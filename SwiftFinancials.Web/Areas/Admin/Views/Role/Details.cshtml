@@ -1,0 +1,52 @@
+﻿@model  Application.MainBoundedContext.DTO.AdministrationModule.RoleDTO
+
+@{
+    ViewBag.Title = "View Role";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Roles</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Role", new { Area = "Admin" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View Role</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <p>
+                        <strong>@Html.DisplayNameFor(model => model.Name)</strong><br>
+
+                        @Html.DisplayFor(model => model.Name)<br>
+                    </p>
+
+                    <p>
+                        @Html.ActionLink("Edit", "Edit", "Role", new { id = Model.Id, Area = "Admin" }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Back to List", "Index", "Role", new { Area = "Admin" }, new { @class = "btn btn-primary" })
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

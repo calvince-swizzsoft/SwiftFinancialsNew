@@ -1,0 +1,155 @@
+﻿@model Application.MainBoundedContext.DTO.ReportsModule.ReportDTO
+
+@{
+    var reportCategoriesList = ViewBag.ReportCategoryList as List<SelectListItem>;
+    ViewBag.Title = "Create";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Reports</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Report", new { Area = "Reports" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm("Create", "Report", new { Area = "Reports" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <div class="form-horizontal">
+
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ParentName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.HiddenFor(model => model.ParentId)
+                                    @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ParentName, new { htmlAttributes = new { @class = "ReportsLookup form-control required", placeholder = "Name.." } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Category, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.DropDownListFor(model => model.Category, reportCategoriesList, new { @class = "form-control", Name = "Type" })
+                                    @Html.ValidationMessageFor(model => model.Category)
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Path, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Path, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Path, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-8">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-success" />
+                                </div>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+    <script>
+        $(document).ready(function () {
+
+            //Report typehead starts here
+            $('.ReportsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetReportsAsync", "Report", new { Area = "Reports" })',
+                        { query: query },
+                        function (Reports) {
+                            var newReportsData = [];
+                            ReportsMap = {};
+                            $.each(Reports, function (i, Report) {
+                                newReportsData.push(Report.Description);
+                                ReportsMap[Report.Description] = Report;
+                            });
+                            process(newReportsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ReportId = "";
+                    ReportId = ReportsMap[item].Id;
+                    $('#ReportId').val(ReportId);
+                    //console.log(ReportId)
+                    return item;
+                }
+            });
+        });
+
+    </script>
+}

@@ -1,0 +1,58 @@
+﻿@using SwiftFinancials.Web.Models
+@model LoginViewModel
+
+@{ Layout = null; }
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Login</title>
+
+    <!-- Primary Inspinia style -->
+    @Styles.Render("~/font-awesome/css")
+    @Styles.Render("~/Content/css")
+
+</head>
+
+<body class="bg-transparent">
+
+    <div class="panel-body center-orientation text-center animated fadeInDown">
+
+        @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "m-t", role = "form" }))
+        {
+<div class="widget-head-color-box p-lg text-center">
+    <img alt="image" class="rounded" src="~/Images/MIA.jpg">
+    @*<h3><b>EasyBim Insurance Management System</b></h3>*@
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    <div class="middle-box form-group form-group-lg">
+        @*@Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })*@
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control text-dark rounded", @placeholder = "Enter email", @required = "" })
+        @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+    </div>
+    <div class="middle-box form-group form-group-lg">
+        @*@Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "control-label col-md-2" })*@
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control text-dark rounded", @placeholder = "Password", @required = "" })
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+    <div class="middle-box form-group form-group-lg">
+        <button type="submit" class="btn btn-rounded btn-pinterest block full-width m-b font-bold">Log in</button>
+    </div>
+    <p class="m-t">
+        @Html.ActionLink("Forgot your password?", "ForgotPassword", new { @class = "text-primary" })
+    </p>
+    <p class="font-weight-bold text-primary "> Copyright  &copy; 2023 | EasyBim Insurance. </p>
+</div>}
+
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/slimScroll")
+    @Scripts.Render("~/bundles/inspinia")
+</body>
+</html>

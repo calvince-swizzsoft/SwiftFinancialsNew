@@ -5,7 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Web;
 
-namespace SwiftFinancials.Presentation.Infrastructure.DataTables
+namespace EasyBim.Presentation.Infrastructure.DataTables
 {
     /// <summary>
     /// Parses the request values from a query from the DataTables jQuery pluggin

@@ -169,6 +169,7 @@
     <Compile Include="Utils\LimitedPool.cs" />
     <Compile Include="Utils\MessageProcessor.cs" />
     <Compile Include="Utils\MvcResultSqlFileStream.cs" />
+    <Compile Include="Utils\NavigationMenu.cs" />
     <Compile Include="Utils\PasswordHash.cs" />
     <Compile Include="Utils\PgpEncrypt.cs" />
     <Compile Include="Utils\PgpEncryptionKeys.cs" />
