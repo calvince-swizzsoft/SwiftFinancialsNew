@@ -1,0 +1,26 @@
+﻿@model Fedhaplus.DashboardApplication.Models.SendCodeViewModel
+@{
+    Layout = "~/Views/Shared/_AccountLayout.cshtml";
+    ViewBag.Title = "Send Code";
+    string userId = ViewBag.UserId;    
+}
+
+<h2 class="font-bold">Send verification code</h2>
+
+<div class="row">
+    <div class="col-lg-12">
+        @using (Html.BeginForm("SendCode", "Account", new { ReturnUrl = Model.ReturnUrl }, FormMethod.Post, new { @class = "m-t", role = "form" }))
+        {
+            @Html.AntiForgeryToken()
+        <div class="row">
+            Select Two-Factor Authentication Provider:
+            @Html.DropDownListFor(model => model.SelectedProvider, Model.Providers)
+            @Html.Hidden("userId", userId)            
+        </div>
+            <br />
+            <div class="row">
+                <input type="submit" value="Submit" class="btn btn-outline-info block full-width m-b" />
+            </div>
+        }
+    </div>
+</div>

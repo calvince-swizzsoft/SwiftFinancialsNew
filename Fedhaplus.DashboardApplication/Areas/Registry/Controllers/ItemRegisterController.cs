@@ -1,0 +1,130 @@
+﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using Fedhaplus.DashboardApplication.Controllers;
+using Fedhaplus.DashboardApplication.Helpers;
+using Fedhaplus.Presentation.Infrastructure.Util;
+using Infrastructure.Crosscutting.Framework.Adapter;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+
+namespace Fedhaplus.DashboardApplication.Areas.Registry.Controllers
+{
+    public class ItemRegisterController : MasterController
+    {
+        // GET: Registry/ItemRegister
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindItemsRegisterByFilterInPageAsync(0, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+
+            else return this.DataTablesJson(items: new List<ItemRegisterDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        public async Task<ActionResult> Details(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var itemRegisterDTO = await _channelService.FindItemRegisterAsync(id, GetServiceHeader());
+
+            return View(itemRegisterDTO.ProjectedAs<ItemRegisterDTO>());
+        }
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(ItemRegisterBindingModel itemRegisterBindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.AddItemRegisterAsync(itemRegisterBindingModel.MapTo<ItemRegisterDTO>(), GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                TempData["Error"] = string.Join(",", allErrors);
+
+                return View(itemRegisterBindingModel);
+            }
+        }
+
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var itemRegisterDTO = await _channelService.FindItemRegisterAsync(id, GetServiceHeader());
+
+            return View(itemRegisterDTO.MapTo<ItemRegisterBindingModel>());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, ItemRegisterBindingModel itemRegisterBindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateItemRegisterAsync(itemRegisterBindingModel.MapTo<ItemRegisterDTO>(), GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                TempData["Error"] = string.Join(",", allErrors);
+
+                return View(itemRegisterBindingModel);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetItemCategoriesAsync()
+        {
+            var itemCategoryDTOs = await _channelService.FindItemCategoriesAsync(GetServiceHeader());
+
+            return Json(itemCategoryDTOs.Where(x => x.IsEnabledForInventoryRegister == true), JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetItemRegistersAsync()
+        {
+            var itemRegisterDTOs = await _channelService.FindItemRegistersAsync(GetServiceHeader());
+
+            return Json(itemRegisterDTOs, JsonRequestBehavior.AllowGet);
+        }
+    }
+}

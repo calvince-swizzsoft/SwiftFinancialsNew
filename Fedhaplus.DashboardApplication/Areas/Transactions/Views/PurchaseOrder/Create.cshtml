@@ -1,0 +1,223 @@
+﻿@model Application.MainBoundedContext.DTO.TransactionsModule.PurchaseOrderItemBindingModel
+
+@{
+    ViewBag.Title = "Create";
+
+    var transactionPaymentMethodsList = ViewBag.TransactionPaymentMethods as List<SelectListItem>;
+    var TotalAmount = ViewBag.TotalAmount;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Item Return</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "PurchaseOrder", new { Area = "Transactions" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="col-md-12">
+        <div class="ibox ">
+            <div class="ibox-title">
+                <div class="ibox-tools">
+                    <a class="collapse-link">
+                        <i class="fa fa-chevron-up"></i>
+                    </a>
+                    <a class="close-link">
+                        <i class="fa fa-times"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="ibox-content m-b-sm border-bottom bg-muted text-dark">
+                @using (Html.BeginForm("AddAsync", "PurchaseOrder", new { Area = "Transactions" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.PurchaseOrderCustomerId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.PurchaseOrderCustomerDescription, new { htmlAttributes = new { @class = "CustomersLookup form-control" } })
+                                    @Html.HiddenFor(model => model.PurchaseOrderCustomerId)
+                                    @Html.ValidationMessageFor(model => model.PurchaseOrderCustomerId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.ItemRegisterId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ItemRegisterDescription, new { htmlAttributes = new { @class = "ItemRegistersLookup form-control Required" } })
+                                    @Html.HiddenFor(model => model.ItemRegisterId)
+                                    @Html.ValidationMessageFor(model => model.ItemRegisterId, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    @Html.LabelFor(model => model.Quantity, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "form-control Required" } })
+                                    @Html.ValidationMessageFor(model => model.Quantity, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <input type="submit" value="ADD" class="btn btn-success" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="ibox-content m-b-sm border-bottom bg-info text-dark">
+                <table class="footable table table-stripped toggle-arrow-tiny">
+                    <thead>
+                        <tr>
+                            <th data-toggle="true">Item Register</th>
+                            <th data-hide="phone">Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (ViewBag.PurchaseOrderItems != null)
+                        {
+                            foreach (var purchaseOrderItem in ViewBag.PurchaseOrderItems)
+                            {
+                                <tr>
+                                    <td>
+                                        @purchaseOrderItem.ItemRegisterDescription
+                                    </td>
+                                    <td>
+                                        @purchaseOrderItem.Quantity.ToString("n2")
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="ibox-content m-b-sm border-bottom">
+                @using (Html.BeginForm("PostPurchaseOrder", "PurchaseOrder", new { Area = "Transactions" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                {
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <div class="form-group">
+                                <input type="submit" value="Post" class="btn btn-success" />
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/plugins/footableStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/footable")
+
+    <script>
+        $(document).ready(function () {
+
+            //Customer typehead starts here
+            $('.CustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i, Customer) {
+                                newCustomersData.push(Customer.Description);
+                                CustomersMap[Customer.Description] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var PurchaseOrderCustomerId = "";
+                    PurchaseOrderCustomerId = CustomersMap[item].Id;
+                    $('#PurchaseOrderCustomerId').val(PurchaseOrderCustomerId);
+                    //console.log(PurchaseOrderCustomerId)
+                    return item;
+                }
+            });
+
+            //ItemRegister typehead starts here
+            $('.ItemRegistersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetItemRegistersAsync", "ItemRegister", new { Area = "Registry" })',
+                        { query: query },
+                        function (ItemRegisters) {
+                            var newItemRegistersData = [];
+                            ItemRegistersMap = {};
+                            $.each(ItemRegisters, function (i, ItemRegister) {
+                                newItemRegistersData.push(ItemRegister.Description);
+                                ItemRegistersMap[ItemRegister.Description] = ItemRegister;
+                            });
+                            process(newItemRegistersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ItemRegisterId = "";
+                    ItemRegisterId = ItemRegistersMap[item].Id;
+                    $('#ItemRegisterId').val(ItemRegisterId);
+                    //console.log(ItemRegisterId)
+                    return item;
+                }
+            });
+
+             $('.footable').footable();
+        });
+
+    </script>
+}

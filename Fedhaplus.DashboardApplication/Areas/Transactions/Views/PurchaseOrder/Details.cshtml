@@ -1,0 +1,74 @@
+﻿@model Application.MainBoundedContext.DTO.TransactionsModule.PurchaseOrderDTO
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>PurchaseOrderDTO</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.ReferenceNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ReferenceNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.PaddedReferenceNumber)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.PaddedReferenceNumber)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierDescription)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SupplierDescription)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierAddressEmail)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SupplierAddressEmail)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.SupplierAddressMobileLine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.SupplierAddressMobileLine)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedBy)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.CreatedDate)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedDate)
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>

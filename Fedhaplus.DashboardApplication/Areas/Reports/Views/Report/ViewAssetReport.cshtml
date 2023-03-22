@@ -1,0 +1,120 @@
+﻿
+@{
+    ViewBag.Title = "ViewAssetReport";
+}
+
+@model Fedhaplus.DashboardApplication.Areas.Reports.Models.ReportModel
+@{ ViewBag.Title = "Create"; }
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Asset Register Reports</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "ViewAssetReport", "Report", new { Area = "Reports" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm("ViewAssetReport", "Report", new { Area = "Reports" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ItemCategoryId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ItemCategoryId)
+                                    @Html.ValidationMessageFor(model => model.ItemCategoryId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.Category, new { htmlAttributes = new { @class = "ItemCategorysLookup form-control required", placeholder = "Category.." } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <a href="~/Reports/Report.aspx" class="btn btn-primary" target="_blank">Print</a>
+                            </div>
+                        </div>}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+    <script>
+        $(document).ready(function () {
+
+              //ItemCategory typehead starts here
+            $('.ItemCategorysLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetItemCategoriesAsync", "ItemRegister", new { Area = "Registry" })',
+                        { query: query },
+                        function (ItemCategorys) {
+                            var newItemCategorysData = [];
+                            ItemCategorysMap = {};
+                            $.each(ItemCategorys, function (i, ItemCategory) {
+                                newItemCategorysData.push(ItemCategory.Description + '|' + ItemCategory.SubCategory);
+                                ItemCategorysMap[ItemCategory.Description + '|' + ItemCategory.SubCategory] = ItemCategory;
+                            });
+                            process(newItemCategorysData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ItemCategoryId = "";
+                    ItemCategoryId = ItemCategorysMap[item].Id;
+                    $('#ItemCategoryId').val(ItemCategoryId);
+                    //console.log(ItemCategoryId)
+                    return item;
+                }
+            });
+
+        });
+
+    </script>
+}

@@ -1,0 +1,118 @@
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.CompanyDTO
+
+@{
+    ViewBag.Title = "View";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Companies</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Company", new { Area = "Admin" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content text-info">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
+
+                                @Html.DisplayFor(model => model.Description)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressAddressLine1)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressAddressLine1)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressAddressLine2)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressAddressLine2)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressStreet)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressStreet)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressPostalCode)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressPostalCode)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressCity)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressCity)<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressEmail)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressEmail)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressLandLine)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressLandLine)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressMobileLine)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressMobileLine)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.EnforceTwoFactorAuthentication)<br></strong>
+
+                                @Html.DisplayFor(model => model.EnforceTwoFactorAuthentication)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedBy)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedBy)<br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "Company", new { id = Model.Id, Area = "Admin" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "Company", new { Area = "Admin" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

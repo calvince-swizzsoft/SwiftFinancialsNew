@@ -1,0 +1,167 @@
+﻿
+@model Application.MainBoundedContext.DTO.RegistryModule.ItemSubCategoryBindingModel
+@{ ViewBag.Title = "Create"; }
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Sub Categories</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "ItemSubCategory", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-secondary text-info">
+                    @using (Html.BeginForm("Create", "ItemSubCategory", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.ItemCategoryId, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.ItemCategoryId)
+                                @Html.ValidationMessageFor(model => model.ItemCategoryId, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.Parent.Description, new { htmlAttributes = new { @class = "ItemCategorysLookup form-control required", placeholder = "Category.." } })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.IsEnabledForAssetRegister, htmlAttributes: new { @class = "control-label" })
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.IsEnabledForAssetRegister)
+                                    @Html.ValidationMessageFor(model => model.IsEnabledForAssetRegister, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.IsEnabledForInventoryRegister, htmlAttributes: new { @class = "control-label" })
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.IsEnabledForInventoryRegister)
+                                    @Html.ValidationMessageFor(model => model.IsEnabledForInventoryRegister, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-8">
+                                @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "control-label" })
+                                <div class="checkbox">
+                                    @Html.EditorFor(model => model.IsLocked)
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </div>}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+    <script>
+        $(document).ready(function () {
+
+            //ItemCategory typehead starts here
+            $('.ItemCategorysLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetItemCategoriesAsync", "ItemSubCategory", new { Area = "Registry" })',
+                        { query: query },
+                        function (ItemCategorys) {
+                            var newItemCategorysData = [];
+                            ItemCategorysMap = {};
+                            $.each(ItemCategorys, function (i, ItemCategory) {
+                                newItemCategorysData.push(ItemCategory.Description);
+                                ItemCategorysMap[ItemCategory.Description] = ItemCategory;
+                            });
+                            process(newItemCategorysData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ItemCategoryId = "";
+                    ItemCategoryId = ItemCategorysMap[item].Id;
+                    $('#ItemCategoryId').val(ItemCategoryId);
+                    //console.log(ItemCategoryId)
+                    return item;
+                }
+            });
+        });
+
+    </script>
+}
