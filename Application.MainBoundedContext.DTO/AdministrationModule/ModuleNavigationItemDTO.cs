@@ -2,10 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.DTO.AdministrationModule
 {
@@ -21,47 +18,73 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public Guid Id { get; set; }
 
         [DataMember]
-        [Display(Name = "Module")]
-        public Guid ModuleId { get; set; }
+        [Display(Name = "Parent")]
+        public Guid? ParentId { get; set; }
 
         [DataMember]
-        [Display(Name = "Module Description")]
-        public string ModuleDescription { get; set; }
+        [Display(Name = "Parent")]
+        public ModuleNavigationItemDTO Parent { get; set; }
 
         [DataMember]
-        [Display(Name = "Item Code")]
-        public int ItemCode { get; set; }
+        [Display(Name = "Description")]
+        public string Description { get; set; }
 
         [DataMember]
-        [Display(Name = "Item Description")]
-        public string ItemDescription { get; set; }
+        [Display(Name = "Icon")]
+        public string Icon { get; set; }
 
         [DataMember]
-        [Display(Name = "Parent Item Code")]
-        public int ParentItemCode { get; set; }
+        [Display(Name = "Code")]
+        public int Code { get; set; }
 
         [DataMember]
-        [Display(Name = "Parent Item Description")]
-        public string ParentItemDescription { get; set; }
+        [Display(Name = "Controller Name")]
+        public string ControllerName { get; set; }
 
         [DataMember]
-        [Display(Name = "Indented Name")]
-        public string IndentedName { get; set; }
+        [Display(Name = "Action Name")]
+        public string ActionName { get; set; }
 
         [DataMember]
-        [Display(Name = "Depth")]
-        public int Depth { get; set; }
+        [Display(Name = "Area Name")]
+        public string AreaName { get; set; }
 
         [DataMember]
-        [Display(Name = "Is Navigable?")]
-        public bool IsNavigable { get; set; }
+        [Display(Name = "Parent Code")]
+        public int AreaCode { get; set; }
+
+        [DataMember]
+        [Display(Name = "Created Date")]
+        public DateTime CreatedDate { get; set; }
 
         [DataMember]
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
 
         [DataMember]
-        [Display(Name = "Created Date")]
-        public DateTime CreatedDate { get; set; }
+        [Display(Name = "Is Area?")]
+        public bool IsArea { get; set; }
+
+        //temp hack
+        public List<ModuleNavigationItemDTO> Child { get; set; }
+
+        HashSet<ModuleNavigationItemDTO> _children;
+        [DataMember]
+        [Display(Name = "Children")]
+        public virtual ICollection<ModuleNavigationItemDTO> Children
+        {
+            get
+            {
+                if (_children == null)
+                {
+                    _children = new HashSet<ModuleNavigationItemDTO>();
+                }
+                return _children;
+            }
+            private set
+            {
+                _children = new HashSet<ModuleNavigationItemDTO>(value);
+            }
+        }
     }
 }

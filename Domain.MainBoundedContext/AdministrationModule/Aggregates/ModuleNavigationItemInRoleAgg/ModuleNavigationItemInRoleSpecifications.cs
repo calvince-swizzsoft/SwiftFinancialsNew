@@ -1,9 +1,5 @@
 ﻿using Domain.Seedwork.Specification;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.MainBoundedContext.AdministrationModule.Aggregates.ModuleNavigationItemInRoleAgg
 {
@@ -11,7 +7,7 @@ namespace Domain.MainBoundedContext.AdministrationModule.Aggregates.ModuleNaviga
     {
         public static Specification<ModuleNavigationItemInRole> ModuleNavigationItemCode(int itemCode)
         {
-            Specification<ModuleNavigationItemInRole> specification = new DirectSpecification<ModuleNavigationItemInRole>(m => m.ModuleNavigationItem.ItemCode == itemCode);
+            Specification<ModuleNavigationItemInRole> specification = new DirectSpecification<ModuleNavigationItemInRole>(m => m.ModuleNavigationItem.Code == itemCode);
 
             return specification;
         }

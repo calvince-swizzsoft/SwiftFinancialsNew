@@ -18,12 +18,18 @@ namespace Infrastructure.Data.MainBoundedContext.UnitOfWork.Mapping.Administrati
             HasKey(x => x.Id);
 
             Property(t => t.SequentialId).HasColumnAnnotation(IndexAnnotation.AnnotationName, new IndexAnnotation(new IndexAttribute() { IsClustered = true, IsUnique = true })); Property(x => x.CreatedBy).HasMaxLength(256);
+           
+            Property(x => x.Description).HasMaxLength(256);
 
-            Property(x => x.ModuleDescription).HasMaxLength(256);
-            Property(x => x.ItemDescription).HasMaxLength(256);
-            Property(x => x.ParentItemDescription).HasMaxLength(256);
+            Property(x => x.Icon).HasMaxLength(256);
 
-            
+            Property(x => x.CreatedBy).HasMaxLength(256);
+
+            Property(x => x.ControllerName).HasMaxLength(256);
+
+            Property(x => x.ActionName).HasMaxLength(256);
+
+            Property(x => x.AreaName).HasMaxLength(256);
 
             ToTable(string.Format("{0}ModuleNavigationItems", DefaultSettings.Instance.TablePrefix));
         }

@@ -70,7 +70,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                     if (item == null) return;
 
                     // Get the specification
-                    ISpecification<ModuleNavigationItem> spec = ModuleNavigationItemSpecifications.ModuleNavigationItemCode(item.ItemCode);
+                    ISpecification<ModuleNavigationItem> spec = ModuleNavigationItemSpecifications.ModuleNavigationItemCode(item.Code);
 
                     // Query this criteria
                     var matchedNavigationItems = _moduleNavigationItemRepository.AllMatching(spec, serviceHeader);
@@ -83,7 +83,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                             var persisted = _moduleNavigationItemRepository.Get(matchedNavigationItem.Id, serviceHeader);
 
                             // manufacture entity via factory
-                            var current = ModuleNavigationItemFactory.CreateModuleNavigationItem(item.ModuleId, item.ModuleDescription, item.ItemCode, item.ItemDescription, item.ParentItemCode, item.ParentItemDescription);
+                            var current = ModuleNavigationItemFactory.CreateModuleNavigationItem(item.ParentId, item.Description, item.Icon, item.Code,item.ControllerName, item.ActionName, item.AreaCode,item.AreaName);
 
                             // reset identity
                             current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
@@ -97,7 +97,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                     else
                     {
                         // Create account type from factory and set persistent id
-                        var moduleNavigationItem = ModuleNavigationItemFactory.CreateModuleNavigationItem(item.ModuleId, item.ModuleDescription, item.ItemCode, item.ItemDescription, item.ParentItemCode, item.ParentItemDescription);
+                        var moduleNavigationItem = ModuleNavigationItemFactory.CreateModuleNavigationItem(item.ParentId, item.Description, item.Icon, item.Code, item.ControllerName, item.ActionName, item.AreaCode, item.AreaName);
 
                         moduleNavigationItem.CreatedBy = serviceHeader.ApplicationUserName;
 
@@ -176,12 +176,12 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
 
                     Array.ForEach(roleNames, (item) =>
                     {
-                        var matches = allNavItems.Where(x => x.ModuleNavigationItem.ItemCode == moduleNavigationItem.ItemCode && x.RoleName.Trim().ToUpper() == item.Trim().ToUpper());
+                        var matches = allNavItems.Where(x => x.ModuleNavigationItem.Code == moduleNavigationItem.Code && x.RoleName.Trim().ToUpper() == item.Trim().ToUpper());
 
                         if (matches.Any()) return;
 
                         // get the specification
-                        ISpecification<ModuleNavigationItem> spec = ModuleNavigationItemSpecifications.ModuleNavigationItemCode(moduleNavigationItem.ItemCode);
+                        ISpecification<ModuleNavigationItem> spec = ModuleNavigationItemSpecifications.ModuleNavigationItemCode(moduleNavigationItem.Code);
 
                         // Query this criteria
                         var navItem = _moduleNavigationItemRepository.AllMatching(spec, serviceHeader).FirstOrDefault();
@@ -218,7 +218,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                             var navItem = _moduleNavigationItemRepository.Get(x.ModuleNavigationItemId, serviceHeader);
 
                             if (navItem != null)
-                                return navItem.ItemCode == moduleNavigationItem.ItemCode && x.RoleName.Trim().ToUpper() == item.Trim().ToUpper();
+                                return navItem.Code == moduleNavigationItem.Code && x.RoleName.Trim().ToUpper() == item.Trim().ToUpper();
                             else return false;
                         });
 
@@ -247,7 +247,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                     var matches =
                         _moduleNavigationItemInRoleRepository.GetAll(serviceHeader).Where(
                             x =>
-                            x.ModuleNavigationItem.ItemCode == moduleNavigationItem.ItemCode &&
+                            x.ModuleNavigationItem.Code == moduleNavigationItem.Code &&
                             x.RoleName.Trim().ToUpper() == roleName.Trim().ToUpper());
 
                     return matches.Any();
@@ -382,11 +382,11 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
         {
             using (var dbContextScope = _dbContextScopeFactory.Create())
             {
-                var matches = GetModuleNavigationItemsWithItemCode(moduleNavigationItem.ItemCode, serviceHeader);
+                var matches = GetModuleNavigationItemsWithItemCode(moduleNavigationItem.Code, serviceHeader);
 
                 if (matches != null && matches.Any())
                 {
-                    var existingRoles = GetRolesForModuleNavigationItemCode(moduleNavigationItem.ItemCode, serviceHeader);
+                    var existingRoles = GetRolesForModuleNavigationItemCode(moduleNavigationItem.Code, serviceHeader);
 
                     var oldSet = from c in existingRoles ?? new string[] { string.Empty } select c;
 

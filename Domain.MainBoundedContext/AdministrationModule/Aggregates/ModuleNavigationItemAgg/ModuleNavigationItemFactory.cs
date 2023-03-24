@@ -1,30 +1,30 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.MainBoundedContext.AdministrationModule.Aggregates.ModuleNavigationItemAgg
 {
     public static class ModuleNavigationItemFactory
     {
-        public static ModuleNavigationItem CreateModuleNavigationItem(Guid moduleId, string moduleDescription, int itemCode, string itemDescription, int parentItemCode, string parentItemDescription)
+        public static ModuleNavigationItem CreateModuleNavigationItem(Guid? parentId, string description, string icon, int code, string controllerName, string actionName, int parentCode, string areaName)
         {
             var moduleNavigationItem = new ModuleNavigationItem();
 
             moduleNavigationItem.GenerateNewIdentity();
 
-            moduleNavigationItem.ModuleId = moduleId;
+            moduleNavigationItem.ParentId = (parentId != null && parentId != Guid.Empty) ? parentId : null;
 
-            moduleNavigationItem.ModuleDescription = moduleDescription;
+            moduleNavigationItem.Description = description;
 
-            moduleNavigationItem.ItemCode = itemCode;
+            moduleNavigationItem.Icon = icon;
 
-            moduleNavigationItem.ItemDescription = itemDescription;
+            moduleNavigationItem.Code = code;
 
-            moduleNavigationItem.ParentItemCode = parentItemCode;
+            moduleNavigationItem.ControllerName = controllerName;
 
-            moduleNavigationItem.ParentItemDescription = parentItemDescription;
+            moduleNavigationItem.ActionName = actionName;
+
+            moduleNavigationItem.AreaCode = parentCode;
+
+            moduleNavigationItem.AreaName = areaName;
 
             moduleNavigationItem.CreatedDate = DateTime.Now;
 
