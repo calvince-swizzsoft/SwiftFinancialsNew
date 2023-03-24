@@ -40,7 +40,7 @@ namespace SwiftFinancials.Utility
 
                         Console.WriteLine("CurrentAppDomainName>{0}", serviceHeader.ApplicationDomainName);
 
-                        result = await channelService.ConfigureAspNetIdentityDatabaseAsync(serviceHeader, 180d);
+                       // result = await channelService.ConfigureAspNetIdentityDatabaseAsync(serviceHeader, 180d);
                         Console.WriteLine("ConfigureAspNetIdentityDatabaseAsync>{0}", result);
 
                         result = await channelService.ConfigureAspNetMembershipDatabaseAsync(serviceHeader, 180d);
