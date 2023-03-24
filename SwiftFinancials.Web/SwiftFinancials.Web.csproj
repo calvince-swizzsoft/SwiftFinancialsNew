@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" />
   <Import Project="..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props" Condition="Exists('..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props')" />
   <Import Project="..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props')" />
   <Import Project="..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" />
@@ -52,9 +51,6 @@
     <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\CommonServiceLocator.dll</HintPath>
-    </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
       <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
@@ -71,14 +67,13 @@
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.4.4\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Fedhaplus.Presentation.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
-    <Reference Include="LazyCache, Version=2.4.0.174, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\LazyCache.2.4.0\lib\netstandard2.0\LazyCache.dll</HintPath>
+    <Reference Include="LazyCache, Version=0.7.1.44, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\LazyCache.0.7.1.44\lib\net45\LazyCache.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -167,6 +162,9 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -221,28 +219,13 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Abstractions, Version=3.3.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.Abstractions.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Configuration, Version=5.2.5.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.Configuration.dll</HintPath>
+      <HintPath>..\packages\Unity.Abstractions.3.3.1\lib\net47\Unity.Abstractions.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Container, Version=5.8.13.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.Container.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Interception, Version=5.5.5.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.Interception.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Interception.Configuration, Version=5.1.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.Interception.Configuration.dll</HintPath>
+      <HintPath>..\packages\Unity.Container.5.8.13\lib\net47\Unity.Container.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Mvc, Version=5.0.15.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.Mvc.5.0.15\lib\net47\Unity.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RegistrationByConvention, Version=2.1.9.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.RegistrationByConvention.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ServiceLocation, Version=2.1.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.5.8.13\lib\net47\Unity.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
@@ -1093,21 +1076,9 @@
       <Project>{11280338-B2E7-4FE0-AFC7-E5C5596583AC}</Project>
       <Name>Domain.MainBoundedContext</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyBim.Presentation.Shared\EasyBim.Presentation.Shared.csproj">
-      <Project>{CDF6163E-1243-4BD4-B873-DC380F908F06}</Project>
-      <Name>EasyBim.Presentation.Shared</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infrastructure.Crosscutting.Framework\Infrastructure.Crosscutting.Framework.csproj">
       <Project>{5D2E6404-03AE-4038-B0AE-7AAA56BA525A}</Project>
       <Name>Infrastructure.Crosscutting.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EasyBim.Presentation.Contracts\EasyBim.Presentation.Contracts.csproj">
-      <Project>{f1d7ad5a-2e8b-44fb-86a5-f2751225167e}</Project>
-      <Name>EasyBim.Presentation.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EasyBim.Presentation.Infrastructure\EasyBim.Presentation.Infrastructure.csproj">
-      <Project>{E36F3A99-A405-44DE-84AB-91F37127B45A}</Project>
-      <Name>EasyBim.Presentation.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\SwiftFinancials.Presentation.Infrastructure\SwiftFinancials.Presentation.Infrastructure.csproj">
       <Project>{DCFCA848-40EE-4F4E-A2D6-AA449C908CC5}</Project>
@@ -1169,14 +1140,11 @@
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.BannedApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.BannedApiAnalyzers.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.PublicApiAnalyzers.2.9.8\build\Microsoft.CodeAnalysis.PublicApiAnalyzers.props'))" />
     <Error Condition="!Exists('..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Roslyn.Diagnostics.Analyzers.2.9.8\build\Roslyn.Diagnostics.Analyzers.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.props'))" />
-    <Error Condition="!Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.4\build\EntityFramework.targets'))" />
   </Target>
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>
   </PropertyGroup>
-  <Import Project="..\packages\EntityFramework.6.4.4\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.4\build\EntityFramework.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
