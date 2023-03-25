@@ -14,7 +14,7 @@ namespace DistributedServices.MainBoundedContext.Identity
 
         public string OtherNames { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Today;
 
         public Guid? CustomerId { get; set; }
 

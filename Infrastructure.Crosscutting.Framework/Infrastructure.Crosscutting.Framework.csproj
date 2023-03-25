@@ -180,6 +180,7 @@
     <Compile Include="Utils\MessageProcessor.cs" />
     <Compile Include="Utils\MvcResultSqlFileStream.cs" />
     <Compile Include="Utils\NavigationMenu.cs" />
+    <Compile Include="Utils\PasswordGenerator.cs" />
     <Compile Include="Utils\PasswordHash.cs" />
     <Compile Include="Utils\PgpEncrypt.cs" />
     <Compile Include="Utils\PgpEncryptionKeys.cs" />
@@ -190,6 +191,7 @@
     <Compile Include="Utils\StrongRandom.cs" />
     <Compile Include="Utils\SystemInfo.cs" />
     <Compile Include="Utils\UberUtil.cs" />
+    <Compile Include="Utils\WellKnownUserRoles.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

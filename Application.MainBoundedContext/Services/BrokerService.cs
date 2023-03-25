@@ -30,6 +30,102 @@ namespace Application.MainBoundedContext.Services
             _serviceBrokerConfigSection = ConfigurationHelper.GetServiceBrokerConfiguration();
         }
 
+        public bool ProcessMembershipAccountRegistrationAlerts(DMLCommand command, ServiceHeader serviceHeader, params UserDTO[] data)
+        {
+            var result = default(bool);
+
+            if (data != null && _serviceBrokerConfigSection != null)
+            {
+                switch (command)
+                {
+                    case DMLCommand.None:
+
+                        var queueDTOs = from item in data
+                                        select new QueueDTO
+                                        {
+                                            RecordId = new Guid(item.Id),
+                                            UserPassword = item.Password,
+                                            CallbackUrl = item.CallbackUrl,
+                                            AppDomainName = serviceHeader.ApplicationDomainName,
+                                            AccountAlertTrigger = (int)AccountAlertTrigger.MembershipAccountRegistration,
+                                        };
+
+                        _messageQueueService.Send(_serviceBrokerConfigSection.ServiceBrokerSettingsItems.AccountAlertDispatcherQueuePath, queueDTOs.ToList(), MessageCategory.AccountAlert, MessagePriority.High, _serviceBrokerConfigSection.ServiceBrokerSettingsItems.TimeToBeReceived);
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        public bool ProcessMembershipResetPasswordAlerts(DMLCommand command, ServiceHeader serviceHeader, params UserDTO[] data)
+        {
+            var result = default(bool);
+
+            if (data != null && _serviceBrokerConfigSection != null)
+            {
+                switch (command)
+                {
+                    case DMLCommand.None:
+
+                        var queueDTOs = from item in data
+                                        select new QueueDTO
+                                        {
+                                            RecordId = new Guid(item.Id),
+                                            CallbackUrl = item.CallbackUrl,
+                                            AppDomainName = serviceHeader.ApplicationDomainName,
+                                            AccountAlertTrigger = (int)AccountAlertTrigger.MembershipResetPassword,
+                                        };
+
+                        _messageQueueService.Send(_serviceBrokerConfigSection.ServiceBrokerSettingsItems.AccountAlertDispatcherQueuePath, queueDTOs.ToList(), MessageCategory.AccountAlert, MessagePriority.High, _serviceBrokerConfigSection.ServiceBrokerSettingsItems.TimeToBeReceived);
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+        public bool ProcessMembershipAccountVerificationAlerts(DMLCommand command, ServiceHeader serviceHeader, params UserDTO[] data)
+        {
+            var result = default(bool);
+
+            if (data != null && _serviceBrokerConfigSection != null)
+            {
+                switch (command)
+                {
+                    case DMLCommand.None:
+
+                        var queueDTOs = from item in data
+                                        select new QueueDTO
+                                        {
+                                            RecordId = new Guid(item.Id),
+                                            Token = item.Token,
+                                            Provider = item.Provider,
+                                            AppDomainName = serviceHeader.ApplicationDomainName,
+                                            AccountAlertTrigger = (int)AccountAlertTrigger.MembershipAccountVerification,
+                                        };
+
+                        _messageQueueService.Send(_serviceBrokerConfigSection.ServiceBrokerSettingsItems.AccountAlertDispatcherQueuePath, queueDTOs.ToList(), MessageCategory.AccountAlert, MessagePriority.High, _serviceBrokerConfigSection.ServiceBrokerSettingsItems.TimeToBeReceived);
+
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            return result;
+        }
+
+
         public bool ProcessRecurringBatchEntries(DMLCommand command, ServiceHeader serviceHeader, params RecurringBatchEntryDTO[] data)
         {
             var result = default(bool);

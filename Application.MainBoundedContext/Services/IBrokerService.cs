@@ -13,6 +13,12 @@ namespace Application.MainBoundedContext.Services
 {
     public interface IBrokerService
     {
+        bool ProcessMembershipAccountRegistrationAlerts(DMLCommand command, ServiceHeader serviceHeader, params UserDTO[] data);
+
+        bool ProcessMembershipResetPasswordAlerts(DMLCommand command, ServiceHeader serviceHeader, params UserDTO[] data);
+
+        bool ProcessMembershipAccountVerificationAlerts(DMLCommand command, ServiceHeader serviceHeader, params UserDTO[] data);
+
         bool ProcessRecurringBatchEntries(DMLCommand command, ServiceHeader serviceHeader, params RecurringBatchEntryDTO[] data);
 
         bool ProcessLoanDisbursementBatchEntries(DMLCommand command, ServiceHeader serviceHeader, params LoanDisbursementBatchEntryDTO[] data);

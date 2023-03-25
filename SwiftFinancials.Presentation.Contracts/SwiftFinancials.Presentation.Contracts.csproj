@@ -90,6 +90,7 @@
     <Compile Include="AdministrationModule\IBranchService.cs" />
     <Compile Include="AdministrationModule\ICompanyService.cs" />
     <Compile Include="AdministrationModule\ILocationService.cs" />
+    <Compile Include="AdministrationModule\IMembershipService.cs" />
     <Compile Include="AdministrationModule\IModuleNavigationItemService.cs" />
     <Compile Include="AdministrationModule\IReportService.cs" />
     <Compile Include="AdministrationModule\IWorkflowService.cs" />
@@ -136,7 +137,6 @@
     <Compile Include="IMediaService.cs" />
     <Compile Include="IUtilityService.cs" />
     <Compile Include="MembershipModule\IMembershipManagerService.cs" />
-    <Compile Include="MembershipModule\IMembershipService.cs" />
     <Compile Include="MembershipModule\IPasswordManagerService.cs" />
     <Compile Include="MembershipModule\IRoleManagerService.cs" />
     <Compile Include="MembershipModule\IUserManagerService.cs" />

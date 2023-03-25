@@ -75,5 +75,15 @@ namespace Application.Seedwork
 
             return new PageCollectionInfo<T> { PageIndex = pageIndex, PageSize = pageSize, PageCollection = items.ToList(), ItemsCount = totalItems };
         }
+
+        public static int AllMatchingCount<T>(IQueryable<T> objectSet, ISpecification<T> specification)
+           where T : class
+        {
+            IQueryable<T> items = null;
+
+            items = objectSet.Where(specification.SatisfiedBy());
+
+            return items.Count();
+        }
     }
 }

@@ -3304,8 +3304,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
     public enum AccountAlertTrigger
     {
+        [Description("Membership Account Registration")]
+        MembershipAccountRegistration,
+        [Description("Membership Account Verification")]
+        MembershipAccountVerification,
+        [Description("Membership Reset Password")]
+        MembershipResetPassword,
         [Description("Transaction")]
-        Transaction = 0,
+        Transaction,
         [Description("Loan Guarantee")]
         LoanGuarantee,
         [Description("Guarantor Substitution")]
@@ -3660,5 +3666,13 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Authorize = 1,
         [Description("Reject")]
         Reject = 2,
+    }
+
+    public enum TwoFactorProviders
+    {
+        [Description("Phone Code")]
+        PhoneCode,
+        [Description("Email Code")]
+        EmailCode
     }
 }

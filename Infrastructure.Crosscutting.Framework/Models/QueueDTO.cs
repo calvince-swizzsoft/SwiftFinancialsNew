@@ -68,5 +68,13 @@ namespace Infrastructure.Crosscutting.Framework.Models
         public int WorkflowRecordType { get; set; }
 
         public int WorkflowRecordStatus { get; set; }
+
+        public string UserPassword { get; set; }
+
+        public string CallbackUrl { get; set; }
+
+        public string Token { get; set; }
+
+        public int Provider { get; set; }
     }
 }

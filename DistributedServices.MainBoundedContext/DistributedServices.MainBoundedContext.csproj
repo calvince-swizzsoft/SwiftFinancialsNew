@@ -62,7 +62,7 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
@@ -312,6 +312,7 @@
     <Content Include="LocationService.svc" />
     <Content Include="MediaService.svc" />
     <Content Include="MembershipManagerService.svc" />
+    <Content Include="MembershipService.svc" />
     <Content Include="MessageGroupService.svc" />
     <Content Include="MicroCreditGroupService.svc" />
     <Content Include="MicroCreditOfficerService.svc" />
@@ -660,6 +661,7 @@
     <Compile Include="Identity\ApplicationRoleManager.cs" />
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationUserManager.cs" />
+    <Compile Include="Contracts\AdministrationModule\IMembershipService.cs" />
     <Compile Include="IncomeAdjustmentService.svc.cs">
       <DependentUpon>IncomeAdjustmentService.svc</DependentUpon>
     </Compile>
@@ -724,6 +726,9 @@
     </Compile>
     <Compile Include="MembershipManagerService.svc.cs">
       <DependentUpon>MembershipManagerService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="MembershipService.svc.cs">
+      <DependentUpon>MembershipService.svc</DependentUpon>
     </Compile>
     <Compile Include="MessageGroupService.svc.cs">
       <DependentUpon>MessageGroupService.svc</DependentUpon>

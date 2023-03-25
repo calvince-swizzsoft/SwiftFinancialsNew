@@ -38,6 +38,7 @@ namespace DistributedServices.MainBoundedContext.Identity
             {
                 MessageFormat = "Your security code is {0}"
             });
+
             this.RegisterTwoFactorProvider("Email Code", new EmailTokenProvider<ApplicationUser>
             {
                 Subject = "Security Code",

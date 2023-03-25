@@ -1013,7 +1013,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #endregion
 
-
         #region CompanyDTO
 
         public Task<List<CompanyDTO>> FindCompaniesAsync(ServiceHeader serviceHeader)
