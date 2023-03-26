@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EasyBim.Presentation.Infrastructure.DataTables
+namespace SwiftFinancials.Presentation.Infrastructure.DataTables
 {
     public class FormatedList
     {

@@ -18,7 +18,7 @@ namespace SwiftFinancials.Web.Reports
             ReportDocument RptDoc = new ReportDocument();
 
             //Map your crystal report path    
-            RptDoc.Load("C:\\Program Files (x86)\\EasyBim Insurance\\dashboard_client\\Reports\\AssetRegister.rpt");
+            RptDoc.Load("C:\\Program Files (x86)\\Swift Financials\\dashboard_client\\Reports\\AssetRegister.rpt");
 
             //Report pfd name    
             string fname = "AssetRegister.pdf";

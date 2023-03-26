@@ -57,7 +57,7 @@ namespace DistributedServices.MainBoundedContext
             _emailAlertAppService = emailAlertAppService;
             _brokerService = brokerService;
 
-            _provider = new DpapiDataProtectionProvider("EasyBim");
+            _provider = new DpapiDataProtectionProvider("SwiftFinancials");
             _applicationUserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(_provider.Create());
         }
 

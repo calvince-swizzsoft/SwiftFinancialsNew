@@ -22,15 +22,15 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                     /*
                      * Only vendor should know this :-(
                      */
-                    instance.RootUser = "sysadmin";
+                    instance.RootUser = "admin";
                     instance.RootPassword = "Abc.2020!";
                     instance.AuditUser = "auditor";
-                    instance.AuditPassword = "Ch@11enge";
-                    instance.Password = "yeknod!";
-                    instance.PasswordQuestion = "Where were you when you first heard about 9/11?";
-                    instance.PasswordAnswer = "idk";
+                    instance.AuditPassword = "Myadmin.2020!";
+                    instance.Password = "Kenya@2030!";
+                    instance.PasswordQuestion = "Where were you when you first heard about 14/13?";
+                    instance.PasswordAnswer = "bmt";
                     instance.RootEmail = "info@stamlinetechnologies.com";
-                    instance.TablePrefix = "swift_";
+                    instance.TablePrefix = "swiftfin_";
 
                     instance.PageSizes = new List<int> { 15, 25, 50, 100, 200, 300, 400 };
                     

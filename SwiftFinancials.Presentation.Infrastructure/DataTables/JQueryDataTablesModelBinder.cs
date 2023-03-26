@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Web.Mvc;
 
-namespace EasyBim.Presentation.Infrastructure.DataTables
+namespace SwiftFinancials.Presentation.Infrastructure.DataTables
 {
     public class JQueryDataTablesModelBinder : IModelBinder
     {

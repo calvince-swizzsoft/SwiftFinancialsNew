@@ -1,5 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO;
-using EasyBim.Presentation.Infrastructure.DataTables;
+using SwiftFinancials.Presentation.Infrastructure.DataTables;
 using Infrastructure.Crosscutting.Framework.Adapter;
 using Infrastructure.Crosscutting.Framework.Logging;
 using System.Web.Mvc;

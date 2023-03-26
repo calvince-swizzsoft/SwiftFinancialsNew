@@ -24,7 +24,7 @@ namespace SwiftFinancials.Utility
             {
                 if (args.Length != 1)
                 {
-                    Console.WriteLine("Usage: EasyBim.Utility.exe [CurrentAppDomainName]");
+                    Console.WriteLine("Usage: SwiftFinancials.Utility.exe [CurrentAppDomainName]");
 
                     Console.WriteLine("Press any key to continue...");
 
@@ -73,7 +73,7 @@ namespace SwiftFinancials.Utility
             {
                 Console.WriteLine("Exception!");
 
-                logger.LogError("EasyBim.Utility...", ex);
+                logger.LogError("SwiftFinancials.Utility...", ex);
             }
         }
 

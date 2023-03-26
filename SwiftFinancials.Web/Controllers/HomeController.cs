@@ -62,17 +62,17 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         //[HttpPost]
-        //public async Task<ActionResult> RedirectTo(string NavigationItemCode)
+        //public async Task<ActionResult> RedirectTo(string navigationItemCode)
         //{
         //    int code = 0;
 
-        //    if (!string.IsNullOrWhiteSpace(NavigationItemCode))
+        //    if (!string.IsNullOrWhiteSpace(navigationItemCode))
         //    {
-        //        if (int.TryParse(NavigationItemCode, out code))
+        //        if (int.TryParse(navigationItemCode, out code))
         //        {
-        //            var NavigationItem = await _channelService.FindNavigationItemByCodeAsync(code, GetServiceHeader());
+        //            var navigationItem = await _channelService.FindNavigationItemByCodeAsync(code, GetServiceHeader());
 
-        //            return RedirectToAction(NavigationItem.ActionName, NavigationItem.ControllerName, new { Area = NavigationItem.AreaName });
+        //            return RedirectToAction(navigationItem.ActionName, navigationItem.ControllerName, new { Area = navigationItem.AreaName });
         //        }
         //        else
         //        {

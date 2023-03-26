@@ -32,7 +32,7 @@ namespace SwiftFinancials.Web.Controllers
             _signInManager = signInManager;
             _authenticationManager = authenticationManager;
 
-            _provider = new DpapiDataProtectionProvider("EasyBim");
+            _provider = new DpapiDataProtectionProvider("SwiftFinancials");
             _applicationUserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(_provider.Create());
         }
 
