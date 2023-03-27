@@ -227,6 +227,8 @@
     <Compile Include="UnitOfWork\Mapping\AdministrationModule\LocationEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AdministrationModule\ModuleNavigationItemEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AdministrationModule\ModuleNavigationItemInRoleEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AdministrationModule\NavigationItemEntityConfiguration.cs" />
+    <Compile Include="UnitOfWork\Mapping\AdministrationModule\NavigationItemInRoleEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AdministrationModule\ReportEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AdministrationModule\SystemPermissionTypeInBranchEntityConfiguration.cs" />
     <Compile Include="UnitOfWork\Mapping\AdministrationModule\SystemPermissionTypeInRoleEntityConfiguration.cs" />

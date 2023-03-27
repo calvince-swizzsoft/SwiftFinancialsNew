@@ -388,6 +388,12 @@
     <Compile Include="AdministrationModule\Aggregates\ModuleNavigationItemInRoleAgg\ModuleNavigationItemInRole.cs" />
     <Compile Include="AdministrationModule\Aggregates\ModuleNavigationItemInRoleAgg\ModuleNavigationItemInRoleFactory.cs" />
     <Compile Include="AdministrationModule\Aggregates\ModuleNavigationItemInRoleAgg\ModuleNavigationItemInRoleSpecifications.cs" />
+    <Compile Include="AdministrationModule\Aggregates\NavigationItemAgg\NavigationItem.cs" />
+    <Compile Include="AdministrationModule\Aggregates\NavigationItemAgg\NavigationItemFactory.cs" />
+    <Compile Include="AdministrationModule\Aggregates\NavigationItemAgg\NavigationItemSpecifications.cs" />
+    <Compile Include="AdministrationModule\Aggregates\NavigationItemInRoleAgg\NavigationItemInRole.cs" />
+    <Compile Include="AdministrationModule\Aggregates\NavigationItemInRoleAgg\NavigationItemInRoleFactory.cs" />
+    <Compile Include="AdministrationModule\Aggregates\NavigationItemInRoleAgg\NavigationItemInRoleSpecifications.cs" />
     <Compile Include="AdministrationModule\Aggregates\ReportAgg\Report.cs" />
     <Compile Include="AdministrationModule\Aggregates\ReportAgg\ReportFactory.cs" />
     <Compile Include="AdministrationModule\Aggregates\ReportAgg\ReportSpecifications.cs" />

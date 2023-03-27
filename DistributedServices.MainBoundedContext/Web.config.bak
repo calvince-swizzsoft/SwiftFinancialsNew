@@ -216,14 +216,6 @@
         <endpoint address="" behaviorConfiguration="SilverlightFaultBehavior" binding="customBinding" bindingConfiguration="customBindingHTTP" contract="DistributedServices.MainBoundedContext.IModuleNavigationItemService" />
         <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
       </service>
-	    <service behaviorConfiguration="serviceBehavior0" name="DistributedServices.MainBoundedContext.NavigationItemService">
-        <endpoint address="" behaviorConfiguration="SilverlightFaultBehavior" binding="customBinding" bindingConfiguration="customBindingHTTP" contract="DistributedServices.MainBoundedContext.INavigationItemService" />
-        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
-      </service>
-      <service behaviorConfiguration="serviceBehavior0" name="DistributedServices.MainBoundedContext.NavigationItemInRoleService">
-        <endpoint address="" behaviorConfiguration="SilverlightFaultBehavior" binding="customBinding" bindingConfiguration="customBindingHTTP" contract="DistributedServices.MainBoundedContext.INavigationItemInRoleService" />
-        <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />
-      </service>
       <service behaviorConfiguration="serviceBehavior0" name="DistributedServices.MainBoundedContext.MembershipService">
         <endpoint address="" behaviorConfiguration="SilverlightFaultBehavior" binding="customBinding" bindingConfiguration="customBindingHTTP" contract="DistributedServices.MainBoundedContext.IMembershipService" />
         <endpoint address="mex" binding="mexHttpBinding" contract="IMetadataExchange" />

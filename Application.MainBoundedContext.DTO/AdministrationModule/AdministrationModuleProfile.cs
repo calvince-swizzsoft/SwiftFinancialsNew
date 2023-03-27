@@ -8,6 +8,8 @@ using Domain.MainBoundedContext.AdministrationModule.Aggregates.CompanyDebitType
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.LocationAgg;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.ModuleNavigationItemAgg;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.ModuleNavigationItemInRoleAgg;
+using Domain.MainBoundedContext.AdministrationModule.Aggregates.NavigationItemAgg;
+using Domain.MainBoundedContext.AdministrationModule.Aggregates.NavigationItemInRoleAgg;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.ReportAgg;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.SystemPermissionTypeInBranchAgg;
 using Domain.MainBoundedContext.AdministrationModule.Aggregates.SystemPermissionTypeInRoleAgg;
@@ -27,6 +29,11 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
 
             //ModuleNavigationItemInRole => ModuleNavigationItemInRoleDTO
             CreateMap<ModuleNavigationItemInRole, ModuleNavigationItemInRoleDTO>();
+
+            //NavigationItem => NavigationItemDTO
+            CreateMap<NavigationItem, NavigationItemDTO>();
+
+            CreateMap<NavigationItemInRole, NavigationItemInRoleDTO>();
 
             //SystemPermissionTypeInRole => SystemPermissionTypeInRoleDTO
             CreateMap<SystemPermissionTypeInRole, SystemPermissionTypeInRoleDTO>();

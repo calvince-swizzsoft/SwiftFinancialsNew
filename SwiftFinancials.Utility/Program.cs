@@ -3,6 +3,7 @@ using Infrastructure.Crosscutting.Framework.Logging;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading;
 
@@ -46,7 +47,7 @@ namespace SwiftFinancials.Utility
                         result = await channelService.ConfigureApplicationDatabaseAsync(serviceHeader, 180d);
                         Console.WriteLine("ConfigureApplicationDatabaseAsync>{0}", result);
 
-                        result = await channelService.AddModuleNavigationItemsAsync(navigationItems, serviceHeader);
+                        result = await channelService.AddNavigationItemsAsync(navigationItems, serviceHeader);
                         Console.WriteLine("AddNavigationItemsAsync>{0}", result);
 
                         if (result)
@@ -77,15 +78,15 @@ namespace SwiftFinancials.Utility
             }
         }
 
-        private static ObservableCollection<ModuleNavigationItemDTO> GetAvailableNavigationMenus()
+        private static List<NavigationItemDTO> GetAvailableNavigationMenus()
         {
             NavigationMenu navigationMenu = new NavigationMenu();
 
-            var result = new ObservableCollection<ModuleNavigationItemDTO>();
+            var result = new List<NavigationItemDTO>();
 
             foreach (var menu in navigationMenu.GetMenus())
             {
-                result.Add(new ModuleNavigationItemDTO
+                result.Add(new NavigationItemDTO
                 {
                     Description = menu.Description,
                     Icon = menu.Icon,
@@ -100,7 +101,6 @@ namespace SwiftFinancials.Utility
 
             return result;
         }
-
 
         private static void ConfigureFactories()
         {

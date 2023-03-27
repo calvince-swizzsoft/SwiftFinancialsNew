@@ -208,10 +208,14 @@
     <Compile Include="AdministrationModule\Services\IBranchAppService.cs" />
     <Compile Include="AdministrationModule\Services\ICompanyAppService.cs" />
     <Compile Include="AdministrationModule\Services\ILocationAppService.cs" />
+    <Compile Include="AdministrationModule\Services\INavigationItemAppService.cs" />
+    <Compile Include="AdministrationModule\Services\INavigationItemInRoleAppService.cs" />
     <Compile Include="AdministrationModule\Services\IReportAppService.cs" />
     <Compile Include="AdministrationModule\Services\IWorkflowAppService.cs" />
     <Compile Include="AdministrationModule\Services\IWorkflowProcessorAppService.cs" />
     <Compile Include="AdministrationModule\Services\LocationAppService.cs" />
+    <Compile Include="AdministrationModule\Services\NavigationItemAppService.cs" />
+    <Compile Include="AdministrationModule\Services\NavigationItemInRoleAppService.cs" />
     <Compile Include="AdministrationModule\Services\ReportAppService.cs" />
     <Compile Include="AdministrationModule\Services\WorkflowAppService.cs" />
     <Compile Include="BackOfficeModule\Services\DataAttachmentPeriodAppService.cs" />

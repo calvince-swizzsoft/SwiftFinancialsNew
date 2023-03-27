@@ -12,7 +12,7 @@ namespace SwiftFinancials.Web.Helpers
     [DataObject]
     public class CacheExtensions
     {
-        public void CacheModuleAccessRightsInRole(List<ModuleNavigationItemInRoleDTO> NavigationItemInRoles, string sessionKey, ServiceHeader serviceHeader)
+        public void CacheModuleAccessRightsInRole(List<NavigationItemInRoleDTO> NavigationItemInRoles, string sessionKey, ServiceHeader serviceHeader)
         {
             var currentCachedRoles = HttpRuntime.Cache[sessionKey];
 

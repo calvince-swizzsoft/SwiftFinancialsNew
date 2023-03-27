@@ -2660,6 +2660,414 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #endregion
 
+        #region NavigationItemDTO
+
+        public Task<bool> AddNavigationItemsAsync(List<NavigationItemDTO> navigationItems, ServiceHeader serviceHeader, double timeoutMinutes)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndAddNavigationItems(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginAddNavigationItems(navigationItems, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<NavigationItemDTO> FindNavigationItemByIdAsync(Guid navigationItemId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<NavigationItemDTO>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndFindNavigationItemById(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindNavigationItemById(navigationItemId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<NavigationItemDTO> FindNavigationItemByCodeAsync(int navigationItemCode, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<NavigationItemDTO>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndFindNavigationItemByCode(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindNavigationItemByCode(navigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<NavigationItemDTO>> FindNavigationItemsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<NavigationItemDTO>>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndFindNavigationItems(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindNavigationItems(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<NavigationItemDTO>> FindNavigationItemsFilterPageCollectionInfoAsync(int pageIndex, int pageSize, List<string> sortedColumns, string text, bool sortAscending, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<NavigationItemDTO>>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndFindNavigationItemsFilterPageCollectionInfo(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindNavigationItemsFilterPageCollectionInfo(pageIndex, pageSize, sortedColumns, text, sortAscending, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<NavigationItemDTO>> FindModuleNavigationActionByControllerNameAsync(string controllerName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<NavigationItemDTO>>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndFindModuleNavigationActionByControllerName(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindModuleNavigationActionByControllerName(controllerName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> BulkInsertNavigationItemAsync(List<Guid> modulesNavigationIds, string roleName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndBulkInsertNavigationItem(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginBulkInsertNavigationItem(modulesNavigationIds, roleName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> BulkInsertNavigationItemInRolesAsync(List<Guid> NavigationItemInRole, string roleName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemService service = GetService<INavigationItemService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemService)result.AsyncState).EndBulkInsertNavigationItemInRoles(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginBulkInsertNavigationItemInRoles(NavigationItemInRole, roleName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        #endregion
+
+        #region NavigationItemInRoleDTO
+
+        public Task<List<NavigationItemInRoleDTO>> GetNavigationItemsInRoleAsync(string roleName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<NavigationItemInRoleDTO>>();
+
+            INavigationItemInRoleService service = GetService<INavigationItemInRoleService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<NavigationItemInRoleDTO> response = ((INavigationItemInRoleService)result.AsyncState).EndGetNavigationItemsInRole(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginGetNavigationItemsInRole(roleName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<NavigationItemInRoleDTO>> GetRolesForNavigationItemCodeAsync(int navigationItemCode, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<NavigationItemInRoleDTO>>();
+
+            INavigationItemInRoleService service = GetService<INavigationItemInRoleService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<NavigationItemInRoleDTO> response = ((INavigationItemInRoleService)result.AsyncState).EndGetRolesForNavigationItemCode(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginGetRolesForNavigationItemCode(navigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> IsNavigationItemInRoleAsync(int navigationItemCode, string roleName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemInRoleService service = GetService<INavigationItemInRoleService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemInRoleService)result.AsyncState).EndIsNavigationItemInRole(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginIsNavigationItemInRole(navigationItemCode, roleName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> AddNavigationItemToRoleAsync(NavigationItemInRoleDTO navigationItemInRoleDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemInRoleService service = GetService<INavigationItemInRoleService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemInRoleService)result.AsyncState).EndAddNavigationItemToRole(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginAddNavigationItemToRole(navigationItemInRoleDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> RemoveNavigationItemRoleAsync(Guid navigationItemId, string roleName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemInRoleService service = GetService<INavigationItemInRoleService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemInRoleService)result.AsyncState).EndRemoveNavigationItemRole(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginRemoveNavigationItemRole(navigationItemId, roleName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> ValidateModuleAccessAsync(string controllerName, string roleName, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            INavigationItemInRoleService service = GetService<INavigationItemInRoleService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    var response = ((INavigationItemInRoleService)result.AsyncState).EndValidateModuleAccess(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginValidateModuleAccess(controllerName, roleName, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        #endregion
+
         #region ModuleNavigationItemInRoleDTO
 
         public Task<bool> AddModuleNavigationItemsAsync(ObservableCollection<ModuleNavigationItemDTO> moduleNavigationItems, ServiceHeader serviceHeader)

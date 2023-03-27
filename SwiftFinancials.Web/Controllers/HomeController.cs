@@ -61,28 +61,28 @@ namespace SwiftFinancials.Web.Controllers
             return View("~/Views/Shared/UnhandledError.cshtml");
         }
 
-        //[HttpPost]
-        //public async Task<ActionResult> RedirectTo(string navigationItemCode)
-        //{
-        //    int code = 0;
+        [HttpPost]
+        public async Task<ActionResult> RedirectTo(string navigationItemCode)
+        {
+            int code = 0;
 
-        //    if (!string.IsNullOrWhiteSpace(navigationItemCode))
-        //    {
-        //        if (int.TryParse(navigationItemCode, out code))
-        //        {
-        //            var navigationItem = await _channelService.FindNavigationItemByCodeAsync(code, GetServiceHeader());
+            if (!string.IsNullOrWhiteSpace(navigationItemCode))
+            {
+                if (int.TryParse(navigationItemCode, out code))
+                {
+                    var navigationItem = await _channelService.FindNavigationItemByCodeAsync(code, GetServiceHeader());
 
-        //            return RedirectToAction(navigationItem.ActionName, navigationItem.ControllerName, new { Area = navigationItem.AreaName });
-        //        }
-        //        else
-        //        {
-        //            return RedirectToAction(Request.UrlReferrer.ToString());
-        //        }
-        //    }
-        //    else
-        //    {
-        //        return RedirectToAction(Request.UrlReferrer.ToString());
-        //    }
-        //}
+                    return RedirectToAction(navigationItem.ActionName, navigationItem.ControllerName, new { Area = navigationItem.AreaName });
+                }
+                else
+                {
+                    return RedirectToAction(Request.UrlReferrer.ToString());
+                }
+            }
+            else
+            {
+                return RedirectToAction(Request.UrlReferrer.ToString());
+            }
+        }
     }
 }

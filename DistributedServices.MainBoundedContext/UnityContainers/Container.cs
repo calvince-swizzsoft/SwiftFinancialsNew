@@ -77,7 +77,10 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
             //-> Repositories	
             Current.RegisterType(typeof(IRepository<>), typeof(Repository<>));
 
-            //-> Domain services
+            //-> Navigation services
+            Current.RegisterType<INavigationItemAppService, NavigationItemAppService>();
+            Current.RegisterType<INavigationItemInRoleAppService, NavigationItemInRoleAppService>();
+
 
             //-> Application services
             Current.RegisterType<IAuditLogAppService, AuditLogAppService>();

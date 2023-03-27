@@ -15,6 +15,7 @@ using SwiftFinancials.Web.Configuration;
 using SwiftFinancials.Web.Helpers;
 using SwiftFinancials.Web.Services;
 using SwiftFinancials.Presentation.Infrastructure.Services;
+using Application.MainBoundedContext.DTO.AdministrationModule;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -95,33 +96,68 @@ namespace SwiftFinancials.Web.Controllers
         [NonAction]
         public async Task ServeNavigationMenus()
         {
-            //if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
-            //{
-            //    ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
-            //}
-            //else
-            //{
-            //    var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
+            if (User.IsInRole(WellKnownUserRoles.SuperAdministrator))
+            {
+                ViewBag.NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+            }
+            else
+            {
+                var user = await _applicationUserManager.FindByNameAsync(User.Identity.Name);
 
-            //    var roles = await _applicationUserManager.GetRolesAsync(user.Id);
+                var roles = await _applicationUserManager.GetRolesAsync(user.Id);
 
-            //    var NavigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
+                var navigationItemsInRole = HttpRuntime.Cache[User.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO> ?? await _channelService.GetNavigationItemsInRoleAsync(roles.FirstOrDefault(), GetServiceHeader());
 
-            //    var NavigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
+                var navigationItems = await _channelService.FindNavigationItemsAsync(GetServiceHeader());
 
-            //    var parentsInNavigationItems = NavigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
+                var parentsInNavigationItems = navigationItems.Where(x => x.ControllerName == null && x.ActionName == null).ToList();
 
-            //    var userNavigationItems = NavigationItems.Where(a => NavigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
+                var userNavigationItems = navigationItems.Where(a => navigationItemsInRole.Any(b => a.Id == b.NavigationItemId)).ToList();
 
-            //    userNavigationItems.AddRange(parentsInNavigationItems);
+                userNavigationItems.AddRange(parentsInNavigationItems);
 
-            //    userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
+                userNavigationItems.ForEach(item => item.Child = userNavigationItems.Where(child => child.AreaCode == item.Code).ToList());
 
-            //    userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
+                userNavigationItems.RemoveAll(x => x.Child.Count == 0 && x.ControllerName == null && x.ActionName == null);
 
-            //    ViewBag.NavigationItems = userNavigationItems;
-            //}
+                ViewBag.NavigationItems = userNavigationItems;
+            }
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetTwoFactorProviders(string selectedValue)
+        {
+            List<SelectListItem> providers = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(TwoFactorProviders)).Cast<TwoFactorProviders>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            providers.AddRange(items);
+
+            return providers;
+        }
+
+        [NonAction]
+        public async Task LoadModuleAccessRights(string username)
+        {
+            var cacheExtensions = new CacheExtensions();
+
+            var currentUser = await _applicationUserManager.FindByNameAsync(username);
+
+            var roles = await _applicationUserManager.GetRolesAsync(currentUser.Id);
+
+            if (roles.Any())
+            {
+                var moduleAccessRightsInRole = await _channelService.GetNavigationItemsInRoleAsync(roles[0], GetServiceHeader());
+
+                cacheExtensions.CacheModuleAccessRightsInRole(moduleAccessRightsInRole, currentUser.Id, GetServiceHeader());
+            }
+        }
+
 
         [NonAction]
         protected static string GetEnumDescription(Enum value)

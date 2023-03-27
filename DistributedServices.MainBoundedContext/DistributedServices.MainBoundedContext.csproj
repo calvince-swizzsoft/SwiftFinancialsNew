@@ -318,6 +318,8 @@
     <Content Include="MicroCreditOfficerService.svc" />
     <Content Include="MobileToBankRequestService.svc" />
     <Content Include="ModuleNavigationItemService.svc" />
+    <Content Include="NavigationItemInRoleService.svc" />
+    <Content Include="NavigationItemService.svc" />
     <Content Include="OverDeductionBatchService.svc" />
     <Content Include="PasswordManagerService.svc" />
     <Content Include="PaySlipService.svc" />
@@ -662,6 +664,8 @@
     <Compile Include="Identity\ApplicationUser.cs" />
     <Compile Include="Identity\ApplicationUserManager.cs" />
     <Compile Include="Contracts\AdministrationModule\IMembershipService.cs" />
+    <Compile Include="Contracts\AdministrationModule\INavigationItemInRoleService.cs" />
+    <Compile Include="Contracts\AdministrationModule\INavigationItemService.cs" />
     <Compile Include="IncomeAdjustmentService.svc.cs">
       <DependentUpon>IncomeAdjustmentService.svc</DependentUpon>
     </Compile>
@@ -746,6 +750,12 @@
     </Compile>
     <Compile Include="ModuleNavigationItemService.svc.cs">
       <DependentUpon>ModuleNavigationItemService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationItemInRoleService.svc.cs">
+      <DependentUpon>NavigationItemInRoleService.svc</DependentUpon>
+    </Compile>
+    <Compile Include="NavigationItemService.svc.cs">
+      <DependentUpon>NavigationItemService.svc</DependentUpon>
     </Compile>
     <Compile Include="OverDeductionBatchService.svc.cs">
       <DependentUpon>OverDeductionBatchService.svc</DependentUpon>

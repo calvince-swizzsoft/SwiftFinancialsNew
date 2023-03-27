@@ -204,6 +204,8 @@
     <Compile Include="AdministrationModule\LocationDTO.cs" />
     <Compile Include="AdministrationModule\ModuleNavigationItemDTO.cs" />
     <Compile Include="AdministrationModule\ModuleNavigationItemInRoleDTO.cs" />
+    <Compile Include="AdministrationModule\NavigationItemDTO.cs" />
+    <Compile Include="AdministrationModule\NavigationItemInRoleDTO.cs" />
     <Compile Include="AdministrationModule\PermissionWrapperDTO.cs" />
     <Compile Include="AdministrationModule\ReportDTO.cs" />
     <Compile Include="AdministrationModule\RoleBindingModel.cs" />

@@ -490,6 +490,12 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\AdministrationModule\ModuleNavigationItemInRoleDTO.cs">
       <Link>Application.MainBoundedContext.DTO\AdministrationModule\ModuleNavigationItemInRoleDTO.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\AdministrationModule\NavigationItemDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\AdministrationModule\NavigationItemDTO.cs</Link>
+    </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\AdministrationModule\NavigationItemInRoleDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\AdministrationModule\NavigationItemInRoleDTO.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\AdministrationModule\PermissionWrapperDTO.cs">
       <Link>Application.MainBoundedContext.DTO\AdministrationModule\PermissionWrapperDTO.cs</Link>
     </Compile>

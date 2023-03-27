@@ -92,6 +92,8 @@
     <Compile Include="AdministrationModule\ILocationService.cs" />
     <Compile Include="AdministrationModule\IMembershipService.cs" />
     <Compile Include="AdministrationModule\IModuleNavigationItemService.cs" />
+    <Compile Include="AdministrationModule\INavigationItemInRoleService.cs" />
+    <Compile Include="AdministrationModule\INavigationItemService.cs" />
     <Compile Include="AdministrationModule\IReportService.cs" />
     <Compile Include="AdministrationModule\IWorkflowService.cs" />
     <Compile Include="BackOfficeModule\IDataAttachmentPeriodService.cs" />

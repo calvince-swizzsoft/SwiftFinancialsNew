@@ -87,7 +87,7 @@ namespace SwiftFinancials.Web.Controllers
                         {
                             case SignInStatus.Success:
                                 //load navigation access rights
-                                //await LoadModuleAccessRights(user.UserName);
+                                await LoadModuleAccessRights(user.UserName);
                                 return RedirectToLocal(returnUrl);
                             case SignInStatus.LockedOut:
                                 return View("Lockout");
@@ -142,7 +142,7 @@ namespace SwiftFinancials.Web.Controllers
                 switch (result)
                 {
                     case SignInStatus.Success:
-                       // await LoadModuleAccessRights(username: Request["username"].ToString());
+                        await LoadModuleAccessRights(username: Request["username"].ToString());
                         return RedirectToLocal(model.ReturnUrl);
                     case SignInStatus.LockedOut:
                         return View("Lockout");
@@ -266,7 +266,7 @@ namespace SwiftFinancials.Web.Controllers
                     // Don't reveal that the user does not exist
                     return RedirectToAction("ResetPasswordConfirmation", "Account");
                 }
-                
+
                 var result = await _applicationUserManager.ResetPasswordAsync(user.Id, model.Code, model.Password);
 
                 if (result.Succeeded)
@@ -312,7 +312,7 @@ namespace SwiftFinancials.Web.Controllers
             var model = new SendCodeViewModel()
             {
                 ReturnUrl = returnUrl,
-                //Providers = GetTwoFactorProviders(string.Empty)
+                Providers = GetTwoFactorProviders(string.Empty)
             };
 
             return View(model);
@@ -330,7 +330,7 @@ namespace SwiftFinancials.Web.Controllers
                 if (!ModelState.IsValid)
                     return View();
 
-             //   sendCodeViewModel.Provider = GetEnumDescription((TwoFactorProviders)sendCodeViewModel.SelectedProvider);
+                sendCodeViewModel.Provider = GetEnumDescription((TwoFactorProviders)sendCodeViewModel.SelectedProvider);
 
                 ApplicationUser applicationUser = new ApplicationUser();
 
@@ -519,7 +519,7 @@ namespace SwiftFinancials.Web.Controllers
                                 {
                                     case SignInStatus.Success:
                                         //load navigation access rights
-                                     //   await LoadModuleAccessRights(user.UserName);
+                                        await LoadModuleAccessRights(user.UserName);
                                         return RedirectToAction("Index", "Home");
                                     case SignInStatus.LockedOut:
                                         return View("Lockout");

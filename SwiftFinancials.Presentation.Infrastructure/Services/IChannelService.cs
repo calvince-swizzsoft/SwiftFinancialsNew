@@ -244,6 +244,42 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #endregion
 
+        #region NavigationItemDTO
+
+        Task<bool> AddNavigationItemsAsync(List<NavigationItemDTO> navigationItems, ServiceHeader serviceHeader, double timeoutMinutes = 10d);
+
+        Task<NavigationItemDTO> FindNavigationItemByIdAsync(Guid navigationItemId, ServiceHeader serviceHeader);
+
+        Task<NavigationItemDTO> FindNavigationItemByCodeAsync(int navigationItemCode, ServiceHeader serviceHeader);
+
+        Task<List<NavigationItemDTO>> FindNavigationItemsAsync(ServiceHeader serviceHeader);
+
+        Task<PageCollectionInfo<NavigationItemDTO>> FindNavigationItemsFilterPageCollectionInfoAsync(int pageIndex, int pageSize, List<string> sortedColumns, string text, bool sortAscending, ServiceHeader serviceHeader);
+
+        Task<List<NavigationItemDTO>> FindModuleNavigationActionByControllerNameAsync(string controllerName, ServiceHeader serviceHeader);
+
+        Task<bool> BulkInsertNavigationItemAsync(List<Guid> modulesNavigationIds, string roleName, ServiceHeader serviceHeader);
+
+        Task<bool> BulkInsertNavigationItemInRolesAsync(List<Guid> NavigationItemInRole, string roleName, ServiceHeader serviceHeader);
+
+        #endregion
+
+        #region NavigationItemInRoleDTO
+
+        Task<List<NavigationItemInRoleDTO>> GetNavigationItemsInRoleAsync(string roleName, ServiceHeader serviceHeader);
+
+        Task<List<NavigationItemInRoleDTO>> GetRolesForNavigationItemCodeAsync(int navigationItemCode, ServiceHeader serviceHeader);
+
+        Task<bool> IsNavigationItemInRoleAsync(int navigationItemCode, string roleName, ServiceHeader serviceHeader);
+
+        Task<bool> AddNavigationItemToRoleAsync(NavigationItemInRoleDTO navigationItemInRoleDTO, ServiceHeader serviceHeader);
+
+        Task<bool> RemoveNavigationItemRoleAsync(Guid navigationItemId, string roleName, ServiceHeader serviceHeader);
+
+        Task<bool> ValidateModuleAccessAsync(string controllerName, string roleName, ServiceHeader serviceHeader);
+
+        #endregion
+
         #region WorkflowDTO
 
         Task<WorkflowDTO> FindWorkflowByRecordAndSystemPermissionTypeAsync(Guid recordId, int systemPermissionType, ServiceHeader serviceHeader = null);
