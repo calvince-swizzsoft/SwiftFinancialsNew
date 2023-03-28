@@ -308,6 +308,7 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
@@ -590,6 +591,8 @@
     <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1055,7 +1058,6 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
-    <Folder Include="Areas\Registry\Controllers\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />
   </ItemGroup>
