@@ -62,7 +62,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(BranchDTO branchBindingModel)
         {
-            if (ModelState.IsValid)
+            branchBindingModel.ValidateAll();
+
+            if (!branchBindingModel.HasErrors)
             {
                 await _channelService.AddBranchAsync(branchBindingModel, GetServiceHeader());
 
@@ -70,6 +72,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
             else
             {
+                var errorMessages = branchBindingModel.ErrorMessages;
+
                 return View(branchBindingModel);
             }
         }

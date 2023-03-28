@@ -11,7 +11,7 @@ namespace Domain.MainBoundedContext.AdministrationModule.Aggregates.CompanyAgg
             bool bypassInterAccountTransferBatchAudit, bool bypassExpensePayableAudit, bool bypassGeneralLedgerAudit, bool excludeChargesInTransactionReceipt, int membershipTerminationNoticePeriod,
             bool excludeChequeMaturityDateInTransactionReceipt, bool trackGuarantorCommittedInvestments, bool transferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, bool receiveLoanRequestBeforeLoanRegistration,
             Address address, TimeDuration timeDuration, string payoutRecoveryPriority, bool isWithholdingTaxAgent, bool enforceBudgetControl, bool localizeOnlineNotifications, bool excludeCustomerAccountBalanceInTransactionReceipt, bool enforceFixedDepositBands,
-            bool enforceBiometricsForCashWithdrawal, bool recoverArrearsOnCashDeposit, bool recoverArrearsOnExternalChequeClearance, bool recoverArrearsOnFixedDepositPayment, bool allowDebitBatchToOverdrawAccount, bool enforceTellerLimits, bool enforceSystemLock, bool enforceTellerCashTransferAcknowledgement,
+            bool enforceBiometricsForCashWithdrawal, bool enforceTwoFactorAuthentication, bool recoverArrearsOnCashDeposit, bool recoverArrearsOnExternalChequeClearance, bool recoverArrearsOnFixedDepositPayment, bool allowDebitBatchToOverdrawAccount, bool enforceTellerLimits, bool enforceSystemLock, bool enforceTellerCashTransferAcknowledgement,
             bool enforceSingleUserSession, bool customerMembershipTextAlertsEnabled, bool enforceInvestmentProductExemptions, bool enforceMobileToBankReconciliationVerification)
         {
             var company = new Company()
@@ -54,6 +54,7 @@ namespace Domain.MainBoundedContext.AdministrationModule.Aggregates.CompanyAgg
                 ExcludeCustomerAccountBalanceInTransactionReceipt = excludeCustomerAccountBalanceInTransactionReceipt,
                 EnforceFixedDepositBands = enforceFixedDepositBands,
                 EnforceBiometricsForCashWithdrawal = enforceBiometricsForCashWithdrawal,
+                EnforceTwoFactorAuthentication = enforceTwoFactorAuthentication,
                 RecoverArrearsOnCashDeposit = recoverArrearsOnCashDeposit,
                 RecoverArrearsOnExternalChequeClearance = recoverArrearsOnExternalChequeClearance,
                 RecoverArrearsOnFixedDepositPayment = recoverArrearsOnFixedDepositPayment,

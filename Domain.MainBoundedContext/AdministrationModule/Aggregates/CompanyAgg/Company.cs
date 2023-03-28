@@ -87,6 +87,8 @@ namespace Domain.MainBoundedContext.AdministrationModule.Aggregates.CompanyAgg
 
         public bool EnforceBiometricsForCashWithdrawal { get; set; }
 
+        public bool EnforceTwoFactorAuthentication { get; set; }
+
         public bool RecoverArrearsOnCashDeposit { get; set; }
 
         public bool RecoverArrearsOnExternalChequeClearance { get; set; }
