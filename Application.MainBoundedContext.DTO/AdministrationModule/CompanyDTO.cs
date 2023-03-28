@@ -149,6 +149,9 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [Display(Name = "Enforce Biometrics For Cash Withdrawal?")]
         public bool EnforceBiometricsForCashWithdrawal { get; set; }
 
+        [Display(Name = "Enforce Two Factor Authentication?")]
+        public bool EnforceTwoFactorAuthentication { get; set; }
+
         [Display(Name = "Recover Arrears On Cash Deposit?")]
         public bool RecoverArrearsOnCashDeposit { get; set; }
 

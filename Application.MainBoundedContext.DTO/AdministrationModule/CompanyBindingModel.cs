@@ -220,6 +220,10 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public bool EnforceBiometricsForCashWithdrawal { get; set; }
 
         [DataMember]
+        [Display(Name = "Enforce Two Factor Authentication?")]
+        public bool EnforceTwoFactorAuthentication { get; set; }
+
+        [DataMember]
         [Display(Name = "Recover Arrears On Cash Deposit?")]
         public bool RecoverArrearsOnCashDeposit { get; set; }
 
