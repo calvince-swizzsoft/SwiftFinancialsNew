@@ -65,7 +65,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CompanyBindingModel companyBindingModel)
         {
-            if (ModelState.IsValid)
+            companyBindingModel.ValidateAll();
+
+            if (!companyBindingModel.HasErrors)
             {
                 await _channelService.AddCompanyAsync(companyBindingModel.MapTo<CompanyDTO>(), GetServiceHeader());
 
@@ -73,6 +75,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
             else
             {
+                var errorMessages = companyBindingModel.ErrorMessages;
+
                 return View(companyBindingModel);
             }
         }
