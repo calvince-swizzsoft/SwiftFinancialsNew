@@ -312,6 +312,7 @@
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
@@ -604,6 +605,10 @@
     <Content Include="Areas\Registry\Views\Employer\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Employer\Index.cshtml" />
     <Content Include="Areas\Registry\Views\Employer\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
