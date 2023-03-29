@@ -41,6 +41,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x5208, IsArea = false, Description = "Insurers", Icon="fa fa-usb", ControllerName="Insurer", ActionName="Index", AreaName = "Client", Code = 0x5208 + 2},
                 new NavigationMenu{AreaCode = 0x5208, IsArea = false, Description = "Customers", Icon="fa fa-users", ControllerName="Customer", ActionName="Index", AreaName = "Client", Code = 0x5208 + 3},
                
+                 //Underwriting - area 27,000
+                new NavigationMenu{Description = "Registry", IsArea = true, Code = 0x00006978},
+                new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Administrative Divisions", Icon="fa fa-calculator", ControllerName="AdministrativeDivision", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 1},
+                //new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Claim Types", Icon="fa fa-users", ControllerName="ClaimType", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 2},
+                //new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Policies", Icon="fa fa-low-vision", ControllerName="Policy", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 3},
+                //new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Claims", Icon="fa fa-book", ControllerName="Claim", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 4},
+
+
                 //Underwriting - area 22,000
                 new NavigationMenu{Description = "Underwriting", IsArea = true, Code = 0x000055F0},
                 new NavigationMenu{AreaCode = 0x000055F0, IsArea = false, Description = "Policy Types", Icon="fa fa-calculator", ControllerName="PolicyType", ActionName="Index", AreaName = "Underwriting", Code = 0x000055F0 + 1},
