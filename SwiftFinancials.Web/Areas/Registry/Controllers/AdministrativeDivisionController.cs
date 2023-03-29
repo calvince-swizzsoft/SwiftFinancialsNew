@@ -61,7 +61,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(AdministrativeDivisionDTO administrativeDivisionBindingModel)
+        public async Task<ActionResult> Create(AdministrativeDivisionBindingModel administrativeDivisionBindingModel)
         {
             if (ModelState.IsValid)
             {
@@ -91,11 +91,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, AdministrativeDivisionDTO administrativeDivisionBindingModel)
+        public async Task<ActionResult> Edit(Guid id, AdministrativeDivisionBindingModel administrativeDivisionBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateAdministrativeDivisionAsync(administrativeDivisionBindingModel, GetServiceHeader());
+                await _channelService.UpdateAdministrativeDivisionAsync(administrativeDivisionBindingModel.MapTo<AdministrativeDivisionDTO>(), GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

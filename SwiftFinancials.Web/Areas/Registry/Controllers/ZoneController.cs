@@ -62,7 +62,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(ZoneDTO zoneBindingModel)
+        public async Task<ActionResult> Create(ZoneBindingModel zoneBindingModel)
         {
             if (ModelState.IsValid)
             {
@@ -85,18 +85,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            var ZoneDTO = await _channelService.FindZoneAsync(id, GetServiceHeader());
+            var zoneDTO = await _channelService.FindZoneAsync(id, GetServiceHeader());
 
-            return View(ZoneDTO);
+            return View(zoneDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, ZoneDTO zoneBindingModel)
+        public async Task<ActionResult> Edit(Guid id, ZoneBindingModel zoneBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateZoneAsync(zoneBindingModel, GetServiceHeader());
+                await _channelService.UpdateZoneAsync(zoneBindingModel.MapTo<ZoneDTO>(), GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

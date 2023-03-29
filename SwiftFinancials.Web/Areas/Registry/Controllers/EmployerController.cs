@@ -61,7 +61,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(EmployerDTO employerBindingModel)
+        public async Task<ActionResult> Create(EmployerBindingModel employerBindingModel)
         {
             if (ModelState.IsValid)
             {
@@ -91,11 +91,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, EmployerDTO employerBindingModel)
+        public async Task<ActionResult> Edit(Guid id, EmployerBindingModel employerBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateEmployerAsync(employerBindingModel, GetServiceHeader());
+                await _channelService.UpdateEmployerAsync(employerBindingModel.MapTo<EmployerDTO>(), GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
