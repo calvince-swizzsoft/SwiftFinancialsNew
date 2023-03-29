@@ -1,0 +1,97 @@
+﻿@model  Application.MainBoundedContext.DTO.RegistryModule.AdministrativeDivisionDTO
+@{
+    ViewBag.Title = "Administative Division Details";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>System Users</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Membership", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+
+                                @Html.DisplayFor(model => model.Description)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.TypeDescription)</strong><br>
+
+                                @Html.DisplayFor(model => model.TypeDescription)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ParentId)</strong><br>
+
+                                @Html.DisplayFor(model => model.ParentId)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Remarks)</strong><br>
+
+                                @Html.DisplayFor(model => model.Remarks)<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
+
+                                @Html.DisplayFor(model => model.IsLocked)<br>
+                            </p>
+
+                            <p>
+                                <strong> @Html.DisplayNameFor(model => model.CreatedBy)</strong><br>
+
+                                @Html.DisplayFor(model => model.CreatedBy)<br>
+                            </p>
+
+                            <p>
+                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "Membership", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "Membership", new { Area = "Registry" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

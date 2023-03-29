@@ -308,6 +308,8 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\Registry\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
@@ -593,6 +595,10 @@
     <Content Include="Areas\Admin\Views\Branch\Details.cshtml" />
     <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
