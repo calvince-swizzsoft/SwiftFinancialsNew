@@ -59,6 +59,13 @@
 
                                         @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+
+                                        @Html.CheckBoxFor(model => model.IsLocked)
+
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="text-center">
@@ -87,35 +94,6 @@
                                         @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
 
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-
-                                        @Html.CheckBoxFor(model => model.IsLocked)
-
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By" } })
-
-                                        @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created Date" } })
-
-                                        @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>

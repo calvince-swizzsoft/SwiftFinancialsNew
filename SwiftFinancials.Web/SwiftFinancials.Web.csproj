@@ -308,7 +308,6 @@
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
-    <Compile Include="Areas\Registry\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
@@ -595,7 +594,6 @@
     <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\Create.cshtml" />
     <Content Include="Areas\Registry\Views\AdministrativeDivision\Create.cshtml" />
     <Content Include="Areas\Registry\Views\AdministrativeDivision\Index.cshtml" />
