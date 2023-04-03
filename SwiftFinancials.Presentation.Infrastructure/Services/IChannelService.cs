@@ -1263,8 +1263,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<EmployerDTO> FindEmployerAsync(Guid employerId, ServiceHeader serviceHeader = null);
 
-        Task<DivisionDTO> FindDivisionAsync(Guid divisionId, ServiceHeader serviceHeader = null);
-
         Task<ObservableCollection<EmployerDTO>> FindEmployersAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<DivisionDTO>> FindDivisionsAsync(ServiceHeader serviceHeader = null);
@@ -2876,6 +2874,22 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<AdministrativeDivisionDTO> FindAdministrativeDivisionAsync(Guid administrativeDivisionId, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<AdministrativeDivisionDTO>> FindAdministrativeDivisionsAsync(bool updateDepth = false, bool traverseTree = true, ServiceHeader serviceHeader = null);
+
+        #endregion
+
+        #region DivisionDTO
+
+        Task<PageCollectionInfo<DivisionDTO>> FindDivisionsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<DivisionDTO>> FindDivisionsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<DivisionDTO> AddDivisionAsync(DivisionDTO divisionDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdateDivisionAsync(DivisionDTO divisionDTO, ServiceHeader serviceHeader = null);
+
+        Task<DivisionDTO> FindDivisionAsync(Guid divisionId, ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<DivisionDTO>> FindDivisionsAsync(bool updateDepth = false, bool traverseTree = true, ServiceHeader serviceHeader = null);
 
         #endregion
     }

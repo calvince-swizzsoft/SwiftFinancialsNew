@@ -21,7 +21,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-       /* public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+       public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -31,7 +31,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDivisionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.AddAccountClosureRequestAsync.FindDivisionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -42,7 +42,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<DivisionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }*/
+        }
 
         public async Task<ActionResult> Details(Guid id)
         {

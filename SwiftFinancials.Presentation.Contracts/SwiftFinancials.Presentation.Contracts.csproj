@@ -155,6 +155,7 @@
     <Compile Include="RegistryModule\ICustomerService.cs" />
     <Compile Include="RegistryModule\IDelegateService.cs" />
     <Compile Include="RegistryModule\IDirectorService.cs" />
+    <Compile Include="RegistryModule\IDivisionService.cs" />
     <Compile Include="RegistryModule\IEducationRegisterService.cs" />
     <Compile Include="RegistryModule\IEducationVenueService.cs" />
     <Compile Include="RegistryModule\IEmployerService.cs" />

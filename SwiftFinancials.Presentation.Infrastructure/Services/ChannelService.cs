@@ -17703,38 +17703,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<DivisionDTO> FindDivisionAsync(Guid divisionId, ServiceHeader serviceHeader)
-        {
-            var tcs = new TaskCompletionSource<DivisionDTO>();
-
-            IEmployerService service = GetService<IEmployerService>(serviceHeader);
-
-            AsyncCallback asyncCallback = (result =>
-            {
-                try
-                {
-                    DivisionDTO response = ((IEmployerService)result.AsyncState).EndFindDivision(result);
-
-                    tcs.TrySetResult(response);
-                }
-                catch (Exception ex)
-                {
-                    HandleFault(ex, (msgcb) =>
-                    {
-                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
-                    });
-                }
-                finally
-                {
-                    DisposeService(service as IClientChannel);
-                }
-            });
-
-            service.BeginFindDivision(divisionId, asyncCallback, service);
-
-            return tcs.Task;
-        }
-
         public Task<ObservableCollection<EmployerDTO>> FindEmployersAsync(ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<EmployerDTO>>();
@@ -37786,6 +37754,203 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         #endregion
+
+        #region DivisionDTO
+
+        public Task<ObservableCollection<DivisionDTO>> FindDivisionsAsync(bool updateDepth, bool traverseTree, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<DivisionDTO>>();
+
+            IDivisionService service = GetService<IDivisionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DivisionDTO> response = ((IDivisionService)result.AsyncState).EndFindDivisions(result);
+
+                    tcs.TrySetResult(new ObservableCollection<DivisionDTO>(response ?? new List<DivisionDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDivisions(updateDepth, traverseTree, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<DivisionDTO>> FindDivisionsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<DivisionDTO>>();
+
+            IDivisionService service = GetService<IDivisionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<DivisionDTO> response = ((IDivisionService)result.AsyncState).EndFindDivisionsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDivisionsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<DivisionDTO>> FindDivisionsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<DivisionDTO>>();
+
+            IDivisionService service = GetService<IDivisionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<DivisionDTO> response = ((IDivisionService)result.AsyncState).EndFindDivisionsInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDivisionsInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<DivisionDTO> AddDivisionAsync(DivisionDTO divisionDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<DivisionDTO>();
+
+            IDivisionService service = GetService<IDivisionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    DivisionDTO response = ((IDivisionService)result.AsyncState).EndAddDivision(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddDivision(divisionDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateDivisionAsync(DivisionDTO divisionDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IDivisionService service = GetService<IDivisionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IDivisionService)result.AsyncState).EndUpdateDivision(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateDivision(divisionDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<DivisionDTO> FindDivisionAsync(Guid divisionId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<DivisionDTO>();
+
+            IDivisionService service = GetService<IDivisionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    DivisionDTO response = ((IDivisionService)result.AsyncState).EndFindDivision(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDivision(divisionId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        #endregion
+
 
 #if !SILVERLIGHT
 
