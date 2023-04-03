@@ -11,7 +11,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Zone", new { Area = "Admin" }, null)
+                @Html.ActionLink("Home", "Index", "Zone", new { Area = "Registry" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "Zone", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Zone", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
