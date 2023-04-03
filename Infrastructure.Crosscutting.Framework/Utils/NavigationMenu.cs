@@ -44,7 +44,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                  //Underwriting - area 27,000
                 new NavigationMenu{Description = "Registry", IsArea = true, Code = 0x00006978},
                 new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Administrative Divisions", Icon="fa fa-calculator", ControllerName="AdministrativeDivision", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 1},
-                //new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Claim Types", Icon="fa fa-users", ControllerName="ClaimType", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 2},
+                new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Zones", Icon="fa fa-users", ControllerName="Zone", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 2},
                 //new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Policies", Icon="fa fa-low-vision", ControllerName="Policy", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 3},
                 //new NavigationMenu{AreaCode = 0x00006978, IsArea = false, Description = "Claims", Icon="fa fa-book", ControllerName="Claim", ActionName="Index", AreaName = "Registry", Code = 0x00006978 + 4},
 

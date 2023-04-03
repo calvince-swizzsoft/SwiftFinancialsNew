@@ -60,21 +60,21 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(BranchDTO branchBindingModel)
+        public async Task<ActionResult> Create(BranchDTO branchDTO)
         {
-            branchBindingModel.ValidateAll();
+            branchDTO.ValidateAll();
 
-            if (!branchBindingModel.HasErrors)
+            if (!branchDTO.HasErrors)
             {
-                await _channelService.AddBranchAsync(branchBindingModel, GetServiceHeader());
+                await _channelService.AddBranchAsync(branchDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = branchBindingModel.ErrorMessages;
+                var errorMessages = branchDTO.ErrorMessages;
 
-                return View(branchBindingModel);
+                return View(branchDTO);
             }
         }
 

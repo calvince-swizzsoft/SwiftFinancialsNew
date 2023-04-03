@@ -39,103 +39,44 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <h1>Primary Details</h1>
-                        <fieldset>
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            
                             <div class="row">
                                 <div class="col-lg-8">
-                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Zone name.", @required = "" } })
-
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.DivisionId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.DivisionId)
+                                        @Html.ValidationMessageFor(model => model.DivisionId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.DivisionDescription, new { htmlAttributes = new { @class = "DivisionsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="text-center">
                                         <div style="margin-top: 20px">
-                                            <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
+                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-                        <h1>Address</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
 
-                                        @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
 
-                                        @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                    </div>*@
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DivisionDescription, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.DivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division" } })
-
-                                        @Html.ValidationMessageFor(model => model.DivisionDescription, "", new { @class = "text-danger" })
-                                    </div>
+                            <div class="form-group form-group-sm">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DivisionEmployerDescription, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.DivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employer" } })
-
-                                        @Html.ValidationMessageFor(model => model.DivisionEmployerDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EnforceRetirementAge, htmlAttributes: new { @class = "" })
-
-                                        @Html.CheckBoxFor(model => model.EnforceRetirementAge)
-
-                                        @Html.ValidationMessageFor(model => model.EnforceRetirementAge, "", new { @class = "text-danger" })
-                                    </div>*@
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created Date" } })
-
-                                        @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+                        </div>
+                        <div class="form-group form-group-lg">
+                        </div>
                     }
                 </div>
             </div>
@@ -154,71 +95,42 @@
 
     <script>
         $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
+           //Division typehead starts here
+            $('.DivisionsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDivisionsAsync", "Division", new { Area = "Registry" })',
+                        { query: query },
+                        function (Divisions) {
+                            var newDivisionsData = [];
+                            DivisionsMap = {};
+                            $.each(Divisions, function (i, Division) {
+                                newDivisionsData.push(Division.Description);
+                                DivisionsMap[Division.Description] = Division;
+                            });
+                            process(newDivisionsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
                         return true;
                     }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
                 },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
+                sorter: function (items) {
+                    return items.sort();
                 },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
                 },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
+                updater: function (item) {
+                    var DivisionId = "";
+                    DivisionId = DivisionsMap[item].Id;
+                    $('#DivisionId').val(DivisionId);
+                    //console.log(DivisionId)
+                    return item;
                 }
             });
-        });</script>
+        });
+    </script>
 }
