@@ -21,7 +21,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-       public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -61,7 +61,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
-       /* public async Task<ActionResult> Create(DivisionBindingModel divisionBindingModel)
+        public async Task<ActionResult> Create(DivisionBindingModel divisionBindingModel)
         {
             if (ModelState.IsValid)
             {
@@ -77,8 +77,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                 return View(divisionBindingModel);
             }
-        }*/
-
+        }
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -91,7 +90,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-       /* public async Task<ActionResult> Edit(Guid id, DivisionBindingModel divisionBindingModel)
+        public async Task<ActionResult> Edit(Guid id, DivisionBindingModel divisionBindingModel)
         {
             if (ModelState.IsValid)
             {
@@ -103,7 +102,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 return View(divisionBindingModel);
             }
-        }*/
+        }
 
         [HttpGet]
         public async Task<JsonResult> GetDivisionsAsync()
