@@ -608,7 +608,6 @@
     <Content Include="Areas\Registry\Views\Zone\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Division\Index.cshtml" />
     <Content Include="Areas\Registry\Views\Division\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Division\Create.cshtml" />
