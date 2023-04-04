@@ -27,7 +27,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         {
             var menus = new List<NavigationMenu>()
             {
-                //Admin - area 20,000
+                // Admin - area 20,000
                 new NavigationMenu{Description = "Administration", IsArea = true, Code = 0x00004E20},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Companies", Icon="fa fa-users", ControllerName="Company", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 1},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Branches", Icon="fa fa-database", ControllerName="Branch", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 2},
@@ -44,17 +44,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //Human Resource - area 22,000
                 new NavigationMenu{Description = "Human Resource", IsArea = true, Code = 0x000055F0},
                 // menu-items (children)
-                new NavigationMenu{AreaCode = 0x000055F0, IsArea = false, Description = "Setup", Icon="fa fa-usb", Code = 0x000055F0 + 1},
-                new NavigationMenu{AreaCode = 0x000055F0, IsArea = false, Description = "Operations", Icon="fa fa-usb", Code = 0x000055F0 + 2},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Departments", Icon="fa fa-usb", ControllerName="Department", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 1},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Designations", Icon="fa fa-usb", ControllerName="Designation", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 2},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Holidays", Icon="fa fa-usb", ControllerName="Holiday", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 3},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Employee Types", Icon="fa fa-usb", ControllerName="EmployeeType", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 4},
 
-                new NavigationMenu{AreaCode = 0x000055F0 + 1, IsArea = false, Description = "Departments", Icon="fa fa-usb", ControllerName="Department", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 3},
-                new NavigationMenu{AreaCode = 0x000055F0 + 1, IsArea = false, Description = "Designations", Icon="fa fa-usb", ControllerName="Designation", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 4},
-                new NavigationMenu{AreaCode = 0x000055F0 + 1, IsArea = false, Description = "Holidays", Icon="fa fa-usb", ControllerName="Holiday", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 5},
-                new NavigationMenu{AreaCode = 0x000055F0 + 1, IsArea = false, Description = "Employee Types", Icon="fa fa-usb", ControllerName="EmployeeType", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 6},
-
-                new NavigationMenu{AreaCode = 0x000055F0 + 2, IsArea = false, Description = "Employees", Icon="fa fa-usb", ControllerName="Employee", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 7},
-                new NavigationMenu{AreaCode = 0x000055F0 + 2, IsArea = false, Description = "Leave", Icon="fa fa-usb", ControllerName="Leave", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 8},
-                new NavigationMenu{AreaCode = 0x000055F0 + 2, IsArea = false, Description = "Salary", Icon="fa fa-usb", ControllerName="Salary", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 9},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Employees", Icon="fa fa-usb", ControllerName="Employee", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 5},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Leave", Icon="fa fa-usb", ControllerName="Leave", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 6},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary", Icon="fa fa-usb", ControllerName="Salary", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 7},
 
                 //Accounts - area 23,000
                 new NavigationMenu{Description = "Accounts", IsArea = true, Code = 0x000059D8},
@@ -68,15 +65,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00005DC0, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x00005DC0 + 1},
                 new NavigationMenu{AreaCode = 0x00005DC0, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x00005DC0 + 2},
 
-<<<<<<< HEAD
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Purposes", Icon="fa fa-users", ControllerName="LoanPurpose", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 3},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Remarks", Icon="fa fa-users", ControllerName="LoaningRemark", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 4},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Income Adjustments", Icon="fa fa-users", ControllerName="IncomeAdjustment", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 5},
-=======
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Purposes", Icon="fa fa-bars", ControllerName="LoanPurpose", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 3},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Remarks", Icon="fa fa-bars", ControllerName="LoanRemark", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 4},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Income Adjustments", Icon="fa fa-bars", ControllerName="IncomeAdjustment", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 5},
->>>>>>> sync nav
 
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Applications", Icon="fa fa-bars", ControllerName="Application", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-bars", ControllerName="Loaning", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 7},

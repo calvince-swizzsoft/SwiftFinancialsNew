@@ -37,9 +37,23 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
             if (parentNavigationItems != null && parentNavigationItems.Any())
                 result = await AddParentNavigationItemsAsync(parentNavigationItems, serviceHeader);
 
-            var subParentNavigationItems = navigationItems.Where(x => !x.IsArea && x.ControllerName == null && x.ActionName == null).ToList();
-            if (subParentNavigationItems != null && subParentNavigationItems.Any())
+            var subParentNavigationItemsList = navigationItems.Where(x => !x.IsArea && x.ControllerName == null && x.ActionName == null).ToList();
+
+            List<NavigationItemDTO> subParentNavigationItems = new List<NavigationItemDTO>();
+
+            if (subParentNavigationItemsList != null && subParentNavigationItemsList.Any())
+            {
+                foreach (var item in subParentNavigationItemsList)
+                {
+                    var parentNavigationItem = await FindNavigationItemAsync(item.AreaCode, serviceHeader);
+
+                    item.ParentId = parentNavigationItem.Id;
+
+                    subParentNavigationItems.Add(item);
+                }
+
                 result = await AddSubParentNavigationItemsAsync(subParentNavigationItems, serviceHeader);
+            }
 
             var childrenNavigationItems = navigationItems.Where(x => !x.IsArea && x.ControllerName != null && x.ActionName != null).ToList();
 
