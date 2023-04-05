@@ -304,6 +304,8 @@
     <Compile Include="Areas\Client\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
+    <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
@@ -624,6 +626,7 @@
     <Content Include="Areas\Loaning\Views\LoaningRemark\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoaningRemark\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoaningRemark\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\web.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1088,6 +1091,9 @@
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
+    <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Department\" />
+    <Folder Include="Areas\HumanResource\Views\Shared\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
