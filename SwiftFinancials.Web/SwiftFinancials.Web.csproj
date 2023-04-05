@@ -67,10 +67,10 @@
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
-      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="LazyCache, Version=0.7.1.44, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LazyCache.0.7.1.44\lib\net45\LazyCache.dll</HintPath>
@@ -627,7 +627,11 @@
     <Content Include="Areas\Loaning\Views\LoaningRemark\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoaningRemark\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\web.config" />
-    <Content Include="Areas\Registry\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1093,8 +1097,6 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
-    <Folder Include="Areas\HumanResource\Views\Department\" />
-    <Folder Include="Areas\HumanResource\Views\Shared\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
