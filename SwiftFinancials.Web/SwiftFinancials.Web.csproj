@@ -305,6 +305,7 @@
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
@@ -632,6 +633,10 @@
     <Content Include="Areas\HumanResource\Views\Department\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\Department\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Department\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
