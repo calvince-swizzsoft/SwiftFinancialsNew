@@ -5,7 +5,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Loan Purposes</h2>
+        <h2>Departments</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -58,6 +58,13 @@
                                         @Html.CheckBoxFor(model => model.IsLocked)
 
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IsRegistry, htmlAttributes: new { @class = "" })
+
+                                        @Html.CheckBoxFor(model => model.IsRegistry)
+
+                                        @Html.ValidationMessageFor(model => model.IsRegistry, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
