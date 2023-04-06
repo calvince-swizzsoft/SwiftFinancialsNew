@@ -317,6 +317,7 @@
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
@@ -637,6 +638,10 @@
     <Content Include="Areas\HumanResource\Views\Designation\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\Designation\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Designation\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
