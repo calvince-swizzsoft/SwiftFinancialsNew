@@ -306,6 +306,7 @@
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
@@ -1107,6 +1108,7 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Holidays\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
