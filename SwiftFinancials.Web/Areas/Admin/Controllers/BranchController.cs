@@ -91,7 +91,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, BranchDTO branchBindingModel)
         {
-            if (ModelState.IsValid)
+            branchBindingModel.ValidateAll();
+
+            if (!branchBindingModel.HasErrors)
             {
                 await _channelService.UpdateBranchAsync(branchBindingModel, GetServiceHeader());
 
