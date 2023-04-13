@@ -333,6 +333,7 @@
     <Compile Include="Configuration\DashboardAppSettingsElement.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
     <Compile Include="Global.asax.cs">
@@ -1113,6 +1114,7 @@
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />
+    <Folder Include="Views\Lookup\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
