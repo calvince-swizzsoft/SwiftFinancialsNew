@@ -644,6 +644,9 @@
     <Content Include="Areas\Registry\Views\EducationVenue\Details.cshtml" />
     <Content Include="Areas\Registry\Views\EducationVenue\Create.cshtml" />
     <Content Include="Areas\Registry\Views\EducationVenue\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
