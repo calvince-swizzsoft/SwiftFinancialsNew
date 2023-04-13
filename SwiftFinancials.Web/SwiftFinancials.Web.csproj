@@ -306,7 +306,9 @@
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
@@ -372,6 +374,7 @@
     <Compile Include="TypeAdapterFactory\AutomapperTypeAdapterFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\HumanResource\Views\Shared\_Layout.cshtml" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -631,7 +634,6 @@
     <Content Include="Areas\Loaning\Views\LoaningRemark\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoaningRemark\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\web.config" />
-    <Content Include="Areas\HumanResource\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\HumanResource\Views\Department\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\Department\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\Department\Create.cshtml" />
@@ -647,6 +649,14 @@
     <Content Include="Areas\HumanResource\Views\Holiday\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1112,6 +1122,7 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\EmployeeTypes\" />
     <Folder Include="Areas\HumanResource\Views\Holidays\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
