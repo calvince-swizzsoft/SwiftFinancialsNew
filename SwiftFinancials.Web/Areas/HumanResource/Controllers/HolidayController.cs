@@ -45,14 +45,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             else return this.DataTablesJson(items: new List<HolidayDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-       /* public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var holidayDTO = await _channelService.FindHolidayAsync(id, GetServiceHeader());
+            var holidayDTO = await _channelService.FindHolidaysByPostingPeriodAsync(id, GetServiceHeader());
 
             return View(holidayDTO);
-        }*/
+        }
 
         public async Task<ActionResult> Create()
         {
