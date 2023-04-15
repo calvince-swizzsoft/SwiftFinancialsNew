@@ -51,13 +51,18 @@
     <Reference Include="AutoMapper, Version=8.0.0.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
-    <Reference Include="CommonServiceLocator, Version=2.0.4.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\CommonServiceLocator.2.0.4\lib\net47\CommonServiceLocator.dll</HintPath>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine">
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
-    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.ReportSource, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Shared, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
-    <Reference Include="CrystalDecisions.Web, Version=13.0.4000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.ReportSource">
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Shared">
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+    </Reference>
+    <Reference Include="CrystalDecisions.Web">
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+    </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
@@ -67,11 +72,43 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
-    <Reference Include="Fedhaplus.Presentation.Shared, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null" />
     <Reference Include="LazyCache, Version=0.7.1.44, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LazyCache.0.7.1.44\lib\net45\LazyCache.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Caching.Memory, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Caching.Memory.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.2.1.0\lib\netstandard2.0\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.4.2.0\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.4.2.0\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=4.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.2.0\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
     <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
       <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
@@ -91,21 +128,43 @@
       <HintPath>..\packages\Serilog.Sinks.File.4.0.0\lib\net45\Serilog.Sinks.File.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.PeriodicBatching, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
-      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.1.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
+      <HintPath>..\packages\Serilog.Sinks.PeriodicBatching.2.3.1\lib\net45\Serilog.Sinks.PeriodicBatching.dll</HintPath>
     </Reference>
     <Reference Include="Serilog.Sinks.RollingFile, Version=2.0.0.0, Culture=neutral, PublicKeyToken=24c2f752a8e58a10, processorArchitecture=MSIL">
       <HintPath>..\packages\Serilog.Sinks.RollingFile.3.3.0\lib\net45\Serilog.Sinks.RollingFile.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    </Reference>
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Numerics" />
+    <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Caching" />
+    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.4.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.5.3\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -162,26 +221,11 @@
     <Reference Include="Unity.Abstractions, Version=3.3.1.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.Abstractions.3.3.1\lib\net47\Unity.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Configuration, Version=5.2.5.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.Configuration.5.2.5\lib\net47\Unity.Configuration.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Container, Version=5.8.13.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.Container.5.8.13\lib\net47\Unity.Container.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Interception, Version=5.5.6.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.Interception.5.5.6\lib\net47\Unity.Interception.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Interception.Configuration, Version=5.1.7.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.Interception.Configuration.5.1.7\lib\net47\Unity.Interception.Configuration.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.Mvc, Version=5.0.15.0, Culture=neutral, PublicKeyToken=6d32ff45e0ccc69f, processorArchitecture=MSIL">
       <HintPath>..\packages\Unity.Mvc.5.0.15\lib\net47\Unity.Mvc.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RegistrationByConvention, Version=2.1.9.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.RegistrationByConvention.2.1.9\lib\net47\Unity.RegistrationByConvention.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ServiceLocation, Version=2.1.2.0, Culture=neutral, PublicKeyToken=489b6accfaf20ef0, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unity.ServiceLocation.2.1.2\lib\net47\Unity.ServiceLocation.dll</HintPath>
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.2.0\lib\net40\WebActivatorEx.dll</HintPath>
@@ -196,26 +240,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNet.Identity.Core">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.Owin">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
-    </Reference>
     <Reference Include="Owin">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Owin">
-      <HintPath>..\packages\Microsoft.Owin.4.0.0\lib\net451\Microsoft.Owin.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Owin.Host.SystemWeb">
       <HintPath>..\packages\Microsoft.Owin.Host.SystemWeb.4.0.0\lib\net451\Microsoft.Owin.Host.SystemWeb.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security">
-      <HintPath>..\packages\Microsoft.Owin.Security.4.0.0\lib\net451\Microsoft.Owin.Security.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin.Security.Cookies">
       <HintPath>..\packages\Microsoft.Owin.Security.Facebook.4.0.0\lib\net451\Microsoft.Owin.Security.Facebook.dll</HintPath>
@@ -231,12 +260,6 @@
     </Reference>
     <Reference Include="Microsoft.Owin.Security.MicrosoftAccount">
       <HintPath>..\packages\Microsoft.Owin.Security.MicrosoftAccount.4.0.0\lib\net451\Microsoft.Owin.Security.MicrosoftAccount.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Owin.Security.OAuth">
-      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.4.0.0\lib\net451\Microsoft.Owin.Security.OAuth.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Diagnostics.DiagnosticSource">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.4.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.TelemetryCorrelation">
       <HintPath>..\packages\Microsoft.AspNet.TelemetryCorrelation.1.0.0\lib\net45\Microsoft.AspNet.TelemetryCorrelation.dll</HintPath>
@@ -281,10 +304,25 @@
     <Compile Include="Areas\Client\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
+    <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
+    <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
+    <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
@@ -297,6 +335,7 @@
     <Compile Include="Configuration\DashboardAppSettingsElement.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
     <Compile Include="Global.asax.cs">
@@ -335,6 +374,7 @@
     <Compile Include="TypeAdapterFactory\AutomapperTypeAdapterFactory.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\HumanResource\Views\Shared\_Layout.cshtml" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -562,6 +602,61 @@
     <Content Include="Areas\Reports\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Client\Views\web.config" />
+    <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Admin\Views\Branch\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Branch\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Branch\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\AdministrativeDivision\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Employer\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Employer\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Employer\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Employer\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Zone\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Division\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Division\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Division\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Division\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanPurpose\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanPurpose\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanPurpose\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanPurpose\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoaningRemark\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoaningRemark\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoaningRemark\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoaningRemark\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\web.config" />
+    <Content Include="Areas\HumanResource\Views\Department\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Department\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Designation\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\EducationVenue\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\EmployeeType\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1022,16 +1117,18 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Commission\" />
     <Folder Include="Areas\Accounts\Views\Shared\" />
-    <Folder Include="Areas\Admin\Views\Branch\" />
-    <Folder Include="Areas\Admin\Views\Shared\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
+    <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\EmployeeTypes\" />
+    <Folder Include="Areas\HumanResource\Views\Holidays\" />
+    <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
-    <Folder Include="Areas\Registry\Controllers\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />
+    <Folder Include="Views\Lookup\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />
@@ -1053,21 +1150,9 @@
       <Project>{11280338-B2E7-4FE0-AFC7-E5C5596583AC}</Project>
       <Name>Domain.MainBoundedContext</Name>
     </ProjectReference>
-    <ProjectReference Include="..\EasyBim.Presentation.Shared\EasyBim.Presentation.Shared.csproj">
-      <Project>{CDF6163E-1243-4BD4-B873-DC380F908F06}</Project>
-      <Name>EasyBim.Presentation.Shared</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Infrastructure.Crosscutting.Framework\Infrastructure.Crosscutting.Framework.csproj">
       <Project>{5D2E6404-03AE-4038-B0AE-7AAA56BA525A}</Project>
       <Name>Infrastructure.Crosscutting.Framework</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EasyBim.Presentation.Contracts\EasyBim.Presentation.Contracts.csproj">
-      <Project>{f1d7ad5a-2e8b-44fb-86a5-f2751225167e}</Project>
-      <Name>EasyBim.Presentation.Contracts</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EasyBim.Presentation.Infrastructure\EasyBim.Presentation.Infrastructure.csproj">
-      <Project>{E36F3A99-A405-44DE-84AB-91F37127B45A}</Project>
-      <Name>EasyBim.Presentation.Infrastructure</Name>
     </ProjectReference>
     <ProjectReference Include="..\SwiftFinancials.Presentation.Infrastructure\SwiftFinancials.Presentation.Infrastructure.csproj">
       <Project>{DCFCA848-40EE-4F4E-A2D6-AA449C908CC5}</Project>
