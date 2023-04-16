@@ -1124,7 +1124,6 @@
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\HumanResource\Views\EmployeeTypes\" />
-    <Folder Include="Areas\HumanResource\Views\Holidays\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
