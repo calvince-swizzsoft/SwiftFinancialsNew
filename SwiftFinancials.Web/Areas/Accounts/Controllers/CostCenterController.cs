@@ -101,5 +101,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(costCenterBindingModel);
             }
         }
+
+       /* [HttpGet]
+        public async Task<JsonResult> GetCostCentersAsync()
+        {
+            var costCenterDTOs = await _channelService.FindCostCenterAsync(GetServiceHeader());
+
+            return Json(costCenterDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
-    }
+}

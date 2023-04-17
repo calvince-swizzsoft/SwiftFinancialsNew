@@ -104,12 +104,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetChartOfAccountsAsync()
-        {
-            var chartOfAccountsDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
+        /* [HttpGet]
+         public async Task<JsonResult> GetChartOfAccountsAsync()
+         {
+             var chartOfAccountsDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
 
-            return Json(chartOfAccountsDTOs, JsonRequestBehavior.AllowGet);
-        }
+             return Json(chartOfAccountsDTOs, JsonRequestBehavior.AllowGet);
+         }*/
     }
 }
