@@ -23580,6 +23580,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<CostCenterDTO>> FindCostCentersAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CostCenterDTO>>();
+
+            ICostCenterService service = GetService<ICostCenterService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CostCenterDTO> response = ((ICostCenterService)result.AsyncState).EndFindCostCenters(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CostCenterDTO>(response ?? new List<CostCenterDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCostCenters(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region TellerDTO

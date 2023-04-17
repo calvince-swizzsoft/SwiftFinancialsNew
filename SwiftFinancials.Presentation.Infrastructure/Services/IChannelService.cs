@@ -1813,6 +1813,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<CostCenterDTO> FindCostCenterAsync(Guid costCenterId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<CostCenterDTO>> FindCostCentersAsync(ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region TellerDTO
