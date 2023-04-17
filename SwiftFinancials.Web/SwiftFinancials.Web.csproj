@@ -665,7 +665,6 @@
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Create.cshtml" />
