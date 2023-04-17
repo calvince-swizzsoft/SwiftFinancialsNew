@@ -99,15 +99,15 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.IsControlAccount, htmlAttributes: new { @class = "" })
                                     @Html.CheckBoxFor(model => model.IsControlAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Control Account?" } })
+                                    @Html.LabelFor(model => model.IsControlAccount, htmlAttributes: new { @class = "" })
                                     @Html.ValidationMessageFor(model => model.IsControlAccount, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.IsReconciliationAccount, htmlAttributes: new { @class = "" })
                                     @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Reconciliation Account?" } })
+                                    @Html.LabelFor(model => model.IsReconciliationAccount, htmlAttributes: new { @class = "" })
                                     @Html.ValidationMessageFor(model => model.IsReconciliationAccount, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -115,15 +115,15 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PostAutomaticallyOnly, htmlAttributes: new { @class = "" })
                                     @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?" } })
+                                    @Html.LabelFor(model => model.PostAutomaticallyOnly, htmlAttributes: new { @class = "" })
                                     @Html.ValidationMessageFor(model => model.PostAutomaticallyOnly, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                     @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                     @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                 </div>
                             </div>
@@ -138,8 +138,8 @@
                                     @Html.LabelFor(model => model.CostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
                                     @Html.HiddenFor(model => model.CostCenterId)
                                     @Html.EditorFor(model => model.CostCenterDescription, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Description" } })
-                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                     @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Is Locked?" } })
+                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                     @Html.ValidationMessageFor(model => model.CostCenterId, "", new { @class = "text-danger" })
                                 </div>
                             </div>
