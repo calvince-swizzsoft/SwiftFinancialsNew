@@ -12,6 +12,11 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
     {
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindChartOfAccounts(AsyncCallback callback, Object state);
+        List<ChartOfAccountDTO> EndFindChartOfAccounts(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAddChartOfAccount(ChartOfAccountDTO chartOfAccountDTO, AsyncCallback callback, Object state);
         ChartOfAccountDTO EndAddChartOfAccount(IAsyncResult result);
 

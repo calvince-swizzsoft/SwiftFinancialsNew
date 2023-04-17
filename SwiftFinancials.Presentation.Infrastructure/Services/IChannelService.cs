@@ -1441,6 +1441,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChartOfAccountDTO
 
+        Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader = null);
+
         Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsAsync(bool includeBalances = false, bool updateDepth = false, ServiceHeader serviceHeader = null);
 
         Task<GeneralLedgerAccount> FindGeneralLedgerAccountAsync(Guid chartOfAccountId, bool includeBalances, ServiceHeader serviceHeader = null);

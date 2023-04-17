@@ -18287,6 +18287,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChartOfAccountDTO
 
+        public Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<ChartOfAccountDTO>>();
+
+            IChartOfAccountService service = GetService<IChartOfAccountService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<ChartOfAccountDTO> response = ((IChartOfAccountService)result.AsyncState).EndFindChartOfAccounts(result);
+
+                    tcs.TrySetResult(new ObservableCollection<ChartOfAccountDTO>(response ?? new List<ChartOfAccountDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindChartOfAccounts(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsAsync(bool includeBalances, bool updateDepth, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<GeneralLedgerAccount>>();
@@ -23611,7 +23643,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
-
 
         #endregion
 
