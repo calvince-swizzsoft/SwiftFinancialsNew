@@ -292,6 +292,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
@@ -658,6 +659,11 @@
     <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChartOfAccount\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChartOfAccount\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChartOfAccount\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChartOfAccount\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1117,7 +1123,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Commission\" />
-    <Folder Include="Areas\Accounts\Views\Shared\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
