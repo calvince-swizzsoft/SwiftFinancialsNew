@@ -45,7 +45,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Chart Of Accounts", "Create", "ChartOfAccounts", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Create Chart Of Accounts", "Create", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -68,7 +68,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccounts", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -81,8 +81,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/ChartOfAccounts/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/ChartOfAccounts/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/accounts/ChartOfAccount/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/ChartOfAccount/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(5)', nRow).html(dt_Created);
                     $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
