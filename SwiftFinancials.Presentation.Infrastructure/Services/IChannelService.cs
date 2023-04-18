@@ -220,6 +220,29 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ReportDTO> FindReportAsync(Guid reportId, ServiceHeader serviceHeader = null);
 
+
+        #region ReportDTO
+
+        Task<Tuple<ReportDTO, string>> AddNewReportAsync(ReportDTO reportDTO, ServiceHeader serviceHeader,
+         double timeoutMinutes = 10d);
+
+        Task<bool> UpdateReportAsync(ReportDTO reportDTO, ServiceHeader serviceHeader,
+         double timeoutMinutes = 10d);
+
+        Task<PageCollectionInfo<ReportDTO>> FindReportFilterInPageAsync(int startIndex, int pageSize, IList<string> sortedColumns, string searchString, bool sortAscending, ServiceHeader serviceHeader,
+         double timeoutMinutes = 10d);
+
+        Task<PageCollectionInfo<ReportDTO>> FindDetailedReportFilterInPageAsync(int startIndex, int pageSize, IList<string> sortedColumns, string searchString, bool sortAscending, ServiceHeader serviceHeader,
+        double timeoutMinutes = 10d);
+
+        Task<PageCollectionInfo<ReportDTO>> FindReportHeadersFilterInPageAsync(int startIndex, int pageSize, IList<string> sortedColumns, string searchString, bool sortAscending, ServiceHeader serviceHeader,
+        double timeoutMinutes = 10d);
+
+        Task<ReportDTO> FindReportByIdAsync(Guid id, ServiceHeader serviceHeader, double timeoutMinutes = 10d);
+
+        Task<List<ReportDTO>> FindReportsAsync(ServiceHeader serviceHeader = null);
+
+        #endregion
         #endregion
 
         #region ModuleNavigationItemDTO

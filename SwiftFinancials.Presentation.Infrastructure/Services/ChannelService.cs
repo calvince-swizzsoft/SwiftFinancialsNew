@@ -74,11 +74,11 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             var tcs = new TaskCompletionSource<bool>();
 
-            DefaultSettings.Instance.CurrentAppDomainName = domain; 
+            DefaultSettings.Instance.CurrentAppDomainName = domain;
 
             DefaultSettings.Instance.CurrentAppUserName = userName;
 
-            DefaultSettings.Instance.CurrentAppUserPassword = password; 
+            DefaultSettings.Instance.CurrentAppUserPassword = password;
 
             IUserManagerService service = GetService<IUserManagerService>(serviceHeader);
 
@@ -144,7 +144,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-       public Task<ObservableCollection<PermissionWrapperDTO>> IsUserAuthorizedToAccessNavigationItemsAsync(string userName, List<PermissionWrapperDTO> permissionWrappers, ServiceHeader serviceHeader)
+        public Task<ObservableCollection<PermissionWrapperDTO>> IsUserAuthorizedToAccessNavigationItemsAsync(string userName, List<PermissionWrapperDTO> permissionWrappers, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<PermissionWrapperDTO>>();
 
@@ -2658,6 +2658,217 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        #region ReportDTO
+
+        public Task<Tuple<ReportDTO, string>> AddNewReportAsync(ReportDTO reportDTO, ServiceHeader serviceHeader, double timeoutMinutes = 10)
+        {
+            TaskCompletionSource<Tuple<ReportDTO, string>> tcs = new TaskCompletionSource<Tuple<ReportDTO, string>>();
+
+            IReportService service = GetService<IReportService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    ReportDTO response = ((IReportService)result.AsyncState).EndAddNewReport(result);
+
+                    tcs.TrySetResult(new Tuple<ReportDTO, string>(response, string.Empty));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginAddNewReport(reportDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateReportAsync(ReportDTO reportDTO, ServiceHeader serviceHeader, double timeoutMinutes = 10)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IReportService service = GetService<IReportService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IReportService)result.AsyncState).EndUpdateReport(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(false);
+                    });
+                }
+            });
+
+            service.BeginUpdateReport(reportDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<ReportDTO>> FindReportFilterInPageAsync(int startIndex, int pageSize, IList<string> sortedColumns, string searchString, bool sortAscending, ServiceHeader serviceHeader, double timeoutMinutes = 10)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<ReportDTO>>();
+
+            IReportService service = GetService<IReportService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<ReportDTO> response =
+                        ((IReportService)result.AsyncState).EndFindReportFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindReportFilterInPage(startIndex, pageSize, sortedColumns, searchString, sortAscending,
+                asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<ReportDTO>> FindDetailedReportFilterInPageAsync(int startIndex, int pageSize, IList<string> sortedColumns, string searchString, bool sortAscending, ServiceHeader serviceHeader, double timeoutMinutes = 10)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<ReportDTO>>();
+
+            IReportService service = GetService<IReportService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<ReportDTO> response =
+                        ((IReportService)result.AsyncState).EndFindDetailedReportFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindDetailedReportFilterInPage(startIndex, pageSize, sortedColumns, searchString, sortAscending,
+                asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<ReportDTO>> FindReportHeadersFilterInPageAsync(int startIndex, int pageSize, IList<string> sortedColumns, string searchString, bool sortAscending, ServiceHeader serviceHeader, double timeoutMinutes = 10)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<ReportDTO>>();
+
+            IReportService service = GetService<IReportService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<ReportDTO> response =
+                        ((IReportService)result.AsyncState).EndFindReportHeadersFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindReportHeadersFilterInPage(startIndex, pageSize, sortedColumns, searchString, sortAscending, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ReportDTO> FindReportByIdAsync(Guid id, ServiceHeader serviceHeader, double timeoutMinutes = 10)
+        {
+            TaskCompletionSource<ReportDTO> taskCompletionSource = new TaskCompletionSource<ReportDTO>();
+
+            IReportService service = GetService<IReportService>(serviceHeader, timeoutMinutes);
+
+            AsyncCallback callback = result =>
+            {
+                try
+                {
+                    var myresult = ((IReportService)result.AsyncState).EndFindReportById(result);
+
+                    taskCompletionSource.TrySetResult(myresult);
+                }
+                catch (Exception ex)
+                {
+
+                    HandleFault(ex, msgbc =>
+                    {
+                        taskCompletionSource.SetResult(null);
+                    });
+                }
+
+            };
+
+            service.BeginFindReportById(id, callback, service);
+
+            return taskCompletionSource.Task;
+        }
+
+        public Task<List<ReportDTO>> FindReportsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<ReportDTO>>();
+
+            IReportService service = GetService<IReportService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<ReportDTO> response = ((IReportService)result.AsyncState).EndFindReports(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindReports(true, true, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        #endregion
         #endregion
 
         #region NavigationItemDTO
@@ -4711,7 +4922,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             {
                 try
                 {
-                     PageCollectionInfo<TextAlertDTO> response = ((ITextAlertService)result.AsyncState).EndFindTextAlertsByFilterInPage(result);
+                    PageCollectionInfo<TextAlertDTO> response = ((ITextAlertService)result.AsyncState).EndFindTextAlertsByFilterInPage(result);
 
                     tcs.TrySetResult(response);
                 }
