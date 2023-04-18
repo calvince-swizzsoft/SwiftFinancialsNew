@@ -299,6 +299,7 @@
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\ModuleController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ReportController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
@@ -669,6 +670,10 @@
     <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Report\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Report\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Report\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
