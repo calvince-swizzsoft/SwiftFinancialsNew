@@ -42,7 +42,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<ChartOfAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        };*/
+        }*/
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -104,12 +104,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-         [HttpGet]
+        /* [HttpGet]
          public async Task<JsonResult> GetChartOfAccountsAsync()
          {
-             var chartOfAccountsDTOs = await _channelService.FindChartOfAccountsAsync(GetServiceHeader());
+             var chartOfAccountsDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
 
              return Json(chartOfAccountsDTOs, JsonRequestBehavior.AllowGet);
-         }
+         }*/
     }
 }

@@ -102,12 +102,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-       [HttpGet]
+       /* [HttpGet]
         public async Task<JsonResult> GetCostCentersAsync()
         {
-            var costCenterDTOs = await _channelService.FindCostCentersAsync(GetServiceHeader());
+            var costCenterDTOs = await _channelService.FindCostCenterAsync(GetServiceHeader());
 
             return Json(costCenterDTOs, JsonRequestBehavior.AllowGet);
-        }
+        }*/
     }
 }
