@@ -37,121 +37,121 @@
                 <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "ChartOfAccount", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-                    @Html.AntiForgeryToken()
+                        @Html.AntiForgeryToken()
 
-                    <h1>Primary Details</h1>
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-lg-8">
-                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AccountName, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Account name.", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                        <h1>Primary Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AccountName, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Account name.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-8">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.HiddenFor(model => model.ParentId)
-                                    @Html.EditorFor(model => model.Parent.AccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Parent Account Name" } })
-                                    @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                                <div class="col-lg-8">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.ParentId)
+                                        @Html.EditorFor(model => model.Parent.AccountName, new { htmlAttributes = new { @class = "CompaniesLookup form-control", placeholder = "Enter Parent Account Name" } })
+                                        @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
+                                <div class="col-lg-4">
+                                    <div class="text-center">
+                                        <div style="margin-top: 20px">
+                                            <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
+                        </fieldset>
 
-                    <h1>Other Details</h1>
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AccountCode, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AccountCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Code" } })
-                                    @Html.ValidationMessageFor(model => model.AccountCode, "", new { @class = "text-danger" })
+                        <h1>Other Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AccountCode, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AccountCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Code" } })
+                                        @Html.ValidationMessageFor(model => model.AccountCode, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AccountCategory, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AccountCategory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Category" } })
+                                        @Html.ValidationMessageFor(model => model.AccountCategory, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AccountCategory, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AccountCategory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Category" } })
-                                    @Html.ValidationMessageFor(model => model.AccountCategory, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AccountType, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AccountType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Type", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.AccountType, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Depth, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Depth, new { htmlAttributes = new { @class = "form-control", @placeholder = "Depth" } })
-                                    @Html.ValidationMessageFor(model => model.Depth, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.IsControlAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Control Account?" } })
-                                    @Html.LabelFor(model => model.IsControlAccount, htmlAttributes: new { @class = "" })
-                                    @Html.ValidationMessageFor(model => model.IsControlAccount, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Reconciliation Account?" } })
-                                    @Html.LabelFor(model => model.IsReconciliationAccount, htmlAttributes: new { @class = "" })
-                                    @Html.ValidationMessageFor(model => model.IsReconciliationAccount, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?" } })
-                                    @Html.LabelFor(model => model.PostAutomaticallyOnly, htmlAttributes: new { @class = "" })
-                                    @Html.ValidationMessageFor(model => model.PostAutomaticallyOnly, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                    </fieldset>
-
-                    <h1>Cost Center Linkage</h1>
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-lg-8">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.HiddenFor(model => model.CostCenterId)
-                                    @Html.EditorFor(model => model.CostCenterDescription, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Description" } })
-                                    @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Is Locked?" } })
-                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                    @Html.ValidationMessageFor(model => model.CostCenterId, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="text-center">
-                                    <div style="margin-top: 20px">
-                                        <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AccountType, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AccountType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Type", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.AccountType, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Depth, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Depth, new { htmlAttributes = new { @class = "form-control", @placeholder = "Depth" } })
+                                        @Html.ValidationMessageFor(model => model.Depth, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsControlAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Control Account?" } })
+                                        @Html.LabelFor(model => model.IsControlAccount, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.IsControlAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Reconciliation Account?" } })
+                                        @Html.LabelFor(model => model.IsReconciliationAccount, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.IsReconciliationAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { htmlAttributes = new { @class = "form-control", @placeholder = "Post Automatically Only?" } })
+                                        @Html.LabelFor(model => model.PostAutomaticallyOnly, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.PostAutomaticallyOnly, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>Cost Center Linkage</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.CostCenterId)
+                                        @Html.EditorFor(model => model.CostCenterDescription, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Description" } })
+                                        @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Is Locked?" } })
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.CostCenterId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="text-center">
+                                        <div style="margin-top: 20px">
+                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     }
 
                 </div>
