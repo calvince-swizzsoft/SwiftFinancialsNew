@@ -15,6 +15,10 @@ namespace DistributedServices.MainBoundedContext
     {
         #region Chart Of Account
 
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        List<ChartOfAccountDTO> FindChartOfAccounts();
+        
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
         ChartOfAccountDTO AddChartOfAccount(ChartOfAccountDTO chartOfAccountDTO);

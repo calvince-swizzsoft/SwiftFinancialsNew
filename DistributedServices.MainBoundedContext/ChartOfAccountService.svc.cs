@@ -28,6 +28,13 @@ namespace DistributedServices.MainBoundedContext
 
         #region Chart Of Account
 
+        public List<ChartOfAccountDTO> FindChartOfAccounts()
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _chartOfAccountAppService.FindChartOfAccounts(serviceHeader);
+        }
+
         public ChartOfAccountDTO AddChartOfAccount(ChartOfAccountDTO chartOfAccountDTO)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
