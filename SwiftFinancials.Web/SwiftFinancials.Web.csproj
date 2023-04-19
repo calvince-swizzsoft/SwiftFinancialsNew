@@ -295,6 +295,7 @@
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
@@ -675,6 +676,10 @@
     <Content Include="Areas\Admin\Views\Report\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
@@ -1136,7 +1141,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
-    <Folder Include="Areas\Accounts\Views\Commission\" />
+    <Folder Include="Areas\Accounts\Views\PostinPeriod\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />

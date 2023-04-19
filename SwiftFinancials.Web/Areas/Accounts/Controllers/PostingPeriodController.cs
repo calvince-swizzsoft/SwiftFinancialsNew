@@ -12,7 +12,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class CommissionController : MasterController
+    public class PostingPeriodController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -32,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindPostingPeriodsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -42,16 +42,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<PostingPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
+            var postingPeriodDTO = await _channelService.FindPostingPeriodAsync(id, GetServiceHeader());
 
-            return View(commissionDTO);
+            return View(postingPeriodDTO);
         }
 
         public async Task<ActionResult> Create()
@@ -62,21 +62,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CommissionDTO commissionDTO)
+        public async Task<ActionResult> Create(PostingPeriodDTO postingPeriodDTO)
         {
-            commissionDTO.ValidateAll();
+            postingPeriodDTO.ValidateAll();
 
-            if (!commissionDTO.HasErrors)
+            if (!postingPeriodDTO.HasErrors)
             {
-                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                await _channelService.AddPostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = commissionDTO.ErrorMessages;
+                var errorMessages = postingPeriodDTO.ErrorMessages;
 
-                return View(commissionDTO);
+                return View(postingPeriodDTO);
             }
         }
 
@@ -84,33 +84,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var CommissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
+            var postingPeriodDTO = await _channelService.FindPostingPeriodAsync(id, GetServiceHeader());
 
-            return View(CommissionDTO.MapTo<CommissionDTO>());
+            return View(postingPeriodDTO.MapTo<PostingPeriodDTO>());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CommissionDTO commissionDTO)
+        public async Task<ActionResult> Edit(Guid id, PostingPeriodDTO postingPeriodDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(commissionDTO);
+                return View(postingPeriodDTO);
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetCommissionsAsync()
+       /* [HttpGet]
+        public async Task<JsonResult> GetPostingPeriodsAsync()
         {
-            var commissionsDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
+            var postingPeriodsDTOs = await _channelService.FindPostingPeriodsAsync(GetServiceHeader());
 
-            return Json(commissionsDTOs, JsonRequestBehavior.AllowGet);
-        }
+            return Json(postingPeriodsDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
 }

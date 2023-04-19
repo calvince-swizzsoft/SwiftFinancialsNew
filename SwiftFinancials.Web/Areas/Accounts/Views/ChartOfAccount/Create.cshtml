@@ -134,7 +134,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Is Locked?" } })
                                         @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.ValidationMessageFor(model => model.CostCenterId, "", new { @class = "text-danger" })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
