@@ -683,6 +683,11 @@
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\PostingPeriod\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\PostingPeriod\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\PostingPeriod\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\PostingPeriod\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
