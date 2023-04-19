@@ -11,7 +11,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class CreditTypeDTOController : MasterController
+    public class CreditTypeController : MasterController
     {
         public async Task<ActionResult> Index()
         {

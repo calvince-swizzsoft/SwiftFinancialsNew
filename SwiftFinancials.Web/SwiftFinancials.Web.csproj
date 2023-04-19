@@ -675,7 +675,6 @@
     <Content Include="Areas\Admin\Views\Report\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
