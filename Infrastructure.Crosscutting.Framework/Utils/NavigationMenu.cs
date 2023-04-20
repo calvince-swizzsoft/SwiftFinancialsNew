@@ -60,9 +60,10 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Chart of Accounts", Icon="fa fa-usb", ControllerName="ChartOfAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 1},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Commissions", Icon="fa fa-users", ControllerName="Commission", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 2},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Journals", Icon="fa fa-calculator", ControllerName="Journal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 3},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cost Center", Icon="fa fa-calculator", ControllerName="CostCenter", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 4},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cost Centers", Icon="fa fa-calculator", ControllerName="CostCenter", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 4},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Credit Types", Icon="fa fa-calculator", ControllerName="CreditType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 5},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Debit Types", Icon="fa fa-calculator", ControllerName="DebitType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 6},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Levies", Icon="fa fa-calculator", ControllerName="Levy", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 7},
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)

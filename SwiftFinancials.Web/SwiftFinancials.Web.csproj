@@ -296,6 +296,7 @@
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
@@ -691,6 +692,9 @@
     <Content Include="Areas\Accounts\Views\DebitType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
