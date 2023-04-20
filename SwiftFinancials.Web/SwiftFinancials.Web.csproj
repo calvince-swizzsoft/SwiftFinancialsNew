@@ -1153,7 +1153,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
-    <Folder Include="Areas\Accounts\Views\PostinPeriod\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
