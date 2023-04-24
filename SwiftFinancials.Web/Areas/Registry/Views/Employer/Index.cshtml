@@ -84,8 +84,8 @@
                     var editUrl = '<a  href="/registry/Employer/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/registry/Employer/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(11)', nRow).html(dt_Created);
-                    $('td:eq(12)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
@@ -94,14 +94,9 @@
                  { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1", "sWidth": "10%" },
                     { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No.", "sWidth": "10%" },
-                    { "mDataProp": "AddressEmail", "sTitle": "Email", "sWidth": "15%" },
-                    { "mDataProp": "AddressCity", "sTitle": "City", "sWidth": "15%" },
-                    { "mDataProp": "AddressLandLine", "sTitle": "LandLine", "sWidth": "10%" },
-                    { "mDataProp": "AddressStreet", "sTitle": "Street", "sWidth": "15%" },
-                    { "mDataProp": "AddressPostalCode", "sTitle": "Postal Code", "sWidth": "15%" },
+                    { "mDataProp": "AddressEmail", "sTitle": "Email", "sWidth": "15%" },,
                     { "mDataProp": "RetirementAge", "sTitle": "Retirement Age", "sWidth": "15%" },
-                    { "mDataProp": "", "sTitle": "EnforceRetirementAge", "sWidth": "15%", "bSortable": false },
-                    { "mDataProp": "", "sTitle": "IsLocked", "sWidth": "15%", "bSortable": false },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "15%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
