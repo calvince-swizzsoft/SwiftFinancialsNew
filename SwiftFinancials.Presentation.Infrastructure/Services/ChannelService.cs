@@ -12970,6 +12970,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region DesignationDTO
 
+        public Task<List<DesignationDTO>> FindDesignationsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<DesignationDTO>>();
+
+            IDesignationService service = GetService<IDesignationService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DesignationDTO> response = ((IDesignationService)result.AsyncState).EndFindDesignations(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDesignations(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         public Task<PageCollectionInfo<DesignationDTO>> FindDesignationsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<DesignationDTO>>();

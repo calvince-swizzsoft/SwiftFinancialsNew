@@ -966,6 +966,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region DesignationDTO
 
+        Task<List<DesignationDTO>> FindDesignationsAsync(ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<DesignationDTO>> FindDesignationsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<DesignationDTO>> FindDesignationsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
