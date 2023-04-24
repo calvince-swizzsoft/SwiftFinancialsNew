@@ -295,6 +295,8 @@
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
@@ -683,11 +685,16 @@
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\PostingPeriod\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\PostingPeriod\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\PostingPeriod\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\PostingPeriod\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitType\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitType\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1146,7 +1153,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
-    <Folder Include="Areas\Accounts\Views\PostinPeriod\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
