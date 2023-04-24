@@ -42,16 +42,13 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="col-lg-8">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            
                             <div class="row">
                                 <div class="col-lg-8">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DivisionId, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.HiddenFor(model => model.DivisionId)
@@ -59,25 +56,13 @@
                                         @Html.EditorFor(model => model.DivisionDescription, new { htmlAttributes = new { @class = "DivisionsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
-                                    </div>
-                                </div>
                             </div>
-
-
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="submit" value="Create" class="btn btn-primary" />
                                 </div>
                             </div>
-                        </div>
-                        <div class="form-group form-group-lg">
-                        </div>
-                    }
+                        </div>}
                 </div>
             </div>
         </div>
