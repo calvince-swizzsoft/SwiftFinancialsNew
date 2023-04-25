@@ -330,6 +330,7 @@
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
@@ -698,6 +699,11 @@
     <Content Include="Areas\Accounts\Views\Levy\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\Station\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Station\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Station\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Station\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1161,7 +1167,6 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
-    <Folder Include="Areas\HumanResource\Views\EmployeeTypes\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
