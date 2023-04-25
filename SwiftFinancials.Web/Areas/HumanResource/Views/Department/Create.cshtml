@@ -62,24 +62,17 @@
                                     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsRegistry, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsRegistry, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Registry?" } })
+                                    @Html.ValidationMessageFor(model => model.IsRegistry, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-
-                                @Html.EditorFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-
-                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.IsRegistry, htmlAttributes: new { @class = "" })
-
-                                @Html.EditorFor(model => model.IsRegistry, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Registry?" } })
-
-                                @Html.ValidationMessageFor(model => model.IsRegistry, "", new { @class = "text-danger" })
-                            </div>
-
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="submit" value="Create" class="btn btn-primary" />

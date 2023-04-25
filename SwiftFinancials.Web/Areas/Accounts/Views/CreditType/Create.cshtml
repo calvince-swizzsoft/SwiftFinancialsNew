@@ -56,20 +56,18 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="col-lg-8">
+                            <div class="col-lg-6">
                                 <div class="form-group form-group-sm">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                                     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
                             </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                            </div>
-
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="submit" value="Create" class="btn btn-primary" />
