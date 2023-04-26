@@ -302,6 +302,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
+    <Compile Include="Areas\Admin\Controllers\LocationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ModuleController.cs" />
     <Compile Include="Areas\Admin\Controllers\ReportController.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
@@ -704,6 +705,10 @@
     <Content Include="Areas\Registry\Views\Station\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Station\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Station\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Location\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Location\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

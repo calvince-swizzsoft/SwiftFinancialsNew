@@ -35,6 +35,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Users", Icon="fa fa-user", ControllerName="Membership", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 4 },
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Access Controls", Icon="fa fa-cog", ControllerName="Module", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 5 },
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Reports", Icon="fa fa-calculator", ControllerName="Report", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 6},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Locations", Icon="fa fa-low-vision", ControllerName="Location", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 7},
+
 
                 //Registry - area 21,000
                 new NavigationMenu{Description = "Registry", IsArea = true, Code = 0x00005208},
