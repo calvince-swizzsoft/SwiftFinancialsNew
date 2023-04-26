@@ -40,11 +40,12 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 //Registry - area 21,000
                 new NavigationMenu{Description = "Registry", IsArea = true, Code = 0x00005208},
-                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Employers", Icon="fa fa-vision", ControllerName="Employer", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 1},
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Employers", Icon="fa fa-database", ControllerName="Employer", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 1},
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Zones", Icon="fa fa-low-vision", ControllerName="Zone", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 2},
-                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Customers", Icon="fa fa-vision", ControllerName="Customer", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 3},
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Customers", Icon="fa fa-users", ControllerName="Customer", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 3},
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Educational Venues", Icon="fa fa-cog", ControllerName="EducationVenue", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 4},
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Divisions", Icon="fa fa-usb", ControllerName="Division", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 5},
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Stations", Icon="fa fa-calculator", ControllerName="Station", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 6},
                
                 //Human Resource - area 22,000
                 new NavigationMenu{Description = "Human Resource", IsArea = true, Code = 0x000055F0},
