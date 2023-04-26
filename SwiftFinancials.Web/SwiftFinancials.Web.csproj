@@ -699,7 +699,6 @@
     <Content Include="Areas\Accounts\Views\Levy\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Edit.cshtml" />
-    <Content Include="Areas\Registry\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Registry\Views\Station\Index.cshtml" />
     <Content Include="Areas\Registry\Views\Station\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Station\Create.cshtml" />
