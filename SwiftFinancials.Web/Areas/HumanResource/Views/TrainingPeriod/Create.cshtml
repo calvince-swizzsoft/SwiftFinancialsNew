@@ -1,0 +1,98 @@
+﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.TrainingPeriodDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Training Period";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Training Periods</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "TrainingPeriod", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-secondary text-info">
+                    @using (Html.BeginForm("Create", "TrainingPeriod", new { Area = "HumanResource" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Training", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Venue, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Venue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Venue", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Venue, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Number", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Start Date", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

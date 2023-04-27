@@ -318,6 +318,7 @@
     <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\TrainingPeriodController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
@@ -708,6 +709,10 @@
     <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

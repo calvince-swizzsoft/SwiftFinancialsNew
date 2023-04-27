@@ -54,10 +54,10 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Designations", Icon="fa fa-usb", ControllerName="Designation", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 2},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Holidays", Icon="fa fa-usb", ControllerName="Holiday", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 3},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Employee Types", Icon="fa fa-usb", ControllerName="EmployeeType", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 4},
-
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Employees", Icon="fa fa-usb", ControllerName="Employee", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 5},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Leave", Icon="fa fa-usb", ControllerName="Leave", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 6},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary", Icon="fa fa-usb", ControllerName="Salary", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 7},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Training Periods", Icon="fa fa-bars", ControllerName="TrainingPeriod", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 8},
 
                 //Accounts - area 23,000
                 new NavigationMenu{Description = "Accounts", IsArea = true, Code = 0x000059D8},
