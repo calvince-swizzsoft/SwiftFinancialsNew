@@ -300,6 +300,7 @@
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\BankController.cs" />
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\LocationController.cs" />
@@ -708,6 +709,10 @@
     <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
