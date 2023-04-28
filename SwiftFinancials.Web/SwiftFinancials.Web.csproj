@@ -319,6 +319,7 @@
     <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\TrainingPeriodController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
@@ -709,6 +710,10 @@
     <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Bank\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Bank\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Bank\Edit.cshtml" />
