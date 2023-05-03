@@ -34,7 +34,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Models
         public Guid LevySplitChartOfAccountId { get; set; }
 
         [DataMember]
+        [Display(Name = "G/L Account Name")]
+        public string LevySplitChartOfAccountAccountName { get; set; }
+
+        [DataMember]
         [Display(Name = "Percentage")]
         public double LevySplitPercentage { get; set; }
+
     }
 }
