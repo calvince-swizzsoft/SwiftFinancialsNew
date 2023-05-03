@@ -323,6 +323,7 @@
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
@@ -718,6 +719,10 @@
     <Content Include="Areas\Admin\Views\Bank\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Bank\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Bank\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
