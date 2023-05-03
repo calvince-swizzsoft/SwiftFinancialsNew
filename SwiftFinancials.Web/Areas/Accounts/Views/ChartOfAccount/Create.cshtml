@@ -274,14 +274,14 @@
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Admin" })',
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
                         { query: query },
                         function (ChartOfAccounts) {
                             var newChartOfAccountsData = [];
                             ChartOfAccountsMap = {};
                             $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.Description);
-                                ChartOfAccountsMap[ChartOfAccount.Description] = ChartOfAccount;
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
                             });
                             process(newChartOfAccountsData); return;
                         });
