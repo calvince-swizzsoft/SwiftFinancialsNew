@@ -1,9 +1,11 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using SwiftFinancials.Web.Areas.Accounts.Models;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -60,21 +62,44 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LevyDTO levyDTO)
+        public async Task<ActionResult> Create(LevyViewModel levyViewModel)
         {
-            levyDTO.ValidateAll();
+            levyViewModel.ValidateAll();
 
-            if (!levyDTO.HasErrors)
+            if (!levyViewModel.HasErrors)
             {
-                await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
+                var levyDTO = new LevyDTO()
+                {
+                    Description = levyViewModel.LevyDescription,
+                    IsLocked = levyViewModel.LevyIsLocked,
+                };
+
+                var levy = await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
+
+                if (levy != null)
+                {
+                    var levySplitDTO = new LevySplitDTO()
+                    {
+                        LevyId = levy.Id,
+                        Description = levyViewModel.LevySplitDescription,
+                        ChartOfAccountId = levyViewModel.LevySplitChartOfAccountId,
+                        Percentage = levyViewModel.LevySplitPercentage,
+                    };
+
+                    var levySplits = new ObservableCollection<LevySplitDTO>();
+
+                    levySplits.Add(levySplitDTO);
+
+                    await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = levyDTO.ErrorMessages;
+                var errorMessages = levyViewModel.ErrorMessages;
 
-                return View(levyDTO);
+                return View(levyViewModel);
             }
         }
 

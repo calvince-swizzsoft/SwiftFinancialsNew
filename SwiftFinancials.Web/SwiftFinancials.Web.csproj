@@ -299,6 +299,7 @@
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
+    <Compile Include="Areas\Accounts\Models\LevyViewModel.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BankController.cs" />
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
