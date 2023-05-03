@@ -79,6 +79,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loan Purposes", Icon="fa fa-bars", ControllerName="LoanPurpose", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 3},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Remarks", Icon="fa fa-bars", ControllerName="LoaningRemark", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 4},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Income Adjustments", Icon="fa fa-bars", ControllerName="IncomeAdjustment", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 5},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Requests", Icon="fa fa-book", ControllerName="LoanRequest", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
 
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Applications", Icon="fa fa-bars", ControllerName="Application", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-bars", ControllerName="Loaning", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 7},

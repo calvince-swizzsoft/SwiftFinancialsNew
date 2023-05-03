@@ -50,7 +50,7 @@
                         @Html.AntiForgeryToken()
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-8">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "AmountApplied", @required = "" } })
@@ -72,7 +72,7 @@
                                         @Html.ValidationMessageFor(model => model.RegisteredBy, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-lg-8">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.RegisteredDate, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.RegisteredDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredDate", @required = "" } })
