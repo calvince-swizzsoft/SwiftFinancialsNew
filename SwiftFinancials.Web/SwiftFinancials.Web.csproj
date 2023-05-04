@@ -292,6 +292,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
@@ -724,6 +725,10 @@
     <Content Include="Areas\Loaning\Views\LoanRequest\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRequest\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRequest\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1137,7 +1142,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
-    <Content Include="_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />

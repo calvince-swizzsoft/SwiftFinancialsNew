@@ -106,11 +106,11 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetCompaniesAsync()
+        public async Task<JsonResult> GetBranchesAsync()
         {
-            var companiesDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
+            var branchesDTOs = await _channelService.FindBranchesAsync(GetServiceHeader());
 
-            return Json(companiesDTOs, JsonRequestBehavior.AllowGet);
+            return Json(branchesDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }
