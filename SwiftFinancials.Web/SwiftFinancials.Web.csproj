@@ -700,7 +700,6 @@
     <Content Include="Areas\Accounts\Views\DebitType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Levy\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Levy\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\Levy\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Levy\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Edit.cshtml" />
@@ -724,6 +723,7 @@
     <Content Include="Areas\Loaning\Views\LoanRequest\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRequest\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRequest\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
