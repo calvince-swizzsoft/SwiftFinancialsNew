@@ -300,6 +300,7 @@
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TreasuryController.cs" />
     <Compile Include="Areas\Accounts\Models\LevyViewModel.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\BankController.cs" />
@@ -729,6 +730,10 @@
     <Content Include="Areas\Accounts\Views\Budget\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Budget\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\Budget\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasury\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasury\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasury\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasury\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
