@@ -154,7 +154,7 @@
             $('.EmployersLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Admin" })',
+                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Registry" })',
                         { query: query },
                         function (Employers) {
                             var newEmployersData = [];

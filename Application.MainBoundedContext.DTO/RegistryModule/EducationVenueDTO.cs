@@ -17,7 +17,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public Guid Id { get; set; }
 
         [DataMember]
-        [Display(Name = "Name")]
+        [Display(Name = "Venue")]
         [Required]
         public string Description { get; set; }
 

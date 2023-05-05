@@ -19,15 +19,15 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public Guid Id { get; set; }
 
         [DataMember]
-        [Display(Name = "Name")]
+        [Display(Name = "Cheque")]
         [Required]
         public string Description { get; set; }
 
         [DataMember]
-        [Display(Name = "Maturity Period")]
+        [Display(Name = "MaturityPeriod")]
         public int MaturityPeriod { get; set; }
 
-        [Display(Name = "Charge Recovery Mode")]
+        [Display(Name = "ChargeRecoveryMode")]
         public int ChargeRecoveryMode { get; set; }
 
         [DataMember]

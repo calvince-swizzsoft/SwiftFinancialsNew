@@ -46,42 +46,31 @@
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employee Type name.", @required = "" } })
-
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
+
                         <h1>Employee Details</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Unit Type" } })
-
+                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Category" } })
                                         @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-
                                         @Html.CheckBoxFor(model => model.IsLocked)
-
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
+
                         <h1>Chart Of Account Linkage</h1>
                         <fieldset>
                             <div class="row">
@@ -89,21 +78,22 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountType, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "G/L Account Type" } })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountCode, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "G/L Account Code" } })
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "G/L Account Name" } })
-                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterId, "", new { @class = "text-danger" })@Html.EditorFor(model => model.ChartOfAccountCostCenterId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "G/L Account Cost Center" } })
-                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterDescription, new { htmlAttributes = new { @class = "ChartOfAccountCostCenterLookup form-control required", placeholder = "G/L Account Cost Center" } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>Cost Center Linkage</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-8">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterDescription, new { htmlAttributes = new { @class = "CostCenterLookup form-control required", placeholder = "G/L Account Cost Center" } })
                                     </div>
                                 </div>
                             </div>
@@ -124,7 +114,7 @@
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
 
-<script>
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -197,14 +187,14 @@
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "HumanResource" })',
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
                         { query: query },
                         function (ChartOfAccounts) {
                             var newChartOfAccountsData = [];
                             ChartOfAccountsMap = {};
                             $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.Description);
-                                ChartOfAccountsMap[ChartOfAccount.Description] = ChartOfAccount;
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
                             });
                             process(newChartOfAccountsData); return;
                         });
@@ -229,20 +219,20 @@
                     return item;
                 }
             });
-             //ChartOfAccountCostCenter typehead starts here
-            $('.ChartOfAccountCostCenterLookup').typeahead({
+             //CostCenter typehead starts here
+            $('.CostCenterLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetChartOfAccountCostCentersAsync", "ChartOfAccountCostCenter", new { Area = "HumanResource" })',
+                        '@Url.Action("GetCostCentersAsync", "CostCenter", new { Area = "Accounts" })',
                         { query: query },
-                        function (ChartOfAccountCostCenters) {
-                            var newChartOfAccountCostCentersData = [];
-                            ChartOfAccountCostCentersMap = {};
-                            $.each(ChartOfAccountCostCenters, function (i, ChartOfAccountCostCenter) {
-                                newChartOfAccountCostCentersData.push(ChartOfAccountCostCenter.Description);
-                                ChartOfAccountCostCentersMap[ChartOfAccountCostCenter.Description] = ChartOfAccountCostCenter;
+                        function (CostCenters) {
+                            var newCostCentersData = [];
+                            CostCentersMap = {};
+                            $.each(CostCenters, function (i, CostCenter) {
+                                newCostCentersData.push(CostCenter.Description);
+                                CostCentersMap[CostCenter.Description] = CostCenter;
                             });
-                            process(newChartOfAccountCostCentersData); return;
+                            process(newCostCentersData); return;
                         });
                 },
                 matcher: function (item) {
@@ -258,10 +248,10 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var chartOfAccountCostCenterId = "";
-                    ChartOfAccountCostCenterId = ChartOfAccountCostCentersMap[item].Id;
-                    $('#ChartOfAccountCostCenterId').val(ChartOfAccountCostCenterId);
-                    //console.log(ChartOfAccountCostCenterId)
+                    var costCenterId = "";
+                    CostCenterId = CostCentersMap[item].Id;
+                    $('#CostCenterId').val(CostCenterId);
+                    //console.log(CostCenterId)
                     return item;
                 }
             });

@@ -47,7 +47,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
+                <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "EducationVenue", new { Area = "Registry" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -58,28 +58,22 @@
                             <div class="col-lg-8">
                                 <div class="form-group form-group-sm">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Venue Name", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.EnforceInvestmentsBalance, htmlAttributes: new { @class = "" })
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.EnforceInvestmentsBalance, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.EnforceInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enforce Investments Balance?" } })
+                                    @Html.ValidationMessageFor(model => model.EnforceInvestmentsBalance, "", new { @class = "text-danger" })
+                                </div>
 
-                                @Html.EditorFor(model => model.EnforceInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnforceInvestments Balance?" } })
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
 
-                                @Html.ValidationMessageFor(model => model.EnforceInvestmentsBalance, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-
-                                @Html.EditorFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-
-                                @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2 col-md-10">
+                                <div class="form-group form-group-sm">
                                     <input type="submit" value="Create" class="btn btn-primary" />
                                 </div>
                             </div>
