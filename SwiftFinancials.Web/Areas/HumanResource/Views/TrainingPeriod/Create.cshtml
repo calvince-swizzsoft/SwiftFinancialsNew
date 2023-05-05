@@ -6,8 +6,8 @@
     ViewBag.Title = "Create Training Period";
 }
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
+<div class="row wrapper border-bottom bg-muted page-heading">
+    <div class="col-lg-10">
         <h2>Training Periods</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
@@ -23,21 +23,10 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
-<div class="wrapper wrapper-content">
+<div class="wrapper wrapper-content white-bg">
     <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
+        <div class="col-md-12">
+            <div class="ibox ">
                 <div class="ibox-title">
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -48,82 +37,76 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Create", "TrainingPeriod", new { Area = "HumanResource" }, FormMethod.Post))
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "TrainingPeriod", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
-
-                        <h2>Training Period Details</h2>
+                        <h1>TrainingPeriod</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-horizontal">
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Training", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Venue, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.Venue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Venue", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Venue, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Number", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                        </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Training", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Start Date", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Venue, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.Venue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Venue", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Venue, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Number", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Start Date", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
 
-                        <h2>File Info</h2>
+                        <h1>File Info</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-sm">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DocumentNumber, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.DocumentNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Document Number", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.DocumentNumber, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-sm">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.FileName, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.FileName, new { htmlAttributes = new { @class = "form-control", @placeholder = "File Name", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.FileName, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-sm">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.FileTitle, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.FileTitle, new { htmlAttributes = new { @class = "form-control", @placeholder = "File Title", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.FileTitle, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-sm">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.FileDescription, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.FileDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "File Description", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.FileDescription, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-sm">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.FileMIMEType, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.FileMIMEType, new { htmlAttributes = new { @class = "form-control", @placeholder = "File MIME Type", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.FileMIMEType, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-sm">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
