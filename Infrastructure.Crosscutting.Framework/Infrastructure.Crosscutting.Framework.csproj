@@ -162,6 +162,7 @@
     <Compile Include="Models\QueueDTO.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\AssemblyAttributes.cs" />
+    <Compile Include="Utils\ChartOfAccountSeedData.cs" />
     <Compile Include="Utils\ConfigurationHelper.cs" />
     <Compile Include="Utils\Converters.cs" />
     <Compile Include="Utils\Counter.cs" />
