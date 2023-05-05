@@ -293,6 +293,7 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
@@ -734,6 +735,10 @@
     <Content Include="Areas\Accounts\Views\Treasury\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasury\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasury\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BudgetEntry\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BudgetEntry\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BudgetEntry\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BudgetEntry\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1187,6 +1192,7 @@
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Account\ForceChangePassword.cshtml" />
     <Content Include="Views\Account\Lockout.cshtml" />
+    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
