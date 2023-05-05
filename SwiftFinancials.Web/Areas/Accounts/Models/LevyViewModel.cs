@@ -25,7 +25,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Models
         public bool LevyIsLocked { get; set; }
 
         [DataMember]
-        [Display(Name = "Levy Split Name")]
+        [Display(Name = "LevySplitName")]
         [Required]
         public string LevySplitDescription { get; set; }
 

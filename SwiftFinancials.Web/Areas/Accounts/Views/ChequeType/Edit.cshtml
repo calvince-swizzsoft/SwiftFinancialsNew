@@ -1,17 +1,17 @@
-﻿@model  SwiftFinancials.Web.Areas.Accounts.Models.LevyViewModel
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.ChequeTypeDTO
 
 @{
-    ViewBag.Title = "Edit Levy";
+    ViewBag.Title = "Edit Cheque Type";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Levy</h2>
+        <h2>Cheque Type</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Levy", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "ChequeType", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Edit</strong>
@@ -34,55 +34,59 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Edit", "Levy", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Edit", "ChequeType", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
-                        <h1>Levy</h1>
+                        <h1>Primary details</h1>
                         <fieldset>
-                            <h2>Levy</h2>
+                            <h2>Primary details</h2>
                             <div class="row">
                                 <div class="col-lg-8">
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevyDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.LevyDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.LevyDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.LevyIsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.LevyIsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.LevyIsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-                        <h1>Levy Split Name</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevySplitDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.LevySplitDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Levy Split Name", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.LevySplitDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevySplitChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.LevySplitChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.LevySplitChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LevySplitChartOfAccountAccountName, new { htmlAttributes = new { @class = "LevySplitsLookup form-control required", placeholder = "Description.." } })
-                                    </div>
-                                </div>
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
 
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "" })
+
+                                        @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maturity Period", @required = "" } })
+
+                                        @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargeRecoveryMode, htmlAttributes: new { @class = "" })
+
+                                        @Html.EditorFor(model => model.ChargeRecoveryMode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Recovery Mode", @required = "" } })
+
+                                        @Html.ValidationMessageFor(model => model.ChargeRecoveryMode, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+
+                                        @Html.CheckBoxFor(model => model.IsLocked)
+
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="text-center">
+                                        <div style="margin-top: 20px">
+                                            <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </fieldset>
                     }
 
                     <div>
-                        @Html.ActionLink("Back to List", "Index", "Levy", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                        @Html.ActionLink("Back to List", "Index", "ChequeType", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                     </div>
                 </div>
             </div>
