@@ -38,39 +38,39 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string Description { get; set; }
 
         [DataMember]
-        [Display(Name = "Maximum Allowed Withdrawal")]
+        [Display(Name = "MaximumAllowedWithdrawal")]
         public decimal MaximumAllowedWithdrawal { get; set; }
 
         [DataMember]
-        [Display(Name = "Maximum Allowed Deposit")]
+        [Display(Name = "MaximumAllowedDeposit")]
         public decimal MaximumAllowedDeposit { get; set; }
 
         [DataMember]
-        [Display(Name = "Minimum Balance")]
+        [Display(Name = "MinimumBalance")]
         public decimal MinimumBalance { get; set; }
 
         [DataMember]
-        [Display(Name = "Operating Balance")]
+        [Display(Name = "OperatingBalance")]
         public decimal OperatingBalance { get; set; }
 
         [DataMember]
-        [Display(Name = "Withdrawal Notice Amount")]
+        [Display(Name = "WithdrawalNoticeAmount")]
         public decimal WithdrawalNoticeAmount { get; set; }
 
         [DataMember]
-        [Display(Name = "Withdrawal Notice Period (Days)")]
+        [Display(Name = "WithdrawalNoticePeriod(Days)")]
         public int WithdrawalNoticePeriod { get; set; }
 
         [DataMember]
-        [Display(Name = "Withdrawal Interval (Days)")]
+        [Display(Name = "WithdrawalInterval(Days)")]
         public int WithdrawalInterval { get; set; }
 
         [DataMember]
-        [Display(Name = "Annual Percentage Yield")]
+        [Display(Name = "AnnualPercentageYield")]
         public double AnnualPercentageYield { get; set; }
 
         [DataMember]
-        [Display(Name = "Recovery Priority")]
+        [Display(Name = "RecoveryPriority")]
         public int Priority { get; set; }
 
         [DataMember]
@@ -86,7 +86,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime CreatedDate { get; set; }
 
         [DataMember]
-        [Display(Name = "G/L Account")]
+        [Display(Name = "G/LAccount")]
         [ValidGuid]
         public Guid ChartOfAccountId { get; set; }
 
@@ -121,11 +121,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string ChartOfAccountCostCenterDescription { get; set; }
 
         [DataMember]
-        [Display(Name = "Automate Ledger Fee Calculation?")]
+        [Display(Name = "AutomateLedgerFeeCalculation?")]
         public bool AutomateLedgerFeeCalculation { get; set; }
 
         [DataMember]
-        [Display(Name = "Throttle Over-The-Counter Withdrawals?")]
+        [Display(Name = "ThrottleOver-The-CounterWithdrawals?")]
         public bool ThrottleOverTheCounterWithdrawals { get; set; }
     }
 }

@@ -47,7 +47,7 @@
                                         @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ParentId)
                                         @Html.EditorFor(model => model.Parent.AccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Parent Account Name" } })
-                                        @Html.ValidationMessageFor(model => model.AccountName, "", new { @class = "text-danger" })
+                                        @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -128,6 +128,7 @@
                                         @Html.LabelFor(model => model.CostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.HiddenFor(model => model.CostCenterId)
                                         @Html.EditorFor(model => model.CostCenterDescription, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Description" } })
+                                        @Html.ValidationMessageFor(model => model.CostCenterId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">

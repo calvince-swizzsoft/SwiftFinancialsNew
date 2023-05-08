@@ -304,6 +304,8 @@
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TellerController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TreasuryController.cs" />
     <Compile Include="Areas\Accounts\Models\LevyViewModel.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
@@ -746,6 +748,15 @@
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\Teller\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Teller\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Teller\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Teller\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Edit.cshtml" />
