@@ -74,6 +74,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Budget Entries", Icon="fa fa-usd-alias", ControllerName="BudgetEntry", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 9},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Treasuries", Icon="fa fa-usd", ControllerName="Treasury", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 10},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cheque Types", Icon="fa fa-book", ControllerName="ChequeType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 11},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Linkages", Icon="fa fa-book", ControllerName="BankLinkage", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)
