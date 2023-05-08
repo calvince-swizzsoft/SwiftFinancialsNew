@@ -22,7 +22,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+       /* public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
          {
              int totalRecordCount = 0;
 
@@ -43,7 +43,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                  return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
              }
              else return this.DataTablesJson(items: new List<TellerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-         }
+         }*/
 
         public async Task<ActionResult> Details(Guid id)
         {
