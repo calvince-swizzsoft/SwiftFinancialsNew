@@ -299,11 +299,13 @@
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DefaultController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SavingsProductCommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TellerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TreasuryController.cs" />
@@ -748,7 +750,6 @@
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\Teller\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Teller\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Teller\Create.cshtml" />
@@ -761,6 +762,10 @@
     <Content Include="Areas\Accounts\Views\BankLinkage\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1220,6 +1225,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
+    <Folder Include="Areas\Accounts\Views\SavingsProductCommission\" />
     <Folder Include="Areas\Client\Data\" />
     <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
