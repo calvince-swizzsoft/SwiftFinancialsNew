@@ -11,7 +11,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class TellerController : MasterController
+    public class DirectDebitController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -22,9 +22,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-       /* public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-       /* [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
          {
              int totalRecordCount = 0;
 
@@ -34,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
              var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-             var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, 1);
+             var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
              if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
              {
@@ -44,17 +42,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                  return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
              }
-             else return this.DataTablesJson(items: new List<TellerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-         }*/
+             else return this.DataTablesJson(items: new List<DirectDebitDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+         }
 
-        public async Task<ActionResult> Details(Guid id)
+        /*public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var tellerDTO = await _channelService.FindTellerAsync(id, true);
+            var directDebitDTO = await _channelService.FindDirectDebitAsync(id, GetServiceHeader());
 
-            return View(tellerDTO);
-        }
+            return View(directDebitDTO);
+        }*/
 
         public async Task<ActionResult> Create()
         {
@@ -64,55 +62,55 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(TellerDTO tellerDTO)
+        public async Task<ActionResult> Create(DirectDebitDTO directDebitDTO)
         {
-            tellerDTO.ValidateAll();
+            directDebitDTO.ValidateAll();
 
-            if (!tellerDTO.HasErrors)
+            if (!directDebitDTO.HasErrors)
             {
-                await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());
+                await _channelService.AddDirectDebitAsync(directDebitDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = tellerDTO.ErrorMessages;
+                var errorMessages = directDebitDTO.ErrorMessages;
 
-                return View(tellerDTO);
+                return View(directDebitDTO);
             }
         }
 
-        public async Task<ActionResult> Edit(Guid id)
+        /*public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var tellerDTO = await _channelService.FindTellerAsync(id, true);
+            var directDebitDTO = await _channelService.FindDirectDebitAsync(id, GetServiceHeader());
 
-            return View(tellerDTO);
-        }
+            return View(directDebitDTO);
+        }*/
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, TellerDTO tellerBindingModel)
+        public async Task<ActionResult> Edit(Guid id, DirectDebitDTO directDebitBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateTellerAsync(tellerBindingModel, GetServiceHeader());
+                await _channelService.UpdateDirectDebitAsync(directDebitBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(tellerBindingModel);
+                return View(directDebitBindingModel);
             }
         }
 
-        /*[HttpGet]
-        public async Task<JsonResult> GetTellersAsync()
+        [HttpGet]
+        public async Task<JsonResult> GetDirectDebitsAsync()
         {
-            var tellersDTOs = await _channelService.FindTellersAsync(GetServiceHeader());
+            var directDebitsDTOs = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
 
-            return Json(tellersDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+            return Json(directDebitsDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }

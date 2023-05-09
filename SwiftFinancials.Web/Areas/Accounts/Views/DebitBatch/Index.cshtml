@@ -1,6 +1,5 @@
-﻿
-@{
-    ViewBag.Title = "Tellers";
+﻿@{
+    ViewBag.Title = "Debit Batch";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -36,7 +35,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="TellersGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="debitBatchesGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -45,7 +44,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Teller", "Create", "Teller", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Create Debit Batch", "Create", "DebitBatch", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -63,12 +62,12 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#TellersGrid').DataTable({
+            $('#debitBatchesGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "DebitBatch", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -81,20 +80,18 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/Teller/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/Teller/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/accounts/DebitBatch/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/DebitBatch/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                  { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "Type", "sTitle": "Type", "sWidth": "10%" },
-                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
@@ -110,3 +107,4 @@
     </script>
 
 }
+
