@@ -19,16 +19,16 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public Guid Id { get; set; }
 
         [DataMember]
-        [Display(Name = "Debit Type")]
+        [Display(Name = "DebitType")]
         [ValidGuid]
         public Guid DebitTypeId { get; set; }
 
         [DataMember]
-        [Display(Name = "Debit Type")]
+        [Display(Name = "DebitType")]
         public string DebitTypeDescription { get; set; }
 
         [DataMember]
-        [Display(Name = "Debit Type Product Code")]
+        [Display(Name = "DebitTypeProductCode")]
         public int DebitTypeCustomerAccountTypeProductCode { get; set; }
 
         [DataMember]
@@ -43,7 +43,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool BranchCompanyAllowDebitBatchToOverdrawAccount { get; set; }
 
         [DataMember]
-        [Display(Name = "Batch Number")]
+        [Display(Name = "BatchNumber")]
         public int BatchNumber { get; set; }
 
         [DataMember]
@@ -90,27 +90,27 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         }
 
         [DataMember]
-        [Display(Name = "Verified/Rejected By")]
+        [Display(Name = "Verified/RejectedBy")]
         public string AuditedBy { get; set; }
 
         [DataMember]
-        [Display(Name = "Verification/Rejection Remarks")]
+        [Display(Name = "Verification/RejectionRemarks")]
         public string AuditRemarks { get; set; }
 
         [DataMember]
-        [Display(Name = "Verified/Rejected Date")]
+        [Display(Name = "Verified/RejectedDate")]
         public DateTime? AuditedDate { get; set; }
 
         [DataMember]
-        [Display(Name = "Authorized/Rejected By")]
+        [Display(Name = "Authorized/RejectedBy")]
         public string AuthorizedBy { get; set; }
 
         [DataMember]
-        [Display(Name = "Authorization/Rejection Remarks")]
+        [Display(Name = "Authorization/RejectionRemarks")]
         public string AuthorizationRemarks { get; set; }
 
         [DataMember]
-        [Display(Name = "Authorized/Rejected Date")]
+        [Display(Name = "Authorized/RejectedDate")]
         public DateTime? AuthorizedDate { get; set; }
 
         [DataMember]
