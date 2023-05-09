@@ -302,6 +302,7 @@
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DefaultController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
@@ -762,6 +763,10 @@
     <Content Include="Areas\Accounts\Views\BankLinkage\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Edit.cshtml" />

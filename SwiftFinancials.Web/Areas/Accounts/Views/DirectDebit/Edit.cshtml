@@ -1,17 +1,17 @@
-﻿@model Application.MainBoundedContext.DTO.AccountsModule.TellerDTO
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.DirectDebitDTO
 
 @{
-    ViewBag.Title = "Edit Tellers";
+    ViewBag.Title = "Edit Direct Debits";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Tellers</h2>
+        <h2>Direct Debits</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Teller", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "DirectDebit", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Edit</strong>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Edit", "Teller", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Edit", "DirectDebit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -46,17 +46,8 @@
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Teller name.", @required = "" } })
-
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Direct Debit name.", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -67,54 +58,42 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.Type, new { htmlAttributes = new { @class = "form-control", @placeholder = "Type" } })
-
-                                        @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChargeType, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Type" } })
+                                        @Html.ValidationMessageFor(model => model.ChargeType, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
-
-                                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MiniStatementItemsCap, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.MiniStatementItemsCap, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mini Statement Items Cap", @required = "" } })
-
-                                        @Html.ValidationMessageFor(model => model.MiniStatementItemsCap, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChargePercentage, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Percentage" } })
+                                        @Html.ValidationMessageFor(model => model.ChargePercentage, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
-
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChargeFixedAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Fixed Amount", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.ChargeFixedAmount, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
+                        </fieldset>
+
+                        <h1>Linkage</h1>
+                        <fieldset>
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-8">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RangeLowerLimit, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Lower Limit" } })
-
-                                        @Html.ValidationMessageFor(model => model.RangeLowerLimit, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductCode, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Customer Account Type Target Product Code" } })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Customer Account Type Product Code" } })
                                     </div>
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RangeUpperLimit, htmlAttributes: new { @class = "" })
 
-                                        @Html.EditorFor(model => model.RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Upper Limit" } })
-
-                                        @Html.ValidationMessageFor(model => model.RangeUpperLimit, "", new { @class = "text-danger" })
+                                <div class="col-lg-4">
+                                    <div class="text-center">
+                                        <div style="margin-top: 20px">
+                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +101,7 @@
                     }
 
                     <div>
-                        @Html.ActionLink("Back to List", "Index", "Teller", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                        @Html.ActionLink("Back to List", "Index", "DirectDebit", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                     </div>
                 </div>
             </div>
