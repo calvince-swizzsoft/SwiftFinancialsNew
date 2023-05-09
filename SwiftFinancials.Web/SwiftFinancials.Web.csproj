@@ -303,6 +303,7 @@
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DefaultController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
@@ -771,6 +772,10 @@
     <Content Include="Areas\Accounts\Views\DebitBatch\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
