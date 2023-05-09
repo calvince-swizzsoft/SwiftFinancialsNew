@@ -301,6 +301,7 @@
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DefaultController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
@@ -748,7 +749,6 @@
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\Teller\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Teller\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Teller\Create.cshtml" />
@@ -761,6 +761,10 @@
     <Content Include="Areas\Accounts\Views\BankLinkage\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BankLinkage\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
