@@ -1468,7 +1468,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
-        Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader = null);
+        Task<List<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsAsync(bool includeBalances = false, bool updateDepth = false, ServiceHeader serviceHeader = null);
 

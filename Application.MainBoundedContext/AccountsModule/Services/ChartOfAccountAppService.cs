@@ -54,7 +54,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             _appCache = appCache;
         }
 
-        public async Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public  PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccounts(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -64,7 +64,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 List<string> sortFields = new List<string> { "ClusterId" };
 
-                return await _chartOfAccountRepository.AllMatchingPagedAsync<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                return  _chartOfAccountRepository.AllMatchingPaged<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
             }
         }
 
@@ -217,14 +217,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 ISpecification<ChartOfAccount> spec = filter;
 
                 return await _chartOfAccountRepository.AllMatchingAsync<ChartOfAccountSummaryDTO>(spec, serviceHeader);
-            }
-        }
-
-        public async Task<List<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
-        {
-            using (_dbContextScopeFactory.CreateReadOnly())
-            {
-                return await _chartOfAccountRepository.GetAllAsync<ChartOfAccountDTO>(serviceHeader);
             }
         }
 

@@ -18571,9 +18571,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
 
-        public Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
+        public Task<List<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
         {
-            var tcs = new TaskCompletionSource<ObservableCollection<ChartOfAccountDTO>>();
+            var tcs = new TaskCompletionSource<List<ChartOfAccountDTO>>();
 
             IChartOfAccountService service = GetService<IChartOfAccountService>(serviceHeader);
 
@@ -18583,7 +18583,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 {
                     List<ChartOfAccountDTO> response = ((IChartOfAccountService)result.AsyncState).EndFindChartOfAccounts(result);
 
-                    tcs.TrySetResult(new ObservableCollection<ChartOfAccountDTO>(response ?? new List<ChartOfAccountDTO>()));
+                    tcs.TrySetResult(new List<ChartOfAccountDTO>(response ?? new List<ChartOfAccountDTO>()));
                 }
                 catch (Exception ex)
                 {
