@@ -54,7 +54,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             _appCache = appCache;
         }
 
-        public  PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccounts(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public async Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -64,7 +64,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 List<string> sortFields = new List<string> { "SequentialId" };
 
-                return  _chartOfAccountRepository.AllMatchingPaged<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                return await  _chartOfAccountRepository.AllMatchingPagedAsync<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
             }
         }
 

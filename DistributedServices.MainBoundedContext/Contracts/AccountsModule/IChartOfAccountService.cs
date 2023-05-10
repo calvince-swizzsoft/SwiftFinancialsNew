@@ -4,6 +4,7 @@ using DistributedServices.Seedwork.ErrorHandlers;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -14,7 +15,7 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccountsByFilterInPage (string text, int pageIndex, int pageSize);
+        Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync (string text, int pageIndex, int pageSize);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]

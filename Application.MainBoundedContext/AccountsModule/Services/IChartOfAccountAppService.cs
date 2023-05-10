@@ -9,7 +9,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 {
     public interface IChartOfAccountAppService
     {
-        PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccounts(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+        Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         ChartOfAccountDTO AddNewChartOfAccount(ChartOfAccountDTO chartOfAccountDTO, ServiceHeader serviceHeader);
 

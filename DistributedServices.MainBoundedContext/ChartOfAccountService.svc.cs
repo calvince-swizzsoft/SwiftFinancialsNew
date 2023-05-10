@@ -8,6 +8,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -28,11 +29,11 @@ namespace DistributedServices.MainBoundedContext
 
         #region Chart Of Account
 
-        public PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccountsByFilterInPage(string text, int pageIndex, int pageSize)
+        public async Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
-            return  _chartOfAccountAppService.FindChartOfAccounts(text, pageIndex, pageSize, serviceHeader);
+            return await  _chartOfAccountAppService.FindChartOfAccountsAsync(text, pageIndex, pageSize, serviceHeader);
         }
 
         public List<ChartOfAccountDTO> FindChartOfAccounts()
