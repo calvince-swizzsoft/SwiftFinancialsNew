@@ -62,7 +62,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 ISpecification<ChartOfAccount> spec = filter;
 
-                List<string> sortFields = new List<string> { "ClusterId" };
+                List<string> sortFields = new List<string> { "SequentialId" };
 
                 return  _chartOfAccountRepository.AllMatchingPaged<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
             }
