@@ -18531,6 +18531,46 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChartOfAccountDTO
 
+        public Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            TaskCompletionSource<PageCollectionInfo<ChartOfAccountDTO>> tcs = new TaskCompletionSource<PageCollectionInfo<ChartOfAccountDTO>>();
+
+            IChartOfAccountService service = GetService<IChartOfAccountService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<ChartOfAccountDTO> response = ((IChartOfAccountService)result.AsyncState).EndFindChartOfAccountsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb))
+                        {
+                            tcs.TrySetResult(null);
+                        }
+                        else
+                        {
+                            tcs.TrySetException(ex);
+                        }
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindChartOfAccountsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         public Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<ChartOfAccountDTO>>();

@@ -1,6 +1,8 @@
 ﻿using Domain.Seedwork.Specification;
+using Infrastructure.Crosscutting.Framework.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity.SqlServer;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +11,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ChartOfAccountAgg
 {
     public static class ChartOfAccountSpecifications
     {
-        public static ISpecification<ChartOfAccount> DefaultSpec()
+        public static Specification<ChartOfAccount> DefaultSpec()
         {
             Specification<ChartOfAccount> specification = new TrueSpecification<ChartOfAccount>();
 
@@ -21,6 +23,20 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.ChartOfAccountAgg
             Specification<ChartOfAccount> specification = new TrueSpecification<ChartOfAccount>();
 
             specification &= new DirectSpecification<ChartOfAccount>(c => c.ParentId == null);
+
+            return specification;
+        }
+
+        public static ISpecification<ChartOfAccount> ChartOfAccountFullText(string text)
+        {
+            Specification<ChartOfAccount> specification = DefaultSpec();
+
+            if (!string.IsNullOrWhiteSpace(text))
+            {
+                text = text.SanitizePatIndexInput();
+
+                specification &= new DirectSpecification<ChartOfAccount>(a => SqlFunctions.PatIndex(text, a.AccountName) > 0);
+            }
 
             return specification;
         }

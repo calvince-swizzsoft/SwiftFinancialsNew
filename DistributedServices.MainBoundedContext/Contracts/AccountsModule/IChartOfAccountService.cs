@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -15,9 +16,13 @@ namespace DistributedServices.MainBoundedContext
     {
         #region Chart Of Account
 
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize);
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        List<ChartOfAccountDTO> FindChartOfAccounts();
+        Task<List<ChartOfAccountDTO>> FindChartOfAccountsAsync();
         
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
