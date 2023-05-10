@@ -40,12 +40,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Account Type")]
         [CustomValidation(typeof(ChartOfAccountDTO), "CheckAccountType")]
-        public int AccountType { get; set; }
+        public short AccountType { get; set; }
 
         [DataMember]
         [Display(Name = "Account Category")]
         [CustomValidation(typeof(ChartOfAccountDTO), "CheckAccountCategory")]
-        public int AccountCategory { get; set; }
+        public short AccountCategory { get; set; }
 
         [DataMember]
         [Display(Name = "Account Code")]
