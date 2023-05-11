@@ -1640,6 +1640,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> ClosePostingPeriodAsync(PostingPeriodDTO postingPeriodDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
+        Task<List<PostingPeriodDTO>> FindPostingPeriodsAsync(ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region CommissionDTO
@@ -1891,6 +1893,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateBudgetAsync(BudgetDTO budgetDTO, ServiceHeader serviceHeader = null);
 
         Task<BudgetDTO> FindBudgetAsync(Guid budgetId, ServiceHeader serviceHeader = null);
+
+        Task<List<BudgetDTO>> FindBudgetsAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<BudgetEntryDTO>> FindBudgetEntriesByBudgetIdAsync(Guid budgetId, bool includeBalances, ServiceHeader serviceHeader = null);
 

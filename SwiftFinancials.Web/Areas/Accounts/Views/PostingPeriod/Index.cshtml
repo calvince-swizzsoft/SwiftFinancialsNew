@@ -84,8 +84,8 @@
                     var editUrl = '<a  href="/accounts/PostingPeriod/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/PostingPeriod/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
@@ -95,11 +95,8 @@
                     { "mDataProp": "DurationStartDate", "sTitle": "Start Date", "sWidth": "10%", },
                     { "mDataProp": "DurationEndDate", "sTitle": "End Date", "sWidth": "15%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
-                    { "mDataProp": "IsClosed", "sTitle": "Is Closed?", "sWidth": "15%" },
-                    { "mDataProp": "IsActive", "sTitle": "Is Active?", "sWidth": "15%" },
-                    { "mDataProp": "ClosedBy", "sTitle": "Closed By:", "sWidth": "15%" },
-                    { "mDataProp": "ClosedDate", "sTitle": "Closed Date:", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "ClosedDate", "sTitle": "Closed Date:", "sWidth": "15%", "bSortable": false },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false },
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });

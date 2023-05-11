@@ -105,12 +105,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public async Task<JsonResult> GetBudgetsAsync()
         {
             var budgetsDTOs = await _channelService.FindBudgetsAsync(GetServiceHeader());
 
             return Json(budgetsDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 }
