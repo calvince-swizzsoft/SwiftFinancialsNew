@@ -46,14 +46,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<LevyDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-        /*public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var levyDTO = await _channelService.FindLeviesAsync(id, GetServiceHeader());
+            var levyDTO = await _channelService.FindLevyAsync(id, GetServiceHeader());
 
             return View(levyDTO );
-        }*/
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -63,6 +63,59 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         public async Task<ActionResult> Create(LevyViewModel levyViewModel)
+        {
+            levyViewModel.ValidateAll();
+
+            if (!levyViewModel.HasErrors)
+            {
+                var levyDTO = new LevyDTO()
+                {
+                    Description = levyViewModel.LevyDescription,
+                    ChargeType = levyViewModel.ChargeType,
+                    IsLocked = levyViewModel.LevyIsLocked,
+                };
+
+                var levy = await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
+
+                if (levy != null)
+                {
+                    var levySplitDTO = new LevySplitDTO()
+                    {
+                        LevyId = levy.Id,
+                        Description = levyViewModel.LevySplitDescription,
+                        ChartOfAccountId = levyViewModel.LevySplitChartOfAccountId,
+                        Percentage = levyViewModel.LevySplitPercentage,
+                    };
+
+                    var levySplits = new ObservableCollection<LevySplitDTO>();
+
+                    levySplits.Add(levySplitDTO);
+
+                    await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                }
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = levyViewModel.ErrorMessages;
+
+                return View(levyViewModel);
+            }
+        }
+
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var levyViewModel = await _channelService.FindLevyAsync(id, GetServiceHeader());
+
+            return View(levyViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(LevyViewModel levyViewModel)
         {
             levyViewModel.ValidateAll();
 
@@ -100,31 +153,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 var errorMessages = levyViewModel.ErrorMessages;
 
                 return View(levyViewModel);
-            }
-        }
-
-        /*public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var levyDTO  = await _channelService.FindLevyAsync(id, GetServiceHeader());
-
-            return View(levyDTO );
-        }*/
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, LevyDTO levyDTOBindingModel)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateLevyAsync(levyDTOBindingModel, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(levyDTOBindingModel);
             }
         }
 

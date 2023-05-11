@@ -5,7 +5,7 @@
 @{
     /**/
 
-    ViewBag.Title = "Create BankLinkage";
+    ViewBag.Title = "Create Bank Linkage";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -59,7 +59,7 @@
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                             <div class="col-lg-8">                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank name ", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
                                 </div>
@@ -70,7 +70,7 @@
                                 </div>
 
                                 <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Account number ", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.BankAccountNumber, "", new { @class = "text-danger" })
                                 </div>
