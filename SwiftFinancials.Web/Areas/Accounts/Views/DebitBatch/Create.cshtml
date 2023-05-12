@@ -264,8 +264,8 @@
                             var newBranchesData = [];
                             BranchesMap = {};
                             $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
+                                newBranchesData.push(Branch.BranchDescription);
+                                BranchesMap[Branch.BranchDescription] = Branch;
                             });
                             process(newBranchesData); return;
                         });

@@ -57,38 +57,38 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MaximumAllowedWithdrawal, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.MaximumAllowedWithdrawal, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MaximumAllowedWithdrawal, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Allowed Withdrawal", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.MaximumAllowedWithdrawal, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MaximumAllowedDeposit, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.MaximumAllowedDeposit, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MaximumAllowedDeposit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Allowed Deposit", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.MaximumAllowedDeposit, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.OperatingBalance, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.OperatingBalance, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.OperatingBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Operating Balance", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.OperatingBalance, "", new { @class = "text-danger" })
                                     </div>
@@ -100,27 +100,27 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.WithdrawalNoticeAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.WithdrawalNoticeAmount, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.WithdrawalNoticeAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Withdrawal Notice Amount", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.WithdrawalNoticeAmount, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.WithdrawalNoticePeriod, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.WithdrawalNoticePeriod, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.WithdrawalNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Withdrawal Notice Period", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.WithdrawalNoticePeriod, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.WithdrawalInterval, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.WithdrawalInterval, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.WithdrawalInterval, new { htmlAttributes = new { @class = "form-control", @placeholder = "Withdrawal Interval", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.WithdrawalInterval, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Priority", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
                                     </div>

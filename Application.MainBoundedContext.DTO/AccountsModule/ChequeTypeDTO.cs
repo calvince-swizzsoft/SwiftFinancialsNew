@@ -24,10 +24,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string Description { get; set; }
 
         [DataMember]
-        [Display(Name = "MaturityPeriod")]
+        [Display(Name = "Maturity Period")]
         public int MaturityPeriod { get; set; }
 
-        [Display(Name = "ChargeRecoveryMode")]
+        [Display(Name = "Charge Recovery Mode")]
         public int ChargeRecoveryMode { get; set; }
 
         [DataMember]

@@ -124,6 +124,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 var levyDTO = new LevyDTO()
                 {
                     Description = levyViewModel.LevyDescription,
+                    ChargeType = levyViewModel.ChargeType,
                     IsLocked = levyViewModel.LevyIsLocked,
                 };
 
@@ -138,7 +139,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         ChartOfAccountId = levyViewModel.LevySplitChartOfAccountId,
                         Percentage = levyViewModel.LevySplitPercentage,
                     };
-
                     var levySplits = new ObservableCollection<LevySplitDTO>();
 
                     levySplits.Add(levySplitDTO);

@@ -62,20 +62,15 @@
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account Type Product Code", @required = "" } })
+                                    @Html.LabelFor(model => model.CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Product Code", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "CustomerAccountTypeTargetProductsLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account Type Product Code", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-labe" })
+                                    @Html.HiddenFor(model => model.SavingsProductId)
+                                    @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Description.." } })
                                 </div>
                                 <div class="form-group form-group-lg">
                                     @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -106,7 +101,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -176,6 +171,42 @@
             });
 
         });
-        </script>
+        //SavingsProduct typehead starts here
+            $('.SavingsProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+                        { query: query },
+                        function (SavingsProducts) {
+                            var newSavingsProductsData = [];
+                            SavingsProductsMap = {};
+                            $.each(SavingsProducts, function (i, SavingsProduct) {
+                                newSavingsProductsData.push(SavingsProduct.Description);
+                                SavingsProductsMap[SavingsProduct.Description] = SavingsProduct;
+                            });
+                            process(newSavingsProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var savingsProductId = "";
+                    SavingsProductId = SavingsProductsMap[item].Id;
+                    $('#SavingsProductId').val(SavingsProductId);
+                    //console.log(SavingsProductId)
+                    return item;
+                }
+            });
+</script>
     }
     

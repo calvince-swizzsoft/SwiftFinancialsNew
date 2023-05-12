@@ -24,7 +24,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string Description { get; set; }
 
         [DataMember]
-        [Display(Name = "ProductCode")]
+        [Display(Name = "Product Code")]
         public int CustomerAccountTypeProductCode { get; set; }
 
         [DataMember]
@@ -43,11 +43,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public Guid CustomerAccountTypeTargetProductId { get; set; }
 
         [DataMember]
-        [Display(Name = "ProductCode")]
+        [Display(Name = "Product Code")]
         public int CustomerAccountTypeTargetProductCode { get; set; }
 
         [DataMember]
-        [Display(Name = "ProductName")]
+        [Display(Name = "Product Name")]
         public string CustomerAccountTypeTargetProductDescription { get; set; }
 
         [DataMember]
@@ -67,6 +67,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Product G/L Account")]
         public Guid CustomerAccountTypeTargetProductChartOfAccountId { get; set; }
+        [DataMember]
+        [Display(Name = "Product G/L Account")]
+        public Guid SavingsProductId { get; set; }
+        [DataMember]
+        [Display(Name = "Product G/L Account Name")]
+        public string SavingsProductDescription { get; set; }
 
         [DataMember]
         [Display(Name = "Product G/L Account Code")]

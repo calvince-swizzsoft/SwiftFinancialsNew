@@ -38,39 +38,39 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string Description { get; set; }
 
         [DataMember]
-        [Display(Name = "MaximumAllowedWithdrawal")]
+        [Display(Name = "Maximum Allowed Withdrawal")]
         public decimal MaximumAllowedWithdrawal { get; set; }
 
         [DataMember]
-        [Display(Name = "MaximumAllowedDeposit")]
+        [Display(Name = "Maximum Allowed Deposit")]
         public decimal MaximumAllowedDeposit { get; set; }
 
         [DataMember]
-        [Display(Name = "MinimumBalance")]
+        [Display(Name = "Minimum Balance")]
         public decimal MinimumBalance { get; set; }
 
         [DataMember]
-        [Display(Name = "OperatingBalance")]
+        [Display(Name = "Operating Balance")]
         public decimal OperatingBalance { get; set; }
 
         [DataMember]
-        [Display(Name = "WithdrawalNoticeAmount")]
+        [Display(Name = "Withdrawal Notice Amount")]
         public decimal WithdrawalNoticeAmount { get; set; }
 
         [DataMember]
-        [Display(Name = "WithdrawalNoticePeriod(Days)")]
+        [Display(Name = "Withdrawal Notice Period (Days)")]
         public int WithdrawalNoticePeriod { get; set; }
 
         [DataMember]
-        [Display(Name = "WithdrawalInterval(Days)")]
+        [Display(Name = "Withdrawal Interval (Days)")]
         public int WithdrawalInterval { get; set; }
 
         [DataMember]
-        [Display(Name = "AnnualPercentageYield")]
+        [Display(Name = "Annual Percentage Yield")]
         public double AnnualPercentageYield { get; set; }
 
         [DataMember]
-        [Display(Name = "RecoveryPriority")]
+        [Display(Name = "Recovery Priority")]
         public int Priority { get; set; }
 
         [DataMember]
@@ -86,7 +86,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime CreatedDate { get; set; }
 
         [DataMember]
-        [Display(Name = "G/LAccount")]
+        [Display(Name = "G/L Account")]
         [ValidGuid]
         public Guid ChartOfAccountId { get; set; }
 

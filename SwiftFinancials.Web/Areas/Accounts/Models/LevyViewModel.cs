@@ -37,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Models
         public DateTime CreatedDate { get; set; }
 
         [DataMember]
-        [Display(Name = "LevySplitName")]
+        [Display(Name = "Levy Split Name")]
         [Required]
         public string LevySplitDescription { get; set; }
 
