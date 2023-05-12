@@ -116,9 +116,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCustomersAsync()
         {
-            var CustomersDTOs = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var customersDTOs = await _channelService.FindCustomersAsync(GetServiceHeader());
 
-            return Json(CustomersDTOs, JsonRequestBehavior.AllowGet);
+            return Json(customersDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

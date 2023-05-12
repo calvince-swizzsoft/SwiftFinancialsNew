@@ -1,0 +1,355 @@
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
+
+@{
+    ViewBag.Title = "Employees";
+}
+<div class="row wrapper border-bottom bg-muted page-heading">
+    <div class="col-lg-10">
+        <h2>Employees</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Employees", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "Employee", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <h1>Linkage Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerId)
+                                        @Html.EditorFor(model => model.Customer.FullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.DesignationId)
+                                        @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
+                                        @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.DepartmentId)
+                                        @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
+                                        @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>Employee Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.NationalHospitalInsuranceFundNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BloodGroup, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.BloodGroup, new { htmlAttributes = new { @class = "form-control", @placeholder = "Blood Group", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.EnforceBiometricsForLogin, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.EnforceBiometricsForLogin, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enforce Biometrics For Login?" } })
+                                        @Html.ValidationMessageFor(model => model.EnforceBiometricsForLogin, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+<script>
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+             //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#branchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+            //Customer typehead starts here
+            $('.CustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i, Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var customerId = "";
+                    CustomerId = CustomersMap[item].Id;
+                    $('#ParentId').val(CustomerId);
+                    //console.log(CustomerId)
+                    return item;
+                }
+            });
+
+            //Designation typehead starts here
+            $('.DesignationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDesignationsAsync", "Designation", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Designations) {
+                            var newDesignationsData = [];
+                            DesignationsMap = {};
+                            $.each(Designations, function (i, Designation) {
+                                newDesignationsData.push(Designation.Description);
+                                DesignationsMap[Designation.Description] = Designation;
+                            });
+                            process(newDesignationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var designationId = "";
+                    DesignationId = DesignationsMap[item].Id;
+                    $('#ParentId').val(DesignationId);
+                    //console.log(DesignationId)
+                    return item;
+                }
+            });
+
+            //Department typehead starts here
+            $('.DepartmentsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDepartmentsAsync", "Department", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Departments) {
+                            var newDepartmentsData = [];
+                            DepartmentsMap = {};
+                            $.each(Departments, function (i, Department) {
+                                newDepartmentsData.push(Department.Description);
+                                DepartmentsMap[Department.Description] = Department;
+                            });
+                            process(newDepartmentsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var departmentId = "";
+                    DepartmentId = DepartmentsMap[item].Id;
+                    $('#ParentId').val(DepartmentId);
+                    //console.log(DepartmentId)
+                    return item;
+                }
+            });
+        });</script>
+}
