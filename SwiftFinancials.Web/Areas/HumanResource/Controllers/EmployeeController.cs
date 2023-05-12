@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
@@ -10,7 +11,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
-    public class DepartmentController : MasterController
+    public class EmployeeController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -31,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDepartmentsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindEmployeesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -41,16 +42,16 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<DepartmentDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<EmployeeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var departmentDTO = await _channelService.FindDepartmentAsync(id, GetServiceHeader());
+            var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
 
-            return View(departmentDTO);
+            return View(employeeDTO);
         }
 
         public async Task<ActionResult> Create()
@@ -61,21 +62,21 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DepartmentDTO departmentDTO)
+        public async Task<ActionResult> Create(EmployeeDTO employeeBindingModel)
         {
-            departmentDTO.ValidateAll();
+            employeeBindingModel.ValidateAll();
 
-            if (!departmentDTO.HasErrors)
+            if (!employeeBindingModel.HasErrors)
             {
-                await _channelService.AddDepartmentAsync(departmentDTO, GetServiceHeader());
+                await _channelService.AddEmployeeAsync(employeeBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = departmentDTO.ErrorMessages;
+                var errorMessages = employeeBindingModel.ErrorMessages;
 
-                return View(departmentDTO);
+                return View(employeeBindingModel);
             }
         }
 
@@ -83,33 +84,33 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var departmentDTO = await _channelService.FindDepartmentAsync(id, GetServiceHeader());
+            var employeeDTO = await _channelService.FindEmployeeAsync(id, GetServiceHeader());
 
-            return View(departmentDTO);
+            return View(employeeDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DepartmentDTO departmentBindingModel)
+        public async Task<ActionResult> Edit(Guid id, EmployeeDTO employeeBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateDepartmentAsync(departmentBindingModel, GetServiceHeader());
+                await _channelService.UpdateEmployeeAsync(employeeBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(departmentBindingModel);
+                return View(employeeBindingModel);
             }
         }
 
-        [HttpGet]
-        public async Task<JsonResult> GetDepartmentsAsync()
+        /*[HttpGet]
+        public async Task<JsonResult> GetEmployeesAsync()
         {
-            var departmentsDTOs = await _channelService.FindDepartmentsAsync(GetServiceHeader());
+            var employeesDTOs = await _channelService.FindEmployeesAsync(GetServiceHeader());
 
-            return Json(departmentsDTOs, JsonRequestBehavior.AllowGet);
-        }
+            return Json(employeesDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
 }
