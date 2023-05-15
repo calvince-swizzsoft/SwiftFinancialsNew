@@ -95,6 +95,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 
                 return View(levyDTO);
             }
