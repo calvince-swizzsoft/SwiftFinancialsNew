@@ -52,55 +52,51 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var levyDTO = await _channelService.FindLevyAsync(id, GetServiceHeader());
 
-            return View(levyDTO );
+            return View(levyDTO);
         }
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LevyViewModel levyViewModel)
+        public async Task<ActionResult> Create(LevyDTO levyDTO)
         {
-            levyViewModel.ValidateAll();
+            levyDTO.ValidateAll();
 
-            if (!levyViewModel.HasErrors)
+            if (!levyDTO.HasErrors)
             {
-                var levyDTO = new LevyDTO()
-                {
-                    Description = levyViewModel.LevyDescription,
-                    ChargeType = levyViewModel.ChargeType,
-                    IsLocked = levyViewModel.LevyIsLocked,
-                };
-
                 var levy = await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
 
                 if (levy != null)
                 {
-                    var levySplitDTO = new LevySplitDTO()
-                    {
-                        LevyId = levy.Id,
-                        Description = levyViewModel.LevySplitDescription,
-                        ChartOfAccountId = levyViewModel.LevySplitChartOfAccountId,
-                        Percentage = levyViewModel.LevySplitPercentage,
-                    };
-
                     var levySplits = new ObservableCollection<LevySplitDTO>();
 
-                    levySplits.Add(levySplitDTO);
+                    foreach (var levySplitDTO in levyDTO.LevySplits)
+                    {
+                        levySplitDTO.LevyId = levy.Id;
+                        levySplitDTO.Description = levySplitDTO.Description;
+                        levySplitDTO.ChartOfAccountId = levySplitDTO.ChartOfAccountId;
+                        levySplitDTO.Percentage = levySplitDTO.Percentage;
+                        levySplits.Add(levySplitDTO);
+                    };
 
-                    await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                    if (levySplits.Any())
+                        await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
                 }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = levyViewModel.ErrorMessages;
+                var errorMessages = levyDTO.ErrorMessages;
 
-                return View(levyViewModel);
+                return View(levyDTO);
             }
         }
 
