@@ -57,6 +57,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(string.Empty);
+            ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(string.Empty);
+
             return View();
         }
 
