@@ -1,7 +1,238 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerDTO
+
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "View";
 }
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Customers</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Customer", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
-<h2>Details</h2>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content text-info">
+                    <div class="row">
+                        <div class="col-lg-6">
 
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.StationDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.StationDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.PersonalIdentificationNumber)<br></strong>
+
+                                @Html.DisplayFor(model => model.PersonalIdentificationNumber)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Type)<br></strong>
+
+                                @Html.DisplayFor(model => model.Type)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualType)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualType)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualFirstName)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualFirstName)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualLastName)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualLastName)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualIdentityCardType)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualIdentityCardType)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualIdentityCardNumber)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualIdentityCardNumber)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualIdentityCardSerialNumber)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualIdentityCardSerialNumber)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualPayrollNumbers)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualPayrollNumbers)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualSalutation)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualSalutation)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualGender)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualGender)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualClassification)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualClassification)<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualMaritalStatus)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualMaritalStatus)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualNationality)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualNationality)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualBirthDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualBirthDate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualEmploymentDesignation)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualEmploymentDesignation)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualEmploymentTermsOfService)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualEmploymentTermsOfService)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualEmploymentDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualEmploymentDate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressAddressLine1)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressAddressLine1)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressAddressLine2)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressAddressLine2)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressStreet)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressStreet)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressPostalCode)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressPostalCode)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressCity)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressCity)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressEmail)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressEmail)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressLandLine)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressLandLine)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AddressMobileLine)<br></strong>
+
+                                @Html.DisplayFor(model => model.AddressMobileLine)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Reference1)<br></strong>
+
+                                @Html.DisplayFor(model => model.Reference1)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Reference2)<br></strong>
+
+                                @Html.DisplayFor(model => model.Reference2)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
+
+                                @Html.DisplayFor(model => model.Remarks)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsDefaulter)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsDefaulter)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.RecordStatus)<br></strong>
+
+                                @Html.DisplayFor(model => model.RecordStatus)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Reference3)<br></strong>
+
+                                @Html.DisplayFor(model => model.Reference3)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.InhibitGuaranteeing)<br></strong>
+
+                                @Html.DisplayFor(model => model.InhibitGuaranteeing)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsLocked)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "Customer", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "Customer", new { Area = "Registry" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
