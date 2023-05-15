@@ -1,5 +1,7 @@
-﻿@model  SwiftFinancials.Web.Areas.Accounts.Models.LevyViewModel
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.LevyDTO
 @{
+    var chargeTypes = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
+
     ViewBag.Title = "Create Levy";
 }
 <div class="row wrapper border-bottom bg-muted page-heading">
@@ -43,44 +45,57 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.LevyDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LevyDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.LevyDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChargeType, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Type", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ChargeType, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.ChargeType, chargeTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.ChargeType)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.ChargePercentage, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ChargePercentage, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.ChargePercentage, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.ChargeFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.ChargeFixedAmount, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.LevyIsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.LevyIsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.LevyIsLocked, "", new { @class = "text-danger" })
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
-                        <h1>Levy Split Name</h1>
+                        <h1>Levy Split Details</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevySplitDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LevySplitDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Levy Split Name", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.LevySplitDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LevySplits[0].Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LevySplits[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Levy Split Name", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.LevySplits[0].Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevySplitPercentage, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LevySplitPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Levy Split Percentage", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.LevySplitPercentage, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LevySplits[0].Percentage, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LevySplits[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Levy Split Percentage", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.LevySplits[0].Percentage, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevySplitChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LevySplitChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.LevySplitChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LevySplitChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.LabelFor(model => model.LevySplits[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LevySplits[0].ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.LevySplits[0].ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.LevySplits[0].ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
 
@@ -104,7 +119,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -204,7 +219,7 @@
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#LevySplitChartOfAccountId').val(ChartOfAccountId);
+                    $('#LevySplits[0].ChartOfAccountId').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }
