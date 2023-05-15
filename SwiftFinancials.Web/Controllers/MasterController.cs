@@ -322,6 +322,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return productCode;
         }
+        [NonAction]
+        protected List<SelectListItem> GetChequeTypeChargeRecoveryModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> chequeTypeChargeRecoveryModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ChequeTypeChargeRecoveryMode)).Cast<ChequeTypeChargeRecoveryMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chequeTypeChargeRecoveryModes.AddRange(items);
+
+            return chequeTypeChargeRecoveryModes;
+        }
 
         [NonAction]
         public DashboardAppConfigSection GetDashboardAppConfiguration()

@@ -54,6 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            ViewBag.ChequeTypeChargeRecoveryModeSelectList = GetChequeTypeChargeRecoveryModeSelectList(string.Empty);
 
             return View();
         }
@@ -72,7 +73,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = chequeTypeDTO.ErrorMessages;
-
+                ViewBag.ChequeTypeChargeRecoveryModeSelectList = GetChequeTypeChargeRecoveryModeSelectList(chequeTypeDTO.ChargeRecoveryMode.ToString());
                 return View(chequeTypeDTO);
             }
         }

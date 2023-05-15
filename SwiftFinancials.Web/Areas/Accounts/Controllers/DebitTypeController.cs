@@ -55,6 +55,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
 
             return View();
         }
@@ -73,6 +74,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = debitTypeDTO.ErrorMessages;
+                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.ProductCode.ToString());
 
                 return View(debitTypeDTO);
             }

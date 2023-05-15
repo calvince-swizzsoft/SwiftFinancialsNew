@@ -26,9 +26,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Product Code")]
         public int CustomerAccountTypeProductCode { get; set; }
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int ProductCode { get; set; }
 
         [DataMember]
-        [Display(Name = "ProductCode")]
+        [Display(Name = "Product Code")]
         public string CustomerAccountTypeProductCodeDescription
         {
             get

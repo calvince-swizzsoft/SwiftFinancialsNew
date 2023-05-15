@@ -4,6 +4,7 @@
     /**/
 
     ViewBag.Title = "Create Debit Type";
+    var productCodes = ViewBag.ProductCodeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -55,29 +56,32 @@
 
                         
 
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Product Code", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-labe" })
-                                    @Html.HiddenFor(model => model.SavingsProductId)
-                                    @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                </div>
+                    <div class="col-lg-6">
+                        <div class="form-group form-group-sm">
+                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                        </div>
+                        <div class="form-group form-group-lg">
+                            @Html.LabelFor(model => model.ProductCode, new { @class = "control-label" })
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                @Html.DropDownListFor(model => model.ProductCode, productCodes, new { @class = "form-control input-md" })
+                                @Html.ValidationMessageFor(model => model.ProductCode)
                             </div>
+                        </div>
+                        <div class="form-group form-group-lg">
+                            @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-labe" })
+                            @Html.HiddenFor(model => model.SavingsProductId)
+                            @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
+                            @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Description.." } })
+                        </div>
+                        <div class="form-group form-group-lg">
+                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
 
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2 col-md-10">
