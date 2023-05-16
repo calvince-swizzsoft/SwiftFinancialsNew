@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.MainBoundedContext.DTO.RegistryModule
@@ -46,5 +47,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public IList<DivisionDTO> Divisions { get; set; }
     }
 }
