@@ -105,12 +105,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-       /* [HttpGet]
+        [HttpGet]
         public async Task<JsonResult> GetPostingPeriodsAsync()
         {
             var postingPeriodsDTOs = await _channelService.FindPostingPeriodsAsync(GetServiceHeader());
 
             return Json(postingPeriodsDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 }

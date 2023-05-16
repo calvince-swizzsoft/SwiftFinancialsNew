@@ -21,7 +21,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-       /* public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+       public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -42,7 +42,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<ChartOfAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }*/
+        }
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -56,6 +56,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
+            ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(string.Empty);
+            ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(string.Empty);
 
             return View();
         }
@@ -74,6 +77,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = chartOfAccountDTO.ErrorMessages;
+
+                ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
+                ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
 
                 return View(chartOfAccountDTO);
             }

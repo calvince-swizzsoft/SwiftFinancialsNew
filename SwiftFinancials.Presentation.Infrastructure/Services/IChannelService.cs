@@ -1466,7 +1466,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChartOfAccountDTO
 
-        Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader = null);
+        Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
+        Task<List<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<GeneralLedgerAccount>> FindGeneralLedgerAccountsAsync(bool includeBalances = false, bool updateDepth = false, ServiceHeader serviceHeader = null);
 
@@ -1637,6 +1639,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<PostingPeriodDTO> FindCurrentPostingPeriodAsync(ServiceHeader serviceHeader = null);
 
         Task<bool> ClosePostingPeriodAsync(PostingPeriodDTO postingPeriodDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+
+        Task<List<PostingPeriodDTO>> FindPostingPeriodsAsync(ServiceHeader serviceHeader = null);
 
         #endregion
 
@@ -1889,6 +1893,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateBudgetAsync(BudgetDTO budgetDTO, ServiceHeader serviceHeader = null);
 
         Task<BudgetDTO> FindBudgetAsync(Guid budgetId, ServiceHeader serviceHeader = null);
+
+        Task<List<BudgetDTO>> FindBudgetsAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<BudgetEntryDTO>> FindBudgetEntriesByBudgetIdAsync(Guid budgetId, bool includeBalances, ServiceHeader serviceHeader = null);
 

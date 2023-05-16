@@ -1,5 +1,6 @@
-﻿@{
-    ViewBag.Title = "Levy";
+﻿
+@{
+    ViewBag.Title = "Employees";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -35,7 +36,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="leviesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="EmployeesGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -44,7 +45,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Levy", "Create", "Levy", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Create Employees", "Create", "Employee", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -62,12 +63,12 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#leviesGrid').DataTable({
+            $('#EmployeesGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Levy", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -80,19 +81,20 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/Levy/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/Levy/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/humanResource/Employee/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/humanResource/Employee/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Levy", "sWidth": "5%" },
-                    { "mDataProp": "ChargePercentage", "sTitle": "Percentage", "sWidth": "5%" },
-                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "5%" },
+                    { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
+                    { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
@@ -108,4 +110,3 @@
     </script>
 
 }
-

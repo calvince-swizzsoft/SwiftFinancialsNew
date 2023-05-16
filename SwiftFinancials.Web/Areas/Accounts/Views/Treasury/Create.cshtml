@@ -56,9 +56,20 @@
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
+                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterId, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Cost Center" } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Treasury Name" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -71,6 +82,11 @@
                                         @Html.LabelFor(model => model.RangeUpperLimit, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Upper Limit" } })
                                         @Html.ValidationMessageFor(model => model.RangeUpperLimit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
@@ -94,7 +110,7 @@
     @Scripts.Render("~/plugins/typehead")
 
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -233,6 +249,42 @@
                     BranchId = BranchesMap[item].Id;
                     $('#BranchId').val(BranchId);
                     //console.log(BranchId)
+                    return item;
+                }
+            });
+             //CostCenter typehead starts here
+            $('.CostCentersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCostCentersAsync", "CostCenter", new { Area = "Accounts" })',
+                        { query: query },
+                        function (CostCenters) {
+                            var newCostCentersData = [];
+                           CostCentersMap = {};
+                            $.each(CostCenters, function (i, CostCenter) {
+                                newCostCentersData.push(CostCenter.Description);
+                                CostCentersMap[CostCenter.Description] = CostCenter;
+                            });
+                            process(newCostCentersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var costCenterId = "";
+                    CostCenterId = CostCentersMap[item].Id;
+                    $('#CostCenterId').val(CostCenterId);
+                    //console.log(CostCenterId)
                     return item;
                 }
             });

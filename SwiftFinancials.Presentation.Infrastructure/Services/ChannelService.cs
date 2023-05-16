@@ -18531,9 +18531,49 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChartOfAccountDTO
 
-        public Task<ObservableCollection<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
+        public Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
-            var tcs = new TaskCompletionSource<ObservableCollection<ChartOfAccountDTO>>();
+            TaskCompletionSource<PageCollectionInfo<ChartOfAccountDTO>> tcs = new TaskCompletionSource<PageCollectionInfo<ChartOfAccountDTO>>();
+
+            IChartOfAccountService service = GetService<IChartOfAccountService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<ChartOfAccountDTO> response = ((IChartOfAccountService)result.AsyncState).EndFindChartOfAccountsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb))
+                        {
+                            tcs.TrySetResult(null);
+                        }
+                        else
+                        {
+                            tcs.TrySetException(ex);
+                        }
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindChartOfAccountsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        public Task<List<ChartOfAccountDTO>> FindChartOfAccountsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<ChartOfAccountDTO>>();
 
             IChartOfAccountService service = GetService<IChartOfAccountService>(serviceHeader);
 
@@ -18543,7 +18583,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 {
                     List<ChartOfAccountDTO> response = ((IChartOfAccountService)result.AsyncState).EndFindChartOfAccounts(result);
 
-                    tcs.TrySetResult(new ObservableCollection<ChartOfAccountDTO>(response ?? new List<ChartOfAccountDTO>()));
+                    tcs.TrySetResult(new List<ChartOfAccountDTO>(response ?? new List<ChartOfAccountDTO>()));
                 }
                 catch (Exception ex)
                 {
@@ -21039,6 +21079,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginClosePostingPeriod(postingPeriodDTO, moduleNavigationItemCode, asyncCallback, service);
+
+            return tcs.Task;
+        }
+        public Task<List<PostingPeriodDTO>> FindPostingPeriodsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<PostingPeriodDTO>>();
+
+            IPostingPeriodService service = GetService<IPostingPeriodService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<PostingPeriodDTO> response = ((IPostingPeriodService)result.AsyncState).EndFindPostingPeriods(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPostingPeriods(asyncCallback, service);
 
             return tcs.Task;
         }
@@ -24348,6 +24419,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<List<BudgetDTO>> FindBudgetsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<BudgetDTO>>();
+
+            IBudgetService service = GetService<IBudgetService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<BudgetDTO> response = ((IBudgetService)result.AsyncState).EndFindBudgets(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindBudgets(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<PageCollectionInfo<BudgetDTO>> FindBudgetsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<BudgetDTO>>();
@@ -24475,6 +24578,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+
 
         public Task<ObservableCollection<BudgetEntryDTO>> FindBudgetEntriesByBudgetIdAsync(Guid budgetId, bool includeBalances, ServiceHeader serviceHeader)
         {

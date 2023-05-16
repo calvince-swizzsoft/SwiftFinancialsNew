@@ -16,16 +16,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Models
         }
 
         [DataMember]
+        [Display(Name = "Id")]
+        public Guid Id { get; set; }
+
+        [DataMember]
         [Display(Name = "Name")]
         [Required]
         public string LevyDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Charge Type")]
+        public int ChargeType { get; set; }
 
         [DataMember]
         [Display(Name = "Is Locked?")]
         public bool LevyIsLocked { get; set; }
 
         [DataMember]
-        [Display(Name = "LevySplitName")]
+        [Display(Name = "Created Date")]
+        public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Levy Split Name")]
         [Required]
         public string LevySplitDescription { get; set; }
 

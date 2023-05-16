@@ -1,7 +1,9 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.ChartOfAccountDTO
-
 @{
     ViewBag.Title = "Chart Of Accounts";
+
+    var chartOfAccountTypes = ViewBag.ChartOfAccountTypeSelectList as List<SelectListItem>;
+    var chartOfAccountCategories = ViewBag.ChartOfAccountCategorySelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-muted page-heading">
     <div class="col-lg-10">
@@ -68,16 +70,22 @@
                                         @Html.ValidationMessageFor(model => model.AccountCode, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AccountCategory, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AccountCategory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Category" } })
-                                        @Html.ValidationMessageFor(model => model.AccountCategory, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.AccountCategory, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.AccountCategory, chartOfAccountCategories, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.AccountCategory)
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AccountType, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AccountType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Type", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AccountType, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.AccountType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.AccountType, chartOfAccountTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.AccountType)
+                                        </div>
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Depth, htmlAttributes: new { @class = "" })
@@ -265,7 +273,7 @@
                 updater: function (item) {
                     var costCenterId = "";
                     CostCenterId = CostCentersMap[item].Id;
-                    $('#costCenterId').val(CostCenterId);
+                    $('#CostCenterId').val(CostCenterId);
                     //console.log(CostCenterId)
                     return item;
                 }
@@ -302,7 +310,7 @@
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    $('#ParentId').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }

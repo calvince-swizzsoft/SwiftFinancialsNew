@@ -21,35 +21,35 @@ namespace SwiftFinancials.Web.Attributes
 
             if (user != null && user.Identity.IsAuthenticated)
             {
-                //if (user.IsInRole(WellKnownUserRoles.SuperAdministrator))
-                //{
-                //    return;
-                //}
+                if (user.IsInRole(WellKnownUserRoles.SuperAdministrator))
+                {
+                    return;
+                }
 
-                //var moduleAccessCachedList = HttpRuntime.Cache[user.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>;
+                var moduleAccessCachedList = HttpRuntime.Cache[user.Identity.GetUserId()] as ICollection<NavigationItemInRoleDTO>;
 
-                //if (moduleAccessCachedList != null)
-                //{
-                //    foreach (var accessRight in moduleAccessCachedList)
-                //    {
-                //        if (accessRight.NavigationItemControllerName.ToLower() == controllerName.ToLower())
-                //        {
-                //            hasPermission = true;
+                if (moduleAccessCachedList != null)
+                {
+                    foreach (var accessRight in moduleAccessCachedList)
+                    {
+                        if (accessRight.NavigationItemControllerName.ToLower() == controllerName.ToLower())
+                        {
+                            hasPermission = true;
 
-                //            break;
-                //        }
-                //    }
+                            break;
+                        }
+                    }
 
-                //    if (hasPermission) return;
+                    if (hasPermission) return;
 
-                //    throw new System.InvalidOperationException($"Sorry, you are not authorized to access {controllerName.ToUpper()} module.");
-                //}
-                //else
-                //{
-                //    var urlHelper = new UrlHelper(filterContext.RequestContext);
+                    throw new System.InvalidOperationException($"Sorry, you are not authorized to access {controllerName.ToUpper()} module.");
+                }
+                else
+                {
+                    var urlHelper = new UrlHelper(filterContext.RequestContext);
 
-                //    filterContext.Result = new RedirectResult(urlHelper.Action("Login", "Account", new { Area = "" }));
-                //}
+                    filterContext.Result = new RedirectResult(urlHelper.Action("Login", "Account", new { Area = "" }));
+                }
             }
             else
             {

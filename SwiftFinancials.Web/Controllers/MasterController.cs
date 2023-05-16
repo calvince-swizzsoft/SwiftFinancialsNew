@@ -188,7 +188,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetCustomerTypesSelectList(string selectedValue)
+        protected List<SelectListItem> GetCustomerTypeSelectList(string selectedValue)
         {
             List<SelectListItem> customerTypesSelectList = new List<SelectListItem>();
 
@@ -205,7 +205,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetGender(string selectedValue)
+        protected List<SelectListItem> GetGenderSelectList(string selectedValue)
         {
             List<SelectListItem> gender = new List<SelectListItem>();
 
@@ -222,7 +222,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetMaritalStatuses(string selectedValue)
+        protected List<SelectListItem> GetMaritalStatusSelectList(string selectedValue)
         {
             List<SelectListItem> maritalStatuses = new List<SelectListItem>();
 
@@ -239,7 +239,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetNationalities(string selectedValue)
+        protected List<SelectListItem> GetNationalitySelectList(string selectedValue)
         {
             List<SelectListItem> nationalities = new List<SelectListItem>();
 
@@ -256,7 +256,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetChartOfAccountTypes(string selectedValue)
+        protected List<SelectListItem> GetChartOfAccountTypeSelectList(string selectedValue)
         {
             List<SelectListItem> chartOfAccountTypes = new List<SelectListItem>();
 
@@ -273,7 +273,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetChartOfAccountCategories(string selectedValue)
+        protected List<SelectListItem> GetChartOfAccountCategorySelectList(string selectedValue)
         {
             List<SelectListItem> chartOfAccountCategories = new List<SelectListItem>();
 
@@ -290,7 +290,7 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
-        protected List<SelectListItem> GetChargeTypes(string selectedValue)
+        protected List<SelectListItem> GetChargeTypeSelectList(string selectedValue)
         {
             List<SelectListItem> chargeTypes = new List<SelectListItem>();
 
@@ -304,6 +304,39 @@ namespace SwiftFinancials.Web.Controllers
             chargeTypes.AddRange(items);
 
             return chargeTypes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetProductCodeSelectList(string selectedValue)
+        {
+            List<SelectListItem> productCode = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ProductCode)).Cast<ProductCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            productCode.AddRange(items);
+
+            return productCode;
+        }
+        [NonAction]
+        protected List<SelectListItem> GetChequeTypeChargeRecoveryModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> chequeTypeChargeRecoveryModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ChequeTypeChargeRecoveryMode)).Cast<ChequeTypeChargeRecoveryMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chequeTypeChargeRecoveryModes.AddRange(items);
+
+            return chequeTypeChargeRecoveryModes;
         }
 
         [NonAction]

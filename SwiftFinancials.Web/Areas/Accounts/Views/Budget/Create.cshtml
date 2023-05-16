@@ -168,8 +168,8 @@
                             var newPostingPeriodsData = [];
                             PostingPeriodsMap = {};
                             $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriodDescription);
-                                PostingPeriodsMap[PostingPeriodDescription] = PostingPeriod;
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
                             });
                             process(newPostingPeriodsData); return;
                         });

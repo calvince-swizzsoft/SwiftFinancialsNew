@@ -3,10 +3,8 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using DistributedServices.Seedwork.ErrorHandlers;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -15,7 +13,11 @@ namespace DistributedServices.MainBoundedContext
     {
         #region Chart Of Account
 
-        [OperationContract(AsyncPattern = true)]
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync (string text, int pageIndex, int pageSize);
+
+        [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
         List<ChartOfAccountDTO> FindChartOfAccounts();
         

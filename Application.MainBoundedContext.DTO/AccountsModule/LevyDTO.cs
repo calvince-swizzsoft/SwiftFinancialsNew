@@ -6,6 +6,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Collections.Generic;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -71,5 +72,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
             return ValidationResult.Success;
         }
+
+        public IList<LevySplitDTO> LevySplits { get; set; } 
     }
 }

@@ -54,6 +54,20 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             _appCache = appCache;
         }
 
+        public async Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                ISpecification<ChartOfAccount> filter = ChartOfAccountSpecifications.ChartOfAccountFullText(text);
+
+                ISpecification<ChartOfAccount> spec = filter;
+
+                List<string> sortFields = new List<string> { "SequentialId" };
+
+                return await  _chartOfAccountRepository.AllMatchingPagedAsync<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+            }
+        }
+
         public ChartOfAccountDTO AddNewChartOfAccount(ChartOfAccountDTO chartOfAccountDTO, ServiceHeader serviceHeader)
         {
             if (chartOfAccountDTO != null)
@@ -271,12 +285,12 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     glAccount.ParentId = node.ParentId;
                     glAccount.Category = node.AccountCategory;
                     glAccount.CategoryDescription = EnumHelper.GetDescription((ChartOfAccountCategory)node.AccountCategory);
-                    glAccount.Type = node.AccountType;
+                    glAccount.Type =(int) node.AccountType;
                     glAccount.TypeDescription = EnumHelper.GetDescription((ChartOfAccountType)node.AccountType);
                     glAccount.Code = node.AccountCode;
                     glAccount.Description = node.AccountName;
-                    glAccount.Name = string.Format("{0}-{1} {2}", node.AccountType.FirstDigit(), node.AccountCode, node.AccountName);
-                    glAccount.IndentedName = string.Format("{0}{1}-{2} {3}", tabs, node.AccountType.FirstDigit(), node.AccountCode, node.AccountName);
+                    glAccount.Name = string.Format("{0}-{1} {2}", node.AccountType, node.AccountCode, node.AccountName);
+                    glAccount.IndentedName = string.Format("{0}{1}-{2} {3}", tabs, node.AccountType, node.AccountCode, node.AccountName);
                     glAccount.Depth = depth;
                     glAccount.IsControlAccount = node.IsControlAccount;
                     glAccount.IsReconciliationAccount = node.IsReconciliationAccount;

@@ -331,6 +331,7 @@
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
@@ -778,6 +779,13 @@
     <Content Include="Areas\Accounts\Views\FixedDepositType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\FixedDepositType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\FixedDepositType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\WireTransferType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\WireTransferType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\WireTransferType\Edit.cshtml" />
