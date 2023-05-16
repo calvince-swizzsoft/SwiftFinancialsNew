@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -65,7 +66,23 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.AddEmployerAsync(employerBindingModel.MapTo<EmployerDTO>(), GetServiceHeader());
+               var employer= await _channelService.AddEmployerAsync(employerBindingModel.MapTo<EmployerDTO>(), GetServiceHeader());
+
+                if(employer!=null)
+                {
+                    //Update divisions
+
+                    var divisions= new ObservableCollection<DivisionDTO>();
+
+                    foreach(var divisionDTO in employerBindingModel.Divisions)
+                    {
+                        divisionDTO.EmployerId = employer.Id;
+
+                        divisions.Add(divisionDTO);
+                    }
+
+                    await _channelService.UpdateDivisionsByEmployerIdAsync(employer.Id, divisions, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }

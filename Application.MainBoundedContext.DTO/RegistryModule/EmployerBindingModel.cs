@@ -1,5 +1,6 @@
 ﻿using Application.Seedwork;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -69,5 +70,8 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public IList<DivisionDTO> Divisions { get; set; }
+
     }
 }
