@@ -74,7 +74,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = debitTypeDTO.ErrorMessages;
-                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.ProductCode.ToString());
+                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
 
                 return View(debitTypeDTO);
             }
