@@ -49,5 +49,10 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public DateTime CreatedDate { get; set; }
 
         public IList<DivisionDTO> Divisions { get; set; }
+
+        public IList<StationDTO> Stations { get; set; }
+
+
+        public IList<ZoneDTO> Zones { get; set; }
     }
 }

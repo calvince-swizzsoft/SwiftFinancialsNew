@@ -64,6 +64,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(PostingPeriodDTO postingPeriodDTO)
         {
+            var startDate = Request["startDate"];
+
+            var endDate = Request["endDate"];
+
+            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate);
+
+            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate);
+
             postingPeriodDTO.ValidateAll();
 
             if (!postingPeriodDTO.HasErrors)

@@ -73,5 +73,9 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         public IList<DivisionDTO> Divisions { get; set; }
 
+        public IList<StationDTO> Stations { get; set; }
+
+        public IList<ZoneDTO> Zones { get; set; }
+
     }
 }

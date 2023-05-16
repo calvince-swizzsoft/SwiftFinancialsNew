@@ -83,6 +83,21 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                     await _channelService.UpdateDivisionsByEmployerIdAsync(employer.Id, divisions, GetServiceHeader());
                 }
+                if (employer != null)
+                {
+                    //Update Stations
+
+                    var stations = new ObservableCollection<StationDTO>();
+
+                    foreach (var stationDTO in employerBindingModel.Stations)
+                    {
+                        stationDTO.ZoneDivisionEmployerId = employer.Id;
+
+                        stations.Add(stationDTO);
+                    }
+
+                    await _channelService.UpdateStationsByZoneIdAsync(employer.Id, stations, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }

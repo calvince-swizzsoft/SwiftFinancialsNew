@@ -64,15 +64,17 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Start Date:", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-lg" id="data_5">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            <span class="input-group-addon">Start Date</span>
+                                            @Html.TextBox("startDate", DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy"), new { @class = "form-control-lg form-control" })
+                                        </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date:", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-lg" id="data_5">
+                                        <div class="input-daterange input-group" id="datepicker">
+                                            <span class="input-group-addon">Start Date</span>
+                                            @Html.TextBox("endDate", DateTime.Today.ToString("dd/MM/yyyy"), new { @class = "form-control-lg form-control" })
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -118,17 +120,34 @@
 </div>
 
 @section Styles{
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
 }
 
 @section Scripts{
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/dateRange")
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
     <script>
         $(document).ready(function () {
+
+            $('#data_5 .input-daterange').datepicker({
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                onSelect: function (d, i) {
+                    if (d !== i.lastVal) {
+                        $(this).change();
+                    }
+                }
+            });
+
             $("#wizard").steps();
             $("#form").steps({
                 bodyTag: "fieldset",
