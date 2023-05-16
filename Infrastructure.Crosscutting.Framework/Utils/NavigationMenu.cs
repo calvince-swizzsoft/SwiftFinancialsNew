@@ -80,6 +80,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Direct Debits", Icon="fa fa-paperclip", ControllerName="DirectDebit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Debit Batches", Icon="fa-envelope-square", ControllerName="DebitBatch", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Fixed Deposit Types", Icon="fa fa-usb", ControllerName="FixedDepositType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Wire Transfer Types", Icon="fa fa-comments", ControllerName="WireTransferType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "UnPay Reasons", Icon="fa fa-usd", ControllerName="UnPayReason", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
 
 
                 //Loaning - area 24,000
