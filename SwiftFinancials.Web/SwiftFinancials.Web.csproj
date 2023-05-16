@@ -794,7 +794,6 @@
     <Content Include="Areas\Accounts\Views\UnPayReason\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
