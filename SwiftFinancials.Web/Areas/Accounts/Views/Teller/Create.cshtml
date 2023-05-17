@@ -111,42 +111,40 @@
                         <h1>Linkage</h1>
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-8">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EmployeeId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.EmployeeId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.EmployeeId)
+                                        @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Employee Name" } })
                                         @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ShortageChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.ShortageChartOfAccountAccountName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ExcessChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.ExcessChartOfAccountAccountName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.ExcessChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.FloatCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.FloatCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.FloatCustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CommissionCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CommissionCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                        @Html.ValidationMessageFor(model => model.CommissionCustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
