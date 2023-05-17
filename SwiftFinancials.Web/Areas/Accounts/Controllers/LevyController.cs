@@ -69,6 +69,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             levyDTO.LevySplitsTotalPercentage = 100;
 
+            Guid levySplitChartOfAccountId = levyDTO.Id;
+
             levyDTO.ValidateAll();
 
             if (!levyDTO.HasErrors)
@@ -83,7 +85,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         levySplitDTO.LevyId = levy.Id;
                         levySplitDTO.Description = levySplitDTO.Description;
-                        levySplitDTO.ChartOfAccountId = levy.Id;
+                        levySplitDTO.ChartOfAccountId = levySplitChartOfAccountId;
                         levySplitDTO.Percentage = levySplitDTO.Percentage;
                         levySplits.Add(levySplitDTO);
                     };
