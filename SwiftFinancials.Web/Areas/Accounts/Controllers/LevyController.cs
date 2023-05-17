@@ -67,6 +67,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LevyDTO levyDTO)
         {
+            levyDTO.LevySplitsTotalPercentage = 100;
+
             levyDTO.ValidateAll();
 
             if (!levyDTO.HasErrors)
@@ -81,7 +83,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         levySplitDTO.LevyId = levy.Id;
                         levySplitDTO.Description = levySplitDTO.Description;
-                        levySplitDTO.ChartOfAccountId = levySplitDTO.ChartOfAccountId;
+                        levySplitDTO.ChartOfAccountId = levy.Id;
                         levySplitDTO.Percentage = levySplitDTO.Percentage;
                         levySplits.Add(levySplitDTO);
                     };

@@ -73,6 +73,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             return ValidationResult.Success;
         }
 
-        public IList<LevySplitDTO> LevySplits { get; set; } 
+        public List<LevySplitDTO> LevySplits { get; set; }
+
+        public LevySplitDTO LevySplit { get; set; }
     }
 }

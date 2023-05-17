@@ -92,10 +92,10 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevySplits[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LevySplits[0].ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.LevySplits[0].ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LevySplits[0].ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.LabelFor(model => model.LevySplit.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Id)
+                                        @Html.ValidationMessageFor(model => model.LevySplit.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
 
@@ -219,7 +219,7 @@
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#LevySplits[0].ChartOfAccountId').val(ChartOfAccountId);
+                    $('#Id').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }
