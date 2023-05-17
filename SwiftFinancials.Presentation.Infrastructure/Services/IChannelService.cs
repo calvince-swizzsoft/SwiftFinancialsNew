@@ -1942,7 +1942,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<TreasuryDTO>> FindTreasuriesByFilterInPageAsync(string text, int pageIndex, int pageSize, bool includeBalances = false, ServiceHeader serviceHeader = null);
 
-        Task<TreasuryDTO> AddTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader = null);
+        Task<TreasuryDTO> AddTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader);
 
         Task<bool> UpdateTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader = null);
 
