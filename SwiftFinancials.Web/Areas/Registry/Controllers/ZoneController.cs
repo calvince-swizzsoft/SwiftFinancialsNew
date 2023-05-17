@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -64,9 +65,27 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ZoneBindingModel zoneBindingModel)
         {
-            if (ModelState.IsValid)
+            zoneBindingModel.ValidateAll();
+
+            if (!zoneBindingModel.ErrorMessages.Any())
             {
-                await _channelService.AddZoneAsync(zoneBindingModel.MapTo<ZoneDTO>(), GetServiceHeader());
+                var zone = await _channelService.AddZoneAsync(zoneBindingModel.MapTo<ZoneDTO>(), GetServiceHeader());
+
+                if (zone != null)
+                {
+                    //Update Stations
+
+                    var stations = new ObservableCollection<StationDTO>();
+
+                    foreach (var stationDTO in zoneBindingModel.Stations)
+                    {
+                        stationDTO.ZoneId = zone.Id;
+
+                        stations.Add(stationDTO);
+                    }
+
+                    await _channelService.UpdateStationsByZoneIdAsync(zone.Id, stations, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }

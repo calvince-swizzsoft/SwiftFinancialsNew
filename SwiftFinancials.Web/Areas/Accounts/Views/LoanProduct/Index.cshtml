@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Zones";
+    ViewBag.Title = "Budgets";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -36,7 +36,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="zonesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="BudgetsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -45,7 +45,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Zone", "Create", "Zone", new { Area = "Registry" }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Create Budgets", "Create", "Budget", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -63,12 +63,12 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#zonesGrid').DataTable({
+            $('#BudgetsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Zone", new { Area = "Registry"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Budget", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -81,23 +81,21 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/registry/Zone/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/registry/Zone/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/accounts/Budget/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/Budget/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "DivisionDescription", "sTitle": "Division", "sWidth": "10%" },
-                    { "mDataProp": "DivisionEmployerDescription", "sTitle": "Employer ", "sWidth": "10%" },
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
-                    { "mDataProp": "Stations[0].Description", "sTitle": "Station", "sWidth": "10%" },
-                    { "mDataProp": "Stations[0].AddressEmail", "sTitle": "Station Email ", "sWidth": "15%" },
-                    { "mDataProp": "Stations[0].AddressMobileLine", "sTitle": "Station Mobile No:", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
+                    { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period Name", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
+                    { "mDataProp": "Description", "sTitle": "Budget Name", "sWidth": "15%" },
+                    { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });

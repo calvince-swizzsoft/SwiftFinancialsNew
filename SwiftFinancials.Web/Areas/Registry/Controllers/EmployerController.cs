@@ -64,17 +64,19 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(EmployerBindingModel employerBindingModel)
         {
-            if (ModelState.IsValid)
-            {
-               var employer= await _channelService.AddEmployerAsync(employerBindingModel.MapTo<EmployerDTO>(), GetServiceHeader());
+            employerBindingModel.ValidateAll();
 
-                if(employer!=null)
+            if (!employerBindingModel.ErrorMessages.Any())
+            {
+                var employer = await _channelService.AddEmployerAsync(employerBindingModel.MapTo<EmployerDTO>(), GetServiceHeader());
+
+                if (employer != null)
                 {
                     //Update divisions
 
-                    var divisions= new ObservableCollection<DivisionDTO>();
+                    var divisions = new ObservableCollection<DivisionDTO>();
 
-                    foreach(var divisionDTO in employerBindingModel.Divisions)
+                    foreach (var divisionDTO in employerBindingModel.Divisions)
                     {
                         divisionDTO.EmployerId = employer.Id;
 
@@ -82,21 +84,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     }
 
                     await _channelService.UpdateDivisionsByEmployerIdAsync(employer.Id, divisions, GetServiceHeader());
-                }
-                if (employer != null)
-                {
-                    //Update Stations
-
-                    var stations = new ObservableCollection<StationDTO>();
-
-                    foreach (var stationDTO in employerBindingModel.Stations)
-                    {
-                        stationDTO.ZoneDivisionEmployerId = employer.Id;
-
-                        stations.Add(stationDTO);
-                    }
-
-                    await _channelService.UpdateStationsByZoneIdAsync(employer.Id, stations, GetServiceHeader());
                 }
 
                 return RedirectToAction("Index");
