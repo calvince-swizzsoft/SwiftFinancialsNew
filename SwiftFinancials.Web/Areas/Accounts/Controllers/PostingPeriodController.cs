@@ -68,9 +68,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var endDate = Request["endDate"];
 
-            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate);
+            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
 
-            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate);
+            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
 
             postingPeriodDTO.ValidateAll();
 
