@@ -38,10 +38,11 @@
                     @using (Html.BeginForm("Create", "Zone", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            <h1>Zone Details</h1>
-                            <fieldset>
+
+                        <h1>Zone Details</h1>
+                        <fieldset>
+                            <div class="form-horizontal">
+                                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                 <div class="row">
                                     <div class="col-lg-8">
                                         <div class="form-group form-group-sm">
@@ -57,64 +58,60 @@
                                         </div>
                                     </div>
                                 </div>
-                            </fieldset>
+                            </div>
+                        </fieldset>
 
-                            <h1>Station Details</h1>
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].Description, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].Description, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].ZoneId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.HiddenFor(model => model.Stations[0].ZoneId)
-                                            @Html.ValidationMessageFor(model => model.Stations[0].ZoneId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.Stations[0].ZoneDescription, new { htmlAttributes = new { @class = "ZonesLookup form-control required", placeholder = "Zone" } })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine1, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine2, "", new { @class = "text-danger" })
-                                        </div>
+                        <h1>Station Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Station name.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].Description, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].AddressEmail, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].AddressEmail, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].AddressMobileLine, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].AddressMobileLine, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].AddressStreet, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].AddressStreet, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Stations[0].AddressPostalCode, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Stations[0].AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-                                            @Html.ValidationMessageFor(model => model.Stations[0].AddressPostalCode, "", new { @class = "text-danger" })
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].ZoneId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.Stations[0].ZoneId)
+                                        @Html.ValidationMessageFor(model => model.Stations[0].ZoneId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Stations[0].ZoneDescription, new { htmlAttributes = new { @class = "ZonesLookup form-control required", placeholder = "Zone" } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine1, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </fieldset>
-
-                            <div class="form-group form-group-sm">
-                                <input type="submit" value="Create" class="btn btn-primary" />
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].AddressEmail, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].AddressEmail, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].AddressMobileLine, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].AddressMobileLine, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].AddressStreet, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].AddressStreet, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Stations[0].AddressPostalCode, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Stations[0].AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
+                                        @Html.ValidationMessageFor(model => model.Stations[0].AddressPostalCode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
-                        </div>
+                        </fieldset>
                     }
                 </div>
             </div>
@@ -132,8 +129,86 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
-        $(document).ready(function () {
+    <script>
+    $(document).ready(function () {
+        $('#data_5 .input-daterange').datepicker({
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: 'dd/mm/yyyy',
+            onSelect: function (d, i) {
+                if (d !== i.lastVal) {
+                    $(this).change();
+                }
+            }
+        });
+
+        $("#wizard").steps();
+        $("#form").steps({
+            bodyTag: "fieldset",
+            onStepChanging: function (event, currentIndex, newIndex) {
+                // Always allow going backward even if the current step contains invalid fields!
+                if (currentIndex > newIndex) {
+                    return true;
+                }
+
+                // Forbid suppressing "Warning" step if the user is to young
+                if (newIndex === 3 && Number($("#age").val()) < 18) {
+                    return false;
+                }
+
+                var form = $(this);
+
+                // Clean up if user went backward before
+                if (currentIndex < newIndex) {
+                    // To remove error styles
+                    $(".body:eq(" + newIndex + ") label.error", form).remove();
+                    $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                }
+
+                // Disable validation on fields that are disabled or hidden.
+                form.validate().settings.ignore = ":disabled,:hidden";
+
+                // Start validation; Prevent going forward if false
+                return form.valid();
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                // Suppress (skip) "Warning" step if the user is old enough.
+                if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                    $(this).steps("next");
+                }
+
+                // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                if (currentIndex === 2 && priorIndex === 3) {
+                    $(this).steps("previous");
+                }
+            },
+            onFinishing: function (event, currentIndex) {
+                var form = $(this);
+
+                // Disable validation on fields that are disabled.
+                // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                form.validate().settings.ignore = ":disabled";
+
+                // Start validation; Prevent form submission if false
+                return form.valid();
+            },
+            onFinished: function (event, currentIndex) {
+                var form = $(this);
+
+                // Submit form input
+                form.submit();
+            }
+        }).validate({
+            errorPlacement: function (error, element) {
+                element.before(error);
+            },
+            rules: {
+                confirm: {
+                    equalTo: "#password"
+                }
+            }
+        });
            //Division typehead starts here
             $('.DivisionsLookup').typeahead({
                 source: function (query, process) {
@@ -206,5 +281,5 @@
                 }
             });
         });
-</script>
+    </script>
 }
