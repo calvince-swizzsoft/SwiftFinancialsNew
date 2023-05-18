@@ -1,19 +1,18 @@
 ﻿
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
-using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using SwiftFinancials.Web.Controllers;
-using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class InsuranceCompanyController : MasterController
     {
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -22,7 +21,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-      /*public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        /*public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -53,7 +52,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(insuranceCompanyDTO);
         }
-
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -105,12 +103,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        /* [HttpGet]
-         public async Task<JsonResult> GetInsuranceCompanysAsync()
-         {
-             var InsuranceCompanysDTOs = await _channelService.FindInsuranceCompaniesAsync(GetServiceHeader());
+       /* [HttpGet]
+        public async Task<JsonResult> GetInsuranceCompanysAsync()
+        {
+            var insuranceCompanyDTOs = await _channelService.FindInsuranceCompanysAsync(GetServiceHeader());
 
-             return Json(insuranceCompanysDTOs, JsonRequestBehavior.AllowGet);
-         }*/
+            return Json(insuranceCompanyDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
 }
