@@ -39,20 +39,16 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <h1>Commission Details</h1>
+                        <h1>Commission</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Name.", @required = "" } })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Commission", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.MaximumCharge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Charge" } })
@@ -63,12 +59,53 @@
                                         @Html.EditorFor(model => model.RoundingType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Rounding Type" } })
                                         @Html.ValidationMessageFor(model => model.RoundingType, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
+                            </div>
+                        </fieldset>
+                        <h1>Commission Splits</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CommissionDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CommissionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Commission Split", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CommissionDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CommissionSplitsTotalPercentage, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CommissionSplitsTotalPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Percentage", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CommissionSplitsTotalPercentage, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.Leviable, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Leviable?" } })
+                                        @Html.ValidationMessageFor(model => model.Leviable, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        </fieldset>
+                        <h1>Commission Levy</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LevyId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LevyId)
+                                        @Html.ValidationMessageFor(model => model.LevyId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Levy.Description, new { htmlAttributes = new { @class = "LeviesProductsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
                             </div>
@@ -90,7 +127,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -156,6 +193,114 @@
                     confirm: {
                         equalTo: "#password"
                     }
+                }
+            });
+            //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+            //Commission typehead starts here
+            $('.CommissionsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCommissionsAsync", "Commission", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Commissions) {
+                            var newCommissionsData = [];
+                            CommissionsMap = {};
+                            $.each(Commissions, function (i, Commission) {
+                                newCommissionsData.push(Commission.Description);
+                                CommissionsMap[Commission.Description] = Commission;
+                            });
+                            process(newCommissionsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var commissionId = "";
+                    CommissionId = CommissionsMap[item].Id;
+                    $('#CommissionId').val(CommissionId);
+                    //console.log(CommissionId)
+                    return item;
+                }
+            });
+            //Levy typehead starts here
+            $('.LeviesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLeviesAsync", "Levy", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Levies) {
+                            var newLeviesData = [];
+                            LeviesMap = {};
+                            $.each(Levies, function (i, Levy) {
+                                newLeviesData.push(Levy.Description);
+                                LeviesMap[Levy.Description] = Levy;
+                            });
+                            process(newLeviesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var levyId = "";
+                    LevyId = LeviesMap[item].Id;
+                    $('#LevyId').val(LevyId);
+                    //console.log(LevyId)
+                    return item;
                 }
             });
         });</script>
