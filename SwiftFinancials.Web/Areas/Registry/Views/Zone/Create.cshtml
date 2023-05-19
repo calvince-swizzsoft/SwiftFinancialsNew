@@ -72,12 +72,6 @@
                                         @Html.ValidationMessageFor(model => model.Stations[0].Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Stations[0].ZoneId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.Stations[0].ZoneId)
-                                        @Html.ValidationMessageFor(model => model.Stations[0].ZoneId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.Stations[0].ZoneDescription, new { htmlAttributes = new { @class = "ZonesLookup form-control required", placeholder = "Zone" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Stations[0].AddressAddressLine1, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Stations[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
                                         @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine1, "", new { @class = "text-danger" })
@@ -87,13 +81,13 @@
                                         @Html.EditorFor(model => model.Stations[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
                                         @Html.ValidationMessageFor(model => model.Stations[0].AddressAddressLine2, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Stations[0].AddressEmail, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Stations[0].AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Stations[0].AddressEmail, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Stations[0].AddressMobileLine, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Stations[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
@@ -242,41 +236,6 @@
                     DivisionId = DivisionsMap[item].Id;
                     $('#DivisionId').val(DivisionId);
                     //console.log(DivisionId)
-                    return item;
-                }
-            });//Zone typehead starts here
-            $('.ZonesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetZonesAsync", "Zone", new { Area = "Registry" })',
-                        { query: query },
-                        function (Zones) {
-                            var newZonesData = [];
-                            ZonesMap = {};
-                            $.each(Zones, function (i, Zone) {
-                                newZonesData.push(Zone.Description);
-                                ZonesMap[Zone.Description] = Zone;
-                            });
-                            process(newZonesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var zoneId = "";
-                    ZoneId = ZonesMap[item].Id;
-                    $('#Stations[0].ZoneId').val(ZoneId);
-                    //console.log(ZoneId)
                     return item;
                 }
             });

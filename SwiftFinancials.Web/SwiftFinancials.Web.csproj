@@ -650,10 +650,6 @@
     <Content Include="Areas\Registry\Views\Zone\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanPurpose\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanPurpose\Create.cshtml" />
@@ -719,10 +715,6 @@
     <Content Include="Areas\Accounts\Views\Levy\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Edit.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
