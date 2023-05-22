@@ -46,8 +46,8 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.StationId)
-                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "stationsLookup form-control required", placeholder = "Station" } })
                                         @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Station", @required = "" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
@@ -243,11 +243,11 @@
                                         @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Membership Number" } })
                                         @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
                                     </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsDefaulter, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsDefaulter, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Defaulter?" } })
@@ -293,9 +293,48 @@
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
         $(document).ready(function () {
+
+            //Station typehead starts here
+            $('.StationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var stationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#StationId').val(StationId);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+
             $("#wizard").steps();
             $("#form").steps({
                 bodyTag: "fieldset",
@@ -363,41 +402,6 @@
                 }
             });
 
-             //Station typehead starts here
-            $('.stationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
-        });</script>
+        });
+    </script>
 }
