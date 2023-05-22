@@ -736,10 +736,6 @@
     <Content Include="Areas\Accounts\Views\Treasury\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasury\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasury\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
