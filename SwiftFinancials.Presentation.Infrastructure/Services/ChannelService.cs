@@ -21406,6 +21406,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<bool> UpdateCommissionLeviesByCommissionIdAsync(Guid commissionId, ObservableCollection<CommissionLevyDTO> commissionLevies, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            ICommissionService service = GetService<ICommissionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ICommissionService)result.AsyncState).EndUpdateCommissionLeviesByCommissionId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateCommissionLeviesByCommissionId(commissionId, commissionLevies.ExtendedToList(), asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         public Task<ObservableCollection<GraduatedScaleDTO>> FindGraduatedScalesByCommissionIdAsync(Guid commissionId, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<GraduatedScaleDTO>>();

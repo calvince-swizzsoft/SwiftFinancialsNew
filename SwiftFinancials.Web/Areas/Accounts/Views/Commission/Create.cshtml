@@ -104,7 +104,7 @@
                                         @Html.LabelFor(model => model.LevyId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.LevyId)
                                         @Html.ValidationMessageFor(model => model.LevyId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.Levy.Description, new { htmlAttributes = new { @class = "LeviesProductsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.Levy.Description, new { htmlAttributes = new { @class = "LeviesLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
                             </div>
@@ -235,7 +235,7 @@
             $('.LeviesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetLeviesAsync", "Levy", new { Area = "Accounts" })',
+                        '@Url.Action("GetLevysAsync", "Levy", new { Area = "Accounts" })',
                         { query: query },
                         function (Levies) {
                             var newLeviesData = [];
@@ -267,5 +267,6 @@
                     return item;
                 }
             });
-        });</script>
+        });
+    </script>
 }

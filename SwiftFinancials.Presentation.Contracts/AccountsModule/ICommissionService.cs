@@ -60,6 +60,12 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         IAsyncResult BeginUpdateLeviesByCommissionId(Guid commissionId, List<LevyDTO> levies, AsyncCallback callback, Object state);
         bool EndUpdateLeviesByCommissionId(IAsyncResult result);
 
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginUpdateCommissionLeviesByCommissionId(Guid commissionId, List<CommissionLevyDTO> commissionLevies, AsyncCallback callback, Object state);
+        bool EndUpdateCommissionLeviesByCommissionId(IAsyncResult result);
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindCommissionSplitsByCommissionId(Guid commissionId, AsyncCallback callback, Object state);

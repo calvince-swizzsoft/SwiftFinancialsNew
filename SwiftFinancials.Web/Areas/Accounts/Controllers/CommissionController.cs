@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -65,15 +66,34 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             commissionDTO.ValidateAll();
 
-            if (!commissionDTO.HasErrors)
+            if (!commissionDTO.ErrorMessages.Any())
             {
-                await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+                var commission = await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+
+                if (commission != null)
+
+                {
+                    //Update CommissionLevies
+
+                    var commissionLevies = new ObservableCollection<CommissionLevyDTO>();
+
+                    foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
+                    {
+                        commissionLevyDTO.Commission.Id = commission.Id;
+
+                        commissionLevies.Add(commissionLevyDTO);
+                    }
+
+                    await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commission.Id, commissionLevies, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = commissionDTO.ErrorMessages;
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                TempData["Error"] = string.Join(",", allErrors);
 
                 return View(commissionDTO);
             }

@@ -1664,6 +1664,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateCommissionSplitsByCommissionIdAsync(Guid commissionId, ObservableCollection<CommissionSplitDTO> commissionSplits, ServiceHeader serviceHeader = null);
 
+        Task<bool> UpdateCommissionLeviesByCommissionIdAsync(Guid commissionId, ObservableCollection<CommissionLevyDTO> commissionLevies, ServiceHeader serviceHeader = null);
+
         Task<ObservableCollection<GraduatedScaleDTO>> FindGraduatedScalesByCommissionIdAsync(Guid commissionId, ServiceHeader serviceHeader = null);
 
         Task<bool> UpdateGraduatedScalesByCommissionIdAsync(Guid commissionId, ObservableCollection<GraduatedScaleDTO> graduatedScales, ServiceHeader serviceHeader = null);

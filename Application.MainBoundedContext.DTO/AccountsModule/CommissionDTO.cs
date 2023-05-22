@@ -176,5 +176,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public IList<LevyDTO> Levies { get; set; }
 
         public IList<LevySplitDTO> LevySplits { get; set; }
+
+        public IList<CommissionLevyDTO> CommissionLevies { get; set; }
     }
 }
