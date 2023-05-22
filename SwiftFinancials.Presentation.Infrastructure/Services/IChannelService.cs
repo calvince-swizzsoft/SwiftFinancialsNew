@@ -1884,6 +1884,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region BudgetDTO
 
+        Task<bool> UpdateBudgetEntriesByBudgetIdAsync(Guid budgetId, ObservableCollection<BudgetEntryDTO> budgetEntries, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<BudgetDTO>> FindBudgetsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<BudgetDTO>> FindBudgetsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);

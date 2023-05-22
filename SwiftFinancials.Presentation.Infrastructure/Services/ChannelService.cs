@@ -24612,6 +24612,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+        public Task<bool> UpdateBudgetEntriesByBudgetIdAsync(Guid budgetId, ObservableCollection<BudgetEntryDTO> budgetEntries, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IBudgetService service = GetService<IBudgetService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IBudgetService)result.AsyncState).EndUpdateBudgetEntriesByBudgetId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateBudgetEntriesByBudgetId(budgetId, budgetEntries.ExtendedToList(), asyncCallback, service);
+
+            return tcs.Task;
+        }
 
         public Task<PageCollectionInfo<BudgetEntryDTO>> FindBudgetEntriesByBudgetIdInPageAsync(Guid budgetId, int pageIndex, int pageSize, bool includeBalances, ServiceHeader serviceHeader)
         {
