@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
@@ -68,7 +67,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!commissionDTO.HasErrors)
             {
-                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -84,9 +83,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var CommissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
+            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
-            return View(CommissionDTO.MapTo<CommissionDTO>());
+            return View(commissionDTO);
         }
 
         [HttpPost]
@@ -95,7 +94,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

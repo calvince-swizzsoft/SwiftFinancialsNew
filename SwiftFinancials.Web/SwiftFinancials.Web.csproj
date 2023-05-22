@@ -696,10 +696,6 @@
     <Content Include="Areas\Admin\Views\Report\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
@@ -795,6 +791,10 @@
     <Content Include="Areas\Accounts\Views\LoanProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanProduct\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

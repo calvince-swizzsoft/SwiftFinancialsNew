@@ -1,7 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.CommissionDTO
 
 @{
-    ViewBag.Title = "Chart Of Accounts";
+    ViewBag.Title = "Commissions";
 }
 <div class="row wrapper border-bottom bg-muted page-heading">
     <div class="col-lg-10">
@@ -43,8 +43,7 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                    <div class="form-group form-group-lg">
+                                    <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Commission", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
@@ -127,7 +126,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -231,42 +230,7 @@
                     return item;
                 }
             });
-            //Commission typehead starts here
-            $('.CommissionsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetCommissionsAsync", "Commission", new { Area = "Accounts" })',
-                        { query: query },
-                        function (Commissions) {
-                            var newCommissionsData = [];
-                            CommissionsMap = {};
-                            $.each(Commissions, function (i, Commission) {
-                                newCommissionsData.push(Commission.Description);
-                                CommissionsMap[Commission.Description] = Commission;
-                            });
-                            process(newCommissionsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var commissionId = "";
-                    CommissionId = CommissionsMap[item].Id;
-                    $('#CommissionId').val(CommissionId);
-                    //console.log(CommissionId)
-                    return item;
-                }
-            });
+
             //Levy typehead starts here
             $('.LeviesLookup').typeahead({
                 source: function (query, process) {
