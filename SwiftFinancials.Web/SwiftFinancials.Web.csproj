@@ -325,9 +325,6 @@
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
-    <Compile Include="Areas\Client\ClientAreaRegistration.cs" />
-    <Compile Include="Areas\Client\Controllers\CustomerController.cs" />
-    <Compile Include="Areas\Client\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
@@ -602,14 +599,7 @@
     <Content Include="Areas\Messaging\Views\web.config" />
     <Content Include="Areas\Messaging\Views\TextAlert\Index.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailAlert\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Create.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Edit.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Details.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Create.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Edit.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Index.cshtml" />
     <Content Include="Content\summernote\font\summernote.woff" />
@@ -623,7 +613,6 @@
     <Content Include="Areas\Messaging\Views\EmailAlert\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\TextAlert\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\web.config" />
-    <Content Include="Areas\Client\Views\Employer\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Create.cshtml" />
@@ -631,7 +620,6 @@
     <Content Include="Areas\Admin\Views\Membership\_Companies.cshtml" />
     <Content Include="Areas\Reports\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Client\Views\web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
@@ -1251,8 +1239,6 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\SavingsProductCommission\" />
-    <Folder Include="Areas\Client\Data\" />
-    <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />

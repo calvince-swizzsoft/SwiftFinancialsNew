@@ -132,5 +132,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             return Json(zoneDTOs, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetStationsAsync()
+        {
+            var stationsDTOs = await _channelService.FindStationsAsync(GetServiceHeader());
+
+            return Json(stationsDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }
