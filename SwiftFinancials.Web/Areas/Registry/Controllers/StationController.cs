@@ -88,9 +88,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View(stationDTO);
         }
 
+        /*
         [HttpPost]
         [ValidateAntiForgeryToken]
-        /*public async Task<ActionResult> Edit(Guid id, StationBindingModel stationBindingModel)
+        public async Task<ActionResult> Edit(Guid id, StationBindingModel stationBindingModel)
         {
             stationBindingModel.ValidateAll();
 
