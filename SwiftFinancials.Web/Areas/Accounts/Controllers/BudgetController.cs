@@ -76,16 +76,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                     //Update BudgetEntries
 
-                    var budgetentries = new ObservableCollection<BudgetEntryDTO>();
+                    var budgetEntries = new ObservableCollection<BudgetEntryDTO>();
 
                     foreach (var budgetEntryDTO in budgetDTO.BudgetEntries)
                     {
                         budgetEntryDTO.BudgetId = budget.Id;
 
-                        budgetentries.Add(budgetEntryDTO);
+                        budgetEntries.Add(budgetEntryDTO);
                     }
 
-                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetentries, GetServiceHeader());
+                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetEntries, GetServiceHeader());
                 }
 
                 return RedirectToAction("Index");
