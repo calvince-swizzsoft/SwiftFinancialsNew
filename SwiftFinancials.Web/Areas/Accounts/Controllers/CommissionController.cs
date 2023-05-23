@@ -73,18 +73,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 if (commission != null)
 
                 {
-                    //Update CommissionLevies
+                    //Update CommissionSplits
 
-                    var commissionLevies = new ObservableCollection<CommissionLevyDTO>();
+                    var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
 
-                    foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
+                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
                     {
-                        commissionLevyDTO.Commission.Id = commission.Id;
+                        commissionSplitDTO.CommissionId = commission.Id;
 
-                        commissionLevies.Add(commissionLevyDTO);
+                        commissionSplits.Add(commissionSplitDTO);
                     }
 
-                    await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commission.Id, commissionLevies, GetServiceHeader());
+                    await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commission.Id, commissionSplits, GetServiceHeader());
                 }
 
                 return RedirectToAction("Index");
