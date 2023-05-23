@@ -29,11 +29,11 @@ namespace DistributedServices.MainBoundedContext
 
         #region Chart Of Account
 
-        public async Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize)
+        public Task<PageCollectionInfo<ChartOfAccountDTO>> FindChartOfAccountsByFilterInPageAsync(string text, int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
-            return await  _chartOfAccountAppService.FindChartOfAccountsAsync(text, pageIndex, pageSize, serviceHeader);
+            return Task.FromResult(_chartOfAccountAppService.FindChartOfAccounts(text, pageIndex, pageSize, serviceHeader));
         }
 
         public List<ChartOfAccountDTO> FindChartOfAccounts()

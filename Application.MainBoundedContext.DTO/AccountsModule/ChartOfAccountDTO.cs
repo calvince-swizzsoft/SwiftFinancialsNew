@@ -28,6 +28,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Parent")]
         public ChartOfAccountDTO Parent { get; set; }
 
+        [Display(Name = "Parent Account Name")]
+        public string ParentAccountName { get; set; }
+
         [DataMember]
         [Display(Name = "Cost Center")]
         [ValidGuid]
