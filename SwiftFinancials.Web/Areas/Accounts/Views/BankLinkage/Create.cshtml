@@ -50,21 +50,21 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
+                <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "BankLinkage", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <div class="col-lg-8">                                <div class="form-group form-group-sm">
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-sm">
                                     @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank name ", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Branch name ", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.BankBranchName, "", new { @class = "text-danger" })
                                 </div>
@@ -76,7 +76,7 @@
                                 </div>
 
                                 <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                 </div>
