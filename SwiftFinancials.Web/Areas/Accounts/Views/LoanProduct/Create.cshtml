@@ -51,7 +51,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
@@ -61,60 +61,56 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestCalculationMode, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "form-control", placeholder = "Interest Calculation Mode" } })
                                         @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", placeholder = "Term in Months" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanInterestRecoveryMode, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.EditorFor(model => model.LoanInterestRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "Interest Recovery Mode" } })
                                         @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountAccountType, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.InterestReceivedChartOfAccountAccountType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
-                                        @Html.ValidationMessageFor(model => model.InterestReceivedChartOfAccountAccountType, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.InterestReceivedChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "InterestReceivedChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.InterestReceivedChartOfAccountId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountAccountCode, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.InterestReceivedChartOfAccountAccountCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
-                                        @Html.ValidationMessageFor(model => model.InterestReceivedChartOfAccountAccountCode, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.InterestReceivableChartOfAccountId, htmlAttributes: new { @class = "" })
+                                        @Html.HiddenFor(model=> model.InterestReceivableChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "InterestReceivableChartOfAccountsLookup form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.InterestReceivableChartOfAccountId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountAccountName, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.InterestReceivedChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
-                                        @Html.ValidationMessageFor(model => model.InterestReceivedChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "InterestChargedChartOfAccountsLookup form-control", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestReceivableChartOfAccountAccountName, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.InterestReceivableChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
-                                        @Html.ValidationMessageFor(model => model.InterestReceivableChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountAccountType, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountType, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
-                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountType, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountName, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
-                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountAccountCode, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.InterestChargedChartOfAccountAccountCode, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
-                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountAccountCode, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.TakeHomeType, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.EditorFor(model => model.TakeHomeType, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
                                         @Html.ValidationMessageFor(model => model.TakeHomeType, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>More Details</h1>
+                        <fieldset>
+                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "" })
@@ -128,18 +124,13 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationGracePeriod, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "COA Name" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationGracePeriod, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationMinimumMembershipPeriod, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationMinimumMembershipPeriod, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumMembershipPeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumMembershipPeriod, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
-                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "" })
@@ -153,14 +144,16 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "COA Name" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationMinimumInterestAmount, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumInterestAmount, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.LoanRegistrationLoanProductSection, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
@@ -178,12 +171,12 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @class = "form-control", placeholder = "COA Name" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationMinimumGuarantors, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationMinimumGuarantors, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumGuarantors, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumGuarantors, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
@@ -218,7 +211,7 @@
     @Scripts.Render("~/plugins/typehead")
 
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -287,20 +280,20 @@
                 }
             });
 
-             //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
+             //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
                         { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
                             });
-                            process(newPostingPeriodsData); return;
+                            process(newChartOfAccountsData); return;
                         });
                 },
                 matcher: function (item) {
@@ -316,28 +309,28 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
+                    var ChartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
                     return item;
                 }
             });
 
-            //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
+              //InterestReceivedChartOfAccount typehead starts here
+            $('.InterestReceivedChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
                         { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
                             });
-                            process(newBranchesData); return;
+                            process(newChartOfAccountsData); return;
                         });
                 },
                 matcher: function (item) {
@@ -353,12 +346,87 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
+                    var ChartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#InterestReceivedChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
                     return item;
                 }
             });
-        });</script>
+
+              //InterestReceivableChartOfAccount typehead starts here
+            $('.InterestReceivableChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ChartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#InterestReceivableChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+
+              //InterestChargedChartOfAccount typehead starts here
+            $('.InterestChargedChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ChartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#InterestChargedChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+          });
+</script>
 }

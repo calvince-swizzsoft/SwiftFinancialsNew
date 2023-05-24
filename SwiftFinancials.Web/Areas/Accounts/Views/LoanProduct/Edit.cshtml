@@ -1,17 +1,17 @@
-﻿@model Application.MainBoundedContext.DTO.AccountsModule.BudgetDTO
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.LoanProductDTO
 
 @{
-    ViewBag.Title = "Edit Budgets";
+    ViewBag.Title = "Edit Loan Products";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Budgets</h2>
+        <h2>Loan Products</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Budget", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "LoanProduct", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Edit</strong>
@@ -35,41 +35,153 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Edit", "Budget", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Edit", "LoanProduct", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-
                         <h1>Primary Details</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "BudgetsLookup form-control required", placeholder = "Posting Period" } })
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BudgetsLookup form-control required", placeholder = "Branch Name" } })
-                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Budget Name" } })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
-                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanInterestCalculationMode, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "form-control", placeholder = "Interest Calculation Mode" } })
+                                        @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", placeholder = "Term in Months" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanInterestRecoveryMode, new { htmlAttributes = new { @class = "form-control", placeholder = "Interest Recovery Mode" } })
+                                        @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.InterestReceivedChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "InterestReceivedChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.InterestReceivedChartOfAccountId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.InterestReceivableChartOfAccountId, htmlAttributes: new { @class = "" })
+                                        @Html.HiddenFor(model => model.InterestReceivableChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "InterestReceivableChartOfAccountsLookup form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.InterestReceivableChartOfAccountId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId)
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "InterestChargedChartOfAccountsLookup form-control", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.TakeHomeType, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
+                                        @Html.ValidationMessageFor(model => model.TakeHomeType, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>More Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationPaymentDueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentDueDate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationPaymentFrequencyPerYear, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentFrequencyPerYear, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationGracePeriod, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationGracePeriod, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMinimumMembershipPeriod, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumMembershipPeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumMembershipPeriod, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanInterestChargeMode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.LoanInterestChargeMode, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMinimumAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMinimumInterestAmount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumInterestAmount, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationLoanProductSection, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductCategory, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationLoanProductCategory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductCategory, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationConsecutiveIncome, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationConsecutiveIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationConsecutiveIncome, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @class = "form-control", placeholder = "COA Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMinimumGuarantors, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMinimumGuarantors, new { htmlAttributes = new { @class = "form-control", placeholder = "Branch Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumGuarantors, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMaximumGuarantees, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMaximumGuarantees, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Product Name" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumGuarantees, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
@@ -77,7 +189,7 @@
                     }
 
                     <div>
-                        @Html.ActionLink("Back to List", "Index", "Budget", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                        @Html.ActionLink("Back to List", "Index", "LoanProduct", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                     </div>
                 </div>
             </div>

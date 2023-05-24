@@ -1,17 +1,17 @@
-﻿@model Application.MainBoundedContext.DTO.AccountsModule.BudgetDTO
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.LoanProductDTO
 
 @{
     ViewBag.Title = "Details";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Budgets</h2>
+        <h2>Loan Products</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Budget", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "LoanProduct", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>View</strong>
@@ -38,25 +38,118 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.PostingPeriodDescription)<br></strong>
-
-                                @Html.DisplayFor(model => model.PostingPeriodDescription)<br>
-                            </p>
-
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BranchDescription)<br></strong>
-
-                                @Html.DisplayFor(model => model.BranchDescription)<br>
-                            </p>
-                            <p>
                                 <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
 
                                 @Html.DisplayFor(model => model.Description)<br>
                             </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TotalValue)<br></strong>
 
-                                @Html.DisplayFor(model => model.TotalValue)<br>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)<br></strong>
+
+                                @Html.DisplayFor(model => model.ChartOfAccountAccountName)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Code)<br></strong>
+
+                                @Html.DisplayFor(model => model.Code)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanInterestCalculationMode)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanInterestCalculationMode)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationTermInMonths)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationTermInMonths)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanInterestRecoveryMode)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanInterestRecoveryMode)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanInterestAnnualPercentageRate)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanInterestAnnualPercentageRate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.TakeHomeType)<br></strong>
+
+                                @Html.DisplayFor(model => model.TakeHomeType)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationPaymentDueDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationPaymentDueDate)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationPaymentFrequencyPerYear)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationPaymentFrequencyPerYear)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationGracePeriod)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationGracePeriod)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMinimumMembershipPeriod)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationMinimumMembershipPeriod)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanInterestChargeMode)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanInterestChargeMode)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMinimumAmount)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationMinimumAmount)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMaximumAmount)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationMaximumAmount)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMinimumInterestAmount)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationMinimumInterestAmount)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationLoanProductSection)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationLoanProductSection)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationLoanProductCategory)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationLoanProductCategory)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationConsecutiveIncome)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationConsecutiveIncome)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationInvestmentsMultiplier)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationInvestmentsMultiplier)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMinimumGuarantors)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationMinimumGuarantors)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMaximumGuarantees)<br></strong>
+
+                                @Html.DisplayFor(model => model.LoanRegistrationMaximumGuarantees)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
@@ -69,8 +162,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <p>
-                                @Html.ActionLink("Edit", "Edit", "Budget", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Budget", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Edit", "Edit", "LoanProduct", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "LoanProduct", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                             </p>
                         </div>
                     </div>
