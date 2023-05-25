@@ -304,6 +304,7 @@
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
@@ -767,7 +768,6 @@
     <Content Include="Areas\Accounts\Views\UnPayReason\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\UnPayReason\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Edit.cshtml" />
@@ -779,6 +779,11 @@
     <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

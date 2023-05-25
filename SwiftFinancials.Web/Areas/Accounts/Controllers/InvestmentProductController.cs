@@ -1,5 +1,4 @@
-﻿
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -11,7 +10,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class InsuranceCompanyController : MasterController
+    public class InvestmentProductController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -21,7 +20,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        /*public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -31,7 +30,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindInsuranceCompanysByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindInvestmentProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -41,16 +40,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<InsuranceCompanyDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }*/
+            else return this.DataTablesJson(items: new List<InvestmentProductDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var insuranceCompanyDTO = await _channelService.FindInsuranceCompanyAsync(id, GetServiceHeader());
+            var investmentProductDTO = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
 
-            return View(insuranceCompanyDTO);
+            return View(investmentProductDTO);
         }
         public async Task<ActionResult> Create()
         {
@@ -60,21 +59,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(InsuranceCompanyDTO insuranceCompanyDTO)
+        public async Task<ActionResult> Create(InvestmentProductDTO investmentProductDTO)
         {
-            insuranceCompanyDTO.ValidateAll();
+            investmentProductDTO.ValidateAll();
 
-            if (!insuranceCompanyDTO.HasErrors)
+            if (!investmentProductDTO.HasErrors)
             {
-                await _channelService.AddInsuranceCompanyAsync(insuranceCompanyDTO, GetServiceHeader());
+                await _channelService.AddInvestmentProductAsync(investmentProductDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = insuranceCompanyDTO.ErrorMessages;
+                var errorMessages = investmentProductDTO.ErrorMessages;
 
-                return View(insuranceCompanyDTO);
+                return View(investmentProductDTO);
             }
         }
 
@@ -82,33 +81,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var insuranceCompanyDTO = await _channelService.FindInsuranceCompanyAsync(id, GetServiceHeader());
+            var investmentProductDTO = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
 
-            return View(insuranceCompanyDTO);
+            return View(investmentProductDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, InsuranceCompanyDTO insuranceCompanyBindingModel)
+        public async Task<ActionResult> Edit(Guid id, InvestmentProductDTO investmentProductBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateInsuranceCompanyAsync(insuranceCompanyBindingModel, GetServiceHeader());
+                await _channelService.UpdateInvestmentProductAsync(investmentProductBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(insuranceCompanyBindingModel);
+                return View(investmentProductBindingModel);
             }
         }
 
-       /* [HttpGet]
-        public async Task<JsonResult> GetInsuranceCompanysAsync()
+        [HttpGet]
+        public async Task<JsonResult> GetInvestmentProductsAsync()
         {
-            var insuranceCompanyDTOs = await _channelService.FindInsuranceCompanysAsync(GetServiceHeader());
+            var investmentProductDTOs = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
 
-            return Json(insuranceCompanyDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+            return Json(investmentProductDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }

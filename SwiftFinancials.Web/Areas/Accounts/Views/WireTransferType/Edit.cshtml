@@ -2,11 +2,11 @@
 @model Application.MainBoundedContext.DTO.AccountsModule.WireTransferTypeDTO
 
 @{
-    ViewBag.Title = "Edit Wire TransferType";
+    ViewBag.Title = "Edit Wire Transfer Type";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Debit Type</h2>
+        <h2>Wire Transfer Type</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -166,6 +166,7 @@
                     }
                 }
             });
-        });</script>
+        });
+    </script>
 }
 

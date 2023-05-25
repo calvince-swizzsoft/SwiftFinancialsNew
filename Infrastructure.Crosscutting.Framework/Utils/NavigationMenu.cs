@@ -80,7 +80,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Fixed Deposit Types", Icon="fa fa-usb", ControllerName="FixedDepositType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Wire Transfer Types", Icon="fa fa-comments", ControllerName="WireTransferType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "UnPay Reasons", Icon="fa fa-usd", ControllerName="UnPayReason", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
-
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Insurance Company", Icon="fa fa-paperclip", ControllerName="InsuranceCompany", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 20},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Investment Product", Icon="fa fa-tasks", ControllerName="InvestmentProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 21},
 
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
@@ -92,7 +93,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Remarks", Icon="fa fa-bars", ControllerName="LoaningRemark", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 4},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Income Adjustments", Icon="fa fa-bars", ControllerName="IncomeAdjustment", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 5},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Requests", Icon="fa fa-book", ControllerName="LoanRequest", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Productss", Icon="fa fa-calculator", ControllerName="LoanProduct", ActionName="Index", AreaName = "Accounts", Code = 0x00005DC0 + 7},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 1, IsArea = false, Description = "Loaning Products", Icon="fa fa-calculator", ControllerName="LoanProduct", ActionName="Index", AreaName = "Accounts", Code = 0x00005DC0 + 7},
 
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Applications", Icon="fa fa-bars", ControllerName="Application", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-bars", ControllerName="Loaning", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 7},

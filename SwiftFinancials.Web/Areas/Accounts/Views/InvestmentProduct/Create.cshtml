@@ -1,22 +1,20 @@
-﻿
-
-@model  Application.MainBoundedContext.DTO.AccountsModule.InsuranceCompanyDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.InvestmentProductDTO
 
 @{
     /**/
 
-    ViewBag.Title = "Create Insurance Company";
+    ViewBag.Title = "Create Investment Product";
 }
 
-<div class="row wrapper border-bottom bg-muted page-heading">
-    <div class="col-lg-10">
-        <h2>Insurance Company</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Investment Product</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "InsuranceCompany", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "InvestmentProduct", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -36,7 +34,7 @@
     </div>
 }
 
-<div class="wrapper wrapper-content bg-white">
+<div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
@@ -51,7 +49,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "InsuranceCompany", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "InvestmentProduct", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
@@ -65,75 +63,51 @@
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance" } })
+                                        @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
-                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterId, new { htmlAttributes = new { @class = "CostCentersLookup form-control required", placeholder = "Cost Center Description" } })
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
+
+                                        @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaximumBalance" } })
+
+                                        @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
-                                        @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-                                        @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "" })
 
-                                        @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
+                                        @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recovery Priority" } })
 
-                                        @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
-                                    </div>                                   
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Addres line" } })
-
-                                        @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                                        @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "" })
+
+                                        @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maturity Period (Days)" } })
+
+                                        @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "" })
+
+                                        @Html.EditorFor(model => model.ParentId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Parent" } })
+
+                                        @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "" });
+
+                                        @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield" } });
+
+                                        @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" });
                                     </div>
                                 </div>
                                 <div class="form-group form-group-sm">
@@ -229,7 +203,7 @@
                     }
                 }
             });
-     //ChartOfAccount typehead starts here
+               //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
@@ -301,6 +275,5 @@
                     return item;
                 }
             });
-        });
-    </script>
+            }); </script>
 }
