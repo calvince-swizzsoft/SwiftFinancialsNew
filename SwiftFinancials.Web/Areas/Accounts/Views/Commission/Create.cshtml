@@ -54,11 +54,6 @@
                                         @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RoundingType, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.RoundingType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Rounding Type" } })
-                                        @Html.ValidationMessageFor(model => model.RoundingType, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
@@ -71,25 +66,25 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.LabelFor(model => model.CommissionSplit.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CommissionSplit.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.CommissionSplit.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CommissionSplit.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CommissionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Commission Split", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CommissionSplits[0].CommissionDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CommissionSplits[0].CommissionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Commission Split", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CommissionSplits[0].CommissionDescription, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplitsTotalPercentage, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CommissionSplitsTotalPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Percentage", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplitsTotalPercentage, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CommissionSplits[0].Percentage, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CommissionSplits[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Percentage", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CommissionSplits[0].Percentage, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.Leviable, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Leviable?" } })
-                                        @Html.ValidationMessageFor(model => model.Leviable, "", new { @class = "text-danger" })
+                                        @Html.CheckBoxFor(model => model.CommissionSplits[0].Leviable, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.CommissionSplits[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Leviable?" } })
+                                        @Html.ValidationMessageFor(model => model.CommissionSplits[0].Leviable, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -101,9 +96,9 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LevyId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LevyId)
-                                        @Html.ValidationMessageFor(model => model.LevyId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CommissionLevy.LevyId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CommissionLevy.LevyId)
+                                        @Html.ValidationMessageFor(model => model.CommissionLevy.LevyId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.Levy.Description, new { htmlAttributes = new { @class = "LeviesLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>

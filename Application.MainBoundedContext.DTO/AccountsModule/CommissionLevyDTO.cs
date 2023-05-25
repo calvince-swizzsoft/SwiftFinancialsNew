@@ -40,5 +40,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
+       
     }
 }
