@@ -1,7 +1,7 @@
 ﻿
 
 @{
-    ViewBag.Title = "Debit Type";
+    ViewBag.Title = "Wire Transfer Type";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -46,7 +46,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Debit Type", "Create", "WireTransferType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                        @Html.ActionLink("Create Wire Transfer Type", "Create", "WireTransferType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -92,11 +92,13 @@
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
-        });
 
+            });
+        });
+    </script>
+}

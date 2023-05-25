@@ -11,7 +11,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Cost Center</h2>
+        <h2>Wire Transfer Type</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -51,7 +51,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
+                <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "WireTransferType", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -59,7 +59,7 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <h1>Company Linkage</h1>
+                            <h1>Wire Transfer Type</h1>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-8">
@@ -179,7 +179,7 @@
                 }
             });
 
-     //ChartOfAccount typehead starts here
+            //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
@@ -215,6 +215,7 @@
                     return item;
                 }
             });
-        });</script>
+        });
+    </script>
 }
 
