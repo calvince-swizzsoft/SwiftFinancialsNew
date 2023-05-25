@@ -71,35 +71,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 var commission = await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
 
                 if (commission != null)
-
                 {
                     //Update CommissionSplits
 
                     var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
 
-                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
+                    if (commissionDTO.CommissionSplits.Any())
                     {
-                        commissionSplitDTO.CommissionId = commission.Id;
+                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
+                        {
+                            commissionSplitDTO.CommissionId = commission.Id;
 
-                        commissionSplits.Add(commissionSplitDTO);
+                            commissionSplits.Add(commissionSplitDTO);
+                        }
+
+                        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commission.Id, commissionSplits, GetServiceHeader());
                     }
-
-                    await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commission.Id, commissionSplits, GetServiceHeader());
 
                     //Update CommissionLevies
 
                     var commissionLevies = new ObservableCollection<CommissionLevyDTO>();
 
-                    foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
+                    if (commissionDTO.CommissionLevies.Any())
                     {
-                        commissionLevyDTO.CommissionId = commission.Id;
+                        foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
+                        {
+                            commissionLevyDTO.CommissionId = commission.Id;
 
-                        commissionLevies.Add(commissionLevyDTO);
+                            commissionLevies.Add(commissionLevyDTO);
+                        }
+
+                        await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commission.Id, commissionLevies, GetServiceHeader());
                     }
-
-                    await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commission.Id, commissionLevies, GetServiceHeader());
-
-
                 }
 
                 return RedirectToAction("Index");

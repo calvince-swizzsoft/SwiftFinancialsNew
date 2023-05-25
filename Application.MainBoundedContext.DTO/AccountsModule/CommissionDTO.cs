@@ -49,44 +49,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
-
-        [DataMember]
-        [Display(Name = "Commission")]
-        public Guid CommissionId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Commission Name")]
-        public string CommissionDescription { get; set; }
-
-        [DataMember]
-        [Display(Name = "G/L Account")]
-        [ValidGuid]
-        public Guid ChartOfAccountId { get; set; }
-        [DataMember]
-        [Display(Name = "G/L Account Type")]
-        public int ChartOfAccountAccountType { get; set; }
-
-        [DataMember]
-        [Display(Name = "G/L Account Name")]
-        public string ChartOfAccountAccountName { get; set; }
-
-        [DataMember]
-        [Display(Name = "Commission Splits Total Percentage")]
-        [CustomValidation(typeof(CommissionDTO), "CheckCommissionSplitsTotalPercentage", ErrorMessage = "The sum of commission split percentage entries must be equal to 100%!")]
-        public double CommissionSplitsTotalPercentage { get; set; }
-
+               
         [DataMember]
         [Display(Name = "Leviable?")]
         public bool Leviable { get; set; }
-
-        [DataMember]
-        [Display(Name = "Levy")]
-        [ValidGuid]
-        public Guid LevyId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Levy")]
-        public LevyDTO Levy { get; set; }
 
         [DataMember]
         [Display(Name = "Charge Benefactor")]
@@ -162,17 +128,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
-        public static ValidationResult CheckCommissionSplitsTotalPercentage(object value, ValidationContext context)
-        {
-            var bindingModel = context.ObjectInstance as CommissionDTO;
-            if (bindingModel == null)
-                throw new NotSupportedException("ObjectInstance must be CommissionDTO");
-
-            if ((double)value != 100d)
-                return new ValidationResult(string.Format("The sum of commission split percentage entries ({0}) must be equal to 100%!", value));
-
-            return ValidationResult.Success;
-        }
         public IList<LevyDTO> Levies { get; set; }
 
         public IList<LevySplitDTO> LevySplits { get; set; }

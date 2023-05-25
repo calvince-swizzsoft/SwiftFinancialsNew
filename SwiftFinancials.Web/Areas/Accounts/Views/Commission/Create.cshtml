@@ -99,7 +99,7 @@
                                         @Html.LabelFor(model => model.CommissionLevy.LevyId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CommissionLevy.LevyId)
                                         @Html.ValidationMessageFor(model => model.CommissionLevy.LevyId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.Levy.Description, new { htmlAttributes = new { @class = "LeviesLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.CommissionLevy.Levy.Description, new { htmlAttributes = new { @class = "LeviesLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
                             </div>
