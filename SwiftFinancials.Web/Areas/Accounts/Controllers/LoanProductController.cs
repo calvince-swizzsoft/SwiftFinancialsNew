@@ -6,14 +6,14 @@ using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
-using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class PostingPeriodController : MasterController
+    public class LoanProductController : MasterController
     {
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -22,7 +22,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        /*public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -32,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindPostingPeriodsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -42,16 +42,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<PostingPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
+            else return this.DataTablesJson(items: new List<LoanProductDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }*/
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var postingPeriodDTO = await _channelService.FindPostingPeriodAsync(id, GetServiceHeader());
+            var loanProductDTO = await _channelService.FindLoanProductAsync(id, GetServiceHeader());
 
-            return View(postingPeriodDTO);
+            return View(loanProductDTO);
         }
 
         public async Task<ActionResult> Create()
@@ -62,29 +62,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(PostingPeriodDTO postingPeriodDTO)
+        public async Task<ActionResult> Create(LoanProductDTO LoanProductDTO)
         {
-            var startDate = Request["startDate"];
+            LoanProductDTO.ValidateAll();
 
-            var endDate = Request["endDate"];
-
-            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
-
-            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
-
-            postingPeriodDTO.ValidateAll();
-
-            if (!postingPeriodDTO.HasErrors)
+            if (!LoanProductDTO.HasErrors)
             {
-                await _channelService.AddPostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());
+                await _channelService.AddLoanProductAsync(LoanProductDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = postingPeriodDTO.ErrorMessages;
+                var errorMessages = LoanProductDTO.ErrorMessages;
 
-                return View(postingPeriodDTO);
+                return View(LoanProductDTO);
             }
         }
 
@@ -92,33 +84,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var postingPeriodDTO = await _channelService.FindPostingPeriodAsync(id, GetServiceHeader());
+            var loanProductDTO = await _channelService.FindLoanProductAsync(id, GetServiceHeader());
 
-            return View(postingPeriodDTO.MapTo<PostingPeriodDTO>());
+            return View(loanProductDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, PostingPeriodDTO postingPeriodDTO)
+        public async Task<ActionResult> Edit(Guid id, LoanProductDTO loanProductBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());
+                await _channelService.UpdateLoanProductAsync(loanProductBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(postingPeriodDTO);
+                return View(loanProductBindingModel);
             }
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetPostingPeriodsAsync()
+        public async Task<JsonResult> GetLoanProductsAsync()
         {
-            var postingPeriodsDTOs = await _channelService.FindPostingPeriodsAsync(GetServiceHeader());
+            var loanProductsDTOs = await _channelService.FindLoanProductsAsync(GetServiceHeader());
 
-            return Json(postingPeriodsDTOs, JsonRequestBehavior.AllowGet);
+            return Json(loanProductsDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

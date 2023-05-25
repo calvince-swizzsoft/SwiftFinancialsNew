@@ -63,15 +63,15 @@
                             @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group form-group-lg">
-                            @Html.LabelFor(model => model.ProductCode, new { @class = "control-label" })
+                            @Html.LabelFor(model => model.CustomerAccountTypeProductCode, new { @class = "control-label" })
                             <div class="input-group">
                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                @Html.DropDownListFor(model => model.ProductCode, productCodes, new { @class = "form-control input-md" })
-                                @Html.ValidationMessageFor(model => model.ProductCode)
+                                @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCodes, new { @class = "form-control input-md" })
+                                @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode)
                             </div>
                         </div>
                         <div class="form-group form-group-lg">
-                            @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-labe" })
+                            @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-label" })
                             @Html.HiddenFor(model => model.SavingsProductId)
                             @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
                             @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Description.." } })

@@ -64,5 +64,10 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFetchBudgetBalanceByBranchId(Guid branchId, int type, Guid typeIdentifier, AsyncCallback callback, Object state);
         decimal EndFetchBudgetBalanceByBranchId(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginUpdateBudgetEntriesByBudgetId(Guid budgetId, List<BudgetEntryDTO> budgetEntries, AsyncCallback callback, Object state);
+        bool EndUpdateBudgetEntriesByBudgetId(IAsyncResult result);
     }
 }

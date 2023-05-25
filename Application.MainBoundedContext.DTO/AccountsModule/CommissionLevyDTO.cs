@@ -1,6 +1,7 @@
 ﻿using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -38,5 +39,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
     }
 }

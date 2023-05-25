@@ -1,6 +1,8 @@
 ﻿using Application.Seedwork;
+using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -49,9 +51,42 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime CreatedDate { get; set; }
 
         [DataMember]
+        [Display(Name = "Commission")]
+        public Guid CommissionId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Commission Name")]
+        public string CommissionDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account")]
+        [ValidGuid]
+        public Guid ChartOfAccountId { get; set; }
+        [DataMember]
+        [Display(Name = "G/L Account Type")]
+        public int ChartOfAccountAccountType { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account Name")]
+        public string ChartOfAccountAccountName { get; set; }
+
+        [DataMember]
         [Display(Name = "Commission Splits Total Percentage")]
         [CustomValidation(typeof(CommissionDTO), "CheckCommissionSplitsTotalPercentage", ErrorMessage = "The sum of commission split percentage entries must be equal to 100%!")]
         public double CommissionSplitsTotalPercentage { get; set; }
+
+        [DataMember]
+        [Display(Name = "Leviable?")]
+        public bool Leviable { get; set; }
+
+        [DataMember]
+        [Display(Name = "Levy")]
+        [ValidGuid]
+        public Guid LevyId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Levy")]
+        public LevyDTO Levy { get; set; }
 
         [DataMember]
         [Display(Name = "Charge Benefactor")]
@@ -138,5 +173,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
             return ValidationResult.Success;
         }
+        public IList<LevyDTO> Levies { get; set; }
+
+        public IList<LevySplitDTO> LevySplits { get; set; }
+
+        public IList<CommissionLevyDTO> CommissionLevies { get; set; }
+
+        public IList<CommissionSplitDTO> CommissionSplits { get; set; }
     }
 }

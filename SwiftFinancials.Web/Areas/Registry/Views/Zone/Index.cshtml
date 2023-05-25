@@ -84,17 +84,20 @@
                     var editUrl = '<a  href="/registry/Zone/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/registry/Zone/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "DivisionDescription", "sTitle": "Division", "sWidth": "15%" },
+                    { "mDataProp": "Description", "sTitle": "Zone", "sWidth": "10%" },
+                    { "mDataProp": "DivisionDescription", "sTitle": "Division", "sWidth": "10%" },
                     { "mDataProp": "DivisionEmployerDescription", "sTitle": "Employer ", "sWidth": "10%" },
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "Stations[0].Description", "sTitle": "Station", "sWidth": "10%" },
+                    { "mDataProp": "Stations[0].AddressEmail", "sTitle": "Station Email ", "sWidth": "15%" },
+                    { "mDataProp": "Stations[0].AddressMobileLine", "sTitle": "Station Mobile No:", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
@@ -107,5 +110,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }

@@ -21,6 +21,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Posting Period", "Create", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -45,7 +46,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Posting Period", "Create", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -81,25 +81,42 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
+                    var startDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + startDate.getHours()).slice(-2);
+                    var m = ("0" + startDate.getMinutes()).slice(-2);
+                    var s = ("0" + startDate.getSeconds()).slice(-2);
+
+                    var dt_StartDate = $.datepicker.formatDate('dd/mm/yy', startDate) ;
+                    aData.DurationStartDate = dt_StartDate;
+
+                    var endDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + endDate.getHours()).slice(-2);
+                    var m = ("0" + endDate.getMinutes()).slice(-2);
+                    var s = ("0" + endDate.getSeconds()).slice(-2);
+
+                    var dt_EndDate = $.datepicker.formatDate('dd/mm/yy', endDate) ;
+                    aData.DurationEndDate = dt_EndDate;
+
                     var editUrl = '<a  href="/accounts/PostingPeriod/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/PostingPeriod/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(1)', nRow).html(dt_StartDate);
+                    $('td:eq(2)', nRow).html(dt_EndDate);                    
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Posting Period Name", "sWidth": "15%" },
-                    { "mDataProp": "DurationStartDate", "sTitle": "Start Date", "sWidth": "10%", },
-                    { "mDataProp": "DurationEndDate", "sTitle": "End Date", "sWidth": "15%" },
-                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
-                    { "mDataProp": "ClosedDate", "sTitle": "Closed Date:", "sWidth": "15%", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "Description", "sTitle": "Description" },
+                    { "mDataProp": "DurationStartDate", "sTitle": "Start Date"},
+                    { "mDataProp": "DurationEndDate", "sTitle": "End Date"},
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {

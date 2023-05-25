@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -66,15 +68,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             budgetDTO.ValidateAll();
 
-            if (!budgetDTO.HasErrors)
+            if (!budgetDTO.ErrorMessages.Any())
             {
-                await _channelService.AddBudgetAsync(budgetDTO, GetServiceHeader());
+                var budget = await _channelService.AddBudgetAsync(budgetDTO.MapTo<BudgetDTO>(), GetServiceHeader());
+
+                if (budget != null)
+                {
+                    //Update BudgetEntries
+
+                    var budgetEntries = new ObservableCollection<BudgetEntryDTO>();
+
+                    foreach (var budgetEntryDTO in budgetDTO.BudgetEntries)
+                    {
+                        budgetEntryDTO.BudgetId = budget.Id;
+
+                        budgetEntries.Add(budgetEntryDTO);
+                    }
+
+                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetEntries, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = budgetDTO.ErrorMessages;
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                TempData["Error"] = string.Join(",", allErrors);
 
                 return View(budgetDTO);
             }

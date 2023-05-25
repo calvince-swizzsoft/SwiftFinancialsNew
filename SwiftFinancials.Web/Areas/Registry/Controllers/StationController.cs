@@ -60,37 +60,38 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View();
         }
 
-        [HttpPost]
-       /* public async Task<ActionResult> Create(StationBindingModel stationBindingModel)
-        {
-            stationBindingModel.ValidateAll();
+        //[HttpPost]
+        //public async Task<ActionResult> Create(StationBindingModel stationBindingModel)
+        //{
+        //    stationBindingModel.ValidateAll();
 
-            if (!stationBindingModel.HasErrors)
-            {
-                await _channelService.AddStationAsync(stationBindingModel, GetServiceHeader());
+        //    if (!stationBindingModel.HasErrors)
+        //    {
+        //        await _channelService.AddStationAsync(stationBindingModel, GetServiceHeader());
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = stationBindingModel.ErrorMessages;
+        //        return RedirectToAction("Index");
+        //    }
+        //    else
+        //    {
+        //        var errorMessages = stationBindingModel.ErrorMessages;
 
-                return View(stationBindingModel);
-            }
-        }*/
+        //        return View(stationBindingModel);
+        //    }
+        //}
 
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
+        //public async Task<ActionResult> Edit(Guid id)
+        //{
+        //    await ServeNavigationMenus();
 
-            var stationDTO = await _channelService.FindStationAsync(id, GetServiceHeader());
+        //    var stationDTO = await _channelService.FindStationAsync(id, GetServiceHeader());
 
-            return View(stationDTO);
-        }
+        //    return View(stationDTO);
+        //}
 
+        /*
         [HttpPost]
         [ValidateAntiForgeryToken]
-        /*public async Task<ActionResult> Edit(Guid id, StationBindingModel stationBindingModel)
+        public async Task<ActionResult> Edit(Guid id, StationBindingModel stationBindingModel)
         {
             stationBindingModel.ValidateAll();
 

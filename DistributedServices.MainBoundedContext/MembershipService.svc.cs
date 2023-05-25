@@ -61,6 +61,9 @@ namespace DistributedServices.MainBoundedContext
             _applicationUserManager.UserTokenProvider = new DataProtectorTokenProvider<ApplicationUser>(_provider.Create());
         }
 
+        public MembershipService()
+        { }
+
         public PageCollectionInfo<UserDTO> FindMembershipByFilterInPage(string text, int pageIndex, int pageSize, List<string> sortFields, bool sortAscending)
         {
             var applicationUserPagedCollection = ProjectionsExtensionMethods.AllMatchingPaged(_applicationUserManager.Users, ApplicationSpecifications.ApplicationUsersWithText(text), pageIndex, pageSize, sortFields, sortAscending);

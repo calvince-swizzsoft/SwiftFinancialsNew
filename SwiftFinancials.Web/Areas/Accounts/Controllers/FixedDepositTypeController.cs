@@ -1,6 +1,4 @@
-﻿
-
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -60,56 +58,56 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        //        [HttpPost]
-        //        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO)
-        //        {
-        //            fixedDepositTypeDTO.ValidateAll();
+        [HttpPost]
+        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO)
+        {
+            fixedDepositTypeDTO.ValidateAll();
 
-        //            if (!fixedDepositTypeDTO.HasErrors)
-        //            {
-        //                object p = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, GetServiceHeader());
+            if (!fixedDepositTypeDTO.HasErrors)
+            {
+                await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO,true);
 
-        //                return RedirectToAction("Index");
-        //            }
-        //            else
-        //            {
-        //                var errorMessages = fixedDepositTypeDTO.ErrorMessages;
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = fixedDepositTypeDTO.ErrorMessages;
 
-        //                return View(fixedDepositTypeDTO);
-        //            }
-        //        }
+                return View(fixedDepositTypeDTO);
+            }
+        }
 
-        //        public async Task<ActionResult> Edit(Guid id)
-        //        {
-        //            await ServeNavigationMenus();
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
 
-        //            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(id, GetServiceHeader());
+            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(id, GetServiceHeader());
 
-        //            return View(fixedDepositTypeDTO);
-        //        }
+            return View(fixedDepositTypeDTO);
+        }
 
-        //        [HttpPost]
-        //        [ValidateAntiForgeryToken]
-        //        public async Task<ActionResult> Edit(Guid id, FixedDepositTypeDTO fixedDepositTypeBindingModel)
-        //        {
-        //            if (ModelState.IsValid)
-        //            {
-        //                await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel, GetServiceHeader());
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, FixedDepositTypeDTO fixedDepositTypeBindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel,true);
 
-        //                return RedirectToAction("Index");
-        //            }
-        //            else
-        //            {
-        //                return View(fixedDepositTypeBindingModel);
-        //            }
-        //        }
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(fixedDepositTypeBindingModel);
+            }
+        }
 
-        //        //[HttpGet]
-        //        //public async Task<JsonResult> GetFixedDepositTypesAsync()
-        //        //{
-        //        //    var fixedDepositTypeDTOs = await _channelService.FindFixedDepositTypesAsync(GetServiceHeader());
+       /* [HttpGet]
+        public async Task<JsonResult> GetFixedDepositTypesAsync()
+        {
+            var fixedDepositTypeDTOs = await _channelService.FindFixedDepositTypesAsync(GetServiceHeader());
 
-        //        //    return Json(fixedDepositTypeDTOs, JsonRequestBehavior.AllowGet);
-        //        //}
+            return Json(fixedDepositTypeDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
 }

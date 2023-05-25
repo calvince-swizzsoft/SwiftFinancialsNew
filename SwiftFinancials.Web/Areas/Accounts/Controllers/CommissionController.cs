@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
@@ -66,15 +66,34 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             commissionDTO.ValidateAll();
 
-            if (!commissionDTO.HasErrors)
+            if (!commissionDTO.ErrorMessages.Any())
             {
-                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                var commission = await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+
+                if (commission != null)
+
+                {
+                    //Update CommissionSplits
+
+                    var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
+
+                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
+                    {
+                        commissionSplitDTO.CommissionId = commission.Id;
+
+                        commissionSplits.Add(commissionSplitDTO);
+                    }
+
+                    await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commission.Id, commissionSplits, GetServiceHeader());
+                }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = commissionDTO.ErrorMessages;
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                TempData["Error"] = string.Join(",", allErrors);
 
                 return View(commissionDTO);
             }
@@ -84,9 +103,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var CommissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
+            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
-            return View(CommissionDTO.MapTo<CommissionDTO>());
+            return View(commissionDTO);
         }
 
         [HttpPost]
@@ -95,7 +114,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

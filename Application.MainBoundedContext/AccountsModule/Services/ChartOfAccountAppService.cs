@@ -68,6 +68,30 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+        public PageCollectionInfo<ChartOfAccountDTO> FindChartOfAccounts(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = ChartOfAccountSpecifications.ChartOfAccountFullText(text);
+
+                ISpecification<ChartOfAccount> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var chartOfAccountCollection = _chartOfAccountRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (chartOfAccountCollection != null)
+                {
+                    var pageCollection = chartOfAccountCollection.PageCollection.ProjectedAsCollection<ChartOfAccountDTO>();
+
+                    var itemsCount = chartOfAccountCollection.ItemsCount;
+
+                    return new PageCollectionInfo<ChartOfAccountDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
         public ChartOfAccountDTO AddNewChartOfAccount(ChartOfAccountDTO chartOfAccountDTO, ServiceHeader serviceHeader)
         {
             if (chartOfAccountDTO != null)

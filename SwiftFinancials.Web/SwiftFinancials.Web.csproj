@@ -79,10 +79,10 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -306,6 +306,7 @@
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsProductCommissionController.cs" />
@@ -325,9 +326,6 @@
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
-    <Compile Include="Areas\Client\ClientAreaRegistration.cs" />
-    <Compile Include="Areas\Client\Controllers\CustomerController.cs" />
-    <Compile Include="Areas\Client\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
@@ -602,14 +600,7 @@
     <Content Include="Areas\Messaging\Views\web.config" />
     <Content Include="Areas\Messaging\Views\TextAlert\Index.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailAlert\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Create.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Edit.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Details.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Create.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Edit.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Index.cshtml" />
     <Content Include="Content\summernote\font\summernote.woff" />
@@ -623,7 +614,6 @@
     <Content Include="Areas\Messaging\Views\EmailAlert\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\TextAlert\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\web.config" />
-    <Content Include="Areas\Client\Views\Employer\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Create.cshtml" />
@@ -631,7 +621,6 @@
     <Content Include="Areas\Admin\Views\Membership\_Companies.cshtml" />
     <Content Include="Areas\Reports\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Client\Views\web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
@@ -650,10 +639,6 @@
     <Content Include="Areas\Registry\Views\Zone\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanPurpose\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanPurpose\Create.cshtml" />
@@ -700,10 +685,6 @@
     <Content Include="Areas\Admin\Views\Report\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
@@ -719,10 +700,6 @@
     <Content Include="Areas\Accounts\Views\Levy\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Edit.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
@@ -748,10 +725,6 @@
     <Content Include="Areas\Accounts\Views\Treasury\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasury\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasury\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\BudgetEntry\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
@@ -798,6 +771,14 @@
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
@@ -1263,8 +1244,6 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\SavingsProductCommission\" />
-    <Folder Include="Areas\Client\Data\" />
-    <Folder Include="Areas\Client\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />

@@ -48,7 +48,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ParentId)
-                                        @Html.EditorFor(model => model.Parent.AccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Parent Account Name" } })
+                                        @Html.EditorFor(model => model.Parent.AccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control", placeholder = "Parent Account Name" } })
                                         @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>

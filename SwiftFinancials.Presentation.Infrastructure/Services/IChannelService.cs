@@ -1664,6 +1664,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateCommissionSplitsByCommissionIdAsync(Guid commissionId, ObservableCollection<CommissionSplitDTO> commissionSplits, ServiceHeader serviceHeader = null);
 
+        Task<bool> UpdateCommissionLeviesByCommissionIdAsync(Guid commissionId, ObservableCollection<CommissionLevyDTO> commissionLevies, ServiceHeader serviceHeader = null);
+
         Task<ObservableCollection<GraduatedScaleDTO>> FindGraduatedScalesByCommissionIdAsync(Guid commissionId, ServiceHeader serviceHeader = null);
 
         Task<bool> UpdateGraduatedScalesByCommissionIdAsync(Guid commissionId, ObservableCollection<GraduatedScaleDTO> graduatedScales, ServiceHeader serviceHeader = null);
@@ -1884,6 +1886,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region BudgetDTO
 
+        Task<bool> UpdateBudgetEntriesByBudgetIdAsync(Guid budgetId, ObservableCollection<BudgetEntryDTO> budgetEntries, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<BudgetDTO>> FindBudgetsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<BudgetDTO>> FindBudgetsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
@@ -1942,7 +1946,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<TreasuryDTO>> FindTreasuriesByFilterInPageAsync(string text, int pageIndex, int pageSize, bool includeBalances = false, ServiceHeader serviceHeader = null);
 
-        Task<TreasuryDTO> AddTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader = null);
+        Task<TreasuryDTO> AddTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader);
 
         Task<bool> UpdateTreasuryAsync(TreasuryDTO treasuryDTO, ServiceHeader serviceHeader = null);
 
