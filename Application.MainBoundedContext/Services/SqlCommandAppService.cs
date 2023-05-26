@@ -1,8 +1,11 @@
-﻿using Application.MainBoundedContext.DTO.AccountsModule;
+﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Domain.MainBoundedContext.HumanResourcesModule.Aggregates.HolidayAgg;
+using Domain.MainBoundedContext.MessagingModule.Aggregates.EmailAlertAgg;
+using Domain.MainBoundedContext.MessagingModule.Aggregates.TextAlertAgg;
 using Domain.Seedwork;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Numero3.EntityFramework.Interfaces;
@@ -21,10 +24,13 @@ namespace Application.MainBoundedContext.Services
     {
         private readonly IDbContextScopeFactory _dbContextScopeFactory;
         private readonly IRepository<Holiday> _repository;
+        private readonly IRepository<EmailAlert> _emailAlertRepository;
+        private readonly IRepository<TextAlert> _textAlertRepository;
 
         public SqlCommandAppService(
             IDbContextScopeFactory dbContextScopeFactory,
-            IRepository<Holiday> repository)
+            IRepository<Holiday> repository,
+            IRepository<EmailAlert> emailAlertRepository, IRepository<TextAlert> textAlertRepository)
         {
             if (dbContextScopeFactory == null)
                 throw new ArgumentNullException(nameof(dbContextScopeFactory));
@@ -34,6 +40,8 @@ namespace Application.MainBoundedContext.Services
 
             _dbContextScopeFactory = dbContextScopeFactory;
             _repository = repository;
+            _emailAlertRepository = emailAlertRepository ?? throw new ArgumentNullException(nameof(emailAlertRepository));
+            _textAlertRepository = textAlertRepository ?? throw new ArgumentNullException(nameof(textAlertRepository));
         }
 
         public List<CustomerDTO> FindCustomersByPayrollNumber(string payrollNumber, ServiceHeader serviceHeader)
@@ -1436,6 +1444,63 @@ namespace Application.MainBoundedContext.Services
 
             return result;
         }
+
+        public List<MonthlySummaryValuesDTO> FindEmailAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader)
+        {
+            var result = new List<MonthlySummaryValuesDTO>();
+
+            using (_dbContextScopeFactory.CreateReadOnlyWithTransaction(IsolationLevel.ReadUncommitted))
+            {
+                List<MonthlySummaryValuesDTO> query = null;
+
+                if (companyId != null && companyId != Guid.Empty)
+                {
+                    query = _emailAlertRepository.DatabaseSqlQuery<MonthlySummaryValuesDTO>("exec sp_MonthlyEmailAlertsSummaryByCompany @CompanyId, @StartDate, @EndDate", serviceHeader,
+                        new object[] { new SqlParameter("CompanyId", companyId), new SqlParameter("StartDate", startDate), new SqlParameter("EndDate", endDate) }).ToList();
+                }
+                else
+                {
+                    query = _emailAlertRepository.DatabaseSqlQuery<MonthlySummaryValuesDTO>("exec sp_MonthlyEmailAlertsSummary @StartDate, @EndDate", serviceHeader,
+                        new object[] { new SqlParameter("StartDate", startDate), new SqlParameter("EndDate", endDate) }).ToList();
+                }
+
+                if (query != null)
+                {
+                    result = query;
+                }
+            }
+
+            return result;
+        }
+
+        public List<MonthlySummaryValuesDTO> FindTextAlertsMonthlyStatatistics(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader)
+        {
+            var result = new List<MonthlySummaryValuesDTO>();
+
+            using (_dbContextScopeFactory.CreateReadOnlyWithTransaction(IsolationLevel.ReadUncommitted))
+            {
+                List<MonthlySummaryValuesDTO> query = null;
+
+                if (companyId != null && companyId != Guid.Empty)
+                {
+                    query = _textAlertRepository.DatabaseSqlQuery<MonthlySummaryValuesDTO>("exec sp_MonthlyTextAlertsSummaryByCompany @CompanyId, @StartDate, @EndDate", serviceHeader,
+                        new object[] { new SqlParameter("CompanyId", companyId), new SqlParameter("StartDate", startDate), new SqlParameter("EndDate", endDate) }).ToList();
+                }
+                else
+                {
+                    query = _textAlertRepository.DatabaseSqlQuery<MonthlySummaryValuesDTO>("exec sp_MonthlyTextAlertsSummary @StartDate, @EndDate", serviceHeader,
+                        new object[] { new SqlParameter("StartDate", startDate), new SqlParameter("EndDate", endDate) }).ToList();
+                }
+
+                if (query != null)
+                {
+                    result = query;
+                }
+            }
+
+            return result;
+        }
+
     }
 
     public class GLAccountStatisticsBag
