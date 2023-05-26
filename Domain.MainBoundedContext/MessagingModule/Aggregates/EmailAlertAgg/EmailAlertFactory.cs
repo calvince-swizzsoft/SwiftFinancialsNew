@@ -5,11 +5,13 @@ namespace Domain.MainBoundedContext.MessagingModule.Aggregates.EmailAlertAgg
 {
     public static class EmailAlertFactory
     {
-        public static EmailAlert CreateEmailAlert(MailMessage mailMessage)
+        public static EmailAlert CreateEmailAlert(Guid? companyId, MailMessage mailMessage)
         {
             var emailAlert = new EmailAlert();
 
             emailAlert.GenerateNewIdentity();
+
+            emailAlert.CompanyId = (companyId != null && companyId != Guid.Empty) ? companyId : null;
 
             emailAlert.MailMessage = mailMessage;
 
