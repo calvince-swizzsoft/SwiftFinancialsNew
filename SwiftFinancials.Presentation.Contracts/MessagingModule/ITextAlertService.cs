@@ -95,5 +95,10 @@ namespace SwiftFinancials.Presentation.Contracts.MessagingModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginUpdateCommissionsBySystemTransactionCode(int systemTransactionCode, CommissionDTO[] commissionDTOs, int chargeBenefactor, AsyncCallback callback, Object state);
         bool EndUpdateCommissionsBySystemTransactionCode(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindTextAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate, AsyncCallback callback, object state);
+        List<MonthlySummaryValuesDTO> EndFindTextAlertsMonthlyStatistics(IAsyncResult result);
     }
 }

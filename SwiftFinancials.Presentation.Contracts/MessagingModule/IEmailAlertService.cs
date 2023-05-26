@@ -69,5 +69,11 @@ namespace SwiftFinancials.Presentation.Contracts.MessagingModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAddQuickEmailAlert(QuickEmailAlertDTO quickEmailAlertDTO, AsyncCallback callback, Object state);
         bool EndAddQuickEmailAlert(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindEmailAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate, AsyncCallback callback, Object state);
+        List<MonthlySummaryValuesDTO> EndFindEmailAlertsMonthlyStatistics(IAsyncResult result);
+
     }
 }

@@ -898,6 +898,9 @@
     <Compile Include="..\Application.MainBoundedContext.DTO\MicroCreditModule\MicroCreditOfficerDTO.cs">
       <Link>Application.MainBoundedContext.DTO\MicroCreditModule\MicroCreditOfficerDTO.cs</Link>
     </Compile>
+    <Compile Include="..\Application.MainBoundedContext.DTO\MonthlySummaryValuesDTO.cs">
+      <Link>Application.MainBoundedContext.DTO\MonthlySummaryValuesDTO.cs</Link>
+    </Compile>
     <Compile Include="..\Application.MainBoundedContext.DTO\PasswordSettings.cs">
       <Link>Application.MainBoundedContext.DTO\PasswordSettings.cs</Link>
     </Compile>
