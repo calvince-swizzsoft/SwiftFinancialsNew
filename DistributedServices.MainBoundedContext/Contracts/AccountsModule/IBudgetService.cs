@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.ServiceModel;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -30,6 +31,10 @@ namespace DistributedServices.MainBoundedContext
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
         bool RemoveBudgetEntries(List<BudgetEntryDTO> budgetEntryDTOs);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        Task<bool> UpdateBudgetEntriesByBudgetIdAsync(Guid budgetId, List<BudgetEntryDTO> budgetEntries);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]

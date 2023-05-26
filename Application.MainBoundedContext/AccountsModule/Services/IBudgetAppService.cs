@@ -3,6 +3,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.AccountsModule.Services
 {
@@ -35,5 +36,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         void FetchBudgetEntryBalances(List<BudgetEntryDTO> budgetEntries, ServiceHeader serviceHeader);
 
         decimal FetchBudgetBalance(Guid branchId, int type, Guid typeIdentifier, ServiceHeader serviceHeader);
+
+        Task<bool> UpdateBudgetEntriesAsync(Guid budgetId, List<BudgetEntryDTO> budgetEntries, ServiceHeader serviceHeader);
     }
 }

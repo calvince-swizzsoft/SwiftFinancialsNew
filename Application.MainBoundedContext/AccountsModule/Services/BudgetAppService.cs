@@ -11,6 +11,7 @@ using Numero3.EntityFramework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.AccountsModule.Services
 {
@@ -137,6 +138,41 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 }
             }
             else return null;
+        }
+
+        public async Task<bool> UpdateBudgetEntriesAsync(Guid budgetId, List<BudgetEntryDTO> budgetEntries, ServiceHeader serviceHeader)
+        {
+            using (var dbContextScope = _dbContextScopeFactory.Create())
+            {
+                var persisted = await _budgetRepository.GetAsync(budgetId, serviceHeader);
+
+                if (persisted != null)
+                {
+                    {
+                        foreach (var item in budgetEntries)
+                        {
+                            if (item.Id == Guid.Empty)
+                            {
+                                var budgetEntry = BudgetEntryFactory.CreateBudgetEntry(persisted.Id, item.Type, item.ChartOfAccountId, item.LoanProductId, item.Amount, item.Reference);
+
+                                _budgetEntryRepository.Add(budgetEntry, serviceHeader);
+                            }
+                            else
+                            {
+
+                                if (!(budgetEntries != null && budgetEntries.Any()))
+                                {
+                                    var budgetEntry = BudgetEntryFactory.CreateBudgetEntry(persisted.Id, item.Type, item.ChartOfAccountId, item.LoanProductId, item.Amount, item.Reference);
+
+                                    _budgetEntryRepository.Add(budgetEntry, serviceHeader);
+                                }
+                            }
+                        }
+                    }
+
+                }
+                    return await dbContextScope.SaveChangesAsync(serviceHeader) > 0;
+            }
         }
 
         public bool RemoveBudgetEntries(List<BudgetEntryDTO> budgetEntryDTOs, ServiceHeader serviceHeader)
@@ -358,7 +394,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 }
             });
         }
-        
+
         public decimal FetchBudgetBalance(Guid branchId, int type, Guid typeIdentifier, ServiceHeader serviceHeader)
         {
             var result = default(decimal);
