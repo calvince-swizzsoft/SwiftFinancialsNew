@@ -8,14 +8,18 @@ using Application.MainBoundedContext.MessagingModule.Services;
 using Application.MainBoundedContext.MicroCreditModule.Services;
 using Application.MainBoundedContext.RegistryModule.Services;
 using Application.MainBoundedContext.Services;
+using DistributedServices.MainBoundedContext.Identity;
 using Domain.Seedwork;
 using Infrastructure.Crosscutting.Framework.Adapter;
 using Infrastructure.Crosscutting.Framework.Logging;
 using Infrastructure.Data.MainBoundedContext.Repositories;
 using Infrastructure.Data.MainBoundedContext.UnitOfWork;
 using LazyCache;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
 using Numero3.EntityFramework.Implementation;
 using Numero3.EntityFramework.Interfaces;
+using System.Data.Entity;
 using System.Runtime.Caching;
 using Unity;
 using Unity.Injection;
@@ -81,6 +85,15 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
             Current.RegisterType<INavigationItemAppService, NavigationItemAppService>();
             Current.RegisterType<INavigationItemInRoleAppService, NavigationItemInRoleAppService>();
 
+            //Authentication
+            Current.RegisterType<IMembershipService, MembershipService>();
+            Current.RegisterType<UserManager<ApplicationUser>>(new TransientLifetimeManager());
+            Current.RegisterType<IUserStore<ApplicationUser>, UserStore<ApplicationUser>>(new TransientLifetimeManager());
+            Current.RegisterType<RoleStore<IdentityRole>, RoleStore<IdentityRole>>(new TransientLifetimeManager());
+            Current.RegisterType<DbContext, ApplicationDbContext>(new TransientLifetimeManager(), new InjectionConstructor("AuthStore"));
+            Current.RegisterType<ApplicationUserManager>();
+            Current.RegisterType<ApplicationRoleManager>();
+            Current.RegisterType<RoleManager<IdentityRole>>(new TransientLifetimeManager());
 
             //-> Application services
             Current.RegisterType<IAuditLogAppService, AuditLogAppService>();
