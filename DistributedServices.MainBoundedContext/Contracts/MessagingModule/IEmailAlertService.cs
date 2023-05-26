@@ -60,6 +60,11 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         bool AddQuickEmailAlert(QuickEmailAlertDTO quickEmailAlertDTO);
 
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        List<MonthlySummaryValuesDTO> FindEmailAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate);
+
+
         #endregion
     }
 }
