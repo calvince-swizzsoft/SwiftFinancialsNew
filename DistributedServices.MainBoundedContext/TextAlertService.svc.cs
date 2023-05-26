@@ -2,6 +2,7 @@
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.MessagingModule.Services;
+using Application.MainBoundedContext.Services;
 using DistributedServices.MainBoundedContext.InstanceProviders;
 using DistributedServices.Seedwork.EndpointBehaviors;
 using DistributedServices.Seedwork.ErrorHandlers;
@@ -18,13 +19,15 @@ namespace DistributedServices.MainBoundedContext
     public class TextAlertService : ITextAlertService
     {
         private readonly ITextAlertAppService _textAlertAppService;
+        private readonly ISqlCommandAppService _sqlCommandAppService;
 
-        public TextAlertService(
-          ITextAlertAppService textAlertAppService)
+        public TextAlertService(ITextAlertAppService textAlertAppService, ISqlCommandAppService sqlCommandAppService)
         {
             Guard.ArgumentNotNull(textAlertAppService, nameof(textAlertAppService));
+            Guard.ArgumentNotNull(sqlCommandAppService, nameof(sqlCommandAppService));
 
             _textAlertAppService = textAlertAppService;
+            _sqlCommandAppService = sqlCommandAppService;
         }
 
         #region TextAlert
@@ -146,6 +149,13 @@ namespace DistributedServices.MainBoundedContext
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _textAlertAppService.UpdateCommissions(systemTransactionCode, commissionDTOs, chargeBenefactor, serviceHeader);
+        }
+
+        public List<MonthlySummaryValuesDTO> FindTextAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _sqlCommandAppService.FindTextAlertsMonthlyStatatistics(companyId, startDate, endDate, serviceHeader);
         }
 
         #endregion

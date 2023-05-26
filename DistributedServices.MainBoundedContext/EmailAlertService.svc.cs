@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.MessagingModule;
 using Application.MainBoundedContext.MessagingModule.Services;
+using Application.MainBoundedContext.Services;
 using DistributedServices.MainBoundedContext.InstanceProviders;
 using DistributedServices.Seedwork.EndpointBehaviors;
 using DistributedServices.Seedwork.ErrorHandlers;
@@ -17,13 +18,15 @@ namespace DistributedServices.MainBoundedContext
     public class EmailAlertService : IEmailAlertService
     {
         private readonly IEmailAlertAppService _emailAlertAppService;
+        private readonly ISqlCommandAppService _sqlCommandAppService;
 
-        public EmailAlertService(
-            IEmailAlertAppService emailAlertAppService)
+        public EmailAlertService(IEmailAlertAppService emailAlertAppService, ISqlCommandAppService sqlCommandAppService)
         {
             Guard.ArgumentNotNull(emailAlertAppService, nameof(emailAlertAppService));
+            Guard.ArgumentNotNull(sqlCommandAppService, nameof(sqlCommandAppService));
 
             _emailAlertAppService = emailAlertAppService;
+            _sqlCommandAppService = sqlCommandAppService;
         }
 
         #region Email Alert
@@ -110,6 +113,13 @@ namespace DistributedServices.MainBoundedContext
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _emailAlertAppService.FindEmailAlert(emailAlertId, serviceHeader);
+        }
+
+        public List<MonthlySummaryValuesDTO> FindEmailAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _sqlCommandAppService.FindEmailAlertsMonthlyStatistics(companyId, startDate, endDate, serviceHeader);
         }
 
         #endregion
