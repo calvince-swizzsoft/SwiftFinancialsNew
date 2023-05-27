@@ -97,9 +97,8 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.ParentId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Parent" } })
-
+                                        @Html.HiddenFor(model => model.ParentId)
+                                        @Html.EditorFor(model => model.ParentId, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", @placeholder = "Parent" } })
                                         @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
@@ -135,7 +134,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -272,6 +271,43 @@
                     CostCenterId = CostCentersMap[item].Id;
                     $('#CostCenterId').val(CostCenterId);
                     //console.log(CostCenterId)
+                    return item;
+                }
+            });
+
+            //InvestmentProduct typehead starts here
+            $('.InvestmentProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
+                        { query: query },
+                        function (InvestmentProducts) {
+                            var newInvestmentProductsData = [];
+                            InvestmentProductsMap = {};
+                            $.each(InvestmentProducts, function (i, InvestmentProduct) {
+                                newInvestmentProductsData.push(InvestmentProduct.Description);
+                                InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
+                            });
+                            process(newInvestmentProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var InvestmentProductId = "";
+                    InvestmentProductId = InvestmentProductsMap[item].Id;
+                    $('#InvestmentProductId').val(InvestmentProductId);
+                    //console.log(InvestmentProductId)
                     return item;
                 }
             });

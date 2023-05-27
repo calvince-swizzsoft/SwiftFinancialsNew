@@ -70,8 +70,14 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.ChartOfAccountId)
-                                            @Html.EditorFor(model => model.ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Account Name" } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccountName, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Account Name" } })
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-sm">
                                             @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -123,7 +129,7 @@
         @Scripts.Render("~/plugins/validate")
         @Scripts.Render("~/plugins/typehead")
 
-        <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -225,6 +231,43 @@
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
                     $('#ParentId').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+
+             //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#ParentId').val(BranchId);
+                    //console.log(BranchId)
                     return item;
                 }
             });
