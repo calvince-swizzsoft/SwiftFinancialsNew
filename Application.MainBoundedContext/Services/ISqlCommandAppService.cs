@@ -1,4 +1,5 @@
-﻿using Application.MainBoundedContext.DTO.AccountsModule;
+﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
@@ -168,5 +169,9 @@ namespace Application.MainBoundedContext.Services
         Task<int> DelinkStationAsync(Guid stationId, ServiceHeader serviceHeader);
 
         SuperSaverInterestDTO FindCustomerSuperSaverPayable(Guid customerId, ServiceHeader serviceHeader);
+
+        List<MonthlySummaryValuesDTO> FindEmailAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader);
+
+        List<MonthlySummaryValuesDTO> FindTextAlertsMonthlyStatatistics(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader);
     }
 }

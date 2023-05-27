@@ -442,6 +442,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateCommissionsBySystemTransactionCodeAsync(int systemTransactionCode, ObservableCollection<CommissionDTO> commissions, int chargeBenefactor, ServiceHeader serviceHeader = null);
 
+        Task<List<MonthlySummaryValuesDTO>> FindTextAlertsMonthlyStatisticsAsync(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader);
+
         #endregion
 
         #region EmailAlertDTO
@@ -465,6 +467,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<List<EmailAlertDTO>> FindEmailAlertsByDLRStatusAsync(int dlrStatus, ServiceHeader serviceHeader = null);
 
         Task<bool> AddQuickEmailAlertAsync(QuickEmailAlertDTO quickEmailAlertDTO, ServiceHeader serviceHeader = null);
+
+        Task<List<MonthlySummaryValuesDTO>> FindEmailAlertsMonthlyStatisticsAsync(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader);
 
         #endregion
 

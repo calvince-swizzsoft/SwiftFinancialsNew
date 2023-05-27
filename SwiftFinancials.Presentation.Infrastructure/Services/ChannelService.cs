@@ -5328,6 +5328,35 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<List<MonthlySummaryValuesDTO>> FindTextAlertsMonthlyStatisticsAsync(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<MonthlySummaryValuesDTO>>();
+
+            ITextAlertService service = GetService<ITextAlertService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<MonthlySummaryValuesDTO> response = ((ITextAlertService)result.AsyncState).EndFindTextAlertsMonthlyStatistics(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindTextAlertsMonthlyStatistics(companyId, startDate, endDate, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region EmailAlertDTO
@@ -5648,6 +5677,34 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginAddQuickEmailAlert(quickEmailAlertDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<List<MonthlySummaryValuesDTO>> FindEmailAlertsMonthlyStatisticsAsync(Guid companyId, DateTime startDate, DateTime endDate, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<MonthlySummaryValuesDTO>>();
+
+            IEmailAlertService service = GetService<IEmailAlertService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<MonthlySummaryValuesDTO> response = ((IEmailAlertService)result.AsyncState).EndFindEmailAlertsMonthlyStatistics(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        tcs.TrySetResult(null);
+                    });
+                }
+            });
+
+            service.BeginFindEmailAlertsMonthlyStatistics(companyId, startDate, endDate, asyncCallback, service);
 
             return tcs.Task;
         }

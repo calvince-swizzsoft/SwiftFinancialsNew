@@ -8,6 +8,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -54,6 +55,13 @@ namespace DistributedServices.MainBoundedContext
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _budgetAppService.RemoveBudgetEntries(budgetEntryDTOs, serviceHeader);
+        }
+
+        public async Task<bool> UpdateBudgetEntriesByBudgetIdAsync(Guid budgetId, List<BudgetEntryDTO> budgetEntries)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return await _budgetAppService.UpdateBudgetEntriesAsync(budgetId, budgetEntries, serviceHeader);
         }
 
         public List<BudgetDTO> FindBudgets()

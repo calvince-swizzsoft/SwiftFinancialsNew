@@ -148,7 +148,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                 {
                     var textMessage = new TextMessage(textAlertDTO.TextMessageRecipient, textMessageBody, (int)dlrStatus, null, textAlertDTO.TextMessageOrigin, textAlertDTO.TextMessagePriority, 0, textAlertDTO.TextMessageSecurityCritical);
 
-                    var textAlert = TextAlertFactory.CreateTextAlert(textMessage, serviceHeader);
+                    var textAlert = TextAlertFactory.CreateTextAlert(textAlertDTO.CompanyId, textMessage, serviceHeader);
 
                     _textAlertRepository.Add(textAlert, serviceHeader);
 
@@ -198,7 +198,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                 {
                     var text = new TextMessage(persisted.TextMessage.Recipient, persisted.TextMessage.Body, textAlertDTO.TextMessageDLRStatus, textAlertDTO.TextMessageReference, persisted.TextMessage.Origin, textAlertDTO.TextMessagePriority, textAlertDTO.TextMessageSendRetry, persisted.TextMessage.SecurityCritical);
 
-                    var current = TextAlertFactory.CreateTextAlert(text, serviceHeader);
+                    var current = TextAlertFactory.CreateTextAlert(textAlertDTO.CompanyId, text, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
 
@@ -400,7 +400,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
 
                         var textMessage = new TextMessage(customer.AddressMobileLine, textMessageBody, (int)DLRStatus.Pending, null, (int)MessageOrigin.Within, (int)QueuePriority.Normal, 0, false);
 
-                        var textAlert = TextAlertFactory.CreateTextAlert(textMessage, serviceHeader);
+                        var textAlert = TextAlertFactory.CreateTextAlert(groupTextAlertDTO.CompanyId, textMessage, serviceHeader);
 
                         textAlerts.Add(textAlert);
 
@@ -465,7 +465,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
 
                         var textMessage = new TextMessage(recipient, textMessageBody, (int)DLRStatus.Pending, null, (int)MessageOrigin.Within, (int)QueuePriority.Highest, 0, false);
 
-                        var textAlert = TextAlertFactory.CreateTextAlert(textMessage, serviceHeader);
+                        var textAlert = TextAlertFactory.CreateTextAlert(quickTextAlertDTO.CompanyId, textMessage, serviceHeader);
 
                         textAlerts.Add(textAlert);
                     }

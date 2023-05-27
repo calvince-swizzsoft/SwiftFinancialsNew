@@ -85,6 +85,10 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         bool UpdateCommissionsBySystemTransactionCode(int systemTransactionCode, CommissionDTO[] commissionDTOs, int chargeBenefactor);
 
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        List<MonthlySummaryValuesDTO> FindTextAlertsMonthlyStatistics(Guid companyId, DateTime startDate, DateTime endDate);
+
         #endregion
     }
 }

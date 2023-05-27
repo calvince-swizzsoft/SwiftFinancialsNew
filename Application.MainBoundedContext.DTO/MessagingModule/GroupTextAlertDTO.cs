@@ -18,6 +18,14 @@ namespace Application.MainBoundedContext.DTO.MessagingModule
         }
 
         [DataMember]
+        [Display(Name = "Company")]
+        public Guid? CompanyId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Company")]
+        public string CompanyDescription { get; set; }
+
+        [DataMember]
         [Display(Name = "Branch")]
         [ValidGuid]
         public Guid BranchId { get; set; }

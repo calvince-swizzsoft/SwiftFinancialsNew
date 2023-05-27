@@ -346,6 +346,7 @@
     <Compile Include="MicroCreditModule\MicroCreditGroupMemberDTO.cs" />
     <Compile Include="MicroCreditModule\MicroCreditModuleProfile.cs" />
     <Compile Include="MicroCreditModule\MicroCreditOfficerDTO.cs" />
+    <Compile Include="MonthlySummaryValuesDTO.cs" />
     <Compile Include="PasswordSettings.cs" />
     <Compile Include="PdfWriterEvents.cs" />
     <Compile Include="ProductCollectionInfo.cs" />

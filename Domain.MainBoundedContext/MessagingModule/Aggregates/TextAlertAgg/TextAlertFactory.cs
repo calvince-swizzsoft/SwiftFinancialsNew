@@ -6,11 +6,13 @@ namespace Domain.MainBoundedContext.MessagingModule.Aggregates.TextAlertAgg
 {
     public static class TextAlertFactory
     {
-        public static TextAlert CreateTextAlert(TextMessage textMessage, ServiceHeader serviceHeader)
+        public static TextAlert CreateTextAlert(Guid? companyId, TextMessage textMessage, ServiceHeader serviceHeader)
         {
             var textAlert = new TextAlert();
 
             textAlert.GenerateNewIdentity();
+
+            textAlert.CompanyId = (companyId != null && companyId != Guid.Empty) ? companyId : null;
 
             textAlert.TextMessage = textMessage;
 
