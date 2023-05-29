@@ -46,9 +46,17 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public short AccountType { get; set; }
 
         [DataMember]
+        [Display(Name = "Account Type")]
+        public string AccountTypeDescription => Enum.IsDefined(typeof(ChartOfAccountType), AccountType) ? EnumHelper.GetDescription((ChartOfAccountType)AccountType) : string.Empty;
+
+        [DataMember]
         [Display(Name = "Account Category")]
       //  [CustomValidation(typeof(ChartOfAccountDTO), "CheckAccountCategory")]
         public short AccountCategory { get; set; }
+
+        [DataMember]
+        [Display(Name = "Account Category")]
+        public string AccountCategoryDescription => Enum.IsDefined(typeof(ChartOfAccountCategory), AccountCategory) ? EnumHelper.GetDescription((ChartOfAccountCategory)AccountCategory) : string.Empty;
 
         [DataMember]
         [Display(Name = "Account Code")]

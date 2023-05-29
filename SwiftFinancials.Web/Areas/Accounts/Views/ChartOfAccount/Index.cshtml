@@ -21,6 +21,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Chart Of Accounts", "Create", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -45,7 +46,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Chart Of Accounts", "Create", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -93,8 +93,8 @@
                 "aoColumns": [
                     { "mDataProp": "AccountName", "sTitle": "Account Name", "sWidth": "15%" },
                     { "mDataProp": "ParentAccountName", "sTitle": "Parent", "sWidth": "10%" },
-                    { "mDataProp": "AccountCategory", "sTitle": "Category", "sWidth": "15%" },
-                    { "mDataProp": "AccountType", "sTitle": "Account Type", "sWidth": "15%" },
+                    { "mDataProp": "AccountCategoryDescription", "sTitle": "Category", "sWidth": "15%" },
+                    { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
