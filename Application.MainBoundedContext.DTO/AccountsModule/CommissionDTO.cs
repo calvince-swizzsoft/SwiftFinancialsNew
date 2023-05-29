@@ -132,6 +132,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         public IList<LevySplitDTO> LevySplits { get; set; }
 
+        public Guid CommissionSplitChartOfAccountId { get; set; }
+
         public CommissionSplitDTO CommissionSplit { get; set; }
 
         public CommissionLevyDTO CommissionLevy { get; set; }
