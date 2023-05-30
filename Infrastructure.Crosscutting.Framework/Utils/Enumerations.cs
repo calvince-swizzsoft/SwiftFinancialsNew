@@ -2532,6 +2532,17 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         ExternalChequeTransfer = 85,
         [Description("External Cheque (Banking)")]
         ExternalChequeBanking = 86,
+
+        [Description("Membership Account Registration")]
+        MembershipAccountRegistration =87,
+        [Description("Membership Account Verification")]
+        MembershipAccountVerification = 88,
+        [Description("Membership Reset Password")]
+        MembershipResetPassword = 89,
+        [Description("Promotional Account Alert")]
+        PromotionalAccountAlert = 90,
+        [Description("Customer Registration Alert")]
+        CustomerRegistration = 91
     }
 
     public enum ChargeBenefactor
