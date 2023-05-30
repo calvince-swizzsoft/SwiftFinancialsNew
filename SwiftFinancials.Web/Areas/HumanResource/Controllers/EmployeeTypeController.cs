@@ -57,7 +57,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(string.Empty);
             return View();
         }
 
@@ -69,13 +69,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (!employeeTypeDTO.HasErrors)
             {
                 await _channelService.AddEmployeeTypeAsync(employeeTypeDTO, GetServiceHeader());
+                
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = employeeTypeDTO.ErrorMessages;
-
+                ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(employeeTypeDTO.Category.ToString());
                 return View(employeeTypeDTO);
             }
         }
@@ -84,9 +85,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var EmployeeTypeDTO = await _channelService.FindEmployeeTypeAsync(id, GetServiceHeader());
+            var employeeTypeDTO = await _channelService.FindEmployeeTypeAsync(id, GetServiceHeader());
 
-            return View(EmployeeTypeDTO);
+            return View(employeeTypeDTO);
         }
 
         [HttpPost]

@@ -38,6 +38,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [DataMember]
         [Display(Name = "G/L Account Name")]
+
         public string ChartOfAccountName
         {
             get

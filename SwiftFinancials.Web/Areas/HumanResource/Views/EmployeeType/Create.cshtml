@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Employee Type";
+    var employeeCategories = ViewBag.EmployeeCategorySelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-muted page-heading">
     <div class="col-lg-10">
@@ -35,69 +36,49 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "EmployeeType", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "EmployeeType", new { Area = "HumanResource" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
-                        <h1>Primary Details</h1>
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-8">
+                                <div class="col-lg-6">
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Employee Type name.", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Employee Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Category" } })
-                                        @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Category, employeeCategories, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Category)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked)
                                         @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Chart Of Account Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "G/L Account Name" } })
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2 col-md-10">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
 
-                        <h1>Cost Center Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterDescription, new { htmlAttributes = new { @class = "CostCenterLookup form-control required", placeholder = "G/L Account Cost Center" } })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+
+
                     }
                 </div>
             </div>
@@ -105,85 +86,14 @@
     </div>
 </div>
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-}
-
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
 
-    <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+<script>
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-             //ChartOfAccount typehead starts here
+            //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
@@ -220,7 +130,7 @@
                 }
             });
              //CostCenter typehead starts here
-            $('.CostCenterLookup').typeahead({
+            $('.CostCentersLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
                         '@Url.Action("GetCostCentersAsync", "CostCenter", new { Area = "Accounts" })',
@@ -255,5 +165,5 @@
                     return item;
                 }
             });
-        });</script>
+</script>
 }

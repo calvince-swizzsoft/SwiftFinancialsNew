@@ -340,6 +340,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetEmployeeCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> employeeCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(EmployeeCategory)).Cast<EmployeeCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            employeeCategories.AddRange(items);
+
+            return employeeCategories;
+        }
+
+        [NonAction]
         public DashboardAppConfigSection GetDashboardAppConfiguration()
         {
             try
