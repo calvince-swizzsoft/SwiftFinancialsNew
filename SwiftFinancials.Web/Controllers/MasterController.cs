@@ -322,6 +322,211 @@ namespace SwiftFinancials.Web.Controllers
 
             return productCode;
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanInterestCalculationModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanInterestCalculationModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(InterestCalculationMode)).Cast<InterestCalculationMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanInterestCalculationModes.AddRange(items);
+
+            return loanInterestCalculationModes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationGuarantorSecurityModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationGuarantorSecurityModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(GuarantorSecurityMode)).Cast<GuarantorSecurityMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationGuarantorSecurityModes.AddRange(items);
+
+            return loanRegistrationGuarantorSecurityModes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationRoundingTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationRoundingTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(RoundingType)).Cast<RoundingType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationRoundingTypes.AddRange(items);
+
+            return loanRegistrationRoundingTypes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationLoanProductCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationLoanProductCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanProductCategory)).Cast<LoanProductCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationLoanProductCategories.AddRange(items);
+
+            return loanRegistrationLoanProductCategories;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanInterestRecoveryModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanInterestRecoveryModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(InterestRecoveryMode)).Cast<InterestRecoveryMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanInterestRecoveryModes.AddRange(items);
+
+            return loanInterestRecoveryModes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationPayoutRecoveryModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationPayoutRecoveryModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PayoutRecoveryMode)).Cast<PayoutRecoveryMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationPayoutRecoveryModes.AddRange(items);
+
+            return loanRegistrationPayoutRecoveryModes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationPaymentDueDateSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationPaymentDueDate = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PaymentDueDate)).Cast<PaymentDueDate>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationPaymentDueDate.AddRange(items);
+
+            return loanRegistrationPaymentDueDate;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationLoanProductSectionsSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationLoanProductSections = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanProductSection)).Cast<LoanProductSection>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationLoanProductSections.AddRange(items);
+
+            return loanRegistrationLoanProductSections;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetRecoveryPrioritySelectList(string selectedValue)
+        {
+            List<SelectListItem> priorities = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(RecoveryPriority)).Cast<RecoveryPriority>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            priorities.AddRange(items);
+
+            return priorities;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationStandingOrderTriggerSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationStandingOrderTriggers = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(StandingOrderTrigger)).Cast<StandingOrderTrigger>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationStandingOrderTriggers.AddRange(items);
+
+            return loanRegistrationStandingOrderTriggers;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanInterestChargeModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanInterestChargeModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(InterestChargeMode)).Cast<InterestChargeMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanInterestChargeModes.AddRange(items);
+
+            return loanInterestChargeModes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanRegistrationAggregateCheckOffRecoveryModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanRegistrationAggregateCheckOffRecoveryModes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(AggregateCheckOffRecoveryMode)).Cast<AggregateCheckOffRecoveryMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanRegistrationAggregateCheckOffRecoveryModes.AddRange(items);
+
+            return loanRegistrationAggregateCheckOffRecoveryModes;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetChequeTypeChargeRecoveryModeSelectList(string selectedValue)
         {

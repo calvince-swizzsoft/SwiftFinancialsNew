@@ -57,7 +57,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanInterestChargeModeSelectList = GetLoanInterestChargeModeSelectList(string.Empty);
+            ViewBag.LoanInterestRecoveryModeSelectList = GetLoanInterestRecoveryModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductCategorySelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanRegistrationRoundingTypeSelectList = GetLoanRegistrationRoundingTypeSelectList(string.Empty);
+            ViewBag.LoanRegistrationGuarantorSecurityModeSelectList = GetLoanRegistrationGuarantorSecurityModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationAggregateCheckOffRecoveryModeSelectList = GetLoanRegistrationAggregateCheckOffRecoveryModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationStandingOrderTriggerSelectList = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
+            ViewBag.PrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductSectionsSelectList(string.Empty);
+            ViewBag.LoanRegistrationPayoutRecoveryModeSelectList = GetLoanRegistrationPayoutRecoveryModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(string.Empty);
             return View();
         }
 
@@ -75,7 +86,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = LoanProductDTO.ErrorMessages;
-
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(LoanProductDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanInterestChargeModeSelectList = GetLoanInterestChargeModeSelectList(LoanProductDTO.LoanInterestChargeMode.ToString());
+                ViewBag.LoanInterestRecoveryModeSelectList = GetLoanInterestRecoveryModeSelectList(LoanProductDTO.LoanInterestRecoveryMode.ToString());
+                ViewBag.LoanRegistrationLoanProductCategorySelectList = GetLoanRegistrationLoanProductCategorySelectList(LoanProductDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanRegistrationRoundingTypeSelectList = GetLoanRegistrationRoundingTypeSelectList(LoanProductDTO.LoanRegistrationRoundingType.ToString());
+                ViewBag.LoanRegistrationGuarantorSecurityModeSelectList = GetLoanRegistrationGuarantorSecurityModeSelectList(LoanProductDTO.LoanRegistrationGuarantorSecurityMode.ToString());
+                ViewBag.LoanRegistrationAggregateCheckOffRecoveryModeSelectList = GetLoanRegistrationAggregateCheckOffRecoveryModeSelectList(LoanProductDTO.LoanRegistrationAggregateCheckOffRecoveryMode.ToString());
+                ViewBag.LoanRegistrationStandingOrderTriggerSelectList = GetLoanRegistrationStandingOrderTriggerSelectList(LoanProductDTO.LoanRegistrationStandingOrderTrigger.ToString());
+                ViewBag.PrioritySelectList = GetRecoveryPrioritySelectList(LoanProductDTO.Priority.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductSectionsSelectList(LoanProductDTO.LoanRegistrationLoanProductSection.ToString());
+                ViewBag.LoanRegistrationPayoutRecoveryModeSelectList = GetLoanRegistrationPayoutRecoveryModeSelectList(LoanProductDTO.LoanRegistrationPayoutRecoveryMode.ToString());
+                ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(LoanProductDTO.LoanRegistrationPaymentDueDate.ToString());
                 return View(LoanProductDTO);
             }
         }
