@@ -443,6 +443,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetTakeHomeTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> takeHomeTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ChargeType)).Cast<ChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            takeHomeTypes.AddRange(items);
+
+            return takeHomeTypes;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetLoanRegistrationLoanProductSectionsSelectList(string selectedValue)
         {
             List<SelectListItem> loanRegistrationLoanProductSections = new List<SelectListItem>();
