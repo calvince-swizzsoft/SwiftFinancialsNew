@@ -57,7 +57,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
             return View();
         }
 
@@ -75,7 +75,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             else
             {
                 var errorMessages = employeeBindingModel.ErrorMessages;
-
+                ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(employeeBindingModel.BloodGroup.ToString());
                 return View(employeeBindingModel);
             }
         }

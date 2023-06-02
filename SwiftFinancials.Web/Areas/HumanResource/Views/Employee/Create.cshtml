@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Employees";
+    var bloodGroups = ViewBag.BloodGroupSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-muted page-heading">
     <div class="col-lg-10">
@@ -35,11 +36,11 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "Employee", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Create", "Employee", new { Area = "HumanResource" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
-                        <h1>Linkage Details</h1>
+                        <h1>Employee Details</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
@@ -55,8 +56,6 @@
                                         @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.DesignationId)
@@ -69,13 +68,12 @@
                                         @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
                                         @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Employee Details</h1>
-                        <fieldset>
-                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
@@ -88,26 +86,22 @@
                                         @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BloodGroup, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BloodGroup, new { htmlAttributes = new { @class = "form-control", @placeholder = "Blood Group", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.BloodGroup, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.BloodGroup, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.BloodGroup, bloodGroups, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.BloodGroup)
+                                        </div>
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.OnlineNotificationsEnabled, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.EnforceBiometricsForLogin, htmlAttributes: new { @class = "" })
@@ -117,92 +111,20 @@
                                 </div>
                             </div>
                         </fieldset>
-                    }
+                }
 
                 </div>
             </div>
         </div>
     </div>
-</div>
+    </div>
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-}
+    @section Scripts{
+        @Scripts.Render("~/plugins/wizardSteps")
+        @Scripts.Render("~/plugins/validate")
+        @Scripts.Render("~/plugins/typehead")
 
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-
-<script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
+        <script>
 
              //Branch typehead starts here
             $('.BranchesLookup').typeahead({
@@ -351,5 +273,5 @@
                     return item;
                 }
             });
-        });</script>
-}
+        </script>
+    }

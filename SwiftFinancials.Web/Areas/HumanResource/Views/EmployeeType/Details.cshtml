@@ -47,7 +47,11 @@
 
                                 @Html.DisplayFor(model => model.CategoryDescription)<br>
                             </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)</strong><br>
 
+                                @Html.DisplayFor(model => model.ChartOfAccountAccountName)<br>
+                            </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
 
@@ -64,8 +68,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <p>
-                                @Html.ActionLink("Edit", "Edit", "Membership", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Membership", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Edit", "Edit", "EmployeeType", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "EmployeeType", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
                             </p>
                         </div>
                     </div>

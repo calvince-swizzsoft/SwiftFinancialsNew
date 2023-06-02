@@ -577,7 +577,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return employeeCategories;
         }
+        [NonAction]
+        protected List<SelectListItem> GetBloodGroupSelectList(string selectedValue)
+        {
+            List<SelectListItem> bloodGroups = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(BloodGroup)).Cast<BloodGroup>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            bloodGroups.AddRange(items);
+
+            return bloodGroups;
+        }
         [NonAction]
         public DashboardAppConfigSection GetDashboardAppConfiguration()
         {
