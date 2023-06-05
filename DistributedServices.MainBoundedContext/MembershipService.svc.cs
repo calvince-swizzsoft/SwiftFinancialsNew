@@ -179,8 +179,8 @@ namespace DistributedServices.MainBoundedContext
 
             var companyDTO =  _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
 
-           // if (companyDTO != null)
-               // applicationUser.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
+            if (companyDTO != null)
+               applicationUser.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
 
             var result = await _applicationUserManager.CreateAsync(applicationUser, userPassword);
 
