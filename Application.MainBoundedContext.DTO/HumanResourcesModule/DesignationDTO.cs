@@ -21,7 +21,6 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [DataMember]
         [Display(Name = "Parent")]
-        [ValidGuid]
         public Guid? ParentId { get; set; }
 
         [DataMember]
