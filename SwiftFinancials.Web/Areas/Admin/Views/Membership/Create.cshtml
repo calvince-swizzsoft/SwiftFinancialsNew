@@ -34,7 +34,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-muted text-info">
+                <div class="ibox-content bg-muted">
                     @using (Html.BeginForm("Create", "Membership", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
