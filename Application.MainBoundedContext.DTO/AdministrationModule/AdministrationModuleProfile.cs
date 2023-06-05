@@ -100,6 +100,9 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
 
             //WorkflowSettingDTO => WorkflowSettingBindingModel
             CreateMap<WorkflowSettingDTO, WorkflowSettingBindingModel>();
+
+            //UserDTO => UserBindingModel
+            CreateMap<UserDTO, UserBindingModel>();
         }
 
         static string ProcessPayoutRecoveryPriority(Company company)

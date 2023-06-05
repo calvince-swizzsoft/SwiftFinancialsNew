@@ -3,7 +3,7 @@ using Quartz.Core;
 using Quartz.Impl;
 using Quartz.Spi;
 
-namespace EasyBim.WindowsService
+namespace SwiftFinancials.WindowsService
 {
     public class UnitySchedulerFactory : StdSchedulerFactory
     {

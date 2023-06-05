@@ -1,4 +1,4 @@
-﻿namespace EasyBim.WindowsService
+﻿namespace SwiftFinancials.WindowsService
 {
     partial class ProjectInstaller
     {
@@ -41,13 +41,13 @@
             // serviceInstaller1
             // 
             this.serviceInstaller1.DelayedAutoStart = true;
-            this.serviceInstaller1.Description = "Hosts Easy Bim Plugins";
-            this.serviceInstaller1.DisplayName = "EasyBim Windows Service";
-            this.serviceInstaller1.ServiceName = "EasyBim.WindowsService";
+            this.serviceInstaller1.Description = "Hosts Swift Financials Plugins";
+            this.serviceInstaller1.DisplayName = "SwiftFinancials Windows Service";
+            this.serviceInstaller1.ServiceName = "SwiftFinancials.WindowsService";
             // 
             // serviceInstaller2
             // 
-            this.serviceInstaller2.ServiceName = "EasyBimService";
+            this.serviceInstaller2.ServiceName = "SwiftFinancialsService";
             // 
             // ProjectInstaller
             // 

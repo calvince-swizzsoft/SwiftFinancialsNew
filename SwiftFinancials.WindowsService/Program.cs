@@ -1,7 +1,7 @@
 ﻿using System.ServiceProcess;
 using System.Threading;
 
-namespace EasyBim.WindowsService
+namespace SwiftFinancials.WindowsService
 {
     static class Program
     {

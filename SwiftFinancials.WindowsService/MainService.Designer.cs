@@ -1,4 +1,4 @@
-﻿namespace EasyBim.WindowsService
+﻿namespace SwiftFinancials.WindowsService
 {
     partial class MainService
     {
@@ -29,7 +29,7 @@
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.ServiceName = "EasyBimService";
+            this.ServiceName = "SwiftFinancialsService";
         }
 
         #endregion
