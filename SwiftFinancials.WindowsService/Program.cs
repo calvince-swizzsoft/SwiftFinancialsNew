@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ServiceProcess;
+using System.Threading;
 
-namespace SwiftFinancials.WindowsService
+namespace EasyBim.WindowsService
 {
     static class Program
     {
@@ -14,12 +10,18 @@ namespace SwiftFinancials.WindowsService
         /// </summary>
         static void Main()
         {
+#if (!DEBUG)
             ServiceBase[] ServicesToRun;
-            ServicesToRun = new ServiceBase[]
-            {
-                new Service1()
-            };
+            ServicesToRun = new ServiceBase[] 
+			{ 
+				new MainService() 
+			};
             ServiceBase.Run(ServicesToRun);
+#else
+            MainService serviceBase = new MainService();
+            serviceBase.StartDebugging(null);
+            Thread.Sleep(Timeout.Infinite);
+#endif
         }
     }
 }

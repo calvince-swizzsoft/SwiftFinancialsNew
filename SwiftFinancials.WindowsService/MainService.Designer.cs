@@ -1,7 +1,6 @@
-﻿
-namespace SwiftFinancials.WindowsService
+﻿namespace EasyBim.WindowsService
 {
-    partial class Service1
+    partial class MainService
     {
         /// <summary> 
         /// Required designer variable.
@@ -30,7 +29,7 @@ namespace SwiftFinancials.WindowsService
         private void InitializeComponent()
         {
             components = new System.ComponentModel.Container();
-            this.ServiceName = "Service1";
+            this.ServiceName = "EasyBimService";
         }
 
         #endregion

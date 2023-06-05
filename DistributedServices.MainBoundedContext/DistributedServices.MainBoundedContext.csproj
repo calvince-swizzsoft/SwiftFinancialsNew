@@ -842,10 +842,14 @@
       <DependentUpon>ZoneService.svc</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="App_Data\" />
-  </ItemGroup>
-  <ItemGroup>
+    <Content Include="App_Data\AccountAlertTemplates\CustomerRegistration_TextTemplate.cshtml" />
+    <Content Include="App_Data\AccountAlertTemplates\MembershipAccountRegistration_EmailTemplate.cshtml" />
+    <Content Include="App_Data\AccountAlertTemplates\MembershipAccountVerification_EmailTemplate.cshtml" />
+    <Content Include="App_Data\AccountAlertTemplates\MembershipAccountVerification_TextTemplate.cshtml" />
+    <Content Include="App_Data\AccountAlertTemplates\MembershipResetPassword_EmailTemplate.cshtml" />
+    <Content Include="App_Data\AccountAlertTemplates\PromotionalAccountAlert_EmailTemplate.cshtml" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
