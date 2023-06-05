@@ -3,7 +3,7 @@
 @{
     ViewBag.Title = "Bank";
 }
-<div class="row wrapper border-bottom bg-muted page-heading">
+<div class="row wrapper border-bottom white-bg  page-heading">
     <div class="col-lg-10">
         <h2>Banks</h2>
         <ol class="breadcrumb">
@@ -34,36 +34,30 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-muted">
                     @using (Html.BeginForm("Create", "Bank", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-
-                        <h2>Bank Details</h2>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
-                                        @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
-                                    </div>
+                        <div class="row">
+                            <div class="col-lg-8">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", @placeholder = "Code" } })
+                                    @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Name" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
                                 </div>
                             </div>
-                        </fieldset>
+                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-

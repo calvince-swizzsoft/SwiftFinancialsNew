@@ -6,6 +6,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
+        <h2>Banks</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,6 +23,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Bank", "Create", "Bank", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -46,7 +48,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Bank", "Create", "Bank", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -96,7 +97,7 @@
                     { "mDataProp": "Code", "sTitle": "Code", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-   
+
         });
         });
 
