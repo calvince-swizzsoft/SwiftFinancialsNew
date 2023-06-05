@@ -190,7 +190,7 @@ namespace SwiftFinancials.Web.Controllers
         [NonAction]
         protected List<SelectListItem> GetCustomerTypeSelectList(string selectedValue)
         {
-            List<SelectListItem> customerTypesSelectList = new List<SelectListItem>();
+            List<SelectListItem> customerTypes = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(CustomerType)).Cast<CustomerType>().Select(v => new SelectListItem
             {
@@ -199,9 +199,9 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            customerTypesSelectList.AddRange(items);
+            customerTypes.AddRange(items);
 
-            return customerTypesSelectList;
+            return customerTypes;
         }
 
         [NonAction]
@@ -222,6 +222,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetIndividualTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> individualTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(IndividualType)).Cast<IndividualType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            individualTypes.AddRange(items);
+
+            return individualTypes;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetMaritalStatusSelectList(string selectedValue)
         {
             List<SelectListItem> maritalStatuses = new List<SelectListItem>();
@@ -236,6 +253,74 @@ namespace SwiftFinancials.Web.Controllers
             maritalStatuses.AddRange(items);
 
             return maritalStatuses;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetCustomerClassificationSelectList(string selectedValue)
+        {
+            List<SelectListItem> individualClassifications = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerClassification)).Cast<CustomerClassification>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            individualClassifications.AddRange(items);
+
+            return individualClassifications;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetTermsOfServiceSelectList(string selectedValue)
+        {
+            List<SelectListItem> termsOfServices = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(TermsOfService)).Cast<TermsOfService>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            termsOfServices.AddRange(items);
+
+            return termsOfServices;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetSalutationSelectList(string selectedValue)
+        {
+            List<SelectListItem> individualSalutations = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(Salutation)).Cast<Salutation>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            individualSalutations.AddRange(items);
+
+            return individualSalutations;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetIdentityCardTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> identityCardTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(IdentityCardType)).Cast<IdentityCardType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            identityCardTypes.AddRange(items);
+
+            return identityCardTypes;
         }
 
         [NonAction]

@@ -61,6 +61,16 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+
             return View();
         }
 
@@ -83,6 +93,16 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             else
             {
                 var errorMessages = customerBindingModel.ErrorMessages;
+
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
+                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
+                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
+                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
+                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
 
                 return View(customerBindingModel);
             }
