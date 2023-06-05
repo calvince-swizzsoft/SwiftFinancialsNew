@@ -2,7 +2,7 @@
 using Quartz.Spi;
 using Unity;
 
-namespace EasyBim.WindowsService
+namespace SwiftFinancials.WindowsService
 {
     public class UnityJobFactory : IJobFactory
     {

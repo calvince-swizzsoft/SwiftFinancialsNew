@@ -5,7 +5,7 @@ using Unity;
 using Unity.Extension;
 using Unity.Lifetime;
 
-namespace EasyBim.WindowsService
+namespace SwiftFinancials.WindowsService
 {
     public class QuartzUnityExtension : UnityContainerExtension
     {

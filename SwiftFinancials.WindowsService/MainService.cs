@@ -7,7 +7,7 @@ using System.ServiceProcess;
 using System.Threading.Tasks;
 using Unity;
 
-namespace EasyBim.WindowsService
+namespace SwiftFinancials.WindowsService
 {
     public partial class MainService : ServiceBase
     {
@@ -51,7 +51,7 @@ namespace EasyBim.WindowsService
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError("EasyBim.WindowsService...", ex);
+                    _logger.LogError("SwiftFinancials.WindowsService...", ex);
                 }
             });
         }
