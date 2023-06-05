@@ -177,10 +177,10 @@ namespace DistributedServices.MainBoundedContext
                 CustomerId = userDTO.CustomerId
             };
 
-            var companyDTO =  _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
+            var companyDTO = _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
 
             if (companyDTO != null)
-               applicationUser.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
+                applicationUser.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
 
             var result = await _applicationUserManager.CreateAsync(applicationUser, userPassword);
 
@@ -248,14 +248,15 @@ namespace DistributedServices.MainBoundedContext
                 user.PhoneNumber = userDTO.PhoneNumber;
                 user.CompanyId = userDTO.CompanyId;
                 user.CustomerId = userDTO.CustomerId;
+                user.LockoutEnabled = userDTO.LockoutEnabled;
             }
 
             if (userDTO.CompanyId != Guid.Empty && userDTO.CompanyId != null)
             {
-                var companyDTO =  _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
+                var companyDTO = _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
 
-                //if (companyDTO != null)
-                //    user.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
+                if (companyDTO != null)
+                    user.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
             }
 
             var result = await _applicationUserManager.UpdateAsync(user);
