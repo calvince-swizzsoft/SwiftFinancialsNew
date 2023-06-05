@@ -109,7 +109,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [HttpGet]
         public async Task<JsonResult> GetEmployeeTypesAsync()
         {
-            var employeeTypesDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
+            var employeeTypesDTOs = await _channelService.FindEmployeeTypesAsync(GetServiceHeader());
 
             return Json(employeeTypesDTOs, JsonRequestBehavior.AllowGet);
         }

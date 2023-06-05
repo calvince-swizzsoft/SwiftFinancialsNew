@@ -185,7 +185,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public string CustomerAddressMobileLine { get; set; }
 
         [DataMember]
-        [Display(Name = "PIN")]
+        [Display(Name = "P.I.N")]
         public string CustomerPersonalIdentificationNumber { get; set; }
 
         [DataMember]
@@ -283,12 +283,12 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         }
 
         [DataMember]
-        [Display(Name = "NSSF Number")]
+        [Display(Name = "N.S.S.F Number")]
         [Required]
         public string NationalSocialSecurityFundNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "NHIF Number")]
+        [Display(Name = "N.H.I.F Number")]
         [Required]
         public string NationalHospitalInsuranceFundNumber { get; set; }
 

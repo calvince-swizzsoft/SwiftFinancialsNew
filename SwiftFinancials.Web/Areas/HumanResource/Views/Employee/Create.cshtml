@@ -51,22 +51,29 @@
                                         @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DesignationId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.DesignationId)
                                         @Html.EditorFor(model => model.DesignationDescription, new { htmlAttributes = new { @class = "DesignationsLookup form-control required", placeholder = "Designation description" } })
                                         @Html.ValidationMessageFor(model => model.DesignationId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DepartmentId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.DepartmentId)
                                         @Html.EditorFor(model => model.DepartmentDescription, new { htmlAttributes = new { @class = "DepartmentsLookup form-control required", placeholder = "Department description" } })
                                         @Html.ValidationMessageFor(model => model.DepartmentId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployeeTypeId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.EmployeeTypeId)
+                                        @Html.ValidationMessageFor(model => model.EmployeeTypeId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.EmployeeTypeCategoryDescription, new { htmlAttributes = new { @class = "EmployeeTypesLookup form-control required", placeholder = "EmployeeType Description" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -81,6 +88,19 @@
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BloodGroup, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.BloodGroup, bloodGroups, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.BloodGroup)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.NationalSocialSecurityFundNumber, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.NationalSocialSecurityFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NSSF Number", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.NationalSocialSecurityFundNumber, "", new { @class = "text-danger" })
@@ -90,14 +110,7 @@
                                         @Html.EditorFor(model => model.NationalHospitalInsuranceFundNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "NHIF Number", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.NationalHospitalInsuranceFundNumber, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BloodGroup, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.BloodGroup, bloodGroups, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.BloodGroup)
-                                        </div>
-                                    </div>
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
@@ -108,12 +121,6 @@
                                         @Html.LabelFor(model => model.OnlineNotificationsEnabled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Online Notifications Enabled?", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.OnlineNotificationsEnabled, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.EnforceBiometricsForLogin, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.EnforceBiometricsForLogin, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enforce Biometrics For Login?" } })
-                                        @Html.ValidationMessageFor(model => model.EnforceBiometricsForLogin, "", new { @class = "text-danger" })
-                                    </div>
-                                   
                                 </div>
                             </div>
                         </fieldset>
@@ -130,7 +137,7 @@
         @Scripts.Render("~/plugins/validate")
         @Scripts.Render("~/plugins/typehead")
 
-        <script>
+<script>
 
              //Branch typehead starts here
             $('.BranchesLookup').typeahead({
@@ -161,9 +168,9 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var BranchId = "";
+                    var branchId = "";
                     BranchId = BranchesMap[item].Id;
-                    $('#branchId').val(BranchId);
+                    $('#BranchId').val(BranchId);
                     //console.log(BranchId)
                     return item;
                 }
@@ -202,6 +209,43 @@
                     CustomerId = CustomersMap[item].Id;
                     $('#ParentId').val(CustomerId);
                     //console.log(CustomerId)
+                    return item;
+                }
+            });
+
+            //EmployeeType typehead starts here
+            $('.EmployeeTypesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployeeTypesAsync", "EmployeeType", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (EmployeeTypes) {
+                            var newEmployeeTypesData = [];
+                            EmployeeTypesMap = {};
+                            $.each(EmployeeTypes, function (i, EmployeeType) {
+                                newEmployeeTypesData.push(EmployeeType.CategoryDescription);
+                                EmployeeTypesMap[EmployeeType.CategoryDescription] = EmployeeType;
+                            });
+                            process(newEmployeeTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var employeeTypeId = "";
+                    EmployeeTypeId = EmployeeTypesMap[item].Id;
+                    $('#EmployeeTypeId').val(EmployeeTypeId);
+                    //console.log(EmployeeTypeId)
                     return item;
                 }
             });
@@ -274,10 +318,10 @@
                 updater: function (item) {
                     var departmentId = "";
                     DepartmentId = DepartmentsMap[item].Id;
-                    $('#ParentId').val(DepartmentId);
+                    $('#DepartmentId').val(DepartmentId);
                     //console.log(DepartmentId)
                     return item;
                 }
             });
-        </script>
+</script>
     }
