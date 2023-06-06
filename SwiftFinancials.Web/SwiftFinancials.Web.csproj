@@ -309,7 +309,6 @@
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\SavingsProductCommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TellerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TreasuryController.cs" />
@@ -1243,7 +1242,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
-    <Folder Include="Areas\Accounts\Views\SavingsProductCommission\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />

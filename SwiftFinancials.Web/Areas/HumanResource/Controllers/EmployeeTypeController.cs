@@ -84,7 +84,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(string.Empty);
             var employeeTypeDTO = await _channelService.FindEmployeeTypeAsync(id, GetServiceHeader());
 
             return View(employeeTypeDTO);
@@ -97,7 +97,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateEmployeeTypeAsync(employeeTypeBindingModel, GetServiceHeader());
-
+                ViewBag.EmployeeCategorySelectList = GetEmployeeCategorySelectList(employeeTypeBindingModel.Category.ToString());
                 return RedirectToAction("Index");
             }
             else

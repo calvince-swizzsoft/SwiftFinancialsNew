@@ -81,7 +81,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.ChequeTypeChargeRecoveryModeSelectList = GetChequeTypeChargeRecoveryModeSelectList(string.Empty);
             var chequeTypeDTO = await _channelService.FindChequeTypeAsync(id, GetServiceHeader());
 
             return View(chequeTypeDTO);
@@ -94,7 +94,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateChequeTypeAsync(chequeTypeBindingModel, GetServiceHeader());
-
+                ViewBag.ChequeTypeChargeRecoveryModeSelectList = GetChequeTypeChargeRecoveryModeSelectList(chequeTypeBindingModel.ChargeRecoveryMode.ToString());
                 return RedirectToAction("Index");
             }
             else
