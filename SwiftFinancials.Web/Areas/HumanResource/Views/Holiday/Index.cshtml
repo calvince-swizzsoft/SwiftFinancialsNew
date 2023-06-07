@@ -21,7 +21,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Holiday", "Create", "Holiday", new { Area = "HumanResourse" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Holiday", "Create", "Holiday", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -46,7 +46,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                       
                     </div>
                 </div>
             </div>
@@ -69,7 +68,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Holiday", new { Area = "HumanResourse"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Holiday", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -82,8 +81,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/humanResourse/Holiday/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/humanResourse/Holiday/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/HumanResource/Holiday/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/HumanResource/Holiday/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
