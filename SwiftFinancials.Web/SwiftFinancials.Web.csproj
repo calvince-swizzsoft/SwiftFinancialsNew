@@ -783,6 +783,7 @@
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
