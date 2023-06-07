@@ -205,6 +205,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetTellerTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> tellerTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(TellerType)).Cast<TellerType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            tellerTypes.AddRange(items);
+
+            return tellerTypes;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetGenderSelectList(string selectedValue)
         {
             List<SelectListItem> gender = new List<SelectListItem>();

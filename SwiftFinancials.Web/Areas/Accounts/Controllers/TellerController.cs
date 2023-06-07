@@ -22,8 +22,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-       /* public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-       /* [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
          {
              int totalRecordCount = 0;
@@ -34,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
              var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-             var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, 1);
+             var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync(jQueryDataTablesModel.iColumns, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayLength, 1);
 
              if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
              {
@@ -45,7 +43,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                  return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
              }
              else return this.DataTablesJson(items: new List<TellerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-         }*/
+         }
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -59,6 +57,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
 
             return View();
         }
@@ -77,6 +76,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = tellerDTO.ErrorMessages;
+                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
 
                 return View(tellerDTO);
             }
