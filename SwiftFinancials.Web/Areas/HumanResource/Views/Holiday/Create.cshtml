@@ -39,78 +39,44 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <h1>Primary Details</h1>
+                        <h2>Holiday Details</h2>
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-8">
+                                <div class="col-lg-4">
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Holiday name.", @required = "" } })
-
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-users" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Start Date" } })
-
                                         @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date" } })
-
-                                        @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-
                                         @Html.CheckBoxFor(model => model.IsLocked)
-
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>PostingPeriod Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Description.." } })
-                                        @Html.EditorFor(model => model.PostingPeriodDurationStartDate, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Start Date" } })
-                                        @Html.EditorFor(model => model.PostingPeriodDurationEndDate, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period end Date" } })
-
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Holiday name.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date" } })
+                                        @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
-                                    </div>
+                            </div>
+                            <div class="form-group form-group-sm">
+                                <div class="col-md-offset-2">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
                                 </div>
                             </div>
                         </fieldset>
@@ -129,7 +95,6 @@
 }
 
 @section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
