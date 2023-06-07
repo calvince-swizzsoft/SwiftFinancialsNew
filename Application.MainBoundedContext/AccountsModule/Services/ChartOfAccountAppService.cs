@@ -248,7 +248,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
-                var filter = ChartOfAccountSpecifications.ParentChartOfAccounts();
+                var filter = ChartOfAccountSpecifications.DefaultSpec();
 
                 ISpecification<ChartOfAccount> spec = filter;
 
