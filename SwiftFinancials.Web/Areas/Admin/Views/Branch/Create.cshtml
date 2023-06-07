@@ -46,10 +46,19 @@
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Branch name.", @required = "" } })
-
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CompanyId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.CompanyId)
+                                        @Html.ValidationMessageFor(model => model.CompanyId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CompanyDescription, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Description.." } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CompanyAddressMobileLine, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CompanyAddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "mobile line", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.CompanyAddressMobileLine, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -68,85 +77,39 @@
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
-
                                         @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-
                                         @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-
                                         @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-
                                         @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
-
                                         @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-
                                         @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Company Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CompanyId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.CompanyId)
-                                        @Html.ValidationMessageFor(model => model.CompanyId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CompanyDescription, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Description.." } })
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CompanyAddressMobileLine, htmlAttributes: new { @class = "" })
-
-                                        @Html.EditorFor(model => model.CompanyAddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "mobile line" , disabled="disabled"} })
-
-                                        @Html.ValidationMessageFor(model => model.CompanyAddressMobileLine, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                        </div>
                                     </div>
                                 </div>
                             </div>
