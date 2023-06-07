@@ -80,7 +80,6 @@
                                 </div>
                             </div>
                         </fieldset>
-
                     }
 
                 </div>
@@ -171,7 +170,7 @@
             $('.PostingPeriodsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "HumanResource" })',
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
                         { query: query },
                         function (PostingPeriods) {
                             var newPostingPeriodsData = [];
