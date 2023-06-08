@@ -134,7 +134,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Pool G/L Account")]
-        [ValidGuid]
+       
         public Guid? PoolChartOfAccountId { get; set; }
 
         [DataMember]

@@ -69,16 +69,12 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaximumBalance" } })
-
                                         @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recovery Priority" } })
-
                                         @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
@@ -86,14 +82,23 @@
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsPooled, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsPooled, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                        @Html.ValidationMessageFor(model => model.IsPooled, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "" })
-
                                         @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maturity Period (Days)" } })
-
                                         @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "" })
@@ -103,10 +108,19 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AnnualPercentageYield, htmlAttributes: new { @class = "" });
-
-                                        @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield" } });
-
-                                        @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" });
+                                        @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield" } })
+                                        @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsRefundable, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsRefundable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Refundable?" } })
+                                        @Html.ValidationMessageFor(model => model.IsRefundable, "", new { @class = "text-danger" })
+                                    </div>
+                                    
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.TrackArrears, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.TrackArrears, new { htmlAttributes = new { @class = "form-control", @placeholder = "Track Arrears?" } })
+                                        @Html.ValidationMessageFor(model => model.TrackArrears, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="form-group form-group-sm">
@@ -134,7 +148,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
