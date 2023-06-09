@@ -11187,6 +11187,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<EmployeeDTO>> FindEmployeesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<EmployeeDTO>>();
+
+            IEmployeeService service = GetService<IEmployeeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<EmployeeDTO> response = ((IEmployeeService)result.AsyncState).EndFindEmployees(result);
+
+                    tcs.TrySetResult(new ObservableCollection<EmployeeDTO>(response ?? new List<EmployeeDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindEmployees(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         #endregion
 
         #region EmployeeDisciplinaryCaseDTO

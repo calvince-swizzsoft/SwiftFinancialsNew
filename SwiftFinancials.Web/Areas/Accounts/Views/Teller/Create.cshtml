@@ -203,8 +203,8 @@
                             var newEmployeesData = [];
                             EmployeesMap = {};
                             $.each(Employees, function (i, Employee) {
-                                newEmployeesData.push(Employee.CustomerFullName);
-                                EmployeesMap[Employee.CustomerFullName] = Employee;
+                                newEmployeesData.push(EmployeeCustomer.FullName);
+                                EmployeesMap[EmployeeCustomer.FullName] = Employee;
                             });
                             process(newEmployeesData); return;
                         });
