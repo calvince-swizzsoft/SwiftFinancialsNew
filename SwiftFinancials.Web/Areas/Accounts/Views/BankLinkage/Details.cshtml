@@ -40,22 +40,26 @@
                         <div class="col-lg-6">
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.BankName)</strong><br>
-
                                 @Html.DisplayFor(model => model.BankName)<br>
                             </p>
                             <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)</strong><br>
+                                @Html.DisplayFor(model => model.ChartOfAccountAccountName)<br>
+                            </p>
+                            <p>
                                 <strong>@Html.DisplayNameFor(model => model.BankBranchName)</strong><br>
-
                                 @Html.DisplayFor(model => model.BankBranchName)<br>
                             </p>
-                            p>
-                            <strong>@Html.DisplayNameFor(model => model.BankAccountNumber)</strong><br>
-
-                            @Html.DisplayFor(model => model.BankAccountNumber)<br>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.BranchDescription)</strong><br>
+                                @Html.DisplayFor(model => model.BranchDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.BankAccountNumber)</strong><br>
+                                @Html.DisplayFor(model => model.BankAccountNumber)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.Remarks)</strong><br>
-
                                 @Html.DisplayFor(model => model.Remarks)<br>
                             </p>
                             <p>
@@ -63,10 +67,8 @@
 
                                 @Html.DisplayFor(model => model.IsLocked)<br>
                             <p>
-
                             <p>
                                 <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
-
                                 @Html.DisplayFor(model => model.CreatedDate)<br>
                             </p>
                         </div>
@@ -162,5 +164,5 @@
                     }
                 }
             });
-     }); </script>
+        });</script>
 }
