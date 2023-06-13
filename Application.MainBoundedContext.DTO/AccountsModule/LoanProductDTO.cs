@@ -325,7 +325,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Create standing order on loan verification?")]
-        public bool LoanRegistrationCreateStandingOrderOnLoanAudit { get;  set; }
+        public bool LoanRegistrationCreateStandingOrderOnLoanAudit { get; set; }
 
         [DataMember]
         [Display(Name = "Take-Home Type")]
@@ -468,7 +468,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Interest Charged G/L Account")]
-        [ValidGuid]
         public Guid InterestChargedChartOfAccountId { get; set; }
 
         [DataMember]

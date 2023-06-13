@@ -42,7 +42,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Product")]
-        [ValidGuid]
+       
         public Guid CustomerAccountTypeTargetProductId { get; set; }
 
         [DataMember]
