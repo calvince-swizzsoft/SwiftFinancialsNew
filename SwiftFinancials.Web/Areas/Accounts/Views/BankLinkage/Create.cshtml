@@ -54,15 +54,14 @@
                     @using (Html.BeginForm("Create", "BankLinkage", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                            <h1>Primary details</h1>
-                            <fieldset>
-                                <h2>Primary details</h2>
+                        <h1>Primary details</h1>
+                        <fieldset>
+                            <div class="form-horizontal">
                                 <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group form-group-sm">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank name ", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
@@ -73,26 +72,28 @@
                                             @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Account Name" } })
                                             @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                         </div>
+                                    </div>
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Branch name ", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.BankBranchName, "", new { @class = "text-danger" })
                                         </div>
-
-                                        <div class="form-group form-group-sm">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Company Branch Name" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Account number ", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.BankAccountNumber, "", new { @class = "text-danger" })
                                         </div>
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
@@ -103,18 +104,19 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-sm">
-                                    <div class="col-md-offset-2 col-md-10">
-                                        <input type="submit" value="Create" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </fieldset>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
                         </div>
-                }
+                    }
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 
     @*<a href="~/GlobalVariable.cs">~/GlobalVariable.cs</a>*@
 
@@ -129,7 +131,7 @@
         @Scripts.Render("~/plugins/validate")
         @Scripts.Render("~/plugins/typehead")
 
-<script>
+        <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -229,7 +231,7 @@
                 updater: function (item) {
                     var chartOfAccountId = "";
                     ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ParentId').val(ChartOfAccountId);
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
                     //console.log(ChartOfAccountId)
                     return item;
                 }
@@ -264,9 +266,9 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var BranchId = "";
+                    var branchId = "";
                     BranchId = BranchesMap[item].Id;
-                    $('#ParentId').val(BranchId);
+                    $('#BranchId').val(BranchId);
                     //console.log(BranchId)
                     return item;
                 }

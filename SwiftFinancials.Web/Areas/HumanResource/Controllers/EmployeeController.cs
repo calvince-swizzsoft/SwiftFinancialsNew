@@ -105,12 +105,12 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public async Task<JsonResult> GetEmployeesAsync()
         {
             var employeesDTOs = await _channelService.FindEmployeesAsync(GetServiceHeader());
 
             return Json(employeesDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 }

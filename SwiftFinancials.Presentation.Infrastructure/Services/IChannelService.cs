@@ -880,6 +880,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<EmployeeDTO> FindEmployeeBySerialNumberAsync(int serialNumber, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<EmployeeDTO>> FindEmployeesAsync(ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region EmployeeDocumentDTO
