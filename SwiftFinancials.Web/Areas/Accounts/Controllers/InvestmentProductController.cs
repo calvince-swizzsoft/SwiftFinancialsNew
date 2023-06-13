@@ -54,7 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
             return View();
         }
 
@@ -72,7 +72,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = investmentProductDTO.ErrorMessages;
-
+                ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(investmentProductDTO.Priority.ToString());
                 return View(investmentProductDTO);
             }
         }

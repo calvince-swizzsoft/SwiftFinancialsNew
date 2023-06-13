@@ -696,6 +696,22 @@ namespace SwiftFinancials.Web.Controllers
             return bloodGroups;
         }
         [NonAction]
+        protected List<SelectListItem> RecoveryPrioritySelectList(string selectedValue)
+        {
+            List<SelectListItem> recoveryPriorities = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(RecoveryPriority)).Cast<RecoveryPriority>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            recoveryPriorities.AddRange(items);
+
+            return recoveryPriorities;
+        }
+        [NonAction]
         public DashboardAppConfigSection GetDashboardAppConfiguration()
         {
             try
