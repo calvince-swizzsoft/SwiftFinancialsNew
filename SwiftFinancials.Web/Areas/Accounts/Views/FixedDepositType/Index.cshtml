@@ -20,6 +20,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Fixed DepositType", "Create", "FixedDepositType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -44,7 +45,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Fixed DepositType", "Create", "FixedDepositType", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -83,8 +83,8 @@
                     var editUrl = '<a  href="/accounts/FixedDepositType/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/FixedDepositType/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
