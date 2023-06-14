@@ -36,7 +36,7 @@
                 </div>
                 <div class="ibox-content text-info">
                     <div class="row">
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
 
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.StationDescription)<br></strong>
@@ -49,14 +49,14 @@
                                 @Html.DisplayFor(model => model.PersonalIdentificationNumber)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Type)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.TypeDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.Type)<br>
+                                @Html.DisplayFor(model => model.TypeDescription)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualType)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualTypeDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualType)<br>
+                                @Html.DisplayFor(model => model.IndividualTypeDescription)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IndividualFirstName)<br></strong>
@@ -69,9 +69,9 @@
                                 @Html.DisplayFor(model => model.IndividualLastName)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualIdentityCardType)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualIdentityCardTypeDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualIdentityCardType)<br>
+                                @Html.DisplayFor(model => model.IndividualIdentityCardTypeDescription)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IndividualIdentityCardNumber)<br></strong>
@@ -89,31 +89,31 @@
                                 @Html.DisplayFor(model => model.IndividualPayrollNumbers)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualSalutation)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualSalutationDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualSalutation)<br>
+                                @Html.DisplayFor(model => model.IndividualSalutationDescription)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualGender)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualGenderDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualGender)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualClassification)<br></strong>
-
-                                @Html.DisplayFor(model => model.IndividualClassification)<br>
+                                @Html.DisplayFor(model => model.IndividualGenderDescription)<br>
                             </p>
                         </div>
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualMaritalStatus)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualClassificationDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualMaritalStatus)<br>
+                                @Html.DisplayFor(model => model.IndividualClassificationDescription)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualNationality)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualMaritalStatusDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualNationality)<br>
+                                @Html.DisplayFor(model => model.IndividualMaritalStatusDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualNationalityDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.IndividualNationalityDescription)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IndividualBirthDate)<br></strong>
@@ -126,15 +126,42 @@
                                 @Html.DisplayFor(model => model.IndividualEmploymentDesignation)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IndividualEmploymentTermsOfService)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IndividualEmploymentTermsOfServiceDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.IndividualEmploymentTermsOfService)<br>
+                                @Html.DisplayFor(model => model.IndividualEmploymentTermsOfServiceDescription)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IndividualEmploymentDate)<br></strong>
 
                                 @Html.DisplayFor(model => model.IndividualEmploymentDate)<br>
                             </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Reference1)<br></strong>
+
+                                @Html.DisplayFor(model => model.Reference1)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Reference2)<br></strong>
+
+                                @Html.DisplayFor(model => model.Reference2)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
+
+                                @Html.DisplayFor(model => model.Remarks)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Reference3)<br></strong>
+
+                                @Html.DisplayFor(model => model.Reference3)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.RecordStatusDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.RecordStatusDescription)<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-4">
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.AddressAddressLine1)<br></strong>
 
@@ -176,34 +203,9 @@
                                 @Html.DisplayFor(model => model.AddressMobileLine)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Reference1)<br></strong>
-
-                                @Html.DisplayFor(model => model.Reference1)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Reference2)<br></strong>
-
-                                @Html.DisplayFor(model => model.Reference2)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
-
-                                @Html.DisplayFor(model => model.Remarks)<br>
-                            </p>
-                            <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsDefaulter)<br></strong>
 
                                 @Html.DisplayFor(model => model.IsDefaulter)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.RecordStatus)<br></strong>
-
-                                @Html.DisplayFor(model => model.RecordStatus)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Reference3)<br></strong>
-
-                                @Html.DisplayFor(model => model.Reference3)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.InhibitGuaranteeing)<br></strong>
