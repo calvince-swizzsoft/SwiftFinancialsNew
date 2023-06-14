@@ -80,7 +80,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
             var investmentProductDTO = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
 
             return View(investmentProductDTO);
@@ -93,7 +93,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateInvestmentProductAsync(investmentProductBindingModel, GetServiceHeader());
-
+                ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(investmentProductBindingModel.Priority.ToString());
                 return RedirectToAction("Index");
             }
             else
