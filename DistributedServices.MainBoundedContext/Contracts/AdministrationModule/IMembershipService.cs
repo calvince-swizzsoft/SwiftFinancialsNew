@@ -1,5 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AdministrationModule;
+using DistributedServices.MainBoundedContext.Identity;
 using DistributedServices.Seedwork.ErrorHandlers;
 using System;
 using System.Collections.Generic;
@@ -38,6 +39,10 @@ namespace DistributedServices.MainBoundedContext
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
         Task<UserDTO> FindMembershipAsync(string id);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        List<UserDTO> FindMemberships();
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]

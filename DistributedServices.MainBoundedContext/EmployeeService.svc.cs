@@ -2,6 +2,7 @@
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using Application.MainBoundedContext.HumanResourcesModule.Services;
+using DistributedServices.MainBoundedContext.Identity;
 using DistributedServices.MainBoundedContext.InstanceProviders;
 using DistributedServices.Seedwork.EndpointBehaviors;
 using DistributedServices.Seedwork.ErrorHandlers;
@@ -22,16 +23,20 @@ namespace DistributedServices.MainBoundedContext
     {
         private readonly IEmployeeAppService _employeeAppService;
         private readonly IEmployeeDisciplinaryCaseAppService _employeeDisciplinaryCaseAppService;
+        private readonly IMembershipService _membershipService;
 
         public EmployeeService(
-            IEmployeeAppService employeeAppService, IEmployeeDisciplinaryCaseAppService employeeDisciplinaryCaseAppService)
+            IEmployeeAppService employeeAppService, IEmployeeDisciplinaryCaseAppService employeeDisciplinaryCaseAppService, IMembershipService membershipService)
         {
             Guard.ArgumentNotNull(employeeAppService, nameof(employeeAppService));
 
             Guard.ArgumentNotNull(employeeDisciplinaryCaseAppService, nameof(employeeDisciplinaryCaseAppService));
 
+            Guard.ArgumentNotNull(membershipService, nameof(membershipService));
+
             _employeeAppService = employeeAppService;
             _employeeDisciplinaryCaseAppService = employeeDisciplinaryCaseAppService;
+            _membershipService = membershipService;
         }
 
         #region Employee
@@ -148,13 +153,15 @@ namespace DistributedServices.MainBoundedContext
 
                 ProfileManager.ApplicationName = string.Format("/{0}", serviceHeader.ApplicationDomainName);
 
+                var userDTOs = _membershipService.FindMemberships();
+
                 var membershipUserCollection = Membership.GetAllUsers();
 
                 var profileCollection = new List<ProfileBase>();
 
-                foreach (var item in membershipUserCollection)
+                foreach (var item in userDTOs)
                 {
-                    var membershipUser = item as MembershipUser;
+                    var membershipUser = item as UserDTO;
 
                     var profile = ProfileBase.Create(membershipUser.UserName);
 

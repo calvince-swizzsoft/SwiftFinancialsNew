@@ -17,6 +17,9 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [Display(Name = "Email Address")]
         public string Email { get; set; }
 
+        [Display(Name = "User Name")]
+        public string UserName { get; set; }
+
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 

@@ -306,6 +306,32 @@ namespace DistributedServices.MainBoundedContext
             return userDTO;
         }
 
+        public List<UserDTO> FindMemberships()
+        {
+            var applicationUsers = _applicationUserManager.Users.ToList();
+
+            List<UserDTO> userDTOs = new List<UserDTO>();
+
+            foreach(var applicationUser in applicationUsers)
+            {
+                var userDTO = new UserDTO()
+                {
+                    FirstName = applicationUser.FirstName,
+                    OtherNames = applicationUser.OtherNames,
+                    Email = applicationUser.Email,
+                    UserName= applicationUser.UserName,
+                    PhoneNumber = applicationUser.PhoneNumber,
+                    CompanyId = applicationUser.CompanyId,
+                    LockoutEnabled = applicationUser.LockoutEnabled,
+                    CreatedDate = applicationUser.CreatedDate,
+                    CustomerId = applicationUser.CustomerId
+                };
+
+                userDTOs.Add(userDTO);
+            }
+           return userDTOs;
+        }
+
         public async Task<bool> ResetMembershipPasswordAsync(UserDTO userDTO)
         {
             var result = default(bool);
