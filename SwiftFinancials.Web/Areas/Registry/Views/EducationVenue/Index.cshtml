@@ -1,5 +1,5 @@
 ﻿@{
- ViewBag.Title = "Education Venue";
+    ViewBag.Title = "Education Venue";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -20,6 +20,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Education  Venue", "Create", "EducationVenue", new { Area = "Registry" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -44,7 +45,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Education  Venue", "Create", "EducationVenue", new { Area = "Registry" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
