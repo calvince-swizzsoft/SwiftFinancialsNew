@@ -155,7 +155,7 @@ namespace DistributedServices.MainBoundedContext
 
                 var userDTOs = _membershipService.FindMemberships();
 
-                var membershipUserCollection = Membership.GetAllUsers();
+               // var membershipUserCollection = Membership.GetAllUsers();
 
                 var profileCollection = new List<ProfileBase>();
 
