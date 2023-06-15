@@ -27819,6 +27819,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<DebitTypeDTO> FindDebitTypeAsync(Guid debitTypeId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<DebitTypeDTO>();
+
+            IDebitTypeService service = GetService<IDebitTypeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    DebitTypeDTO response = ((IDebitTypeService)result.AsyncState).EndFindDebitType(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDebitType(debitTypeId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<ObservableCollection<DebitTypeDTO>> FindDebitTypesAsync(ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<DebitTypeDTO>>();
@@ -27882,7 +27914,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+        public Task<List<DebitTypeDTO>> FindDebitTypeAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<DebitTypeDTO>>();
 
+            IDebitTypeService service = GetService<IDebitTypeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DebitTypeDTO> response = ((IDebitTypeService)result.AsyncState).EndFindDebitTypes(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDebitTypes(asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<DebitTypeDTO> AddDebitTypeAsync(DebitTypeDTO debitTypeDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<DebitTypeDTO>();

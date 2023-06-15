@@ -44,14 +44,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<DebitTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-        /*public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var debitTypeDTO = await _channelService.FindDebitTypesAsync(id, GetServiceHeader());
+            var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
 
             return View(debitTypeDTO);
-        }*/
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -80,14 +80,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        /*public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
             var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
 
             return View(debitTypeDTO);
-        }*/
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -96,7 +96,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateDebitTypeAsync(debitTypeDTOBindingModel, GetServiceHeader());
-
+                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTOBindingModel.CustomerAccountTypeProductCode.ToString());
                 return RedirectToAction("Index");
             }
             else
