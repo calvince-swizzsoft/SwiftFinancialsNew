@@ -68,7 +68,7 @@ namespace DistributedServices.MainBoundedContext
 
             var employeeDTOs = _employeeAppService.FindEmployees(serviceHeader);
 
-            PopulateEmployeeApplicationUserName(employeeDTOs, serviceHeader);
+            //PopulateEmployeeApplicationUserName(employeeDTOs, serviceHeader);
 
             return employeeDTOs;
         }
@@ -79,7 +79,7 @@ namespace DistributedServices.MainBoundedContext
 
             var employeePageCollectionInfo = _employeeAppService.FindEmployees(pageIndex, pageSize, serviceHeader);
 
-            PopulateEmployeeApplicationUserName(employeePageCollectionInfo.PageCollection, serviceHeader);
+           // PopulateEmployeeApplicationUserName(employeePageCollectionInfo.PageCollection, serviceHeader);
 
             return employeePageCollectionInfo;
         }
@@ -90,7 +90,7 @@ namespace DistributedServices.MainBoundedContext
 
             var employeePageCollectionInfo = _employeeAppService.FindEmployees(text, pageIndex, pageSize, serviceHeader);
 
-            PopulateEmployeeApplicationUserName(employeePageCollectionInfo.PageCollection, serviceHeader);
+            //PopulateEmployeeApplicationUserName(employeePageCollectionInfo.PageCollection, serviceHeader);
 
             return employeePageCollectionInfo;
         }
@@ -101,7 +101,7 @@ namespace DistributedServices.MainBoundedContext
 
             var employeePageCollectionInfo = _employeeAppService.FindEmployees(departmentId, text, pageIndex, pageSize, serviceHeader);
 
-            PopulateEmployeeApplicationUserName(employeePageCollectionInfo.PageCollection, serviceHeader);
+            //PopulateEmployeeApplicationUserName(employeePageCollectionInfo.PageCollection, serviceHeader);
 
             return employeePageCollectionInfo;
         }
@@ -114,7 +114,7 @@ namespace DistributedServices.MainBoundedContext
 
             if (employeeDTO != null)
             {
-                PopulateEmployeeApplicationUserName(new List<EmployeeDTO> { employeeDTO }, serviceHeader);
+               // PopulateEmployeeApplicationUserName(new List<EmployeeDTO> { employeeDTO }, serviceHeader);
             }
 
             return employeeDTO;
@@ -128,7 +128,7 @@ namespace DistributedServices.MainBoundedContext
 
             if (employeeDTO != null)
             {
-                PopulateEmployeeApplicationUserName(new List<EmployeeDTO> { employeeDTO }, serviceHeader);
+               // PopulateEmployeeApplicationUserName(new List<EmployeeDTO> { employeeDTO }, serviceHeader);
             }
 
             return employeeDTO;
@@ -140,7 +140,7 @@ namespace DistributedServices.MainBoundedContext
 
             var employeeDTOs = _employeeAppService.FindEmployees(salaryPeriodDTO, salaryGroups, branches, departments, serviceHeader);
 
-            PopulateEmployeeApplicationUserName(employeeDTOs, serviceHeader);
+            //PopulateEmployeeApplicationUserName(employeeDTOs, serviceHeader);
 
             return employeeDTOs;
         }

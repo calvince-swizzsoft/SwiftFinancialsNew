@@ -18,6 +18,8 @@ namespace DistributedServices.MainBoundedContext.Identity
 
         public Guid? CustomerId { get; set; }
 
+        public Guid? EmployeeId { get; set; }
+
         public DateTime? LastPasswordChangedDate { get; set; }
 
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
