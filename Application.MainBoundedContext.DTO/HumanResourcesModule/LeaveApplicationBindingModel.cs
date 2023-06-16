@@ -23,6 +23,18 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public Guid EmployeeId { get; set; }
 
         [DataMember]
+        [Display(Name = "First Name")]
+        public string EmployeeCustomerIndividualFirstName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Other Names")]
+        public string EmployeeCustomerIndividualLastName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employee Name")]
+        public string EmployeeCustomerFullName { get; set; }
+
+        [DataMember]
         [Display(Name = "Leave Type")]
         [ValidGuid]
         public Guid LeaveTypeId { get; set; }
