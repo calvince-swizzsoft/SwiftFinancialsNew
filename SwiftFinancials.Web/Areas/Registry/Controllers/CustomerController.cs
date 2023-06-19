@@ -84,9 +84,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var mandatoryDebitTypes =new List<DebitTypeDTO>();
             var mandatoryProducts = new ProductCollectionInfo();
 
+
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+
+
             if (!customerBindingModel.HasErrors)
             {
-                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), mandatoryDebitTypes, mandatoryProducts,1,GetServiceHeader());
+                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), mandatoryProducts,1,GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
