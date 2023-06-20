@@ -18,7 +18,7 @@ namespace Infrastructure.Crosscutting.Framework.Models
         public string IpAddress { get; set; }
         public HttpMessageType MessageType { get; set; }
 
-        public List<string> Headers
+        public List<string> Headers 
         {
             get { return _headers; }
         }
