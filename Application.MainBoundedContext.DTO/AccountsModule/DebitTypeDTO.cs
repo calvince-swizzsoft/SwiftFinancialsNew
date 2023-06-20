@@ -110,6 +110,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool IsLocked { get; set; }
 
         [DataMember]
+        [Display(Name = "Is Mandatory?")]
+        public bool IsMandatory { get; set; }
+
+        [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
     }
