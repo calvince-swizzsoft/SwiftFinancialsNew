@@ -49,6 +49,13 @@ namespace DistributedServices.MainBoundedContext
             return _investmentProductAppService.FindInvestmentProducts(serviceHeader);
         }
 
+        public List<InvestmentProductDTO> FindMandatoryInvestmentProducts(bool isMandatory)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _investmentProductAppService.FindMandatoryInvestmentProducts(isMandatory, serviceHeader);
+        }
+
         public List<InvestmentProductDTO> FindInvestmentProductsByCode(int code)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

@@ -1128,7 +1128,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<CustomerDTO>> FindCustomersByRecordStatusAndFilterInPageAsync(int recordStatus, string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+        Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
         Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader = null);
 
@@ -1752,6 +1752,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<InvestmentProductDTO>> FindInvestmentProductsAsync(ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<InvestmentProductDTO>> FindMandatoryInvestmentProductsAsync(bool isMandatory, ServiceHeader serviceHeader = null);
+
         Task<ObservableCollection<InvestmentProductDTO>> FindInvestmentProductsByCodeAsync(int code, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<InvestmentProductDTO>> FindInvestmentProductsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
@@ -2142,7 +2144,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<DebitTypeDTO>> FindDebitTypesAsync(ServiceHeader serviceHeader = null);
 
-        Task<ObservableCollection<DebitTypeDTO>> FindMandatoryDebitTypesAsync(bool  isMandotory,  ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<DebitTypeDTO>> FindMandatoryDebitTypesAsync(bool  isMandatory,  ServiceHeader serviceHeader = null);
 
         Task<DebitTypeDTO> FindDebitTypeAsync(Guid debitTypeDTOId, ServiceHeader serviceHeader = null);
         Task<PageCollectionInfo<DebitTypeDTO>> FindDebitTypesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);

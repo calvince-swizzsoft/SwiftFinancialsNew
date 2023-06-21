@@ -27,6 +27,11 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindMandatoryInvestmentProducts(bool isMandatory, AsyncCallback callback, Object state);
+        List<InvestmentProductDTO> EndFindMandatoryInvestmentProducts(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindInvestmentProductsByCode(int code, AsyncCallback callback, Object state);
         List<InvestmentProductDTO> EndFindInvestmentProductsByCode(IAsyncResult result);
 

@@ -13,7 +13,7 @@ namespace SwiftFinancials.Presentation.Contracts.RegistryModule
     {
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginAddCustomer(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, AsyncCallback callback, Object state);
+        IAsyncResult BeginAddCustomer(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, AsyncCallback callback, Object state);
         CustomerDTO EndAddCustomer(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]

@@ -59,6 +59,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         investmentProduct.Lock();
                     else investmentProduct.UnLock();
 
+                    if (investmentProductDTO.IsMandatory)
+                        investmentProduct.SetAsMandatory();
+                    else investmentProduct.ResetAsMandatory();
+
                     _investmentProductRepository.Add(investmentProduct, serviceHeader);
 
                     dbContextScope.SaveChanges(serviceHeader);
@@ -89,6 +93,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         current.Lock();
                     else current.UnLock();
 
+                    if (investmentProductDTO.IsMandatory)
+                        current.SetAsMandatory();
+                    else current.ResetAsMandatory();
                     _investmentProductRepository.Merge(persisted, current, serviceHeader);
 
                     return dbContextScope.SaveChanges(serviceHeader) >= 0;
@@ -96,7 +103,21 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return false;
             }
         }
+        public List<InvestmentProduct> FindMandatoryInvestmentProducts(bool isMandatory, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                ISpecification<InvestmentProduct> spec = InvestmentProductSpecifications.MandatoryDebitTypes(isMandatory);
 
+                var investmentProducts = _investmentProductRepository.AllMatching(spec, serviceHeader);
+
+                if (investmentProducts != null && investmentProducts.Any())
+                {
+                    return investmentProducts.ProjectedAsCollection<InvestmentProduct>();
+                }
+                else return null;
+            }
+        }
         public List<InvestmentProductDTO> FindInvestmentProducts(ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())

@@ -26,6 +26,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        List<InvestmentProductDTO> FindMandatoryInvestmentProducts(bool isMandatory);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         List<InvestmentProductDTO> FindInvestmentProductsByCode(int code);
 
         [OperationContract()]

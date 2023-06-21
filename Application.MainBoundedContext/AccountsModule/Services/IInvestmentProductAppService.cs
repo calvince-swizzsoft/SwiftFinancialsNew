@@ -35,5 +35,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         InvestmentProductExemptionDTO FindInvestmentProductExemption(Guid investmentProductId, int customerClassification, ServiceHeader serviceHeader);
 
         bool UpdateInvestmentProductExemptions(Guid investmentProductId, List<InvestmentProductExemptionDTO> investmentProductExemptions, ServiceHeader serviceHeader);
+
+        List<InvestmentProductDTO> FindMandatoryInvestmentProducts(bool isMandatory, ServiceHeader serviceHeader);
     }
 }

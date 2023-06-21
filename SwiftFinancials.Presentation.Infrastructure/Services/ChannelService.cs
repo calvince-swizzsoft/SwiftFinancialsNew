@@ -15076,7 +15076,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        public Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<CustomerDTO>();
 
@@ -15103,10 +15103,12 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-            service.BeginAddCustomer(customerDTO, mandatoryDebitTypes, mandatoryProducts, moduleNavigationItemCode, asyncCallback, service);
+            service.BeginAddCustomer(customerDTO, mandatoryDebitTypes, mandatoryInvestmentProducts, mandatoryProducts, moduleNavigationItemCode, asyncCallback, service);
 
             return tcs.Task;
         }
+
+       
 
         public Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader)
         {
@@ -22624,6 +22626,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginFindInvestmentProducts(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ObservableCollection<InvestmentProductDTO>> FindMandatoryInvestmentProductsAsync(bool isMandatory, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<InvestmentProductDTO>>();
+
+            IInvestmentProductService service = GetService<IInvestmentProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<InvestmentProductDTO> response = ((IInvestmentProductService)result.AsyncState).EndFindMandatoryInvestmentProducts(result);
+
+                    tcs.TrySetResult(new ObservableCollection<InvestmentProductDTO>(response ?? new List<InvestmentProductDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindMandatoryInvestmentProducts(isMandatory, asyncCallback, service);
 
             return tcs.Task;
         }
