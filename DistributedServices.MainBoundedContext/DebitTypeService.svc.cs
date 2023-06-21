@@ -53,6 +53,13 @@ namespace DistributedServices.MainBoundedContext
             return debitTypes;
         }
 
+        public List<DebitTypeDTO> FindMandatoryDebitTypes(bool isMandatory)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _debitTypeAppService.FindMandatoryDebitTypes(isMandatory, serviceHeader);             
+        }
+
         public PageCollectionInfo<DebitTypeDTO> FindDebitTypesInPage(int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

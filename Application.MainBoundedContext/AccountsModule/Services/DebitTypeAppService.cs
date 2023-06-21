@@ -71,6 +71,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         debitType.Lock();
                     else debitType.UnLock();
 
+                    if (debitTypeDTO.IsMandatory)
+                        debitType.SetAsMandatory();
+                    else debitType.ResetAsMandatory();
+
                     _debitTypeRepository.Add(debitType, serviceHeader);
 
                     dbContextScope.SaveChanges(serviceHeader);
@@ -103,6 +107,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         current.Lock();
                     else current.UnLock();
 
+                    if (debitTypeDTO.IsMandatory)
+                        current.SetAsMandatory();
+                    else current.ResetAsMandatory();
+
                     _debitTypeRepository.Merge(persisted, current, serviceHeader);
 
                     return dbContextScope.SaveChanges(serviceHeader) >= 0;
@@ -116,6 +124,22 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             using (_dbContextScopeFactory.CreateReadOnly())
             {
                 ISpecification<DebitType> spec = DebitTypeSpecifications.DefaultSpec();
+
+                var debitTypes = _debitTypeRepository.AllMatching(spec, serviceHeader);
+
+                if (debitTypes != null && debitTypes.Any())
+                {
+                    return debitTypes.ProjectedAsCollection<DebitTypeDTO>();
+                }
+                else return null;
+            }
+        }
+
+        public List<DebitTypeDTO> FindMandatoryDebitTypes(bool isMandatory, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                ISpecification<DebitType> spec = DebitTypeSpecifications.MandatoryDebitTypes(isMandatory);
 
                 var debitTypes = _debitTypeRepository.AllMatching(spec, serviceHeader);
 

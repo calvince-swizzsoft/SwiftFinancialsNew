@@ -27883,6 +27883,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<DebitTypeDTO>> FindMandatoryDebitTypesAsync(bool isMandatory, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<DebitTypeDTO>>();
+
+            IDebitTypeService service = GetService<IDebitTypeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DebitTypeDTO> response = ((IDebitTypeService)result.AsyncState).EndFindMandatoryDebitTypes(result);
+
+                    tcs.TrySetResult(new ObservableCollection<DebitTypeDTO>(response ?? new List<DebitTypeDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindMandatoryDebitTypes(isMandatory, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<PageCollectionInfo<DebitTypeDTO>> FindDebitTypesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<DebitTypeDTO>>();

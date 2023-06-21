@@ -85,7 +85,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var mandatoryProducts = new ProductCollectionInfo();
 
 
-            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true,GetServiceHeader());
 
 
             if (!customerBindingModel.HasErrors)
