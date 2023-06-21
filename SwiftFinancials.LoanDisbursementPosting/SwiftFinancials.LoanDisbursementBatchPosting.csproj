@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Configuration\LoanDisbursementBatchMessageProcessor.cs" />
     <Compile Include="Configuration\LoanDisbursementBatchPostingConfigSection.cs" />
     <Compile Include="Configuration\LoanDisbursementBatchPostingSettingsCollection.cs" />
@@ -78,12 +77,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>%25systemroot%25\System32\xcopy /y "$(TargetPath)" "$(SolutionDir)SwiftFinancials.WindowsService\$(OutDir)"
-
-%25systemroot%25\System32\xcopy /y "$(TargetDir)Quartz.dll" "$(SolutionDir)SwiftFinancials.WindowsService\$(OutDir)"
-
-%25systemroot%25\System32\xcopy /y "$(TargetDir)Common.Logging.dll" "$(SolutionDir)SwiftFinancials.WindowsService\$(OutDir)"
-
-%25systemroot%25\System32\xcopy /y "$(TargetDir)Common.Logging.Core.dll" "$(SolutionDir)SwiftFinancials.WindowsService\$(OutDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
 </Project>
