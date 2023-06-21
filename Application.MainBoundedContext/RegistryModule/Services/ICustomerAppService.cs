@@ -10,7 +10,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
 {
     public interface ICustomerAppService
     {
-        Task<CustomerDTO> AddNewCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader);
+        Task<CustomerDTO> AddNewCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, List<SavingsProductDTO> mandatorySavingsProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
         Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader);
 

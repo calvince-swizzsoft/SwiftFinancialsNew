@@ -35,11 +35,11 @@ namespace DistributedServices.MainBoundedContext
 
         #region Customer
 
-        public async Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode)
+        public async Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, List<SavingsProductDTO> mandatorySavingsProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
-            return await _customerAppService.AddNewCustomerAsync(customerDTO, mandatoryDebitTypes, mandatoryProducts, moduleNavigationItemCode, serviceHeader);
+            return await _customerAppService.AddNewCustomerAsync(customerDTO, mandatoryDebitTypes,mandatoryInvestmentProducts,mandatorySavingsProducts, mandatoryProducts, moduleNavigationItemCode, serviceHeader);
         }
 
         public async Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO)
