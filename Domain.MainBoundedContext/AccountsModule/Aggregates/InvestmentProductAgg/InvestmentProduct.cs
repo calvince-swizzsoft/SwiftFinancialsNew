@@ -48,6 +48,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.InvestmentProductA
 
         public bool IsLocked { get; private set; }
 
+        public bool IsMandatory { get; private set; }
+
         public void Lock()
         {
             if (!IsLocked)
@@ -58,6 +60,17 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.InvestmentProductA
         {
             if (IsLocked)
                 this.IsLocked = false;
+        }
+        public void SetAsMandatory()
+        {
+            if (!IsMandatory)
+                this.IsMandatory = true;
+        }
+
+        public void ResetAsMandatory()
+        {
+            if (IsMandatory)
+                this.IsMandatory = false;
         }
     }
 }
