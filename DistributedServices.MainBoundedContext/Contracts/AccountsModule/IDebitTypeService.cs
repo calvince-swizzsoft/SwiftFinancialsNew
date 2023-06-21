@@ -29,6 +29,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        List<DebitTypeDTO> FindMandatoryDebitTypes(bool isMandatory);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<DebitTypeDTO> FindDebitTypesInPage(int pageIndex, int pageSize);
 
         [OperationContract()]

@@ -25,5 +25,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         bool UpdateCommissions(Guid debitTypeId, List<CommissionDTO> commissions, ServiceHeader serviceHeader);
 
         void FetchDebitTypesProductDescription(List<DebitTypeDTO> debitTypes, ServiceHeader serviceHeader);
+
+        List<DebitTypeDTO> FindMandatoryDebitTypes(bool isMandatory, ServiceHeader serviceHeader);
     }
 }

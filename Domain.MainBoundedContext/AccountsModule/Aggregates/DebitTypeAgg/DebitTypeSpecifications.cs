@@ -29,5 +29,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.DebitTypeAgg
 
             return specification;
         }
+
+        public static Specification<DebitType> MandatoryDebitTypes(bool isMandatory)
+        {
+            Specification<DebitType> specification  = new DirectSpecification<DebitType>(c => c.IsMandatory==isMandatory);
+
+            return specification;
+        }
     }
 }

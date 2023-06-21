@@ -27,6 +27,11 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindMandatoryDebitTypes(bool isMandatory,  AsyncCallback callback, Object state);
+        List<DebitTypeDTO> EndFindMandatoryDebitTypes(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindDebitTypesInPage(int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<DebitTypeDTO> EndFindDebitTypesInPage(IAsyncResult result);
 

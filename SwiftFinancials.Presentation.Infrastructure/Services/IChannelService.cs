@@ -2141,6 +2141,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<PageCollectionInfo<DebitTypeDTO>> FindDebitTypesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<DebitTypeDTO>> FindDebitTypesAsync(ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<DebitTypeDTO>> FindMandatoryDebitTypesAsync(bool  isMandotory,  ServiceHeader serviceHeader = null);
+
         Task<DebitTypeDTO> FindDebitTypeAsync(Guid debitTypeDTOId, ServiceHeader serviceHeader = null);
         Task<PageCollectionInfo<DebitTypeDTO>> FindDebitTypesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 

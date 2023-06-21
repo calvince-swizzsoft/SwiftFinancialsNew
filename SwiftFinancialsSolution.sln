@@ -105,7 +105,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.eStatementI
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.FixedDepositLiquidationInvoker", "SwiftFinancials.FixedDepositLiquidationInvoker\SwiftFinancials.FixedDepositLiquidationInvoker.csproj", "{5D0B863E-1593-4B29-AFB9-8FE67A248F3C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.LoanDisbursementPosting", "SwiftFinancials.LoanDisbursementPosting\SwiftFinancials.LoanDisbursementPosting.csproj", "{841ADBCB-2D7E-4F39-B670-D790D16C2D3D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.LoanDisbursementBatchPosting", "SwiftFinancials.LoanDisbursementPosting\SwiftFinancials.LoanDisbursementBatchPosting.csproj", "{841ADBCB-2D7E-4F39-B670-D790D16C2D3D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.SavingsProductLedgerFeeProcessor", "SwiftFinancials.SavingsProductLedgerFeeProcessor\SwiftFinancials.SavingsProductLedgerFeeProcessor.csproj", "{7BE7609D-528E-4772-A3A0-CD2255F6B3CE}"
 EndProject
