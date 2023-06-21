@@ -68,7 +68,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.InvestmentProductA
         {
             return new DirectSpecification<InvestmentProduct>(x => !x.IsLocked && x.IsSuperSaver);
         }
-        public static Specification<InvestmentProduct> MandatoryDebitTypes(bool isMandatory)
+        public static Specification<InvestmentProduct> MandatoryInvestmentProducts(bool isMandatory)
         {
             Specification<InvestmentProduct> specification = new DirectSpecification<InvestmentProduct>(c => c.IsMandatory == isMandatory);
 

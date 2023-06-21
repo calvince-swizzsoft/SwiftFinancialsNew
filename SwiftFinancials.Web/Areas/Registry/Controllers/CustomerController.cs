@@ -86,11 +86,12 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
             var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true,GetServiceHeader());
+            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
 
 
             if (!customerBindingModel.HasErrors)
             {
-                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), mandatoryProducts,1,GetServiceHeader());
+                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(),mandatoryProducts,1,GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

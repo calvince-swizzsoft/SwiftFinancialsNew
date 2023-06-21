@@ -103,17 +103,18 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return false;
             }
         }
-        public List<InvestmentProduct> FindMandatoryInvestmentProducts(bool isMandatory, ServiceHeader serviceHeader)
+
+        public List<InvestmentProductDTO> FindMandatoryInvestmentProducts(bool isMandatory, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
-                ISpecification<InvestmentProduct> spec = InvestmentProductSpecifications.MandatoryDebitTypes(isMandatory);
+                ISpecification<InvestmentProduct> spec = InvestmentProductSpecifications.MandatoryInvestmentProducts(isMandatory);
 
                 var investmentProducts = _investmentProductRepository.AllMatching(spec, serviceHeader);
 
                 if (investmentProducts != null && investmentProducts.Any())
                 {
-                    return investmentProducts.ProjectedAsCollection<InvestmentProduct>();
+                    return investmentProducts.ProjectedAsCollection<InvestmentProductDTO>();
                 }
                 else return null;
             }
