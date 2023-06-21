@@ -49,6 +49,13 @@ namespace DistributedServices.MainBoundedContext
             return _savingsProductAppService.FindSavingsProducts(serviceHeader);
         }
 
+        public List<SavingsProductDTO> FindMandatorySavingsProducts(bool isMandatory)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _savingsProductAppService.FindMandatorySavingsProducts(isMandatory, serviceHeader);
+        }
+
         public PageCollectionInfo<SavingsProductDTO> FindSavingsProductsInPage(int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

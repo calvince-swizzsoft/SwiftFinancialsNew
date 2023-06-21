@@ -48,7 +48,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
     <Compile Include="Configuration\LoanDisbursementBatchMessageProcessor.cs" />
     <Compile Include="Configuration\LoanDisbursementBatchPostingConfigSection.cs" />
     <Compile Include="Configuration\LoanDisbursementBatchPostingSettingsCollection.cs" />
@@ -77,4 +76,8 @@
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>
+    </PostBuildEvent>
+  </PropertyGroup>
 </Project>

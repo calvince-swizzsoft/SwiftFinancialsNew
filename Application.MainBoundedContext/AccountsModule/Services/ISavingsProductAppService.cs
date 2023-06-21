@@ -14,6 +14,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         List<SavingsProductDTO> FindSavingsProducts(ServiceHeader serviceHeader);
 
+        List<SavingsProductDTO> FindMandatorySavingsProducts(bool isMandatory, ServiceHeader serviceHeader);
+
         List<SavingsProductDTO> FindCachedSavingsProducts(ServiceHeader serviceHeader);
 
         List<SavingsProductDTO> FindSavingsProducts(int code, ServiceHeader serviceHeader);

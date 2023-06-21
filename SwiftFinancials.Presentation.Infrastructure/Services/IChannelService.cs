@@ -1726,6 +1726,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<SavingsProductDTO>> FindSavingsProductsAsync(ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<SavingsProductDTO>> FindMandatorySavingsProductsAsync(bool isMandatory, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<SavingsProductDTO>> FindSavingsProductsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<SavingsProductDTO> AddSavingsProductAsync(SavingsProductDTO savingsProductDTO, ServiceHeader serviceHeader = null);

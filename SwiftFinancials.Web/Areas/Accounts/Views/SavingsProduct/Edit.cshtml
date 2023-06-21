@@ -57,13 +57,15 @@
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumAllowedWithdrawal, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MaximumAllowedWithdrawal, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Allowed Withdrawal", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.MaximumAllowedWithdrawal, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumAllowedDeposit, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MaximumAllowedDeposit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Allowed Deposit", @required = "" } })
@@ -106,6 +108,8 @@
                                         @Html.EditorFor(model => model.AnnualPercentageYield, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Yield", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.AnnualPercentageYield, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Priority", @required = "" } })
@@ -130,6 +134,11 @@
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsMandatory, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsMandatory, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Mandatory?" } })
+                                        @Html.ValidationMessageFor(model => model.IsMandatory, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 

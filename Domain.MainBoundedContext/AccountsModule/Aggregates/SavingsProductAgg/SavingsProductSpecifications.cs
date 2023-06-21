@@ -66,5 +66,12 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SavingsProductAgg
         {
             return new DirectSpecification<SavingsProduct>(x => !x.IsLocked && x.AutomateLedgerFeeCalculation);
         }
+
+        public static Specification<SavingsProduct> MandatorySavingsProducts(bool isMandatory)
+        {
+            Specification<SavingsProduct> specification = new DirectSpecification<SavingsProduct>(c => c.IsMandatory == isMandatory);
+
+            return specification;
+        }
     }
 }
