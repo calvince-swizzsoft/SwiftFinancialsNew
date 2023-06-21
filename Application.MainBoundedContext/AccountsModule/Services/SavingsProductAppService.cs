@@ -66,6 +66,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         savingsProduct.Lock();
                     else savingsProduct.UnLock();
 
+                    if (savingsProductDTO.IsMandatory)
+                        savingsProduct.SetAsMandatory();
+                    else savingsProduct.ResetAsMandatory();
+
                     _savingsProductRepository.Add(savingsProduct, serviceHeader);
 
                     dbContextScope.SaveChanges(serviceHeader);
@@ -96,6 +100,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         current.Lock();
                     else current.UnLock();
 
+                    if (savingsProductDTO.IsMandatory)
+                        current.SetAsMandatory();
+                    else current.ResetAsMandatory();
+
                     _savingsProductRepository.Merge(persisted, current, serviceHeader);
 
                     // Set as default?
@@ -109,6 +117,22 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         }
 
         public List<SavingsProductDTO> FindSavingsProducts(ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                ISpecification<SavingsProduct> spec = SavingsProductSpecifications.DefaultSpec();
+
+                var savingsProducts = _savingsProductRepository.AllMatching(spec, serviceHeader);
+
+                if (savingsProducts != null && savingsProducts.Any())
+                {
+                    return savingsProducts.ProjectedAsCollection<SavingsProductDTO>();
+                }
+                else return null;
+            }
+        }
+
+        public List<SavingsProductDTO> FindMandatorySavingsProducts(bool isMandatory, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {

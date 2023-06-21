@@ -22272,6 +22272,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<SavingsProductDTO>> FindMandatorySavingsProductsAsync(bool isMandatory, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<SavingsProductDTO>>();
+
+            ISavingsProductService service = GetService<ISavingsProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SavingsProductDTO> response = ((ISavingsProductService)result.AsyncState).EndFindMandatorySavingsProducts(result);
+
+                    tcs.TrySetResult(new ObservableCollection<SavingsProductDTO>(response ?? new List<SavingsProductDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindMandatorySavingsProducts(isMandatory, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<PageCollectionInfo<SavingsProductDTO>> FindSavingsProductsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<SavingsProductDTO>>();

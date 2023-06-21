@@ -36,6 +36,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SavingsProductAgg
 
         public bool IsDefault { get; private set; }
 
+        public bool IsMandatory { get; private set; }
+
         public bool AutomateLedgerFeeCalculation { get; set; }
 
         public bool ThrottleOverTheCounterWithdrawals { get; set; }
@@ -62,6 +64,18 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SavingsProductAgg
         {
             if (IsDefault)
                 this.IsDefault = false;
+        }
+
+        public void SetAsMandatory()
+        {
+            if (!IsMandatory)
+                this.IsMandatory = true;
+        }
+
+        public void ResetAsMandatory()
+        {
+            if (IsMandatory)
+                this.IsMandatory = false;
         }
     }
 }

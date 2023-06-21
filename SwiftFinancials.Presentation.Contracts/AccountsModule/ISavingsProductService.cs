@@ -27,6 +27,11 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindMandatorySavingsProducts(bool isMandatory, AsyncCallback callback, Object state);
+        List<SavingsProductDTO> EndFindMandatorySavingsProducts(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindSavingsProductsInPage(int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<SavingsProductDTO> EndFindSavingsProductsInPage(IAsyncResult result);
 

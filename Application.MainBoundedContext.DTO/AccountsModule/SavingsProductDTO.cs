@@ -82,6 +82,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool IsDefault { get; set; }
 
         [DataMember]
+        [Display(Name = "Is Mandatory?")]
+        public bool IsMandatory { get; set; }
+
+        [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 

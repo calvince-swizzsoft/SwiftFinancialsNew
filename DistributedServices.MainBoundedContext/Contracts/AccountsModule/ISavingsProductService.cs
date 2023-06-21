@@ -26,6 +26,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        List<SavingsProductDTO> FindMandatorySavingsProducts(bool isMandatory);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<SavingsProductDTO> FindSavingsProductsInPage(int pageIndex, int pageSize);
 
         [OperationContract()]
