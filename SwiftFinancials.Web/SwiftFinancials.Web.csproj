@@ -364,6 +364,7 @@
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
@@ -803,6 +804,10 @@
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
