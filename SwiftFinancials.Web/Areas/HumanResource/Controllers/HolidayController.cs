@@ -64,6 +64,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(HolidayDTO holidayDTO)
         {
+            var startDate = Request["startDate"];
+
+            var endDate = Request["endDate"];
+
+            holidayDTO.DurationStartDate = DateTime.Parse(startDate).Date;
+
+            holidayDTO.DurationEndDate = DateTime.Parse(endDate).Date;
             holidayDTO.ValidateAll();
 
             if (!holidayDTO.HasErrors)

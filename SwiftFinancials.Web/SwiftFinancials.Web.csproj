@@ -799,7 +799,6 @@
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
-    <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
