@@ -1,21 +1,21 @@
 ﻿using Infrastructure.Crosscutting.Framework.Logging;
 using Quartz;
+using SwiftFinancials.Presentation.Infrastructure.Services;
 using System;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using System.Threading.Tasks;
-using SwiftFinancials.FixedDepositLiquidationInvoker.Configuration;
-using SwiftFinancials.Presentation.Infrastructure.Services;
+using SwiftFinancials.InvestmentBalancesNormalizer.Configuration;
 
-namespace SwiftFinancials.FixedDepositLiquidationInvoker.Services
+namespace SwiftFinancials.InvestmentBalancesNormalizer.Services
 {
     [Export(typeof(IPlugin))]
-    public class Dispatcher : IPlugin
+    public class Pooler : IPlugin
     {
         private readonly ILogger _logger;
 
         [ImportingConstructor]
-        public Dispatcher(ILogger logger)
+        public Pooler(ILogger logger)
         {
             if (logger == null)
                 throw new ArgumentNullException(nameof(logger));
@@ -27,12 +27,12 @@ namespace SwiftFinancials.FixedDepositLiquidationInvoker.Services
 
         public Guid Id
         {
-            get { return new Guid("{1AB57E9B-B4AA-4F1C-A351-CBBD95883262}"); }
+            get { return new Guid("{225BF9DA-E3FF-4BFB-A592-878459ED8478}"); }
         }
 
         public string Description
         {
-            get { return "FIXED-DEPOSIT_LIQUIDATION_DISPATCHER"; }
+            get { return "INVESTMENT_BALANCES_POOLER"; }
         }
 
         public void DoWork(IScheduler scheduler, params string[] args)
@@ -41,32 +41,32 @@ namespace SwiftFinancials.FixedDepositLiquidationInvoker.Services
             {
                 try
                 {
-                    var fixedDepositLiquidationInvokerConfigSection = (FixedDepositLiquidationInvokerConfigSection)ConfigurationManager.GetSection("fixedDepositLiquidationInvokerConfiguration");
+                    var investmentBalancesNormalizerConfigSection = (InvestmentBalancesNormalizerConfigSection)ConfigurationManager.GetSection("investmentBalancesNormalizerConfiguration");
 
-                    if (fixedDepositLiquidationInvokerConfigSection == null)
-                        throw new ArgumentNullException(nameof(fixedDepositLiquidationInvokerConfigSection));
+                    if (investmentBalancesNormalizerConfigSection == null)
+                        throw new ArgumentNullException(nameof(investmentBalancesNormalizerConfigSection));
 
                     // Define the Job to be scheduled
-                    var jobDetail = JobBuilder.Create<FixedDepositLiquidationJob>()
-                        .WithIdentity("FixedDepositLiquidationJob", "VFIN")
+                    var jobDetail = JobBuilder.Create<PoolingJob>()
+                        .WithIdentity("PoolingJob", "VFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("FixedDepositLiquidationJob", "VFIN")
-                        .WithCronSchedule(fixedDepositLiquidationInvokerConfigSection.FixedDepositLiquidationInvokerSettingsItems.FixedDepositLiquidationJobCronExpression)
+                        .WithIdentity("PoolingJob", "VFIN")
+                        .WithCronSchedule(investmentBalancesNormalizerConfigSection.InvestmentBalancesNormalizerSettingsItems.PoolingJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("FixedDepositLiquidationJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("FixedDepositLiquidationJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("PoolingJob", "VFIN")))
+                        await scheduler.DeleteJob(new JobKey("PoolingJob", "VFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 
-                    _logger.Debug("Job '{0}' scheduled for '{1}'", "FixedDepositLiquidationJob", schedule.ToString("r"));
+                    _logger.Debug("Job '{0}' scheduled for '{1}'", "PoolingJob", schedule.ToString("r"));
                 }
                 catch (Exception ex)
                 {
