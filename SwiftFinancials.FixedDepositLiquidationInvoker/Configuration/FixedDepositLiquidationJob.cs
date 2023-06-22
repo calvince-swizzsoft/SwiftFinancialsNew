@@ -52,7 +52,7 @@ namespace SwiftFinancials.FixedDepositLiquidationInvoker.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.FixedDepositLiquidationInvoker_FixedDepositLiquidationJob.Execute", ex);
+                _logger.LogError("SwiftFinancials.FixedDepositLiquidationInvoker_FixedDepositLiquidationJob.Execute", ex);
             }
         }
     }

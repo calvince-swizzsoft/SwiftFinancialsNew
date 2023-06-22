@@ -75,7 +75,7 @@ namespace SwiftFinancials.CreditBatchPosting.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.CreditBatchPosting_QueueingJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.CreditBatchPosting_QueueingJob_Execute", ex);
             }
         }
     }

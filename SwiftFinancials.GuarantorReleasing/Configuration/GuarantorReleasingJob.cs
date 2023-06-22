@@ -52,7 +52,7 @@ namespace SwiftFinancials.GuarantorReleasing.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.GuarantorReleasing_GuarantorReleasingJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.GuarantorReleasing_GuarantorReleasingJob_Execute", ex);
             }
         }
     }

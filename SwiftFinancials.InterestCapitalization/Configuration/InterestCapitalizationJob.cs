@@ -52,7 +52,7 @@ namespace SwiftFinancials.InterestCapitalization.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.InterestCapitalization_InterestCapitalizationJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.InterestCapitalization_InterestCapitalizationJob_Execute", ex);
             }
         }
     }

@@ -9,7 +9,7 @@ using System.Messaging;
 using System.Threading.Tasks;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 
-namespace SwiftFinancials.DebitBatchPosting.Configuration
+namespace SwiftFinancials.JournalReversalBatchPosting.Configuration
 {
     public class QueueingJob : IJob
     {
@@ -42,19 +42,19 @@ namespace SwiftFinancials.DebitBatchPosting.Configuration
             {
                 _logger.Debug("{0}****{0}Job {1} fired @ {2} next scheduled for {3}{0}***{0}", Environment.NewLine, context.JobDetail.Key, context.FireTimeUtc.ToString("r"), context.NextFireTimeUtc.Value.ToString("r"));
 
-                var debitBatchPostingConfigSection = (DebitBatchPostingConfigSection)ConfigurationManager.GetSection("debitBatchPostingConfiguration");
+                var journalReversalBatchPostingConfigSection = (JournalReversalBatchPostingConfigSection)ConfigurationManager.GetSection("journalReversalBatchPostingConfiguration");
 
-                if (debitBatchPostingConfigSection != null)
+                if (journalReversalBatchPostingConfigSection != null)
                 {
-                    foreach (var settingsItem in debitBatchPostingConfigSection.DebitBatchPostingSettingsItems)
+                    foreach (var settingsItem in journalReversalBatchPostingConfigSection.JournalReversalBatchPostingSettingsItems)
                     {
-                        var debitBatchPostingSettingsElement = (DebitBatchPostingSettingsElement)settingsItem;
+                        var journalReversalBatchPostingSettingsElement = (JournalReversalBatchPostingSettingsElement)settingsItem;
 
-                        if (debitBatchPostingSettingsElement != null && debitBatchPostingSettingsElement.Enabled == 1)
+                        if (journalReversalBatchPostingSettingsElement != null && journalReversalBatchPostingSettingsElement.Enabled == 1)
                         {
-                            var serviceHeader = new ServiceHeader { ApplicationDomainName = debitBatchPostingSettingsElement.UniqueId };
+                            var serviceHeader = new ServiceHeader { ApplicationDomainName = journalReversalBatchPostingSettingsElement.UniqueId };
 
-                            var pageCollectionInfo = await _channelService.FindQueableDebitBatchEntriesInPageAsync(0, debitBatchPostingSettingsElement.QueuePageSize, serviceHeader);
+                            var pageCollectionInfo = await _channelService.FindQueableJournalReversalBatchEntriesInPageAsync(0, journalReversalBatchPostingSettingsElement.QueuePageSize, serviceHeader);
 
                             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection != null)
                             {
@@ -66,7 +66,7 @@ namespace SwiftFinancials.DebitBatchPosting.Configuration
                                         AppDomainName = serviceHeader.ApplicationDomainName,
                                     };
 
-                                    _messageQueueService.Send(debitBatchPostingConfigSection.DebitBatchPostingSettingsItems.QueuePath, queueDTO, MessageCategory.DebitBatchEntry, (MessagePriority)item.DebitBatchPriority, debitBatchPostingSettingsElement.TimeToBeReceived);
+                                    _messageQueueService.Send(journalReversalBatchPostingConfigSection.JournalReversalBatchPostingSettingsItems.QueuePath, queueDTO, MessageCategory.JournalReversalBatchEntry, (MessagePriority)item.JournalReversalBatchPriority, journalReversalBatchPostingSettingsElement.TimeToBeReceived);
                                 }
                             }
                         }
@@ -75,7 +75,7 @@ namespace SwiftFinancials.DebitBatchPosting.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("SwiftFinancials.DebitBatchPosting_QueueingJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.JournalReversalBatchPosting_QueueingJob_Execute", ex);
             }
         }
     }

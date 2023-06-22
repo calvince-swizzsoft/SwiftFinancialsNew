@@ -54,7 +54,7 @@ namespace SwiftFinancials.InvestmentBalancesNormalizer.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.InvestmentBalancesNormalizer_NormalizationJob.Execute", ex);
+                _logger.LogError("SwiftFinancials.InvestmentBalancesNormalizer_NormalizationJob.Execute", ex);
             }
         }
 
