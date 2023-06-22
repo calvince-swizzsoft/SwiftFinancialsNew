@@ -81,17 +81,20 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
             //cheat
+            var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
+            var mandatorySavingsProducts = new List<SavingsProductDTO>();
             var mandatoryDebitTypes =new List<DebitTypeDTO>();
             var mandatoryProducts = new ProductCollectionInfo();
 
 
             var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true,GetServiceHeader());
             var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
 
 
             if (!customerBindingModel.HasErrors)
             {
-                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(),mandatoryProducts,1,GetServiceHeader());
+                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts,1,GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

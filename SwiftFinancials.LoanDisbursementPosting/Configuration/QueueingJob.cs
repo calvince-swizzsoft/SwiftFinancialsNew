@@ -76,7 +76,7 @@ namespace SwiftFinancials.LoanDisbursementBatchPosting.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.LoanDisbursementBatchPosting_QueueingJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.LoanDisbursementBatchPosting_QueueingJob_Execute", ex);
             }
         }
     }

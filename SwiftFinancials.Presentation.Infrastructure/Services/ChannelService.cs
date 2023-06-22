@@ -15076,7 +15076,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader)
+        public Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, List<SavingsProductDTO> mandatorySavingsProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<CustomerDTO>();
 

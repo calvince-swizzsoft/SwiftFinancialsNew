@@ -1128,7 +1128,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<CustomerDTO>> FindCustomersByRecordStatusAndFilterInPageAsync(int recordStatus, string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+        Task<CustomerDTO> AddCustomerAsync(CustomerDTO customerDTO, List<DebitTypeDTO> mandatoryDebitTypes, List<InvestmentProductDTO> mandatoryInvestmentProducts, List<SavingsProductDTO> mandatorySavingsProducts, ProductCollectionInfo mandatoryProducts, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
         Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader = null);
 
