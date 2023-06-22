@@ -51,7 +51,7 @@
                         <h2>Holiday Details</h2>
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                     @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
@@ -59,35 +59,42 @@
                                         @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
                                     </div>
-                                    <div class="form-group form-group-lg">
+                                    <div class="form-group" id="data_3">
                                         @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Start Date" } })
-                                        @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked)
                                         @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Holiday name.", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
+
+                                    <div class="form-group" id="data_3">
                                         @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.DurationEndDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "End Date" } })
-                                        @Html.ValidationMessageFor(model => model.DurationEndDate, "", new { @class = "text-danger" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
-                                </div>
-                            </div>
+
+
+
                         </fieldset>
                     }
 
@@ -97,16 +104,62 @@
     </div>
 </div>
 
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script>
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+    
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({

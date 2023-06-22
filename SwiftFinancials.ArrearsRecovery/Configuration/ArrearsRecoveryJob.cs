@@ -52,7 +52,7 @@ namespace SwiftFinancials.ArrearsRecovery.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.ArrearsRecovery_ArrearsRecoveryJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.ArrearsRecovery_ArrearsRecoveryJob_Execute", ex);
             }
         }
     }

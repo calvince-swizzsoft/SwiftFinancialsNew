@@ -75,7 +75,7 @@ namespace SwiftFinancials.RecurringBatchPosting.Configuration
             }
             catch (Exception ex)
             {
-                _logger.LogError("VanguardFinancials.RecurringBatchPosting_QueueingJob_Execute", ex);
+                _logger.LogError("SwiftFinancials.RecurringBatchPosting_QueueingJob_Execute", ex);
             }
         }
     }
