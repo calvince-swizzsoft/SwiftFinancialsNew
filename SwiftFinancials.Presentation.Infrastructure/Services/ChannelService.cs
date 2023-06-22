@@ -12202,6 +12202,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+        public Task<TrainingPeriodDTO> AddTrainingPeriodAsync(TrainingPeriodDTO trainingPeriodDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<TrainingPeriodDTO>();
+
+            ITrainingPeriodService service = GetService<ITrainingPeriodService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    TrainingPeriodDTO response = ((ITrainingPeriodService)result.AsyncState).EndAddTrainingPeriod(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddTrainingPeriod(trainingPeriodDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
 
         public Task<PageCollectionInfo<TrainingPeriodEntryDTO>> FindTrainingPeriodEntriesByTrainingPeriodIdFilterInPageAsync(Guid trainingPeriodId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {

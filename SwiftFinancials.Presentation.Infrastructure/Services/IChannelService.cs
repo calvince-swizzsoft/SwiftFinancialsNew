@@ -1638,6 +1638,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PostingPeriodDTO> AddPostingPeriodAsync(PostingPeriodDTO postingPeriodDTO, ServiceHeader serviceHeader = null);
 
+        Task<TrainingPeriodDTO> AddTrainingPeriodAsync(TrainingPeriodDTO trainingPeriodDTO, ServiceHeader serviceHeader = null);
+
         Task<bool> UpdatePostingPeriodAsync(PostingPeriodDTO postingPeriodDTO, ServiceHeader serviceHeader = null);
 
         Task<PostingPeriodDTO> FindPostingPeriodAsync(Guid postingPeriodId, ServiceHeader serviceHeader = null);

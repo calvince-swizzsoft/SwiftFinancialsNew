@@ -55,14 +55,23 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         public async Task<ActionResult> Create()
         {
+
             await ServeNavigationMenus();
 
             return View();
         }
 
         [HttpPost]
-        /*public async Task<ActionResult> Create(TrainingPeriodDTO trainingPeriodDTO)
+        public async Task<ActionResult> Create(TrainingPeriodDTO trainingPeriodDTO)
         {
+            var startDate = Request["startDate"];
+
+            var endDate = Request["endDate"];
+
+            trainingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
+
+            trainingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
+
             trainingPeriodDTO.ValidateAll();
 
             if (!trainingPeriodDTO.HasErrors)
@@ -77,7 +86,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return View(trainingPeriodDTO);
             }
-        }*/
+        }
 
         public async Task<ActionResult> Edit(Guid id)
         {

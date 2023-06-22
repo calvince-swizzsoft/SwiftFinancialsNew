@@ -13,6 +13,11 @@ namespace SwiftFinancials.Presentation.Contracts.HumanResourcesModule
         #region TrainingPeriodDTO
 
         [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginAddTrainingPeriod(TrainingPeriodDTO trainingPeriodDTO, AsyncCallback callback, Object state);
+        TrainingPeriodDTO EndAddTrainingPeriod(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))] 
         IAsyncResult BeginAddNewTrainingPeriod(TrainingPeriodDTO trainingPeriodDTO, AsyncCallback callback, Object state);
         TrainingPeriodDTO EndAddNewTrainingPeriod(IAsyncResult result);
