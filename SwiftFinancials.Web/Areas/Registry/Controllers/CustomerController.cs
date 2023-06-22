@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
@@ -77,6 +76,15 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel)
         {
+
+            var date = Request["date"];
+
+            customerBindingModel.IndividualBirthDate = DateTime.Parse(date).Date;
+
+            customerBindingModel.RegistrationDate = DateTime.Parse(date).Date;
+
+            customerBindingModel.IndividualEmploymentDate = DateTime.Parse(date).Date;
+
             customerBindingModel.ValidateAll();
 
 

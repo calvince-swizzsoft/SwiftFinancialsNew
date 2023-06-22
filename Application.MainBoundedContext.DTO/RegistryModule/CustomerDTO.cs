@@ -138,6 +138,12 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [Display(Name = "Birth Date")]
         public DateTime? IndividualBirthDate { get; set; }
+       
+        [Display(Name = "Start Date")]
+        public DateTime DurationStartDate { get; set; }
+
+        [Display(Name = "End Date")]
+        public DateTime DurationEndDate { get; set; }
 
         [Display(Name = "Employment Designation")]
         public string IndividualEmploymentDesignation { get; set; }
@@ -309,6 +315,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [Display(Name = "Registration Date")]
         public DateTime? RegistrationDate { get; set; }
 
+
         [Display(Name = "Recruited By")]
         public string RecruitedBy { get; set; }
 
@@ -444,6 +451,20 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public int CompareTo(CustomerDTO other)
         {
             return this.CompareTo(other);
+        }
+
+        public static ValidationResult CheckDurationEndDate(string value, ValidationContext context)
+        {
+            var bindingModel = context.ObjectInstance as CustomerBindingModel;
+            if (bindingModel == null)
+                throw new NotSupportedException("ObjectInstance must be CustomerBindingModel");
+
+            if (bindingModel.DurationEndDate == null || bindingModel.DurationStartDate == null)
+                return new ValidationResult("The duration dates must be specified.");
+            else if (bindingModel.DurationEndDate <= bindingModel.DurationStartDate)
+                return new ValidationResult("The end date must be greater than the start date.");
+
+            return ValidationResult.Success;
         }
     }
 }
