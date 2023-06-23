@@ -1238,5 +1238,13 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 return _populationRegisterQueryRepository.AllMatchingPaged<PopulationRegisterQueryDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
             }
         }
+
+        public async Task<int> GetCustomersCountAsync(ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                return await _customerRepository.CountAllAsync(serviceHeader);
+            }
+        }
     }
 }

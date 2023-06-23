@@ -15661,6 +15661,46 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<int> GetCustomersCountAsync(ServiceHeader serviceHeader)
+        {
+            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+
+            ICustomerService service = GetService<ICustomerService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    int response = ((ICustomerService)result.AsyncState).EndGetCustomersCount(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb))
+                        {
+                            tcs.TrySetResult(0);
+                        }
+                        else
+                        {
+                            tcs.TrySetException(ex);
+                        }
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginGetCustomersCount(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region AccountAlertDTO

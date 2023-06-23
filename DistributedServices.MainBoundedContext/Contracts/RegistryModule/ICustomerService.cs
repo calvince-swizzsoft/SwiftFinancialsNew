@@ -150,6 +150,9 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<PopulationRegisterQueryDTO> FindThirdPartyNotifiablePopulationRegisterQueriesByFilterInPage(string text, int populationRegisterFilter, int pageIndex, int pageSize, int daysCap);
 
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        Task<int> GetCustomersCountAsync();
         #endregion
     }
 }

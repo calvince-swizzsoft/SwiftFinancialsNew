@@ -273,6 +273,14 @@ namespace DistributedServices.MainBoundedContext
             return _customerAppService.FindThirdPartyNotifiablePopulationRegisterQueries(text, populationRegisterFilter, pageIndex, pageSize, daysCap, serviceHeader);
         }
 
+        public async Task<int> GetCustomersCountAsync()
+        {
+            ServiceHeader serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return await _customerAppService.GetCustomersCountAsync(serviceHeader);
+        }
+
         #endregion
     }
 }
+

@@ -1161,6 +1161,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<PopulationRegisterQueryDTO>> FindThirdPartyNotifiablePopulationRegisterQueriesByFilterInPageAsync(string text, int populationRegisterFilter, int pageIndex, int pageSize, int daysCap, ServiceHeader serviceHeader = null);
 
+        Task<int> GetCustomersCountAsync(ServiceHeader serviceHeader);
+
         #endregion
 
         #region AccountAlertDTO

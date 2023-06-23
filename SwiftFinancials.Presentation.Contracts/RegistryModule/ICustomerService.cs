@@ -180,5 +180,10 @@ namespace SwiftFinancials.Presentation.Contracts.RegistryModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindThirdPartyNotifiablePopulationRegisterQueriesByFilterInPage(string text, int populationRegisterFilter, int pageIndex, int pageSize, int daysCap, AsyncCallback callback, Object state);
         PageCollectionInfo<PopulationRegisterQueryDTO> EndFindThirdPartyNotifiablePopulationRegisterQueriesByFilterInPage(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginGetCustomersCount(AsyncCallback callback, object state);
+        int EndGetCustomersCount(IAsyncResult result);
     }
 }

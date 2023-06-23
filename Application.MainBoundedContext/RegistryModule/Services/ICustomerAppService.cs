@@ -83,5 +83,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
         PageCollectionInfo<PopulationRegisterQueryDTO> FindPopulationRegisterQueries(int status, DateTime startDate, DateTime endDate, string text, int populationRegisterFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         PageCollectionInfo<PopulationRegisterQueryDTO> FindThirdPartyNotifiablePopulationRegisterQueries(string text, int populationRegisterFilter, int pageIndex, int pageSize, int daysCap, ServiceHeader serviceHeader);
+
+        Task<int> GetCustomersCountAsync(ServiceHeader serviceHeader);
     }
 }
