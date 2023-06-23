@@ -34,7 +34,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch,1, jQueryDataTablesModel.iDisplayStart,jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -92,18 +92,20 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             //cheat
             var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
             var mandatorySavingsProducts = new List<SavingsProductDTO>();
-            var mandatoryDebitTypes =new List<DebitTypeDTO>();
+            var mandatoryDebitTypes = new List<DebitTypeDTO>();
             var mandatoryProducts = new ProductCollectionInfo();
 
 
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true,GetServiceHeader());
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
             var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
             var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
 
+            mandatoryProducts.InvestmentProductCollection = investmentProducts.ToList();
+            mandatoryProducts.SavingsProductCollection = savingsProducts.ToList();
 
             if (!customerBindingModel.HasErrors)
             {
-                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts,1,GetServiceHeader());
+                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
