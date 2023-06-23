@@ -452,19 +452,5 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         {
             return this.CompareTo(other);
         }
-
-        public static ValidationResult CheckDurationEndDate(string value, ValidationContext context)
-        {
-            var bindingModel = context.ObjectInstance as CustomerBindingModel;
-            if (bindingModel == null)
-                throw new NotSupportedException("ObjectInstance must be CustomerBindingModel");
-
-            if (bindingModel.DurationEndDate == null || bindingModel.DurationStartDate == null)
-                return new ValidationResult("The duration dates must be specified.");
-            else if (bindingModel.DurationEndDate <= bindingModel.DurationStartDate)
-                return new ValidationResult("The end date must be greater than the start date.");
-
-            return ValidationResult.Success;
-        }
     }
 }
