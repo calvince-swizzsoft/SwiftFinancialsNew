@@ -76,14 +76,15 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel)
         {
+            var registrationdate = Request["registrationdate"];
+            var birthdate = Request["birthdate"];
+            var employmentdate = Request["employmentdate"];
 
-            var date = Request["date"];
+            customerBindingModel.IndividualBirthDate = DateTime.Parse(birthdate).Date;
 
-            customerBindingModel.IndividualBirthDate = DateTime.Parse(date).Date;
+            customerBindingModel.RegistrationDate = DateTime.Parse(registrationdate).Date;
 
-            customerBindingModel.RegistrationDate = DateTime.Parse(date).Date;
-
-            customerBindingModel.IndividualEmploymentDate = DateTime.Parse(date).Date;
+            customerBindingModel.IndividualEmploymentDate = DateTime.Parse(employmentdate).Date;
 
             customerBindingModel.ValidateAll();
 
