@@ -16,6 +16,7 @@ using Numero3.EntityFramework.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.AdministrationModule.Services
 {
@@ -365,6 +366,14 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                 }
 
                 return dbContextScope.SaveChanges(serviceHeader) >= 0;
+            }
+        }
+
+        public async Task<int> GetCompaniesCountAsync(ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                return await _companyRepository.CountAllAsync(serviceHeader);
             }
         }
     }

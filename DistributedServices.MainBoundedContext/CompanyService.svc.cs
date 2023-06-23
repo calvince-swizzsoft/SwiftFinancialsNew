@@ -9,6 +9,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -97,6 +98,13 @@ namespace DistributedServices.MainBoundedContext
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _companyAppService.UpdateAttachedProducts(companyId, attachedProductsTuple, serviceHeader);
+        }
+
+        public async Task<int> GetCompaniesCountAsync()
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return await _companyAppService.GetCompaniesCountAsync(serviceHeader);
         }
 
         #endregion

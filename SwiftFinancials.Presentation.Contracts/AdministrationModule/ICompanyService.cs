@@ -60,5 +60,10 @@ namespace SwiftFinancials.Presentation.Contracts.AdministrationModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginUpdateAttachedProductsByCompanyId(Guid companyId, ProductCollectionInfo attachedProductsTuple, AsyncCallback callback, Object state);
         bool EndUpdateAttachedProductsByCompanyId(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginGetCompaniesCount(AsyncCallback callback, Object state);
+        int EndGetCompaniesCount(IAsyncResult result);
     }
 }

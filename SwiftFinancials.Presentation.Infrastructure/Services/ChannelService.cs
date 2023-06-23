@@ -1335,6 +1335,46 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<int> GetCompaniesCountAsync(ServiceHeader serviceHeader)
+        {
+            TaskCompletionSource<int> tcs = new TaskCompletionSource<int>();
+
+            ICompanyService service = GetService<ICompanyService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    int response = ((ICompanyService)result.AsyncState).EndGetCompaniesCount(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb))
+                        {
+                            tcs.TrySetResult(0);
+                        }
+                        else
+                        {
+                            tcs.TrySetException(ex);
+                        }
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginGetCompaniesCount(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         #endregion
 
         #region AuditLogDTO

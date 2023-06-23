@@ -4,6 +4,7 @@ using Application.MainBoundedContext.DTO.AdministrationModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace Application.MainBoundedContext.AdministrationModule.Services
 {
@@ -32,5 +33,7 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
         ProductCollectionInfo FindCachedAttachedProducts(Guid companyId, ServiceHeader serviceHeader);
         
         bool UpdateAttachedProducts(Guid companyId, ProductCollectionInfo attachedProductsTuple, ServiceHeader serviceHeader);
+
+        Task<int> GetCompaniesCountAsync(ServiceHeader serviceHeader);
     }
 }

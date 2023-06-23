@@ -102,6 +102,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateAttachedProductsByCompanyIdAsync(Guid companyId, ProductCollectionInfo attachedProductsTuple, ServiceHeader serviceHeader = null);
 
+        Task<int> GetCompaniesCountAsync(ServiceHeader serviceHeader);
         #endregion
 
         #region AuditLogDTO

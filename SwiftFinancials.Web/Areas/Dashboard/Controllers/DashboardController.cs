@@ -23,20 +23,20 @@ namespace SwiftFinancials.Web.Areas.Dashboard.Controllers
 
         #region Metrics
 
-        //public async Task<JsonResult> Companies()
-        //{
-        //    return Json(new { success = true, Companies = await _channelService.GetCompaniesCountAsync(GetServiceHeader()) });
-        //}
+        public async Task<JsonResult> Companies()
+        {
+            return Json(new { success = true, Companies = await _channelService.GetCompaniesCountAsync(GetServiceHeader()) });
+        }
 
         public async Task<JsonResult> Users()
         {
             return Json(new { success = true, Users = await _channelService.GetApplicationUsersCountAsync(GetServiceHeader()) });
         }
 
-        //public async Task<JsonResult> Customers()
-        //{
-        //    return Json(new { success = true, Customers = await _channelService.GetCustomersCountAsync(GetServiceHeader()) });
-        //}
+        public async Task<JsonResult> Customers()
+        {
+            return Json(new { success = true, Customers = await _channelService.GetCustomersCountAsync(GetServiceHeader()) });
+        }
 
         //public JsonResult AssetRegisters()
         //{

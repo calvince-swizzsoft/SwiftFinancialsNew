@@ -480,5 +480,10 @@ namespace Infrastructure.Data.MainBoundedContext.Repositories
 
             return dbContext;
         }
+
+        public async Task<int> CountAllAsync(ServiceHeader serviceHeader)
+        {
+            return await GetDbContext(serviceHeader).Set<TEntity>().CountAsync();
+        }
     }
 }

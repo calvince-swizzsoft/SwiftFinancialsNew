@@ -67,5 +67,7 @@ namespace Domain.Seedwork
         string Pluralize();
 
         string Pluralize<TTarget>() where TTarget : class;
+
+        Task<int> CountAllAsync(ServiceHeader serviceHeader);
     }
 }

@@ -5,6 +5,7 @@ using DistributedServices.Seedwork.ErrorHandlers;
 using System;
 using System.Collections.Generic;
 using System.ServiceModel;
+using System.Threading.Tasks;
 
 namespace DistributedServices.MainBoundedContext
 {
@@ -52,6 +53,10 @@ namespace DistributedServices.MainBoundedContext
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
         bool UpdateAttachedProductsByCompanyId(Guid companyId, ProductCollectionInfo attachedProductsTuple);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        Task<int> GetCompaniesCountAsync();
 
         #endregion
     }
