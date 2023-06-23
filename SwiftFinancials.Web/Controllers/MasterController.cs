@@ -664,6 +664,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetWithdrawalNotificationCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> withdrawalNotificationCategories = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(WithdrawalNotificationCategory)).Cast<WithdrawalNotificationCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            withdrawalNotificationCategories.AddRange(items);
+
+            return withdrawalNotificationCategories;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetEmployeeCategorySelectList(string selectedValue)
         {
             List<SelectListItem> employeeCategories = new List<SelectListItem>();

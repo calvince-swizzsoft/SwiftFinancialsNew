@@ -1,7 +1,175 @@
-﻿
+﻿@model  Application.MainBoundedContext.DTO.RegistryModule.WithdrawalNotificationDTO
+
 @{
-    ViewBag.Title = "Create";
+    /**/
+
+    ViewBag.Title = "Create Withdrawal Notification";
+    var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
 }
 
-<h2>Create</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>withdrawal Notification</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "WithdrawalNotification", new { Area = "Registry" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "WithdrawalNotification", new { Area = "Registry" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerId)
+                                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.Customer.FullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employer", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerStationDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Category, withdrawalNotificationCategories, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Category)
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            <div class="col-md-offset-2">
+                                                <input type="submit" value="Create" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Serial Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerSerialNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Identity Card Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Payroll Number", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+    <script>
+
+            //Customer typehead starts here
+            $('.CustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i, Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var customerId = "";
+                    CustomerId = CustomersMap[item].Id;
+                    $('#CustomerId').val(CustomerId);
+                    //console.log(CustomerId)
+                    return item;
+                }
+            });
+
+    </script>
+}

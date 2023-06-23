@@ -23,6 +23,11 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [ValidGuid]
         public Guid CustomerId { get; set; }
 
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        public CustomerDTO Customer { get; set; }
+
         [DataMember]
         [Display(Name = "Salutation")]
         public int CustomerIndividualSalutation { get; set; }

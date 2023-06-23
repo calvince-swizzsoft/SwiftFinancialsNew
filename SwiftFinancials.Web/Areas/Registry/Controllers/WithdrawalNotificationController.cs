@@ -56,6 +56,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             return View();
         }
@@ -74,6 +75,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
 
                 TempData["Error"] = string.Join(",", allErrors);
+
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
 
                 return View(withdrawalNotificationDTO);
             }
