@@ -403,14 +403,6 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [Display(Name = "Registration Date")]
         public DateTime? RegistrationDate { get; set; }
 
-        [DataMember]
-        [Display(Name = "Start Date")]
-        public DateTime DurationStartDate { get; set; }
-
-        [DataMember]
-        [Display(Name = "End Date")]
-        [CustomValidation(typeof(CustomerBindingModel), "CheckDurationEndDate")]
-        public DateTime DurationEndDate { get; set; }
 
         [DataMember]
         [Display(Name = "Recruited By")]

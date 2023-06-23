@@ -7,6 +7,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -80,11 +81,11 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var birthdate = Request["birthdate"];
             var employmentdate = Request["employmentdate"];
 
-            customerBindingModel.IndividualBirthDate = DateTime.Parse(birthdate).Date;
+            customerBindingModel.IndividualBirthDate  = DateTime.ParseExact((Request["birthdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            customerBindingModel.RegistrationDate = DateTime.Parse(registrationdate).Date;
+            customerBindingModel.RegistrationDate = DateTime.ParseExact((Request["registrationdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            customerBindingModel.IndividualEmploymentDate = DateTime.Parse(employmentdate).Date;
+            customerBindingModel.IndividualEmploymentDate = DateTime.ParseExact((Request["employmentdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             customerBindingModel.ValidateAll();
 
