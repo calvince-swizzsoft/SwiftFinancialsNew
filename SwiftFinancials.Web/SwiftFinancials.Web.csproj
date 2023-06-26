@@ -325,7 +325,7 @@
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TellerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\TreasuryController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\TreasuryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\UnPayReasonController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WireTransferTypeController.cs" />
     <Compile Include="Areas\Accounts\Models\LevyViewModel.cs" />
@@ -341,6 +341,7 @@
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
+    <Compile Include="Areas\FrontOffice\FrontOfficeAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeController.cs" />
@@ -736,10 +737,10 @@
     <Content Include="Areas\Accounts\Views\Budget\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Budget\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\Budget\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Treasury\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Treasury\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\Treasury\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\Treasury\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
@@ -808,6 +809,7 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\web.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1269,6 +1271,8 @@
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
+    <Folder Include="Areas\FrontOffice\Data\" />
+    <Folder Include="Areas\FrontOffice\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />

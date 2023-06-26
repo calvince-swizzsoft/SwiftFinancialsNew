@@ -9,7 +9,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
-namespace SwiftFinancials.Web.Areas.Accounts.Controllers
+namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class TreasuryController : MasterController
     {
@@ -32,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
              var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-             var pageCollectionInfo = await _channelService.FindTreasuriesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true);
+             var pageCollectionInfo = await _channelService.FindTreasuriesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,true, GetServiceHeader());
 
              if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
              {
