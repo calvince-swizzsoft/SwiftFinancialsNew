@@ -64,23 +64,22 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(WithdrawalNotificationDTO withdrawalNotificationDTO)
         {
-            if (ModelState.IsValid)
+            withdrawalNotificationDTO.ValidateAll();
+
+            if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.AddWithdrawalNotificationAsync(withdrawalNotificationDTO.MapTo<WithdrawalNotificationDTO>(), GetServiceHeader());
+                await _channelService.AddWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
-
-                TempData["Error"] = string.Join(",", allErrors);
-
+                var errorMessages = withdrawalNotificationDTO.ErrorMessages;
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
-
                 return View(withdrawalNotificationDTO);
             }
         }
+
 
 
         public async Task<ActionResult> Edit(Guid id)
