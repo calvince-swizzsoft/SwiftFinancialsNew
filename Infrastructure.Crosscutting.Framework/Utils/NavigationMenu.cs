@@ -82,8 +82,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "UnPay Reasons", Icon="fa fa-usd", ControllerName="UnPayReason", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Insurance Company", Icon="fa fa-paperclip", ControllerName="InsuranceCompany", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Investment Product", Icon="fa fa-tasks", ControllerName="InvestmentProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Tellers", Icon="fa fa-tasks", ControllerName="Teller", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 20},
-
+               
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)
@@ -102,8 +101,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 //Front Office - area 25,000
                 new NavigationMenu{Description = "Front Office", IsArea = true, Code = 0x000061A8},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Treasury", Icon="fa fa-calculator", ControllerName="Treasury", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 1},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Teller", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 2},
+                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Treasuries", Icon="fa fa-calculator", ControllerName="Treasury", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 1},
+                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Tellers", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 2},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Cheques", Icon="fa fa-low-calculator", ControllerName="Cheque", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 3},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fixed Deposits", Icon="fa fa-calculator", ControllerName="FixedDeposit", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 4},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Expense Payables", Icon="fa fa-low-calculator", ControllerName="ExpensePayable", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 5},

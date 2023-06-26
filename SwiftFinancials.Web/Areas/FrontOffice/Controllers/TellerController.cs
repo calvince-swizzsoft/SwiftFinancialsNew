@@ -10,7 +10,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
-namespace SwiftFinancials.Web.Areas.Accounts.Controllers
+namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class TellerController : MasterController
     {

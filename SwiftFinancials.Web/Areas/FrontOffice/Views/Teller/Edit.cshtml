@@ -11,7 +11,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Teller", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "Teller", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Edit</strong>
@@ -35,7 +35,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Edit", "Teller", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Edit", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -122,7 +122,7 @@
                     }
 
                     <div>
-                        @Html.ActionLink("Back to List", "Index", "Teller", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                        @Html.ActionLink("Back to List", "Index", "Teller", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
                     </div>
                 </div>
             </div>

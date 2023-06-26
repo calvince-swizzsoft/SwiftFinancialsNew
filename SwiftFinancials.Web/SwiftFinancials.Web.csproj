@@ -323,7 +323,7 @@
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\TellerController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\TellerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TreasuryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\UnPayReasonController.cs" />
@@ -745,10 +745,10 @@
     <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChequeType\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Teller\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Teller\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\Teller\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\Teller\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\SavingsProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\SavingsProduct\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\SavingsProduct\Create.cshtml" />

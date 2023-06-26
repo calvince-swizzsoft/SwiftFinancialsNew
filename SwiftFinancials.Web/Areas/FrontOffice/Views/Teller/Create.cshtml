@@ -5,22 +5,22 @@
     var tellerTypes = ViewBag.TellerTypeSelectList as List<SelectListItem>;
 }
 
-    <div class="row wrapper border-bottom bg-muted page-heading">
-        <div class="col-lg-10">
-            <h2>Tellers</h2>
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item">
-                    @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
-                </li>
-                <li class="breadcrumb-item">
-                    @Html.ActionLink("Home", "Index", "Teller", new { Area = "Accounts" }, null)
-                </li>
-                <li class="breadcrumb-item active">
-                    <strong>Create</strong>
-                </li>
-            </ol>
-        </div>
+<div class="row wrapper border-bottom white-bg  page-heading">
+    <div class="col-lg-10">
+        <h2>Tellers</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Teller", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
     </div>
+</div>
 
     <div class="wrapper wrapper-content white-bg">
         <div class="row">
@@ -37,12 +37,11 @@
                         </div>
                     </div>
                     <div class="ibox-content bg-white text-info">
-                        @using (Html.BeginForm("Create", "Teller", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Create", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
                             @Html.AntiForgeryToken()
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <h1>Naming</h1>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -71,10 +70,10 @@
                                             @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ExcessChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                             @Html.ValidationMessageFor(model => model.ExcessChartOfAccountAccountName, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.MiniStatementItemsCap, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.MiniStatementItemsCap, new { htmlAttributes = new { @class = "form-control   col-md-1", @placeholder = "0", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.MiniStatementItemsCap, "", new { @class = "text-danger" })
+                                        <div class="form-group form-group-sm">
+                                            <div class="col-md-offset-2">
+                                                <input type="submit" value="Create" class="btn btn-primary" />
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -122,78 +121,10 @@
     }
 
     @section Scripts{
-        @Scripts.Render("~/plugins/wizardSteps")
         @Scripts.Render("~/plugins/validate")
         @Scripts.Render("~/plugins/typehead")
 
 <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
 
              //Employee typehead starts here
             $('.EmployeesLookup').typeahead({
@@ -340,6 +271,74 @@
                     return item;
                 }
             });
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
 
         });</script>
     }
