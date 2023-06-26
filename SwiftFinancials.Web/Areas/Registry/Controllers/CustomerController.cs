@@ -131,7 +131,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
 
             return View(customerDTO.MapTo<CustomerBindingModel>());
@@ -144,7 +144,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
-
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
                 return RedirectToAction("Index");
             }
             else

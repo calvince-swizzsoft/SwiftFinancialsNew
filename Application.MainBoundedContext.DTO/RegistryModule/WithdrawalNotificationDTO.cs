@@ -186,7 +186,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
+
         public Guid BranchId { get; set; }
 
         [DataMember]
