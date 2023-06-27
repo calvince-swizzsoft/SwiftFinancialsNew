@@ -5,13 +5,13 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
-    public class LoanPurposeController : MasterController
+    public class LoanProductAppraisalProductController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -31,7 +31,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanPurposesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanProductAppraisalProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -41,16 +41,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanPurposeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<LoanProductAppraisalProductDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var loanPurposeDTO = await _channelService.FindLoanPurposeAsync(id, GetServiceHeader());
+            var LoanProductAppraisalProductDTO = await _channelService.FindLoanProductAppraisalProductAsync(id, GetServiceHeader());
 
-            return View(loanPurposeDTO);
+            return View(LoanProductAppraisalProductDTO);
         }
 
         public async Task<ActionResult> Create()
@@ -61,21 +61,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LoanPurposeDTO loanPurposeDTO)
+        public async Task<ActionResult> Create(LoanProductAppraisalProductDTO LoanProductAppraisalProductDTO)
         {
-            loanPurposeDTO.ValidateAll();
+            LoanProductAppraisalProductDTO.ValidateAll();
 
-            if (!loanPurposeDTO.HasErrors)
+            if (!LoanProductAppraisalProductDTO.HasErrors)
             {
-                await _channelService.AddLoanPurposeAsync(loanPurposeDTO, GetServiceHeader());
+                await _channelService.AddLoanProductAppraisalProductAsync(LoanProductAppraisalProductDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = loanPurposeDTO.ErrorMessages;
+                var errorMessages = LoanProductAppraisalProductDTO.ErrorMessages;
 
-                return View(loanPurposeDTO);
+                return View(LoanProductAppraisalProductDTO);
             }
         }
 
@@ -83,33 +83,33 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanPurposeDTO = await _channelService.FindLoanPurposeAsync(id, GetServiceHeader());
+            var LoanProductAppraisalProductDTO = await _channelService.FindLoanProductAppraisalProductAsync(id, GetServiceHeader());
 
-            return View(loanPurposeDTO);
+            return View(LoanProductAppraisalProductDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, LoanPurposeDTO loanPurposeBindingModel)
+        public async Task<ActionResult> Edit(Guid id, LoanProductAppraisalProductDTO LoanProductAppraisalProductBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateLoanPurposeAsync(loanPurposeBindingModel, GetServiceHeader());
+                await _channelService.UpdateLoanProductAppraisalProductAsync(LoanProductAppraisalProductBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(loanPurposeBindingModel);
+                return View(LoanProductAppraisalProductBindingModel);
             }
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetLoanPurposesAsync()
+        public async Task<JsonResult> GetBudgetsAsync()
         {
-            var loanPurposeDTOs = await _channelService.FindLoanPurposesAsync(GetServiceHeader());
+            var loanProductAppraisalProductDTOs = await _channelService.FindLoanProductAppraisalProductsAsync(GetServiceHeader());
 
-            return Json(loanPurposeDTOs, JsonRequestBehavior.AllowGet);
+            return Json(loanProductAppraisalProductDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

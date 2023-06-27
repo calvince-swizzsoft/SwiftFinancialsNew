@@ -1,0 +1,129 @@
+﻿
+@{
+    ViewBag.Title = "Loan Registration";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @Html.ActionLink("Create Loan Registration", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="7" class="dataTables_empty">
+                                        Loading data from server
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script type="text/javascript">
+
+        $(document).ready(function () {
+            $('#LoanRegistrationsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var receivedDate = new Date(parseInt(aData.DurationReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + receivedDate.getHours()).slice(-2);
+                    var m = ("0" + receivedDate.getMinutes()).slice(-2);
+                    var s = ("0" + receivedDate.getSeconds()).slice(-2);
+
+                    var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
+                    aData.DurationReceivedDate = dt_ReceivedDate;
+
+                    var endDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + endDate.getHours()).slice(-2);
+                    var m = ("0" + endDate.getMinutes()).slice(-2);
+                    var s = ("0" + endDate.getSeconds()).slice(-2);
+
+                    var dt_EndDate = $.datepicker.formatDate('dd/mm/yy', endDate) ;
+                    aData.DurationEndDate = dt_EndDate;
+
+                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
+                    $('td:eq(1)', nRow).html(dt_ReceivedDate);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+
+                    return nRow;
+                },
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer" },
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied"},
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan purpose"},
+                    { "mDataProp": "ReceivedDate", "sTitle": "Received Date" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+        });
+
+        $(document).ajaxStart(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+        $(document).ajaxStop(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+    </script>
+
+}

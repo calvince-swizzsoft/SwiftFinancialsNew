@@ -321,6 +321,7 @@
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TellerController.cs" />
@@ -352,6 +353,7 @@
     <Compile Include="Areas\HumanResource\Controllers\TrainingPeriodController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanProductAppraisalController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
@@ -809,6 +811,14 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\web.config" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
@@ -1275,6 +1285,7 @@
     <Folder Include="Areas\FrontOffice\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\Loaning\Data\" />
+    <Folder Include="Areas\Loaning\Views\LoanProductAppraisal\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />

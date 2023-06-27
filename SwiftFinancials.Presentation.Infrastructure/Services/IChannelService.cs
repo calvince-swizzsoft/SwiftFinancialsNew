@@ -729,6 +729,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<LoanPurposeDTO> FindLoanPurposeAsync(Guid loanPurposeId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<LoanPurposeDTO>> FindLoanPurposesAsync(ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region LoanCaseDTO
@@ -2947,6 +2949,22 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<DivisionDTO> FindDivisionAsync(Guid divisionId, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<DivisionDTO>> FindDivisionsAsync(bool updateDepth = false, bool traverseTree = true, ServiceHeader serviceHeader = null);
+
+        #endregion
+
+        #region LoanProductAppraisalProductDTO
+
+        Task<PageCollectionInfo<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<LoanProductAppraisalProductDTO> AddLoanProductAppraisalProductAsync(LoanProductAppraisalProductDTO LoanProductAppraisalProductDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdateLoanProductAppraisalProductAsync(LoanProductAppraisalProductDTO LoanProductAppraisalProductDTO, ServiceHeader serviceHeader = null);
+
+        Task<LoanProductAppraisalProductDTO> FindLoanProductAppraisalProductAsync(Guid LoanProductAppraisalProductId, ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsAsync( ServiceHeader serviceHeader = null);
 
         #endregion
     }

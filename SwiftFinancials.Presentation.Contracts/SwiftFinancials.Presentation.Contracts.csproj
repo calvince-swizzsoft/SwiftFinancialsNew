@@ -86,6 +86,7 @@
     <Compile Include="AccountsModule\IUnPayReasonService.cs" />
     <Compile Include="AccountsModule\IWireTransferBatchService.cs" />
     <Compile Include="AccountsModule\IWireTransferTypeService.cs" />
+    <Compile Include="AccountsModule\ILoanProductAppraisalProductService.cs" />
     <Compile Include="AdministrationModule\IBankService.cs" />
     <Compile Include="AdministrationModule\IBranchService.cs" />
     <Compile Include="AdministrationModule\ICompanyService.cs" />
