@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -64,6 +65,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {
+
+            var receivedDate = Request["recievedDate"];
+            loanCaseDTO.ReceivedDate = DateTime.ParseExact((Request["recievedDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
