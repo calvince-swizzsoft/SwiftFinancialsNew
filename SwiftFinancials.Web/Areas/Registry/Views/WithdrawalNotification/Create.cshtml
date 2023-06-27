@@ -84,14 +84,6 @@
                                                 @Html.DropDownListFor(model => model.Category, withdrawalNotificationCategories, new { @class = "form-control input-md" })
                                                 @Html.ValidationMessageFor(model => model.Category)
                                             </div>
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.BranchId)
-                                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
                                         </div>
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2">
@@ -99,7 +91,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-sm">
                                             @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "control-label" })
@@ -122,7 +113,6 @@
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
 
-
                                     </div>
                                 </div>
                             </fieldset>
@@ -142,44 +132,8 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
 
-            //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var BranchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
             //Customer typehead starts here
             $('.CustomersLookup').typeahead({
                 source: function (query, process) {
@@ -219,5 +173,5 @@
                 }
             });
 
-</script>
+    </script>
 }
