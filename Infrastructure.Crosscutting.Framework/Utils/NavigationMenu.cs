@@ -72,19 +72,17 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Levies", Icon="fa fa-calculator", ControllerName="Levy", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 7},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Budgets", Icon="fa fa-money", ControllerName="Budget", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 8},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Budget Entries", Icon="fa fa-tasks", ControllerName="BudgetEntry", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 9},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Treasuries", Icon="fa fa-usd", ControllerName="Treasury", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 10},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cheque Types", Icon="fa fa-book", ControllerName="ChequeType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 11},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Saving Products", Icon="fa-envelope-square", ControllerName="SavingsProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Linkages", Icon="fa fa-book", ControllerName="BankLinkage", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 13},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Direct Debits", Icon="fa fa-paperclip", ControllerName="DirectDebit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 14},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Debit Batches", Icon="fa-envelope-square", ControllerName="DebitBatch", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Fixed Deposit Types", Icon="fa fa-usb", ControllerName="FixedDepositType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Wire Transfer Types", Icon="fa fa-comments", ControllerName="WireTransferType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "UnPay Reasons", Icon="fa fa-usd", ControllerName="UnPayReason", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Insurance Company", Icon="fa fa-paperclip", ControllerName="InsuranceCompany", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Investment Product", Icon="fa fa-tasks", ControllerName="InvestmentProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 20},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Tellers", Icon="fa fa-tasks", ControllerName="Teller", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 21},
-
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cheque Types", Icon="fa fa-book", ControllerName="ChequeType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 10},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Saving Products", Icon="fa-envelope-square", ControllerName="SavingsProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 11},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Linkages", Icon="fa fa-book", ControllerName="BankLinkage", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Direct Debits", Icon="fa fa-paperclip", ControllerName="DirectDebit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 13},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Debit Batches", Icon="fa-envelope-square", ControllerName="DebitBatch", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 14},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Fixed Deposit Types", Icon="fa fa-usb", ControllerName="FixedDepositType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Wire Transfer Types", Icon="fa fa-comments", ControllerName="WireTransferType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "UnPay Reasons", Icon="fa fa-usd", ControllerName="UnPayReason", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Insurance Company", Icon="fa fa-paperclip", ControllerName="InsuranceCompany", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Investment Product", Icon="fa fa-tasks", ControllerName="InvestmentProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
+               
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)
@@ -103,8 +101,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 //Front Office - area 25,000
                 new NavigationMenu{Description = "Front Office", IsArea = true, Code = 0x000061A8},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Treasury", Icon="fa fa-calculator", ControllerName="Treasury", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 1},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Teller", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 2},
+                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Treasuries", Icon="fa fa-calculator", ControllerName="Treasury", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 1},
+                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Tellers", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 2},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Cheques", Icon="fa fa-low-calculator", ControllerName="Cheque", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 3},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fixed Deposits", Icon="fa fa-calculator", ControllerName="FixedDeposit", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 4},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Expense Payables", Icon="fa fa-low-calculator", ControllerName="ExpensePayable", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 5},

@@ -5,6 +5,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
+        <h2>Withdrawal Notification</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -84,8 +85,8 @@
                     var editUrl = '<a  href="/registry/WithdrawalNotification/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/registry/WithdrawalNotification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
@@ -93,7 +94,6 @@
                 "aoColumns": [
                     { "mDataProp": "Customer", "sTitle": "Customer", "sWidth": "15%" },
                     { "mDataProp": "Category", "sTitle": "Category", "sWidth": "10%" },
-                    { "mDataProp": "Employer", "sTitle": "Employer", "sWidth": "10%" },
                     { "mDataProp": "Station", "sTitle": "Station", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],

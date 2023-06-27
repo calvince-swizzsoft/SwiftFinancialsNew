@@ -236,7 +236,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Float Customer Account")]
-        [ValidGuid]
+
         public Guid? FloatCustomerAccountId { get; set; }
 
         [DataMember]
@@ -417,7 +417,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Commission Customer Account")]
-        [ValidGuid]
+
         public Guid? CommissionCustomerAccountId { get; set; }
 
         [DataMember]

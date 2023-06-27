@@ -5,6 +5,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
+        <h2>Tellers</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -21,7 +22,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Teller", "Create", "Teller", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Teller", "Create", "Teller", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -68,7 +69,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -81,8 +82,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/Teller/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/Teller/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/frontOffice/Teller/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/frontOffice/Teller/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
