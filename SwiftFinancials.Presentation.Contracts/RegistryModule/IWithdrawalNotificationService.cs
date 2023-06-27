@@ -21,6 +21,12 @@ namespace SwiftFinancials.Presentation.Contracts.RegistryModule
         IAsyncResult BeginApproveWithdrawalNotification(WithdrawalNotificationDTO withdrawalNotificationDTO, int membershipWithdrawalApprovalOption, AsyncCallback callback, Object state);
         bool EndApproveWithdrawalNotification(IAsyncResult result);
 
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginUpdateWithdrawalNotification(WithdrawalNotificationDTO withdrawalNotificationDTO, AsyncCallback callback, Object state);
+        bool EndUpdateWithdrawalNotification(IAsyncResult result);
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAuditWithdrawalNotification(WithdrawalNotificationDTO withdrawalNotificationDTO, int membershipWithdrawalAuditOption, AsyncCallback callback, Object state);

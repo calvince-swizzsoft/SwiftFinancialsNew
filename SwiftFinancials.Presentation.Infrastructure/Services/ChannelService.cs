@@ -15179,7 +15179,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-       
+
 
         public Task<bool> UpdateCustomerAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader)
         {
@@ -16172,7 +16172,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+        public Task<bool> UpdateWithdrawalNotificationAsync(WithdrawalNotificationDTO withdrawalNotificationDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
 
+            IWithdrawalNotificationService service = GetService<IWithdrawalNotificationService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IWithdrawalNotificationService)result.AsyncState).EndUpdateWithdrawalNotification(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateWithdrawalNotification(withdrawalNotificationDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<PageCollectionInfo<WithdrawalNotificationDTO>> FindWithdrawalNotificationsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<WithdrawalNotificationDTO>>();

@@ -91,13 +91,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View(withdrawalNotificationDTO);
         }
 
-        /*[HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, WithdrawalNotificationDTO withdrawalNotificationDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateWithdrawalNotificationAsync(withdrawalNotificationDTO.MapTo<WithdrawalNotificationDTO>(), GetServiceHeader());
+                await _channelService.UpdateWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -105,7 +105,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 return View(withdrawalNotificationDTO);
             }
-        }*
+        }
 
        /* [HttpGet]
         public async Task<JsonResult> GetWithdrawalNotificationsAsync()

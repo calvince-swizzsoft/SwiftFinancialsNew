@@ -1194,7 +1194,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> ProcessDeathSettlementsAsync(WithdrawalNotificationDTO withdrawalNotificationDTO, ObservableCollection<WithdrawalSettlementDTO> withdrawalSettlementDTOs, InsuranceCompanyDTO insuranceCompanyDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
         Task<WithdrawalNotificationDTO> FindWithdrawalNotificationAsync(Guid withdrawalNotificationId, ServiceHeader serviceHeader = null);
-
+        Task<bool> UpdateWithdrawalNotificationAsync(WithdrawalNotificationDTO withdrawalNotificationDTO, ServiceHeader serviceHeader = null);
         Task<ObservableCollection<WithdrawalSettlementDTO>> FindWithdrawalSettlementsByWithdrawalNotificationIdAsync(Guid withdrawalNotificationId, bool includeProductDescription, ServiceHeader serviceHeader = null);
 
         #endregion
