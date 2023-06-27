@@ -22,7 +22,7 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginFindTellers(bool includeBalances, AsyncCallback callback, Object state);
+        IAsyncResult BeginFindTellers(AsyncCallback callback, Object state);
         List<TellerDTO> EndFindTellers(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]

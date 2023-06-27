@@ -84,9 +84,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            var TreasuryDTO = await _channelService.FindTreasuryAsync(id, true);
+            var treasuryDTO = await _channelService.FindTreasuryAsync(id, true);
 
-            return View(TreasuryDTO);
+            return View(treasuryDTO);
         }
 
         [HttpPost]

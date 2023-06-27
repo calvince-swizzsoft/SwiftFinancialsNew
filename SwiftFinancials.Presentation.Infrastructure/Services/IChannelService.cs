@@ -1871,6 +1871,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<TellerDTO> AddTellerAsync(TellerDTO tellerDTO, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<TellerDTO>> FindTellersAsync(ServiceHeader serviceHeader = null);
+
         Task<bool> UpdateTellerAsync(TellerDTO tellerDTO, ServiceHeader serviceHeader = null);
 
         Task<TellerDTO> FindTellerAsync(Guid tellerId, bool includeBalance = false, ServiceHeader serviceHeader = null);

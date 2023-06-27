@@ -409,6 +409,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetTreasuryTransactionTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> treasuryTransactionTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(TreasuryTransactionType)).Cast<TreasuryTransactionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            treasuryTransactionTypes.AddRange(items);
+
+            return treasuryTransactionTypes;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetProductCodeSelectList(string selectedValue)
         {
             List<SelectListItem> productCode = new List<SelectListItem>();

@@ -323,6 +323,7 @@
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\FiscalCountController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TellerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TreasuryController.cs" />
@@ -810,6 +811,11 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\web.config" />
+    <Content Include="Areas\FrontOffice\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1272,7 +1278,6 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
-    <Folder Include="Areas\FrontOffice\Views\Shared\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />

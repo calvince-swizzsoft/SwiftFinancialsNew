@@ -24486,6 +24486,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+         public Task<ObservableCollection<TellerDTO>> FindTellersAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<TellerDTO>>();
+
+            ITellerService service = GetService<ITellerService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<TellerDTO> response = ((ITellerService)result.AsyncState).EndFindTellers(result);
+
+                    tcs.TrySetResult(new ObservableCollection<TellerDTO>(response ?? new List<TellerDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindTellers(asyncCallback, service );
+
+            return tcs.Task;
+        }
+
         public Task<ObservableCollection<TariffWrapper>> ComputeTellerCashTariffsAsync(CustomerAccountDTO customerAccountDTO, decimal totalValue, int frontOfficeTransactionType, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<TariffWrapper>>();
