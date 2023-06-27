@@ -46,11 +46,10 @@
                                 </tr>
                             </tbody>
                         </table>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 </div>
 
 @section Styles {
@@ -81,26 +80,18 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var receivedDate = new Date(parseInt(aData.DurationReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var receivedDate = new Date(parseInt(aData.ReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + receivedDate.getHours()).slice(-2);
                     var m = ("0" + receivedDate.getMinutes()).slice(-2);
                     var s = ("0" + receivedDate.getSeconds()).slice(-2);
 
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
-                    aData.DurationReceivedDate = dt_ReceivedDate;
-
-                    var endDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + endDate.getHours()).slice(-2);
-                    var m = ("0" + endDate.getMinutes()).slice(-2);
-                    var s = ("0" + endDate.getSeconds()).slice(-2);
-
-                    var dt_EndDate = $.datepicker.formatDate('dd/mm/yy', endDate) ;
-                    aData.DurationEndDate = dt_EndDate;
+                    aData.ReceivedDate = dt_ReceivedDate;
 
                     var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(1)', nRow).html(dt_ReceivedDate);
+                    $('td:eq(3)', nRow).html(dt_ReceivedDate);
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
