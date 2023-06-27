@@ -259,7 +259,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Registration Remarks")]
-        [ValidGuid]
         public Guid RegistrationRemarkId { get; set; }
 
         [DataMember]
