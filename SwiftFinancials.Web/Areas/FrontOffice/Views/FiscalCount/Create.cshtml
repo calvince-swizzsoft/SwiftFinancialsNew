@@ -74,12 +74,6 @@
                                         @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
                                         @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Description.." } })
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -139,43 +133,6 @@
                     return item;
                 }
         });
-
-            //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
-                        { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
-                    return item;
-                }
-            });
 
         $(document).ready(function () {
             $("#wizard").steps();
