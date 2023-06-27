@@ -1,0 +1,121 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Web.Mvc;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.BackOfficeModule;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
+
+namespace SwiftFinancials.Web.Areas.Loaning.Controllers
+{
+    public class LoanRegistrationController : MasterController
+    {
+
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        public async Task<ActionResult> Details(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            return View(loanCaseDTO);
+        }
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
+        {
+
+            var receivedDate = Request["recievedDate"];
+            loanCaseDTO.ReceivedDate = DateTime.ParseExact((Request["recievedDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
+            {
+                await _channelService.AddLoanCaseAsync(loanCaseDTO, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = loanCaseDTO.ErrorMessages;
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                return View(loanCaseDTO);
+            }
+        }
+
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var LoanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            return View(LoanCaseDTO);
+        }
+
+        /*[HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, LoanCaseDTO loanCaseBindingModel)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateLoanCaseAsync(loanCaseBindingModel, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(loanCaseBindingModel);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetLoanCasesAsync()
+        {
+            var loanCasesDTOs = await _channelService.FindLoanCasesAsync(GetServiceHeader());
+
+            return Json(loanCasesDTOs, JsonRequestBehavior.AllowGet);
+        }*/
+    }
+}

@@ -22,7 +22,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
+        
         public Guid BranchId { get; set; }
 
         [DataMember]
@@ -30,8 +30,18 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public string BranchDescription { get; set; }
 
         [DataMember]
+        [Display(Name = "Teller")]
+        [ValidGuid]
+        public Guid TellerId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Teller")]
+        public string TellerDescription { get; set; }
+
+        [DataMember]
         [Display(Name = "Posting Period")]
         [ValidGuid]
+
         public Guid PostingPeriodId { get; set; }
 
         [DataMember]
@@ -40,7 +50,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "G/L Account")]
-        [ValidGuid]
+        
         public Guid ChartOfAccountId { get; set; }
 
         [DataMember]
@@ -84,6 +94,24 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Reference")]
         public string Reference { get; set; }
+
+        [DataMember]
+        [Display(Name = "Total Amount")]
+        public string TotalAmount { get; set; }
+
+        [DataMember]
+        [Display(Name = "TransactionType")]
+        public int TransactionType { get; set; }
+
+        [DataMember]
+        [Display(Name = "TransactionType")]
+        public string TransactionTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(TreasuryTransactionType), TransactionType) ? EnumHelper.GetDescription((TreasuryTransactionType)TransactionType) : string.Empty;
+            }
+        }
 
         [DataMember]
         [Display(Name = "One-Thousands")]
@@ -161,7 +189,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Destination Branch")]
-        [ValidGuid]
+        
         public Guid DestinationBranchId { get; set; }
     }
 }

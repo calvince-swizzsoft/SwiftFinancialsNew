@@ -103,5 +103,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View(loanPurposeBindingModel);
             }
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetLoanPurposesAsync()
+        {
+            var loanPurposeDTOs = await _channelService.FindLoanPurposesAsync(GetServiceHeader());
+
+            return Json(loanPurposeDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }

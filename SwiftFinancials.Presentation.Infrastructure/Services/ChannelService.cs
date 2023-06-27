@@ -9063,6 +9063,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<LoanPurposeDTO>> FindLoanPurposesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<LoanPurposeDTO>>();
+
+            ILoanPurposeService service = GetService<ILoanPurposeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<LoanPurposeDTO> response = ((ILoanPurposeService)result.AsyncState).EndFindLoanPurposes(result);
+
+                    tcs.TrySetResult(new ObservableCollection<LoanPurposeDTO>(response ?? new List<LoanPurposeDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanPurposes(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<LoanPurposeDTO> FindLoanPurposeAsync(Guid loanPurposeId, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<LoanPurposeDTO>();
@@ -24516,6 +24548,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+         public Task<ObservableCollection<TellerDTO>> FindTellersAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<TellerDTO>>();
+
+            ITellerService service = GetService<ITellerService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<TellerDTO> response = ((ITellerService)result.AsyncState).EndFindTellers(result);
+
+                    tcs.TrySetResult(new ObservableCollection<TellerDTO>(response ?? new List<TellerDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindTellers(asyncCallback, service );
+
+            return tcs.Task;
+        }
+
         public Task<ObservableCollection<TariffWrapper>> ComputeTellerCashTariffsAsync(CustomerAccountDTO customerAccountDTO, decimal totalValue, int frontOfficeTransactionType, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<TariffWrapper>>();
@@ -38812,6 +38876,202 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginFindDivision(divisionId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        #endregion
+
+        #region LoanProductAppraisalProductDTO
+
+        public Task<ObservableCollection<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<LoanProductAppraisalProductDTO>>();
+
+            ILoanProductAppraisalProductService service = GetService<ILoanProductAppraisalProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<LoanProductAppraisalProductDTO> response = ((ILoanProductAppraisalProductService)result.AsyncState).EndFindLoanProductAppraisalProducts(result);
+
+                    tcs.TrySetResult(new ObservableCollection<LoanProductAppraisalProductDTO>(response ?? new List<LoanProductAppraisalProductDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanProductAppraisalProducts(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<LoanProductAppraisalProductDTO>>();
+
+            ILoanProductAppraisalProductService service = GetService<ILoanProductAppraisalProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<LoanProductAppraisalProductDTO> response = ((ILoanProductAppraisalProductService)result.AsyncState).EndFindLoanProductAppraisalProductsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanProductAppraisalProductsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<LoanProductAppraisalProductDTO>>();
+
+            ILoanProductAppraisalProductService service = GetService<ILoanProductAppraisalProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<LoanProductAppraisalProductDTO> response = ((ILoanProductAppraisalProductService)result.AsyncState).EndFindLoanProductAppraisalProductsInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanProductAppraisalProductsInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<LoanProductAppraisalProductDTO> AddLoanProductAppraisalProductAsync(LoanProductAppraisalProductDTO LoanProductAppraisalProductDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<LoanProductAppraisalProductDTO>();
+
+            ILoanProductAppraisalProductService service = GetService<ILoanProductAppraisalProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    LoanProductAppraisalProductDTO response = ((ILoanProductAppraisalProductService)result.AsyncState).EndAddLoanProductAppraisalProduct(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddLoanProductAppraisalProduct(LoanProductAppraisalProductDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateLoanProductAppraisalProductAsync(LoanProductAppraisalProductDTO LoanProductAppraisalProductDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            ILoanProductAppraisalProductService service = GetService<ILoanProductAppraisalProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ILoanProductAppraisalProductService)result.AsyncState).EndUpdateLoanProductAppraisalProduct(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateLoanProductAppraisalProduct(LoanProductAppraisalProductDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<LoanProductAppraisalProductDTO> FindLoanProductAppraisalProductAsync(Guid LoanProductAppraisalProductId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<LoanProductAppraisalProductDTO>();
+
+            ILoanProductAppraisalProductService service = GetService<ILoanProductAppraisalProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    LoanProductAppraisalProductDTO response = ((ILoanProductAppraisalProductService)result.AsyncState).EndFindLoanProductAppraisalProduct(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanProductAppraisalProduct(LoanProductAppraisalProductId, asyncCallback, service);
 
             return tcs.Task;
         }

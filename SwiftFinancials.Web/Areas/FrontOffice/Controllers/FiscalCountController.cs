@@ -2,17 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using Infrastructure.Crosscutting.Framework.Utils;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
-    public class TellerController : MasterController
+    public class FiscalCountController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -33,7 +31,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync((int)TellerType.Employee, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindTreasuriesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -43,43 +41,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<TellerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<FiscalCountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var tellerDTO = await _channelService.FindTellerAsync(id, true);
+            var fiscalCountDTO = await _channelService.FindFiscalCountAsync(id, GetServiceHeader());
 
-            return View(tellerDTO);
+            return View(fiscalCountDTO);
         }
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(TellerDTO tellerDTO)
+        public async Task<ActionResult> Create(FiscalCountDTO fiscalCountDTO)
         {
-            tellerDTO.ValidateAll();
+            fiscalCountDTO.ValidateAll();
 
-            if (!tellerDTO.HasErrors)
+            if (!fiscalCountDTO.HasErrors)
             {
-                await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());
+                await _channelService.AddFiscalCountAsync(fiscalCountDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = tellerDTO.ErrorMessages;
-                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
+                var errorMessages = fiscalCountDTO.ErrorMessages;
+                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(fiscalCountDTO.TransactionType.ToString());
 
-                return View(tellerDTO);
+                return View(fiscalCountDTO);
             }
         }
 
@@ -87,33 +85,33 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            var tellerDTO = await _channelService.FindTellerAsync(id, true);
+            var fiscalCountDTO = await _channelService.FindFiscalCountAsync(id, GetServiceHeader());
 
-            return View(tellerDTO);
+            return View(fiscalCountDTO);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, TellerDTO tellerBindingModel)
+        public async Task<ActionResult> Edit(Guid id, FiscalCountDTO fiscalCountDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateTellerAsync(tellerBindingModel, GetServiceHeader());
+                await _channelService.UpdateFiscalCountAsync(fiscalCountDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(tellerBindingModel);
+                return View(fiscalCountDTO);
             }
-        }
+        }*/
 
-        [HttpGet]
-        public async Task<JsonResult> GetTellersAsync()
+        /*[HttpGet]
+        public async Task<JsonResult> GetTreasuriesAsync()
         {
-            var tellersDTOs = await _channelService.FindTellersAsync(GetServiceHeader());
+            var treasuriesDTOs = await _channelService.FindTreasuriesAsync(GetServiceHeader());
 
-            return Json(tellersDTOs, JsonRequestBehavior.AllowGet);
-        }
+            return Json(treasuriesDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
 }
