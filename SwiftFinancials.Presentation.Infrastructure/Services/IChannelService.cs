@@ -755,6 +755,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<LoanCaseDTO> AddLoanCaseAsync(LoanCaseDTO loanCaseDTO, ServiceHeader serviceHeader = null);
 
+        Task<bool> UpdateLoanCaseAsync(LoanCaseDTO loanCaseDTO, ServiceHeader serviceHeader = null);
+
         Task<bool> UpdateLoanGuarantorsByLoanCaseIdAsync(Guid loanCaseId, ObservableCollection<LoanGuarantorDTO> loanGuarantors, ServiceHeader serviceHeader = null);
 
         Task<bool> UpdateLoanCollateralsByLoanCaseIdAsync(Guid loanCaseId, ObservableCollection<CustomerDocumentDTO> customerDocuments, ServiceHeader serviceHeader = null);
@@ -808,6 +810,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<LoanGuarantorDTO> AddLoanGuarantorAsync(LoanGuarantorDTO loanGuarantorDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> ReleaseLoanGuarantorsByLoaneeCustomerAccountAsync(CustomerAccountDTO customerAccountDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<LoanCaseDTO>> FindLoanCasesAsync(ServiceHeader serviceHeader = null);
 
         #endregion
 

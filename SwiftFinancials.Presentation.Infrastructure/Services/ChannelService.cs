@@ -9451,6 +9451,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<bool> UpdateLoanCaseAsync(LoanCaseDTO loanCaseDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            ILoanCaseService service = GetService<ILoanCaseService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ILoanCaseService)result.AsyncState).EndUpdateLoanCase(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateLoanCase(loanCaseDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<bool> UpdateLoanGuarantorsByLoanCaseIdAsync(Guid loanCaseId, ObservableCollection<LoanGuarantorDTO> loanGuarantors, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -10058,6 +10090,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+        public Task<ObservableCollection<LoanCaseDTO>> FindLoanCasesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<LoanCaseDTO>>();
+
+            ILoanCaseService service = GetService<ILoanCaseService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<LoanCaseDTO> response = ((ILoanCaseService)result.AsyncState).EndFindLoanCases(result);
+
+                    tcs.TrySetResult(new ObservableCollection<LoanCaseDTO>(response ?? new List<LoanCaseDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanCases(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
 
         public Task<ObservableCollection<LoanCollateralDTO>> FindLoanCollateralsByLoanCaseIdAsync(Guid loanCaseId, ServiceHeader serviceHeader)
         {
