@@ -44,7 +44,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
+                <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Create", "LoanRequest", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -52,39 +52,39 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "AmountApplied", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.ReceivedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ReceivedDate", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.LoanCaseNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.LoanCaseNumber, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.LoanCaseNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "LoanCaseNumber", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.LoanCaseNumber, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.RegisteredBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.RegisteredBy, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.RegisteredBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredBy", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.RegisteredBy, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.RegisteredDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.RegisteredDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.RegisteredDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredDate", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.RegisteredDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.CancelledBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.CancelledBy, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CancelledBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "CancelledBy", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CancelledBy, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.CancelledDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.LabelFor(model => model.CancelledDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CancelledDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "CancelledDate", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CancelledDate, "", new { @class = "text-danger" })
                                     </div>
