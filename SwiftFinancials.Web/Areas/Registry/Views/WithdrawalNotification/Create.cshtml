@@ -92,19 +92,19 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Serial Number", @required = "" } })
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerSerialNumber, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Identity Card Number", @required = "" } })
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Payroll Number", @required = "" } })
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-sm">
@@ -113,10 +113,9 @@
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
-                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Branch name", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -137,7 +136,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
 
             //Customer typehead starts here
             $('.CustomersLookup').typeahead({
@@ -173,47 +172,19 @@
                     $('#CustomerId').val(CustomerId);
                     $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
                     $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+                    $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+                    $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+                    $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+                    $('#CustomerBranchId').val(CustomersMap[item].IndividualPayrollNumbers);
+
+                   
+
                     //console.log(CustomerId)
                     return item;
                 }
             });
 
-            //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
 
-</script>
+
+    </script>
 }

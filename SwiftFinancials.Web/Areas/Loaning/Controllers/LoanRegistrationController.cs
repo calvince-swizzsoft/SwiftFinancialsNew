@@ -67,7 +67,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
 
             var receivedDate = Request["recievedDate"];
-            loanCaseDTO.ReceivedDate = DateTime.ParseExact((Request["recievedDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["recievedDate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
@@ -94,19 +96,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(LoanCaseDTO);
         }
 
-        /*[HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, LoanCaseDTO loanCaseBindingModel)
+        public async Task<ActionResult> Edit(Guid id, LoanCaseDTO loanCaseDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateLoanCaseAsync(loanCaseBindingModel, GetServiceHeader());
+                await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(loanCaseBindingModel);
+                return View(loanCaseDTO);
             }
         }
 
@@ -116,6 +118,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var loanCasesDTOs = await _channelService.FindLoanCasesAsync(GetServiceHeader());
 
             return Json(loanCasesDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 }
