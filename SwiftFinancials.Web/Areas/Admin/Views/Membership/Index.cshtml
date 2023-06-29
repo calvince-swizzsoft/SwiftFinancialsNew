@@ -85,18 +85,17 @@
                     var editUrl = '<a  href="/Admin/Membership/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Admin/Membership/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "FirstName", "sTitle": "First Name" },
-                    { "mDataProp": "OtherNames", "sTitle": "Other Names" },
-                    { "mDataProp": "Email", "sTitle": "Email" },
-                    { "mDataProp": "PhoneNumber", "sTitle": "Phone Number" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date" },
+                    { "mDataProp": "FirstName", "sTitle": "First Name", "sWidth": "15%" },
+                    { "mDataProp": "OtherNames", "sTitle": "Other Names","sWidth": "15%" },
+                    { "mDataProp": "Email", "sTitle": "Email", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                     { "mDataProp": "Actions", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
                 "responsive": true,

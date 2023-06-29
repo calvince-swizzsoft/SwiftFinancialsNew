@@ -1789,6 +1789,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<LoanProductDTO>> FindLoanProductsByLoanProductSectionAndFilterInPageAsync(int loanProductSection, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
+        Task<PageCollectionInfo<LoanProductDTO>> FindLoanProductsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
         Task<ObservableCollection<LoanProductDTO>> FindLoanProductsAsync(ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<LoanProductDTO>> FindLoanProductsByCodeAsync(int code, ServiceHeader serviceHeader = null);

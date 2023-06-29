@@ -23192,6 +23192,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region LoanProductDTO
 
+        public Task<PageCollectionInfo<LoanProductDTO>> FindLoanProductsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<LoanProductDTO>>();
+
+            ILoanProductService service = GetService<ILoanProductService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<LoanProductDTO> response = ((ILoanProductService)result.AsyncState).EndFindLoanProductsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanProductsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         public Task<PageCollectionInfo<LoanProductDTO>> FindLoanProductsByLoanProductSectionAndFilterInPageAsync(int loanProductSection, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<LoanProductDTO>>();

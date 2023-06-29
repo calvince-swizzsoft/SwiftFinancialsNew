@@ -12,7 +12,7 @@
     var termsOfServices = ViewBag.IndividualEmploymentTermsOfServiceSelectList as List<SelectListItem>;
     var individualClassifications = ViewBag.IndividualClassificationSelectList as List<SelectListItem>;
 }
-<div class="row wrapper border-bottom bg-muted page-heading">
+<div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
         <h2>Customers</h2>
         <ol class="breadcrumb">
@@ -67,9 +67,10 @@
                                         @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference1, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Reference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Acc/Number" } })
-                                        @Html.ValidationMessageFor(model => model.Reference1, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -85,11 +86,6 @@
                                         @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference2, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Reference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Membership Number" } })
-                                        @Html.ValidationMessageFor(model => model.Reference2, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                                 <div class="col-lg">
                                     <div class="form-group form-group-lg">
@@ -102,11 +98,6 @@
                                         @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference3, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Reference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Personal File Number" } })
-                                        @Html.ValidationMessageFor(model => model.Reference3, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                                 <div class="col-lg">
                                     <div class="form-group form-group-lg">
@@ -118,12 +109,6 @@
                                         @Html.LabelFor(model => model.StationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employer", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.StationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                     </div>
                                 </div>
                             </div>

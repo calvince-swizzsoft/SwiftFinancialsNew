@@ -1250,18 +1250,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
     [Flags]
     public enum TreasuryTransactionType
     {
-        [Description("Treasury to Teller")]
+        [Description("Treasury to Treasury")]
         TreasuryToTeller = 1,
         [Description("Treasury to Bank")]
         TreasuryToBank = 2,
         [Description("Bank to Treasury")]
         BankToTreasury = 4,
-        [Description("Treasury to Treasury")]
+        [Description("Treasury to Teller")]
         TreasuryToTreasury = 8,
-        [Description("Teller To Treasury")]
-        TellerToTreasury = 16,
-        [Description("Teller To Teller")]
-        TellerToTeller = 32
     }
 
     [Flags]
