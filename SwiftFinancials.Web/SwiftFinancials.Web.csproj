@@ -321,6 +321,7 @@
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
@@ -826,6 +827,10 @@
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

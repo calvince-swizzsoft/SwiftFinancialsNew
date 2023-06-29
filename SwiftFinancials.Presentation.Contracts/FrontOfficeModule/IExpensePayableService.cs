@@ -79,5 +79,11 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindExpensePayableEntriesByExpensePayableIdInPage(Guid expensePayableId, int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<ExpensePayableEntryDTO> EndFindExpensePayableEntriesByExpensePayableIdInPage(IAsyncResult result);
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindExpensePayablesByFilterInPage(string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
+        PageCollectionInfo<ExpensePayableDTO> EndFindExpensePayablesByFilterInPage(IAsyncResult result);
     }
 }

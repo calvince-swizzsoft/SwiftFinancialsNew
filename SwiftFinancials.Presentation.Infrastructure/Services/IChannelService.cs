@@ -2592,6 +2592,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<ExpensePayableDTO>> FindExpensePayablesByStatusAndFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
+        Task<PageCollectionInfo<ExpensePayableDTO>> FindExpensePayablesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<ExpensePayableDTO>> FindExpensePayablesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<ExpensePayableDTO>> FindExpensePayablesByDateRangeAndFilterInPageAsync(DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
