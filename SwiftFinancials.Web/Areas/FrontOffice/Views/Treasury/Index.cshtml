@@ -22,6 +22,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Treasuries", "Create", "Treasury", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -46,7 +47,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Treasuries", "Create", "Treasury", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
