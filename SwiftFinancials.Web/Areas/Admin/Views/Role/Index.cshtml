@@ -28,6 +28,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @Html.ActionLink("Create Role", "Create", "Role", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -52,7 +53,6 @@
                                 </tr>
                             </tbody>
                         </table>
-                        @Html.ActionLink("Create Role", "Create", "Role", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     </div>
                 </div>
             </div>
@@ -89,8 +89,8 @@
                 },
                 // Display settings
                 "aoColumns": [
-                { "mDataProp": "Name", "sTitle": "Name", "sWidth": "90%" },
-                    { "mDataProp": "Name", "sTitle": "", "sWidth": "10%", "bSortable": false}],
+                { "mDataProp": "Name", "sTitle": "Name", "sWidth": "60%" },
+                    { "mDataProp": "Name", "sTitle": "", "sWidth": "40%", "bSortable": false}],
                 "aaSorting": [[0, "desc"]]
         });
         });
