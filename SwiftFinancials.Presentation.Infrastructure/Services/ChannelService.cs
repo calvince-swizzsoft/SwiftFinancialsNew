@@ -34236,6 +34236,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<PageCollectionInfo<ExpensePayableDTO>> FindExpensePayablesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<ExpensePayableDTO>>();
+
+            IExpensePayableService service = GetService<IExpensePayableService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<ExpensePayableDTO> response = ((IExpensePayableService)result.AsyncState).EndFindExpensePayablesByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindExpensePayablesByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<PageCollectionInfo<ExpensePayableDTO>> FindExpensePayablesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<ExpensePayableDTO>>();

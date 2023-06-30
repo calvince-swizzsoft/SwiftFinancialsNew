@@ -322,6 +322,7 @@
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
@@ -813,10 +814,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Index.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
@@ -827,6 +824,14 @@
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Create.cshtml" />

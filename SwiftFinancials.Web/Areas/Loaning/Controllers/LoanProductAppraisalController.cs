@@ -48,9 +48,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var LoanProductAppraisalProductDTO = await _channelService.FindLoanProductAppraisalProductAsync(id, GetServiceHeader());
+            var loanProductAppraisalProductDTO = await _channelService.FindLoanProductAppraisalProductAsync(id, GetServiceHeader());
 
-            return View(LoanProductAppraisalProductDTO);
+            return View(loanProductAppraisalProductDTO);
         }
 
         public async Task<ActionResult> Create()
@@ -61,21 +61,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LoanProductAppraisalProductDTO LoanProductAppraisalProductDTO)
+        public async Task<ActionResult> Create(LoanProductAppraisalProductDTO loanProductAppraisalProductDTO)
         {
-            LoanProductAppraisalProductDTO.ValidateAll();
+            loanProductAppraisalProductDTO.ValidateAll();
 
-            if (!LoanProductAppraisalProductDTO.HasErrors)
+            if (!loanProductAppraisalProductDTO.HasErrors)
             {
-                await _channelService.AddLoanProductAppraisalProductAsync(LoanProductAppraisalProductDTO, GetServiceHeader());
+                await _channelService.AddLoanProductAppraisalProductAsync(loanProductAppraisalProductDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = LoanProductAppraisalProductDTO.ErrorMessages;
+                var errorMessages = loanProductAppraisalProductDTO.ErrorMessages;
 
-                return View(LoanProductAppraisalProductDTO);
+                return View(loanProductAppraisalProductDTO);
             }
         }
 
@@ -83,24 +83,24 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var LoanProductAppraisalProductDTO = await _channelService.FindLoanProductAppraisalProductAsync(id, GetServiceHeader());
+            var loanProductAppraisalProductDTO = await _channelService.FindLoanProductAppraisalProductAsync(id, GetServiceHeader());
 
-            return View(LoanProductAppraisalProductDTO);
+            return View(loanProductAppraisalProductDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, LoanProductAppraisalProductDTO LoanProductAppraisalProductBindingModel)
+        public async Task<ActionResult> Edit(Guid id, LoanProductAppraisalProductDTO loanProductAppraisalProductBindingModel)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateLoanProductAppraisalProductAsync(LoanProductAppraisalProductBindingModel, GetServiceHeader());
+                await _channelService.UpdateLoanProductAppraisalProductAsync(loanProductAppraisalProductBindingModel, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(LoanProductAppraisalProductBindingModel);
+                return View(loanProductAppraisalProductBindingModel);
             }
         }
 

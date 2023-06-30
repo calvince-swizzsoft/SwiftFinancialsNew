@@ -66,9 +66,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {
 
-            var receivedDate = Request["receivedDate"];
+            var receiveddate = Request["receiveddate"];
 
-            loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receivedDate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            loanCaseDTO.ReceivedDate = DateTime.ParseExact((Request["receiveddate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             loanCaseDTO.ValidateAll();
 
