@@ -813,10 +813,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Index.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProductProduct\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
@@ -831,6 +827,10 @@
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
