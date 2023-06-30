@@ -73,7 +73,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Customer Account")]
-        [ValidGuid]
+
         public Guid? CustomerAccountId { get; set; }
 
         [DataMember]
@@ -214,6 +214,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         }
 
         [DataMember]
+        [Display(Name = "Type")]
+        public int EntryType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string EntryTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(JournalVoucherEntryType), EntryType) ? EnumHelper.GetDescription((JournalVoucherEntryType)EntryType) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "Voucher Number")]
         public int VoucherNumber { get; set; }
 
@@ -228,7 +242,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         }
         
         [DataMember]
-        [Display(Name = "Total Value")]
+        [Display(Name = "Principal")]
         public decimal TotalValue { get; set; }
 
         [DataMember]

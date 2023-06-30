@@ -10,6 +10,12 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
     [ServiceContract(Name = "IJournalVoucherService")]
     public interface IJournalVoucherService
     {
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindJournalVouchersByFilterInPage(string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
+        PageCollectionInfo<JournalVoucherDTO> EndFindJournalVouchersByFilterInPage(IAsyncResult result);
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAddJournalVoucher(JournalVoucherDTO journalVoucherDTO, AsyncCallback callback, Object state);
