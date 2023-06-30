@@ -729,6 +729,49 @@ namespace SwiftFinancials.Web.Controllers
 
             return bloodGroups;
         }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetJournalVoucherTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalVoucherTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(JournalVoucherType)).Cast<JournalVoucherType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            journalVoucherTypes.AddRange(items);
+
+            return journalVoucherTypes;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetJournalVoucherEntryTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalVoucherEntryTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(JournalVoucherEntryType)).Cast<JournalVoucherEntryType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            journalVoucherEntryTypes.AddRange(items);
+
+            return journalVoucherEntryTypes;
+        }
+
+
+
+
+
+
+
         [NonAction]
         protected List<SelectListItem> RecoveryPrioritySelectList(string selectedValue)
         {
