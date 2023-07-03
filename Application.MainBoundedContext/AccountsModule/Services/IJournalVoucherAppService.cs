@@ -27,6 +27,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         List<JournalVoucherDTO> FindJournalVouchers(ServiceHeader serviceHeader);
 
+        PageCollectionInfo<JournalVoucherDTO> FindJournalVouchers(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
         PageCollectionInfo<JournalVoucherDTO> FindJournalVouchers(int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         PageCollectionInfo<JournalVoucherDTO> FindJournalVouchers(DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);

@@ -142,6 +142,22 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+
+        public PageCollectionInfo<JournalVoucherDTO> FindJournalVouchers(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = JournalVoucherSpecifications.JournalVoucherFullText(text);
+
+                ISpecification<JournalVoucher> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                return _journalVoucherRepository.AllMatchingPaged<JournalVoucherDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+            }
+        }
+
+
         public JournalVoucherEntryDTO AddNewJournalVoucherEntry(JournalVoucherEntryDTO journalVoucherEntryDTO, ServiceHeader serviceHeader)
         {
             if (journalVoucherEntryDTO != null)
