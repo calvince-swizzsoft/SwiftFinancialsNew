@@ -25300,7 +25300,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
 
-        public Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null)
+        public Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<JournalVoucherDTO>>();
 

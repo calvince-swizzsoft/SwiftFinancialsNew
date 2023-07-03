@@ -1940,7 +1940,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #region JournalVoucherDTO
 
         Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersByStatusAndFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
-        Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersByDateRangeAndFilterInPageAsync(DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
