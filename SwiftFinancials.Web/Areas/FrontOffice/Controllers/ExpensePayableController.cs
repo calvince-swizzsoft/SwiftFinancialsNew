@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -66,6 +67,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
+            var valuedate = Request["valuedate"];
+            expensePayableDTO.ValueDate = DateTime.ParseExact((Request["valuedate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
             expensePayableDTO.ValidateAll();
 
             if (!expensePayableDTO.HasErrors)
