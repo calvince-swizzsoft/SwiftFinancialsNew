@@ -20,6 +20,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -89,6 +90,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
+
             var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
 
             return View(journalVoucherDTO);
@@ -101,7 +105,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
-
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
                 return RedirectToAction("Index");
             }
             else

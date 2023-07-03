@@ -84,8 +84,22 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalVoucherAgg
                     specification |= voucherNumberSpec;
                 }
             }
-
             return specification;
         }
+
+            public static Specification<JournalVoucher> JournalVoucherFullText(string text)
+            {
+                Specification<JournalVoucher> specification = DefaultSpec();
+
+                if (!String.IsNullOrWhiteSpace(text))
+                {
+                    var descriptionSpec = new DirectSpecification<JournalVoucher>(c => c.PrimaryDescription.Contains(text));
+
+                    specification &= (descriptionSpec);
+                }
+
+                return specification;
+            }
+
     }
 }

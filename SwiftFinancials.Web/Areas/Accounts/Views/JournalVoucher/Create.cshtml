@@ -78,11 +78,6 @@
                                         @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
@@ -96,6 +91,11 @@
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
                                         </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
