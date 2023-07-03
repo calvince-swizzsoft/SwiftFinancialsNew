@@ -91,9 +91,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var LoanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
 
-            return View(LoanCaseDTO);
+            return View(loanCaseDTO);
         }
 
         [HttpPost]
@@ -103,6 +105,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
 
                 return RedirectToAction("Index");
             }
