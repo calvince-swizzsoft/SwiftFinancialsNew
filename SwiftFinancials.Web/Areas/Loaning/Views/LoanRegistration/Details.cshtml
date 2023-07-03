@@ -10,7 +10,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Registration", new { Area = "Loaning" }, null)
+                @Html.ActionLink("Home", "Index", "LoanRegistration", new { Area = "Loaning" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>View</strong>
@@ -107,8 +107,8 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <p>
-                                @Html.ActionLink("Edit", "Edit", "Registration", new { id = Model.Id, Area = "Loaning" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Registration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Edit", "Edit", "LoanRegistration", new { id = Model.Id, Area = "Loaning" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
                             </p>
                         </div>
                     </div>
