@@ -4,7 +4,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Cost Center</h2>
+        <h2>Credit Type</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -40,6 +40,17 @@
                                 <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
 
                                 @Html.DisplayFor(model => model.Description)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)</strong><br>
+
+                                @Html.DisplayFor(model => model.ChartOfAccountAccountName)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.TransactionOwnershipDescription)</strong><br>
+
+                                @Html.DisplayFor(model => model.TransactionOwnershipDescription)<br>
                             </p>
 
                             <p>

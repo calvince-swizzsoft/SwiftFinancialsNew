@@ -27802,7 +27802,40 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<ObservableCollection<CreditTypeDTO>> FindCreditTypesAsync(ServiceHeader serviceHeader)
+
+        public Task<CreditTypeDTO> FindCreditTypeAsync(Guid creditTypeId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<CreditTypeDTO>();
+
+            ICreditTypeService service = GetService<ICreditTypeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    CreditTypeDTO response = ((ICreditTypeService)result.AsyncState).EndFindCreditType(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCreditType(creditTypeId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ObservableCollection<CreditTypeDTO>> FindCreditTypesAsync(Guid creditTypeId, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<CreditTypeDTO>>();
 
@@ -28118,6 +28151,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginUpdateAttachedProductsByCreditTypeId(creditTypeId, attachedProductsTuple, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ObservableCollection<CreditTypeDTO>> FindCreditTypesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CreditTypeDTO>>();
+
+            ICreditTypeService service = GetService<ICreditTypeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CreditTypeDTO> response = ((ICreditTypeService)result.AsyncState).EndFindCreditTypes(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CreditTypeDTO>(response ?? new List<CreditTypeDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCreditTypes(asyncCallback, service);
 
             return tcs.Task;
         }

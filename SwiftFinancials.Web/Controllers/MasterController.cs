@@ -204,6 +204,24 @@ namespace SwiftFinancials.Web.Controllers
             return customerTypes;
         }
 
+
+        [NonAction]
+        protected List<SelectListItem> GetTransactionOwnershipSelectList(string selectedValue)
+        {
+            List<SelectListItem> transactionOwnerships = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(TransactionOwnership)).Cast<TransactionOwnership>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            transactionOwnerships.AddRange(items);
+
+            return transactionOwnerships;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetTellerTypeSelectList(string selectedValue)
         {

@@ -44,18 +44,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<CreditTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-        /*public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var creditTypeDTO = await _channelService.FindCreditTypesAsync(id, GetServiceHeader());
+            var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
 
             return View(creditTypeDTO);
-        }*/
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(string.Empty);
             return View();
         }
 
@@ -73,19 +73,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = creditTypeDTO.ErrorMessages;
-
+                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
                 return View(creditTypeDTO);
             }
         }
 
-        /*public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+
+            ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(string.Empty);
 
             var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
 
             return View(creditTypeDTO);
-        }*/
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -94,6 +96,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateCreditTypeAsync(creditTypeDTOBindingModel, GetServiceHeader());
+
+                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTOBindingModel.TransactionOwnershipDescription.ToString());
 
                 return RedirectToAction("Index");
             }
