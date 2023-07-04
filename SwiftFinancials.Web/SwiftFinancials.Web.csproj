@@ -836,6 +836,8 @@
     <Content Include="Areas\Accounts\Views\JournalVoucher\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Approve.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

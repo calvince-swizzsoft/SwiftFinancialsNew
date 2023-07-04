@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "ExpensePayable";
     var chartOfAccountType = ViewBag.ChartOfAccountTypeSelectList as List<SelectListItem>;
+    var journalVoucherTypes = ViewBag.JournalVoucherTypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg  page-heading">
@@ -49,8 +50,14 @@
                             <div class="row">
                                 <div class="col-lg-6">
 
-                                  
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Type)
+                                        </div>
+                                    </div>                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
@@ -68,22 +75,17 @@
                                         @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
+                                   
 
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
 
                                 </div>
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountName, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "ChartOfAccountName" } })
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountName, "", new { @class = "text-danger" })
-                                    </div>
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
@@ -96,20 +98,24 @@
                                         @Html.EditorFor(model => model.VoucherNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "VoucherNumber" } })
                                         @Html.ValidationMessageFor(model => model.VoucherNumber, "", new { @class = "text-danger" })
                                     </div>
+
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.PostingPeriodId)
                                         @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period" } })
                                     </div>
-
+                                  
 
                                 </div>
-                                <div class="form-group form-group-sm">
-                                    <div class="col-md-offset-2">
-                                        <input type="submit" value="Create" class="btn btn-primary" />
-                                    </div>
-                                </div>
+                               
                             </div>
 
 

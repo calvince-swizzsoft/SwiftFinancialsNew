@@ -50,7 +50,8 @@
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.LoanInterestCalculationMode)</strong><br>
                                 @Html.DisplayFor(model => model.LoanInterestCalculationMode)<br>
-                            </p><p>
+                            </p>
+                            <p>
                                 <strong>@Html.DisplayNameFor(model => model.LoanRegistrationMaximumAmount)</strong><br>
                                 @Html.DisplayFor(model => model.LoanRegistrationMaximumAmount)<br>
                             </p>
@@ -65,6 +66,12 @@
                                 <strong>@Html.DisplayNameFor(model => model.CustomerFullName)</strong><br>
                                 @Html.DisplayFor(model => model.CustomerFullName)<br>
                             </p>
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "LoanRegistration", new { id = Model.Id, Area = "Loaning" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.LoanInterestAnnualPercentageRate)</strong><br>
                                 @Html.DisplayFor(model => model.LoanInterestAnnualPercentageRate)<br>
@@ -100,15 +107,6 @@
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
                                 @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "LoanRegistration", new { id = Model.Id, Area = "Loaning" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
                             </p>
                         </div>
                     </div>

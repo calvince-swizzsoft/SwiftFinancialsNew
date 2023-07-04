@@ -59,6 +59,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
             return View();
         }
 
@@ -83,6 +84,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 var errorMessages = loanCaseDTO.ErrorMessages;
                 ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 return View(loanCaseDTO);
             }
         }
@@ -94,6 +96,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
 
             return View(loanCaseDTO);
         }
@@ -107,6 +110,69 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
                 ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(loanCaseDTO);
+            }
+        }
+
+        public async Task<ActionResult> Approve(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+
+            return View(loanCaseDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Approve(Guid id, LoanCaseDTO loanCaseDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(loanCaseDTO);
+            }
+        }
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+
+            return View(loanCaseDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, LoanCaseDTO loanCaseDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
                 return RedirectToAction("Index");
             }

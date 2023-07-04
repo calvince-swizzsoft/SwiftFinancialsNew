@@ -59,7 +59,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
 
             return View();
         }
@@ -80,7 +80,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else
             {
                 var errorMessages = expensePayableDTO.ErrorMessages;
-               
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
 
                 return View(expensePayableDTO);
             }
