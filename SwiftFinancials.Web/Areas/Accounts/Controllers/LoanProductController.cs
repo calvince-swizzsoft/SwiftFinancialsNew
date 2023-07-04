@@ -70,6 +70,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.LoanRegistrationPayoutRecoveryModeSelectList = GetLoanRegistrationPayoutRecoveryModeSelectList(string.Empty);
             ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(string.Empty);
             ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
             return View();
         }
 
@@ -100,6 +101,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.LoanRegistrationPayoutRecoveryModeSelectList = GetLoanRegistrationPayoutRecoveryModeSelectList(LoanProductDTO.LoanRegistrationPayoutRecoveryMode.ToString());
                 ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(LoanProductDTO.LoanRegistrationPaymentDueDate.ToString());
                 ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(LoanProductDTO.TakeHomeType.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(LoanProductDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 return View(LoanProductDTO);
             }
         }

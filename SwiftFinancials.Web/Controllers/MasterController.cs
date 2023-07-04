@@ -460,6 +460,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetLoanPaymentFrequencyPerYearSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanPaymentFrequencyPerYear = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PaymentFrequencyPerYear)).Cast<PaymentFrequencyPerYear>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanPaymentFrequencyPerYear.AddRange(items);
+
+            return loanPaymentFrequencyPerYear;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetLoanRegistrationGuarantorSecurityModeSelectList(string selectedValue)
         {
             List<SelectListItem> loanRegistrationGuarantorSecurityModes = new List<SelectListItem>();

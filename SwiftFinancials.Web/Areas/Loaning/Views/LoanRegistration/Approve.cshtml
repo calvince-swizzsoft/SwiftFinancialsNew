@@ -1,7 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 
 @{
-    ViewBag.Title = "Edit Loan Registration";
+    ViewBag.Title = "Approve Loan Registration";
     var loanInterestCalculationModes = ViewBag.LoanInterestCalculationModeSelectList as List<SelectListItem>;
     var loanRegistrationLoanProductSections = ViewBag.LoanRegistrationLoanProductSectionSelectList as List<SelectListItem>;
 }
@@ -37,9 +37,10 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Approve", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+
 
                         <h1>Primary Details</h1>
                         <fieldset>
@@ -148,7 +149,7 @@
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <input type="submit" value="Edit" class="btn btn-primary" />
+                                        <input type="submit" value="Approve" class="btn btn-primary" />
                                     </div>
                                 </div>
                             </div>
