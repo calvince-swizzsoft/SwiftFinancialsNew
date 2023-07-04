@@ -28773,6 +28773,71 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<CreditBatchDTO>> FindCreditBatchesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CreditBatchDTO>>();
+
+            ICreditBatchService service = GetService<ICreditBatchService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CreditBatchDTO> response = ((ICreditBatchService)result.AsyncState).EndFindCreditBatches(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CreditBatchDTO>(response ?? new List<CreditBatchDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCreditBatches(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<CreditBatchDTO>> FindCreditBatchesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<CreditBatchDTO>>();
+
+            ICreditBatchService service = GetService<ICreditBatchService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<CreditBatchDTO> response = ((ICreditBatchService)result.AsyncState).EndFindCreditBatchesByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCreditBatchesByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         public Task<ObservableCollection<CreditBatchEntryDTO>> FindLoanAppraisalCreditBatchEntriesByCustomerIdAsync(Guid customerId, Guid loanProductId, bool includeProductDescription, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<CreditBatchEntryDTO>>();

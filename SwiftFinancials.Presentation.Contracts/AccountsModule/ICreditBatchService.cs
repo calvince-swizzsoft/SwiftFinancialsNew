@@ -134,5 +134,11 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindQueableCreditBatchEntriesInPage(int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<CreditBatchEntryDTO> EndFindQueableCreditBatchEntriesInPage(IAsyncResult result);
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindCreditBatchesByFilterInPage(string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
+        PageCollectionInfo<CreditBatchDTO> EndFindCreditBatchesByFilterInPage(IAsyncResult result);
     }
 }

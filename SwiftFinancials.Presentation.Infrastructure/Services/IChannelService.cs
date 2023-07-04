@@ -2200,6 +2200,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<BatchImportEntryWrapper>> ParseCreditBatchImportAsync(Guid creditBatchId, string fileName, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<CreditBatchDTO>> FindCreditBatchesAsync(ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<CreditBatchDTO>> FindCreditBatchesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
         Task<ObservableCollection<CreditBatchEntryDTO>> FindLoanAppraisalCreditBatchEntriesByCustomerIdAsync(Guid customerId, Guid loanProductId, bool includeProductDescription, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<CreditBatchEntryDTO>> FindCreditBatchEntriesByCustomerIdAsync(int creditBatchType, Guid customerId, bool includeProductDescription, ServiceHeader serviceHeader = null);
