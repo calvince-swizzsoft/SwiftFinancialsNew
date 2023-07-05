@@ -43,7 +43,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "G/L Account Type")]
-        public int ChartOfAccountAccountType { get; set; }
+        public short ChartOfAccountAccountType { get; set; }
 
         [DataMember]
         [Display(Name = "G/L Account Code")]
@@ -53,13 +53,14 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "G/L Account Name")]
         public string ChartOfAccountAccountName { get; set; }
 
+
         [DataMember]
         [Display(Name = "G/L Account Name")]
         public string ChartOfAccountName
         {
             get
             {
-                return string.Format("{0}-{1} {2}", ChartOfAccountAccountType.FirstDigit(), ChartOfAccountAccountCode, ChartOfAccountAccountName);
+                return string.Format("{0}-{1} {2}", ChartOfAccountAccountType, ChartOfAccountAccountCode, ChartOfAccountAccountName);
             }
         }
 
@@ -78,7 +79,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Branch Code")]
-        public int CustomerAccountBranchCode { get; set; }
+        public short CustomerAccountBranchCode { get; set; }
 
         [DataMember]
         [Display(Name = "Customer Account Product")]
@@ -86,11 +87,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Customer Account Product Code")]
-        public int CustomerAccountCustomerAccountTypeProductCode { get; set; }
+        public byte CustomerAccountCustomerAccountTypeProductCode { get; set; }
 
         [DataMember]
         [Display(Name = "Customer Account Product Code")]
-        public int CustomerAccountCustomerAccountTypeTargetProductCode { get; set; }
+        public short CustomerAccountCustomerAccountTypeTargetProductCode { get; set; }
 
         [DataMember]
         [Display(Name = "Serial Number")]
@@ -116,7 +117,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Customer Type")]
-        public int CustomerAccountCustomerType { get; set; }
+        public byte CustomerAccountCustomerType { get; set; }
 
         [DataMember]
         [Display(Name = "Customer Type")]
@@ -124,13 +125,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             get
             {
-                return Enum.IsDefined(typeof(CustomerType), CustomerAccountCustomerType) ? EnumHelper.GetDescription((CustomerType)CustomerAccountCustomerType) : string.Empty;
+                return Enum.IsDefined(typeof(CustomerType), (int)CustomerAccountCustomerType) ? EnumHelper.GetDescription((CustomerType)CustomerAccountCustomerType) : string.Empty;
             }
         }
 
         [DataMember]
         [Display(Name = "Customer Salutation")]
-        public int CustomerAccountCustomerIndividualSalutation { get; set; }
+        public byte CustomerAccountCustomerIndividualSalutation { get; set; }
 
         [DataMember]
         [Display(Name = "Customer Salutation")]
@@ -138,7 +139,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             get
             {
-                return Enum.IsDefined(typeof(Salutation), CustomerAccountCustomerIndividualSalutation) ? EnumHelper.GetDescription((Salutation)CustomerAccountCustomerIndividualSalutation) : string.Empty;
+                return Enum.IsDefined(typeof(Salutation), (int)CustomerAccountCustomerIndividualSalutation) ? EnumHelper.GetDescription((Salutation)CustomerAccountCustomerIndividualSalutation) : string.Empty;
             }
         }
 
@@ -201,7 +202,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Type")]
-        public int Type { get; set; }
+        public byte Type { get; set; }
 
         [DataMember]
         [Display(Name = "Type")]
@@ -209,13 +210,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             get
             {
-                return Enum.IsDefined(typeof(JournalVoucherType), Type) ? EnumHelper.GetDescription((JournalVoucherType)Type) : string.Empty;
+                return Enum.IsDefined(typeof(JournalVoucherType), (int)Type) ? EnumHelper.GetDescription((JournalVoucherType)Type) : string.Empty;
             }
         }
 
         [DataMember]
         [Display(Name = "Type")]
-        public int EntryType { get; set; }
+        public byte EntryType { get; set; }
 
         [DataMember]
         [Display(Name = "Type")]
@@ -223,7 +224,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             get
             {
-                return Enum.IsDefined(typeof(JournalVoucherEntryType), EntryType) ? EnumHelper.GetDescription((JournalVoucherEntryType)EntryType) : string.Empty;
+                return Enum.IsDefined(typeof(JournalVoucherEntryType), (int)EntryType) ? EnumHelper.GetDescription((JournalVoucherEntryType)EntryType) : string.Empty;
             }
         }
 
@@ -266,7 +267,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Status")]
-        public int Status { get; set; }
+        public byte Status { get; set; }
 
         [DataMember]
         [Display(Name = "Status")]
@@ -274,7 +275,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             get
             {
-                return Enum.IsDefined(typeof(JournalVoucherStatus), Status) ? EnumHelper.GetDescription((JournalVoucherStatus)Status) : string.Empty;
+                return Enum.IsDefined(typeof(JournalVoucherStatus), (int)Status) ? EnumHelper.GetDescription((JournalVoucherStatus)Status) : string.Empty;
             }
         }
 

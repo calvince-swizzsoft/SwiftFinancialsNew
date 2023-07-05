@@ -153,7 +153,29 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 var sortFields = new List<string> { "SequentialId" };
 
-                return _journalVoucherRepository.AllMatchingPaged<JournalVoucherDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                var journalVoucherPagedCollection = _journalVoucherRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (journalVoucherPagedCollection != null)
+                {
+                    var pageCollection = journalVoucherPagedCollection.PageCollection.ProjectedAsCollection<JournalVoucherDTO>();
+
+                    //if (pageCollection != null && pageCollection.Any())
+                    //{
+                    //    foreach (var item in pageCollection)
+                    //    {
+                    //        var totalItems = _journalVoucherRepository.AllMatchingCount(JournalVoucherSpecifications.ExpensePayableEntryWithExpensePayableId(item.Id), serviceHeader);
+
+                    //        var postedItems = _journalVoucherRepository.AllMatchingCount(JournalVoucherSpecifications.PostedExpensePayableEntryWithExpensePayableId(item.Id), serviceHeader);
+
+                    //        item.PostedEntries = string.Format("{0}/{1}", postedItems, totalItems);
+                    //    }
+                    //}
+
+                    var itemsCount = journalVoucherPagedCollection.ItemsCount;
+
+                    return new PageCollectionInfo<JournalVoucherDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
             }
         }
 

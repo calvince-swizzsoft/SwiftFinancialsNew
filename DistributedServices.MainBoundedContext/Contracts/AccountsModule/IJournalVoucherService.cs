@@ -23,6 +23,11 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         bool UpdateJournalVoucher(JournalVoucherDTO journalVoucherDTO);
 
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<JournalVoucherDTO> FindJournalVouchersByFilterInPage(string text, int pageIndex, int pageSize);
+
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
         JournalVoucherEntryDTO AddJournalVoucherEntry(JournalVoucherEntryDTO journalVoucherEntryDTO);
