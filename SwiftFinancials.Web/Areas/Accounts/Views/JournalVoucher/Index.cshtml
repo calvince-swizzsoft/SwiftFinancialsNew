@@ -85,15 +85,14 @@
                     var editUrl = '<a  href="/accounts/JournalVoucher/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/JournalVoucher/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
-                    { "mDataProp": "EntryTypeDescription", "sTitle": "Entry Type", "sWidth": "10%" },
                     { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Chart Of Account", "sWidth": "10%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },

@@ -682,6 +682,40 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetLoanApprovalOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanApprovalOption = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanApprovalOption)).Cast<LoanApprovalOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanApprovalOption.AddRange(items);
+
+            return loanApprovalOption;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanAuditOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanAuditOptions = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanAuditOption)).Cast<LoanAuditOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanAuditOptions.AddRange(items);
+
+            return loanAuditOptions;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetLoanRegistrationAggregateCheckOffRecoveryModeSelectList(string selectedValue)
         {
             List<SelectListItem> loanRegistrationAggregateCheckOffRecoveryModes = new List<SelectListItem>();
