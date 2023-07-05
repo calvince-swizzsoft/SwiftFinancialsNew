@@ -85,16 +85,17 @@
                     var editUrl = '<a  href="/accounts/JournalVoucher/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/JournalVoucher/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Chart Of Account", "sWidth": "10%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "5%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Chart Of Account", "sWidth": "3%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]

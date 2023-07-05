@@ -266,7 +266,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime? ValueDate { get; set; }
 
         [DataMember]
-        [Display(Name = "Status")]
+        [Display(Name = "Journal Voucher Status")]
         public byte Status { get; set; }
 
         [DataMember]

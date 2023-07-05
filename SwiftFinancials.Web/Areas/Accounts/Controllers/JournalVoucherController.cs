@@ -59,6 +59,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
+            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
 
             return View();
         }
@@ -82,6 +83,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
                 return View(journalVoucherDTO);
             }
         }
@@ -92,6 +94,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
+            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
 
             var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
 
@@ -107,6 +110,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
                 return RedirectToAction("Index");
             }
             else

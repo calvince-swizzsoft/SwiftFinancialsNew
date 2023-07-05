@@ -223,6 +223,24 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetJournalVoucherStatusSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalVoucherStatuses = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(JournalVoucherStatus)).Cast<JournalVoucherStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            journalVoucherStatuses.AddRange(items);
+
+            return journalVoucherStatuses;
+        }
+
+
+        [NonAction]
         protected List<SelectListItem> GetTellerTypeSelectList(string selectedValue)
         {
             List<SelectListItem> tellerTypes = new List<SelectListItem>();
