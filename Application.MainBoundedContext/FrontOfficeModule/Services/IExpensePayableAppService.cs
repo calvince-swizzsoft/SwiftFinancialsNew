@@ -33,6 +33,8 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
 
         PageCollectionInfo<ExpensePayableDTO> FindExpensePayables(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
+        PageCollectionInfo<ExpensePayableDTO> FindExpensePayables(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
         ExpensePayableDTO FindExpensePayable(Guid expensePayableId, ServiceHeader serviceHeader);
 
         List<ExpensePayableEntryDTO> FindExpensePayableEntriesByExpensePayableId(Guid expensePayableId, ServiceHeader serviceHeader);

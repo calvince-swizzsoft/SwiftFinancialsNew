@@ -58,6 +58,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<ExpensePayableDTO> FindExpensePayablesByFilterInPage(string text, int pageIndex, int pageSize);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         ExpensePayableDTO FindExpensePayable(Guid expensePayableId);
 
         [OperationContract()]
