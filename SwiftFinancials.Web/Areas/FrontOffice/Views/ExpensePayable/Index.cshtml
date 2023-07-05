@@ -22,7 +22,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Expense Payable","Create", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Expense Payable", "Create", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -74,29 +74,48 @@
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
+
+
+
+                    var valueDate = new Date(parseInt(aData.ValueDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + valueDate.getHours()).slice(-2);
+                    var m = ("0" + valueDate.getMinutes()).slice(-2);
+                    var s = ("0" + valueDate.getSeconds()).slice(-2);                  
+                    var dt_ValuedateCreated = $.datepicker.formatDate('dd/mm/yy', valueDate) + " " + h + ":" + m + ":" + s;
+                    aData.ValueDate = dt_ValuedateCreated;
+
+
+
                     var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var verifyUrl = '<a  href="/frontOffice/ExpensePayable/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+
+                    $('td:eq(2)', nRow).html(dt_ValuedateCreated);
+                    $('td:eq(5)', nRow).html(dt_Created);                   
+                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + verifyUrl);
+                 //   $('td:eq(9)', nRow).html(verifyUrl + '&nbsp;' + verifyUrl);
+
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "ChartOfAccountName", "sTitle": "ChartOfAccountName", "sWidth": "15%" },
-                    { "mDataProp": "ChartOfAccountId", "sTitle": "ChartOfAccountId", "sWidth": "15%" },
-                    { "mDataProp": "TotalValue", "sTitle": "TotalValue", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },                 
+                    { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
+                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "15%" },
+                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false },                   
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+
                 "aaSorting": [[0, "desc"]]
         });
         });

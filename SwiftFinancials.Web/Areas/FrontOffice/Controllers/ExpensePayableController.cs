@@ -111,12 +111,42 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<JsonResult> GetExpensePayablesAsync()
-        //{
-        //    var expensePayableDTOs = await _channelService.FindExpensePayablesAsync(GetServiceHeader());
 
-        //    return Json(expensePayableDTOs, JsonRequestBehavior.AllowGet);
-        //}
+
+         public async Task<ActionResult> Verify (Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+
+            return View(expensePayableDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
+        {
+            var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
+            if (ModelState.IsValid)
+            {
+              await _channelService. AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
+
+                return RedirectToAction("Verify");
+            }
+            else
+            {
+
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                return View(expensePayableDTO);
+            }
+        }
+    //    [HttpGet]
+    //    public async Task<JsonResult> GetExpensePayablesAsync()
+    //    {
+    //        var expensePayableDTOs = await _channelService.FindExpensePayablesAsync(GetServiceHeader());
+
+    //        return Json(expensePayableDTOs, JsonRequestBehavior.AllowGet);
+    //    }
     }
 }

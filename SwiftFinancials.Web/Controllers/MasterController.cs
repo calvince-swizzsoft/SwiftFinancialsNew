@@ -783,6 +783,24 @@ namespace SwiftFinancials.Web.Controllers
             return journalVoucherTypes;
         }
 
+        protected List<SelectListItem> GetExpensePayableAuthOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> expensePayableAuthOptions = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ExpensePayableAuthOption)).Cast<ExpensePayableAuthOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            expensePayableAuthOptions.AddRange(items);
+
+            return expensePayableAuthOptions;
+        }
+
+
+
 
         [NonAction]
         protected List<SelectListItem> GetJournalVoucherEntryTypeSelectList(string selectedValue)
