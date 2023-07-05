@@ -96,6 +96,20 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         }
 
         [DataMember]
+        [Display(Name = "Type")]
+        public int ExpensePayableAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string ExpensePayableAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ExpensePayableAuthOption), ExpensePayableAuthOption) ? EnumHelper.GetDescription((ExpensePayableAuthOption)ExpensePayableAuthOption) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "Total Value")]
         public decimal TotalValue { get; set; }
 

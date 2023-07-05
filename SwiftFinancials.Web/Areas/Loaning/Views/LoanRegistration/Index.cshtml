@@ -94,9 +94,9 @@
                     var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
                     var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
-                    $('td:eq(3)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl);
+                    $('td:eq(4)', nRow).html(dt_ReceivedDate);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl);
 
                     return nRow;
                 },
@@ -104,7 +104,8 @@
                 "aoColumns": [
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer" },
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied"},
-                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan purpose"},
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan purpose" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status" },
                     { "mDataProp": "ReceivedDate", "sTitle": "Received Date" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],

@@ -843,6 +843,7 @@
     <Content Include="Areas\Accounts\Views\CreditBatch\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditBatch\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditBatch\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
