@@ -6,12 +6,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class CreditTypeController : MasterController
+    public class CreditBatchController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -31,7 +30,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCreditTypesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCreditBatchesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -41,40 +40,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<CreditTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<CreditBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
+            var creditBatchDTO = await _channelService.FindCreditBatchAsync(id, GetServiceHeader());
 
-            return View(creditTypeDTO);
+            return View(creditBatchDTO);
         }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-            ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(string.Empty);
+
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CreditTypeDTO creditTypeDTO)
+        public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
         {
-            creditTypeDTO.ValidateAll();
+            creditBatchDTO.ValidateAll();
 
-            if (!creditTypeDTO.HasErrors)
+            if (!creditBatchDTO.HasErrors)
             {
-                await _channelService.AddCreditTypeAsync(creditTypeDTO, GetServiceHeader());
+                await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = creditTypeDTO.ErrorMessages;
-                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTO.TransactionOwnershipDescription.ToString());
-                return View(creditTypeDTO);
+                var errorMessages = creditBatchDTO.ErrorMessages;
+
+                return View(creditBatchDTO);
             }
         }
 
@@ -82,38 +81,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(string.Empty);
+            var creditBatchDTO = await _channelService.FindCreditBatchAsync(id, GetServiceHeader());
 
-            var creditTypeDTO = await _channelService.FindCreditTypeAsync(id, GetServiceHeader());
-
-            return View(creditTypeDTO);
+            return View(creditBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CreditTypeDTO creditTypeDTOBindingModel)
+        public async Task<ActionResult> Edit(Guid id, CreditBatchDTO creditBatchDTO)
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCreditTypeAsync(creditTypeDTOBindingModel, GetServiceHeader());
-
-                ViewBag.TransactionOwnershipSelectList = GetTransactionOwnershipSelectList(creditTypeDTOBindingModel.TransactionOwnershipDescription.ToString());
+                await _channelService.UpdateCreditBatchAsync(creditBatchDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(creditTypeDTOBindingModel);
+                return View(creditBatchDTO);
             }
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetCreditTypesAsync()
+        public async Task<JsonResult> GetCreditBatchesAsync()
         {
-            var creditTypeDTOs = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var creditBatchDTOs = await _channelService.FindCreditBatchesAsync(GetServiceHeader());
 
-            return Json(creditTypeDTOs, JsonRequestBehavior.AllowGet);
+            return Json(creditBatchDTOs, JsonRequestBehavior.AllowGet);
         }
     }
-    
-    }
+}

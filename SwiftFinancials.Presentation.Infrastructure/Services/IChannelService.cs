@@ -2133,6 +2133,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<CreditTypeDTO>> FindCreditTypesAsync(ServiceHeader serviceHeader = null);
 
+        Task<CreditTypeDTO> FindCreditTypeAsync(Guid creditTypeDTOId, ServiceHeader serviceHeader = null);
+       
+
         Task<PageCollectionInfo<CreditTypeDTO>> FindCreditTypesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<CreditTypeDTO> AddCreditTypeAsync(CreditTypeDTO creditTypeDTO, ServiceHeader serviceHeader = null);
@@ -2166,6 +2169,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<ObservableCollection<DebitTypeDTO>> FindMandatoryDebitTypesAsync(bool isMandatory, ServiceHeader serviceHeader = null);
 
         Task<DebitTypeDTO> FindDebitTypeAsync(Guid debitTypeDTOId, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<DebitTypeDTO>> FindDebitTypesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<DebitTypeDTO> AddDebitTypeAsync(DebitTypeDTO debitTypeDTO, ServiceHeader serviceHeader = null);
@@ -2195,6 +2199,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #region CreditBatchDTO
 
         Task<ObservableCollection<BatchImportEntryWrapper>> ParseCreditBatchImportAsync(Guid creditBatchId, string fileName, ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<CreditBatchDTO>> FindCreditBatchesAsync(ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<CreditBatchDTO>> FindCreditBatchesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<CreditBatchEntryDTO>> FindLoanAppraisalCreditBatchEntriesByCustomerIdAsync(Guid customerId, Guid loanProductId, bool includeProductDescription, ServiceHeader serviceHeader = null);
 

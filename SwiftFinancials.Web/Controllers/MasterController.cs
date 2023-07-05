@@ -204,6 +204,24 @@ namespace SwiftFinancials.Web.Controllers
             return customerTypes;
         }
 
+
+        [NonAction]
+        protected List<SelectListItem> GetTransactionOwnershipSelectList(string selectedValue)
+        {
+            List<SelectListItem> transactionOwnerships = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(TransactionOwnership)).Cast<TransactionOwnership>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            transactionOwnerships.AddRange(items);
+
+            return transactionOwnerships;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetTellerTypeSelectList(string selectedValue)
         {
@@ -457,6 +475,23 @@ namespace SwiftFinancials.Web.Controllers
             loanInterestCalculationModes.AddRange(items);
 
             return loanInterestCalculationModes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanPaymentFrequencyPerYearSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanPaymentFrequencyPerYear = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(PaymentFrequencyPerYear)).Cast<PaymentFrequencyPerYear>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanPaymentFrequencyPerYear.AddRange(items);
+
+            return loanPaymentFrequencyPerYear;
         }
 
         [NonAction]

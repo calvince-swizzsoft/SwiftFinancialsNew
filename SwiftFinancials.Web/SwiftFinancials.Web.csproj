@@ -313,6 +313,7 @@
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
@@ -836,6 +837,12 @@
     <Content Include="Areas\Accounts\Views\JournalVoucher\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Approve.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
