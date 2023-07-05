@@ -105,6 +105,14 @@ namespace DistributedServices.MainBoundedContext
             return _expensePayableAppService.FindExpensePayables(status, startDate, endDate, text, pageIndex, pageSize, serviceHeader);
         }
 
+        public PageCollectionInfo<ExpensePayableDTO> FindExpensePayablesByFilterInPage( string text, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _expensePayableAppService.FindExpensePayables( text, pageIndex, pageSize, serviceHeader);
+        }
+
+
         public ExpensePayableDTO FindExpensePayable(Guid expensePayableId)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

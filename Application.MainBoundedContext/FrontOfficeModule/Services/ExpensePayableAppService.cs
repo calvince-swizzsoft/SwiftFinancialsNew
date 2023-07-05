@@ -495,6 +495,42 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
             }
         }
 
+        public PageCollectionInfo<ExpensePayableDTO> FindExpensePayables( string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = ExpensePayableSpecifications.ExpensePayablesWithText(text);
+
+                ISpecification<ExpensePayable> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var expensePayablePagedCollection = _expensePayableRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (expensePayablePagedCollection != null)
+                {
+                    var pageCollection = expensePayablePagedCollection.PageCollection.ProjectedAsCollection<ExpensePayableDTO>();
+
+                    if (pageCollection != null && pageCollection.Any())
+                    {
+                        foreach (var item in pageCollection)
+                        {
+                            var totalItems = _expensePayableEntryRepository.AllMatchingCount(ExpensePayableEntrySpecifications.ExpensePayableEntryWithExpensePayableId(item.Id), serviceHeader);
+
+                            var postedItems = _expensePayableEntryRepository.AllMatchingCount(ExpensePayableEntrySpecifications.PostedExpensePayableEntryWithExpensePayableId(item.Id), serviceHeader);
+
+                            item.PostedEntries = string.Format("{0}/{1}", postedItems, totalItems);
+                        }
+                    }
+
+                    var itemsCount = expensePayablePagedCollection.ItemsCount;
+
+                    return new PageCollectionInfo<ExpensePayableDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
         public ExpensePayableDTO FindExpensePayable(Guid expensePayableId, ServiceHeader serviceHeader)
         {
             if (expensePayableId != Guid.Empty)
