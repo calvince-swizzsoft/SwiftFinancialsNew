@@ -447,6 +447,20 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
         [DataMember]
+        [Display(Name = "Loan Audit Option")]
+        public int LoanAuditOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Loan Audit Option")]
+        public string LoanAuditOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanAuditOption), LoanAuditOption) ? EnumHelper.GetDescription((LoanAuditOption)LoanAuditOption) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "Investments Balance")]
         public decimal LoanProductInvestmentsBalance { get; set; }
 
@@ -481,6 +495,20 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
             get
             {
                 return Enum.IsDefined(typeof(InterestChargeMode), LoanInterestChargeMode) ? EnumHelper.GetDescription((InterestChargeMode)LoanInterestChargeMode) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Loan Approval Option")]
+        public int LoanApprovalOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Loan Approval Option")]
+        public string LoanApprovalOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanApprovalOption), LoanApprovalOption) ? EnumHelper.GetDescription((LoanApprovalOption)LoanApprovalOption) : string.Empty;
             }
         }
 
