@@ -461,6 +461,20 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
         [DataMember]
+        [Display(Name = "Loan Cancellation Option")]
+        public int LoanCancellationOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Loan Cancellation Option")]
+        public string LoanCancellationOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanCancellationOption), LoanCancellationOption) ? EnumHelper.GetDescription((LoanCancellationOption)LoanCancellationOption) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "Investments Balance")]
         public decimal LoanProductInvestmentsBalance { get; set; }
 
