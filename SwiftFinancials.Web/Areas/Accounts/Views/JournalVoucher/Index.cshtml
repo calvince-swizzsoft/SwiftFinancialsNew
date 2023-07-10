@@ -84,20 +84,23 @@
 
                     var editUrl = '<a  href="/accounts/JournalVoucher/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/JournalVoucher/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var pendUrl = '<a  href="/accounts/JournalVoucher/pend/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Pend</a>';
+                    var postUrl = '<a  href="/accounts/JournalVoucher/post/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Post</a>';
+                    var rejectUrl = '<a  href="/accounts/JournalVoucher/reject/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Reject</a>';
+                    var verifyUrl = '<a  href="/accounts/JournalVoucher/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + pendUrl + '&nbsp;' + postUrl + '&nbsp;' + rejectUrl + '&nbsp;' + verifyUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "5%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Chart Of Account", "sWidth": "3%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Chart Of Account", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });

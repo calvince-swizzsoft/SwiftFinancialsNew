@@ -845,6 +845,10 @@
     <Content Include="Areas\Accounts\Views\CreditBatch\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Cancel.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Pend.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Post.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Reject.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
