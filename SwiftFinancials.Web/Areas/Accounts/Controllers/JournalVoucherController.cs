@@ -117,7 +117,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        public async Task<ActionResult> Pend(Guid id)
+        public async Task<ActionResult> Pending(Guid id)
         {
             await ServeNavigationMenus();
 
@@ -132,7 +132,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Pend(Guid id, JournalVoucherDTO journalVoucherDTO)
+        public async Task<ActionResult> Pending(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
             if (ModelState.IsValid)
             {
