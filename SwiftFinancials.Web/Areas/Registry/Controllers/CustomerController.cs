@@ -141,7 +141,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, CustomerBindingModel customerBindingModel)
         {
-            if (ModelState.IsValid)
+            customerBindingModel.ValidateAll();
+
+            if(!customerBindingModel.ErrorMessages.Any())
             {
                 await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
                 ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
@@ -149,6 +151,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
             else
             {
+
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
                 return View(customerBindingModel);
             }
         }
