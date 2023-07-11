@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -75,8 +77,23 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
-                await _channelService.AddLoanCaseAsync(loanCaseDTO, GetServiceHeader());
+                var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO.MapTo<LoanCaseDTO>(), GetServiceHeader());
 
+                if (loanCase != null)
+                {
+                    //Update BudgetEntries
+
+                    var loanGuarantors = new ObservableCollection<LoanGuarantorDTO>();
+
+                    foreach (var loanGurantorDTO in loanCaseDTO.LoanGuarantors)
+                    {
+                        loanGurantorDTO.LoanCaseId = loanCase.Id;
+
+                        loanGuarantors.Add(loanGurantorDTO);
+                    }
+
+                    await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
+                }
                 return RedirectToAction("Index");
             }
             else
