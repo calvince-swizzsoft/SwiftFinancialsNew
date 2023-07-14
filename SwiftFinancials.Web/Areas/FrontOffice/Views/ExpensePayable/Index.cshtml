@@ -93,14 +93,17 @@
 
 
 
+                  
                     var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyUrl = '<a  href="/frontOffice/ExpensePayable/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var approveUrl = '<a  href="/frontOffice/ExpensePayable/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var verifyUrl = '<a  href="/frontOffice/ExpensePayable/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var cancelUrl = '<a  href="/frontOffice/ExpensePayable/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
 
 
                     $('td:eq(2)', nRow).html(dt_ValuedateCreated);
                     $('td:eq(5)', nRow).html(dt_Created);                   
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + verifyUrl);
+                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + cancelUrl);
                  //   $('td:eq(9)', nRow).html(verifyUrl + '&nbsp;' + verifyUrl);
 
 
@@ -108,13 +111,13 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },                 
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "8%"},
                     { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
-                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "15%" },
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false },                   
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "8%"},
+                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "4%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "4%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%", "bSortable": false },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "40%", "bSortable": false }],
 
                 "aaSorting": [[0, "desc"]]
         });

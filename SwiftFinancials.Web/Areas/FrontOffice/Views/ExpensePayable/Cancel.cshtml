@@ -1,15 +1,14 @@
 ﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
 @{
-    ViewBag.Title = "Edit Expense Payable";
+    ViewBag.Title = "Cancel Expense Payable";
     var loanInterestCalculationModes = ViewBag.LoanInterestCalculationModeSelectList as List<SelectListItem>;
     var loanRegistrationLoanProductSections = ViewBag.LoanRegistrationLoanProductSectionSelectList as List<SelectListItem>;
-    var expensePayableStatuses = ViewBag.ExpensePayableAuthOptionTypeSelectList as List<SelectListItem>;
-
+    var loanApprovalOption = ViewBag.LoanApprovalOptionSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Approve posting period</h2>
+        <h2>Posting Periods</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -18,7 +17,7 @@
                 @Html.ActionLink("Home", "Index", "ExpenseApproval", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Edit</strong>
+                <strong>Verify</strong>
             </li>
         </ol>
     </div>
@@ -39,59 +38,58 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Cancel", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
 
-                    <h1>Edit</h1>
+                        <h1>Details</h1>
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
 
-                                    <div class="form-group" id="data_3">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="CreatedDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
+                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Investment Balance" } })
+                                        @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Balance" } })
                                         @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
-                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div>
-                                        @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = " Branch Name" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
                                     <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
                                         <div class="input-group date">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input type="text" name="ValueDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
                                         </div>
                                     </div>
+                                    <div>
+                                        @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount" } })
+                                        @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
+                                    </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks" } })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Term in Months" } })
                                         @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
                                     </div>
 
                                 </div>
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountAccountName)
@@ -104,27 +102,32 @@
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Type, expensePayableStatuses, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Type)
-                                        </div>
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Savings Product Name" } })
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterId, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "Loan Product Name" } })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodLookup form-control required", placeholder = "PostingPeriodId" } })
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.ChartOfAccountAccountType, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountAccountType)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountType, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountType, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Loan Purpose Name" } })
                                     </div>
 
 
                                     <div class="form-group form-group-sm">
-                                        <input type="submit" value="Edit" class="btn btn-primary" />
+                                        <input type="submit" value="Cancel" class="btn btn-primary" />
                                     </div>
-
                                 </div>
-
                             </div>
                         </fieldset>
                     }
