@@ -4,7 +4,6 @@
     ViewBag.Title = "Edit Journal Voucher";
     var journalVoucherTypes = ViewBag.JournalVoucherTypeSelectList as List<SelectListItem>;
     var journalVoucherEntryTypes = ViewBag.JournalVoucherEntryTypeSelectList as List<SelectListItem>;
-    var journalVoucherStatuses = ViewBag.JournalVoucherStatusSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -73,12 +72,10 @@
                                         @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ValueDate", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
@@ -133,14 +130,6 @@
                                         @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, journalVoucherStatuses, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Status)
-                                        </div>
                                     </div>
                                 </div>
                             </div>
