@@ -827,7 +827,6 @@
     <Content Include="Areas\FrontOffice\Views\FiscalCount\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Details.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Details.cshtml" />
@@ -846,6 +845,9 @@
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Verify.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Approve.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />

@@ -1,7 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
 @{
-    ViewBag.Title = "Edit Expense Payable";
+    ViewBag.Title = "Approve Expense Payable";
     var loanInterestCalculationModes = ViewBag.LoanInterestCalculationModeSelectList as List<SelectListItem>;
     var loanRegistrationLoanProductSections = ViewBag.LoanRegistrationLoanProductSectionSelectList as List<SelectListItem>;
     var expensePayableStatuses = ViewBag.ExpensePayableAuthOptionTypeSelectList as List<SelectListItem>;
@@ -18,7 +18,7 @@
                 @Html.ActionLink("Home", "Index", "ExpenseApproval", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Edit</strong>
+                <strong>Approve</strong>
             </li>
         </ol>
     </div>
@@ -39,12 +39,12 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Approve", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
 
-                    <h1>Edit</h1>
+                        <h1>Approve</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-4">
@@ -74,7 +74,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = " Branch Name" } })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group" id="data_3">
@@ -111,16 +111,9 @@
                                             @Html.ValidationMessageFor(model => model.Type)
                                         </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodLookup form-control required", placeholder = "PostingPeriodId" } })
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                    </div>
-
 
                                     <div class="form-group form-group-sm">
-                                        <input type="submit" value="Edit" class="btn btn-primary" />
+                                        <input type="submit" value="Approve" class="btn btn-primary" />
                                     </div>
 
                                 </div>

@@ -2,6 +2,7 @@
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -958,5 +959,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return ValidationResult.Success;
             }
         }
+
+        public IList<LoanGuarantorDTO> LoanGuarantors { get; set; }
     }
 }
