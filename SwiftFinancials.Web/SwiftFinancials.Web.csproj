@@ -846,6 +846,7 @@
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

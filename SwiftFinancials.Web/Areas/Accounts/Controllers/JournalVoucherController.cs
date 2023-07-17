@@ -148,7 +148,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-       [HttpGet]
+        public async Task<ActionResult> Authorize(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
+            ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(string.Empty);
+
+            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
+
+            return View(journalVoucherDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Authorize(Guid id, JournalVoucherDTO journalVoucherDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO,1,1, GetServiceHeader());
+
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(journalVoucherDTO);
+            }
+        }
+
+        [HttpGet]
         public async Task<JsonResult> GetJournalVouchersAsync()
         {
             var journalVoucherDTOs = await _channelService.FindJournalVouchersAsync(GetServiceHeader());
