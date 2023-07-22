@@ -17,7 +17,7 @@
                 @Html.ActionLink("Home", "Index", "ExpenseApproval", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Verify</strong>
+                <strong>Cancel</strong>
             </li>
         </ol>
     </div>
@@ -43,19 +43,19 @@
                         @Html.AntiForgeryToken()
 
 
-                        <h1>Details</h1>
+                        <h1>Cancel Expense Payable</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-3">
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Investment Balance" } })
+                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By" } })
                                         @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Balance" } })
+                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By" } })
                                         @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group" id="data_3">
@@ -79,12 +79,12 @@
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount" } })
+                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Audit Date" } })
                                         @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Term in Months" } })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks" } })
                                         @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
                                     </div>
 
@@ -105,22 +105,17 @@
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Savings Product Name" } })
+                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "branch Name" } })
                                     </div>
 
                                 </div>
                                 <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountCostCenterId, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "Loan Product Name" } })
-                                    </div>
+                                  
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountAccountType, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountAccountType)
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountType, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountType, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Loan Purpose Name" } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountType, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Account Name" } })
                                     </div>
 
 
