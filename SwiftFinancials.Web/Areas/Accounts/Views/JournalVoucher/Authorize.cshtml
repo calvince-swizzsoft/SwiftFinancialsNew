@@ -73,6 +73,18 @@
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ValueDate", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
@@ -83,9 +95,14 @@
                                         @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuthorizedBy, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuthorizedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedBy", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuthorizedBy, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary Description", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Primary Description", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -93,6 +110,16 @@
                                         @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuthorizedBy, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuthorizedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedBy", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.AuthorizedBy, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
@@ -104,10 +131,12 @@
                                         @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "CreatedDate", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuthorizedDate, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuthorizedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedDate", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuthorizedDate, "", new { @class = "text-danger" })
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.AuthorizedDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="authorizeddate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label" })
@@ -283,6 +312,80 @@
                     return item;
                 }
             });
+
+             //PostingPeriod typehead starts here
+            $('.PostingPeriodsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        { query: query },
+                        function (PostingPeriods) {
+                            var newPostingPeriodsData = [];
+                            PostingPeriodsMap = {};
+                            $.each(PostingPeriods, function (i, PostingPeriod) {
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                            });
+                            process(newPostingPeriodsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var postingPeriodId = "";
+                    PostingPeriodId = PostingPeriodsMap[item].Id;
+                    $('#PostingPeriodId').val(PostingPeriodId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+
+         //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
             $(document).ready(function () {
                 $('#data_3 .input-group.date').datepicker({
                     startView: 2,
@@ -294,5 +397,6 @@
             });
             }); </script>
 }
+
 
 

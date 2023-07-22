@@ -102,7 +102,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
-            if (ModelState.IsValid)
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
             {
                 await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
@@ -112,6 +114,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+                var errorMessages = journalVoucherDTO.ErrorMessages;
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
                 return View(journalVoucherDTO);
             }
         }
@@ -132,10 +138,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
-            if (ModelState.IsValid)
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
             {
                 await _channelService.AuditJournalVoucherAsync(journalVoucherDTO, 1, GetServiceHeader());
-
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
 
                 ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
@@ -144,6 +151,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+                var errorMessages = journalVoucherDTO.ErrorMessages;
+
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
                 return View(journalVoucherDTO);
             }
         }
@@ -164,18 +176,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Authorize(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
-            if (ModelState.IsValid)
+
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO,1,1, GetServiceHeader());
+                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, 1, 1, GetServiceHeader());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = journalVoucherDTO.ErrorMessages;
 
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
 
                 ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
                 return View(journalVoucherDTO);
             }
         }
