@@ -92,7 +92,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
 
             var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
 
@@ -103,109 +102,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
-            if (ModelState.IsValid)
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
             {
                 await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(journalVoucherDTO);
-            }
-        }
-
-        public async Task<ActionResult> Pending(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
-
-            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
-
-            return View(journalVoucherDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Pending(Guid id, JournalVoucherDTO journalVoucherDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
+                var errorMessages = journalVoucherDTO.ErrorMessages;
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(journalVoucherDTO);
-            }
-        }
-
-        public async Task<ActionResult> Post(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
-
-            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
-
-            return View(journalVoucherDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Post(Guid id, JournalVoucherDTO journalVoucherDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(journalVoucherDTO);
-            }
-        }
-
-        public async Task<ActionResult> Reject(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
-
-            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
-
-            return View(journalVoucherDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Reject(Guid id, JournalVoucherDTO journalVoucherDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
-                return RedirectToAction("Index");
-            }
-            else
-            {
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
                 return View(journalVoucherDTO);
             }
         }
@@ -215,8 +127,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(string.Empty);
+            ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(string.Empty);
 
             var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
 
@@ -227,26 +138,70 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
-            if (ModelState.IsValid)
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.UpdateJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
+                await _channelService.AuditJournalVoucherAsync(journalVoucherDTO, 1, GetServiceHeader());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-                ViewBag.JournalVoucherStatusSelectList = GetJournalVoucherStatusSelectList(journalVoucherDTO.Status.ToString());
+
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
+
                 return RedirectToAction("Index");
             }
             else
             {
+                var errorMessages = journalVoucherDTO.ErrorMessages;
+
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
                 return View(journalVoucherDTO);
             }
         }
 
-        /*[HttpGet]
+        public async Task<ActionResult> Authorize(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
+            ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(string.Empty);
+
+            var journalVoucherDTO = await _channelService.FindJournalVoucherAsync(id, GetServiceHeader());
+
+            return View(journalVoucherDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Authorize(Guid id, JournalVoucherDTO journalVoucherDTO)
+        {
+
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
+            {
+                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, 1, 1, GetServiceHeader());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = journalVoucherDTO.ErrorMessages;
+
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
+
+                return View(journalVoucherDTO);
+            }
+        }
+
+        [HttpGet]
         public async Task<JsonResult> GetJournalVouchersAsync()
         {
             var journalVoucherDTOs = await _channelService.FindJournalVouchersAsync(GetServiceHeader());
 
             return Json(journalVoucherDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 }

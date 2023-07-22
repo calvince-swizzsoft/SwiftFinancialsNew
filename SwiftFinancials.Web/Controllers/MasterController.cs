@@ -868,9 +868,6 @@ namespace SwiftFinancials.Web.Controllers
             return expensePayableAuthOptions;
         }
 
-
-
-
         [NonAction]
         protected List<SelectListItem> GetJournalVoucherEntryTypeSelectList(string selectedValue)
         {
@@ -888,10 +885,22 @@ namespace SwiftFinancials.Web.Controllers
             return journalVoucherEntryTypes;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetJournalVoucherAuthOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> journalVoucherAuthOptions = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(JournalVoucherAuthOption)).Cast<JournalVoucherAuthOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
 
+            journalVoucherAuthOptions.AddRange(items);
 
-
+            return journalVoucherAuthOptions;
+        }
 
 
         [NonAction]

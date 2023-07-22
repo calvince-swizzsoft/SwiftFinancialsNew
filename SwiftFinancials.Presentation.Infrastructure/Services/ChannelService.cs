@@ -25332,6 +25332,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<JournalVoucherDTO>> FindJournalVouchersAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<JournalVoucherDTO>>();
+
+            IJournalVoucherService service = GetService<IJournalVoucherService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<JournalVoucherDTO> response = ((IJournalVoucherService)result.AsyncState).EndFindJournalVouchers(result);
+
+                    tcs.TrySetResult(new ObservableCollection<JournalVoucherDTO>(response ?? new List<JournalVoucherDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindJournalVouchers(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
 
         public Task<PageCollectionInfo<JournalVoucherDTO>> FindJournalVouchersInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {

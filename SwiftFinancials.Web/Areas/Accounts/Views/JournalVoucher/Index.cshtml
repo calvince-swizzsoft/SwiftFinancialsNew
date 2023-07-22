@@ -84,13 +84,11 @@
 
                     var editUrl = '<a  href="/accounts/JournalVoucher/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/JournalVoucher/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var pendingUrl = '<a  href="/accounts/JournalVoucher/pending/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Pending</a>';
-                    var postUrl = '<a  href="/accounts/JournalVoucher/post/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Post</a>';
-                    var rejectUrl = '<a  href="/accounts/JournalVoucher/reject/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Reject</a>';
                     var verifyUrl = '<a  href="/accounts/JournalVoucher/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var authorizeUrl = '<a  href="/accounts/JournalVoucher/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + pendingUrl + '&nbsp;' + postUrl + '&nbsp;' + rejectUrl + '&nbsp;' + verifyUrl);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;'+ authorizeUrl );
 
                     return nRow;
                 },

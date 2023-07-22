@@ -260,7 +260,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Reference")]
         [Required]
         public string Reference { get; set; }
-        
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        [Required]
+        public string Remarks { get; set; }
+
         [DataMember]
         [Display(Name = "Value Date")]
         public DateTime? ValueDate { get; set; }
@@ -276,6 +281,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             get
             {
                 return Enum.IsDefined(typeof(JournalVoucherStatus), (int)Status) ? EnumHelper.GetDescription((JournalVoucherStatus)Status) : string.Empty;
+            }
+        }
+
+
+        [DataMember]
+        [Display(Name = "Journal Voucher Auth Option")]
+        public byte AuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Journal Voucher Auth Option")]
+        public string AuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(JournalVoucherAuthOption), (int)AuthOption) ? EnumHelper.GetDescription((JournalVoucherAuthOption)AuthOption) : string.Empty;
             }
         }
 
