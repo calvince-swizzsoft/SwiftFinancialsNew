@@ -324,6 +324,7 @@
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
@@ -361,6 +362,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
+    <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
@@ -845,6 +847,12 @@
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Verify.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\AddMore.cshtml" />
+    <Content Include="Areas\Loaning\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Approve.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Cancel.cshtml" />

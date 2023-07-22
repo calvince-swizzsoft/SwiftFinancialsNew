@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
-using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -68,32 +67,35 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {
-
             var receiveddate = Request["receiveddate"];
 
-            loanCaseDTO.ReceivedDate = DateTime.ParseExact((Request["receiveddate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
             {
-                var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO.MapTo<LoanCaseDTO>(), GetServiceHeader());
+                var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO, GetServiceHeader());
 
                 if (loanCase != null)
                 {
-                    //Update BudgetEntries
-
                     var loanGuarantors = new ObservableCollection<LoanGuarantorDTO>();
 
-                    foreach (var loanGurantorDTO in loanCaseDTO.LoanGuarantors)
+                    foreach (var loanGuarantorDTO in loanCaseDTO.LoanGuarantors)
                     {
-                        loanGurantorDTO.LoanCaseId = loanCase.Id;
+                        loanGuarantorDTO.LoanCaseId = loanCase.Id;
+                        loanGuarantorDTO.CustomerIndividualIdentityCardNumber = loanGuarantorDTO.CustomerIndividualIdentityCardNumber;
+                        loanGuarantorDTO.LoanCaseAmountApplied = loanGuarantorDTO.LoanCaseAmountApplied;
+                        loanGuarantorDTO.AppraisalFactor = loanGuarantorDTO.AppraisalFactor;
+                        loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
+                        loanGuarantorDTO.CustomerId = loanGuarantorDTO.CustomerId;
+                        loanGuarantors.Add(loanGuarantorDTO);
+                    };
 
-                        loanGuarantors.Add(loanGurantorDTO);
-                    }
-
-                    await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
+                    if (loanGuarantors.Any())
+                        await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
                 }
+
                 return RedirectToAction("Index");
             }
             else
@@ -105,6 +107,101 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View(loanCaseDTO);
             }
         }
+
+        [HttpGet]
+        public ActionResult AddMore()
+        {
+            var loanGuarantors = new LoanGuarantorDTO();
+            return PartialView("AddMore", loanGuarantors);
+        }
+
+        /*public async Task<ActionResult> Create(List<LoanCaseDTO> loanCases)
+        {
+            foreach (var loanCaseDTO in loanCases)
+            {
+                var receiveddate = Request["receiveddate"];
+
+                loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                loanCaseDTO.ValidateAll();
+
+                if (!loanCaseDTO.HasErrors)
+                {
+                    var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO.MapTo<LoanCaseDTO>(), GetServiceHeader());
+
+                    if (loanCase != null)
+                    {
+                        // Update LoanGuarantors
+                        var loanGuarantors = new List<ObservableCollection<LoanGuarantorDTO>>();
+
+                        foreach (var loanGurantorDTO in loanCaseDTO.LoanGuarantors)
+                        {
+                            loanGurantorDTO.LoanCaseId = loanCase.Id;
+                            loanGuarantors.Add(loanGurantorDTO);
+                        }
+
+                        await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
+                    }
+                }
+                else
+                {
+                    var errorMessages = loanCaseDTO.ErrorMessages;
+                    ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                    ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                    ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+                    return View(loanCaseDTO);
+                }
+            }
+
+            return RedirectToAction("Index");
+        }*/
+
+
+        /*[HttpPost]
+        public async Task<ActionResult> Create(List<LoanCaseDTO> loanCases)
+        {
+            foreach (var loanCaseDTO in loanCases)
+            {
+                var receiveddate = Request["receiveddate"];
+
+                loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+                loanCaseDTO.ValidateAll();
+
+                if (!loanCaseDTO.HasErrors)
+                {
+                    var levy = await _channelService.AddLevyAsync(loanCases, GetServiceHeader());
+
+                    if (levy != null)
+                    {
+                        var levySplits = new ObservableCollection<LevySplitDTO>();
+
+                        foreach (var levySplitDTO in levyDTO.LevySplits)
+                        {
+                            levySplitDTO.LevyId = levy.Id;
+                            levySplitDTO.Description = levySplitDTO.Description;
+                            levySplitDTO.ChartOfAccountId = levySplitChartOfAccountId;
+                            levySplitDTO.Percentage = levySplitDTO.Percentage;
+                            levySplits.Add(levySplitDTO);
+                        };
+
+                        if (levySplits.Any())
+                            await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                    }
+
+                    return RedirectToAction("Index");
+                }
+
+                else
+                {
+                    var errorMessages = levyDTO.ErrorMessages;
+                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
+
+                    return View(levyDTO);
+                }
+            }
+        }*/
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -162,7 +259,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
-                await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption,  GetServiceHeader());
+                await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -199,7 +296,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
-                await _channelService.AuditLoanCaseAsync(loanCaseDTO,loanAuditOption, GetServiceHeader());
+                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanAuditOption, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
