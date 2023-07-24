@@ -49,6 +49,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public decimal ChargeFixedAmount { get; set; }
 
         [DataMember]
+        [Display(Name = "Value")]
+        public double ChargeValue { get; set; }
+
+        [DataMember]
         [Display(Name = "Is Locked?")]
         public bool IsLocked { get; set; }
 

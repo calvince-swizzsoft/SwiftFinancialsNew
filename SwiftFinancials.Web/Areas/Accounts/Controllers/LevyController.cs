@@ -1,5 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Areas.Accounts.Models;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -8,7 +9,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
@@ -61,15 +61,63 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
+            ViewBag.LevySplitDTOs = null;
+
             return View();
         }
 
         [HttpPost]
+        public async Task<ActionResult> Add(LevyDTO levyDTO)
+        {
+            await ServeNavigationMenus();
+
+            LevySplitDTOs = TempData["LevySplitDTO"] as ObservableCollection<LevySplitDTO>;
+
+            if (LevySplitDTOs == null)
+                LevySplitDTOs = new ObservableCollection<LevySplitDTO>();
+
+            foreach (var levySplitDTO in levyDTO.LevySplits)
+            {
+                levySplitDTO.Description = levySplitDTO.Description;
+                levySplitDTO.ChartOfAccountId = levyDTO.Id;//Temporary 
+                levySplitDTO.Percentage = levySplitDTO.Percentage;
+                LevySplitDTOs.Add(levySplitDTO);
+            };
+
+            TempData["LevySplitDTO"] = LevySplitDTOs;
+
+            TempData["LevyDTO"] = levyDTO;
+
+            ViewBag.LevySplitDTOs = LevySplitDTOs;
+
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
+
+            return View("Create", levyDTO);
+        }
+
+
+        [HttpPost]
         public async Task<ActionResult> Create(LevyDTO levyDTO)
         {
+            levyDTO = TempData["LevyDTO"] as LevyDTO;
+
             levyDTO.LevySplitsTotalPercentage = 100;
 
             Guid levySplitChartOfAccountId = levyDTO.Id;
+
+            switch ((ChargeType)levyDTO.ChargeType)
+            {
+                case ChargeType.FixedAmount:
+                    levyDTO.ChargeFixedAmount = (decimal)levyDTO.ChargeValue;
+                    break;
+
+                case ChargeType.Percentage:
+                    levyDTO.ChargePercentage = (double)levyDTO.ChargeValue;
+                    break;
+
+                default:
+                    break;
+            }
 
             levyDTO.ValidateAll();
 
@@ -98,7 +146,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ViewBag.LevySplits = await _channelService.FindLevySplitsByLevyIdAsync(levy.Id, GetServiceHeader());
 
-                return View();
+                return RedirectToAction("Index");
             }
             else
             {
