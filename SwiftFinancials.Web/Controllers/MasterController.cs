@@ -16,6 +16,8 @@ using SwiftFinancials.Web.Helpers;
 using SwiftFinancials.Web.Services;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 using Application.MainBoundedContext.DTO.AdministrationModule;
+using System.Collections.ObjectModel;
+using Application.MainBoundedContext.DTO.AccountsModule;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -25,6 +27,8 @@ namespace SwiftFinancials.Web.Controllers
     [CustomErrorHandling]
     public class MasterController : Controller
     {
+        public ObservableCollection<LevySplitDTO> LevySplitDTOs;
+
         private IChannelService channelService;
         public IChannelService _channelService
         {

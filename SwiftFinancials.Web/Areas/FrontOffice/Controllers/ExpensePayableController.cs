@@ -20,7 +20,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-
+             
             return View();
         }
 

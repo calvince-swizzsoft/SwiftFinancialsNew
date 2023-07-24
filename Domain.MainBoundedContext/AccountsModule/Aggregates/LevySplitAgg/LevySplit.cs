@@ -17,7 +17,5 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.LevySplitAgg
         public string Description { get; set; }
 
         public double Percentage { get; set; }
-
-        
     }
 }
