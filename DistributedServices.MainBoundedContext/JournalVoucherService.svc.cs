@@ -70,7 +70,7 @@ namespace DistributedServices.MainBoundedContext
             return _journalVoucherAppService.AuditJournalVoucher(journalVoucherDTO, journalVoucherAuthOption, serviceHeader);
         }
 
-        public bool  (JournalVoucherDTO journalVoucherDTO, int journalVoucherAuthOption, int moduleNavigationItemCode)
+        public bool AuthorizeJournalVoucher(JournalVoucherDTO journalVoucherDTO, int journalVoucherAuthOption, int moduleNavigationItemCode)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
