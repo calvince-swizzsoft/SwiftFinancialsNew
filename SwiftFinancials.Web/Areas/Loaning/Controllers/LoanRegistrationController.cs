@@ -61,6 +61,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+            ViewBag.LoanGuarantorDTOs = null;
             return View();
         }
 
@@ -108,99 +109,35 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-        [HttpGet]
-        public ActionResult AddMore()
+        [HttpPost]
+        public async Task<ActionResult> AddMore(LoanCaseDTO loanCaseDTO)
         {
-            var loanGuarantors = new LoanGuarantorDTO();
-            return PartialView("AddMore", loanGuarantors);
+            await ServeNavigationMenus();
+
+            LoanGuarantorDTOs = TempData["LoanGuarantorDTO"] as ObservableCollection<LoanGuarantorDTO>;
+
+            if (LoanGuarantorDTOs == null)
+                LoanGuarantorDTOs = new ObservableCollection<LoanGuarantorDTO>();
+
+            foreach (var loanGuarantorDTO in loanCaseDTO.LoanGuarantors)
+            {
+                loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
+                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = loanGuarantorDTO.CustomerIndividualIdentityCardNumber;
+                loanGuarantorDTO.LoanCaseAmountApplied = loanGuarantorDTO.LoanCaseAmountApplied;
+                loanGuarantorDTO.AppraisalFactor = loanGuarantorDTO.AppraisalFactor;
+                loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
+                loanGuarantorDTO.CustomerId = loanGuarantorDTO.CustomerId;
+                LoanGuarantorDTOs.Add(loanGuarantorDTO);
+            };
+
+            TempData["LoanGuarantorDTOs"] = LoanGuarantorDTOs;
+
+            TempData["LoanCaseDTO"] = loanCaseDTO;
+
+            ViewBag.LoanGuarantorDTOs = LoanGuarantorDTOs;
+
+            return View("Create", loanCaseDTO);
         }
-
-        /*public async Task<ActionResult> Create(List<LoanCaseDTO> loanCases)
-        {
-            foreach (var loanCaseDTO in loanCases)
-            {
-                var receiveddate = Request["receiveddate"];
-
-                loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                loanCaseDTO.ValidateAll();
-
-                if (!loanCaseDTO.HasErrors)
-                {
-                    var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO.MapTo<LoanCaseDTO>(), GetServiceHeader());
-
-                    if (loanCase != null)
-                    {
-                        // Update LoanGuarantors
-                        var loanGuarantors = new List<ObservableCollection<LoanGuarantorDTO>>();
-
-                        foreach (var loanGurantorDTO in loanCaseDTO.LoanGuarantors)
-                        {
-                            loanGurantorDTO.LoanCaseId = loanCase.Id;
-                            loanGuarantors.Add(loanGurantorDTO);
-                        }
-
-                        await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
-                    }
-                }
-                else
-                {
-                    var errorMessages = loanCaseDTO.ErrorMessages;
-                    ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
-                    ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
-                    ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
-                    return View(loanCaseDTO);
-                }
-            }
-
-            return RedirectToAction("Index");
-        }*/
-
-
-        /*[HttpPost]
-        public async Task<ActionResult> Create(List<LoanCaseDTO> loanCases)
-        {
-            foreach (var loanCaseDTO in loanCases)
-            {
-                var receiveddate = Request["receiveddate"];
-
-                loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                loanCaseDTO.ValidateAll();
-
-                if (!loanCaseDTO.HasErrors)
-                {
-                    var levy = await _channelService.AddLevyAsync(loanCases, GetServiceHeader());
-
-                    if (levy != null)
-                    {
-                        var levySplits = new ObservableCollection<LevySplitDTO>();
-
-                        foreach (var levySplitDTO in levyDTO.LevySplits)
-                        {
-                            levySplitDTO.LevyId = levy.Id;
-                            levySplitDTO.Description = levySplitDTO.Description;
-                            levySplitDTO.ChartOfAccountId = levySplitChartOfAccountId;
-                            levySplitDTO.Percentage = levySplitDTO.Percentage;
-                            levySplits.Add(levySplitDTO);
-                        };
-
-                        if (levySplits.Any())
-                            await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
-                    }
-
-                    return RedirectToAction("Index");
-                }
-
-                else
-                {
-                    var errorMessages = levyDTO.ErrorMessages;
-                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
-
-                    return View(levyDTO);
-                }
-            }
-        }*/
 
 
         public async Task<ActionResult> Edit(Guid id)
