@@ -80,8 +80,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else
             {
                 var errorMessages = expensePayableDTO.ErrorMessages;
+
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(expensePayableDTO.Type.ToString());
+
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
                 return View(expensePayableDTO);
             }
         }
@@ -89,8 +92,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
 
             return View();
         }
@@ -106,119 +111,124 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
 
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = expensePayableDTO.ErrorMessages;               
+
+                return View(expensePayableDTO);
+            }
+        }
+                                                                /////////////verify expense payable/////    
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
+        {
+            var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
+       
+           if (!expensePayableDTO.HasErrors)
+            {
+               
+                await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
+
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+                return RedirectToAction("Index");
+    }
+            else
+            {
+                var errorMessages = expensePayableDTO.ErrorMessages;
+               
+                return View(expensePayableDTO);
+}
+        }
+                                                            /////////////Approve expense payable/////    
+        public async Task<ActionResult> Approve(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Approve(Guid id, ExpensePayableDTO expensePayableDTO)
+        {
+
+            expensePayableDTO.ValidateAll();
+
+            if (!expensePayableDTO.HasErrors)
+            {
+                var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
+
+                var moduleNavigationItemCode = expensePayableDTO.ModuleNavigationItemCode;
+
+                await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, moduleNavigationItemCode, GetServiceHeader());
+
+                await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = expensePayableDTO.ErrorMessages;
+
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(expensePayableDTO.Type.ToString());
-                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(expensePayableDTO.Type.ToString());
+
+                return View();
+            }
+        }
+
+                                                    /////////////Cancel expense payable/////    
+        public async Task<ActionResult> Cancel(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Cancel(Guid id, ExpensePayableDTO expensePayableDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
                 return View(expensePayableDTO);
             }
         }
 
-
-
-        // public async Task<ActionResult> Verify (Guid id)
+        //[HttpGet]
+        //public async Task<JsonResult> GetExpensePayablesAsync()
         //{
-        //    await ServeNavigationMenus();
-        //    ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-           
+        //    var expensePayableDTOs = await _channelService.FindExpensePayablesAsync(GetServiceHeader());
 
-        //    var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-
-        //    return View(expensePayableDTO);
+        //    return Json(expensePayableDTOs, JsonRequestBehavior.AllowGet);
         //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
-        //{
-        //    var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
-        //    if (ModelState.IsValid)
-        //    {
-        //      await _channelService. AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
-
-        //        return RedirectToAction("Verify");
-        //    }
-        //    else
-        //    {
-
-        //        ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-        //        return View(expensePayableDTO);
-        //    }
-        //}
-
-
-        //public async Task<ActionResult> Approve(Guid id)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-        //    ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-
-        //    return View(expensePayableDTO);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Approve(Guid id, ExpensePayableDTO expensePayableDTO)
-        //{
-            
-        //    expensePayableDTO.ValidateAll();
-
-        //    if (!expensePayableDTO.HasErrors)
-        //    {
-        //        var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
-        //        var moduleNavigationItemCode = expensePayableDTO.ModuleNavigationItemCode;
-        //        await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO,expensePayableAuthOption, moduleNavigationItemCode,GetServiceHeader());
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        var errorMessages = expensePayableDTO.ErrorMessages;
-        //        ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(expensePayableDTO.Type.ToString());
-        //        ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(expensePayableDTO.Type.ToString());
-        //        ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(expensePayableDTO.Type.ToString());
-        //        return View(expensePayableDTO);
-        //    }
-        //}
-
-
-        //public async Task<ActionResult> Cancel(Guid id)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-
-        //    return View(expensePayableDTO);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> Cancel(Guid id, ExpensePayableDTO expensePayableDTO)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        return View(expensePayableDTO);
-        //    }
-        //}
-
-        //    [HttpGet]
-        //    public async Task<JsonResult> GetExpensePayablesAsync()
-        //    {
-        //        var expensePayableDTOs = await _channelService.FindExpensePayablesAsync(GetServiceHeader());
-
-        //        return Json(expensePayableDTOs, JsonRequestBehavior.AllowGet);
-        //    }
     }
 }

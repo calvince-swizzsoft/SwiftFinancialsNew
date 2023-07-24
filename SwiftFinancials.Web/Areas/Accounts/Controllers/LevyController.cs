@@ -94,7 +94,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
                 }
 
-                return RedirectToAction("Index");
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
+
+                ViewBag.LevySplits = await _channelService.FindLevySplitsByLevyIdAsync(levy.Id, GetServiceHeader());
+
+                return View();
             }
             else
             {
