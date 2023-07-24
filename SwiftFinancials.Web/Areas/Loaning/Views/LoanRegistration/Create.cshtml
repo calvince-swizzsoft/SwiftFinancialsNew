@@ -147,46 +147,6 @@
                                 </div>
                             </div>
                         </fieldset>
-                        <h1>Guarantor Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "ID Number" } })
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].AppraisalFactor, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].AppraisalFactor, new { htmlAttributes = new { @class = "form-control", @placeholder = "Appraisal Factor" } })
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].AppraisalFactor, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].TotalShares, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].TotalShares, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].CommittedShares, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].CommittedShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Committed Shares", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CommittedShares, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].AmountGuaranteed, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].AmountGuaranteed, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].CustomerId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LoanGuarantors[0].CustomerId)
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
                     }
                 </div>
             </div>

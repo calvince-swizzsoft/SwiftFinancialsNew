@@ -177,11 +177,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Authorize(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
 
+            var journalVoucherAuthOption = journalVoucherDTO.AuthOption;
+
+
             journalVoucherDTO.ValidateAll();
 
             if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, 1, 1, GetServiceHeader());
+                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, journalVoucherAuthOption,1, GetServiceHeader());
                 return RedirectToAction("Index");
             }
             else
