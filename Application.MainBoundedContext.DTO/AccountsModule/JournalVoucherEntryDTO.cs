@@ -24,6 +24,15 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [ValidGuid]
         public Guid JournalVoucherId { get; set; }
 
+
+        [DataMember]
+        [Display(Name = "Branch")]
+        [ValidGuid]
+        public Guid BranchId { get; set; }
+
+        [Display(Name = "Branch")]
+        public string BranchDescription { get; set; }
+
         [DataMember]
         [Display(Name = "G/L Account")]
         [ValidGuid]
@@ -113,6 +122,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             get
             {
                 return Enum.IsDefined(typeof(CustomerType), CustomerAccountCustomerType) ? EnumHelper.GetDescription((CustomerType)CustomerAccountCustomerType) : string.Empty;
+            }
+        }
+
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public byte EntryType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string EntryTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(JournalVoucherEntryType), (int)EntryType) ? EnumHelper.GetDescription((JournalVoucherEntryType)EntryType) : string.Empty;
             }
         }
 
@@ -208,5 +232,29 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Primary Description")]
+        [Required]
+        public string PrimaryDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Secondary Description")]
+        [Required]
+        public string SecondaryDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Principal")]
+        public decimal TotalValue { get; set; }
+
+        [DataMember]
+        [Display(Name = "Reference")]
+        [Required]
+        public string Reference { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        [Required]
+        public string Remarks { get; set; }
     }
 }

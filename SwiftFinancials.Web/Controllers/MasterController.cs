@@ -29,6 +29,8 @@ namespace SwiftFinancials.Web.Controllers
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
 
+        public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
+
         private IChannelService channelService;
         public IChannelService _channelService
         {

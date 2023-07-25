@@ -85,5 +85,10 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindJournalVoucherEntriesByJournalVoucherIdInPage(Guid journalVoucherId, int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<JournalVoucherEntryDTO> EndFindJournalVoucherEntriesByJournalVoucherIdInPage(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginUpdateJournalVoucherEntriesByJournalVoucherId(Guid journalVoucherId, List<JournalVoucherEntryDTO> journalVoucherEntries, AsyncCallback callback, Object state);
+        bool EndUpdateJournalVoucherEntriesByJournalVoucherId(IAsyncResult result);
     }
 }

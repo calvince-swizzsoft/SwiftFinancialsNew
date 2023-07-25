@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -55,38 +56,108 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
         public async Task<ActionResult> Create()
         {
-
+            
             await ServeNavigationMenus();
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
 
+            ViewBag.JournalVoucherEntryDTOs = null;
+
             return View();
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
+        {
+            await ServeNavigationMenus();
+
+            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
+
+            if (JournalVoucherEntryDTOs == null)
+                JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
+
+            foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
+            {
+                journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
+                journalVoucherEntryDTO.ChartOfAccountId = journalVoucherDTO.Id;//Temporary
+                journalVoucherEntryDTO.BranchId = journalVoucherDTO.Id;//Temporary
+                journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
+                journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
+                journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
+                journalVoucherEntryDTO.TotalValue = journalVoucherEntryDTO.TotalValue;
+                journalVoucherEntryDTO.Remarks = journalVoucherEntryDTO.Remarks;
+                JournalVoucherEntryDTOs.Add(journalVoucherEntryDTO);
+            };
+
+            TempData["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
+
+            TempData["JournalVoucherDTO"] = journalVoucherDTO;
+
+            ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
+
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+
+            return View("Create", journalVoucherDTO);
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
+
+            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+
             var valuedate = Request["valuedate"];
             journalVoucherDTO.ValueDate = DateTime.ParseExact((Request["valuedate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
             journalVoucherDTO.ValidateAll();
 
             if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.AddJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
 
-                return RedirectToAction("Index");
+                var journalVoucher = await _channelService.AddJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
+
+                if (journalVoucher != null)
+                {
+                    var journalVoucherEntries = new ObservableCollection<JournalVoucherEntryDTO>();
+
+                    foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
+                    {
+                        journalVoucherEntryDTO.JournalVoucherId = journalVoucher.Id;
+                        journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
+                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryChartOfAccountId;
+                        journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
+                        journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
+                        journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
+                        journalVoucherEntryDTO.TotalValue = journalVoucherEntryDTO.TotalValue;
+                        journalVoucherEntryDTO.Remarks = journalVoucherEntryDTO.Remarks;
+                        journalVoucherEntries.Add(journalVoucherEntryDTO);
+                    };
+
+                    if (journalVoucherEntries.Any())
+
+                      await _channelService.UpdateJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, journalVoucherEntries, GetServiceHeader());
+                }
+                        ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+                        ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+
+                    ViewBag.JournalVoucherEntries = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, GetServiceHeader());
+
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    var errorMessages = journalVoucherDTO.ErrorMessages;
+
+                    ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+                    ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+
+                    return View(journalVoucherDTO);
+                }
             }
-            else
-            {
-                var errorMessages = journalVoucherDTO.ErrorMessages;
+        
 
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-                return View(journalVoucherDTO);
-            }
-        }
-
-        public async Task<ActionResult> Edit(Guid id)
+            public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 

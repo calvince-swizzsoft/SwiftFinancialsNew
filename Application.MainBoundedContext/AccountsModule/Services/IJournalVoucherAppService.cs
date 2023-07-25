@@ -25,6 +25,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         bool UpdateJournalVoucherEntryCollection(Guid journalVoucherId, List<JournalVoucherEntryDTO> journalVoucherEntryCollection, ServiceHeader serviceHeader);
 
+        bool UpdateJournalVoucherEntries(Guid journalVoucherId, List<JournalVoucherEntryDTO> journalVoucherEntries, ServiceHeader serviceHeader);
+        
+
         List<JournalVoucherDTO> FindJournalVouchers(ServiceHeader serviceHeader);
 
         PageCollectionInfo<JournalVoucherDTO> FindJournalVouchers(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
