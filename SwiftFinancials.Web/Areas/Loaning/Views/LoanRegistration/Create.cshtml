@@ -46,6 +46,12 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.EmployerId)
+                                        @Html.EditorFor(model => model.EmployerDescription, new { htmlAttributes = new { @class = "EmployersLookup form-control required", placeholder = "Employer Description" } })
+                                        @Html.ValidationMessageFor(model => model.EmployerId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -73,10 +79,10 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.StationId)
+                                        @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Station" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestCalculationMode, new { @class = "control-label" })
@@ -96,6 +102,11 @@
                                         @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", placeholder = "Term in Months" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Applied" } })
+                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
@@ -113,11 +124,6 @@
                                         @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount Percentage" } })
                                         @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Applied" } })
-                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -147,7 +153,103 @@
                                 </div>
                             </div>
                         </fieldset>
+
+                        <h1>Guarantor Details</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "ID Number" } })
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].AppraisalFactor, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].AppraisalFactor, new { htmlAttributes = new { @class = "form-control", @placeholder = "Appraisal Factor" } })
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].AppraisalFactor, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].TotalShares, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].TotalShares, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].CommittedShares, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].CommittedShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Committed Shares", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CommittedShares, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].AmountGuaranteed, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].AmountGuaranteed, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].CustomerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanGuarantors[0].CustomerId)
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <input type="submit" value="Add Loan Guarantor" class="btn btn-success" />
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <row>
+                            <div class="ibox-content m-b-sm border-bottom bg-white text-dark">
+                                <table class="footable table table-stripped toggle-arrow-tiny">
+                                    <thead>
+                                        <tr>
+                                            <th>Customer Name</th>
+                                            <th>Amount Applied</th>
+                                            <th>Identity Number</th>
+                                            <th>Amount Applied</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.loanGuarantorsDTOs != null)
+                                        {
+                                            foreach (var loanGuarantors in ViewBag.LoanGuarantorsDTOs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @loanGuarantors.CustomerIndividualIdentityCardNumber
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.LoanCaseAmountApplied
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.AppraisalFactor
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.CommittedShares
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.Customer.FullName
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </row>
                     }
+                    <div class="ibox-content m-b-sm border-bottom">
+                        @using (Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <input type="submit" value="Post" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -157,7 +259,6 @@
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
     @Styles.Render("~/plugins/awesomeCheckboxStyles")
     @Styles.Render("~/plugins/clockpickerStyles")
@@ -177,7 +278,6 @@
 }
 
 @section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
@@ -199,95 +299,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
-        $(document).ready(function () {
-            var entryIndex = 1; // Track the index of the entry fields
-
-            // Add More button click event
-            $('#addMoreButton').click(function () {
-                var newEntry = '<input type="text" name="[' + entryIndex + '].Name" placeholder="Entry" required>' +
-                    '<input type="text" name="[' + entryIndex + '].Description" placeholder="Description" required>';
-
-                $('#dynamicEntriesContainer').append(newEntry);
-                entryIndex++;
-            });
-        });
-        $(document).ready(function () {
-
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
+<script>
             //customers typehead starts here
             $('.CustomersLookup').typeahead({
                 source: function (query, process) {
@@ -324,7 +336,6 @@
                     return item;
                 }
             });
-
             //LoanPurpose typehead starts here
             $('.LoanPurposesLookup').typeahead({
                 source: function (query, process) {
@@ -361,7 +372,6 @@
                     return item;
                 }
             });
-
             //LoanProduct typehead starts here
             $('.LoanProductsLookup').typeahead({
                 source: function (query, process) {
@@ -470,7 +480,154 @@
                     return item;
                 }
             });
+            //Employer typehead starts here
+            $('.EmployersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Employers) {
+                            var newEmployersData = [];
+                            EmployersMap = {};
+                            $.each(Employers, function (i, Employer) {
+                                newEmployersData.push(Employer.Description);
+                                EmployersMap[Employer.Description] = Employer;
+                            });
+                            process(newEmployersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var employerId = "";
+                    EmployerId = EmployersMap[item].Id;
+                    $('#EmployerId').val(EmployerId);
+                    //console.log(EmployerId)
+                    return item;
+                }
+            });
+            //Station typehead starts here
+            $('.StationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var StationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#StationId').val(StationId);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
         });
 
-    </script>
+</script>
 }
