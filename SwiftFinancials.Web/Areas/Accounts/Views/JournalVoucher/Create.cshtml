@@ -130,14 +130,14 @@
                                 </div>
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.JournalVoucherEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
+                                    @Html.HiddenFor(model => model.Id)
                                     @Html.ValidationMessageFor(model => model.JournalVoucherEntry.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                    @Html.EditorFor(model => model.Id, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "Description.." } })
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.JournalVoucherEntry.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.BranchId)
-                                    @Html.ValidationMessageFor(model => model.JournalVoucherEntry.BranchId, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                 </div>
                                 <div class="form-group form-group-lg">
@@ -267,10 +267,46 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
+<script>
 
     //ChartOfAccount typehead starts here
-            $('.ChartOfAccountsLookup').typeahead({
+    $('.JournalVoucherEntryChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#Id').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+    //ChartOfAccount typehead starts here
+    $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
                         '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
