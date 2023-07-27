@@ -110,7 +110,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddMore(LoanCaseDTO loanCaseDTO)
+        public async Task<ActionResult> Add(LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
 
