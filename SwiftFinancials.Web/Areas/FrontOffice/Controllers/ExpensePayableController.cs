@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
@@ -58,82 +56,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return View(expensePayableDTO);
         }
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-
-            ViewBag.ExpensePayableSplits = null;
+            ViewBag.JournalVoucherTypeSelectList =GetJournalVoucherTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Add(ExpensePayableDTO expensePayableDTO)
-        {
-            await ServeNavigationMenus();
-
-            expensePayableSplits = TempData["LevySplitDTO"] as ObservableCollection<ExpensePayableDTO>;
-
-            if (expensePayableSplits == null)
-                
-            expensePayableSplits = new ObservableCollection<ExpensePayableDTO>();
-
-
-            foreach (var expensePayableSplit  in expensePayableDTO.ExpensePayables)
-            {
-                expensePayableSplit.BranchId = expensePayableSplit.BranchId;
-                expensePayableSplit.Status = expensePayableSplit.Status;
-                expensePayableSplit.CreatedBy = expensePayableSplit.CreatedBy;
-                expensePayableSplits.Add(expensePayableDTO);
-                
-            }
-
-            TempData["ExpensePayableSplits"] = expensePayableSplits;
-
-            TempData["ExpensePayableDTO"] = expensePayableDTO;
-
-            ViewBag.LevySplitDTOs = LevySplitDTOs;
-
-            expensePayableSplits.Add(expensePayableDTO);
-
-            TempData["ExpensePayableSplits"] = expensePayableSplits;
-
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-
-            return View("Create", expensePayableDTO);
-        }
-
-        [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
-            expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO;
-
             expensePayableDTO.ValidateAll();
-
 
             if (!expensePayableDTO.HasErrors)
             {
-
-                var expensePayableSplits = TempData["ExpensePayableSplits"] as List<ExpensePayableDTO>;
-
-                var expensepayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-
-                if (expensePayableSplits != null && expensePayableSplits.Any())
-                {
-  
-
-                    await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-                
-                    ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(expensePayableDTO.Type.ToString());
-
-                    ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
-
-                }
+                await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -142,6 +82,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var errorMessages = expensePayableDTO.ErrorMessages;
 
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(expensePayableDTO.Type.ToString());
+
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
 
                 return View(expensePayableDTO);

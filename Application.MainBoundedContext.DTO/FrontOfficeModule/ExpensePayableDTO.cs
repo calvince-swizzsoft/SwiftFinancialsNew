@@ -7,10 +7,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
-
-
-using System.Collections.Generic;
-
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
     public class ExpensePayableDTO : BindingModelBase<ExpensePayableDTO>
@@ -179,12 +175,5 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "module")]
         public int ModuleNavigationItemCode { get; set; }
 
-        public List<ExpensePayableDTO> expensePayables { get; set; }
-        public List<ExpensePayableEntryDTO> ExpensePayables { get; set; }
-
-        public ExpensePayableEntryDTO Expensepayable { get; set; }
-
-       
     }
 }
-

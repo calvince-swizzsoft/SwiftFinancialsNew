@@ -2630,7 +2630,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateExpensePayableEntryCollectionAsync(Guid expensePayableId, ObservableCollection<ExpensePayableEntryDTO> expensePayableEntryCollection, ServiceHeader serviceHeader = null);
 
-        //Task<bool> UpdateLevySplitsByLevyIdAsync(Guid levyId, ObservableCollection<LevySplitDTO> levySplits, ServiceHeader serviceHeader = null);
         #endregion
 
         #region MobileToBankRequestDTO

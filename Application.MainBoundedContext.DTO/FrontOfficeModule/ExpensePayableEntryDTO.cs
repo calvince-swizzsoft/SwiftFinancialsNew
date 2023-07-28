@@ -3,7 +3,6 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -108,11 +107,5 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
-
-
-
-        public List<ExpensePayableEntryDTO> ExpensePayables { get; set; }
-
-        public ExpensePayableEntryDTO Expensepayable { get; set; }
     }
 }
