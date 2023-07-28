@@ -21,7 +21,7 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.JournalVoucherEntr
         public virtual CustomerAccount CustomerAccount { get; private set; }
 
         public decimal Amount { get; set; }
-        
+
         public byte Status { get; set; }
     }
 }

@@ -1969,6 +1969,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateJournalVoucherEntryCollectionAsync(Guid journalVoucherId, ObservableCollection<JournalVoucherEntryDTO> journalVoucherEntryCollection, ServiceHeader serviceHeader = null);
 
+        Task<bool> UpdateJournalVoucherEntriesByJournalVoucherIdAsync(Guid journalVoucherId, ObservableCollection<JournalVoucherEntryDTO> journalVoucherEntries, ServiceHeader serviceHeader = null);
+
         #endregion
 
         #region TreasuryDTO

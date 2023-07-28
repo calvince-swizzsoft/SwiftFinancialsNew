@@ -18,6 +18,7 @@ using SwiftFinancials.Presentation.Infrastructure.Services;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using System.Collections.ObjectModel;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.BackOfficeModule;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -28,6 +29,10 @@ namespace SwiftFinancials.Web.Controllers
     public class MasterController : Controller
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
+
+        public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTOs;
+
+        public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
 
         private IChannelService channelService;
         public IChannelService _channelService

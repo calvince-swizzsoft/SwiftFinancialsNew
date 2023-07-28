@@ -76,6 +76,10 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<JournalVoucherEntryDTO> FindJournalVoucherEntriesByJournalVoucherIdInPage(Guid journalVoucherId, int pageIndex, int pageSize);
 
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        bool UpdateJournalVoucherEntriesByJournalVoucherId(Guid journalVoucherId, List<JournalVoucherEntryDTO> journalVoucherEntries);
+
         #endregion
     }
 }

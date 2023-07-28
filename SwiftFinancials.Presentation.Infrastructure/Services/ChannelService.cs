@@ -25749,6 +25749,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<bool> UpdateJournalVoucherEntriesByJournalVoucherIdAsync(Guid journalVoucherId, ObservableCollection<JournalVoucherEntryDTO> journalVoucherEntries, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IJournalVoucherService service = GetService<IJournalVoucherService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IJournalVoucherService)result.AsyncState).EndUpdateJournalVoucherEntriesByJournalVoucherId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateJournalVoucherEntriesByJournalVoucherId(journalVoucherId, journalVoucherEntries.ExtendedToList(), asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         #endregion
 
         #region TreasuryDTO

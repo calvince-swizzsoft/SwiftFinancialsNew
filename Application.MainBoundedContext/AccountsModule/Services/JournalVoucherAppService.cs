@@ -455,6 +455,71 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+        public List<JournalVoucherEntryDTO> FindJournalVoucherEntries(Guid journalVoucherId, ServiceHeader serviceHeader)
+        {
+            if (journalVoucherId != Guid.Empty)
+            {
+                using (_dbContextScopeFactory.CreateReadOnly())
+                {
+                    var filter = JournalVoucherEntrySpecifications.JournalVoucherEntryWithJournalVoucherId(journalVoucherId);
+
+                    ISpecification<JournalVoucherEntry> spec = filter;
+
+                    var journalVoucherEntries = _journalVoucherEntryRepository.AllMatching(spec, serviceHeader);
+
+                    if (journalVoucherEntries != null)
+                    {
+                        return journalVoucherEntries.ProjectedAsCollection<JournalVoucherEntryDTO>();
+                    }
+                    else return null;
+                }
+            }
+            else return null;
+        }
+
+        public bool UpdateJournalVoucherEntries(Guid journalVoucherId, List<JournalVoucherEntryDTO> journalVoucherEntries, ServiceHeader serviceHeader)
+        {
+            if (journalVoucherId != null && journalVoucherEntries != null)
+            {
+                using (var dbContextScope = _dbContextScopeFactory.Create())
+                {
+                    var persisted = _journalVoucherRepository.Get(journalVoucherId, serviceHeader);
+
+                    if (persisted != null)
+                    {
+                        var existing = FindJournalVoucherEntries(persisted.Id, serviceHeader);
+
+                        if (existing != null && existing.Any())
+                        {
+                            foreach (var item in existing)
+                            {
+                                var journalVoucherEntry = _journalVoucherEntryRepository.Get(item.Id, serviceHeader);
+
+                                if (journalVoucherEntry != null)
+                                {
+                                    _journalVoucherEntryRepository.Remove(journalVoucherEntry, serviceHeader);
+                                }
+                            }
+                        }
+
+                        if (journalVoucherEntries.Any())
+                        {
+                            foreach (var item in journalVoucherEntries)
+                            {
+                                var journalVoucherEntry = JournalVoucherEntryFactory.CreateJournalVoucherEntry(persisted.Id, item.ChartOfAccountId, item.CustomerAccountId, item.Amount);
+
+                                _journalVoucherEntryRepository.Add(journalVoucherEntry, serviceHeader);
+                            }
+                        }
+
+                        return dbContextScope.SaveChanges(serviceHeader) >= 0;
+                    }
+                    else return false;
+                }
+            }
+            else return false;
+        }
+
         public PageCollectionInfo<JournalVoucherDTO> FindJournalVouchers(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())

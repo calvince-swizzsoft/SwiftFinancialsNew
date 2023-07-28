@@ -84,6 +84,13 @@ namespace DistributedServices.MainBoundedContext
             return _journalVoucherAppService.UpdateJournalVoucherEntryCollection(journalVoucherId, journalVoucherEntryCollection, serviceHeader);
         }
 
+        public bool UpdateJournalVoucherEntriesByJournalVoucherId(Guid journalVoucherId, List<JournalVoucherEntryDTO> journalVoucherEntries)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _journalVoucherAppService.UpdateJournalVoucherEntries(journalVoucherId, journalVoucherEntries, serviceHeader);
+        }
+
         public List<JournalVoucherDTO> FindJournalVouchers()
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

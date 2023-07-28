@@ -847,7 +847,6 @@
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Verify.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\AddMore.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanGuarantor\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanGuarantor\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanGuarantor\Edit.cshtml" />
@@ -1320,7 +1319,6 @@
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\Loaning\Data\" />
-    <Folder Include="Areas\Loaning\Views\LoanProductAppraisal\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />
