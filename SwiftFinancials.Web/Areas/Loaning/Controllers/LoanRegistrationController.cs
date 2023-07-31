@@ -85,8 +85,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     foreach (var loanGuarantorDTO in loanCaseDTO.LoanGuarantors)
                     {
                         loanGuarantorDTO.LoanCaseId = loanCase.Id;
+                        loanGuarantorDTO.LoaneeCustomerId = loanGuarantorDTO.LoaneeCustomerId;
+                        loanGuarantorDTO.LoanCaseId = loanCase.Id;
                         loanGuarantorDTO.CustomerIndividualIdentityCardNumber = loanGuarantorDTO.CustomerIndividualIdentityCardNumber;
-                        loanGuarantorDTO.LoanCaseAmountApplied = loanGuarantorDTO.LoanCaseAmountApplied;
+                        loanGuarantorDTO.AmountGuaranteed = loanGuarantorDTO.AmountGuaranteed;
                         loanGuarantorDTO.AppraisalFactor = loanGuarantorDTO.AppraisalFactor;
                         loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
                         loanGuarantorDTO.CustomerId = loanGuarantorDTO.CustomerId;
@@ -110,7 +112,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> AddMore(LoanCaseDTO loanCaseDTO)
+        public async Task<ActionResult> Add(LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
 

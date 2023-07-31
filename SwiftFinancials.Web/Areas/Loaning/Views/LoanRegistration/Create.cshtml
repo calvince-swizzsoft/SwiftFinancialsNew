@@ -61,7 +61,7 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Investment Balance", disabled = "disabled" } })
+                                        @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Investment Balance" } })
                                         @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
@@ -116,6 +116,12 @@
                                         @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer" } })
                                     </div>
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Rate" } })
                                         @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
@@ -159,8 +165,14 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].CustomerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanGuarantors[0].CustomerId)
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerFullName, new { htmlAttributes = new { @class = "GuarantorCustomersLookup form-control required", placeholder = "Lookup Guarantor's Name" } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "ID Number" } })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "ID Number", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
@@ -168,28 +180,22 @@
                                         @Html.EditorFor(model => model.LoanGuarantors[0].AppraisalFactor, new { htmlAttributes = new { @class = "form-control", @placeholder = "Appraisal Factor" } })
                                         @Html.ValidationMessageFor(model => model.LoanGuarantors[0].AppraisalFactor, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].TotalShares, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].TotalShares, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanGuarantors[0].TotalShares, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares" } })
+                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].TotalShares, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanGuarantors[0].CommittedShares, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].CommittedShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Committed Shares", disabled = "disabled" } })
+                                        @Html.EditorFor(model => model.LoanGuarantors[0].CommittedShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Committed Shares" } })
                                         @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CommittedShares, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanGuarantors[0].AmountGuaranteed, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.LoanGuarantors[0].AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
                                         @Html.ValidationMessageFor(model => model.LoanGuarantors[0].AmountGuaranteed, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanGuarantors[0].CustomerId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LoanGuarantors[0].CustomerId)
-                                        @Html.ValidationMessageFor(model => model.LoanGuarantors[0].CustomerId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LoanGuarantors[0].CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
                                     </div>
                                 </div>
                                 <div class="form-group">
@@ -206,7 +212,8 @@
                                             <th>Customer Name</th>
                                             <th>Amount Applied</th>
                                             <th>Identity Number</th>
-                                            <th>Amount Applied</th>
+                                            <th>Appraisal Factor</th>
+                                            <th>Committed Shares</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -214,23 +221,23 @@
                                         {
                                             foreach (var loanGuarantors in ViewBag.LoanGuarantorsDTOs)
                                             {
-                                                <tr>
-                                                    <td>
-                                                        @loanGuarantors.CustomerIndividualIdentityCardNumber
-                                                    </td>
-                                                    <td>
-                                                        @loanGuarantors.LoanCaseAmountApplied
-                                                    </td>
-                                                    <td>
-                                                        @loanGuarantors.AppraisalFactor
-                                                    </td>
-                                                    <td>
-                                                        @loanGuarantors.CommittedShares
-                                                    </td>
-                                                    <td>
-                                                        @loanGuarantors.Customer.FullName
-                                                    </td>
-                                                </tr>
+                                        <tr>
+                                            <td>
+                                                @loanGuarantors.Customer.FullName
+                                            </td>
+                                            <td>
+                                                @loanGuarantors.LoanCaseAmountApplied
+                                            </td>
+                                            <td>
+                                                @loanGuarantors.CustomerIndividualIdentityCardNumber
+                                            </td>
+                                            <td>
+                                                @loanGuarantors.AppraisalFactor
+                                            </td>
+                                            <td>
+                                                @loanGuarantors.CommittedShares
+                                            </td>
+                                        </tr>
                                             }
                                         }
                                     </tbody>
@@ -332,6 +339,78 @@
                     var customerId = "";
                     CustomerId = CustomersMap[item].Id;
                     $('#CustomerId').val(CustomerId);
+                    //console.log(CustomerId)
+                    return item;
+                }
+            });
+            //customers typehead starts here
+            $('.GuarantorCustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i,Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var customerId = "";
+                    CustomerId = CustomersMap[item].Id;
+                    $('#LoanGuarantors[0].CustomerId').val(CustomerId);
+                    //console.log(CustomerId)
+                    return item;
+                }
+            });
+            //Loaneecustomers typehead starts here
+            $('.LoaneeCustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i,Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var customerId = "";
+                    CustomerId = CustomersMap[item].Id;
+                    $('#LoanGuarantors[0].LoaneeCustomerId').val(CustomerId);
                     //console.log(CustomerId)
                     return item;
                 }
