@@ -1,0 +1,2 @@
+
+INSERT INTO  [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Designations]([Id]      ,[ParentId]      ,[Description]      ,[Remarks]      ,[Depth]      ,[IsLocked]      ,[SequentialId]      ,[CreatedBy]      ,[CreatedDate])SELECT [Id]      ,[ParentId]      ,[Description]      ,[Remarks]      ,[Depth]      ,[IsLocked]      ,[SequentialId]      ,[CreatedBy]      ,[CreatedDate]  FROM [SwiftFinancialsDB_TEST].[dbo].[vfin_Designations]
