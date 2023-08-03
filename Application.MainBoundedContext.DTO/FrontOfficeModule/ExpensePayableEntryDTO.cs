@@ -107,5 +107,11 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Posting Period")]
+        [ValidGuid]
+        public Guid PostingPeriodId { get; set; }
     }
+     
 }

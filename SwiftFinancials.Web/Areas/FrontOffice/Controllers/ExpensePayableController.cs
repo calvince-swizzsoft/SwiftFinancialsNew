@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
@@ -62,18 +64,81 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             ViewBag.JournalVoucherTypeSelectList =GetJournalVoucherTypeSelectList(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+            ViewBag.ExpensePayableEntries = null;
 
             return View();
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> Add(ExpensePayableDTO expensePayable)
+        {
+            await ServeNavigationMenus();
+
+            ExpensePayableEntries = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
+
+            if (ExpensePayableEntries == null)
+                ExpensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
+
+            foreach (var ExpensePayableEntry in expensePayable.ExpensePayableEntries)
+            {
+                ExpensePayableEntry.PrimaryDescription = ExpensePayableEntry.PrimaryDescription;
+                ExpensePayableEntry.BranchId = ExpensePayableEntry.BranchId;//Temporary 
+                ExpensePayableEntry.CreatedBy = ExpensePayableEntry.CreatedBy;
+                ExpensePayableEntries.Add(ExpensePayableEntry);
+            };
+
+            TempData["ExpensePayableEntries"] = ExpensePayableEntries;
+
+            TempData["ExpensePayableDTO"] = expensePayable;
+
+            ViewBag.ExpensePayableEntries = ExpensePayableEntries;
+
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayable.Type.ToString());
+
+            return View("Create", expensePayable);
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
+
+            Guid id = expensePayableDTO.Id;
+
             expensePayableDTO.ValidateAll();
 
             if (!expensePayableDTO.HasErrors)
             {
-                await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+
+                var journalVoucher = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+
+                if (journalVoucher != null)
+                {
+                  var   ExpensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
+
+
+                    foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
+                    {
+                        expensePayableEntryDTO.BranchId = journalVoucher.BranchId;
+                        expensePayableEntryDTO.BranchDescription = expensePayableEntryDTO.BranchDescription;
+                        expensePayableEntryDTO.ChartOfAccountId = id;
+                        expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
+                        expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
+                        expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
+
+                        ExpensePayableEntries.Add(expensePayableEntryDTO);
+                    };
+
+                    if (ExpensePayableEntries.Any())
+
+                        await _channelService.UpdateExpensePayableEntryCollectionAsync(expensePayableDTO.Id, ExpensePayableEntries, GetServiceHeader());
+                }
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
+
+                ViewBag.JournalVoucherEntries = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -81,13 +146,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var errorMessages = expensePayableDTO.ErrorMessages;
 
-                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(expensePayableDTO.Type.ToString());
-
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
 
                 return View(expensePayableDTO);
             }
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {

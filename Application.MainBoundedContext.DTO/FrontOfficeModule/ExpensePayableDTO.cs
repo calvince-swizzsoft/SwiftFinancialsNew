@@ -4,6 +4,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -28,6 +29,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Posting Period")]
         [ValidGuid]
         public Guid PostingPeriodId { get; set; }
+
+
+        [Display(Name = "PostingPeriod Description")]
+        public string PostingPeriodDescription { get; set; }
 
         [Display(Name = "Branch Id")]
         public string BranchDescription { get; set; }
@@ -174,6 +179,9 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "module")]
         public int ModuleNavigationItemCode { get; set; }
+
+        public List<ExpensePayableEntryDTO> ExpensePayableEntries { get; set; }
+        public ExpensePayableEntryDTO ExpensePayableEntrie { get; set; }
 
     }
 }
