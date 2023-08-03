@@ -8,7 +8,7 @@ INSERT INTO  [SwiftFinancialsDB_DEV].[dbo].[swiftfin_SalaryCardEntries] ([Id]
       ,[SequentialId]
       ,[CreatedBy]
       ,[CreatedDate])
-SELECT TOP (1000) [Id]
+SELECT [Id]
       ,[SalaryCardId]
       ,[SalaryGroupEntryId]
       ,[Charge_Type]
