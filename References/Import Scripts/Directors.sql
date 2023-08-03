@@ -1,0 +1,18 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+INSERT INTO  [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Directors] ([Id]
+  ,[DivisionId]
+      ,[CustomerId]
+      ,[Remarks]
+      ,[IsLocked]
+      ,[SequentialId]
+      ,[CreatedBy]
+      ,[CreatedDate])
+SELECT TOP (1000) [Id]
+      ,[DivisionId]
+      ,[CustomerId]
+      ,[Remarks]
+      ,[IsLocked]
+      ,[SequentialId]
+      ,[CreatedBy]
+      ,[CreatedDate]
+  FROM [SwiftFinancialsDB_TEST].[dbo].[vfin_Directors]
