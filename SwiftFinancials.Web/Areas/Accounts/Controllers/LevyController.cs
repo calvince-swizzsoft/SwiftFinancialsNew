@@ -95,7 +95,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Create", levyDTO);
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Create(LevyDTO levyDTO)
         {
@@ -217,5 +216,4 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return Json(levyDTOs, JsonRequestBehavior.AllowGet);
         }
     }
-
 }

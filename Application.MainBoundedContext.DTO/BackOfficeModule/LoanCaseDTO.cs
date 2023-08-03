@@ -979,5 +979,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
         public IList<LoanGuarantorDTO> LoanGuarantors { get; set; }
+
+        public LoanGuarantorDTO LoanGuarantor { get; set; }
     }
 }
