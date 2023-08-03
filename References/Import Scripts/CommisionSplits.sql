@@ -1,0 +1,12 @@
+/****** Script for SelectTopNRows command from SSMS  ******/
+INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_CommissionSplits]
+SELECT TOP (1000) [Id]
+      ,[CommissionId]
+      ,[ChartOfAccountId]
+      ,[Description]
+      ,[Percentage]
+      ,[Leviable]
+      ,[SequentialId]
+      ,[CreatedBy]
+      ,[CreatedDate]
+  FROM [SwiftFinancialsDB_Test].[dbo].[vfin_CommissionSplits]
