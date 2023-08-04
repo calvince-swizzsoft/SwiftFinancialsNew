@@ -1,10 +1,4 @@
 
-
-
-
-
-
-
 INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_JournalVouchers]([Id]
       ,[BranchId]
       ,[PostingPeriodId]
