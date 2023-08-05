@@ -77,7 +77,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
 
             ExpensePayableEntries = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
-
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayable.Type.ToString());
             if (ExpensePayableEntries == null)
                 ExpensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
 
@@ -96,6 +96,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.ExpensePayableEntries = ExpensePayableEntries;
 
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayable.Type.ToString());
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayable.Type.ToString());
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayable.Type.ToString());
 
             return View("Create", expensePayable);
         }
