@@ -81,6 +81,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Required]
         public string SecondaryDescription { get; set; }
 
+        
+
         [DataMember]
         [Display(Name = "Reference")]
         [Required]
@@ -112,6 +114,12 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Posting Period")]
         [ValidGuid]
         public Guid PostingPeriodId { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Total Value")]
+        public int TotalValue { get; set; }
+
     }
      
 }
