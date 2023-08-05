@@ -129,14 +129,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                         expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
                         expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
-
                         ExpensePayableEntries.Add(expensePayableEntryDTO);
                     };
 
                     if (ExpensePayableEntries.Any())
-
                         await _channelService.UpdateExpensePayableEntryCollectionAsync(expensePayableDTO.Id, ExpensePayableEntries, GetServiceHeader());
-                }
+                } 
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
 
