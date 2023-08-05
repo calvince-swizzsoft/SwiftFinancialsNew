@@ -114,16 +114,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (!expensePayableDTO.HasErrors)
             {
 
-                var journalVoucher = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                var expensePayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
 
-                if (journalVoucher != null)
+                if (expensePayable != null)
                 {
                   var   ExpensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
 
 
                     foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
                     {
-                        expensePayableEntryDTO.BranchId = journalVoucher.BranchId;
+                        expensePayableEntryDTO.BranchId = expensePayable.BranchId;
                         expensePayableEntryDTO.BranchDescription = expensePayableEntryDTO.BranchDescription;
                         expensePayableEntryDTO.ChartOfAccountId = id;
                         expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
@@ -138,7 +138,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
 
-                ViewBag.JournalVoucherEntries = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, GetServiceHeader());
+                ViewBag.ExpensePayableEntry= await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
