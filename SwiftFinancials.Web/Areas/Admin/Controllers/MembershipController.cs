@@ -116,7 +116,17 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return View();
             }
 
-            return View();
+            var company = await _channelService.FindCompanyAsync(parseId, GetServiceHeader());
+
+            UserBindingModel userBindingModel = new UserBindingModel();
+
+            if (company != null)
+            {
+                userBindingModel.CompanyId = company.Id;
+                userBindingModel.CompanyDescription = company.Description;
+            }
+
+            return View(userBindingModel);
         }
 
         // POST: SystemUser/Create

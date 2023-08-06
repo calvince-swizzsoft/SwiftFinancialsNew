@@ -22,7 +22,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-             
+
             return View();
         }
 
@@ -63,7 +63,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-            ViewBag.JournalVoucherTypeSelectList =GetJournalVoucherTypeSelectList(string.Empty);
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.ExpensePayableEntries = null;
 
@@ -118,7 +118,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (expensePayable != null)
                 {
-                  var   ExpensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
+                    var ExpensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
 
 
                     foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
@@ -134,7 +134,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     if (ExpensePayableEntries.Any())
                         await _channelService.UpdateExpensePayableEntryCollectionAsync(expensePayableDTO.Id, ExpensePayableEntries, GetServiceHeader());
-                } 
+                }
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
 
@@ -169,7 +169,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, ExpensePayableDTO expensePayableDTO)
         {
-            
+
             expensePayableDTO.ValidateAll();
 
             if (!expensePayableDTO.HasErrors)
@@ -182,12 +182,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else
             {
-                var errorMessages = expensePayableDTO.ErrorMessages;               
+                var errorMessages = expensePayableDTO.ErrorMessages;
 
                 return View(expensePayableDTO);
             }
         }
-                                                                /////////////verify expense payable/////    
+        /////////////verify expense payable/////    
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
@@ -204,24 +204,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
         {
             var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
-       
-           if (!expensePayableDTO.HasErrors)
+
+            if (!expensePayableDTO.HasErrors)
             {
-               
+
                 await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
                 return RedirectToAction("Index");
-    }
+            }
             else
             {
                 var errorMessages = expensePayableDTO.ErrorMessages;
-               
+
                 return View(expensePayableDTO);
-}
+            }
         }
-                                                            /////////////Approve expense payable/////    
+        /////////////Approve expense payable/////    
         public async Task<ActionResult> Approve(Guid id)
         {
             await ServeNavigationMenus();
@@ -262,7 +262,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
-                                                    /////////////Cancel expense payable/////    
+        /////////////Cancel expense payable/////    
         public async Task<ActionResult> Cancel(Guid id)
         {
             await ServeNavigationMenus();
