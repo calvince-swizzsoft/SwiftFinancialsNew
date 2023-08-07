@@ -1,5 +1,5 @@
 /****** Script for SelectTopNRows command from SSMS  ******/
-SELECT TOP (1000) [Id]
+INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_ExpensePayables] ([Id]
 
       ,[BranchId]
       ,[ChartOfAccountId]
@@ -17,5 +17,25 @@ SELECT TOP (1000) [Id]
       ,[AuthorizedDate]
       ,[SequentialId]
       ,[CreatedBy]
+      ,[CreatedDate])
+
+
+SELECT [Id]
+      ,[BranchId]
+      ,[ChartOfAccountId]
+      ,[VoucherNumber]
+      ,[Type]
+      ,[TotalValue]
+      ,[ValueDate]
+      ,[Remarks]
+      ,[Status]
+      ,[AuditedBy]
+      ,[AuditRemarks]
+      ,[AuditedDate]
+      ,[AuthorizedBy]
+      ,[AuthorizationRemarks]
+      ,[AuthorizedDate]
+      ,[SequentialId]
+      ,[CreatedBy]
       ,[CreatedDate]
-  FROM [SwiftFinancialsDB_DEV].[dbo].[swiftfin_ExpensePayables]
+  FROM [SwiftFinancialsDB_TEST].[dbo].[vfin_ExpensePayables]

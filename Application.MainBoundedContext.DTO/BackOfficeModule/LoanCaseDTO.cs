@@ -175,6 +175,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
                 return result;
             }
+            set { }
         }
 
         [DataMember]
