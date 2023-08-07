@@ -55,14 +55,31 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanCaseDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
             ViewBag.LoanGuarantorDTOs = null;
-            return View();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+
+            if (customer != null)
+            {
+                loanCaseDTO.CustomerId = customer.Id;
+            }
+
+            return View(loanCaseDTO);
         }
 
         [HttpPost]

@@ -353,18 +353,19 @@
 
                     var selectUrl = '<a  href="/loaning/loanRegistration/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
 
                     return nRow;
                 },
         // Display settings
         "aoColumns": [
-            { "mDataProp": "FullName", "sTitle": "Customer" },
-            { "mDataProp": "LoanGuarantors[0].CustomerFullName", "sTitle": "Guarantor Customer" },
-            { "mDataProp": "StatusDescription", "sTitle": "Status" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
-            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
+            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
     });
 
