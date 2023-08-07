@@ -386,6 +386,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             {
                 return string.Format("{0}-{1} {2}", ChartOfAccountAccountType.FirstDigit(), ChartOfAccountAccountCode, ChartOfAccountAccountName);
             }
+            set { }
         }
 
         [DataMember]

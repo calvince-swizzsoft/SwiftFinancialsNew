@@ -54,7 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(loanProductDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
@@ -71,6 +71,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(string.Empty);
             ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(string.Empty);
             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+
+            LoanProductDTO loanProductDTO = new LoanProductDTO();
+
+            if (loanProduct != null)
+            {
+                loanProductDTO.ChartOfAccountId = loanProduct.Id;
+               loanProductDTO.ChartOfAccountName = loanProduct.ChartOfAccountName;
+            }
             return View();
         }
 
