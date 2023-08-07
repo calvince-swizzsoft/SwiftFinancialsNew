@@ -54,11 +54,29 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(employeeDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+
             ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(string.Empty);
-            return View();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            EmployeeDTO employeeBindingModel = new EmployeeDTO();
+
+            if (customer != null)
+            {
+                employeeBindingModel.CustomerId = customer.Id;
+            }
+
+            return View(employeeBindingModel);
         }
 
         [HttpPost]
