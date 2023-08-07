@@ -120,6 +120,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
             {
                 return string.Format("{0} {1} {2}", CustomerIndividualSalutationDescription, CustomerIndividualFirstName, CustomerIndividualLastName).Trim();
             }
+            set { }
         }
 
         [DataMember]

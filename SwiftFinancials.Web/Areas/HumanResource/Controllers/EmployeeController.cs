@@ -74,6 +74,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             if (customer != null)
             {
                 employeeBindingModel.CustomerId = customer.Id;
+                employeeBindingModel.CustomerFullName = customer.FullName;
             }
 
             return View(employeeBindingModel);
