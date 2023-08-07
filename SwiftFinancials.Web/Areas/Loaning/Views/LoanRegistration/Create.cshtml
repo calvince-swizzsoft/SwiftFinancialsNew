@@ -108,54 +108,55 @@
                                         @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Rate" } })
-                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount Percentage" } })
-                                        @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
+                                <div class="col-md-4 form-group">
+                                    @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.TextBoxFor(model => model.CustomerId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanProductId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LoanProductId)
-                                        @Html.ValidationMessageFor(model => model.LoanProductId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LoanProductDescription, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "Loan Product Name" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanPurposeId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LoanPurposeId)
-                                        @Html.ValidationMessageFor(model => model.LoanPurposeId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Loan Purpose Name" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.SavingsProductId)
-                                        @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Savings Product Name" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Remarks" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
+                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Rate" } })
+                                    @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount Percentage" } })
+                                    @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanProductId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.LoanProductId)
+                                    @Html.ValidationMessageFor(model => model.LoanProductId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.LoanProductDescription, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "Loan Product Name" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanPurposeId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.LoanPurposeId)
+                                    @Html.ValidationMessageFor(model => model.LoanPurposeId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Loan Purpose Name" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.SavingsProductId)
+                                    @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Savings Product Name" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Remarks" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                         </fieldset>
@@ -221,23 +222,23 @@
                                         {
                                             foreach (var loanGuarantors in ViewBag.LoanGuarantorsDTOs)
                                             {
-                                        <tr>
-                                            <td>
-                                                @loanGuarantors.Customer.FullName
-                                            </td>
-                                            <td>
-                                                @loanGuarantors.LoanCaseAmountApplied
-                                            </td>
-                                            <td>
-                                                @loanGuarantors.CustomerIndividualIdentityCardNumber
-                                            </td>
-                                            <td>
-                                                @loanGuarantors.AppraisalFactor
-                                            </td>
-                                            <td>
-                                                @loanGuarantors.CommittedShares
-                                            </td>
-                                        </tr>
+                                                <tr>
+                                                    <td>
+                                                        @loanGuarantors.Customer.FullName
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.LoanCaseAmountApplied
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.CustomerIndividualIdentityCardNumber
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.AppraisalFactor
+                                                    </td>
+                                                    <td>
+                                                        @loanGuarantors.CommittedShares
+                                                    </td>
+                                                </tr>
                                             }
                                         }
                                     </tbody>
@@ -262,6 +263,30 @@
         </div>
     </div>
 </div>
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 @section Styles{
@@ -307,6 +332,53 @@
 
 
 <script>
+
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/loaning/loanRegistration/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "FullName", "sTitle": "Customer" },
+            { "mDataProp": "LoanGuarantors[0].CustomerFullName", "sTitle": "Guarantor Customer" },
+            { "mDataProp": "StatusDescription", "sTitle": "Status" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=CustomerFullName]').val(data.FullName);
+        //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+
+        $('#customerLookupModal').modal('hide');
+    });
+
             //customers typehead starts here
             $('.CustomersLookup').typeahead({
                 source: function (query, process) {
