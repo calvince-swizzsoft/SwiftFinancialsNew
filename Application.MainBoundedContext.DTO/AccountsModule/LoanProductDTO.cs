@@ -381,6 +381,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Principal G/L Account Name")]
         public string ChartOfAccountName { get; set; }
+
         [DataMember]
         [Display(Name = "Principal G/L Account Cost Center")]
         public Guid? ChartOfAccountCostCenterId { get; set; }
