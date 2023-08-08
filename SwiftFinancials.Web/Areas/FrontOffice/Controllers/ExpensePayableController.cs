@@ -83,13 +83,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 expensePayableDTO.BranchId = branch.Id;
                 expensePayableDTO.BranchDescription = branch.Description;
+            }        
+        
+        var postingperiod = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());       
+
+            if (postingperiod != null)
+            {
+                expensePayableDTO.PostingPeriodId = postingperiod.Id;
+                expensePayableDTO.PostingPeriodDescription = postingperiod.Description;
+            }
+
+            var chartofAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+            if (chartofAccount != null)
+            {
+                expensePayableDTO.PostingPeriodId = chartofAccount.Id;
+                expensePayableDTO.PostingPeriodDescription = chartofAccount.AccountName;
             }
 
             return View(expensePayableDTO);
-        }
+}
 
-
-        [HttpPost]
+[HttpPost]
         public async Task<ActionResult> Add(ExpensePayableDTO expensePayable)
         {
             await ServeNavigationMenus();

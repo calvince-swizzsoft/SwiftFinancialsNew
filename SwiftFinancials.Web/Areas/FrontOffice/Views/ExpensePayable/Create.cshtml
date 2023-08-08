@@ -68,19 +68,27 @@
                                         @Html.ValidationMessageFor(model => model.Type)
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "chart of account name" } })
+
+
+                                <div class="col-md-10 form-group">
+                                    @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.TextBoxFor(model => model.ChartOfAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#ChartOfAccountModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-10 form-group">
+                                    @Html.LabelFor(model => model.PostingPeriodId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#PostingPeriodLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
                                 </div>
 
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.PostingPeriodId)
-                                    @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Description.." } })
-                                </div>
                             </div>
                             <div class="col-lg-5">
                                 <div class="form-group form-group-lg">
@@ -124,7 +132,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-5">
-                            
+
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.ExpensePayableEntries[0].TotalValue, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.ExpensePayableEntries[0].TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "" } })
@@ -139,15 +147,19 @@
                                 </div>
 
 
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-10 form-group">
                                     @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
-                                        @Html.TextBoxFor(model => model.BranchId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#BranchesLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
                                     </div>
                                 </div>
+
+
+
+
                             </div>
                         </div>
 
@@ -246,6 +258,62 @@
     </div>
 </div>
 
+
+<div class="modal  fade" id="PostingPeriodLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Chart Of Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="chartOfAccountGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+<div class="modal  fade" id="ChartOfAccountModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Chart of Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="ChartOfAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -290,6 +358,58 @@
     @Scripts.Render("~/plugins/duallist")
 
     <script>
+
+
+    $('#ChartOfAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/FrontOffice/ExpensePayable/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "AccountName", "sTitle": "Account Name", "sWidth": "15%" },
+            { "mDataProp": "ParentAccountName", "sTitle": "Parent", "sWidth": "10%" },
+            { "mDataProp": "AccountCategoryDescription", "sTitle": "Category", "sWidth": "15%" },
+            { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
+         
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#BranchId').val(data.Id);
+        $('input[name=ChartOfAccountId]').val(data.Id);
+        $('input[name=ChartOfAccountName]').val(data.ChartOfAccountName);
+        //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+
+
+
+      /*  $('#BranchId').val(BranchId);*/
+        $('#ChartOfAccountsGrid').modal('hide');
+    });
 
     //////////start of testing/////////
 
@@ -342,6 +462,54 @@
       /*  $('#BranchId').val(BranchId);*/
         $('#BranchesLookupModal').modal('hide');
     });
+
+        ///////posting period///////
+
+
+
+        $('#postingPeriodsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "PostingPeriod", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+                    var selectUrl = '<a  href="/FrontOffice/ExpensePayable/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Description" },
+            { "mDataProp": "DurationStartDate", "sTitle": "Start Date" },
+            { "mDataProp": "DurationEndDate", "sTitle": "End Date" },
+            { "mDataProp": "IsLocked", "sTitle": "Is Locked?" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#PostingPeriodId').val(data.Id);
+        $('input[name=PostingPeriodId]').val(data.Id);
+        $('input[name=PostingPeriodDescription]').val(data.PostingPeriodDescription);
+
+        $('#PostingPeriodLookupModal').modal('hide');
+    });
+
 
 
     //ChartOfAccount typehead starts here

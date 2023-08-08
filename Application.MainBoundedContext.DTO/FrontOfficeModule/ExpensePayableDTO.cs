@@ -34,6 +34,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "PostingPeriod Description")]
         public string PostingPeriodDescription { get; set; }
 
+
         [Display(Name = "Branch Id")]
         public string BranchDescription { get; set; }
 
