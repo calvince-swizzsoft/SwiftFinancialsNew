@@ -54,7 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(journalVoucherDTO);
         }
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             
             await ServeNavigationMenus();
@@ -62,10 +62,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
 
             ViewBag.JournalVoucherEntryDTOs = null;
+            Guid parseId;
 
-            return View();
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+            JournalVoucherDTO journalVoucherDTO = new JournalVoucherDTO();
+
+            if (chartOfAccount != null)
+            {
+                journalVoucherDTO.ChartOfAccountId = chartOfAccount.Id;
+                journalVoucherDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
+            }
+
+
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+            if (branch != null)
+            {
+                journalVoucherDTO.BranchId = branch.Id;
+                journalVoucherDTO.BranchDescription = branch.Description;
+            }
+
+            return View(journalVoucherDTO);
         }
-
 
         [HttpPost]
         public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
