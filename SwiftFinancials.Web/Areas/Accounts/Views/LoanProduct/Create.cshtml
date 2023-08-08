@@ -159,21 +159,27 @@
                                         <div class="input-group" data-autoclose="true">
                                             @Html.TextBoxFor(model => model.ChartOfAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#chartOfAccountsLookupModal"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestReceivableChartOfAccountId, htmlAttributes: new { @class = "" })
-                                        @Html.HiddenFor(model => model.InterestReceivableChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "InterestReceivableChartOfAccountsLookup form-control", @placeholder = "Interest Receivable COA" } })
-                                        @Html.ValidationMessageFor(model => model.InterestReceivableChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.InterestReceivableChartOfAccountId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.ChartOfAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.InterestReceivedChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "InterestReceivedChartOfAccountsLookup form-control required", placeholder = "Interest Received COA" } })
-                                        @Html.ValidationMessageFor(model => model.InterestReceivedChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.InterestReceivedChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
@@ -263,10 +269,13 @@
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "InterestReceivedChartOfAccountsLookup form-control required", placeholder = "Interest Charged COA" } })
-                                        @Html.ValidationMessageFor(model => model.InterestChargedChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.ChartOfAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -279,11 +288,11 @@
     </div>
 </div>
 
-<div class="modal  fade" id="chartOfAccountsLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="chartOfAccountLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3 class="font-bold">ChartOfAccounts Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Chart Of Accounts Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
             <table id="chartOfAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
@@ -302,8 +311,10 @@
     </div>
 </div>
 
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
     @Styles.Render("~/plugins/awesomeCheckboxStyles")
     @Styles.Render("~/plugins/clockpickerStyles")
@@ -323,6 +334,7 @@
 }
 
 @section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
@@ -344,7 +356,64 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
+
+<script>
+
+
+    $('#chartOfAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/accounts/loanProduct/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "AccountName", "sTitle": "Account Name", "sWidth": "15%" },
+            { "mDataProp": "ParentAccountName", "sTitle": "Parent", "sWidth": "10%" },
+            { "mDataProp": "AccountCategoryDescription", "sTitle": "Category", "sWidth": "15%" },
+            { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+             });
+
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = chartOfAccountsGrid.row(this).data();
+
+        $('#ChartOfAccountId').val(data.Id);
+        $('input[name=ChartOfAccountId]').val(data.Id);
+        $('#InterestReceivedChartOfAccountId').val(ChartOfAccountId);
+        $('input[name=InterestReceivedChartOfAccountId]').val(data.Id);
+        $('#InterestReceivableChartOfAccountId').val(ChartOfAccountId);
+        $('input[name=InterestReceivableChartOfAccountId]').val(data.Id);
+        $('#InterestChargedChartOfAccountId').val(ChartOfAccountId);
+        $('input[name=InterestChargedChartOfAccountId]').val(data.Id);
+        $('input[name=ChartOfAccountName]').val(data.AccountName);
+        //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+
+        $('#chartOfAccountLookupModal').modal('hide');
+    });
+
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -412,202 +481,6 @@
                     }
                 }
             });
-
-             $('#chartOfAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/LoanProduct/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                 "aoColumns": [
-                     { "mDataProp": "AccountName", "sTitle": "Account Name", "sWidth": "15%" },
-                     { "mDataProp": "ParentAccountName", "sTitle": "Parent", "sWidth": "10%" },
-                     { "mDataProp": "AccountCategoryDescription", "sTitle": "Category", "sWidth": "15%" },
-                     { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "15%" },
-                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
-                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-        });
-
-        $("#s tbody").on("click", "tr", function () {
-            var data = chartOfAccountsGrid.row(this).data();
-
-            $('#ChartOfAccountId').val(data.Id);
-            $('input[name=ChartOfAccountId]').val(data.Id);
-            $('input[name=ChartOfAccountAccountName]').val(data.AccountName);
-            //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-
-            $('#chartOfAccountsLookupModal').modal('hide');
-        });
-
-             //ChartOfAccount typehead starts here
-            $('.ChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var ChartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-
-              //InterestReceivedChartOfAccount typehead starts here
-            $('.InterestReceivedChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var ChartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#InterestReceivedChartOfAccountId').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-
-              //InterestReceivableChartOfAccount typehead starts here
-            $('.InterestReceivableChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var ChartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#InterestReceivableChartOfAccountId').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-
-              //InterestChargedChartOfAccount typehead starts here
-            $('.InterestChargedChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var ChartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#InterestChargedChartOfAccountId').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
           });
-    </script>
+</script>
 }

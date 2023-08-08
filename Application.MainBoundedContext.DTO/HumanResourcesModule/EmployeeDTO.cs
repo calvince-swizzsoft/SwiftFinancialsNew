@@ -114,14 +114,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
         [DataMember]
         [Display(Name = "Name")]
-        public string CustomerFullName
-        {
-            get
-            {
-                return string.Format("{0} {1} {2}", CustomerIndividualSalutationDescription, CustomerIndividualFirstName, CustomerIndividualLastName).Trim();
-            }
-            set { }
-        }
+        public string CustomerFullName { get; set; }
 
         [DataMember]
         [Display(Name = "Gender")]

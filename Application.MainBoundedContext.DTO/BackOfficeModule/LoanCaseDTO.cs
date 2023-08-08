@@ -152,31 +152,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public DateTime? CustomerNonIndividualDateEstablished { get; set; }
 
         [DataMember]
-        [Display(Name = "Customer Name")]
-        public string CustomerFullName
-        {
-            get
-            {
-                var result = string.Empty;
-
-                switch ((CustomerType)CustomerType)
-                {
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.Individual:
-                        result = string.Format("{0} {1} {2}", CustomerIndividualSalutationDescription, CustomerIndividualFirstName, CustomerIndividualLastName).Trim();
-                        break;
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.Partnership:
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.Corporation:
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.MicroCredit:
-                        result = CustomerNonIndividualDescription;
-                        break;
-                    default:
-                        break;
-                }
-
-                return result;
-            }
-            set { }
-        }
+        [Display(Name = "Name")]
+        public string CustomerFullName { get; set; }
 
         [DataMember]
         [Display(Name = "Identity Card Number")]

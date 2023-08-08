@@ -79,14 +79,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
-            var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+            var loanProduct = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
 
             LoanProductDTO loanProductDTO = new LoanProductDTO();
 
             if (loanProduct != null)
             {
                 loanProductDTO.ChartOfAccountId = loanProduct.Id;
-               loanProductDTO.ChartOfAccountName = loanProduct.ChartOfAccountName;
+                loanProductDTO.InterestReceivedChartOfAccountId = loanProduct.Id;
+                loanProductDTO.InterestReceivableChartOfAccountId = loanProduct.Id;
+                loanProductDTO.InterestChargedChartOfAccountId = loanProduct.Id;
+                loanProductDTO.ChartOfAccountName = loanProduct.AccountName;
+                loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
             }
             return View();
         }

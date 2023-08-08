@@ -380,14 +380,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Principal G/L Account Name")]
-        public string ChartOfAccountName
-        {
-            get
-            {
-                return string.Format("{0}-{1} {2}", ChartOfAccountAccountType.FirstDigit(), ChartOfAccountAccountCode, ChartOfAccountAccountName);
-            }
-            set { }
-        }
+        public string ChartOfAccountName { get; set; }
 
         [DataMember]
         [Display(Name = "Principal G/L Account Cost Center")]
