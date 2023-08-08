@@ -126,12 +126,6 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Remarks")]
         public string Remarks { get; set; }
         [DataMember]
-        [Display(Name = "Customer")]
-        [ValidGuid]
-        public Guid CustomerId { get; set; }
-
-
-        [DataMember]
         [Display(Name = "Status")]
         public int Status { get; set; }
 

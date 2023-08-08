@@ -53,13 +53,31 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View(withdrawalNotificationDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
-            return View();
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var Customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
+
+            if (Customer != null)
+            {
+                withdrawalNotificationDTO.CustomerId = Customer.Id;
+                withdrawalNotificationDTO.CustomerFullName = Customer.FullName;
+            }
+
+            return View(withdrawalNotificationDTO);
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Create(WithdrawalNotificationDTO withdrawalNotificationDTO)

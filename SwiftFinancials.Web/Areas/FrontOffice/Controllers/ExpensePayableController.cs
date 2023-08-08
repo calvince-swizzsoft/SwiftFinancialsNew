@@ -59,7 +59,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(expensePayableDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
@@ -67,7 +67,25 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.ExpensePayableEntries = null;
 
-            return View();
+            
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+            ExpensePayableDTO expensePayableDTO = new ExpensePayableDTO();
+
+            if (branch != null)
+            {
+                expensePayableDTO.BranchId = branch.Id;
+                expensePayableDTO.BranchDescription = branch.Description;
+            }
+
+            return View(expensePayableDTO);
         }
 
 

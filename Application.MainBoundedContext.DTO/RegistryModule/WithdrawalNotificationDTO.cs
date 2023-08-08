@@ -94,6 +94,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             {
                 return string.Format("{0} {1} {2}", CustomerIndividualSalutationDescription, CustomerIndividualFirstName, CustomerIndividualLastName);
             }
+            set { }
         }
 
         [DataMember]
