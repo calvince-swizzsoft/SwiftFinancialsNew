@@ -135,11 +135,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
-
-            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+           Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
 
             var valuedate = Request["valuedate"];
+
             journalVoucherDTO.ValueDate = DateTime.ParseExact((Request["valuedate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             journalVoucherDTO.ValidateAll();
 
             if (!journalVoucherDTO.HasErrors)

@@ -51,11 +51,10 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "JournalVoucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Add", "JournalVoucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
                         <h1>Journal Voucher</h1>
-                        <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
@@ -125,7 +124,6 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
                         <h1>Voucher Entries</h1>
                         <div class="row">
                             <div class="col-lg-6">
@@ -150,14 +148,14 @@
                                     @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                 </div>
                                 @*<div class="col-md-6 form-group">
-                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#branchLookupModal"><span class="fa fa-search"></span></a>
-                                        </span>
-                                    </div>
-                                </div>*@
+                @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
+                <div class="input-group" data-autoclose="true">
+                    @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                    <span class="input-group-addon">
+                        <a data-toggle="modal" data-target="#branchLookupModal"><span class="fa fa-search"></span></a>
+                    </span>
+                </div>
+            </div>*@
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.JournalVoucherEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.JournalVoucherEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Primary Description", @required = "" } })
@@ -186,10 +184,10 @@
                                     @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Remarks, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-sm-1">
-                            <div class="form-group">
-                                <input type="submit" value="Add Journal Voucher Entry" class="btn btn-success" />
+                            <div class="col-sm-1">
+                                <div class="form-group">
+                                    <input type="submit" value="Add Journal Voucher Entry" class="btn btn-success" />
+                                </div>
                             </div>
                         </div>
                         <row>
