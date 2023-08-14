@@ -13,6 +13,8 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
     {
         LoanCaseDTO AddNewLoanCase(LoanCaseDTO loanCaseDTO, ServiceHeader serviceHeader);
 
+        Task<bool> UpdateLoanCaseAsync(LoanCaseDTO loanCaseDTO, ServiceHeader serviceHeader);
+
         bool AppraiseLoanCase(LoanCaseDTO loanCaseDTO, int loanAppraisalOption, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
         Task<bool> AppraiseLoanCaseAsync(LoanCaseDTO loanCaseDTO, int loanAppraisalOption, int moduleNavigationItemCode, ServiceHeader serviceHeader);
