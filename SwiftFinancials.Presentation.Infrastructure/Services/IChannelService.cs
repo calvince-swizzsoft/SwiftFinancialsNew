@@ -2260,6 +2260,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<DebitBatchEntryDTO>> FindDebitBatchEntriesByCustomerIdAsync(Guid customerId, bool includeProductDescription, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<DebitBatchDTO>> FindDebitBatchesAsync(ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<DebitBatchDTO>> FindDebitBatchesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<DebitBatchDTO>> FindDebitBatchesByStatusAndFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<DebitBatchEntryDTO>> FindDebitBatchEntriesByDebitBatchIdAsync(Guid debitBatchId, bool includeProductDescription, ServiceHeader serviceHeader = null);

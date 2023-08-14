@@ -930,6 +930,28 @@ namespace SwiftFinancials.Web.Controllers
 
             return recoveryPriorities;
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetQueuePrioritySelectList(string selectedValue)
+        {
+            List<SelectListItem> queuePriorities = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(QueuePriority)).Cast<QueuePriority>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            queuePriorities.AddRange(items);
+
+            return queuePriorities;
+        }
+
+
+
+
+
         [NonAction]
         public DashboardAppConfigSection GetDashboardAppConfiguration()
         {

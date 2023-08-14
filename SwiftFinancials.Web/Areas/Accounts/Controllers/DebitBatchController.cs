@@ -20,7 +20,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        /*[HttpPost]
+        [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
@@ -48,14 +48,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var debitBatchDTO = await _channelService.FindDebitBatchesAsync(id, GetServiceHeader());
+            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
 
             return View(debitBatchDTO);
-        }*/
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
 
@@ -73,7 +73,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = debitBatchDTO.ErrorMessages;
-
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
                 return View(debitBatchDTO);
             }
         }
@@ -103,13 +103,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public async Task<JsonResult> GetDebitBatchesAsync()
         {
             var debitBatchDTOs = await _channelService.FindDebitBatchesAsync(GetServiceHeader());
 
             return Json(debitBatchDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 
 }

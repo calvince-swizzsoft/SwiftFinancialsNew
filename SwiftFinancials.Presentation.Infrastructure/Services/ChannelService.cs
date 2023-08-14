@@ -29642,6 +29642,75 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<DebitBatchDTO>> FindDebitBatchesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<DebitBatchDTO>>();
+
+            IDebitBatchService service = GetService<IDebitBatchService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<DebitBatchDTO> response = ((IDebitBatchService)result.AsyncState).EndFindDebitBatches(result);
+
+                    tcs.TrySetResult(new ObservableCollection<DebitBatchDTO>(response ?? new List<DebitBatchDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDebitBatches(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+
+        public Task<PageCollectionInfo<DebitBatchDTO>> FindDebitBatchesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<DebitBatchDTO>>();
+
+            IDebitBatchService service = GetService<IDebitBatchService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<DebitBatchDTO> response = ((IDebitBatchService)result.AsyncState).EndFindDebitBatchesByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindDebitBatchesByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+
+
         public Task<ObservableCollection<DebitBatchEntryDTO>> FindDebitBatchEntriesByCustomerIdAsync(Guid customerId, bool includeProductDescription, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<DebitBatchEntryDTO>>();
