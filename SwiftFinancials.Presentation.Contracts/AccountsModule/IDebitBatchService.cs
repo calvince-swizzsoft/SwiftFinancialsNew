@@ -84,5 +84,10 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindQueableDebitBatchEntriesInPage(int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<DebitBatchEntryDTO> EndFindQueableDebitBatchEntriesInPage(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindDebitBatchesByFilterInPage(string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
+        PageCollectionInfo<DebitBatchDTO> EndFindDebitBatchesByFilterInPage(IAsyncResult result);
     }
 }

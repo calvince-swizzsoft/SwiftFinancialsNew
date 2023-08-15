@@ -4,6 +4,7 @@
     /**/
 
     ViewBag.Title = "Create Debit Batch";
+    var queuePriorities = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -53,83 +54,90 @@
                     {
                         @Html.AntiForgeryToken()
                         <h1>Debit Batch</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.DebitTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.DebitTypeId)
-                                        @Html.ValidationMessageFor(model => model.DebitTypeId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "DebitTypesLookup form-control required", placeholder = "Description.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.DebitTypeId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.DebitTypeId)
+                                    @Html.ValidationMessageFor(model => model.DebitTypeId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "DebitTypesLookup form-control required", placeholder = "Description.." } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                     </div>
-                                    <div class="form-group form-group-sm">
+                                    @*<div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.BatchNumber, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.BatchNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Batch Number", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.BatchNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                    </div>
+                                    </div>*@
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.Priority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Priority", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Priority, "", new { @class = "text-danger" })
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.Priority)
                                     </div>
-                                    <div class="form-group form-group-lg">
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-md-offset-2">
+                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                                @*<div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.Status, new { htmlAttributes = new { @class = "form-control", @placeholder = "Status", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Status, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
+                                    </div>*@
                             </div>
-                        </fieldset>
-                        <h1>Other Details</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuditedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuditedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuditedBy", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuditedBy, "", new { @class = "text-danger" })
+                        </div>
+                        @*<h1>Other Details</h1>
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuditedBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.AuditedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuditedBy", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.AuditedBy, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuditRemarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuditedDate", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuthorizedBy, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.AuthorizedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedBy", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.AuthorizedBy, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizationRemarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AuthorizedDate, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.AuthorizedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedDate", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.AuthorizedDate, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuditRemarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuditedDate", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuthorizedBy, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuthorizedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedBy", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuthorizedBy, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizationRemarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuthorizedDate, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuthorizedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizedDate", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuthorizedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
 
-                            </div>
-                        </fieldset>
+                                </div>
+                            </fieldset>*@
 
                     }
                 </div>
@@ -148,7 +156,47 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
+
+     //DebitType typehead starts here
+            $('.DebitTypesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDebitTypesAsync", "DebitType", new { Area = "Accounts" })',
+                        { query: query },
+                        function (DebitTypes) {
+                            var newDebitTypesData = [];
+                            DebitTypesMap = {};
+                            $.each(DebitTypes, function (i, DebitType) {
+                                newDebitTypesData.push(DebitType.Description);
+                                DebitTypesMap[DebitType.Description] = DebitType;
+                            });
+                            process(newDebitTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var debitTypeId = "";
+                    DebitTypeId = DebitTypesMap[item].Id;
+                    $('#DebitTypeId').val(DebitTypeId);
+                    //console.log(DebitTypeId)
+                    return item;
+                }
+            });
+
+
+
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -218,42 +266,7 @@
             });
 
         });
-     //DebitType typehead starts here
-            $('.DebitTypesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetDebitTypesAsync", "DebitType", new { Area = "Accounts" })',
-                        { query: query },
-                        function (DebitTypes) {
-                            var newDebitTypesData = [];
-                            DebitTypesMap = {};
-                            $.each(DebitTypes, function (i, DebitType) {
-                                newDebitTypesData.push(DebitType.DebitTypeDescription);
-                                DebitTypesMap[DebitType.DebitTypeDescription] = DebitType;
-                            });
-                            process(newDebitTypesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var DebitTypeId = "";
-                    DebitTypeId = DebitTypesMap[item].Id;
-                    $('#DebitTypeId').val(DebitTypeId);
-                    //console.log(DebitTypeId)
-                    return item;
-                }
-            });
+
                  //Branch typehead starts here
             $('.BranchesLookup').typeahead({
                 source: function (query, process) {
@@ -264,8 +277,8 @@
                             var newBranchesData = [];
                             BranchesMap = {};
                             $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.BranchDescription);
-                                BranchesMap[Branch.BranchDescription] = Branch;
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
                             });
                             process(newBranchesData); return;
                         });
@@ -289,6 +302,6 @@
                     //console.log(BranchId)
                     return item;
                 }
-            
+
             }); </script>
 }

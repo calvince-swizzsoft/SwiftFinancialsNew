@@ -95,16 +95,15 @@
                     var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
                     var cancelUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
                     
-                    $('td:eq(5)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + cancelUrl);
+                    $('td:eq(4)', nRow).html(dt_ReceivedDate);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + cancelUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer" },
-                    { "mDataProp": "LoanGuarantors[0].CustomerFullName", "sTitle": "Guarantor Customer" },
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan purpose" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status" },

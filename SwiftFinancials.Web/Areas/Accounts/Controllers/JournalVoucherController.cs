@@ -54,7 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(journalVoucherDTO);
         }
-        public async Task<ActionResult> Create(Guid? id)
+        public async Task<ActionResult> Create()
         {
             
             await ServeNavigationMenus();
@@ -62,39 +62,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
 
             ViewBag.JournalVoucherEntryDTOs = null;
-            Guid parseId;
+           
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
-
-            JournalVoucherDTO journalVoucherDTO = new JournalVoucherDTO();
-
-            if (chartOfAccount != null)
-            {
-                journalVoucherDTO.ChartOfAccountId = chartOfAccount.Id;
-                journalVoucherDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
-            }
-
-
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
-
-            if (branch != null)
-            {
-                journalVoucherDTO.BranchId = branch.Id;
-                journalVoucherDTO.BranchDescription = branch.Description;
-            }
-
-            return View(journalVoucherDTO);
+            return View();
         }
 
         [HttpPost]
@@ -135,11 +105,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
-
-            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+           Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
 
             var valuedate = Request["valuedate"];
+
             journalVoucherDTO.ValueDate = DateTime.ParseExact((Request["valuedate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
             journalVoucherDTO.ValidateAll();
 
             if (!journalVoucherDTO.HasErrors)

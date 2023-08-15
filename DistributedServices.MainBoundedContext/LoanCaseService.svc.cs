@@ -43,6 +43,13 @@ namespace DistributedServices.MainBoundedContext
             return _loanCaseAppService.AddNewLoanCase(loanCaseDTO, serviceHeader);
         }
 
+        public async Task<bool> UpdateLoanCaseAsync(LoanCaseDTO loanCaseDTO)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return await _loanCaseAppService.UpdateLoanCaseAsync(loanCaseDTO, serviceHeader);
+        }
+
         public bool UpdateLoanGuarantorsByLoanCaseId(Guid loanCaseId, List<LoanGuarantorDTO> loanGuarantors)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

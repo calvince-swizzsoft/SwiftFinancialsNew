@@ -90,7 +90,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 loanProductDTO.InterestReceivableChartOfAccountId = loanProduct.Id;
                 loanProductDTO.InterestChargedChartOfAccountId = loanProduct.Id;
                 loanProductDTO.ChartOfAccountName = loanProduct.AccountName;
-                loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
+                //loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
             }
             return View();
         }

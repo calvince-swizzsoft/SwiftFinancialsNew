@@ -24,6 +24,22 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public Guid? LoanCaseId { get; set; }
 
         [DataMember]
+        [Display(Name = "Employer")]
+        public Guid? EmployerId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string EmployerDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public Guid? StationId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public string StationDescription { get; set; }
+
+        [DataMember]
         [Display(Name = "Amount Applied")]
         public decimal LoanCaseAmountApplied { get; set; }
 

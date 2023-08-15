@@ -969,6 +969,41 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             else return false;
         }
 
+        public async Task<bool> UpdateLoanCaseAsync(LoanCaseDTO loanCaseDTO, ServiceHeader serviceHeader)
+        {
+            using (var dbContextScope = _dbContextScopeFactory.Create())
+            {
+                var result = default(bool);
+
+                if (loanCaseDTO != null)
+                {
+                    var persisted = _loanCaseRepository.Get(loanCaseDTO.Id, serviceHeader);
+
+                    if (persisted != null)
+                    {
+                        var loanInterest = new LoanInterest(loanCaseDTO.LoanInterestAnnualPercentageRate, loanCaseDTO.LoanInterestChargeMode, loanCaseDTO.LoanInterestRecoveryMode, loanCaseDTO.LoanInterestCalculationMode);
+
+                        var loanRegistration = new LoanRegistration(loanCaseDTO.LoanRegistrationTermInMonths, loanCaseDTO.LoanRegistrationMinimumAmount, loanCaseDTO.LoanRegistrationMaximumAmount, loanCaseDTO.LoanRegistrationMinimumInterestAmount, loanCaseDTO.LoanRegistrationLoanProductSection, loanCaseDTO.LoanRegistrationLoanProductCategory, loanCaseDTO.LoanRegistrationConsecutiveIncome, loanCaseDTO.LoanRegistrationInvestmentsMultiplier, loanCaseDTO.LoanRegistrationMinimumGuarantors, loanCaseDTO.LoanRegistrationMaximumGuarantees, loanCaseDTO.LoanRegistrationRejectIfMemberHasBalance, loanCaseDTO.LoanRegistrationSecurityRequired, loanCaseDTO.LoanRegistrationAllowSelfGuarantee, loanCaseDTO.LoanRegistrationGracePeriod, loanCaseDTO.LoanRegistrationMinimumMembershipPeriod, loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear, loanCaseDTO.LoanRegistrationPaymentDueDate, loanCaseDTO.LoanRegistrationPayoutRecoveryMode, loanCaseDTO.LoanRegistrationPayoutRecoveryPercentage, loanCaseDTO.LoanRegistrationAggregateCheckOffRecoveryMode, loanCaseDTO.LoanRegistrationChargeClearanceFee, loanCaseDTO.LoanRegistrationMicrocredit, loanCaseDTO.LoanRegistrationStandingOrderTrigger, loanCaseDTO.LoanRegistrationTrackArrears, loanCaseDTO.LoanRegistrationChargeArrearsFee, loanCaseDTO.LoanRegistrationEnforceSystemAppraisalRecommendation, loanCaseDTO.LoanRegistrationBypassAudit, loanCaseDTO.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, loanCaseDTO.LoanRegistrationGuarantorSecurityMode, loanCaseDTO.LoanRegistrationRoundingType, loanCaseDTO.LoanRegistrationDisburseMicroLoanLessDeductions, loanCaseDTO.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement, loanCaseDTO.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal, loanCaseDTO.LoanRegistrationThrottleScheduledArrearsRecovery, loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit);
+
+                        var takeHome = new Charge(loanCaseDTO.TakeHomeType, loanCaseDTO.TakeHomePercentage, loanCaseDTO.TakeHomeFixedAmount);
+
+                        var current = LoanCaseFactory.CreateLoanCase(loanCaseDTO.ParentId, loanCaseDTO.BranchId, loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, loanCaseDTO.LoanPurposeId, loanCaseDTO.SavingsProductId, loanCaseDTO.Remarks, loanCaseDTO.AmountApplied, loanCaseDTO.ReceivedDate, loanCaseDTO.LoanProductInvestmentsBalance, loanCaseDTO.LoanProductLoanBalance, loanCaseDTO.TotalLoansBalance, loanCaseDTO.LoanProductLatestIncome, loanCaseDTO.Reference, loanInterest, loanRegistration, loanCaseDTO.MaximumAmountPercentage, takeHome);
+
+                        current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
+                        persisted.Status = (int)LoanCaseStatus.Registered;
+                        persisted.CreatedBy = serviceHeader.ApplicationUserName;
+                        persisted.CaseNumber = persisted.CaseNumber;
+
+                        _loanCaseRepository.Merge(persisted, current, serviceHeader);
+
+                        result = await dbContextScope.SaveChangesAsync(serviceHeader) >= 0;
+                    }
+                }
+
+                return result;
+            }
+        }
+
         public async Task<bool> CancelLoanCaseAsync(LoanCaseDTO loanCaseDTO, int loanCancellationOption, ServiceHeader serviceHeader)
         {
             using (var dbContextScope = _dbContextScopeFactory.Create())

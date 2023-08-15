@@ -79,10 +79,10 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.EntityFramework, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.2\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.3\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.3\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
@@ -140,10 +140,11 @@
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Configuration.ConfigurationManager, Version=4.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Configuration.ConfigurationManager.4.4.1\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
+    <Reference Include="System.Configuration.ConfigurationManager, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Configuration.ConfigurationManager.6.0.0\lib\net461\System.Configuration.ConfigurationManager.dll</HintPath>
     </Reference>
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.OracleClient" />
     <Reference Include="System.Diagnostics.DiagnosticSource, Version=4.0.5.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Diagnostics.DiagnosticSource.4.7.1\lib\net46\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
@@ -151,6 +152,7 @@
     <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
     </Reference>
+    <Reference Include="System.Net" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.7\lib\net45\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
@@ -165,10 +167,21 @@
     <Reference Include="System.Runtime.Remoting" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Permissions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Permissions.6.0.0\lib\net461\System.Security.Permissions.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.ServiceProcess" />
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
+    <Reference Include="System.Transactions" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -242,6 +255,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Owin">
@@ -292,14 +306,37 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditTypeController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\FiscalCountController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\TellerController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SavingsProductController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\TreasuryController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\UnPayReasonController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\WireTransferTypeController.cs" />
+    <Compile Include="Areas\Accounts\Models\LevyViewModel.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
+    <Compile Include="Areas\Admin\Controllers\BankController.cs" />
     <Compile Include="Areas\Admin\Controllers\BranchController.cs" />
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\LocationController.cs" />
@@ -308,20 +345,24 @@
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
-    <Compile Include="Areas\Client\ClientAreaRegistration.cs" />
-    <Compile Include="Areas\Client\Controllers\CustomerController.cs" />
-    <Compile Include="Areas\Client\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Dashboard\Controllers\DashboardController.cs" />
     <Compile Include="Areas\Dashboard\DashboardAreaRegistration.cs" />
+    <Compile Include="Areas\FrontOffice\FrontOfficeAreaRegistration.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DepartmentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DesignationController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveApplicationController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\TrainingPeriodController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanProductAppraisalController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
+    <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
     <Compile Include="Areas\Messaging\Controllers\TextAlertController.cs" />
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
@@ -332,6 +373,7 @@
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Models\ReportModel.cs" />
@@ -582,14 +624,7 @@
     <Content Include="Areas\Messaging\Views\web.config" />
     <Content Include="Areas\Messaging\Views\TextAlert\Index.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailAlert\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Create.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Edit.cshtml" />
-    <Content Include="Areas\Client\Views\Customer\Details.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Index.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Create.cshtml" />
-    <Content Include="Areas\Client\Views\Employer\Edit.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Index.cshtml" />
     <Content Include="Content\summernote\font\summernote.woff" />
@@ -603,7 +638,6 @@
     <Content Include="Areas\Messaging\Views\EmailAlert\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\TextAlert\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\web.config" />
-    <Content Include="Areas\Client\Views\Employer\Details.cshtml" />
     <Content Include="Areas\Registry\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Create.cshtml" />
@@ -611,7 +645,6 @@
     <Content Include="Areas\Admin\Views\Membership\_Companies.cshtml" />
     <Content Include="Areas\Reports\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
-    <Content Include="Areas\Client\Views\web.config" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
@@ -630,10 +663,6 @@
     <Content Include="Areas\Registry\Views\Zone\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\Zone\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Division\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanPurpose\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanPurpose\Create.cshtml" />
@@ -680,10 +709,6 @@
     <Content Include="Areas\Admin\Views\Report\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Report\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Create.cshtml" />
@@ -696,18 +721,140 @@
     <Content Include="Areas\Accounts\Views\DebitType\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Levy\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Levy\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\Levy\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Levy\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitType\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditType\Edit.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Index.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Station\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Index.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Details.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Location\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\TrainingPeriod\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Edit.cshtml" />
+    <Content Include="Areas\Admin\Views\Bank\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRequest\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Levy\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Budget\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Treasury\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChequeType\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChequeType\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChequeType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\ChequeType\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Teller\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsProduct\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankLinkage\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankLinkage\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankLinkage\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankLinkage\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\DirectDebit\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\DebitBatch\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\FixedDepositType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Employee\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\WireTransferType\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\WireTransferType\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\WireTransferType\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\WireTransferType\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\UnPayReason\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\UnPayReason\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\UnPayReason\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\UnPayReason\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InsuranceCompany\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\InsuranceCompany\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InsuranceCompany\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanProduct\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Commission\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Details.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Edit.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\web.config" />
+    <Content Include="Areas\FrontOffice\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FiscalCount\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanProductAppraisalProduct\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Approve.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Verify.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Cancel.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Verify.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanGuarantor\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Approve.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Cancel.cshtml" />
+    <Content Include="Areas\Accounts\Views\JournalVoucher\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1121,7 +1268,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Web.config" />
-    <Content Include="_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
@@ -1162,14 +1308,15 @@
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Account\ForceChangePassword.cshtml" />
     <Content Include="Views\Account\Lockout.cshtml" />
+    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
-    <Folder Include="Areas\Client\Data\" />
-    <Folder Include="Areas\Client\Views\Shared\" />
+    <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
+    <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
@@ -1243,7 +1390,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:57723/</IISUrl>
+          <IISUrl>http://localhost:58870/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

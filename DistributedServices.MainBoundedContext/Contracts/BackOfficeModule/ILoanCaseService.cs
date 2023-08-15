@@ -21,6 +21,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        Task<bool> UpdateLoanCaseAsync(LoanCaseDTO loanCaseDTO);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         bool UpdateLoanGuarantorsByLoanCaseId(Guid loanCaseId, List<LoanGuarantorDTO> loanGuarantors);
 
         [OperationContract()]
