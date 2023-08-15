@@ -81,6 +81,37 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+
+            return View(debitBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, DebitBatchDTO debitBatchDTO)
+        {
+            debitBatchDTO.ValidateAll();
+
+            if (!debitBatchDTO.HasErrors)
+            {
+                await _channelService.UpdateDebitBatchAsync(debitBatchDTO, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = debitBatchDTO.ErrorMessages;
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+                return View(debitBatchDTO);
+            }
+        }
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
 
@@ -89,19 +120,57 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DebitBatchDTO debitBatchDTOBindingModel)
+        public async Task<ActionResult> Verify(Guid id, DebitBatchDTO debitBatchDTO)
         {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateDebitBatchAsync(debitBatchDTOBindingModel, GetServiceHeader());
+            debitBatchDTO.ValidateAll();
 
+            if (!debitBatchDTO.HasErrors)
+            {
+                await _channelService.AuditDebitBatchAsync(debitBatchDTO,1, GetServiceHeader());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(debitBatchDTOBindingModel);
+                var errorMessages = debitBatchDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                return View(debitBatchDTO);
             }
         }
+
+        public async Task<ActionResult> Authorize(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+
+            return View(debitBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Authorize(Guid id, DebitBatchDTO debitBatchDTO)
+        {
+            var batchAuthOption = debitBatchDTO.BatchAuthOption;
+            debitBatchDTO.ValidateAll();
+
+            if (!debitBatchDTO.HasErrors)
+            {
+                await _channelService.AuthorizeDebitBatchAsync(debitBatchDTO, 1, batchAuthOption, GetServiceHeader());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = debitBatchDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                return View(debitBatchDTO);
+            }
+        }
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetDebitBatchesAsync()

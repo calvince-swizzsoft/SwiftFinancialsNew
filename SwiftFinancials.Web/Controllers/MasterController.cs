@@ -828,6 +828,27 @@ namespace SwiftFinancials.Web.Controllers
 
             return employeeCategories;
         }
+
+        [NonAction]
+        protected List<SelectListItem> GetBatchAuthOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> batchAuthOptions = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(BatchAuthOption)).Cast<BatchAuthOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            batchAuthOptions.AddRange(items);
+
+            return batchAuthOptions;
+        }
+
+
+
+
         [NonAction]
         protected List<SelectListItem> GetBloodGroupSelectList(string selectedValue)
         {

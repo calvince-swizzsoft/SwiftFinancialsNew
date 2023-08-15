@@ -83,19 +83,22 @@
 
                     var editUrl = '<a  href="/accounts/DebitBatch/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/DebitBatch/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var verifyUrl = '<a  href="/accounts/DebitBatch/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var authorizeUrl = '<a  href="/accounts/DebitBatch/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + authorizeUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "DebitTypeDescription", "sTitle": "DebitType", "sWidth": "15%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "DebitTypeDescription", "sTitle": "DebitType", "sWidth": "15%"  },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
+                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "2%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

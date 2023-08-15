@@ -89,6 +89,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        [DataMember]
+        [Display(Name = "Debit Batch Auth Option")]
+        public byte BatchAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Debit Batch Auth Option")]
+        public string BatchAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)BatchAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)BatchAuthOption) : string.Empty;
+            }
+        }
+
         [DataMember]
         [Display(Name = "Verified/RejectedBy")]
         public string AuditedBy { get; set; }
