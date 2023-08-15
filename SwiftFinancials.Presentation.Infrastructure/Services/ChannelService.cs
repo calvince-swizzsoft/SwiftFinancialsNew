@@ -34653,6 +34653,44 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<bool> UpdateExpensePayableEntriesByExpensePayableIdAsync(Guid expensePayableId, ObservableCollection<ExpensePayableEntryDTO> expensePayableEntries, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+        
+            IExpensePayableService service = GetService<IExpensePayableService>(serviceHeader);
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IExpensePayableService)result.AsyncState).EndUpdateExpensePayableEntriesByExpensePayableId(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateExpensePayableEntriesByExpensePayableId(expensePayableId, expensePayableEntries.ExtendedToList(), asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+
+
+
+
         public Task<ExpensePayableEntryDTO> AddExpensePayableEntryAsync(ExpensePayableEntryDTO expensePayableEntryDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ExpensePayableEntryDTO>();

@@ -34,7 +34,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTOs;
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
-        public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntries;
+        public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
 
         private IChannelService channelService;
         public IChannelService _channelService

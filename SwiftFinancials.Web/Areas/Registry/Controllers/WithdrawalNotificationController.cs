@@ -71,8 +71,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (Customer != null)
             {
+
                 withdrawalNotificationDTO.CustomerId = Customer.Id;
                 withdrawalNotificationDTO.CustomerFullName = Customer.FullName;
+                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = Customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.CustomerSerialNumber = Customer.SerialNumber;
+                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = Customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.CustomerStationDescription = Customer.StationDescription;
+                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = Customer.StationZoneDivisionEmployerDescription;
             }
 
             return View(withdrawalNotificationDTO);
