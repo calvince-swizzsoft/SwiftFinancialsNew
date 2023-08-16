@@ -9834,7 +9834,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
-        public Task<ObservableCollection<LoanCaseDTO>> FindLoanCaseByLoanCaseNumberAsync(int caseNumber, bool includeBatchStatus, ServiceHeader serviceHeader)
+        public Task<ObservableCollection<LoanCaseDTO>> FindLoanCaseByLoanCaseNumberAsync(int caseNumber, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<LoanCaseDTO>>();
 
@@ -9861,7 +9861,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-            service.BeginFindLoanCaseByLoanCaseNumber(caseNumber, includeBatchStatus, asyncCallback, service);
+            service.BeginFindLoanCaseByLoanCaseNumber(caseNumber, asyncCallback, service);
 
             return tcs.Task;
         }

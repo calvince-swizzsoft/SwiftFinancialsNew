@@ -77,7 +77,7 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber, bool includeBatchStatus);
+        List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]

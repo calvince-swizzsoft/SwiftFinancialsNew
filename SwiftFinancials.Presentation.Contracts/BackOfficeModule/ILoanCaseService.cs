@@ -89,7 +89,7 @@ namespace SwiftFinancials.Presentation.Contracts.BackOfficeModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginFindLoanCaseByLoanCaseNumber(int caseNumber, bool includeBatchStatus, AsyncCallback callback, Object state);
+        IAsyncResult BeginFindLoanCaseByLoanCaseNumber(int caseNumber, AsyncCallback callback, Object state);
         List<LoanCaseDTO> EndFindLoanCaseByLoanCaseNumber(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]

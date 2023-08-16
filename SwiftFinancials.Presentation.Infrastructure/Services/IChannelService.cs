@@ -779,7 +779,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<AttachedLoanDTO>> FindAttachedLoansByLoanCaseIdAsync(Guid loanCaseId, ServiceHeader serviceHeader = null);
 
-        Task<ObservableCollection<LoanCaseDTO>> FindLoanCaseByLoanCaseNumberAsync(int caseNumber, bool includeBatchStatus, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<LoanCaseDTO>> FindLoanCaseByLoanCaseNumberAsync(int caseNumber, ServiceHeader serviceHeader = null);
 
         Task<LoanCaseDTO> FindLoanCaseAsync(Guid loanCaseId, ServiceHeader serviceHeader = null);
 

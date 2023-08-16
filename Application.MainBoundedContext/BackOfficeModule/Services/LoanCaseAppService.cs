@@ -2066,12 +2066,12 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             else return null;
         }
 
-        public List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber, bool includeBatchStatus, ServiceHeader serviceHeader)
+        public List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber, ServiceHeader serviceHeader)
         {
             {
                 using (_dbContextScopeFactory.CreateReadOnly())
                 {
-                    var filter = LoanCaseSpecifications.LoanCaseWithLoanCaseNumber(caseNumber, includeBatchStatus);
+                    var filter = LoanCaseSpecifications.LoanCaseWithLoanCaseNumber(caseNumber);
 
                     ISpecification<LoanCase> spec = filter;
 

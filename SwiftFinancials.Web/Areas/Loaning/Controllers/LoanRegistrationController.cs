@@ -312,5 +312,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             return Json(loanCasesDTOs, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetLoanCaseAsync(LoanCaseDTO loanCaseDTO)
+        {
+            var caseNumber = loanCaseDTO.CaseNumber;
+            var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
+
+            return Json(loanCasesDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }

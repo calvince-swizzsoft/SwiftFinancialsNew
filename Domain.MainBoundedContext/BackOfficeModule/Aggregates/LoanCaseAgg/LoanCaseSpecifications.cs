@@ -68,9 +68,9 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoanCaseAgg
             return specification;
         }
 
-        public static Specification<LoanCase> LoanCaseWithLoanCaseNumber(int caseNumber, bool includeBatchStatus)
+        public static Specification<LoanCase> LoanCaseWithLoanCaseNumber(int caseNumber)
         {
-            Specification<LoanCase> specification = DefaultSpec(includeBatchStatus);
+            Specification<LoanCase> specification = DefaultSpec(false);
 
             var loanCaseSpec = new DirectSpecification<LoanCase>(c => c.CaseNumber == caseNumber);
 
