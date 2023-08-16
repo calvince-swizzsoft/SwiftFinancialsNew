@@ -61,6 +61,7 @@
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-6">
+
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
@@ -70,19 +71,19 @@
                                                 </span>
                                             </div>
                                         </div>
+
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerStationDescription, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
                                         </div>
+
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
                                         </div>
-
-
-                  
+                                                          
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Category, new { @class = "control-label" })
                                             <div class="input-group">
@@ -91,13 +92,17 @@
                                                 @Html.ValidationMessageFor(model => model.Category)
                                             </div>
                                         </div>
+
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2">
                                                 <input type="submit" value="Create" class="btn btn-primary" />
                                             </div>
                                         </div>
+
                                     </div>
-                                    <div class="col-lg-6">
+
+
+                                    <div class="col-lg-10">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })

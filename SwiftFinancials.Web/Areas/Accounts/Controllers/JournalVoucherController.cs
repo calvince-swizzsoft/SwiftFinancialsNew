@@ -59,6 +59,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             
             await ServeNavigationMenus();
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
+
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
 
             ViewBag.JournalVoucherEntryDTOs = null;

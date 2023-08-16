@@ -441,7 +441,7 @@ namespace SwiftFinancials.Web.Controllers
         [NonAction]
         protected List<SelectListItem> GetChargeTypeSelectList(string selectedValue)
         {
-            List<SelectListItem> chargeTypes = new List<SelectListItem>();
+            List<SelectListItem> ChargeType = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(ChargeType)).Cast<ChargeType>().Select(v => new SelectListItem
             {
@@ -450,9 +450,9 @@ namespace SwiftFinancials.Web.Controllers
                 Selected = ((int)v).ToString() == selectedValue,
             }).ToList();
 
-            chargeTypes.AddRange(items);
+            ChargeType.AddRange(items);
 
-            return chargeTypes;
+            return ChargeType;
         }
 
         [NonAction]
@@ -828,6 +828,30 @@ namespace SwiftFinancials.Web.Controllers
 
             return employeeCategories;
         }
+
+
+
+        [NonAction]
+        protected List<SelectListItem> GetMonthsAsync(string selectedValue)
+        {
+            List<SelectListItem> Monthtype = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(Month)).Cast<Month>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            Monthtype.AddRange(items);
+
+            return Monthtype;
+        }
+
+
+
+
+
         [NonAction]
         protected List<SelectListItem> GetBloodGroupSelectList(string selectedValue)
         {
@@ -863,6 +887,45 @@ namespace SwiftFinancials.Web.Controllers
             return journalVoucherTypes;
         }
 
+        [NonAction]
+
+        protected List<SelectListItem> GetCreditBatchesAsync(string selectedValue)
+        {
+            List<SelectListItem> QueuePriority = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CreditBatchType)).Cast<CreditBatchType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            QueuePriority.AddRange(items);
+
+            return QueuePriority;
+        }
+
+
+
+
+        [NonAction]
+        protected List<SelectListItem> GetQueuePriorityAsync(string selectedValue)
+        {
+            List<SelectListItem> creditBatchType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(QueuePriority)).Cast<QueuePriority>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            creditBatchType.AddRange(items);
+
+            return creditBatchType;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetExpensePayableAuthOptionSelectList(string selectedValue)
         {
             List<SelectListItem> expensePayableAuthOptions = new List<SelectListItem>();

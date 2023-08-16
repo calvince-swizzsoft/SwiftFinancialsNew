@@ -54,7 +54,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View();
         }
 
@@ -67,6 +70,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
 
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
                 return RedirectToAction("Index");
             }
             else
