@@ -110,6 +110,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+            var creditBatchDTO = await _channelService.FindCreditBatchAsync(id, GetServiceHeader());
+
+            return View(creditBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, CreditBatchDTO creditBatchDTO)
+        {
+            creditBatchDTO.ValidateAll();
+
+            if (!creditBatchDTO.HasErrors)
+            {
+                await _channelService.AuditCreditBatchAsync(creditBatchDTO, 1, GetServiceHeader());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(creditBatchDTO.Type.ToString());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = creditBatchDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(creditBatchDTO.Type.ToString());
+                return View(creditBatchDTO);
+            }
+        }
         [HttpGet]
         public async Task<JsonResult> GetCreditBatchesAsync()
         {

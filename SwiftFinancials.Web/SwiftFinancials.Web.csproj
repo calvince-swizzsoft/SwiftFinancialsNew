@@ -857,6 +857,7 @@
     <Content Include="Areas\Accounts\Views\JournalVoucher\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\CreditBatch\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
