@@ -73,6 +73,11 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<DebitBatchDTO> FindDebitBatchesByFilterInPage(string text, int pageIndex, int pageSize);
+
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<DebitBatchEntryDTO> FindQueableDebitBatchEntriesInPage(int pageIndex, int pageSize);
 
         #endregion

@@ -95,6 +95,14 @@ namespace DistributedServices.MainBoundedContext
             return _debitBatchAppService.FindDebitBatches(status, startDate, endDate, text, pageIndex, pageSize, serviceHeader);
         }
 
+        public PageCollectionInfo<DebitBatchDTO> FindDebitBatchesByFilterInPage(string text, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _debitBatchAppService.FindDebitBatches(text, pageIndex, pageSize, serviceHeader);
+        }
+
+
         public DebitBatchDTO FindDebitBatch(Guid debitBatchId)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

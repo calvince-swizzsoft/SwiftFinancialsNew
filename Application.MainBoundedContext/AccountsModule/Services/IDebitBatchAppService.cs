@@ -24,6 +24,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         List<DebitBatchDTO> FindDebitBatches(ServiceHeader serviceHeader);
 
+        PageCollectionInfo<DebitBatchDTO> FindDebitBatches(int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
+        PageCollectionInfo<DebitBatchDTO> FindDebitBatches(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
         PageCollectionInfo<DebitBatchDTO> FindDebitBatches(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         DebitBatchDTO FindDebitBatch(Guid debitBatchId, ServiceHeader serviceHeader);

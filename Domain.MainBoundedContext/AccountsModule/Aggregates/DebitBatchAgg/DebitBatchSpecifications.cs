@@ -14,6 +14,22 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.DebitBatchAgg
             return specification;
         }
 
+        public static Specification<DebitBatch> DebitBatchFullText(string text)
+        {
+            Specification<DebitBatch> specification = DefaultSpec();
+
+            if (!String.IsNullOrWhiteSpace(text))
+            {
+                var descriptionSpec = new DirectSpecification<DebitBatch>(c => c.Reference.Contains(text));
+
+                specification &= (descriptionSpec);
+            }
+
+            return specification;
+        }
+
+
+
         public static Specification<DebitBatch> DebitBatchesWithStatus(int status, DateTime startDate, DateTime endDate, string text)
         {
             endDate = UberUtil.AdjustTimeSpan(endDate);

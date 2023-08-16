@@ -482,6 +482,58 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+        public PageCollectionInfo<DebitBatchDTO> FindDebitBatches(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = DebitBatchSpecifications.DebitBatchFullText(text);
+
+                ISpecification<DebitBatch> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var debitBatchCollection = _debitBatchRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (debitBatchCollection != null)
+                {
+                    var pageCollection = debitBatchCollection.PageCollection.ProjectedAsCollection<DebitBatchDTO>();
+
+                    var itemsCount = debitBatchCollection.ItemsCount;
+
+                    return new PageCollectionInfo<DebitBatchDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
+        public PageCollectionInfo<DebitBatchDTO> FindDebitBatches(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = DebitBatchSpecifications.DefaultSpec();
+
+                ISpecification<DebitBatch> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var debitBatchPagedCollection = _debitBatchRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (debitBatchPagedCollection != null)
+                {
+                    var pageCollection = debitBatchPagedCollection.PageCollection.ProjectedAsCollection<DebitBatchDTO>();
+
+                    var itemsCount = debitBatchPagedCollection.ItemsCount;
+
+                    return new PageCollectionInfo<DebitBatchDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
+
+
+
+
         public PageCollectionInfo<DebitBatchDTO> FindDebitBatches(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
