@@ -2066,6 +2066,26 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             else return null;
         }
 
+        public List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber, bool includeBatchStatus, ServiceHeader serviceHeader)
+        {
+            {
+                using (_dbContextScopeFactory.CreateReadOnly())
+                {
+                    var filter = LoanCaseSpecifications.LoanCaseWithLoanCaseNumber(caseNumber, includeBatchStatus);
+
+                    ISpecification<LoanCase> spec = filter;
+
+                    var loanCases = _loanCaseRepository.AllMatching(spec, serviceHeader);
+
+                    if (loanCases != null && loanCases.Any())
+                    {
+                        return loanCases.ProjectedAsCollection<LoanCaseDTO>();
+                    }
+                    else return null;
+                }
+            }
+        }
+
         public LoanGuarantorDTO FindLoanGuarantor(Guid loanGuarantorId, ServiceHeader serviceHeader)
         {
             if (loanGuarantorId != Guid.Empty)
@@ -2458,12 +2478,12 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                                 _journalEntryPostingService.PerformDoubleEntry(relievingInterestJournal, destinationLoanProduct.InterestReceivableChartOfAccountId, sourceLoanProduct.InterestReceivableChartOfAccountId, destinationCustomerAccount, sourceCustomerAccount, serviceHeader);
                                 journals.Add(relievingInterestJournal);
 
-                                #region Do we need to send alerts?
+                                    #region Do we need to send alerts?
 
-                                _brokerService.ProcessGuarantorRelievingAccountAlerts(DMLCommand.None, serviceHeader, loanGuarantorAttachmentHistoryEntryDTO);
+                                    _brokerService.ProcessGuarantorRelievingAccountAlerts(DMLCommand.None, serviceHeader, loanGuarantorAttachmentHistoryEntryDTO);
 
-                                #endregion
-                            });
+                                    #endregion
+                                });
                         }
                     }
                 }

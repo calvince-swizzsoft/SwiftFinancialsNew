@@ -162,6 +162,13 @@ namespace DistributedServices.MainBoundedContext
             return _loanCaseAppService.FindLoanGuarantorsByLoanCaseId(loanCaseId, serviceHeader);
         }
 
+        public List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber, bool includeBatchStatus)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _loanCaseAppService.FindLoanCaseByLoanCaseNumber(caseNumber, includeBatchStatus, serviceHeader);
+        }
+
         public List<AttachedLoanDTO> FindAttachedLoansByLoanCaseId(Guid loanCaseId)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
