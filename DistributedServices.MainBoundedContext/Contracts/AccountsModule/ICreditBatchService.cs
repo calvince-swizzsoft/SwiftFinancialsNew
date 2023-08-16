@@ -113,6 +113,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<CreditBatchDTO> FindCreditBatchesByFilterInPage(string text, int pageIndex, int pageSize);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<CreditBatchEntryDTO> FindQueableCreditBatchEntriesInPage(int pageIndex, int pageSize);
 
         #endregion

@@ -34,6 +34,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         PageCollectionInfo<CreditBatchDTO> FindCreditBatches(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
+        PageCollectionInfo<CreditBatchDTO> FindCreditBatches(int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
+        PageCollectionInfo<CreditBatchDTO> FindCreditBatches(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
         CreditBatchDTO FindCreditBatch(Guid creditBatchId, ServiceHeader serviceHeader);
 
         CreditBatchDTO FindCachedCreditBatch(Guid creditBatchId, ServiceHeader serviceHeader);

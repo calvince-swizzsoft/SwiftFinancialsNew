@@ -1325,11 +1325,63 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+
+        public PageCollectionInfo<CreditBatchDTO> FindCreditBatches(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = CreditBatchSpecifications.CreditBatchFullText(text);
+
+                ISpecification<CreditBatch> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var creditBatchCollection = _creditBatchRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (creditBatchCollection != null)
+                {
+                    var pageCollection = creditBatchCollection.PageCollection.ProjectedAsCollection<CreditBatchDTO>();
+
+                    var itemsCount = creditBatchCollection.ItemsCount;
+
+                    return new PageCollectionInfo<CreditBatchDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
+
+        public PageCollectionInfo<CreditBatchDTO> FindCreditBatches(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = CreditBatchSpecifications.DefaultSpec();
+
+                ISpecification<CreditBatch> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var creditBatchPagedCollection = _creditBatchRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (creditBatchPagedCollection != null)
+                {
+                    var pageCollection = creditBatchPagedCollection.PageCollection.ProjectedAsCollection<CreditBatchDTO>();
+
+                    var itemsCount = creditBatchPagedCollection.ItemsCount;
+
+                    return new PageCollectionInfo<CreditBatchDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
+
+
         public PageCollectionInfo<CreditBatchDTO> FindCreditBatches(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
-                var filter = CreditBatchSpecifications.CreditBatchesWithDateRangeAndStatus(startDate, endDate, status, text);
+                var filter = CreditBatchSpecifications.CreditBatchesWithStatus(status, startDate, endDate, text);
 
                 ISpecification<CreditBatch> spec = filter;
 
@@ -1345,7 +1397,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     {
                         foreach (var item in pageCollection)
                         {
-                            var totalItems = _creditBatchEntryRepository.AllMatchingCount(CreditBatchEntrySpecifications.CreditBatchEntryWithCreditBatchId(item.Id, null, (int)CreditBatchEntryFilter.Reference), serviceHeader);
+                            var totalItems = _creditBatchEntryRepository.AllMatchingCount(CreditBatchEntrySpecifications.CreditBatchEntryWithCreditBatchId(item.Id, null), serviceHeader);
 
                             var postedItems = _creditBatchEntryRepository.AllMatchingCount(CreditBatchEntrySpecifications.PostedCreditBatchEntryWithCreditBatchId(item.Id), serviceHeader);
 
@@ -1360,7 +1412,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
-
         public CreditBatchDTO FindCreditBatch(Guid creditBatchId, ServiceHeader serviceHeader)
         {
             if (creditBatchId != Guid.Empty)
@@ -1558,6 +1609,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
+
 
         public List<CreditBatchEntryDTO> FindCreditBatchEntriesByCustomerId(int creditBatchType, Guid customerId, ServiceHeader serviceHeader)
         {
