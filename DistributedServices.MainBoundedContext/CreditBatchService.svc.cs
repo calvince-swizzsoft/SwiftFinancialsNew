@@ -122,6 +122,13 @@ namespace DistributedServices.MainBoundedContext
             return _creditBatchAppService.FindCreditBatches(serviceHeader);
         }
 
+        public PageCollectionInfo<CreditBatchDTO> FindCreditBatchesByFilterInPage(string text, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _creditBatchAppService.FindCreditBatches(text, pageIndex, pageSize, serviceHeader);
+        }
+
         public PageCollectionInfo<CreditBatchDTO> FindCreditBatchesByStatusAndFilterInPage(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

@@ -17,6 +17,20 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.CreditBatchEntryAg
             return specification;
         }
 
+        public static Specification<CreditBatchEntry> CreditBatchEntryWithCreditBatchId(Guid creditBatchId, string text)
+        {
+            Specification<CreditBatchEntry> specification = DefaultSpec();
+
+            if (creditBatchId != null && creditBatchId != Guid.Empty)
+            {
+                var creditBatchIdSpec = new DirectSpecification<CreditBatchEntry>(c => c.CreditBatchId == creditBatchId);
+
+                specification &= creditBatchIdSpec;
+            }
+
+            return specification;
+        }
+
         public static Specification<CreditBatchEntry> CreditBatchEntryWithCreditBatchId(Guid creditBatchId, string text, int creditBatchEntryFilter)
         {
             Specification<CreditBatchEntry> specification = new DirectSpecification<CreditBatchEntry>(c => c.CreditBatchId == creditBatchId);

@@ -124,8 +124,8 @@
                     var editUrl = '<a  href="/Accounts/CreditBatch/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Accounts/CreditBatch/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
@@ -133,7 +133,8 @@
                 "aoColumns": [
                     { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
                     { "mDataProp": "CreditTypeDescription", "sTitle": "Credit Type", "sWidth": "15%" },
-                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
