@@ -77,6 +77,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         LoanGuarantorDTO FindLoanGuarantor(Guid loanGuarantorId);
 
         [OperationContract()]

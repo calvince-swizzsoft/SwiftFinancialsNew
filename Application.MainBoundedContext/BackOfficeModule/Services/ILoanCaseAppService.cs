@@ -83,6 +83,8 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
 
         List<AttachedLoanDTO> FindAttachedLoansByLoanCaseId(Guid loanCaseId, ServiceHeader serviceHeader);
 
+        List<LoanCaseDTO> FindLoanCaseByLoanCaseNumber(int caseNumber, ServiceHeader serviceHeader);
+
         List<LoanAppraisalFactorDTO> FindLoanAppraisalFactorsByLoanCaseId(Guid loanCaseId, ServiceHeader serviceHeader);
 
         List<LoanCaseDTO> FindLoanCasesByCustomerIdAndLoanProductId(Guid customerId, Guid loanProductId, ServiceHeader serviceHeader);
