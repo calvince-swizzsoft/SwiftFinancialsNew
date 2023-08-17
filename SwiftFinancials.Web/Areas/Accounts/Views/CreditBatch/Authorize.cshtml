@@ -2,7 +2,7 @@
 
 @{
     /**/
-    ViewBag.Title = "Verify Credit Batch ";
+    ViewBag.Title = "Authorize Credit Batch ";
     var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
     var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
     var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
@@ -56,10 +56,10 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Verify", "CreditBatch", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Authorize", "CreditBatch", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        <h1>Credit Batch</h1>
+                        <h1>Authorize Credit Batch</h1>
 
                         <fieldset>
                             <div class="row">
@@ -100,26 +100,7 @@
                                             @Html.ValidationMessageFor(model => model.Priority)
                                         </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "createdby", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
-                                    </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.TypeDescription, batchAuthOptions, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.TypeDescription)
-                                        </div>
-                                    </div>
-                                  
                                 </div>
-
-
-
-
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
@@ -145,6 +126,11 @@
                                         @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "createdby", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-sm">
@@ -159,32 +145,21 @@
                                         @Html.EditorFor(model => model.ConcessionFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "ConcessionFixedAmount", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.ConcessionFixedAmount, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.RecoverCarryForwards, new { htmlAttributes = new { @class = "form-control", @placeholder = "RecoverCarryForwards?" } })
-                                                @Html.LabelFor(model => model.RecoverCarryForwards, htmlAttributes: new { @class = "" })
-                                                @Html.ValidationMessageFor(model => model.RecoverCarryForwards, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.RecoverIndefiniteCharges, new { htmlAttributes = new { @class = "form-control", @placeholder = "RecoverIndefiniteCharges?" } })
-                                                @Html.LabelFor(model => model.RecoverIndefiniteCharges, htmlAttributes: new { @class = "" })
-                                                @Html.ValidationMessageFor(model => model.RecoverIndefiniteCharges, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Authorization Remarks", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.RecoverArrearages, new { htmlAttributes = new { @class = "form-control", @placeholder = "RecoverArrearages?" } })
-                                                @Html.LabelFor(model => model.RecoverArrearages, htmlAttributes: new { @class = "" })
-                                                @Html.ValidationMessageFor(model => model.RecoverArrearages, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
 
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.TypeDescription, batchAuthOptions, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.TypeDescription)
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </fieldset>
@@ -240,7 +215,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-<script>
+    <script>
 
         $(document).ready(function () {
             $("#wizard").steps();

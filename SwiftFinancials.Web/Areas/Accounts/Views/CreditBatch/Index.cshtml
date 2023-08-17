@@ -123,20 +123,21 @@
 
                     var editUrl = '<a  href="/Accounts/CreditBatch/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Accounts/CreditBatch/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
+                    var verifyUrl = '<a  href="/Accounts/CreditBatch/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var AuthorizeUrl = '<a  href="/Accounts/CreditBatch/Authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
                     $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + AuthorizeUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
-                    { "mDataProp": "CreditTypeDescription", "sTitle": "Credit Type", "sWidth": "15%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "CreditTypeDescription", "sTitle": "CreditType", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
+                    { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "2%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
