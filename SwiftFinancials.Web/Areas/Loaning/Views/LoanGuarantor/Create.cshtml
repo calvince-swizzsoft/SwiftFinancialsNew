@@ -52,6 +52,25 @@
                                             @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerId)
+                                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer" } })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.LoanCaseId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.LoanCaseId)
+                                            @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.LoanCaseCaseNumber, new { htmlAttributes = new { @class = "LoanCasesLookup form-control required", placeholder = "Customer Name" } })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.LoaneeCustomerFullName, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.LoaneeCustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loanee Customer Name" } })
+                                            @Html.ValidationMessageFor(model => model.LoaneeCustomerFullName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanCaseAmountApplied, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.LoanCaseAmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Applied", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.LoanCaseAmountApplied, "", new { @class = "text-danger" })
@@ -61,8 +80,6 @@
                                             @Html.EditorFor(model => model.TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.TotalShares, "", new { @class = "text-danger" })
                                         </div>
-                                    </div>
-                                    <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CommittedShares, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CommittedShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Committed Shares", disabled = "disabled" } })
@@ -72,18 +89,6 @@
                                             @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
                                             @Html.ValidationMessageFor(model => model.AmountGuaranteed, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.CustomerId)
-                                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer Name" } })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.LoanCaseId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.LoanCaseId)
-                                            @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanCaseCaseNumber, new { htmlAttributes = new { @class = "LoanCasesLookup form-control required", placeholder = "Customer Name" } })
                                         </div>
                                     </div>
                                 </div>
@@ -96,7 +101,8 @@
     </div>
 </div>
 
-<script> 
+<script>
+
         $(document).ready(function () {
         $("#wizard").steps();
         $("#form").steps({
@@ -164,21 +170,21 @@
                 }
             }
         });
-     //customers typehead starts here
-    $('.CustomersLookup').typeahead({
-        source: function (query, process) {
-            return $.getJSON(
-              '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
-              { query: query },
-               function (Customers) {
-                  var newCustomersData = [];
-                   CustomersMap = {};
-                   $.each(Customers, function (i,Customer) {
-                    newCustomersData.push(Customer.FullName);
-                   CustomersMap[Customer.FullName] = Customer;
-                   });
-                   process(newCustomersData); return;
-                   });
+            //customers typehead starts here
+            $('.CustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i,Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
                 },
                 matcher: function (item) {
                     if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
@@ -203,9 +209,9 @@
              //LoanCases typehead starts here
             $('.LoanCasesLookup').typeahead({
                 source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLoanCaseAsync", "LoanRegistration", new { Area = "Loaning" })',
-                        { query: query },
+                return $.getJSON(
+                '@Url.Action("GetLoanCasesAsync", "LoanRegistration", new { Area = "Loaning" })',
+                 { query: query },
                         function (LoanCases) {
                         var newLoanCasesData = [];
                         LoanCasesMap = {};
@@ -214,8 +220,8 @@
                             LoanCasesMap[LoanCase.LoanCaseCaseNumber] = LoanCase;
                         });
                         process(newLoanCasesData); return;
-                        });
-                        },
+                    });
+                 },
                         matcher: function (item) {
                         if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
                         return true;
@@ -231,10 +237,11 @@
                         updater: function (item) {
                         var loanCaseId = "";
                         LoanCaseId = LoanCasesMap[item].Id;
-                        $('#LoanCaseId').val(LoanCaseId);
+                            $('#LoanCaseId').val(LoanCaseId);
+                            $('#LoaneeCustomerFullName').val(LoanCasesMap[item].LoaneeCustomerFullName);
                         //console.log(LoanCaseId)
                         return item;
-                        }
+                  }
             });
-       </script>
+</script>
 }
