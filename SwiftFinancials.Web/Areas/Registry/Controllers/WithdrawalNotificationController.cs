@@ -65,20 +65,20 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 return View();
             }
 
-            var Customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
 
-            if (Customer != null)
+            if (customer != null)
             {
 
-                withdrawalNotificationDTO.CustomerId = Customer.Id;
-                withdrawalNotificationDTO.CustomerFullName = Customer.FullName;
-                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = Customer.IndividualPayrollNumbers;
-                withdrawalNotificationDTO.CustomerSerialNumber = Customer.SerialNumber;
-                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = Customer.IndividualIdentityCardNumber;
-                withdrawalNotificationDTO.CustomerStationDescription = Customer.StationDescription;
-                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = Customer.StationZoneDivisionEmployerDescription;
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.CustomerFullName = customer.FullName;
+                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
+                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.CustomerStationDescription = customer.StationDescription;
+                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
             }
 
             return View(withdrawalNotificationDTO);
