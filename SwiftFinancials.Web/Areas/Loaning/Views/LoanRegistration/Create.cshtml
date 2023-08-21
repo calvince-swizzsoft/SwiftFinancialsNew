@@ -112,21 +112,23 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
+                                    @*<div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerId)
                                         @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer" } })
+                                    </div>*@
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerId)
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
                                     </div>
-                                    @*<div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>*@
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
@@ -171,7 +173,7 @@
                                 </div>
                             </div>
                         </fieldset>
-                        @*<row>
+                        <row>
                                 <div class="ibox-content m-b-sm border-bottom bg-info text-dark">
                                     <table class="footable table table-stripped toggle-arrow-tiny">
                                         <thead>
@@ -198,10 +200,10 @@
                                         </tbody>
                                     </table>
                                 </div>
-                            </row>*@
+                            </row>
                     }
                 </div>
-                @*<div class="ibox-content m-b-sm border-bottom">
+                <div class="ibox-content m-b-sm border-bottom">
                         @using(Html.BeginForm("Create", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
                             <div class="row">
@@ -213,13 +215,13 @@
                             </div>
 
                         }
-                    </div>*@
+                    </div>
             </div>
         </div>
     </div>
 </div>
 
-@*<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header  bg-primary">
@@ -240,7 +242,7 @@
                 </div>
             </div>
         </div>
-    </div>*@
+    </div>
 
 
 @section Styles{
@@ -363,7 +365,7 @@
             });
         });
 
-    @*$('#customersGrid').DataTable({
+    $('#customersGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
@@ -408,7 +410,7 @@
         //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
 
         $('#customerLookupModal').modal('hide');
-    });*@
+    });
 
             //customers typehead starts here
             $('.CustomersLookup').typeahead({

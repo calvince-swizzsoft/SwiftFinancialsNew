@@ -211,7 +211,7 @@
             $('.LoanCasesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetLoanCaseAsync", "LoanCase", new { Area = "Registry" })',
+                        '@Url.Action("GetLoanCaseAsync", "LoanRegistration", new { Area = "Loaning" })',
                         { query: query },
                         function (LoanCases) {
                             var newLoanCasesData = [];
