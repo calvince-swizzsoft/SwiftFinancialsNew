@@ -67,7 +67,7 @@
                                             @Html.LabelFor(model => model.LoaneeCustomerId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.LoaneeCustomerId)
                                             @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoaneeCustomerFullName, new { htmlAttributes = new { @class = "LoanCasesLookup form-control required", placeholder = "Loanee Customer Name" } })
+                                            @Html.EditorFor(model => model.LoaneeCustomerFullName, new { htmlAttributes = new { @class = "LoaneeCustomersLookup form-control required", placeholder = "Loanee Customer Name" } })
                                         </div>
                                         <div class="form-group form-group-sm">
                                             <input type="submit" value="Create" class="btn btn-primary" />
