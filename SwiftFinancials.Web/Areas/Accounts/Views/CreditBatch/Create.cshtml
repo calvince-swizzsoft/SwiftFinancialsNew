@@ -97,6 +97,12 @@
                                                 @Html.ValidationMessageFor(model => model.Type)
                                             </div>
                                         </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                        </div>
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2 col-md-10">
                                                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -142,12 +148,7 @@
                                             @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                        </div>
+                                     
 
                                     </div>
                                 </div>
