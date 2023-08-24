@@ -1,25 +1,46 @@
-﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
+﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
+
 @{
-    ViewBag.Title = "Edit Expense Payable";
-    var expensePayableStatuses = ViewBag.ExpensePayableAuthOptionTypeSelectList as List<SelectListItem>;
+    /**/
+    ViewBag.Title = "Verify Expense Payable ";
+    var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+    var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
+    var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
+    var Monthtype = ViewBag.MonthsSelectList as List<SelectListItem>;
+    var Months = ViewBag.MonthsSelectList as List<SelectListItem>;
+    var ChargeType = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
+    var ConcessionType = ViewBag.ConcessionTypeSelectList as List<SelectListItem>;
     var journalVoucherTypes = ViewBag.JournalVoucherTypeSelectList as List<SelectListItem>;
+
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>ExpensePayable</h2>
+    <div class="col-lg-12">
+        <h2>Expense Payable</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "ExpensePayable", new { Area = "FrontO" }, null)
+                @Html.ActionLink("Home", "Index", "ExpensePayable", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>verify</strong>
+                <strong>Verify</strong>
             </li>
         </ol>
     </div>
 </div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -38,163 +59,111 @@
                 <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Verify", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-
                         @Html.AntiForgeryToken()
-                        <h1>Expense Payable</h1>
+                        <h1>Credit Batch</h1>
+
                         <fieldset>
-
                             <div class="row">
-                                <div class="col-lg-4">
+
+                                <div class="col-lg-6">
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ExpensePayableEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.ExpensePayableEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary description", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
-                                    </div>
-
-
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Type)
                                         </div>
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total value", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ExpensePayableEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.ExpensePayableEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].Reference, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "createdby", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
                                     </div>
 
                                 </div>
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ExpensePayableEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.ExpensePayableEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary description", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
+                                <div class="col-lg-6">
+
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "G/L Account Name" } })
                                     </div>
+
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                                <div class="col-lg-4">
+
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ExpensePayableEntrie.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ExpensePayableEntrie.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ExpensePayableEntrie.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ExpensePayableEntrie.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "chart of account name" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ExpensePayableEntrie.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ExpensePayableEntrie.BranchId)
-                                        @Html.ValidationMessageFor(model => model.ExpensePayableEntrie.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ExpensePayableEntrie.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description.." } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ExpensePayableEntrie.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ExpensePayableEntrie.PostingPeriodId)
-                                        @Html.ValidationMessageFor(model => model.ExpensePayableEntrie.PostingPeriodId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ExpensePayableEntrie, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Description.." } })
+                                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "created date", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-
-
                             </div>
-
-
                         </fieldset>
-
-                      
-
-                        <div class="col-sm-1">
-                            <div class="form-group">
-                                <input type="submit" value="Add Expense Payable" class="btn btn-success" />
-                            </div>
-                        </div>
-                        <row>
-                            <div class="ibox-content m-b-sm border-bottom bg-info text-dark">
-                                <table class="footable table table-stripped toggle-arrow-tiny">
-                                    <thead>
-                                        <tr>
-                                            <th data-toggle="true">SecondaryDescription</th>
-                                            <th data-hide="phone">Reference</th>
-                                            <th data-hide="phone"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.ExpensePayableEntries != null)
-                                        {
-                                            foreach (var ExpensePayableEntries in ViewBag.ExpensePayableEntries)
-                                            {
-                                                <tr>
-                                                    <td>
-                                                        @ExpensePayableEntries.SecondaryDescription
-                                                    </td>
-                                                    <td>
-                                                        @ExpensePayableEntries.Reference
-                                                    </td>
-
-                                                </tr>
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
-                        </row>
                     }
-                </div>
-
-                    <div>
-                        @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
-                    </div>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
-    <script>
+
+<script>
+
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -262,5 +231,168 @@
                     }
                 }
             });
-        });</script>
+
+
+
+
+    //ChartOfAccount typehead starts here
+    $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+                //PostingPeriod typehead starts here
+            $('.PostingPeriodsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        { query: query },
+                        function (PostingPeriods) {
+                            var newPostingPeriodsData = [];
+                            PostingPeriodsMap = {};
+                            $.each(PostingPeriods, function (i, PostingPeriod) {
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                            });
+                            process(newPostingPeriodsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var postingPeriodId = "";
+                    PostingPeriodId = PostingPeriodsMap[item].Id;
+                    $('#PostingPeriodId').val(PostingPeriodId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+
+              //CreditTypes typehead starts here
+            $('.CreditTypesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCreditTypesAsync", "CreditType", new { Area = "Accounts" })',
+                        { query: query },
+                        function (CreditTypes) {
+                            var newCreditTypesData = [];
+                            CreditTypesMap = {};
+                            $.each(CreditTypes, function (i, CreditType) {
+                                newCreditTypesData.push(CreditType.Description);
+                                CreditTypesMap[CreditType.Description] = CreditType;
+                            });
+                            process(newCreditTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CreditTyped = "";
+                    CreditTypeId = CreditTypesMap[item].Id;
+                    $('#CreditTypeId').val(CreditTypeId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+
+         //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+            $(document).ready(function () {
+                $('#data_3 .input-group.date').datepicker({
+                    startView: 2,
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    autoclose: true,
+                });
+            });
+            }); </script>
 }
+
+
