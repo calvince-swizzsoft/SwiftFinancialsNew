@@ -1,6 +1,4 @@
 
-
-
   INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_CustomerAccounts] ([Id]
       ,[CustomerId]
       ,[BranchId]
