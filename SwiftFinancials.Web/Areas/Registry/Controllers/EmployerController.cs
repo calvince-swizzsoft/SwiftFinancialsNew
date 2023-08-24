@@ -38,7 +38,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(employer => employer.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
