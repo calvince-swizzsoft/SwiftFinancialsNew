@@ -194,12 +194,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         /////////////verify expense payable/////    
         public async Task<ActionResult> Verify(Guid id)
         {
-            await ServeNavigationMenus();
-
+            await ServeNavigationMenus();         
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-
             return View();
         }
 
@@ -207,6 +205,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
         {
+            expensePayableDTO.ValidateAll();
             var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
 
             if (!expensePayableDTO.HasErrors)
