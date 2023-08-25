@@ -1,4 +1,3 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
 INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Commissions]
 SELECT TOP (1000) [Id]
       ,[Description]
