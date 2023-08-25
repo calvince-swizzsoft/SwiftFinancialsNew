@@ -1,4 +1,3 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
 INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_DebitTypes]([Id]
       ,[Description]
       ,[CustomerAccountType_ProductCode]
