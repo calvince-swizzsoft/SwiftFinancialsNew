@@ -82,21 +82,26 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/registry/WithdrawalNotification/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/registry/WithdrawalNotification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/Registry/WithdrawalNotification/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/Registry/WithdrawalNotification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var verifyUrl = '<a  href="/Registry/WithdrawalNotification/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var ApproveUrl = '<a  href="/Registry/WithdrawalNotification/Approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approval</a>';
+                    var SettlementUrl = '<a  href="/Registry/WithdrawalNotification/Settlement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Settlement</a>';
+                    var DeathClaimUrl = '<a  href="/Registry/WithdrawalNotification/DeathClaim/' + aData.Id + '" class = "btn btn-outline-info"">' + 'DeathClaim</a>';
+
 
                     $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + ApproveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + SettlementUrl + '&nbsp;' + DeathClaimUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Customer.FullName", "sTitle": "Customer", "sWidth": "15%" },
-                    { "mDataProp": "Category", "sTitle": "Category", "sWidth": "10%" },
-                    { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "Customer.FullName", "sTitle": "Customer", "sWidth": "4%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "StatusDescription", "sWidth": "4%" },
+                    { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "4%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "4%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "60%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
