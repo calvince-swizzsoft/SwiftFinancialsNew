@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -58,6 +59,31 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             return View();
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+           var LoanGuarantorDTOs = TempData["LoanGuarantorDTO"] as ObservableCollection<LoanGuarantorDTO>;
+
+            if (LoanGuarantorDTOs == null)
+                LoanGuarantorDTOs = new ObservableCollection<LoanGuarantorDTO>();
+            {
+                loanGuarantorDTO.LoanCaseCaseNumber = loanGuarantorDTO.LoanCaseCaseNumber;
+                loanGuarantorDTO.LoanCaseId = loanGuarantorDTO.Id;//Temporary
+                LoanGuarantorDTOs.Add(loanGuarantorDTO);
+            };
+
+            TempData["LoanGuarantorDTO"] = LoanGuarantorDTOs;
+
+            TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+
+            ViewBag.LoanGuarantorDTOs = LoanGuarantorDTOs;
+
+            return View("Create", loanGuarantorDTO);
         }
 
         [HttpPost]

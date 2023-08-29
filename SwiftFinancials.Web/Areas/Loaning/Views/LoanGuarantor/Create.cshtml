@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Search", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="form-horizontal">
@@ -47,39 +47,63 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.EmployerId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.EmployerId)
-                                            @Html.ValidationMessageFor(model => model.EmployerId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.EmployerDescription, new { htmlAttributes = new { @class = "EmployersLookup form-control required", placeholder = "Employer Name" } })
-                                        </div>
-                                        <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "ID Number" } })
                                             @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                         </div>
+                                        @*<div class="form-group form-group-lg">
+            @Html.LabelFor(model => model.LoanCaseId, htmlAttributes: new { @class = "control-label" })
+            @Html.HiddenFor(model => model.LoanCaseId)
+            @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
+            @Html.EditorFor(model => model.LoanCaseCaseNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Number" } })<span class="fa fa-search"></span>
+        </div>*@
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.LoanCaseId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.LoanCaseId)
-                                            @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanCaseCaseNumber, new { htmlAttributes = new { @class = "LoanCasesLookup form-control required", placeholder = "Loan Number" } })
+                                            <div class="input-group" id="searchInput">
+                                                @Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Loan Number" })
+
+                                                <button id="searchButton" input type="submit" value="Search"><span class="fa fa-search"></span></button>
+
+                                                <div id="searchResults">
+                                                    <!-- Loan Number and Loan Case ID will be displayed here -->
+                                                </div>
+                                            </div>
                                         </div>
+                                        @*<div class="form-group form-group-lg">
+            @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
+            @Html.HiddenFor(model => model.LoanCaseId)
+            <div class="input-group" data-autoclose="true">
+                @Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Loan Number" })
+                <span class="input-group-addon">
+                    <input type="text" id="searchInput" placeholder="@Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Loan Number" })">
+                    <a href="" id="searchButton"><span class="fa fa-search"></span></a>
+                </span>
+                <div id="searchResults">
+                    <!-- Search results will be displayed here -->
+                </div>
+            </div>
+        </div>*@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoaneeCustomerId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.LoaneeCustomerId)
-                                            @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
+                                            @Html.ValidationMessageFor(model => model.LoaneeCustomerId, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.LoaneeCustomerFullName, new { htmlAttributes = new { @class = "LoaneeCustomersLookup form-control required", placeholder = "Loanee Customer Name" } })
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        <div class="ibox-content m-b-sm border-bottom">
+                                            @using (Html.BeginForm("Create", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post))
+                                            {
+                                                <div class="row">
+                                                    <div class="col-sm-2">
+                                                        <div class="form-group">
+                                                            <input type="submit" value="Create" class="btn btn-success" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            }
                                         </div>
                                     </div>
                                     <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.StationId)
-                                            @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Station Name" } })
-                                        </div>
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.TotalShares, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.TotalShares, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Shares", disabled = "disabled" } })
@@ -170,7 +194,35 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
+    <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              const searchButton = document.getElementById("searchButton");
+              const searchInput = document.getElementById("searchInput");
+              const searchResults = document.getElementById("searchResults");
+
+              searchButton.addEventListener("click", function() {
+              const searchTerm = searchInput.value;
+
+               // Perform the AJAX request to retrieve LoanNumber and LoanCaseId
+                $.ajax({
+                 url: '@Url.Action("GetLoanCasesAsync", "LoanRegistration", new { Area = "Loaning" })',
+                    type: 'GET',
+                data: { caseNumber: searchTerm },
+                success: function(response) {
+                // Assuming the response is a JSON object with LoanNumber and LoanCaseId
+                const caseNumber = response.caseNumber;
+                const Id = response.Id;
+                const customerFullName = response.customerFullName;
+
+                // Display the results
+                searchResults.innerHTML = `Loan Number: ${caseNumber}<br>Loan Case ID: ${Id}<br>Loanee: ${customerFullName}`;
+            },
+            error: function() {
+                searchResults.innerHTML = "Error occurred while fetching data.";
+            }
+                    });
+                 });
+            });
             //customers typehead starts here
             $('.CustomersLookup').typeahead({
                 source: function (query, process) {
@@ -211,7 +263,7 @@
             $('.LoanCasesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetLoanCaseAsync", "LoanRegistration", new { Area = "Loaning" })',
+                        '@Url.Action("GetLoanCasesAsync", "LoanRegistration", new { Area = "Loaning" })',
                         { query: query },
                         function (LoanCases) {
                             var newLoanCasesData = [];
@@ -245,20 +297,20 @@
                     return item;
                 }
             });
-            //Loaneecustomers typehead starts here
-            $('.LoaneeCustomersLookup').typeahead({
+            //LoaneeCustomers typehead starts here
+        $('.LoaneeCustomersLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        '@Url.Action("GetLoanCasesAsync", "LoanRegistration", new { Area = "Loaning" })',
                         { query: query },
-                        function (Customers) {
-                            var newCustomersData = [];
-                            CustomersMap = {};
-                            $.each(Customers, function (i,Customer) {
-                                newCustomersData.push(Customer.FullName);
-                                CustomersMap[Customer.FullName] = Customer;
+                        function (LoanCases) {
+                            var newLoanCasesData = [];
+                            LoanCasesMap = {};
+                            $.each(LoanCases, function (i,LoanCase) {
+                                newLoanCasesData.push(Customer.FullName);
+                                LoanCasesMap[Customer.FullName] = LoanCase;
                             });
-                            process(newCustomersData); return;
+                            process(newLoanCasesData); return;
                         });
                 },
                 matcher: function (item) {
@@ -274,10 +326,12 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var LoaneeCustomerId = "";
-                    LoaneeCustomerId = CustomersMap[item].Id;
-                    $('LoaneeCustomerId').val(LoaneeCustomerId);
-                    //console.log(CustomerId)
+                    var LoanCaseId = "";
+                    LoanCaseId = LoanCasesMap[item].Id;
+                    $('LoanCaseId').val(LoanCaseId);
+                    CustomerId = LoanCasesMap[item].CustomerId;
+                    $('CustomerFullName').val(CustomerFullName);
+                    //console.log(LoanCaseId)
                     return item;
                 }
             });
@@ -513,5 +567,5 @@
         $('#customerLookupModal').modal('hide');
     });*@
 
-</script>
+    </script>
 }
