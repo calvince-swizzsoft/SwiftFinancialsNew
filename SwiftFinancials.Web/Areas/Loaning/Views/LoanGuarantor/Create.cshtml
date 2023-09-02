@@ -42,7 +42,7 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <h1>Guarantor Details</h1>
+                            <h2>Guarantor Details</h2>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-4">
@@ -57,7 +57,7 @@
             @Html.ValidationMessageFor(model => model.LoanCaseId, "", new { @class = "text-danger" })
             @Html.EditorFor(model => model.LoanCaseCaseNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Number" } })<span class="fa fa-search"></span>
         </div>*@
-                                        <div class="form-group form-group-lg">
+                                        @*<div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.LoanCaseId)
                                             <div class="input-group" id="searchInput">
@@ -69,7 +69,22 @@
                                                     <!-- Loan Number and Loan Case ID will be displayed here -->
                                                 </div>
                                             </div>
+                                        </div>*@
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.LoanCaseId)
+                                            <div class="input-group" id="searchInput">
+                                                @Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Loan Number" })
+
+                                                <!-- The following line should be corrected -->
+                                                <button id="searchButton" type="submit"><span class="fa fa-search"></span></button>
+
+                                                <div id="searchResults">
+                                                    <!-- Loan Number and Loan Case ID will be displayed here -->
+                                                </div>
+                                            </div>
                                         </div>
+
                                         @*<div class="form-group form-group-lg">
             @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
             @Html.HiddenFor(model => model.LoanCaseId)
@@ -301,7 +316,7 @@
         $('.LoaneeCustomersLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetLoanCasesAsync", "LoanRegistration", new { Area = "Loaning" })',
+                        '@Url.Action("GetLoanCaseByLoanCaseNumberAsync", "LoanRegistration", new { Area = "Loaning" })',
                         { query: query },
                         function (LoanCases) {
                             var newLoanCasesData = [];

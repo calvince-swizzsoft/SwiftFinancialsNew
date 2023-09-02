@@ -61,30 +61,80 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO)
+        //{
+        //    await ServeNavigationMenus();
+
+        //   var LoanGuarantorDTOs = TempData["LoanGuarantorDTO"] as ObservableCollection<LoanGuarantorDTO>;
+
+        //    if (LoanGuarantorDTOs == null)
+        //        LoanGuarantorDTOs = new ObservableCollection<LoanGuarantorDTO>();
+        //    {
+        //        loanGuarantorDTO.LoanCaseCaseNumber = loanGuarantorDTO.LoanCaseCaseNumber;
+        //        loanGuarantorDTO.LoanCaseId = loanGuarantorDTO.Id;//Temporary
+        //        LoanGuarantorDTOs.Add(loanGuarantorDTO);
+        //    };
+
+        //    TempData["LoanGuarantorDTO"] = LoanGuarantorDTOs;
+
+        //    TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+
+        //    ViewBag.LoanGuarantorDTOs = LoanGuarantorDTOs;
+
+        //    return View("Create", loanGuarantorDTO);
+        //}
 
         [HttpPost]
-        public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO,int  caseNumber)
         {
             await ServeNavigationMenus();
 
-           var LoanGuarantorDTOs = TempData["LoanGuarantorDTO"] as ObservableCollection<LoanGuarantorDTO>;
+            
+                var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
 
-            if (LoanGuarantorDTOs == null)
-                LoanGuarantorDTOs = new ObservableCollection<LoanGuarantorDTO>();
-            {
-                loanGuarantorDTO.LoanCaseCaseNumber = loanGuarantorDTO.LoanCaseCaseNumber;
-                loanGuarantorDTO.LoanCaseId = loanGuarantorDTO.Id;//Temporary
-                LoanGuarantorDTOs.Add(loanGuarantorDTO);
-            };
+                TempData["LoanCaseDTOs"] = loanCasesDTOs ?? new ObservableCollection<LoanCaseDTO>();
 
-            TempData["LoanGuarantorDTO"] = LoanGuarantorDTOs;
+                foreach (var loanCaseDTO in loanGuarantorDTO.LoanGuarantors)
+                {
+                    loanCaseDTO.LoanCaseCaseNumber = loanCaseDTO.LoanCaseCaseNumber; // Use the provided caseNumber
+                    loanCaseDTO.LoanCaseId = loanCaseDTO.LoanCaseId;
+                }
 
-            TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+                TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+                ViewBag.LoanCaseDTOs = TempData["LoanCaseDTOs"];
 
-            ViewBag.LoanGuarantorDTOs = LoanGuarantorDTOs;
-
-            return View("Create", loanGuarantorDTO);
+                return View("Create", loanGuarantorDTO);
         }
+
+
+        //[HttpPost]
+        //public async Task<ActionResult> Search( LoanGuarantorDTO loanGuarantorDTO, int caseNumber)
+        //{
+        //    await ServeNavigationMenus();
+
+        //    var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
+
+        //    TempData["LoanCaseDTOs"] = loanCasesDTOs as ObservableCollection<LoanCaseDTO>;
+
+        //    if (loanCasesDTOs == null)
+        //        loanCasesDTOs = new ObservableCollection<LoanCaseDTO>();
+
+        //    foreach (var loanCaseDTO in loanGuarantorDTO.LoanGuarantors)
+        //    {
+        //        loanCaseDTO.LoanCaseCaseNumber = loanCaseDTO.LoanCaseCaseNumber;
+        //        loanCaseDTO.LoanCaseId = loanCaseDTO.LoanCaseId;//Temporary
+        //        loanCasesDTOs.Add(loanCaseDTO);
+        //    };
+
+        //    TempData["LoanCaseDTOs"] = loanCasesDTOs;
+
+        //    TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+
+        //    ViewBag.LoanCaseDTOs = loanCasesDTOs;
+
+        //    return View("Create", loanGuarantorDTO);
+        //}
 
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
