@@ -18,12 +18,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         
-        public  GLADRply(GLAccountsDet glad)
-        {
-            string systemGLAccountCode2 = glad.systemGLAccountCode, mappedGLAccountName2 = glad.mappedGLAccountName,
-                mappedGLAccountcostCenter2 = glad.mappedGLAccountcostCenter, createdDate2 = glad.createdDate;
+        //public  GLADRply(GLAccountsDet glad)
+        //{
+        //    string systemGLAccountCode2 = glad.systemGLAccountCode, mappedGLAccountName2 = glad.mappedGLAccountName,
+        //        mappedGLAccountcostCenter2 = glad.mappedGLAccountcostCenter, createdDate2 = glad.createdDate;
 
            
-        }
+        //}
     }
 }
