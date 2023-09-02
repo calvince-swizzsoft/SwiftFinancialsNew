@@ -86,12 +86,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         //}
 
         [HttpPost]
-        public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO,int  caseNumber)
+        public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
 
             
-                var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
+                var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(loanGuarantorDTO.LoanCaseCaseNumber, GetServiceHeader());
 
                 TempData["LoanCaseDTOs"] = loanCasesDTOs ?? new ObservableCollection<LoanCaseDTO>();
 
