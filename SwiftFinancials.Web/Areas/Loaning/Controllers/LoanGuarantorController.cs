@@ -90,55 +90,59 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            
-                var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(loanGuarantorDTO.LoanCaseCaseNumber, GetServiceHeader());
 
-                TempData["LoanCaseDTOs"] = loanCasesDTOs ?? new ObservableCollection<LoanCaseDTO>();
+            var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(loanGuarantorDTO.LoanCaseCaseNumber, GetServiceHeader());
 
-                foreach (var loanCaseDTO in loanGuarantorDTO.LoanGuarantors)
-                {
-                    loanCaseDTO.LoanCaseCaseNumber = loanCaseDTO.LoanCaseCaseNumber; // Use the provided caseNumber
-                    loanCaseDTO.LoanCaseId = loanCaseDTO.LoanCaseId;
-                }
+            TempData["LoanCaseDTOs"] = loanCasesDTOs ?? new ObservableCollection<LoanCaseDTO>();
 
-                TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
-                ViewBag.LoanCaseDTOs = TempData["LoanCaseDTOs"];
+            foreach (var loanCaseDTO in loanCasesDTOs.ToList())
+            {
+                loanGuarantorDTO.LoanCaseCaseNumber = loanCaseDTO.CaseNumber; // Use the provided caseNumber
+                loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
+                loanGuarantorDTO.LoaneeCustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName;
+                loanGuarantorDTO.LoanCaseAmountApplied = loanCaseDTO.AmountApplied;
+                loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
+                loanGuarantorDTO.LoanProductDescription = loanCaseDTO.LoanProductDescription;
+            }
 
-                return View("Create", loanGuarantorDTO);
+            TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+            ViewBag.LoanCaseDTOs = TempData["LoanCaseDTOs"];
+
+            return View("Create", loanGuarantorDTO);
         }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> Search( LoanGuarantorDTO loanGuarantorDTO, int caseNumber)
-        //{
-        //    await ServeNavigationMenus();
+        [HttpPost]
+        public async Task<ActionResult> SearchA(LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
 
-        //    var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
+            loanGuarantorDTO = TempData["LoanGuarantorDTO"] as LoanGuarantorDTO;
 
-        //    TempData["LoanCaseDTOs"] = loanCasesDTOs as ObservableCollection<LoanCaseDTO>;
+            var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(loanGuarantorDTO.LoanCaseCaseNumber, GetServiceHeader());
 
-        //    if (loanCasesDTOs == null)
-        //        loanCasesDTOs = new ObservableCollection<LoanCaseDTO>();
+            TempData["LoanCaseDTOs"] = loanCasesDTOs ?? new ObservableCollection<LoanCaseDTO>();
 
-        //    foreach (var loanCaseDTO in loanGuarantorDTO.LoanGuarantors)
-        //    {
-        //        loanCaseDTO.LoanCaseCaseNumber = loanCaseDTO.LoanCaseCaseNumber;
-        //        loanCaseDTO.LoanCaseId = loanCaseDTO.LoanCaseId;//Temporary
-        //        loanCasesDTOs.Add(loanCaseDTO);
-        //    };
+            foreach (var loanCaseDTO in loanCasesDTOs.ToList())
+            {
+                loanGuarantorDTO.LoanCaseCaseNumber = loanCaseDTO.CaseNumber; // Use the provided caseNumber
+                loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
+                loanGuarantorDTO.LoaneeCustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName;
+                loanGuarantorDTO.LoanCaseAmountApplied = loanCaseDTO.AmountApplied;
 
-        //    TempData["LoanCaseDTOs"] = loanCasesDTOs;
+            }
 
-        //    TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+            TempData["LoanGuarantorDTO"] = loanGuarantorDTO;
+            ViewBag.LoanCaseDTOs = TempData["LoanCaseDTOs"];
 
-        //    ViewBag.LoanCaseDTOs = loanCasesDTOs;
-
-        //    return View("Create", loanGuarantorDTO);
-        //}
+            return View("Create", loanGuarantorDTO);
+        }
 
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
+            loanGuarantorDTO = TempData["LoanGuarantorDTO"] as  LoanGuarantorDTO;
+
             loanGuarantorDTO.ValidateAll();
 
             if (!loanGuarantorDTO.HasErrors)

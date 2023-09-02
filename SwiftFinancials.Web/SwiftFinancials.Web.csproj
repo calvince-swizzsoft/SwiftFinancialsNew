@@ -698,7 +698,6 @@
     <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Edit.cshtml" />
@@ -1321,6 +1320,7 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\GLAccountDetermination\" />
+    <Folder Include="Areas\Accounts\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
