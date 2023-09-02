@@ -857,7 +857,10 @@
     <Content Include="Areas\Accounts\Views\DebitBatch\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditBatch\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\CreditBatch\Authorize.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Verify.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Approval.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
+    <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

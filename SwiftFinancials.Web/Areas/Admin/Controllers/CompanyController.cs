@@ -38,7 +38,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(company => company.CreatedDate).ToList();
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);

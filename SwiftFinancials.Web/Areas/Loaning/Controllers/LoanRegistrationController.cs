@@ -77,7 +77,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             if (customer != null)
             {
                 loanCaseDTO.CustomerId = customer.Id;
-                loanCaseDTO.CustomerFullName = customer.FullName;
             }
 
             return View(loanCaseDTO);
@@ -314,9 +313,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetLoanCaseAsync(LoanCaseDTO loanCaseDTO)
+        public async Task<JsonResult> GetLoanCaseByLoanCaseNumberAsync(int caseNumber)
         {
-            var caseNumber = loanCaseDTO.CaseNumber;
             var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
 
             return Json(loanCasesDTOs, JsonRequestBehavior.AllowGet);
