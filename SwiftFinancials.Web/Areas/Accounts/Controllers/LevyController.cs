@@ -38,7 +38,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(levy => levy.CreatedDate).ToList();
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -76,7 +76,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (LevySplitDTOs == null)
                 LevySplitDTOs = new ObservableCollection<LevySplitDTO>();
 
-            foreach (var levySplitDTO in levyDTO.LevySplits)
+            foreach (var levySplitDTO  in levyDTO.LevySplits)
             {
                 levySplitDTO.Description = levySplitDTO.Description;
                 levySplitDTO.ChartOfAccountId = levyDTO.Id;//Temporary 

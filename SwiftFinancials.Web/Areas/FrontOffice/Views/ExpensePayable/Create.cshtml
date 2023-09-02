@@ -67,6 +67,12 @@
                                     </div>
                                 </div>
                                 <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Branch Name" } })
+                                </div>
+                                <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.ChartOfAccountId)
                                     @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
@@ -78,6 +84,7 @@
                                     @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
                                 </div>
+
 
                             </div>
                             <div class="col-lg-5">
@@ -136,9 +143,17 @@
                                 </div>
 
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.Id)
-                                    @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.PostingPeriodId)
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.PostingPeriodId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
+                                </div>
+
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.BranchId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Branch Name" } })
                                 </div>
                             </div>
@@ -167,25 +182,25 @@
                                         {
                                             foreach (var ExpensePayableEntries in ViewBag.ExpensePayableEntryDTOs)
                                             {
-                                        <tr>
-                                            <td>
-                                                @ExpensePayableEntries.ChartOfAccountId
-                                            </td>
-                                            <td>
-                                                @ExpensePayableEntries.BranchId
-                                            </td>
+                                                <tr>
+                                                    <td>
+                                                        @ExpensePayableEntries.ChartOfAccountId
+                                                    </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.BranchId
+                                                    </td>
 
-                                            <td>
-                                                @ExpensePayableEntries.PostingPeriodId
-                                            </td>
-                                            <td>
-                                                @ExpensePayableEntries.TotalValue
-                                            </td>
-                                            <td>
-                                                @ExpensePayableEntries.SecondaryDescription
-                                            </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.PostingPeriodId
+                                                    </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.TotalValue
+                                                    </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.SecondaryDescription
+                                                    </td>
 
-                                        </tr>
+                                                </tr>
                                             }
                                         }
                                     </tbody>

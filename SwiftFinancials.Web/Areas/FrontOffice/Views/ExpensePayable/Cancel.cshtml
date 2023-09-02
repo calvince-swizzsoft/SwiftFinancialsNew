@@ -8,7 +8,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Posting Periods</h2>
+        <h2>Expense Payable</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -50,12 +50,12 @@
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By" } })
+                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By" } })
+                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Created By", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group" id="data_3">
@@ -68,24 +68,31 @@
                                     <div>
                                         @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
                                     </div>
+
+
+
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     </div>
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Audit Date" } })
+                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Audit Date", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks" } })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Cancel" class="btn btn-primary" />
                                     </div>
 
                                 </div>
@@ -94,33 +101,28 @@
                                         @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountAccountName)
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer" } })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer", disabled = "disabled" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Remarks" } })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Remarks", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "branch Name" } })
+                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "branch Name", disabled = "disabled" } })
                                     </div>
 
                                 </div>
                                 <div class="col-lg-3">
-                                  
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountAccountType, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountAccountType)
                                         @Html.ValidationMessageFor(model => model.ChartOfAccountAccountType, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountType, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Account Name" } })
-                                    </div>
-
-
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Cancel" class="btn btn-primary" />
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountType, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", placeholder = "Account Name", disabled = "disabled" } })
                                     </div>
                                 </div>
                             </div>
