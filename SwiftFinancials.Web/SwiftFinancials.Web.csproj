@@ -860,6 +860,7 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Approval.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
+    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1320,7 +1321,6 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\GLAccountDetermination\" />
-    <Folder Include="Areas\Accounts\Views\Shared\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
