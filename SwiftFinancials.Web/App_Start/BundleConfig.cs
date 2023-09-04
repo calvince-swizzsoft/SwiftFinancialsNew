@@ -458,6 +458,13 @@ namespace SwiftFinancials.Web
             bundles.Add(new StyleBundle("~/plugins/passwordMeter").Include(
                         "~/Scripts/plugins/pwstrength/pwstrength-bootstrap.min.js",
                         "~/Scripts/plugins/pwstrength/zxcvbn.js"));
+
+            ////Scripts for Grid MVC
+            //bundles.Add(new ScriptBundle("~/bundles/Gridmvc").Include(
+            //    "~/scripts/gridmvc*"));
+            //bundles.Add(new ScriptBundle("~/content/Gridmvc").Include(
+            //    "~/content/Gridmvc.css"));
+
         }
     }
 }
