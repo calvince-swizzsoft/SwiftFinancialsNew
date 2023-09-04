@@ -16358,7 +16358,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-            service.BeginFindWithdrawalNotificationsByFilterInPage(text, customerFilter, pageIndex, pageSize, asyncCallback, service);
+            service.BeginFindWithdrawalNotificationsByFilterInPage(text,  pageIndex, pageSize, asyncCallback, service);
 
             return tcs.Task;
         }
@@ -16618,6 +16618,44 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+
+
+
+
+
+        public Task<PageCollectionInfo<WithdrawalNotificationDTO>> FindWithdrawalNotificationsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<WithdrawalNotificationDTO>>();
+
+            IWithdrawalNotificationService service = GetService<IWithdrawalNotificationService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<WithdrawalNotificationDTO> response = ((IWithdrawalNotificationService)result.AsyncState).EndFindWithdrawalNotificationsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindWithdrawalNotificationsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
 
         #endregion
 

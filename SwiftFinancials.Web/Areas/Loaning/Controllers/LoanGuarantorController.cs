@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -60,14 +62,75 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> Search(LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+
+            var loanCasesDTOs = await _channelService.FindLoanCaseByLoanCaseNumberAsync(loanGuarantorDTO.LoanCaseCaseNumber, GetServiceHeader());
+
+            TempData["LoanCaseDTOs"] = loanCasesDTOs ?? new ObservableCollection<LoanCaseDTO>();
+
+            foreach (var loanCaseDTO in loanCasesDTOs.ToList())
+            {
+                loanGuarantorDTO.LoanCaseCaseNumber = loanCaseDTO.CaseNumber; // Use the provided caseNumber
+                loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
+                loanGuarantorDTO.LoaneeCustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName;
+                loanGuarantorDTO.LoanCaseAmountApplied = loanCaseDTO.AmountApplied;
+                loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
+                loanGuarantorDTO.LoanProductDescription = loanCaseDTO.LoanProductDescription;
+            }
+
+            TempData["LoanCaseDTOs"] = loanGuarantorDTO;
+
+            ViewBag.LoanCaseDTOs = TempData["LoanCaseDTOs"];
+
+            return View("Create", loanGuarantorDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> SearchA(LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTOs = TempData["LoanCaseDTOs"] as LoanGuarantorDTO;
+
+            var customerDTOs = await _channelService.FindCustomersAsync(GetServiceHeader());
+
+            TempData["LoanCasesDTOs"] = customerDTOs ??  new ObservableCollection<CustomerDTO>();
+
+            var firstCustomerDTO = customerDTOs.FirstOrDefault();
+            if (firstCustomerDTO != null)
+            {
+                loanGuarantorDTO.CustomerId = firstCustomerDTO.Id;
+                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = firstCustomerDTO.IndividualIdentityCardNumber;
+                loanGuarantorDTO.CustomerIndividualFirstName = firstCustomerDTO.IndividualFirstName;
+                loanGuarantorDTO.CustomerIndividualLastName = firstCustomerDTO.IndividualLastName;
+
+            }
+
+            TempData["LoanCasesDTOs"] = loanGuarantorDTO;
+            ViewBag.LoanCaseDTOs = TempData["LoanCasesDTOs"];
+
+            return View("Create", loanGuarantorDTO);
+        }
+
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
+            var loanCaseDTOs = TempData["LoanCaseDTOs"] as LoanGuarantorDTO;
+            var customerDTOs = TempData["LoanCasesDTOs"] as  LoanGuarantorDTO;
+
             loanGuarantorDTO.ValidateAll();
 
             if (!loanGuarantorDTO.HasErrors)
             {
                 await _channelService.AddLoanGuarantorAsync(loanGuarantorDTO, GetServiceHeader());
+
+                TempData["LoanCasesDTOs"] = null;
 
                 return RedirectToAction("Index");
             }

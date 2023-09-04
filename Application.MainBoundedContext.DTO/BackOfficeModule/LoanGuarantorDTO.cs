@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
+using System.Collections.Generic;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -458,5 +459,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
             return ValidationResult.Success;
         }
+        public List<LoanGuarantorDTO> LoanGuarantors { get; set; }
     }
 }

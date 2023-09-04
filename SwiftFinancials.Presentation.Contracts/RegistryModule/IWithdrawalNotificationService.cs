@@ -54,7 +54,7 @@ namespace SwiftFinancials.Presentation.Contracts.RegistryModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginFindWithdrawalNotificationsByFilterInPage(string text, int customerFilter, int pageIndex, int pageSize, AsyncCallback callback, Object state);
+        IAsyncResult BeginFindWithdrawalNotificationsByFilterInPage(string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<WithdrawalNotificationDTO> EndFindWithdrawalNotificationsByFilterInPage(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
@@ -71,5 +71,8 @@ namespace SwiftFinancials.Presentation.Contracts.RegistryModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindWithdrawalSettlementsByWithdrawalNotificationId(Guid withdrawalNotificationId, bool includeProductDescription, AsyncCallback callback, Object state);
         List<WithdrawalSettlementDTO> EndFindWithdrawalSettlementsByWithdrawalNotificationId(IAsyncResult result);
+
+        
+       
     }
 }

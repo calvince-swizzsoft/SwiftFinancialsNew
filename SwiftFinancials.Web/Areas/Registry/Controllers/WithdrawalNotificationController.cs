@@ -31,11 +31,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindWithdrawalNotificationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,1, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindWithdrawalNotificationsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(creditBatch => creditBatch.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -111,7 +113,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             await ServeNavigationMenus();
 
             var withdrawalNotificationDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
-
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             return View(withdrawalNotificationDTO);
         }
 
@@ -122,21 +124,159 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
+                return View(withdrawalNotificationDTO);
+            }
+        }
+
+
+
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            return View(creditBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(WithdrawalNotificationDTO withdrawalNotificationDTO)
+        {
+            withdrawalNotificationDTO.ValidateAll();
+
+            if (!withdrawalNotificationDTO.HasErrors)
+            {
+                await _channelService.AuditWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
+                var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
                 return View(withdrawalNotificationDTO);
             }
         }
 
-       /* [HttpGet]
-        public async Task<JsonResult> GetWithdrawalNotificationsAsync()
+        public async Task<ActionResult> Approval(Guid id)
         {
-            var withdrawalNotificationDTOs = await _channelService.FindWithdrawalNotificationsAsync(false, true, GetServiceHeader());
+            await ServeNavigationMenus();
 
-            return Json(withdrawalNotificationDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            return View(creditBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Approval(WithdrawalNotificationDTO withdrawalNotificationDTO)
+        {
+            withdrawalNotificationDTO.ValidateAll();
+
+            if (!withdrawalNotificationDTO.HasErrors)
+            {
+                await _channelService.ApproveWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
+                return View(withdrawalNotificationDTO);
+            }
+        }
+
+        public async Task<ActionResult> Settlement(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            return View(creditBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Settlement(WithdrawalNotificationDTO withdrawalNotificationDTO)
+        {
+            withdrawalNotificationDTO.ValidateAll();
+
+            if (!withdrawalNotificationDTO.HasErrors)
+            {
+                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO,1, 1, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
+                return View(withdrawalNotificationDTO);
+            }
+        }
+
+
+        public async Task<ActionResult> DeathClaim(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            return View(creditBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeathClaim(WithdrawalNotificationDTO withdrawalNotificationDTO,WithdrawalSettlementDTO withdrawalSettlementDTOs)
+        {
+            withdrawalNotificationDTO.ValidateAll();
+
+            if (!withdrawalNotificationDTO.HasErrors)
+            {
+                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, 1,1, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
+                return View(withdrawalNotificationDTO);
+            }
+        }
+
+        /* [HttpGet]
+         public async Task<JsonResult> GetWithdrawalNotificationsAsync()
+         {
+             var withdrawalNotificationDTOs = await _channelService.FindWithdrawalNotificationsAsync(false, true, GetServiceHeader());
+
+             return Json(withdrawalNotificationDTOs, JsonRequestBehavior.AllowGet);
+         }*/
     }
 }

@@ -1206,7 +1206,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                                             break;
                                     }
                                 }
-                                else throw new InvalidOperationException("Sorry, but requisite minimums have not been setup viz. default savings product / control accounts / posting period!");
+                                else  throw new InvalidOperationException("Sorry, but requisite minimums have not been setup viz. default savings product / control accounts / posting period!");
 
                                 break;
                             case MembershipWithdrawalSettlementOption.Defer:

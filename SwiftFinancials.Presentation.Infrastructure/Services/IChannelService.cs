@@ -1187,7 +1187,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<PageCollectionInfo<WithdrawalNotificationDTO>> FindWithdrawalNotificationsByStatusAndFilterInPageAsync(DateTime startDate, DateTime endDate, int status, string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<PageCollectionInfo<WithdrawalNotificationDTO>> FindWithdrawalNotificationsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+        Task<PageCollectionInfo<WithdrawalNotificationDTO>> FindWithdrawalNotificationsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<WithdrawalNotificationDTO>> FindWithdrawalNotificationsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 

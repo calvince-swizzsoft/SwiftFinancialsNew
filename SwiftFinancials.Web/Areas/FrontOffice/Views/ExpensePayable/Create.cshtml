@@ -76,7 +76,7 @@
                                     @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.PostingPeriodId)
                                     @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
+                                    @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
                                 </div>
 
                             </div>
@@ -136,10 +136,10 @@
                                 </div>
 
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.Id)
                                     @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntry.BranchId, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Branch Name" } })
+                                    @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Branch Name" } })
                                 </div>
                             </div>
                         </div>
