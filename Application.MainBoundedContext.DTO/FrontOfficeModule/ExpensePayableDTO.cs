@@ -20,15 +20,15 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
-        [ValidGuid]
+      
         [DataMember]
         [Display(Name = "Branch Name")]
-     
+       
         public Guid BranchId { get; set; }
 
         [DataMember]
         [Display(Name = "Posting Period")]
-        [ValidGuid]
+       
         public Guid PostingPeriodId { get; set; }
 
       

@@ -42,6 +42,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
+
                 pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -60,12 +63,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         public async Task<ActionResult> Create()
-        {
+         {
             await ServeNavigationMenus();
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            ViewBag.ExpensePayableEntries = null;
+            ViewBag.ExpensePayableEntryDTOs = null;
 
 
             return View();
@@ -84,8 +87,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
             {
 
-                expensePayableEntryDTO.ChartOfAccountId = expensePayableDTO.Id;
-                expensePayableEntryDTO.BranchId = expensePayableDTO.BranchId;
+                expensePayableEntryDTO.ChartOfAccountId = expensePayableDTO.Id;     
                 expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
                 expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                 expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
@@ -98,7 +100,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             TempData["ExpensePayableDTO"] = expensePayableDTO;
 
             ViewBag.ExpensePayableEntryDTOs = ExpensePayableEntryDTOs;
-
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
             return View("Create", expensePayableDTO);
         }
@@ -107,9 +110,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
-
+            expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO;
             Guid expensePayableEntryChartOfAccountId = expensePayableDTO.Id;
-            Guid expensePayableEntryBranchId = expensePayableDTO.Id;
+          
 
             expensePayableDTO.ValidateAll();
 
@@ -126,8 +129,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
                     {
                         expensePayableEntryDTO.ExpensePayableId = expensePayable.Id;
-                        expensePayableEntryDTO.ChartOfAccountId = expensePayableEntryChartOfAccountId;
-                        expensePayableEntryDTO.BranchId = expensePayableEntryBranchId;
+                        expensePayableEntryDTO.ChartOfAccountId = expensePayableEntryChartOfAccountId;                      
                         expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
                         expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                         expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
@@ -137,12 +139,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     };
 
                     if (expensePayableEntries.Any())
+
                         await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, expensePayableEntries, GetServiceHeader());
                 }
+
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
 
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
+
                 ViewBag.ExpensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, GetServiceHeader());
+
 
                 return RedirectToAction("Index");
             }
@@ -150,6 +158,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var errorMessages = expensePayableDTO.ErrorMessages;
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
                 return View(expensePayableDTO);
             }
@@ -164,7 +173,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
 
-            return View();
+            return View(expensePayableDTO);
         }
 
         [HttpPost]
@@ -173,30 +182,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
 
             expensePayableDTO.ValidateAll();
-
-            if (!expensePayableDTO.HasErrors)
+            if (ModelState.IsValid)
             {
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-
+               
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = expensePayableDTO.ErrorMessages;
-
                 return View(expensePayableDTO);
             }
         }
-        /////////////verify expense payable/////    
+
+ 
         public async Task<ActionResult> Verify(Guid id)
         {
-            await ServeNavigationMenus();         
+            await ServeNavigationMenus();   
+            
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            return View();
+
+            return View(expensePayableDTO);
         }
 
         [HttpPost]
@@ -204,6 +215,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
         {
             expensePayableDTO.ValidateAll();
+
             var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
 
             if (!expensePayableDTO.HasErrors)
@@ -212,7 +224,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
                 return RedirectToAction("Index");
             }
             else
@@ -222,7 +236,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View(expensePayableDTO);
             }
         }
-        /////////////Approve expense payable/////    
+      
         public async Task<ActionResult> Approve(Guid id)
         {
             await ServeNavigationMenus();
@@ -231,7 +245,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
 
-            return View();
+            return View(expensePayableDTO);
         }
 
         [HttpPost]
@@ -259,18 +273,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
 
-                return View();
+                return View(expensePayableDTO);
             }
         }
 
-        /////////////Cancel expense payable/////    
+         
         public async Task<ActionResult> Cancel(Guid id)
         {
             await ServeNavigationMenus();
 
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
 
-            return View();
+            return View(expensePayableDTO);
         }
 
         [HttpPost]
@@ -289,12 +303,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
-        //[HttpGet]
-        //public async Task<JsonResult> GetExpensePayablesAsync()
+        //[httpget]
+        //public async task<jsonresult> getexpensepayablesasync()
         //{
-        //    var expensePayableDTOs = await _channelService.FindExpensePayablesAsync(GetServiceHeader());
+        //    var expensepayabledtos = await _channelservice.findexpensepayablesasync(getserviceheader());
 
-        //    return Json(expensePayableDTOs, JsonRequestBehavior.AllowGet);
+        //    return json(expensepayabledtos, jsonrequestbehavior.allowget);
         //}
     }
 }
