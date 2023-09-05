@@ -128,6 +128,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Type")]
+        public byte Type { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string TypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(JournalVoucherType), (int)Type) ? EnumHelper.GetDescription((JournalVoucherType)Type) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Type")]
         public byte EntryType { get; set; }
 
         [DataMember]

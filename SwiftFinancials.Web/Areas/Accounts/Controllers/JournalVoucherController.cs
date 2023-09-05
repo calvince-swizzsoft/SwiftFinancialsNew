@@ -127,7 +127,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         journalVoucherEntryDTO.JournalVoucherId = journalVoucher.Id;
                         journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
-                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryChartOfAccountId;
+                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryDTO.ChartOfAccountId;
                         journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
                         journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
                         journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
