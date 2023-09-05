@@ -2623,8 +2623,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<PageCollectionInfo<ExpensePayableEntryDTO>> FindExpensePayableEntriesByExpensePayableIdInPageAsync(Guid expensePayableId, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<ExpensePayableDTO> AddExpensePayableAsync(ExpensePayableDTO expensePayableDTO, ServiceHeader serviceHeader = null);
-
-
+    
+    
         Task<bool> UpdateExpensePayableEntriesByExpensePayableIdAsync(Guid expensePayableId, ObservableCollection<ExpensePayableEntryDTO> expensePayableEntries, ServiceHeader serviceHeader = null);
 
 

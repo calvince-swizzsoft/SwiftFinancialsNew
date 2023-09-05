@@ -110,6 +110,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
             expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO;
+
             Guid expensePayableEntryChartOfAccountId = expensePayableDTO.Id;
           
 

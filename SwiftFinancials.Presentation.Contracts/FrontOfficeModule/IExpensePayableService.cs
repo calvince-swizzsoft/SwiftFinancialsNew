@@ -12,7 +12,7 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
     {
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginAddExpensePayable(ExpensePayableDTO levyDTO, AsyncCallback callback, Object state);
+        IAsyncResult BeginAddExpensePayable(ExpensePayableDTO expensePayableDTO, AsyncCallback callback, Object state);
         ExpensePayableDTO EndAddExpensePayable(IAsyncResult result);
 
 
