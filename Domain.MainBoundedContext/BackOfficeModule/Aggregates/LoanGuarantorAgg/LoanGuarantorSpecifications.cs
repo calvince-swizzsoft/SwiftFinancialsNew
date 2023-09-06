@@ -97,5 +97,22 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoanGuarantorAgg
 
             return specification;
         }
+        public static Specification<LoanGuarantor> LoanGuarantorFullText(string text)
+        {
+            Specification<LoanGuarantor> specification = DefaultSpec();
+
+            if (!String.IsNullOrWhiteSpace(text))
+            {
+                var firstNameSpec = new DirectSpecification<LoanGuarantor>(c => c.Customer.Individual.FirstName.Contains(text));
+
+                var lastNameSpec = new DirectSpecification<LoanGuarantor>(c => c.Customer.Individual.LastName.Contains(text));
+
+                var loanProductSpec = new DirectSpecification<LoanGuarantor>(c => c.LoanProduct.Description.Contains(text));
+
+                specification &= firstNameSpec | lastNameSpec | loanProductSpec;
+            }
+
+            return specification;
+        }
     }
 }

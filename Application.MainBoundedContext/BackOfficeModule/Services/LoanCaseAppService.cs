@@ -2172,6 +2172,30 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             else return null;
         }
 
+        public PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantors(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = LoanGuarantorSpecifications.LoanGuarantorFullText(text);
+
+                ISpecification<LoanGuarantor> spec = filter;
+
+                var sortFields = new List<string> { "SequentialId" };
+
+                var loanGuarantorCollection = _loanGuarantorRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+
+                if (loanGuarantorCollection != null)
+                {
+                    var pageCollection = loanGuarantorCollection.PageCollection.ProjectedAsCollection<LoanGuarantorDTO>();
+
+                    var itemsCount = loanGuarantorCollection.ItemsCount;
+
+                    return new PageCollectionInfo<LoanGuarantorDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                }
+                else return null;
+            }
+        }
+
         public List<AttachedLoanDTO> FindAttachedLoansByLoanCaseId(Guid loanCaseId, ServiceHeader serviceHeader)
         {
             if (loanCaseId != null && loanCaseId != Guid.Empty)
