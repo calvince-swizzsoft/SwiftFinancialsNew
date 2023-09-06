@@ -24,6 +24,15 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [ValidGuid]
         public Guid JournalVoucherId { get; set; }
 
+        [DataMember]
+        [Display(Name = "Posting Period")]
+        [ValidGuid]
+        public Guid PostingPeriodId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Posting Period")]
+        public string PostingPeriodDescription { get; set; }
+
 
         [DataMember]
         [Display(Name = "Branch")]

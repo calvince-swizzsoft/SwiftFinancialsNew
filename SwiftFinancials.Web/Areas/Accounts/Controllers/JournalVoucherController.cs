@@ -73,7 +73,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
+            journalVoucherDTO.ValidateAll();
+
+            if (!journalVoucherDTO.HasErrors)
+
+                JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
+
 
             if (JournalVoucherEntryDTOs == null)
                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
@@ -82,6 +87,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
                 journalVoucherEntryDTO.ChartOfAccountId = journalVoucherDTO.Id;//Temporary
+                journalVoucherEntryDTO.PostingPeriodId = journalVoucherDTO.Id;
                 journalVoucherEntryDTO.BranchId = journalVoucherDTO.Id;//Temporary
                 journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
                 journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
@@ -106,11 +112,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
-           Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+            Guid journalVoucherEntryPostingPeriodId = journalVoucherDTO.Id;
+            Guid journalVoucherEntryBranchId = journalVoucherDTO.Id;
 
             var valuedate = Request["valuedate"];
 
-            journalVoucherDTO.ValueDate = DateTime.ParseExact((Request["valuedate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            journalVoucherDTO.ValueDate = DateTime.ParseExact(valuedate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             journalVoucherDTO.ValidateAll();
 
@@ -127,7 +135,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         journalVoucherEntryDTO.JournalVoucherId = journalVoucher.Id;
                         journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
-                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryDTO.ChartOfAccountId;
+                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryChartOfAccountId;//Temporary
+                        journalVoucherEntryDTO.PostingPeriodId = journalVoucherEntryPostingPeriodId;
+                        journalVoucherEntryDTO.BranchId = journalVoucherEntryBranchId;//Temporary
                         journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
                         journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
                         journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
