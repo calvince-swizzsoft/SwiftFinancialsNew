@@ -99,7 +99,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             TempData["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
 
-            TempData["JournalVoucherDTO"] = journalVoucherDTO;
+            TempData["JournalVoucherEntryDTO"] = journalVoucherDTO;
 
             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
 
@@ -112,7 +112,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
-            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+            await ServeNavigationMenus();
+
+            journalVoucherDTO =TempData["JournalVoucherEntryDTO"] as JournalVoucherDTO;
+            
+                        Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
             Guid journalVoucherEntryPostingPeriodId = journalVoucherDTO.Id;
             Guid journalVoucherEntryBranchId = journalVoucherDTO.Id;
 
