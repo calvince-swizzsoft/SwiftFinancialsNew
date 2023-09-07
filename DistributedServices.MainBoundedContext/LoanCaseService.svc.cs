@@ -148,6 +148,13 @@ namespace DistributedServices.MainBoundedContext
             return _loanCaseAppService.FindLoanGuarantorsByCustomerId(customerId, serviceHeader);
         }
 
+        public PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantorsByFilterInPage(string text, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _loanCaseAppService.FindLoanGuarantors(text, pageIndex, pageSize, serviceHeader);
+        }
+
         public PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantorsByCustomerIdAndFilterInPage(Guid customerId, string text, int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

@@ -9739,6 +9739,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<PageCollectionInfo<LoanGuarantorDTO>> FindLoanGuarantorsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<LoanGuarantorDTO>>();
+
+            ILoanCaseService service = GetService<ILoanCaseService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<LoanGuarantorDTO> response = ((ILoanCaseService)result.AsyncState).EndFindLoanGuarantorsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindLoanGuarantorsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<PageCollectionInfo<LoanCaseDTO>> FindLoanCasesByLoanProductSectionAndFilterInPageAsync(int loanProductSection, int status, DateTime startDate, DateTime endDate, string text, int loanCaseFilter, int pageIndex, int pageSize, bool includeBatchStatus, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<LoanCaseDTO>>();
@@ -16358,7 +16390,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-            service.BeginFindWithdrawalNotificationsByFilterInPage(text,  pageIndex, pageSize, asyncCallback, service);
+            service.BeginFindWithdrawalNotificationsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
 
             return tcs.Task;
         }
@@ -24715,7 +24747,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-         public Task<ObservableCollection<TellerDTO>> FindTellersAsync(ServiceHeader serviceHeader)
+        public Task<ObservableCollection<TellerDTO>> FindTellersAsync(ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<TellerDTO>>();
 
@@ -24742,7 +24774,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
-            service.BeginFindTellers(asyncCallback, service );
+            service.BeginFindTellers(asyncCallback, service);
 
             return tcs.Task;
         }
@@ -34796,7 +34828,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             var tcs = new TaskCompletionSource<bool>();
 
-        
+
             IExpensePayableService service = GetService<IExpensePayableService>(serviceHeader);
             AsyncCallback asyncCallback = (result =>
             {
