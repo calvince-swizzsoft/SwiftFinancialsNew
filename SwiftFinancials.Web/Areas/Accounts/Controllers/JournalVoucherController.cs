@@ -56,14 +56,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
         public async Task<ActionResult> Create()
         {
-            
+
             await ServeNavigationMenus();
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
 
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(string.Empty);
 
             ViewBag.JournalVoucherEntryDTOs = null;
-           
+
 
             return View();
         }
@@ -112,17 +112,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
-            await ServeNavigationMenus();
+            journalVoucherDTO = TempData["JournalVoucherEntryDTO"] as JournalVoucherDTO;
 
-            journalVoucherDTO =TempData["JournalVoucherEntryDTO"] as JournalVoucherDTO;
-            
-                        Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
             Guid journalVoucherEntryPostingPeriodId = journalVoucherDTO.Id;
             Guid journalVoucherEntryBranchId = journalVoucherDTO.Id;
 
             var valuedate = Request["valuedate"];
 
-            journalVoucherDTO.ValueDate = DateTime.ParseExact(valuedate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            journalVoucherDTO.ValueDate = DateTime.ParseExact(Request["valuedate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             journalVoucherDTO.ValidateAll();
 
@@ -152,28 +150,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     if (journalVoucherEntries.Any())
 
-                      await _channelService.UpdateJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, journalVoucherEntries, GetServiceHeader());
+                        await _channelService.UpdateJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, journalVoucherEntries, GetServiceHeader());
                 }
-                        ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-                        ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
 
-                    ViewBag.JournalVoucherEntries = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, GetServiceHeader());
+                ViewBag.JournalVoucherEntries = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, GetServiceHeader());
 
-                    return RedirectToAction("Index");
-                }
-                else
-                {
-                    var errorMessages = journalVoucherDTO.ErrorMessages;
-
-                    ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-                    ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-
-                    return View(journalVoucherDTO);
-                }
+                return RedirectToAction("Index");
             }
-        
+            else
+            {
+                var errorMessages = journalVoucherDTO.ErrorMessages;
 
-            public async Task<ActionResult> Edit(Guid id)
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+
+                return View(journalVoucherDTO);
+            }
+        }
+
+
+        public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
@@ -271,7 +269,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, journalVoucherAuthOption,1, GetServiceHeader());
+                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, journalVoucherAuthOption, 1, GetServiceHeader());
                 return RedirectToAction("Index");
             }
             else
