@@ -57,9 +57,29 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanGuarantorDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid id)
         {
-            await ServeNavigationMenus();
+            await ServeNavigationMenus(); 
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            LoanGuarantorDTO loanGuarantorDTO = new LoanGuarantorDTO();
+
+            if (customer != null)
+            {
+                loanGuarantorDTO.CustomerId = customer.Id;
+                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                loanGuarantorDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
+                loanGuarantorDTO.CustomerIndividualLastName = customer.IndividualLastName;
+
+            }
 
             return View();
         }
@@ -79,6 +99,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.LoanCaseCaseNumber = loanCaseDTO.CaseNumber; // Use the provided caseNumber
                 loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
                 loanGuarantorDTO.LoaneeCustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName;
+                loanGuarantorDTO.LoaneeCustomerIndividualLastName = loanCaseDTO.CustomerIndividualLastName;
                 loanGuarantorDTO.LoanCaseAmountApplied = loanCaseDTO.AmountApplied;
                 loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
                 loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
@@ -92,12 +113,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> SearchA(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> SearchA(Guid id, LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
 
             loanGuarantorDTO = TempData["LoanGuarantorsDTOs"] as LoanGuarantorDTO;
 
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
             var customerDTOs = await _channelService.FindCustomersAsync(GetServiceHeader());
 
             LoanGuarantorDTOs = TempData["LoanGuarantorDTOs"] as ObservableCollection<LoanGuarantorDTO>;
@@ -109,9 +136,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customerDTO.IndividualIdentityCardNumber;
                 loanGuarantorDTO.CustomerIndividualFirstName = customerDTO.IndividualFirstName;
                 loanGuarantorDTO.CustomerIndividualLastName = customerDTO.IndividualLastName;
+                loanGuarantorDTO.TotalShares = loanGuarantorDTO.TotalShares;
+                loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
+                loanGuarantorDTO.AmountPledged = loanGuarantorDTO.AmountPledged;
 
             }
-            
+
             TempData["LoanGuarantorDTOs"] = loanGuarantorDTO;
 
             return View("Create", loanGuarantorDTO);
@@ -120,7 +150,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
-            
+
             loanGuarantorDTO = TempData["LoanGuarantorDTOs"] as LoanGuarantorDTO;
 
             loanGuarantorDTO.ValidateAll();

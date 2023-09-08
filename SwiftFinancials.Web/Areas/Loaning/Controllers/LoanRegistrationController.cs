@@ -77,6 +77,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             if (customer != null)
             {
                 loanCaseDTO.CustomerId = customer.Id;
+                loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
+                loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
             }
 
             return View(loanCaseDTO);
