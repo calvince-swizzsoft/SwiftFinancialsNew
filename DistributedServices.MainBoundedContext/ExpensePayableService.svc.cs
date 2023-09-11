@@ -134,6 +134,15 @@ namespace DistributedServices.MainBoundedContext
             return _expensePayableAppService.FindExpensePayableEntriesByExpensePayableId(expensePayableId, pageIndex, pageSize, serviceHeader);
         }
 
+
+
+
+        public bool UpdateExpensePayableEntriesByExpensePayableId(Guid expensePayableId, List<ExpensePayableEntryDTO> expensePayableEntries)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _expensePayableAppService.UpdateExpensePayableEntries(expensePayableId, expensePayableEntries, serviceHeader);
+        }
         #endregion
 
     }

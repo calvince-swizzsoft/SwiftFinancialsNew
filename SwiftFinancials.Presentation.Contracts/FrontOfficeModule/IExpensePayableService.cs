@@ -89,13 +89,6 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
 
 
 
-
-
-
-
-
-
-
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginUpdateExpensePayableEntriesByExpensePayableId(Guid expensePayableId, List<ExpensePayableEntryDTO> expensePayableEntries, AsyncCallback callback, Object state);

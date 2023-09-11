@@ -72,6 +72,14 @@ namespace DistributedServices.MainBoundedContext
         [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<ExpensePayableEntryDTO> FindExpensePayableEntriesByExpensePayableIdInPage(Guid expensePayableId, int pageIndex, int pageSize);
 
+
+
+
+
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        bool UpdateExpensePayableEntriesByExpensePayableId(Guid expensePayableId, List<ExpensePayableEntryDTO> expensePayableEntries);
         #endregion
     }
 }

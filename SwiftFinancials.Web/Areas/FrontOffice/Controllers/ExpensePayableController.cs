@@ -43,9 +43,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
 
                 pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -113,8 +113,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO;
 
-            Guid expensePayableEntryChartOfAccountId = expensePayableDTO.Id;
-          
+            Guid expensePayableEntryChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+            Guid expensePayableEntryBranchId = expensePayableDTO.BranchId;
+
 
             expensePayableDTO.ValidateAll();
 
@@ -131,8 +132,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
                     {
                         expensePayableEntryDTO.ExpensePayableId = expensePayable.Id;
-                        expensePayableEntryDTO.ChartOfAccountId = expensePayableEntryChartOfAccountId;
-                        expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
+                        expensePayableEntryDTO.ChartOfAccountId = expensePayable.ChartOfAccountId;
+                        expensePayableEntryDTO.BranchId = expensePayable.BranchId;
+                        expensePayableEntryDTO.ChartOfAccountAccountName = expensePayable.ChartOfAccountAccountName;
+                        expensePayableEntryDTO.BranchDescription = expensePayable.BranchDescription;
                         expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
                         expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                         expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
