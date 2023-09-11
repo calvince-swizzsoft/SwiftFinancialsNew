@@ -57,9 +57,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanGuarantorDTO);
         }
 
-        public async Task<ActionResult> Create(Guid id)
+        public async Task<ActionResult> Create(Guid? id)
         {
-            await ServeNavigationMenus(); 
+            await ServeNavigationMenus();
 
             Guid parseId;
 
@@ -74,14 +74,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (customer != null)
             {
-                loanGuarantorDTO.CustomerId = customer.Id;
-                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                loanGuarantorDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
-                loanGuarantorDTO.CustomerIndividualLastName = customer.IndividualLastName;
 
+                loanGuarantorDTO.CustomerId = customer.Id;
+               loanGuarantorDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
+                loanGuarantorDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                loanGuarantorDTO.CustomerSerialNumber = customer.SerialNumber;
+                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+              
+               // loanGuarantorDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
             }
 
-            return View();
+            return View(loanGuarantorDTO);
         }
 
 
