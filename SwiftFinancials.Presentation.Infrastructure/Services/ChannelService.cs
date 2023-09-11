@@ -34796,8 +34796,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             var tcs = new TaskCompletionSource<bool>();
 
-        
             IExpensePayableService service = GetService<IExpensePayableService>(serviceHeader);
+
             AsyncCallback asyncCallback = (result =>
             {
                 try
@@ -34819,12 +34819,11 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
                 }
             });
 
+           
             service.BeginUpdateExpensePayableEntriesByExpensePayableId(expensePayableId, expensePayableEntries.ExtendedToList(), asyncCallback, service);
 
             return tcs.Task;
         }
-
-
 
 
 

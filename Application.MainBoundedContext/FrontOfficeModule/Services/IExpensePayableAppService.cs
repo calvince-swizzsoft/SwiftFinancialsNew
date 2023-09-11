@@ -40,5 +40,7 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
         List<ExpensePayableEntryDTO> FindExpensePayableEntriesByExpensePayableId(Guid expensePayableId, ServiceHeader serviceHeader);
 
         PageCollectionInfo<ExpensePayableEntryDTO> FindExpensePayableEntriesByExpensePayableId(Guid expensePayableId, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
+        bool UpdateExpensePayableEntries(Guid expensePayableId, List<ExpensePayableEntryDTO> expensePayableEntries, ServiceHeader serviceHeader);
     }
 }

@@ -2626,8 +2626,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
     
     
         Task<bool> UpdateExpensePayableEntriesByExpensePayableIdAsync(Guid expensePayableId, ObservableCollection<ExpensePayableEntryDTO> expensePayableEntries, ServiceHeader serviceHeader = null);
-
-
+      
         Task<ExpensePayableDTO> FindExpensePayableAsync(Guid expensePayableId, ServiceHeader serviceHeader = null);
 
         Task<ExpensePayableEntryDTO> AddExpensePayableEntryAsync(ExpensePayableEntryDTO expensePayableEntryDTO, ServiceHeader serviceHeader = null);

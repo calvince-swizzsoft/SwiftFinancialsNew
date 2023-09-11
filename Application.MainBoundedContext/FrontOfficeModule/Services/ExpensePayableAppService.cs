@@ -607,5 +607,76 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
             }
             else return null;
         }
+
+
+
+        public bool UpdateExpensePayableEntries(Guid expensePayableId, List<ExpensePayableEntryDTO> ExpensePayableEntries, ServiceHeader serviceHeader)
+        {
+            if (expensePayableId != null && ExpensePayableEntries != null)
+            {
+                using (var dbContextScope = _dbContextScopeFactory.Create())
+                {
+                    var persisted = _expensePayableRepository.Get(expensePayableId, serviceHeader);
+
+                    if (persisted != null)
+                    {
+                        var existing = FindExpensePayableEntries(persisted.Id, serviceHeader);
+
+                        if (existing != null && existing.Any())
+                        {
+                            foreach (var item in existing)
+                            {
+                                var ExpensePayableEntry = _expensePayableEntryRepository.Get(item.Id, serviceHeader);
+
+                                if (ExpensePayableEntry != null)
+                                {
+                                    _expensePayableEntryRepository.Remove(ExpensePayableEntry, serviceHeader);
+                                }
+                            }
+                        }
+
+                        if (ExpensePayableEntries.Any())
+                        {
+                            foreach (var item in ExpensePayableEntries)
+                            {
+                                var ExpensePayableEntry = ExpensePayableEntryFactory.CreateExpensePayableEntry(persisted.Id, item.BranchId , item.ChartOfAccountId, item.Value,item.PrimaryDescription,item.SecondaryDescription,item.Reference);
+                                
+                                _expensePayableEntryRepository.Add(ExpensePayableEntry, serviceHeader);
+                            }
+                        }
+
+                        return dbContextScope.SaveChanges(serviceHeader) >= 0;
+                    }
+                    else return false;
+                }
+            }
+            else return false;
+        }
+
+        public List<ExpensePayableEntryDTO> FindExpensePayableEntries(Guid expensePayableId, ServiceHeader serviceHeader)
+        {
+            if (expensePayableId != Guid.Empty)
+            {
+                using (_dbContextScopeFactory.CreateReadOnly())
+                {
+                    var filter = ExpensePayableEntrySpecifications.ExpensePayableEntryWithExpensePayableId(expensePayableId);
+
+                    ISpecification<ExpensePayableEntry> spec = filter;
+
+                    var expensePayableEntries = _expensePayableEntryRepository.AllMatching(spec, serviceHeader);
+
+                    if (expensePayableEntries != null)
+                    {
+                        return expensePayableEntries.ProjectedAsCollection<ExpensePayableEntryDTO>();
+                    }
+                    else return null;
+                }
+            }
+            else return null;
+        }
+
+
+
+
     }
 }

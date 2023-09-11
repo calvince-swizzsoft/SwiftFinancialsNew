@@ -87,7 +87,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
             {
 
-                expensePayableEntryDTO.ChartOfAccountId = expensePayableDTO.Id;     
+                expensePayableEntryDTO.ChartOfAccountId = expensePayableDTO.Id;
+                expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
                 expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
                 expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                 expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
@@ -130,7 +131,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
                     {
                         expensePayableEntryDTO.ExpensePayableId = expensePayable.Id;
-                        expensePayableEntryDTO.ChartOfAccountId = expensePayableEntryChartOfAccountId;                      
+                        expensePayableEntryDTO.ChartOfAccountId = expensePayableEntryChartOfAccountId;
+                        expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
                         expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
                         expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                         expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
@@ -141,7 +143,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     if (expensePayableEntries.Any())
 
-                        await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, expensePayableEntries, GetServiceHeader());
+                        await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id,expensePayableEntries, GetServiceHeader());
                 }
 
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
@@ -173,7 +175,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
 
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View(expensePayableDTO);
         }
 
@@ -188,7 +193,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-               
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
+              
                 return RedirectToAction("Index");
             }
             else

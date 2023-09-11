@@ -88,7 +88,21 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
         PageCollectionInfo<ExpensePayableDTO> EndFindExpensePayablesByFilterInPage(IAsyncResult result);
 
 
+
+
+
+
+
+
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginUpdateExpensePayableEntriesByExpensePayableId(Guid expensePayableId, List<ExpensePayableEntryDTO> expensePayableEntries, AsyncCallback callback, Object state);
         bool EndUpdateExpensePayableEntriesByExpensePayableId(IAsyncResult result);
+
+
+        //IAsyncResult BeginUpdateExpensePayableEntriesByExpensePayableId(Guid expensePayableId, List<ExpensePayableEntryDTO> expensePayableEntries, AsyncCallback callback, Object state);
+        //bool EndUpdateExpensePayableEntriesByExpensePayableId(IAsyncResult result);
     }
 }
