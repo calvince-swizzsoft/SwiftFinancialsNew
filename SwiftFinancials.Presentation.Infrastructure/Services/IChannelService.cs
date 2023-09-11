@@ -773,6 +773,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<LoanGuarantorDTO>> FindLoanGuarantorsByLoaneeCustomerIdAndLoanProductIdAsync(Guid loanCaseCustomerId, Guid loanCaseLoanProductId, ServiceHeader serviceHeader = null);
 
+        Task<PageCollectionInfo<LoanGuarantorDTO>> FindLoanGuarantorsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<LoanCaseDTO>> FindLoanCasesByLoanProductSectionAndFilterInPageAsync(int loanProductSection, int status, DateTime startDate, DateTime endDate, string text, int loanCaseFilter, int pageIndex, int pageSize, bool includeBatchStatus = false, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<LoanCaseDTO>> FindLoanCasesByLoanProductCategoryAndFilterInPageAsync(int loanProductCategory, int status, DateTime startDate, DateTime endDate, string text, int loanCaseFilter, decimal approvedAmountThreshold, int pageIndex, int pageSize, bool includeBatchStatus = false, ServiceHeader serviceHeader = null);

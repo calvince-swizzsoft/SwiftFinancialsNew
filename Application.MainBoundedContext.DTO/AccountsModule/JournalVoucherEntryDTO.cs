@@ -24,6 +24,15 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [ValidGuid]
         public Guid JournalVoucherId { get; set; }
 
+        [DataMember]
+        [Display(Name = "Posting Period")]
+        [ValidGuid]
+        public Guid PostingPeriodId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Posting Period")]
+        public string PostingPeriodDescription { get; set; }
+
 
         [DataMember]
         [Display(Name = "Branch")]
@@ -125,6 +134,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public byte Type { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string TypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(JournalVoucherType), (int)Type) ? EnumHelper.GetDescription((JournalVoucherType)Type) : string.Empty;
+            }
+        }
 
         [DataMember]
         [Display(Name = "Type")]

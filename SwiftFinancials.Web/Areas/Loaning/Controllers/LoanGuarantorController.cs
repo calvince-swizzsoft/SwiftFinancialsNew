@@ -22,29 +22,31 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-        //[HttpPost]
-        //public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-        //{
-        //    int totalRecordCount = 0;
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
 
-        // int searchRecordCount = 0;
+            int searchRecordCount = 0;
 
-        //    var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-        //   var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-        //    var pageCollectionInfo = await _channelService.FindLoanGuarantorsByCustomerIdAndFilterInPageAsync(customerId, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanGuarantorsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
-        //    if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-        //    {
-        //       totalRecordCount = pageCollectionInfo.ItemsCount;
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-        //       searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
-        //        return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        //    }
-        //    else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        //}
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -55,9 +57,29 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanGuarantorDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid id)
         {
-            await ServeNavigationMenus();
+            await ServeNavigationMenus(); 
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            LoanGuarantorDTO loanGuarantorDTO = new LoanGuarantorDTO();
+
+            if (customer != null)
+            {
+                loanGuarantorDTO.CustomerId = customer.Id;
+                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                loanGuarantorDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
+                loanGuarantorDTO.CustomerIndividualLastName = customer.IndividualLastName;
+
+            }
 
             return View();
         }
@@ -77,6 +99,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.LoanCaseCaseNumber = loanCaseDTO.CaseNumber; // Use the provided caseNumber
                 loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
                 loanGuarantorDTO.LoaneeCustomerIndividualFirstName = loanCaseDTO.CustomerIndividualFirstName;
+                loanGuarantorDTO.LoaneeCustomerIndividualLastName = loanCaseDTO.CustomerIndividualLastName;
                 loanGuarantorDTO.LoanCaseAmountApplied = loanCaseDTO.AmountApplied;
                 loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
                 loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
@@ -90,12 +113,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> SearchA(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> SearchA(Guid id, LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
 
             loanGuarantorDTO = TempData["LoanGuarantorsDTOs"] as LoanGuarantorDTO;
 
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
             var customerDTOs = await _channelService.FindCustomersAsync(GetServiceHeader());
 
             LoanGuarantorDTOs = TempData["LoanGuarantorDTOs"] as ObservableCollection<LoanGuarantorDTO>;
@@ -107,9 +136,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customerDTO.IndividualIdentityCardNumber;
                 loanGuarantorDTO.CustomerIndividualFirstName = customerDTO.IndividualFirstName;
                 loanGuarantorDTO.CustomerIndividualLastName = customerDTO.IndividualLastName;
+                loanGuarantorDTO.TotalShares = loanGuarantorDTO.TotalShares;
+                loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
+                loanGuarantorDTO.AmountPledged = loanGuarantorDTO.AmountPledged;
 
             }
-            
+
             TempData["LoanGuarantorDTOs"] = loanGuarantorDTO;
 
             return View("Create", loanGuarantorDTO);
@@ -118,7 +150,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
-            
+
             loanGuarantorDTO = TempData["LoanGuarantorDTOs"] as LoanGuarantorDTO;
 
             loanGuarantorDTO.ValidateAll();

@@ -77,6 +77,8 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
 
         List<LoanGuarantorDTO> FindLoanGuarantorsByCustomerId(Guid customerId, ServiceHeader serviceHeader);
 
+        PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantors(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+
         PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantorsByCustomerId(Guid customerId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         List<LoanGuarantorDTO> FindLoanGuarantorsByLoanCaseId(Guid loanCaseId, ServiceHeader serviceHeader);

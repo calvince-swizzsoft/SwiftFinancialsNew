@@ -89,6 +89,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantorsByFilterInPage(string text, int pageIndex, int pageSize);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         PageCollectionInfo<LoanGuarantorDTO> FindLoanGuarantorsByCustomerIdAndFilterInPage(Guid customerId, string text, int pageIndex, int pageSize);
 
         [OperationContract()]

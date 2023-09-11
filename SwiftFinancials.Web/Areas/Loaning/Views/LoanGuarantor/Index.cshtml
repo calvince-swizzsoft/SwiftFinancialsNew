@@ -85,16 +85,21 @@
                     var editUrl = '<a  href="/Loaning/LoanGuarantor/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Loaning/LoanGuarantor/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Guarantor Name", "sWidth": "15%" },
+                    { "mDataProp": "CustomerIndividualIdentityCardNumber", "sTitle": "ID Number", "sWidth": "10%" },
+                    { "mDataProp": "TotalShares", "sTitle": "Total Shares", "sWidth": "10%" },
+                    { "mDataProp": "CommittedShares", "sTitle": "Committed Shares", "sWidth": "10%" },
                     { "mDataProp": "AmountGuaranteed", "sTitle": "Amount Guaranteed", "sWidth": "10%" },
-                    { "mDataProp": "LoanCaseCaseNumber", "sTitle": "Loan Case Number", "sWidth": "10%" },
+                    { "mDataProp": "AmountPledged", "sTitle": "Amount Pledged", "sWidth": "10%" },
+                    { "mDataProp": "AmountPledged", "sTitle": "Amount Pledged", "sWidth": "10%" },
+                    { "mDataProp": "LoaneeCustomerFullName", "sTitle": "Loanee", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
