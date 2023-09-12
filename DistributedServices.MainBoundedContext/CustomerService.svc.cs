@@ -70,6 +70,13 @@ namespace DistributedServices.MainBoundedContext
             return await _customerAppService.FindCustomersByIdentityCardNumberAsync(identityCardNumber, matchExtact, serviceHeader);
         }
 
+        public async Task<List<CustomerDTO>> FindCustomersByIDNumberAsync(string identityCardNumber)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return await _customerAppService.FindCustomersByIDNumberAsync(identityCardNumber, serviceHeader);
+        }
+
         public async Task<CustomerDTO> FindCustomerAsync(Guid customerId)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);

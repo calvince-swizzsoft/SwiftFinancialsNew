@@ -56,6 +56,8 @@ namespace Application.MainBoundedContext.RegistryModule.Services
 
         Task<List<CustomerDTO>> FindCustomersByIdentityCardNumberAsync(string identityCardNumber, bool matchExtact, ServiceHeader serviceHeader);
 
+        Task<List<CustomerDTO>> FindCustomersByIDNumberAsync(string identityCardNumber, ServiceHeader serviceHeader);
+
         Task<List<NextOfKinDTO>> FindNextOfKinCollectionAsync(Guid customerId, ServiceHeader serviceHeader);
 
         Task<List<AccountAlertDTO>> FindAccountAlertCollectionAsync(Guid customerId, ServiceHeader serviceHeader);
