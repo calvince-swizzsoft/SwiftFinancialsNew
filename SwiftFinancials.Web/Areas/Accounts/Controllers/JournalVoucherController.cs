@@ -39,6 +39,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(journalVoucher => journalVoucher.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -84,6 +86,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
             {
+                journalVoucherEntryDTO.JournalVoucherId = journalVoucherDTO.Id;
                 journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
                 journalVoucherEntryDTO.ChartOfAccountId = journalVoucherDTO.Id;//Temporary
                 journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
@@ -110,7 +113,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
             journalVoucherDTO = TempData["JournalVoucherDTO"] as JournalVoucherDTO;
-            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.Id;
+
+            Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.ChartOfAccountId;
+
             var valuedate = Request["valuedate"];
             if (!string.IsNullOrEmpty(valuedate))
             {
@@ -136,7 +141,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         journalVoucherEntryDTO.JournalVoucherId = journalVoucher.Id;
                         journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
-                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryChartOfAccountId;//Temporary
+                        journalVoucherEntryDTO.ChartOfAccountId = journalVoucher.ChartOfAccountId;
                         journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
                         journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
                         journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
