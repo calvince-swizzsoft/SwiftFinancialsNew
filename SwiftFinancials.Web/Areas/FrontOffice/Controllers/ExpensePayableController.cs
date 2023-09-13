@@ -89,6 +89,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 expensePayableEntryDTO.ChartOfAccountId = expensePayableDTO.Id;
                 expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
+                expensePayableEntryDTO.BranchDescription = expensePayableEntryDTO.BranchDescription;
+                expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountName;
                 expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
                 expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
                 expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
@@ -175,14 +177,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());      
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View(expensePayableDTO);
+
+
         }
 
         [HttpPost]
@@ -191,10 +194,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
 
             expensePayableDTO.ValidateAll();
-            if (ModelState.IsValid)
+            if (!expensePayableDTO.HasErrors)
             {
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
@@ -206,6 +208,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else
             {
+                var errorMessages = expensePayableDTO.ErrorMessages;
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 return View(expensePayableDTO);
             }
         }
@@ -218,7 +227,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
 
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
 
             return View(expensePayableDTO);
@@ -238,7 +252,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
 
                 return RedirectToAction("Index");
@@ -258,7 +277,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
 
             ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View(expensePayableDTO);
         }
 
@@ -278,7 +301,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, moduleNavigationItemCode, GetServiceHeader());
 
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 return RedirectToAction("Index");
             }
             else
@@ -286,7 +314,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var errorMessages = expensePayableDTO.ErrorMessages;
 
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 return View(expensePayableDTO);
             }
         }
@@ -298,6 +331,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
 
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View(expensePayableDTO);
         }
 
@@ -308,7 +347,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-
+                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 return RedirectToAction("Index");
             }
             else
