@@ -89,15 +89,15 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
                     var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var cancelUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
                     
                     $('td:eq(5)', nRow).html(dt_ReceivedDate);
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + cancelUrl);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + appraiseUrl);
 
                     return nRow;
                 },
