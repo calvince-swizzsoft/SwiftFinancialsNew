@@ -15501,6 +15501,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<CustomerDTO>> FindCustomersByIDNumberAsync(string identityCardNumber, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CustomerDTO>>();
+
+            ICustomerService service = GetService<ICustomerService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CustomerDTO> response = ((ICustomerService)result.AsyncState).EndFindCustomersByIDNumber(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CustomerDTO>(response ?? new List<CustomerDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCustomersByIDNumber(identityCardNumber, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<bool> UpdateCustomerStationAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();

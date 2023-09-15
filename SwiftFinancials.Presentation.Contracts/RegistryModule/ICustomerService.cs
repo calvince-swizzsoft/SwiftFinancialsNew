@@ -38,6 +38,11 @@ namespace SwiftFinancials.Presentation.Contracts.RegistryModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginFindCustomersByIDNumber(string identityCardNumber, AsyncCallback callback, Object state);
+        List<CustomerDTO> EndFindCustomersByIDNumber(IAsyncResult result);
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindCustomer(Guid customerId, AsyncCallback callback, Object state);
         CustomerDTO EndFindCustomer(IAsyncResult result);
 

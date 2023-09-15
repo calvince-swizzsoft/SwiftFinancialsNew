@@ -36,6 +36,10 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
+        Task<List<CustomerDTO>> FindCustomersByIDNumberAsync(string identityCardNumber);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
         Task<CustomerDTO> FindCustomerAsync(Guid customerId);
 
         [OperationContract()]

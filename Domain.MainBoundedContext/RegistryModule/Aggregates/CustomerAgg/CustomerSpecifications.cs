@@ -299,6 +299,18 @@ namespace Domain.MainBoundedContext.RegistryModule.Aggregates.CustomerAgg
             }
         }
 
+        public static Specification<Customer> CustomerIndividualIDNumber(string identityCardNumber)
+        {
+            Specification<Customer> specification = DefaultSpec();
+
+            var customerSpec = new DirectSpecification<Customer>(c => c.Individual.IdentityCardNumber == identityCardNumber);
+
+            specification &= customerSpec;
+
+
+            return specification;
+        }
+
         public static Specification<Customer> CustomerNonIndividualRegistrationNumber(string registrationNumber)
         {
             Specification<Customer> specification = new DirectSpecification<Customer>(c => c.NonIndividual.RegistrationNumber == registrationNumber);

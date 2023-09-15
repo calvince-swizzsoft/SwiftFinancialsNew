@@ -1151,6 +1151,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<CustomerDTO>> FindCustomersByIdentityCardNumberAsync(string identityCardNumber, bool matchExtact, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<CustomerDTO>> FindCustomersByIDNumberAsync(string identityCardNumber, ServiceHeader serviceHeader = null);
+
         Task<bool> UpdateCustomerStationAsync(CustomerDTO customerDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> ResetCustomerStationAsync(ObservableCollection<CustomerDTO> customerDTOs, ServiceHeader serviceHeader = null);
