@@ -1501,11 +1501,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<bool> UpdateChartOfAccountAsync(ChartOfAccountDTO chartOfAccountDTO, ServiceHeader serviceHeader = null);
 
-        Task<Guid> GetChartOfAccountMappingForSystemGeneralLedgerAccountCodeAsync(int systemGeneralLedgerAccountCode, ServiceHeader serviceHeader = null);
-
-        Task<bool> MapSystemGeneralLedgerAccountCodeToChartOfAccountAsync(int systemGeneralLedgerAccountCode, Guid chartOfAccountId, ServiceHeader serviceHeader = null);
-
-        Task<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+        
 
         #endregion
 
@@ -3004,5 +3000,27 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<ObservableCollection<LoanProductAppraisalProductDTO>> FindLoanProductAppraisalProductsAsync(ServiceHeader serviceHeader = null);
 
         #endregion
+
+        #region SystemGeneralLedgerAccountMappingDTO
+        Task<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+
+        Task<SystemGeneralLedgerAccountMappingDTO> AddSystemGeneralLedgerAccountMappingAsync(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, ServiceHeader serviceHeader = null);
+
+        Task<bool> UpdateSystemGeneralLedgerAccountMappingAsync(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, ServiceHeader serviceHeader = null);
+
+        Task<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappingAsync(Guid systemGeneralLedgerAccountMappingId, ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsAsync(ServiceHeader serviceHeader = null);
+
+        Task<Guid> GetChartOfAccountMappingForSystemGeneralLedgerAccountCodeAsync(int systemGeneralLedgerAccountCode, ServiceHeader serviceHeader = null);
+
+        Task<bool> MapSystemGeneralLedgerAccountCodeToChartOfAccountAsync(int systemGeneralLedgerAccountCode, Guid chartOfAccountId, ServiceHeader serviceHeader = null);
+
+
+
+        #endregion
+
     }
 }

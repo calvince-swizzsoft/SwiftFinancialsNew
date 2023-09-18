@@ -318,12 +318,12 @@
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\GLAccountDeterminationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -861,6 +861,10 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
     <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1320,7 +1324,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
-    <Folder Include="Areas\Accounts\Views\GLAccountDetermination\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />

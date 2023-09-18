@@ -846,7 +846,22 @@ namespace SwiftFinancials.Web.Controllers
             return batchAuthOptions;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetSystemGeneralLedgerAccountCodeSelectList(string selectedValue)
+        {
+            List<SelectListItem> systemGeneralLedgerAccountCodes = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemGeneralLedgerAccountCode)).Cast<SystemGeneralLedgerAccountCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemGeneralLedgerAccountCodes.AddRange(items);
+
+            return systemGeneralLedgerAccountCodes;
+        }
 
 
 

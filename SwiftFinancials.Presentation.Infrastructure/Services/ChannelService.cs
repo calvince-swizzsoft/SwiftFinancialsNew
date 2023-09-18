@@ -19289,38 +19289,6 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
-        {
-            var tcs = new TaskCompletionSource<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>>();
-
-            IChartOfAccountService service = GetService<IChartOfAccountService>(serviceHeader);
-
-            AsyncCallback asyncCallback = (result =>
-            {
-                try
-                {
-                    PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> response = ((IChartOfAccountService)result.AsyncState).EndFindSystemGeneralLedgerAccountMappingsInPage(result);
-
-                    tcs.TrySetResult(response);
-                }
-                catch (Exception ex)
-                {
-                    HandleFault(ex, (msgcb) =>
-                    {
-                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
-                    });
-                }
-                finally
-                {
-                    DisposeService(service as IClientChannel);
-                }
-            });
-
-            service.BeginFindSystemGeneralLedgerAccountMappingsInPage(pageIndex, pageSize, asyncCallback, service);
-
-            return tcs.Task;
-        }
-
         #endregion
 
         #region CustomerAccountDTO
@@ -39673,6 +39641,203 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         #endregion
+
+        #region SystemGeneralLedgerAccountMappingDTO
+        public Task<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>>();
+
+            ISystemGeneralLedgerAccountMappingService service = GetService<ISystemGeneralLedgerAccountMappingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> response = ((ISystemGeneralLedgerAccountMappingService)result.AsyncState).EndFindSystemGeneralLedgerAccountMappingsByFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSystemGeneralLedgerAccountMappingsByFilterInPage(text, pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO>>();
+
+            ISystemGeneralLedgerAccountMappingService service = GetService<ISystemGeneralLedgerAccountMappingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> response = ((ISystemGeneralLedgerAccountMappingService)result.AsyncState).EndFindSystemGeneralLedgerAccountMappingsInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSystemGeneralLedgerAccountMappingsInPage(pageIndex, pageSize, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<SystemGeneralLedgerAccountMappingDTO> AddSystemGeneralLedgerAccountMappingAsync(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<SystemGeneralLedgerAccountMappingDTO>();
+
+            ISystemGeneralLedgerAccountMappingService service = GetService<ISystemGeneralLedgerAccountMappingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SystemGeneralLedgerAccountMappingDTO response = ((ISystemGeneralLedgerAccountMappingService)result.AsyncState).EndAddSystemGeneralLedgerAccountMapping(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginAddSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<bool> UpdateSystemGeneralLedgerAccountMappingAsync(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            ISystemGeneralLedgerAccountMappingService service = GetService<ISystemGeneralLedgerAccountMappingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ISystemGeneralLedgerAccountMappingService)result.AsyncState).EndUpdateSystemGeneralLedgerAccountMapping(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappingAsync(Guid systemGeneralLedgerAccountMappingId, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<SystemGeneralLedgerAccountMappingDTO>();
+
+            ISystemGeneralLedgerAccountMappingService service = GetService<ISystemGeneralLedgerAccountMappingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    SystemGeneralLedgerAccountMappingDTO response = ((ISystemGeneralLedgerAccountMappingService)result.AsyncState).EndFindSystemGeneralLedgerAccountMapping(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ObservableCollection<SystemGeneralLedgerAccountMappingDTO>> FindSystemGeneralLedgerAccountMappingsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<SystemGeneralLedgerAccountMappingDTO>>();
+
+            ISystemGeneralLedgerAccountMappingService service = GetService<ISystemGeneralLedgerAccountMappingService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<SystemGeneralLedgerAccountMappingDTO> response = ((ISystemGeneralLedgerAccountMappingService)result.AsyncState).EndFindSystemGeneralLedgerAccountMappings(result);
+
+                    tcs.TrySetResult(new ObservableCollection<SystemGeneralLedgerAccountMappingDTO>(response ?? new List<SystemGeneralLedgerAccountMappingDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindSystemGeneralLedgerAccountMappings(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        #endregion
+
 
 
 #if !SILVERLIGHT
