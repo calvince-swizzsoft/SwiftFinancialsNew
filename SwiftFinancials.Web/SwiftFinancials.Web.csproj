@@ -850,7 +850,6 @@
     <Content Include="Areas\Loaning\Views\LoanGuarantor\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Approve.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Authorize.cshtml" />

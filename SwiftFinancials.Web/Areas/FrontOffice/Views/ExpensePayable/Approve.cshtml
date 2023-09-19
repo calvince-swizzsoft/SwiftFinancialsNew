@@ -49,13 +49,7 @@
                             <div class="row">
                                 <div class="col-lg-4">
 
-                                    @*  <div class="form-group" id="data_3">
-                                            @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                            <div class="input-group date">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                <input type="text" name="CreatedDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                            </div>
-                                        </div>*@
+                                   
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
@@ -71,44 +65,39 @@
                                         @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                     </div>
-                                    <div>
-                                        @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
-                                    </div>
+                                    
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description", disabled = "disabled" } })
+                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
                                         @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                     </div>
-                                    @* <div class="form-group" id="data_3">
-                                            @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
-                                            <div class="input-group date">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                <input type="text" name="ValueDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                            </div>
-                                        </div>*@
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks"} })
                                         @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="AuditedDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
                                     </div>
+
                                     <div class="form-group form-group-sm">
                                         <input type="submit" value="Approve" class="btn btn-primary" />
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountAccountName)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Customer", disabled = "disabled" } })
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
@@ -119,7 +108,7 @@
                                         @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Type, expensePayableStatuses, new { @class = "form-control input-md", disabled = "disabled" })
+                                            @Html.DropDownListFor(model => model.Type, expensePayableStatuses, new { @class = "form-control input-md" })
                                             @Html.ValidationMessageFor(model => model.Type)
                                         </div>
                                     </div>
@@ -252,6 +241,19 @@
                     }
                 }
             });
+
+
+            $(document).ready(function () {
+                $('#data_3 .input-group.date').datepicker({
+                    startView: 2,
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    autoclose: true,
+                });
+            });
+
+
         });
 
     </script>
