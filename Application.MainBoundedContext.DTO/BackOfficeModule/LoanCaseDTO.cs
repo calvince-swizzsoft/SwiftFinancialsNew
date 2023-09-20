@@ -480,6 +480,20 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
         [DataMember]
+        [Display(Name = "Loan Appraisal Option")]
+        public int LoanAppraisalOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Loan Appraisal Option")]
+        public string LoanAppraisalOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanAppraisalOption), LoanAppraisalOption) ? EnumHelper.GetDescription((LoanAppraisalOption)LoanAppraisalOption) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "Loan Cancellation Option")]
         public int LoanCancellationOption { get; set; }
 
