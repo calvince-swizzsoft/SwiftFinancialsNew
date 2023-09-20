@@ -249,6 +249,7 @@
     <Content Include="CommissionService.svc" />
     <Content Include="CompanyService.svc" />
     <Content Include="ConditionalLendingService.svc" />
+    <Content Include="SystemGeneralLedgerAccountMappingService.svc" />
     <Content Include="CostCenterService.svc" />
     <Content Include="CreditBatchService.svc" />
     <Content Include="CreditTypeService.svc" />
@@ -459,11 +460,15 @@
     <Compile Include="Contracts\AccountsModule\IReportTemplateService.cs" />
     <Compile Include="Contracts\AccountsModule\ISavingsProductService.cs" />
     <Compile Include="Contracts\AccountsModule\IStandingOrderService.cs" />
+    <Compile Include="Contracts\AccountsModule\ISystemGeneralLedgerAccountMappingService.cs" />
     <Compile Include="Contracts\AccountsModule\ITellerService.cs" />
     <Compile Include="Contracts\AccountsModule\ITreasuryService.cs" />
     <Compile Include="Contracts\AccountsModule\IUnPayReasonService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferTypeService.cs" />
+    <Compile Include="SystemGeneralLedgerAccountMappingService.svc.cs">
+      <DependentUpon>SystemGeneralLedgerAccountMappingService.svc</DependentUpon>
+    </Compile>
     <Compile Include="Contracts\AdministrationModule\IBankService.cs" />
     <Compile Include="Contracts\AdministrationModule\IBranchService.cs" />
     <Compile Include="Contracts\AdministrationModule\ICompanyService.cs" />
