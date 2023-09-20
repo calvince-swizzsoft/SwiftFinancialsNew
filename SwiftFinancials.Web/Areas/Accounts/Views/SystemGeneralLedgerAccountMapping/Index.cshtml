@@ -82,8 +82,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/systemGeneralLedgerAccountMapping/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/systemGeneralLedgerAccountMapping/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/accounts/SystemGeneralLedgerAccountMapping/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/SystemGeneralLedgerAccountMapping/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(2)', nRow).html(dt_Created);
                     $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
