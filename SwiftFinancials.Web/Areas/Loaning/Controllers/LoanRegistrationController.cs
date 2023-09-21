@@ -130,36 +130,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Add(LoanCaseDTO loanCaseDTO)
-        {
-            await ServeNavigationMenus();
-
-            LoanGuarantorDTOs = TempData["LoanGuarantorDTO"] as ObservableCollection<LoanGuarantorDTO>;
-
-            if (LoanGuarantorDTOs == null)
-                LoanGuarantorDTOs = new ObservableCollection<LoanGuarantorDTO>();
-
-            foreach (var loanGuarantorDTO in loanCaseDTO.LoanGuarantors)
-            {
-                loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
-                loanGuarantorDTO.CustomerIndividualIdentityCardNumber = loanGuarantorDTO.CustomerIndividualIdentityCardNumber;
-                loanGuarantorDTO.LoanCaseAmountApplied = loanGuarantorDTO.LoanCaseAmountApplied;
-                loanGuarantorDTO.AppraisalFactor = loanGuarantorDTO.AppraisalFactor;
-                loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
-                loanGuarantorDTO.CustomerId = loanGuarantorDTO.CustomerId;
-                LoanGuarantorDTOs.Add(loanGuarantorDTO);
-            };
-
-            TempData["LoanGuarantorDTOs"] = LoanGuarantorDTOs;
-
-            TempData["LoanCaseDTO"] = loanCaseDTO;
-
-            ViewBag.LoanGuarantorDTOs = LoanGuarantorDTOs;
-
-            return View("Create", loanCaseDTO);
-        }
-
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -195,6 +165,43 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
+        public async Task<ActionResult> Appraise(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+            ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+
+            return View(loanCaseDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
+        {
+            var loanAppraisalOption = loanCaseDTO.LoanAppraisalOption;
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
+            {
+                await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanAppraisalOption,1, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = loanCaseDTO.ErrorMessages;
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
+                return View(loanCaseDTO);
+            }
+        }
+
         public async Task<ActionResult> Approve(Guid id)
         {
             await ServeNavigationMenus();
@@ -210,7 +217,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approve(Guid id, LoanCaseDTO loanCaseDTO)
+        public async Task<ActionResult> Approve(LoanCaseDTO loanCaseDTO)
         {
             var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
             loanCaseDTO.ValidateAll();
@@ -232,43 +239,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
-        public async Task<ActionResult> Appraise(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
-            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
-            ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
-
-            return View(loanCaseDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Appraise(Guid id, LoanCaseDTO loanCaseDTO)
-        {
-            var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
-            loanCaseDTO.ValidateAll();
-
-            if (!loanCaseDTO.HasErrors)
-            {
-                await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = loanCaseDTO.ErrorMessages;
-                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
-                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
-                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
-                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
-                return View(loanCaseDTO);
-            }
-        }
-
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
@@ -284,7 +254,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, LoanCaseDTO loanCaseDTO)
+        public async Task<ActionResult> Verify(LoanCaseDTO loanCaseDTO)
         {
             var loanAuditOption = loanCaseDTO.LoanAuditOption;
             loanCaseDTO.ValidateAll();
@@ -321,7 +291,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Cancel(Guid id, LoanCaseDTO loanCaseDTO)
+        public async Task<ActionResult> Cancel(LoanCaseDTO loanCaseDTO)
         {
             var loanCancellationOption = loanCaseDTO.LoanCancellationOption;
             loanCaseDTO.ValidateAll();
