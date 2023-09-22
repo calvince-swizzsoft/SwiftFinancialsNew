@@ -72,5 +72,14 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Name")]
+        [Required]
+        public string Description { get; set; }
+
+        [DataMember]
+        [Display(Name = "Is Locked?")]
+        public bool IsLocked { get; set; }
     }
 }

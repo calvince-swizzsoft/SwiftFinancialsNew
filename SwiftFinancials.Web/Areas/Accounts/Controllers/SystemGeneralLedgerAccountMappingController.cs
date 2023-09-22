@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class SystemGeneralLedgerAccountMapping : MasterController
+    public class SystemGeneralLedgerAccountMappingController : MasterController
     {
         public async Task<ActionResult> Index()
         {

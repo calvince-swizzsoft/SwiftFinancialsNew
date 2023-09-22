@@ -176,6 +176,7 @@
     <Compile Include="AccountsModule\Services\IReportTemplateAppService.cs" />
     <Compile Include="AccountsModule\Services\ISavingsProductAppService.cs" />
     <Compile Include="AccountsModule\Services\IStandingOrderAppService.cs" />
+    <Compile Include="AccountsModule\Services\ISystemGeneralLedgerAccountMappingAppService.cs" />
     <Compile Include="AccountsModule\Services\ITellerAppService.cs" />
     <Compile Include="AccountsModule\Services\ITreasuryAppService.cs" />
     <Compile Include="AccountsModule\Services\IUnPayReasonAppService.cs" />
@@ -194,6 +195,7 @@
     <Compile Include="AccountsModule\Services\ReportTemplateAppService.cs" />
     <Compile Include="AccountsModule\Services\SavingsProductAppService.cs" />
     <Compile Include="AccountsModule\Services\StandingOrderAppService.cs" />
+    <Compile Include="AccountsModule\Services\SystemGeneralLedgerAccountMappingAppService.cs" />
     <Compile Include="AccountsModule\Services\TellerAppService.cs" />
     <Compile Include="AccountsModule\Services\TreasuryAppService.cs" />
     <Compile Include="AccountsModule\Services\UnPayReasonAppService.cs" />

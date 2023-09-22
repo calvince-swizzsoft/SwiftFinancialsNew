@@ -1,18 +1,76 @@
-﻿using System;
+﻿using Application.MainBoundedContext.AccountsModule.Services;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using DistributedServices.MainBoundedContext.InstanceProviders;
+using DistributedServices.Seedwork.EndpointBehaviors;
+using DistributedServices.Seedwork.ErrorHandlers;
+using Infrastructure.Crosscutting.Framework.Utils;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
 
-namespace DistributedServices.MainBoundedContext.Contracts.AccountsModule
+namespace DistributedServices.MainBoundedContext
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "SystemGeneralLedgerAccountMapping" in code, svc and config file together.
-    // NOTE: In order to launch WCF Test Client for testing this service, please select SystemGeneralLedgerAccountMapping.svc or SystemGeneralLedgerAccountMapping.svc.cs at the Solution Explorer and start debugging.
-    public class SystemGeneralLedgerAccountMapping : ISystemGeneralLedgerAccountMappingService
+    [ApplicationErrorHandlerAttribute()]
+    [UnityInstanceProviderServiceBehavior()]
+    [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
+    public class SystemGeneralLedgerAccountMappingService : ISystemGeneralLedgerAccountMappingService
     {
-        public void DoWork()
+        private readonly ISystemGeneralLedgerAccountMappingAppService _systemGeneralLedgerAccountMappingAppService;
+
+        public SystemGeneralLedgerAccountMappingService(
+            ISystemGeneralLedgerAccountMappingAppService systemGeneralLedgerAccountMappingAppService)
         {
+            Guard.ArgumentNotNull(systemGeneralLedgerAccountMappingAppService, nameof(systemGeneralLedgerAccountMappingAppService));
+
+            _systemGeneralLedgerAccountMappingAppService = systemGeneralLedgerAccountMappingAppService;
         }
+
+        #region System General Ledger Account Mapping
+
+        public SystemGeneralLedgerAccountMappingDTO AddSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _systemGeneralLedgerAccountMappingAppService.AddNewSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO, serviceHeader);
+        }
+
+        public bool UpdateSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _systemGeneralLedgerAccountMappingAppService.UpdateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO, serviceHeader);
+        }
+
+        public List<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappings()
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _systemGeneralLedgerAccountMappingAppService.FindSystemGeneralLedgerAccountMappings(serviceHeader);
+        }
+
+        public PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappingsInPage(string text, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _systemGeneralLedgerAccountMappingAppService.FindSystemGeneralLedgerAccountMappings(text, pageIndex, pageSize, serviceHeader);
+        }
+
+        public PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappingsByFilterInPage(string text, int pageIndex, int pageSize)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _systemGeneralLedgerAccountMappingAppService.FindSystemGeneralLedgerAccountMappings(text, pageIndex, pageSize, serviceHeader);
+        }
+
+        public SystemGeneralLedgerAccountMappingDTO FindSystemGeneralLedgerAccountMapping(Guid systemGeneralLedgerAccountMappingId)
+        {
+            var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+            return _systemGeneralLedgerAccountMappingAppService.FindSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingId, serviceHeader);
+        }
+
+
+        #endregion
     }
 }

@@ -12,6 +12,8 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.SystemGeneralLedge
 
         public Guid ChartOfAccountId { get; set; }
 
+        public string Description { get; set; }
+
         public virtual ChartOfAccount ChartOfAccount { get; private set; }
 
         

@@ -1,17 +1,42 @@
-﻿using System;
+﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using DistributedServices.Seedwork.ErrorHandlers;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.Serialization;
 using System.ServiceModel;
-using System.Text;
 
-namespace DistributedServices.MainBoundedContext.Contracts.AccountsModule
+namespace DistributedServices.MainBoundedContext
 {
-    // NOTE: You can use the "Rename" command on the "Refactor" menu to change the interface name "ISystemGeneralLedgerAccountMapping" in both code and config file together.
     [ServiceContract]
     public interface ISystemGeneralLedgerAccountMappingService
     {
-        [OperationContract]
-        void DoWork();
+        #region System General Ledger Account Mapping
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        SystemGeneralLedgerAccountMappingDTO AddSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        bool UpdateSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        List<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappings();
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        SystemGeneralLedgerAccountMappingDTO FindSystemGeneralLedgerAccountMapping(Guid systemGeneralLedgerAccountMappingId);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappingsInPage(string text, int pageIndex, int pageSize);
+
+        [OperationContract()]
+        [FaultContract(typeof(ApplicationServiceError))]
+        PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappingsByFilterInPage(string text, int pageIndex, int pageSize);
+
+        #endregion
     }
 }
+
