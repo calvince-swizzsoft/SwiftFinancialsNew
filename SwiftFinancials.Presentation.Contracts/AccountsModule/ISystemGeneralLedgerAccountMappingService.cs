@@ -7,9 +7,12 @@ using System.ServiceModel;
 
 namespace SwiftFinancials.Presentation.Contracts.AccountsModule
 {
+
     [ServiceContract(Name = "ISystemGeneralLedgerAccountMappingService")]
     public interface ISystemGeneralLedgerAccountMappingService
     {
+        #region System General Ledger Account Mapping
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAddSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, AsyncCallback callback, Object state);
@@ -39,5 +42,7 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindSystemGeneralLedgerAccountMappingsByFilterInPage(string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
         PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> EndFindSystemGeneralLedgerAccountMappingsByFilterInPage(IAsyncResult result);
+
+        #endregion
     }
 }

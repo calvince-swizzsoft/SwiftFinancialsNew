@@ -1,11 +1,10 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.Seedwork;
-using Infrastructure.Crosscutting.Framework.Utils;
 using Domain.MainBoundedContext.AccountsModule.Aggregates.SystemGeneralLedgerAccountMappingAgg;
 using Domain.Seedwork;
 using Domain.Seedwork.Specification;
-using LazyCache;
+using Infrastructure.Crosscutting.Framework.Utils;
 using Numero3.EntityFramework.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -17,12 +16,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
     {
         private readonly IDbContextScopeFactory _dbContextScopeFactory;
         private readonly IRepository<SystemGeneralLedgerAccountMapping> _systemGeneralLedgerAccountMappingRepository;
-        private readonly IAppCache _appCache;
 
         public SystemGeneralLedgerAccountMappingAppService(
            IDbContextScopeFactory dbContextScopeFactory,
-           IRepository<SystemGeneralLedgerAccountMapping> systemGeneralLedgerAccountMappingRepository,
-           IAppCache appCache)
+           IRepository<SystemGeneralLedgerAccountMapping> systemGeneralLedgerAccountMappingRepository)
         {
             if (dbContextScopeFactory == null)
                 throw new ArgumentNullException(nameof(dbContextScopeFactory));
@@ -30,24 +27,17 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             if (systemGeneralLedgerAccountMappingRepository == null)
                 throw new ArgumentNullException(nameof(systemGeneralLedgerAccountMappingRepository));
 
-            if (appCache == null)
-                throw new ArgumentNullException(nameof(appCache));
-
             _dbContextScopeFactory = dbContextScopeFactory;
             _systemGeneralLedgerAccountMappingRepository = systemGeneralLedgerAccountMappingRepository;
-            _appCache = appCache;
         }
 
         public SystemGeneralLedgerAccountMappingDTO AddNewSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, ServiceHeader serviceHeader)
         {
-            if (systemGeneralLedgerAccountMappingDTO != null && systemGeneralLedgerAccountMappingDTO.ChartOfAccountId != Guid.Empty)
+            if (systemGeneralLedgerAccountMappingDTO != null)
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var systemGeneralLedgerAccountMapping = SystemGeneralLedgerAccountMappingFactory.CreateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode, systemGeneralLedgerAccountMappingDTO.ChartOfAccountId);
-
-                    systemGeneralLedgerAccountMapping.SystemGeneralLedgerAccountCode = (short)_systemGeneralLedgerAccountMappingRepository.DatabaseSqlQuery<int>(string.Format("SELECT ISNULL(MAX(SystemGeneralLedgerAccountCode),0) + 1 AS Expr1 FROM {0}SystemGeneralLedgerAccountMappings", DefaultSettings.Instance.TablePrefix), serviceHeader).FirstOrDefault();
-
+                    var systemGeneralLedgerAccountMapping = SystemGeneralLedgerAccountMappingFactory.CreateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode,systemGeneralLedgerAccountMappingDTO.ChartOfAccountId);
 
                     _systemGeneralLedgerAccountMappingRepository.Add(systemGeneralLedgerAccountMapping, serviceHeader);
 
@@ -61,7 +51,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         public bool UpdateSystemGeneralLedgerAccountMapping(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO, ServiceHeader serviceHeader)
         {
-            if (systemGeneralLedgerAccountMappingDTO == null || systemGeneralLedgerAccountMappingDTO.Id == Guid.Empty || systemGeneralLedgerAccountMappingDTO.ChartOfAccountId == Guid.Empty)
+            if (systemGeneralLedgerAccountMappingDTO == null || systemGeneralLedgerAccountMappingDTO.Id == Guid.Empty)
                 return false;
 
             using (var dbContextScope = _dbContextScopeFactory.Create())
@@ -73,10 +63,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var current = SystemGeneralLedgerAccountMappingFactory.CreateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode, systemGeneralLedgerAccountMappingDTO.ChartOfAccountId);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
-                    current.SystemGeneralLedgerAccountCode = persisted.SystemGeneralLedgerAccountCode;
 
                     _systemGeneralLedgerAccountMappingRepository.Merge(persisted, current, serviceHeader);
-
 
                     return dbContextScope.SaveChanges(serviceHeader) >= 0;
                 }
@@ -88,9 +76,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
-                ISpecification<SystemGeneralLedgerAccountMapping> spec = SystemGeneralLedgerAccountMappingSpecifications.DefaultSpec();
-
-                var systemGeneralLedgerAccountMappings = _systemGeneralLedgerAccountMappingRepository.AllMatching(spec, serviceHeader);
+                var systemGeneralLedgerAccountMappings = _systemGeneralLedgerAccountMappingRepository.GetAll(serviceHeader);
 
                 if (systemGeneralLedgerAccountMappings != null && systemGeneralLedgerAccountMappings.Any())
                 {
@@ -99,8 +85,6 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 else return null;
             }
         }
-
-
 
         public PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> FindSystemGeneralLedgerAccountMappings(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
@@ -112,13 +96,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 var sortFields = new List<string> { "SequentialId" };
 
-                var systemGeneralLedgerAccountMappingCollection = _systemGeneralLedgerAccountMappingRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                var systemGeneralLedgerAccountMappingPagedCollection = _systemGeneralLedgerAccountMappingRepository.AllMatchingPaged(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
 
-                if (systemGeneralLedgerAccountMappingCollection != null)
+                if (systemGeneralLedgerAccountMappingPagedCollection != null)
                 {
-                    var pageCollection = systemGeneralLedgerAccountMappingCollection.PageCollection.ProjectedAsCollection<SystemGeneralLedgerAccountMappingDTO>();
+                    var pageCollection = systemGeneralLedgerAccountMappingPagedCollection.PageCollection.ProjectedAsCollection<SystemGeneralLedgerAccountMappingDTO>();
 
-                    var itemsCount = systemGeneralLedgerAccountMappingCollection.ItemsCount;
+                    var itemsCount = systemGeneralLedgerAccountMappingPagedCollection.ItemsCount;
 
                     return new PageCollectionInfo<SystemGeneralLedgerAccountMappingDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
                 }
@@ -167,7 +151,5 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
             else return null;
         }
-
     }
-
 }
