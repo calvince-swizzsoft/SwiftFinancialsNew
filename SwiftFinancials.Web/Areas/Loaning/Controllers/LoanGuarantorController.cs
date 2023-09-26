@@ -146,41 +146,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> SearchA(Guid id, LoanGuarantorDTO loanGuarantorDTO)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    loanGuarantorDTO = TempData["LoanGuarantorsDTOs"] as LoanGuarantorDTO;
-
-        //    Guid parseId;
-
-        //    if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return View();
-        //    }
-        //    var customerDTOs = await _channelService.FindCustomersAsync(GetServiceHeader());
-
-        //    LoanGuarantorDTOs = TempData["LoanGuarantorDTOs"] as ObservableCollection<LoanGuarantorDTO>;
-
-        //    var customerDTO = customerDTOs.FirstOrDefault();
-        //    if (customerDTOs != null)
-        //    {
-        //        loanGuarantorDTO.CustomerId = customerDTO.Id;
-        //        loanGuarantorDTO.CustomerIndividualIdentityCardNumber = customerDTO.IndividualIdentityCardNumber;
-        //        loanGuarantorDTO.CustomerIndividualFirstName = customerDTO.IndividualFirstName;
-        //        loanGuarantorDTO.CustomerIndividualLastName = customerDTO.IndividualLastName;
-        //        loanGuarantorDTO.TotalShares = loanGuarantorDTO.TotalShares;
-        //        loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
-        //        loanGuarantorDTO.AmountPledged = loanGuarantorDTO.AmountPledged;
-
-        //    }
-
-        //    TempData["LoanGuarantorDTOs"] = loanGuarantorDTO;
-
-        //    return View("Create", loanGuarantorDTO);
-        //}
-
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
