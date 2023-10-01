@@ -37684,6 +37684,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+
+        public Task<bool> UpdateAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
+
+            IAccountClosureRequestService service = GetService<IAccountClosureRequestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((IAccountClosureRequestService)result.AsyncState).EndUpdateAccountclosureRequest(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginUpdateAccountclosureRequest(accountClosureRequestDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         #endregion
 
         #region FixedDepositTypeDTO

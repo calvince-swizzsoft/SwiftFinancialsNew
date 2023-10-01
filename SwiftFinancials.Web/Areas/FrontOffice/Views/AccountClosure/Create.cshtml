@@ -1,21 +1,21 @@
-﻿@model  Application.MainBoundedContext.DTO.RegistryModule.WithdrawalNotificationDTO
-
+﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.AccountClosureRequestDTO
 @{
     /**/
 
-    ViewBag.Title = "Create Withdrawal Notification";
+    ViewBag.Title = "Create AccountClosure";
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+    var customertype = ViewBag.customertypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Withdrawal Notification</h2>
+        <h2>AccountClosure</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "WithdrawalNotification", new { Area = "Registry" }, null)
+                @Html.ActionLink("Home", "Index", "AccountClosure", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "WithdrawalNotification", new { Area = "Registry" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "AccountClosure", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
@@ -63,36 +63,59 @@
                                     <div class="col-lg-6">
 
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.CustomerAccountId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.CustomerId)
-                                                @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.CustomerAccountId)
+                                                @Html.TextBoxFor(model => model.CustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
                                         </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerStationDescription, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
-                                        </div>
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerAccountId, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Customer AccountId" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountId, "", new { @class = "text-danger" })
                                         </div>
-                                                          
+
+
+
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "PayrollNumbers", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reason", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                                        </div>
+
+
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                        </div>
+
+
+                                       
+
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerType, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Category, withdrawalNotificationCategories, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.Category)
+                                                @Html.DropDownListFor(model => model.CustomerAccountCustomerType, customertype, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.CustomerAccountCustomerType)
                                             </div>
                                         </div>
+
+
 
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2">
@@ -105,32 +128,34 @@
 
                                     <div class="col-lg-6">
 
+
+
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerSerialNumber, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
                                         </div>
+
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer File Number" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                         </div>
+
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
+
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                         </div>
+
+
+
                                     </div>
                                 </div>
                             </fieldset>
@@ -150,7 +175,7 @@
             <div class="modal-header  bg-primary">
                 <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -210,10 +235,9 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
 
-             //Station typehead starts here
-
+                //Station typehead starts here
             $('.StationsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
@@ -254,7 +278,8 @@
             });
 
 
-    $('#customersGrid').DataTable({
+
+    $('#CustomerAccountsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
@@ -272,7 +297,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Registry/WithdrawalNotification/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/FrontOffice/AccountClosure/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
@@ -291,22 +316,24 @@
     });
 
     $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
+        var data = CustomerAccountsGrid.row(this).data();
 
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
+        $('#CustomerAccountId').val(data.Id);
+        $('input[name=CustomerAccountId]').val(data.Id);
+        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
 
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+
+        var CustomerAccountId = "";
+        CustomerAccountId = CustomersMap[item].Id;
+
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
         $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
         $('#customerLookupModal').modal('hide');
     });
-
 
          //Branch typehead starts here
             $('.BranchesLookup').typeahead({
@@ -347,5 +374,5 @@
 
 
 
-    </script>
+</script>
 }

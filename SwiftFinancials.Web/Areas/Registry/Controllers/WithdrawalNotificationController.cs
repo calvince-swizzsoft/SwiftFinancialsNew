@@ -58,6 +58,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             Guid parseId;

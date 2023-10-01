@@ -2844,7 +2844,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> SettleAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, int accountClosureSettlementOption, ServiceHeader serviceHeader = null);
 
         Task<AccountClosureRequestDTO> FindAccountClosureRequestAsync(Guid accountClosureRequestId, bool includeProductDescription, ServiceHeader serviceHeader = null);
-
+        Task<bool> UpdateAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, ServiceHeader serviceHeader = null);
         #endregion
 
         #region FixedDepositTypeDTO

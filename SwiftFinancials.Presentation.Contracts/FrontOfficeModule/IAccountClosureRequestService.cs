@@ -57,6 +57,13 @@ namespace SwiftFinancials.Presentation.Contracts.FrontOfficeModule
         IAsyncResult BeginFindAccountClosureRequestsByStatusAndFilterInPage(DateTime startDate, DateTime endDate, int status, string text, int customerFilter, int pageIndex, int pageSize, bool includeProductDescription, AsyncCallback callback, Object state);
         PageCollectionInfo<AccountClosureRequestDTO> EndFindAccountClosureRequestsByStatusAndFilterInPage(IAsyncResult result);
 
+
+
+
+        [OperationContract(AsyncPattern = true)]
+        [FaultContract(typeof(ApplicationServiceError))]
+        IAsyncResult BeginUpdateAccountclosureRequest(AccountClosureRequestDTO accountClosureRequestDTO, AsyncCallback callback, Object state);
+        bool EndUpdateAccountclosureRequest(IAsyncResult result);
         #endregion
     }
 }
