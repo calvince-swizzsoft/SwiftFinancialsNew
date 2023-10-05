@@ -63,9 +63,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -77,11 +76,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             AccountClosureRequestDTO accountClosureRequestDTO = new AccountClosureRequestDTO();
 
-            if (customer != null)
+            if (customer != null)     
             {
 
-               // accountClosureRequestDTO.CustomerAccountId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountCustomerId = customer.Id;
+
+                // accountClosureRequestDTO.CustomerAccountCustomerId = customer.Id;
+                accountClosureRequestDTO.CustomerAccountId = customer.Id;
                 accountClosureRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.FullName;
                 accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
                 accountClosureRequestDTO.CustomerAccountCustomerSerialNumber = customer.SerialNumber;
@@ -90,6 +90,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             }
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
 
             return View(accountClosureRequestDTO);
         }
@@ -105,7 +109,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
 
 
-                ViewBag.customertypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
 
                 return RedirectToAction("Index");
             }
