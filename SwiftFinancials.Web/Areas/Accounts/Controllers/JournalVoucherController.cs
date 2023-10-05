@@ -89,6 +89,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 journalVoucherEntryDTO.JournalVoucherId = journalVoucherDTO.Id;
                 journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
                 journalVoucherEntryDTO.ChartOfAccountId = journalVoucherDTO.Id;//Temporary
+                journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
                 journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
                 journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
                 journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
@@ -142,6 +143,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         journalVoucherEntryDTO.JournalVoucherId = journalVoucher.Id;
                         journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
                         journalVoucherEntryDTO.ChartOfAccountId = journalVoucher.ChartOfAccountId;
+                        journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
                         journalVoucherEntryDTO.PrimaryDescription = journalVoucherEntryDTO.PrimaryDescription;
                         journalVoucherEntryDTO.SecondaryDescription = journalVoucherEntryDTO.SecondaryDescription;
                         journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;

@@ -45,7 +45,7 @@
                                         @Html.LabelFor(model => model.LoanCaseId, new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.LoanCaseId)
                                         <div class="input-group" id="searchInput">
-                                            @Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Loan Number" })
+                                            @Html.TextBoxFor(model => model.LoanCaseCaseNumber, new { @class = "form-control", @placeholder = "Enter Loan number and click search" })
 
                                             <!-- The following line should be corrected -->
                                             <button id="searchButton" type="submit"><span class="fa fa-search"></span></button>
@@ -85,40 +85,49 @@
                 </div>
                 <div class="ibox-content m-b-sm border-bottom">
                     <div class="ibox-content bg-white text-info">
-                        @using (Html.BeginForm("SearchA", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("SearchA", "LoanGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form2" }))
                         {
                             <h2>Guarantor Details</h2>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <div class="col-md-13 form-group">
+                                        <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.CustomerId)
-                                                @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
+                                            @Html.HiddenFor(model => model.CustomerId)
+                                            <div class="input-group" id="searchInput">
+                                                @Html.TextBoxFor(model => model.CustomerIndividualIdentityCardNumber, new { @class = "form-control", @placeholder = "Enter ID number and click search" })
+
+                                                <!-- The following line should be corrected -->
+                                                <button id="searchButton" type="submit"><span class="fa fa-search"></span></button>
+
+                                                
                                             </div>
                                         </div>
+                                        @*<div class="col-md-13 form-group">
+                    @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                    <div class="input-group" data-autoclose="true">
+                        @Html.HiddenFor(model => model.CustomerId)
+                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                        <span class="input-group-addon">
+                            <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                        </span>
+                    </div>
+                </div>*@
                                         @*<div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.CustomerId)
-                                                @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Description.." } })
-                                            </div>*@
+                    @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                    @Html.HiddenFor(model => model.CustomerId)
+                    @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                    @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "CustomersLookup form-control required", placeholder = "Description.." } })
+                </div>*@
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "ID Number", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerIndividualFirstName, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualFirstName, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
-                                            @Html.ValidationMessageFor(model => model.AmountGuaranteed, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group">
-                                            <input type="submit" value="Add Guarantor" class="btn btn-success" />
+                                            @Html.LabelFor(model => model.CustomerIndividualLastName, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Last Name", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualLastName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
@@ -138,6 +147,11 @@
                                             @Html.ValidationMessageFor(model => model.CommittedShares, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount Guranteed" } })
+                                    @Html.ValidationMessageFor(model => model.AmountGuaranteed, "", new { @class = "text-danger" })
                                 </div>
                             </fieldset>
                         }

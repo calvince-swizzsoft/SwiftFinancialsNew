@@ -172,5 +172,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             return Json(customersDTOs, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpGet]
+        public async Task<JsonResult> GetCustomersByIDyNumberAsync(string individualIdentityCardNumber)
+        {
+            var customersDTOs = await _channelService.FindCustomersByIDNumberAsync(individualIdentityCardNumber, GetServiceHeader());
+
+            return Json(customersDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }

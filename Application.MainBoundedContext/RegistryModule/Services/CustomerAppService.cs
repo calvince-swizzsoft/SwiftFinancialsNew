@@ -977,6 +977,18 @@ namespace Application.MainBoundedContext.RegistryModule.Services
             }
         }
 
+        public async Task<List<CustomerDTO>> FindCustomersByIDNumberAsync(string identityCardNumber, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                var filter = CustomerSpecifications.CustomerIndividualIDNumber(identityCardNumber);
+
+                ISpecification<Customer> spec = filter;
+
+                return await _customerRepository.AllMatchingAsync<CustomerDTO>(spec, serviceHeader);
+            }
+        }
+
         public async Task<List<NextOfKinDTO>> FindNextOfKinCollectionAsync(Guid customerId, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())

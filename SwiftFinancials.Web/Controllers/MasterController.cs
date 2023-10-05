@@ -728,6 +728,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetLoanAppraisalOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> loanAppraisalOption = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanAppraisalOption)).Cast<LoanAppraisalOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            loanAppraisalOption.AddRange(items);
+
+            return loanAppraisalOption;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetLoanCancellationOptionSelectList(string selectedValue)
         {
             List<SelectListItem> loanCancellationOptions = new List<SelectListItem>();
@@ -846,7 +863,22 @@ namespace SwiftFinancials.Web.Controllers
             return batchAuthOptions;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetSystemGeneralLedgerAccountCodeSelectList(string selectedValue)
+        {
+            List<SelectListItem> systemGeneralLedgerAccountCodes = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemGeneralLedgerAccountCode)).Cast<SystemGeneralLedgerAccountCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemGeneralLedgerAccountCodes.AddRange(items);
+
+            return systemGeneralLedgerAccountCodes;
+        }
 
 
 
