@@ -33,24 +33,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string BranchDescription { get; set; }
 
         [DataMember]
-        [Display(Name = "Station")]
-        [ValidGuid]
-        public Guid StationId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Station")]
-        public string StationDescription { get; set; }
-
-        [DataMember]
-        [Display(Name = "Employer")]
-        [ValidGuid]
-        public Guid EmployerId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Employer")]
-        public string EmployerDescription { get; set; }
-
-        [DataMember]
         [Display(Name = "E-mail")]
         public string BranchAddressEmail { get; set; }
 
