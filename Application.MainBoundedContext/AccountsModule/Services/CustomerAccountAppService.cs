@@ -405,6 +405,15 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             }
         }
 
+
+        public CustomerAccountDTO FindCustomerAccounts(Guid customerAccountId, ServiceHeader serviceHeader)
+        {
+            using (_dbContextScopeFactory.CreateReadOnly())
+            {
+                return _customerAccountRepository.Get<CustomerAccountDTO>(customerAccountId, serviceHeader);
+            }
+        }
+
         public async Task<List<CustomerAccountSummaryDTO>> FindCustomerAccountsAsync(Guid[] customerAccountIds, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())

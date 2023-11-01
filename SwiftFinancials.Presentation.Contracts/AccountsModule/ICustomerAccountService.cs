@@ -12,6 +12,12 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
     [ServiceContract(Name = "ICustomerAccountService")]
     public interface ICustomerAccountService
     {
+        //[OperationContract(AsyncPattern = true)]
+        //[FaultContract(typeof(ApplicationServiceError))]
+        //IAsyncResult BeginFindCustomerAccount(Guid customerAccountId, AsyncCallback callback, Object state);
+        //CustomerAccountDTO EndFindCustomerAccount(IAsyncResult result);
+
+
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAddCustomerAccount(CustomerAccountDTO customerAccountDTO, AsyncCallback callback, Object state);
@@ -65,7 +71,7 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindCustomerAccountsByFilterInPage(string text, int customerFilter, int pageIndex, int pageCount, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, AsyncCallback callback, Object state);
-        PageCollectionInfo<CustomerAccountDTO> EndFindCustomerAccountsByFilterInPage(IAsyncResult result);
+       PageCollectionInfo<CustomerAccountDTO> EndFindCustomerAccountsByFilterInPage(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
@@ -201,5 +207,8 @@ namespace SwiftFinancials.Presentation.Contracts.AccountsModule
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginAdjustCustomerAccountLoanInterest(LoanInterestAdjustmentDTO loanInterestAdjustmentDTO, AsyncCallback callback, Object state);
         bool EndAdjustCustomerAccountLoanInterest(IAsyncResult result);
+
+
+       
     }
 }

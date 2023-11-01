@@ -19292,6 +19292,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #endregion
 
         #region CustomerAccountDTO
+        //public Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, ServiceHeader serviceHeader)
+        //{
+        //    var tcs = new TaskCompletionSource<CustomerAccountDTO>();
+
+        //    ICustomerAccountService service = GetService<ICustomerAccountService>(serviceHeader);
+
+        //    AsyncCallback asyncCallback = (result =>
+        //    {
+        //        try
+        //        {
+        //            CustomerAccountDTO response = ((ICustomerAccountService)result.AsyncState).EndFindCustomerAccount(result);
+
+        //            tcs.TrySetResult(response);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            HandleFault(ex, (msgcb) =>
+        //            {
+        //                if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+        //            });
+        //        }
+        //        finally
+        //        {
+        //            DisposeService(service as IClientChannel);
+        //        }
+        //    });
+
+        //    service.BeginFindCustomerAccount(customerAccountId, asyncCallback, service);
+
+        //    return tcs.Task;
+        //}
 
         public Task<bool> UpdateCustomerAccountAsync(CustomerAccountDTO customerAccountDTO, ServiceHeader serviceHeader)
         {
@@ -19580,6 +19611,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+
+     
 
         public Task<PageCollectionInfo<CustomerAccountDTO>> FindCustomerAccountsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader)
         {
@@ -37493,7 +37527,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task<PageCollectionInfo<AccountClosureRequestDTO>> FindAccountClosureRequestsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeProductDescription, ServiceHeader serviceHeader)
-        {
+       {
             var tcs = new TaskCompletionSource<PageCollectionInfo<AccountClosureRequestDTO>>();
 
             IAccountClosureRequestService service = GetService<IAccountClosureRequestService>(serviceHeader);

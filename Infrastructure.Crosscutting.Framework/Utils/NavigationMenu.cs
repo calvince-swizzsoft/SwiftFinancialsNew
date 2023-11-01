@@ -97,6 +97,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Journal Vouchers", Icon="fa fa-calculator", ControllerName="JournalVoucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 21},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Credit Batches", Icon="fa fa-calculator", ControllerName="CreditBatch", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 22},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/L Account Determinations", Icon="fa fa-database", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 23},
+                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Customer Accounts", Icon="fa fa-database", ControllerName="CustomerAccounts", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 24},
+
                
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
