@@ -1521,6 +1521,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, bool includeBalances = false, bool includeProductDescription = false, bool includeInterestBalanceForLoanAccounts = false, bool considerMaturityPeriodForInvestmentAccounts = false, ServiceHeader serviceHeader = null);
 
+       // Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, ServiceHeader serviceHeader = null);
+
         Task<CustomerAccountDTO> FindCustomerAccountByFullAccountNumberAsync(string fullAccountNumber, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<CustomerAccountDTO>> FindCustomerAccountsInPageAsync(int pageIndex, int pageSize, bool includeBalances = false, bool includeProductDescription = false, bool includeInterestBalanceForLoanAccounts = false, bool considerMaturityPeriodForInvestmentAccounts = false, ServiceHeader serviceHeader = null);
@@ -2842,6 +2844,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> SettleAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, int accountClosureSettlementOption, ServiceHeader serviceHeader = null);
 
         Task<AccountClosureRequestDTO> FindAccountClosureRequestAsync(Guid accountClosureRequestId, bool includeProductDescription, ServiceHeader serviceHeader = null);
+
         Task<bool> UpdateAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, ServiceHeader serviceHeader = null);
         #endregion
 

@@ -314,6 +314,7 @@
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CustomerAccountsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
@@ -871,6 +872,7 @@
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Appraise.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccounts\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\Salary\Details.cshtml" />
