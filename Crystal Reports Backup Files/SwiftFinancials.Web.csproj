@@ -318,13 +318,14 @@
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\GLAccountDeterminationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
@@ -850,7 +851,6 @@
     <Content Include="Areas\Loaning\Views\LoanGuarantor\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\ExpensePayable\Approve.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\ExpensePayable\Cancel.cshtml" />
     <Content Include="Areas\Accounts\Views\JournalVoucher\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\DebitBatch\Authorize.cshtml" />
@@ -861,6 +861,13 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
     <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Appraise.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1320,7 +1327,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
-    <Folder Include="Areas\Accounts\Views\GLAccountDetermination\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />

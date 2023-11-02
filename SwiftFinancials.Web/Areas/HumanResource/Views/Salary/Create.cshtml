@@ -1,0 +1,456 @@
+﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryHeadDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Salary Head";
+    var salaryHeads = ViewBag.SalaryHeadTypeSelectList as List<SelectListItem>;
+
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Salary</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Salary", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Salary Head</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "Salary", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.TypeDescription, salaryHeads, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.TypeDescription)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Name" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                            @Html.TextBoxFor(model => model.ProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Product..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#ProductsLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="ibox-content m-b-sm border-bottom">
+                            @using (Html.BeginForm("Create", "Salary", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                            {
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <input type="submit" style="width:270px; background-color:darkgreen; border-color:darkgreen" value="Create" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="ProductsLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Products LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <br />
+            <table id="ProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="modal  fade" id="GLAccountsLookUpModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">GL Account LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <br />
+            <table id="GLAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+<script>
+
+    //ChartOfAccount typehead starts here
+    $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+                //Station typehead starts here
+        $('.ProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetProductsAsync", "Salary", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Stations) {
+                            var newProductsData = [];
+                            ProductsMap = {};
+                            $.each(Products, function (i, Product) {
+                                newProductsData.push(Product.Description);
+                                ProductsMap[Product.Description] = Product;
+                            });
+                            process(newProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ProductID = "";
+                    ProductID = ProductsMap[item].Id;
+                    $('#CustomerAccountTypeTargetProductId').val(ProductID);
+                    $('#CustomerAccountTypeTargetProductId').val(ProductsMap[item].CustomerAccountTypeProductCodeDescription);
+                    $('#ProductDescription').val(ProductsMap[item].ProductDescription);
+                    $('#CustomerAccountTypeProductCode').val(ProductsMap[item].CustomerAccountTypeProductCode);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+
+
+
+    $('#ProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                  var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/HumanResource/Salary/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            //{ "mDataProp": "Code", "sTitle": "Code", "sWidth": "5%" },
+            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "5%" },
+            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Allowed Withdrawal", "sWidth": "10%" },
+            { "mDataProp": "MaximumAllowedDeposit", "sTitle": "Maximum Allowed Deposit", "sWidth": "20%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
+
+            { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = ProductsGrid.row(this).data();
+
+      //  $('#CustomerAccountCustomerId').val(data.Id);
+        $('#Code').val(data.Id);
+     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeProductCodeDescription]').val(data.Fullname);
+
+
+        var Code = "";
+        Code = ProductsMap[item].Id;
+
+        $('#CustomerAccountTypeProductCode').val(ProductsMap[item].CustomerAccountTypeProductCode);
+        $('#CustomerAccountTypeProductCodeDescription').val(ProductsMap[item].CustomerAccountTypeProductCodeDescription);
+        $('#ProductDescription').val(ProductsMap[item].ProductDescription);
+        //$('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
+        $('#ProductsLookupModal').modal('hide');
+    });
+
+
+
+
+         @*//Branch typehead starts here
+            $('.GLAccountsLookUp').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Branches) {
+                            var newGLAccountsData = [];
+                            GLAccountsMap = {};
+                            $.each(GLAccount, function (i, Branch) {
+                                newGLAccountsData.push(GLAccount.Description);
+                                GLAccountsMap[GLAccount.Description] = GLAccount;
+                            });
+                            process(newGLAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var ChartOfAccountId = "";
+                    ChartOfAccountId = GLAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+        $('#GLAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                  var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/HumanResource/Salary/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "AccountType", "sTitle": "Account Type", "sWidth": "5%" },
+            { "mDataProp": "AccountCategory", "sTitle": "Account Category", "sWidth": "5%" },
+            { "mDataProp": "AccountCode", "sTitle": "Account Code", "sWidth": "10%" },
+            { "mDataProp": "AccountName", "sTitle": "Account Name", "sWidth": "20%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
+
+
+            //{ "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "30%" },
+            //{ "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "20%" },
+            //{ "mDataProp": "WithdrawalNoticePeriod", "sTitle": "Withdrawal Notice Period", "sWidth": "15%" },
+            { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = GLAccountsGrid.row(this).data();
+
+      //  $('#CustomerAccountCustomerId').val(data.Id);
+        $('#Code').val(data.Id);
+     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeProductCodeDescription]').val(data.Fullname);
+
+
+        var Code = "";
+        Code = GLAccountsMap[item].Id;
+
+        $('#CustomerAccountTypeProductCode').val(ProductsMap[item].CustomerAccountTypeProductCode);
+        $('#CustomerAccountTypeProductCodeDescription').val(ProductsMap[item].CustomerAccountTypeProductCodeDescription);
+        $('#ProductDescription').val(ProductsMap[item].ProductDescription);
+        //$('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
+        $('#ProductsLookupModal').modal('hide');
+    });*@
+</script>
+}

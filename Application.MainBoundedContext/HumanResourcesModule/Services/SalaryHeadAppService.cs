@@ -125,7 +125,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
                     var current = SalaryHeadFactory.CreateSalaryHead(salaryHeadDTO.ChartOfAccountId, salaryHeadDTO.Description, salaryHeadDTO.Type, customerAccountType);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
-                    
+
 
                     switch ((SalaryHeadType)salaryHeadDTO.Type)
                     {
