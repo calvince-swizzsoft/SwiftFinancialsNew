@@ -883,7 +883,6 @@
     <Content Include="Areas\HumanResource\Views\SalaryCards\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryCards\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\_ViewStart.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />

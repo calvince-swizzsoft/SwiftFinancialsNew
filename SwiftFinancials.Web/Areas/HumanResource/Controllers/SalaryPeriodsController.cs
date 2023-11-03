@@ -61,7 +61,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(string.Empty);
+            ViewBag.MonthTypeSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(string.Empty);
 
             Guid parseId;
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -92,6 +93,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var salaryPeriod = await _channelService.AddSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
 
+                ViewBag.MonthTypeSelectList = GetMonthsAsync(salaryPeriodDTO.Month.ToString());
+                ViewBag.EmployeeTypeSelectList = GetEmployeeCategorySelectList(salaryPeriodDTO.EmployeeCategoryDescription.ToString());
                 //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryCardDTO.Type.ToString());
 
                 //await GetChartOfAccountsAsync(id);
