@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
-    public class SalaryCardsController : MasterController
+    public class SalaryPeriodsController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -44,7 +44,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<SalaryCardEntryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<SalaryPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -71,7 +71,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             //var savingproducts = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
 
-            SalaryCardDTO salaryCardDTO = new SalaryCardDTO();
+            SalaryPeriodDTO salaryPeriodDTO = new SalaryPeriodDTO();
 
             //if (savingproducts != null)
             //{
@@ -80,17 +80,17 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             //}
 
-            return View(salaryCardDTO);
+            return View(salaryPeriodDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SalaryCardDTO salaryCardDTO, Guid? id)
+        public async Task<ActionResult> Create(SalaryPeriodDTO salaryPeriodDTO, Guid? id)
         {
-            salaryCardDTO.ValidateAll();
+            salaryPeriodDTO.ValidateAll();
 
-            if (!salaryCardDTO.HasErrors)
+            if (!salaryPeriodDTO.HasErrors)
             {
-                var salarycard = await _channelService.AddSalaryCardAsync(salaryCardDTO, GetServiceHeader());
+                var salaryPeriod = await _channelService.AddSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
 
                 //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryCardDTO.Type.ToString());
 
@@ -99,8 +99,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
             else
             {
-                var errorMessages = salaryCardDTO.ErrorMessages;
-                return View(salaryCardDTO);
+                var errorMessages = salaryPeriodDTO.ErrorMessages;
+                return View(salaryPeriodDTO);
             }
         }
 
@@ -108,26 +108,26 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var salaryCardTO = await _channelService.FindSalaryCardAsync(id, GetServiceHeader());
+            var salaryPeriod = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
 
-            return View(salaryCardTO);
+            return View(salaryPeriod);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, SalaryCardDTO salaryCardDTO)
+        public async Task<ActionResult> Edit(Guid id, SalaryPeriodDTO salaryPeriodDTO)
         {
-            salaryCardDTO.ValidateAll();
+            salaryPeriodDTO.ValidateAll();
 
-            if (!salaryCardDTO.HasErrors)
+            if (!salaryPeriodDTO.HasErrors)
             {
-                await _channelService.UpdateSalaryCardAsync(salaryCardDTO, GetServiceHeader());
+                await _channelService.UpdateSalaryPeriodAsync(salaryPeriodDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(salaryCardDTO);
+                return View(salaryPeriodDTO);
             }
         }
     }
