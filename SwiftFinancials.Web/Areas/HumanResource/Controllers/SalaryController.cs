@@ -72,6 +72,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             var savingproducts = await _channelService.FindSavingsProductAsync(parseId,GetServiceHeader());
 
             SalaryHeadDTO salaryHeadDTO = new SalaryHeadDTO();
+            await GetChartOfAccountsAsync(id);
             
             if (savingproducts != null)
             {
@@ -84,31 +85,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
 
-        public async Task<ActionResult> GetChartOfAccountsAsync(Guid? id)
-        {
-            await ServeNavigationMenus();
-
-            Guid parseId;
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            ChartOfAccountDTO chartOfAccountDTO = new ChartOfAccountDTO();
-            var chartOfAccounts = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
-
-            if(chartOfAccounts!=null)
-            {
-                chartOfAccountDTO.Id = chartOfAccounts.Id;
-            }
-
-            return View(chartOfAccountDTO);
-        }
-
-
         [HttpPost]
-        public async Task<ActionResult> Create(SalaryHeadDTO salaryHeadDTO, Guid? id, ChartOfAccountDTO chartOfAccountDTO)
+        public async Task<ActionResult> Create(SalaryHeadDTO salaryHeadDTO, ChartOfAccountDTO chartOfAccountDTO)
         {
+        //    salaryHeadDTO.ChartOfAccountId = chartOfAccountDTO.Id;
             salaryHeadDTO.ValidateAll();
            // chartOfAccountDTO.ValidateAll();
 
@@ -133,6 +113,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(string.Empty);
+
             var salaryHeadDTO = await _channelService.FindSalaryHeadAsync(id, GetServiceHeader());
 
             return View(salaryHeadDTO);
@@ -140,7 +122,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, SalaryHeadDTO salaryHeadDTO)
+        public async Task<ActionResult> Edit(SalaryHeadDTO salaryHeadDTO)
         {
             salaryHeadDTO.ValidateAll();
 
@@ -148,10 +130,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
 
+                ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+
                 return RedirectToAction("Index");
             }
             else
             {
+                var errorMessages = salaryHeadDTO.ErrorMessages;
+                ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
                 return View(salaryHeadDTO);
             }
         }
@@ -164,27 +150,27 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return Json(salaryHeadsDTO, JsonRequestBehavior.AllowGet);
         }
 
-        //[HttpGet]
-        //public async Task<ActionResult> GetChartOfAccountsAsync(Guid? id)
-        //{
-        //    await ServeNavigationMenus();
+        [HttpGet]
+        public async Task<ActionResult> GetChartOfAccountsAsync(Guid? id)
+        {
+            await ServeNavigationMenus();
 
-        //    Guid parseId;
+            Guid parseId;
 
-        //    if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return View();
-        //    }
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
 
-        //    ChartOfAccountDTO chartOfAccountDTO = new ChartOfAccountDTO();
-        //    var chartOfAccounts = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+            ChartOfAccountDTO chartOfAccountDTO = new ChartOfAccountDTO();
+            var chartOfAccounts = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
 
-        //    if (chartOfAccounts != null)
-        //    {
-        //        chartOfAccountDTO.AccountCode = Convert.ToInt32(chartOfAccounts.Id);
-        //        chartOfAccountDTO.AccountName = chartOfAccounts.AccountName;
-        //    }
-        //    return View(chartOfAccountDTO);
-        //}
+            if (chartOfAccounts != null)
+            {
+                chartOfAccountDTO.AccountCode = Convert.ToInt32(chartOfAccounts.Id);
+                chartOfAccountDTO.AccountName = chartOfAccounts.AccountName;
+            }
+            return View(chartOfAccountDTO);
+        }
     }
 }

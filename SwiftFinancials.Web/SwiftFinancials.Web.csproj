@@ -328,10 +328,13 @@
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryCardsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryGroupsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryPeriodsController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\SalaryProcessingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
@@ -884,6 +887,9 @@
     <Content Include="Areas\HumanResource\Views\SalaryCards\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\SalaryPeriods\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\PaySlips\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1347,6 +1353,7 @@
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />

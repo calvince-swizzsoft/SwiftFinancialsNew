@@ -5,7 +5,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Salary</h1>
+        <h1><strong>Salary</strong></h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,7 +22,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Salary Head</h2>
+                    <h2><strong>Salary Head</strong></h2>
                     <hr />
                     @Html.ActionLink("Create Salary Head", "Create", "Salary", new { Area = "HumanResource" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -86,22 +86,24 @@
 
                     var create = '<a  href="/HumanResource/Salary/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Create</a>';
                     var viewUrl = '<a  href="/HumanResource/Salary/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/HumanResource/Salary/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     //{ "mDataProp": "Description", "sTitle": "Type", "sWidth": "15%" },
-                  //{ "mDataProp": "Description", "sTitle": "Type", "sWidth": "10%" },
-                   // "mDataProp": "Product", "sTitle": "Product", "sWidth": "10%" },
-                 // { "mDataProp": "GLAccount", "sTitle": "G/L Account", "sWidth": "20%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "5%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
+                    //{ "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
 
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "viewUrl", "sTitle": "View or Edit Salary Head", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });
@@ -115,5 +117,7 @@
     </script>
 
 }
+
+
 
 

@@ -51,6 +51,11 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //Human Resource - area 22,000
                 new NavigationMenu{Description = "Human Resource", IsArea = true, Code = 0x000055F0},
                 // menu-items (children)
+                //new NavigationMenu{AreaCode = 0x000055F0, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x000055F0 + 1},
+                //new NavigationMenu{AreaCode = 0x000055F0, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x000055F0 + 2},
+                // menu-items (modules)
+                //new NavigationMenu{AreaCode = 0x000055F0 + 2, IsArea = false, Description = "Salary", Icon="fa fa-bars", ControllerName="Salary", ActionName="Index", AreaName = "Salary", Code = 0x000055F0 + 3},
+
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Departments", Icon="fa fa-usb", ControllerName="Department", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 1},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Designations", Icon="fa fa-usb", ControllerName="Designation", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 2},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Holidays", Icon="fa-spotify", ControllerName="Holiday", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 3},
@@ -59,10 +64,12 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Leave Types", Icon="fa fa-usb", ControllerName="LeaveType", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 6},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Training Periods", Icon="fa fa-bars", ControllerName="TrainingPeriod", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 8},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Training Periods", Icon="fa fa-bars", ControllerName="LeaveApplication", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 8},
+
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary Heads", Icon="fa fa-usb", ControllerName="Salary", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 7},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary Groups", Icon="fa fa-usb", ControllerName="SalaryGroups", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 9},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary Cards", Icon="fa fa-usb", ControllerName="SalaryCards", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 10},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Salary Periods", Icon="fa fa-usb", ControllerName="SalaryPeriods", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 11},
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Pay Slips", Icon="fa fa-usb", ControllerName="PaySlips", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 12},
                 
 
 
