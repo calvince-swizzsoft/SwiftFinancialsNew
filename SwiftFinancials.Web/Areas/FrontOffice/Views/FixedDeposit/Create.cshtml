@@ -1,19 +1,19 @@
-﻿@model Application.MainBoundedContext.DTO.AccountsModule.TellerDTO
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.FixedDepositDTO
 
 @{
-    ViewBag.Title = "Teller";
+    ViewBag.Title = "FixedDeposit";
     var tellerTypes = ViewBag.TellerTypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg  page-heading">
     <div class="col-lg-10">
-        <h2>Tellers</h2>
+        <h2>Fixed Deposit</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Teller", new { Area = "FrontOffice" }, null)
+                @Html.ActionLink("Home", "Create", "FixedDeposit", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -22,109 +22,63 @@
     </div>
 </div>
 
-    <div class="wrapper wrapper-content white-bg">
-        <div class="row">
-            <div class="col-md-12">
-                <div class="ibox ">
-                    <div class="ibox-title">
-                        <div class="ibox-tools">
-                            <a class="collapse-link">
-                                <i class="fa fa-chevron-up"></i>
-                            </a>
-                            <a class="close-link">
-                                <i class="fa fa-times"></i>
-                            </a>
-                        </div>
+<div class="wrapper wrapper-content white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
                     </div>
-                    <div class="ibox-content bg-white text-info">
-                        @using (Html.BeginForm("Create", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Type, tellerTypes, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.Type)
-                                            </div>
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.RangeLowerLimit, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Lower Limit" } })
-                                            @Html.ValidationMessageFor(model => model.RangeLowerLimit, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ChartOfAccountId)
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExcessChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ExcessChartOfAccountId)
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ExcessChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ExcessChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            <div class="col-md-offset-2">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerAccountCustomerReference1" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Teller name.", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.RangeUpperLimit, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.RangeUpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Range Upper Limit" } })
-                                            @Html.ValidationMessageFor(model => model.RangeUpperLimit, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ShortageChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ShortageChartOfAccountId)
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ShortageChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                            @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.EmployeeId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.EmployeeId)
-                                            @Html.EditorFor(model => model.EmployeeId, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Employee Name" } })
-                                            @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
                                 </div>
-                            </fieldset>
-                        }
 
-                    </div>
+                            </div>
+                        </fieldset>
+                    }
+
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    @section Styles{
-        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-        @Styles.Render("~/plugins/wizardStepsStyles")
-    }
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
 
-    @section Scripts{
-        @Scripts.Render("~/plugins/validate")
-        @Scripts.Render("~/plugins/typehead")
+@section Scripts{
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
 
-<script>
+    <script>
 
              //Employee typehead starts here
             $('.EmployeesLookup').typeahead({
@@ -341,4 +295,4 @@
 
 
         });</script>
-    }
+}

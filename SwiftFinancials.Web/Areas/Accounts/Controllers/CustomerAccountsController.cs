@@ -10,6 +10,7 @@ using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
+
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class CustomerAccountsController : MasterController
@@ -35,9 +36,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();  
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,jQueryDataTablesModel.iColumns, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts , considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, jQueryDataTablesModel.iColumns, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -64,11 +65,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+            ViewBag.CustomerAccountManagementActionSelectList = GetCustomerAccountManagementActionSelectList(string.Empty);
 
-            return View();
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
+
+            if (customer != null)
+            {
+
+                customerAccountDTO.CustomerId = customer.Id;
+                customerAccountDTO.CustomerIndividualFirstName = customer.FullName;
+                customerAccountDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                customerAccountDTO.CustomerSerialNumber = customer.SerialNumber;
+                customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+            }
+            return View(customerAccountDTO);
         }
 
         [HttpPost]
@@ -100,9 +123,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bool includeBalances = false;
             bool includeProductDescription = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
-            var CustomerAccount = await _channelService.FindCustomerAccountAsync(id, includeInterestBalanceForLoanAccounts, includeBalances, includeProductDescription, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-            return View();
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+            var CustomerAccount = await _channelService.FindCustomerAccountAsync(id, includeInterestBalanceForLoanAccounts, includeBalances, includeProductDescription, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
+
+            if (CustomerAccount != null)
+            {
+
+                customerAccountDTO.CustomerId = CustomerAccount.Id;
+                customerAccountDTO.CustomerIndividualFirstName = CustomerAccount.CustomerIndividualFirstName;
+                customerAccountDTO.CustomerIndividualPayrollNumbers = CustomerAccount.CustomerIndividualPayrollNumbers;
+                customerAccountDTO.CustomerSerialNumber = CustomerAccount.CustomerSerialNumber;
+                customerAccountDTO.CustomerIndividualIdentityCardNumber = CustomerAccount.CustomerIndividualIdentityCardNumber;
+                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = CustomerAccount.CustomerStationZoneDivisionEmployerDescription;
+            }
+            return View(customerAccountDTO);
         }
 
         [HttpPost]
@@ -134,5 +175,60 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return Json(customerAccountDTO, JsonRequestBehavior.AllowGet);
         }
+
+        public async Task<ActionResult> CustomerManagement(Guid id)
+        {
+            await ServeNavigationMenus();
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
+
+            var CustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            if (CustomerAccount != null)
+            {
+                customerAccountDTO.CustomerId = CustomerAccount.Id;
+                customerAccountDTO.CustomerIndividualFirstName = CustomerAccount.CustomerIndividualFirstName;
+                customerAccountDTO.CustomerIndividualPayrollNumbers = CustomerAccount.CustomerIndividualPayrollNumbers;
+                customerAccountDTO.CustomerSerialNumber = CustomerAccount.CustomerSerialNumber;
+                customerAccountDTO.CustomerIndividualIdentityCardNumber = CustomerAccount.CustomerIndividualIdentityCardNumber;
+                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = CustomerAccount.CustomerStationZoneDivisionEmployerDescription;
+            }
+            return View(customerAccountDTO);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> CustomerManagement(Guid id, CustomerAccountDTO customerAccountHistoryDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                int managementAction = 0;
+
+                string remarks = "";
+
+                int remarkType = 0;
+
+                await _channelService.ManageCustomerAccountAsync(id, managementAction, remarks, remarkType, GetServiceHeader());
+
+                ViewBag.CustomerAccountManagementActionSelectList = GetCustomerAccountManagementActionSelectList(customerAccountHistoryDTO.CustomerIndividualSalutationDescription.ToString());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(customerAccountHistoryDTO);
+            }
+        }
+
     }
 }

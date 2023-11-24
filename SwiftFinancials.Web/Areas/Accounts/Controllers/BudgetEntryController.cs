@@ -21,7 +21,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        /*[HttpPost]
+        [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
@@ -32,7 +32,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindBudgetEntriesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindBudgetsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -49,10 +49,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var BudgetEntryDTO = await _channelService.FindBudgetEntryAsync(id, GetServiceHeader());
+            var BudgetEntryDTO = await _channelService.FindBudgetAsync(id, GetServiceHeader());
 
             return View(BudgetEntryDTO);
-        }*/
+        }
 
         public async Task<ActionResult> Create()
         {

@@ -2,7 +2,6 @@
 @{
     ViewBag.Title = "Customer Accounts";
 }
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Customer Accounts</h2>
@@ -119,17 +118,20 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    //var selectUrl = '<a  href="/FrontOffice/AccountClosure/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var editUrl = '<a  href="/Accounts/CustomerAccounts/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/Accounts/CustomerAccounts/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var CustomerManagementUrl = '<a  href="/Accounts/CustomerAccounts/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'CustomerManagement</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                  //  $('td:eq(4)', nRow).html(selectUrl);
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
 
                     return nRow;
                 },
         // Display settings
         "aoColumns": [        
            
-            { "mDataProp": "CustomerTypeDescription", "sTitle": "CustomerTypeDescription", "sWidth": "10%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "10%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "10%" },
             { "mDataProp": "BranchDescription", "sTitle": "BranchDescription", "sWidth": "15%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },

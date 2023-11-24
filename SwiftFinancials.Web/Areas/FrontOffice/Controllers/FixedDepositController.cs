@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -13,7 +14,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
-    public class AccountClosureController : MasterController
+    public class FixedDepositController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -29,13 +30,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-            bool includeProductDescription = false;
+
+            bool includeProductDescription = true;
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, jQueryDataTablesModel.iColumns, includeProductDescription, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindFixedDepositsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -47,16 +49,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<FixedDepositDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var accountClosureDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
 
-            return View(accountClosureDTO);
+            return View(fixedDepositDTO);
         }
 
 
@@ -103,23 +105,58 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(AccountClosureRequestDTO accountClosureRequestDTO)
+        public async Task<ActionResult> Add(FixedDepositDTO fixedDepositDTO)
         {
-            accountClosureRequestDTO.ValidateAll();
+            await ServeNavigationMenus();
 
-            if (!accountClosureRequestDTO.HasErrors)
+            FixedDepositPayableDTOs = TempData["FixedDepositPayableDTO"] as ObservableCollection<FixedDepositPayableDTO>;
+
+            if (FixedDepositPayableDTOs == null)
+                FixedDepositPayableDTOs = new ObservableCollection<FixedDepositPayableDTO>();
+
+            foreach (var fixedDepositPayableDTO in fixedDepositDTO.FixedDepositPayables)
             {
-                await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
+                fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountId = fixedDepositDTO.Id;
+                fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountName = fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountName;
+                fixedDepositPayableDTO.CustomerAccountBranchId = fixedDepositPayableDTO.CustomerAccountBranchId;
+                fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription = fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription;
+                fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection = fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection;
+               
+                FixedDepositPayableDTOs.Add(fixedDepositPayableDTO);
+            };
+
+            TempData["FixedDepositPayableDTO"] = FixedDepositPayableDTOs;
+
+            TempData["FixedDepositPayableDTO"] = fixedDepositDTO;
+
+            ViewBag.ExpensePayableEntryDTOs = ExpensePayableEntryDTOs;
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
+            return View("Create", fixedDepositDTO);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(FixedDepositDTO fixedDepositDTO)
+        {
+            fixedDepositDTO.ValidateAll();
+
+            int moduleNavigationItemCode = 0;
+
+            if (!fixedDepositDTO.HasErrors)
+            {
+                await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
+
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = accountClosureRequestDTO.ErrorMessages;
+                var errorMessages = fixedDepositDTO.ErrorMessages;
 
-                return View(accountClosureRequestDTO);
+                return View(fixedDepositDTO);
             }
         }
 
@@ -163,7 +200,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approval(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-           int accountClosureApprovalOption =0;
+            int accountClosureApprovalOption = 0;
 
             if (ModelState.IsValid)
 

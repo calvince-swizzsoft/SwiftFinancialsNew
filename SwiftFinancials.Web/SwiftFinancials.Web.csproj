@@ -327,7 +327,9 @@
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\ChequesController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\FixedDepositController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
@@ -870,6 +872,19 @@
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Appraise.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccounts\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CostCenter\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CostCenter\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BudgetEntry\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccounts\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Edit.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Approval.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\verify.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FixedDeposit\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccounts\CustomerManagement.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1332,6 +1347,7 @@
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
+    <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />

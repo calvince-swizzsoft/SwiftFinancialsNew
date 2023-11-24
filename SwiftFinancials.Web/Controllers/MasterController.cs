@@ -35,7 +35,7 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
-
+        public ObservableCollection<FixedDepositPayableDTO> FixedDepositPayableDTOs;
         private IChannelService channelService;
         public IChannelService _channelService
         {
@@ -215,6 +215,26 @@ namespace SwiftFinancials.Web.Controllers
             return customerTypes;
         }
 
+
+
+
+        [NonAction]
+        protected List<SelectListItem> GetCCustomerAccountManagementActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerAccountManagementAction = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerAccountManagementAction)).Cast<CustomerAccountManagementAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerAccountManagementAction.AddRange(items);
+
+            return customerAccountManagementAction;
+        }
+        
 
         [NonAction]
         protected List<SelectListItem> GetTransactionOwnershipSelectList(string selectedValue)
@@ -828,7 +848,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return withdrawalNotificationCategories;
         }
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountManagementActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerAccountManagementAction = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(CustomerAccountManagementAction)).Cast<CustomerAccountManagementAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerAccountManagementAction.AddRange(items);
+
+            return customerAccountManagementAction;
+        }
         [NonAction]
         protected List<SelectListItem> GetEmployeeCategorySelectList(string selectedValue)
         {

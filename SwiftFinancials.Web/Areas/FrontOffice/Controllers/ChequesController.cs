@@ -13,7 +13,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
-    public class AccountClosureController : MasterController
+    public class ChequesController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -29,13 +29,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-            bool includeProductDescription = false;
+
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, jQueryDataTablesModel.iColumns, includeProductDescription, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindExternalChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -47,16 +47,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var accountClosureDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+            var externalChequeDTO = await _channelService.FindExternalChequePayablesByExternalChequeIdAsync(id, GetServiceHeader());
 
-            return View(accountClosureDTO);
+            return View(externalChequeDTO);
         }
 
 
@@ -64,62 +64,30 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
 
 
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            AccountClosureRequestDTO accountClosureRequestDTO = new AccountClosureRequestDTO();
-
-            if (customer != null)
-            {
-                accountClosureRequestDTO.CustomerAccountCustomerId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                accountClosureRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
-
-
-            }
-
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
-
-            return View(accountClosureRequestDTO);
+            return View();
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(AccountClosureRequestDTO accountClosureRequestDTO)
+        public async Task<ActionResult> Create(ExternalChequeDTO externalChequeDTO)
         {
-            accountClosureRequestDTO.ValidateAll();
+            externalChequeDTO.ValidateAll();
 
-            if (!accountClosureRequestDTO.HasErrors)
+            if (!externalChequeDTO.HasErrors)
             {
-                await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
+                await _channelService.AddExternalChequeAsync(externalChequeDTO, GetServiceHeader());
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(externalChequeDTO.CustomerAccountCustomerType.ToString());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = accountClosureRequestDTO.ErrorMessages;
+                var errorMessages = externalChequeDTO.ErrorMessages;
 
-                return View(accountClosureRequestDTO);
+                return View(externalChequeDTO);
             }
         }
 
@@ -163,7 +131,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approval(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-           int accountClosureApprovalOption =0;
+            int accountClosureApprovalOption = 0;
 
             if (ModelState.IsValid)
 

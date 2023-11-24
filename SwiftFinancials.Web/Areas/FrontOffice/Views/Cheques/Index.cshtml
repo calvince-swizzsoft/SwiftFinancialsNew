@@ -1,11 +1,11 @@
 ﻿
 @{
-    ViewBag.Title = "AccountClosure";
+    ViewBag.Title = "Cheques";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Account Closure</h2>
+        <h2>Cheques</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -22,7 +22,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create AccountClosure", "Create", "AccountClosure", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Cheques", "Create", " Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -38,7 +38,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="AccountClosuresGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="ChequesGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -64,12 +64,12 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#AccountClosuresGrid').DataTable({
+            $('#ChequesGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "AccountClosure", new { Area = "FrontOffice"}))",
+                "sAjaxSource": "@(Url.Action("Index", " Cheques", new { Area = "FrontOffice"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -82,26 +82,25 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/frontOffice/AccountClosure/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/frontOffice/AccountClosure/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyurl = '<a  href="/frontOffice/AccountClosure/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'verify</a>';
-                    var Approvalurl = '<a  href="/frontOffice/AccountClosure/Approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var editUrl = '<a  href="/frontOffice/ Cheques/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/frontOffice/ Cheques/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
                     $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl +'&nbsp;' + verifyurl + '&nbsp;' + Approvalurl);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "BranchDescription", "sWidth": "15%" },
-                    { "mDataProp": "CustomerAccountCustomerTypeDescription", "sTitle": "Customer Type Description", "sWidth": "10%" },
-                    { "mDataProp": "CustomerAccountStatusDescription", "sTitle": "CustomerAccountStatus", "sWidth": "10%" },
-                    { "mDataProp": "CustomerAccountRemarks", "sTitle": "CustomerAccountRemarks", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "CustomerAccountFullAccountNumber", "sWidth": "15%" },
+                    { "mDataProp": "Amount", "sTitle": "Amount", "sWidth": "10%" },
+                    { "mDataProp": "TellerDescription", "sTitle": "TellerDescription", "sWidth": "10%" },
+                    { "mDataProp": "Drawer", "sTitle": "Drawer", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
-
+        });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
@@ -109,7 +108,6 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-         });
     </script>
 
 }

@@ -1,17 +1,17 @@
-﻿@model Application.MainBoundedContext.DTO.RegistryModule.WithdrawalNotificationDTO
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO
 
 @{
     ViewBag.Title = "View";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>WithdrawalNotification</h2>
+        <h2>Customer Account</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "WithdrawalNotification", new { Area = "Registry" }, null)
+                @Html.ActionLink("Home", "Index", "CustomerAccount", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>View</strong>
@@ -44,19 +44,19 @@
                                 @Html.DisplayFor(model => model.CustomerId)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerStationZoneDivisionEmployerDescription)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.StatusDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.CustomerStationZoneDivisionEmployerDescription)<br>
+                                @Html.DisplayFor(model => model.StatusDescription)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerStationDescription)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.CustomerTypeDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.CustomerStationDescription)<br>
+                                @Html.DisplayFor(model => model.CustomerTypeDescription)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Category)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.CustomerIndividualSalutation)<br></strong>
 
-                                @Html.DisplayFor(model => model.Category)<br>
+                                @Html.DisplayFor(model => model.CustomerIndividualSalutation)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.CustomerSerialNumber)<br></strong>
@@ -69,9 +69,9 @@
                                 @Html.DisplayFor(model => model.CustomerIndividualIdentityCardNumber)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerIndividualPayrollNumbers)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.CustomerIndividualFirstName)<br></strong>
 
-                                @Html.DisplayFor(model => model.CustomerIndividualPayrollNumbers)<br>
+                                @Html.DisplayFor(model => model.CustomerIndividualFirstName)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
@@ -80,19 +80,19 @@
                             </p>
 
                         </div>
-                           
-                        </div>
-                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "WithdrawalNotification", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "WithdrawalNotification", new { Area = "Registry" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>
+                            @*   @Html.ActionLink("Edit", "Edit", "CustomerAccounts", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })*@
+                            @Html.ActionLink("Back to List", "Index", "CustomerAccounts", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

@@ -84,8 +84,16 @@
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
                                         @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductCode, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Customer Account Type Target Product Code" } })
-                                        @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Customer Account Type Product Code" } })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "SavingProductsLookup form-control required", placeholder = "Saving Products" } })
+
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", placeholder = "InvestmentProducts" } })
+
                                     </div>
                                 </div>
 
@@ -117,7 +125,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -185,7 +193,90 @@
                     }
                 }
             });
+     ///// Investment products lookup /////
+$('.InvestmentProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (InvestmentProducts) {
+                var newInvestmentProductsData = [];
+                InvestmentProductsMap = {};
+                $.each(InvestmentProducts, function (i, InvestmentProduct) {
+                    newInvestmentProductsData.push(InvestmentProduct.Description);
+                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
+                });
+                process(newInvestmentProductsData);
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var investmentProductId = "";
+        investmentProductId = InvestmentProductsMap[item].Id;
+        $('#InvestmentProductId').val(investmentProductId);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
+        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
 
+        //console.log(investmentProductId)
+        return item;
+    }
+});
+
+
+
+
+
+        /////saving products lookup /////
+        $('.SavingProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+            '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (SavingProducts) {
+                var newSavingProductsData = [];
+                SavingProductsMap = {};
+                $.each(SavingProducts, function (i, SavingProduct) {
+                    newSavingProductsData.push(SavingProduct.Description);
+                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                });
+                process(newSavingProductsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var savingProductId = "";
+        savingProductId = SavingProductsMap[item].Id;
+        $('#SavingProductId').val(savingProductId);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription);
+        $('#SavingProductId').val(CustomerAccountTypeTargetProductId);
+
+        //console.log(savingProductId)
+        return item;
+    }
+});
              //Company typehead starts here
             $('.CompaniesLookup').typeahead({
                 source: function (query, process) {

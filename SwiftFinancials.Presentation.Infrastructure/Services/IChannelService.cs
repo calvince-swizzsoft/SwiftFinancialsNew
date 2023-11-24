@@ -668,6 +668,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> PrintInHouseChequeAsync(InHouseChequeDTO inHouseChequeDTO, BankLinkageDTO bankLinkageDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
         #endregion
+       
 
         #region FixedDepositDTO
 
@@ -1521,7 +1522,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, bool includeBalances = false, bool includeProductDescription = false, bool includeInterestBalanceForLoanAccounts = false, bool considerMaturityPeriodForInvestmentAccounts = false, ServiceHeader serviceHeader = null);
 
+
        // Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, ServiceHeader serviceHeader = null);
+
 
         Task<CustomerAccountDTO> FindCustomerAccountByFullAccountNumberAsync(string fullAccountNumber, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader = null);
 
