@@ -1,0 +1,308 @@
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryGroupEntryDTO
+
+@{
+    ViewBag.Title = "Salary Groups";
+    var valueType = ViewBag.ValueTypeSelectList as List<SelectListItem>;
+    var roundingTypes = ViewBag.RoundingTypeSelectList as List<SelectListItem>;
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Salary</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "SalaryGroups", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                @*<strong>Create Salary Group</strong>*@
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Salary Group</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        <fieldset>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.SalaryGroupDescription, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Salary Group Name.", @required = "" } })
+                                @Html.ValidationMessageFor(model => model.SalaryGroupDescription, "", new { @class = "text-danger" })
+                            </div>
+
+                            <h3><u>Salary Group Entry Details</u></h3>
+                            <hr />
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.SalaryHeadId, htmlAttributes: new { @class = "control-label" })
+                                <div class="input-group" data-autoclose="true">
+                                    @Html.HiddenFor(model => model.SalaryHeadId)
+                                    @Html.TextBoxFor(model => model.SalaryHeadDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link salary head." })
+                                    <span class="input-group-addon">
+                                        <a data-toggle="modal" data-target="#SalaryHeadsLookupModal"><span class="fa fa-search"></span></a>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="col-md-13 form-group">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChargeTypeDescription, htmlAttributes: new { @class = "" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.ChargeTypeDescription, valueType, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.ChargeTypeDescription)
+                                            </div>
+                                        </div>
+
+                                        <div class=" form-group form-group-lg">
+                                            @Html.LabelFor(model => model.MinimumValue, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.MinimumValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.MinimumValue, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.ChargeType, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.ChargeType, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RoundingTypeDescription, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.RoundingTypeDescription, roundingTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.RoundingTypeDescription)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                        <div class="ibox-content m-b-sm border-bottom">
+                            @using (Html.BeginForm("Create", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                            {
+                                <div class="row">
+                                    <div class="col-sm-2">
+                                        <div class="form-group">
+                                            <input type="submit" style="width:270px; background-color:darkgreen; border-color:darkgreen" value="Create" class="btn btn-success" />
+                                        </div>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="SalaryHeadsLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Salary Heads LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <br />
+            <table id="SalaryHeadsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+}
+
+<script>
+
+    // Here //
+    $('.SalaryHeadsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetSalaryHeadsAsync", "Salary", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Stations) {
+                            var newSalaryHeadsData = [];
+                            SalaryHeadsMap = {};
+                            $.each(SalaryHeads, function (i, SalaryHead) {
+                                newSalaryHeadsData.push(SalaryHead.Description);
+                                SalaryHeadsMap[Product.Description] = SalaryHead;
+                            });
+                            process(newSalaryHeadsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var SalaryHeadID = "";
+                    SalaryHeadID = SalaryHeadsMap[item].Id;
+                    $('#SalaryHeadId').val(SalaryHeadID);
+                    $('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
+                    $('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
+                    $('#SalaryHeadDescription').val(ProductsMap[item].SalaryHeadDescription);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+    // Here //
+
+    $('#SalaryHeadsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Salary", new { Area = "HumanResource" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                  var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/HumanResource/SalaryGroups/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "SalaryHeadDescription", "sTitle": "Salary Head", "sWidth": "20%" },
+            { "mDataProp": "SalaryHeadIsOneOff", "sTitle": "Is One-Off?", "sWidth": "4%" },
+            { "mDataProp": "ChargeType", "sTitle": "Value Type", "sWidth": "10%" },
+            { "mDataProp": "ChargePercentage", "sTitle": "Percentage Value", "sWidth": "10%" },
+            { "mDataProp": "ChargeFixedAmount", "sTitle": "Fixed Value", "sWidth": "10%" },
+            { "mDataProp": "MinimumValue", "sTitle": "Minimum Value", "sWidth": "10%" },
+            { "mDataProp": "RoundingType", "sTitle": "Rounding Type", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
+
+            { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = SalaryHeadsGrid.row(this).data();
+
+      //  $('#CustomerAccountCustomerId').val(data.Id);
+        $('#Code').val(data.Id);
+     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
+        $('input[name=SalaryHeadId]').val(data.SalaryHeadID);
+        $('input[name=SalaryHeadDescription]').val(data.SalaryHeadDescription);
+
+
+        var Code = "";
+        Code = SalaryHeadsMap[item].Id;
+
+        $('#SalaryHeadId').val(SalaryHeadsMap[item].SalaryHeadID);
+        $('#SalaryHeadDescription').val(SalaryHeadsMap[item].SalaryHeadDescription);
+        //$('#ProductDescription').val(SalaryHeadsMap[item].ProductDescription);
+        //$('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
+        $('#SalaryHeadsLookupModal').modal('hide');
+    });
+
+</script>

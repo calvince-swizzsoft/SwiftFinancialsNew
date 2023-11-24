@@ -391,6 +391,57 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetSalaryHeadTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> salaryHead = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SalaryHeadType)).Cast<SalaryHeadType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            salaryHead.AddRange(items);
+
+            return salaryHead;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetValueGroupTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> chargeType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ChargeType)).Cast<ChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chargeType.AddRange(items);
+
+            return chargeType;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetRoundingTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> roudingType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(RoundingType)).Cast<RoundingType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            roudingType.AddRange(items);
+
+            return roudingType;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetIdentityCardTypeSelectList(string selectedValue)
         {
             List<SelectListItem> identityCardTypes = new List<SelectListItem>();
@@ -915,7 +966,22 @@ namespace SwiftFinancials.Web.Controllers
             return systemGeneralLedgerAccountCodes;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetGLAccountsNameSelectList(string selectedValue)
+        {
+            List<SelectListItem> systemGeneralLedgerAccountCodes = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemGeneralLedgerAccountCode)).Cast<SystemGeneralLedgerAccountCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemGeneralLedgerAccountCodes.AddRange(items);
+
+            return systemGeneralLedgerAccountCodes;
+        }
 
 
 

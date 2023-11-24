@@ -90,7 +90,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public int SalaryHeadCustomerAccountTypeTargetProductCode { get; set; }
 
         [DataMember]
-        [Display(Name = "Value Type")]
+        [Display(Name = "Value")]
         public int ChargeType { get; set; }
 
         [DataMember]
