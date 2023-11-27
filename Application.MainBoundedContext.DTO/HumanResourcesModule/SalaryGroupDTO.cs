@@ -29,23 +29,48 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
-        HashSet<SalaryGroupEntryDTO> _salaryGroupEntries;
-        [DataMember]
-        [Display(Name = "Salary Group Entries")]
-        public virtual ICollection<SalaryGroupEntryDTO> SalaryGroupEntries
-        {
-            get
-            {
-                if (_salaryGroupEntries == null)
-                {
-                    _salaryGroupEntries = new HashSet<SalaryGroupEntryDTO>();
-                }
-                return _salaryGroupEntries;
-            }
-            private set
-            {
-                _salaryGroupEntries = new HashSet<SalaryGroupEntryDTO>(value);
-            }
-        }
+        //HashSet<SalaryGroupEntryDTO> _salaryGroupEntries;
+        //[DataMember]
+        //[Display(Name = "Salary Group Entries")]
+        //public virtual ICollection<SalaryGroupEntryDTO> SalaryGroupEntries
+        //{
+        //    get
+        //    {
+        //        if (_salaryGroupEntries == null)
+        //        {
+        //            _salaryGroupEntries = new HashSet<SalaryGroupEntryDTO>();
+        //        }
+        //        return _salaryGroupEntries;
+        //    }
+        //    private set
+        //    {
+        //        _salaryGroupEntries = new HashSet<SalaryGroupEntryDTO>(value);
+        //    }
+        //}
+
+        public List<SalaryGroupEntryDTO> SalaryGroupEntries { get; set; }
+        public SalaryGroupEntryDTO SalaryGroupEntry { get; set; }
+
+
+        //public List<SalaryGroupEntryDTO> sGroupEntries
+        //{
+        //    get
+        //    {
+        //        if (SalaryGroupEntries != null)
+        //        {
+        //            SalaryGroupEntryDTO salaryGroupEntryDTO = new SalaryGroupEntryDTO();
+
+        //            List<ICollection> collections = new List<ICollection>((IEnumerable<ICollection>)SalaryGroupEntries);
+        //        }
+
+        //        return sGroupEntries
+        //    }
+        //    set
+        //    {
+
+        //    }
+        //}
+
+        //public SalaryGroupEntryDTO sGroupEntry { get; set; }
     }
 }

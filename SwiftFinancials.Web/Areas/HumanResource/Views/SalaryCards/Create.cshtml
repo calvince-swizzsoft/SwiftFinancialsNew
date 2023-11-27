@@ -55,13 +55,12 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.EmployeeId, htmlAttributes: new { @class = "control-label" })
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployeeCustomerId, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.EmployeeId)
-                                            @Html.TextBoxFor(model => model.Employee, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Employee..." })
+                                            @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder="Link Employee..." })
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#EmployeesLookupModal"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
@@ -74,22 +73,18 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.SalaryGroupId, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.SalaryGroupId)
-                                            @Html.TextBoxFor(model => model.SalaryGroupDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Product..." })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#SalaryGroupsLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
+                                        @Html.HiddenFor(model => model.SalaryGroupId)
+                                        @Html.ValidationMessageFor(model => model.SalaryGroupId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "SalaryGroupsLookup form-control required", placeholder = "Description.." } })
                                     </div>
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.InsuranceReliefAmount, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.InsuranceReliefAmount)
                                         @Html.ValidationMessageFor(model => model.InsuranceReliefAmount, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.InsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Chart of Acccount Name" } })
+                                        @Html.EditorFor(model => model.InsuranceReliefAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                     </div>
                                 </div>
                             </div>
@@ -120,14 +115,13 @@
     </div>
 </div>
 
-<div class="modal  fade" id="SalaryHeadsLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Salary Heads LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Employee Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <br />
-            <table id="SalaryHeadsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -138,7 +132,7 @@
             </table>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -190,21 +184,20 @@
 }
 
 <script>
-
-    // Here //
-    $('.SalaryHeadsLookup').typeahead({
+                        //SalaryGroup typehead starts here
+    $('.SalaryGroupsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetSalaryHeadsAsync", "SalaryGroups", new { Area = "HumanResource" })',
+                        '@Url.Action("GetSalaryGroupsAsync", "SalaryGroups", new { Area = "HumanResource" })',
                         { query: query },
-                        function (Stations) {
-                            var newSalaryHeadsData = [];
-                            SalaryHeadsMap = {};
-                            $.each(SalaryHeads, function (i, SalaryHead) {
-                                newSalaryHeadsData.push(SalaryHead.Description);
-                                SalaryHeadsMap[Product.Description] = SalaryHead;
+                        function (SalaryGroups) {
+                            var newSalaryGroupsData = [];
+                            SalaryGroupsMap = {};
+                            $.each(SalaryGroups, function (i, SalaryGroup) {
+                                newSalaryGroupsData.push(SalaryGroup.AccountName);
+                                SalaryGroupsMap[SalaryGroup.AccountName] = SalaryGroup;
                             });
-                            process(newSalaryHeadsData); return;
+                            process(newSalaryGroupsData); return;
                         });
                 },
                 matcher: function (item) {
@@ -220,29 +213,67 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var SalaryHeadID = "";
-                    SalaryHeadID = SalaryHeadsMap[item].Id;
-                    $('#SalaryHeadId').val(SalaryHeadID);
-                    $('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
-                    $('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
-                    $('#SalaryHeadDescription').val(ProductsMap[item].SalaryHeadDescription);
-                    //console.log(StationId)
+                    var SalaryGroupId = "";
+                    SalaryGroupId = SalaryGroupsMap[item].Id;
+
+                    $('#SalaryGroupId').val(ChartOfAccountId);
+
+                    //console.log(ChartOfAccountId)
                     return item;
                 }
-            });
+    });
+
+
+
+    // Here //
+    @*$('.EmployeesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployeesAsync", "SalaryCards", new { Area = "HumanResource" })',
+                        { query: query },
+                        function (Stations) {
+                            var newEmployeesData = [];
+                            EmployeesMap = {};
+                            $.each(Employees, function (i, Employees) {
+                                newEmployeesData.push(Employees.Description);
+                                EmployeesMap[Employees.Description] = Employees;
+                            });
+                            process(newEmployeesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var EmployeeID = "";
+                    EmployeeID = EmployeesMap[item].Id;
+                    $('#EmployeeCustomerId').val(EmployeeID);
+                    $('#EmployeeCustomerFullName').val(EmployeesMap[item].CustomerFullName);
+                    return item;
+                }
+            });*@
     // Here //
 
-    $('#SalaryHeadsGrid').DataTable({
+    $('#customersGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SalaryGroups", new { Area = "HumanResource" }))",
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                  var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -250,50 +281,33 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/HumanResource/SalaryGroups/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/humanResource/SalaryCards/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(selectUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
 
                     return nRow;
                 },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "SalaryHeadDescription", "sTitle": "Salary Head", "sWidth": "20%" },
-            { "mDataProp": "SalaryHeadIsOneOff", "sTitle": "Is One-Off?", "sWidth": "4%" },
-            { "mDataProp": "ChargeType", "sTitle": "Value Type", "sWidth": "10%" },
-            { "mDataProp": "ChargePercentage", "sTitle": "Percentage Value", "sWidth": "10%" },
-            { "mDataProp": "ChargeFixedAmount", "sTitle": "Fixed Value", "sWidth": "10%" },
-            { "mDataProp": "MinimumValue", "sTitle": "Minimum Value", "sWidth": "10%" },
-            { "mDataProp": "RoundingType", "sTitle": "Rounding Type", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
+                // Display settings
+                 "aoColumns": [
+                     { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                     { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+                     { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+        });
 
-            { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
-        "aaSorting": [[0, "desc"]]
-    });
+        $("#s tbody").on("click", "tr", function () {
+            var data = customersGrid.row(this).data();
 
-    $("#s tbody").on("click", "tr", function () {
-        var data = SalaryHeadsGrid.row(this).data();
+            $('#EmployeeCustomerId').val(data.Id);
+            $('input[name=EmployeeCustomerId]').val(data.Id);
+            $('input[name=EmployeeCustomerFullName]').val(data.FullName);
+            //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
 
-      //  $('#CustomerAccountCustomerId').val(data.Id);
-        $('#Code').val(data.Id);
-     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
-        $('input[name=SalaryHeadId]').val(data.SalaryHeadID);
-        $('input[name=SalaryHeadDescription]').val(data.SalaryHeadDescription);
-
-
-        var Code = "";
-        Code = SalaryHeadsMap[item].Id;
-
-        $('#SalaryHeadId').val(SalaryHeadsMap[item].SalaryHeadID);
-        $('#SalaryHeadDescription').val(SalaryHeadsMap[item].SalaryHeadDescription);
-        //$('#ProductDescription').val(SalaryHeadsMap[item].ProductDescription);
-        //$('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-        $('#SalaryHeadsLookupModal').modal('hide');
-    });
+            $('#customerLookupModal').modal('hide');
+        });
 
 </script>

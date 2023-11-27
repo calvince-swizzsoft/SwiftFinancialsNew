@@ -98,6 +98,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
 
+                TempData["AlertMessage"] = "Created Salary Head";
                 //await GetChartOfAccountsAsync(id);
                 return RedirectToAction("Index");
             }

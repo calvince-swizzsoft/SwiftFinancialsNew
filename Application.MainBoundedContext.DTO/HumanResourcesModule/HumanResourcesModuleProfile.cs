@@ -62,7 +62,8 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 
             //SalaryGroup => SalaryGroupDTO
             CreateMap<SalaryGroup, SalaryGroupDTO>()
-                .ForMember(dest => dest.SalaryGroupEntries, opt => opt.Ignore());
+                .ForMember(dest => dest.SalaryGroupEntries, opt => opt.Ignore())
+                .ForMember(dest => dest.SalaryGroupEntry, opt => opt.Ignore());
 
             //SalaryGroupEntry => SalaryGroupEntryDTO
             CreateMap<SalaryGroupEntry, SalaryGroupEntryDTO>()

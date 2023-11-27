@@ -44,7 +44,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<SalaryCardEntryDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<SalaryCardDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -61,26 +61,26 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(string.Empty);
-
             Guid parseId;
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
 
-            //var savingproducts = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
+            //await GetSalaryGroupsAsync(id);
+            await GetEmployeesAsync();
 
-            SalaryCardDTO salaryCardDTO = new SalaryCardDTO();
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
-            //if (savingproducts != null)
-            //{
-            //    salaryHeadDTO.CustomerAccountTypeTargetProductId = savingproducts.Id;
-            //    salaryHeadDTO.ProductDescription = savingproducts.Description;
+            EmployeeDTO employeeBindingModel = new EmployeeDTO();
 
-            //}
+            if (customer != null)
+            {
+                employeeBindingModel.CustomerId = customer.Id;
+                employeeBindingModel.CustomerFullName = customer.FullName;
+            }
 
-            return View(salaryCardDTO);
+            return View(employeeBindingModel);
         }
 
         [HttpPost]
@@ -92,9 +92,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 var salarycard = await _channelService.AddSalaryCardAsync(salaryCardDTO, GetServiceHeader());
 
-                //ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryCardDTO.Type.ToString());
-
-                //await GetChartOfAccountsAsync(id);
                 return RedirectToAction("Index");
             }
             else
@@ -129,6 +126,37 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 return View(salaryCardDTO);
             }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetSalaryGroupsAsync(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            SalaryGroupDTO salaryGroupDTO = new SalaryGroupDTO();
+            var salaryGroups = await _channelService.FindSalaryGroupAsync(parseId, GetServiceHeader());
+
+            if (salaryGroups != null)
+            {
+                salaryGroupDTO.Id = salaryGroups.Id;
+                salaryGroupDTO.Description = salaryGroups.Description;
+            }
+            return View(salaryGroupDTO);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetEmployeesAsync()
+        {
+            var employeesDTOs = await _channelService.FindEmployeesAsync(GetServiceHeader());
+
+            return Json(employeesDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

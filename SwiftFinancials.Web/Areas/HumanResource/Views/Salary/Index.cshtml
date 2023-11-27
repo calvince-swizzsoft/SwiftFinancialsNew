@@ -33,6 +33,16 @@
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
+
+                    @if (TempData["AlertMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AlertMessage"]
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>&times;</span>
+                            </button>
+                        </div>
+                    }
                 </div>
                 <div class="ibox-content">
                     <div class="sk-spinner sk-spinner-double-bounce">
@@ -114,6 +124,13 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
+        // Message Alert TimeOut
+        window.setTimeout(function () {
+            $('.alert').fadeTo(500, 0).slideUp(500, function () {
+                $(this).remove();
+            });
+        }, 4000);
     </script>
 
 }

@@ -24,7 +24,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime EndDate)
         {
             int totalRecordCount = 0;
 
@@ -34,7 +34,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindSalaryCardsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindSalaryPeriodsByFilterInPageAsync(status, startDate, EndDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -51,10 +51,10 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var salaryCardDTO = await _channelService.FindSalaryHeadAsync(id, GetServiceHeader());
+            var salaryPeriodDTO = await _channelService.FindSalaryPeriodAsync(id, GetServiceHeader());
             //var chartOfAccount = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
 
-            return View(salaryCardDTO);
+            return View(salaryPeriodDTO);
         }
 
         public async Task<ActionResult> Create(Guid? id)
@@ -70,18 +70,16 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 return View();
             }
 
-            //var savingproducts = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
+            PostingPeriodDTO postingPeriodDTO = new PostingPeriodDTO();
+            var postingPeriod = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
 
-            SalaryPeriodDTO salaryPeriodDTO = new SalaryPeriodDTO();
+            if (postingPeriod != null)
+            {
+                postingPeriodDTO.Id = postingPeriod.Id;
+                postingPeriodDTO.Description = postingPeriod.Description;
+            }
 
-            //if (savingproducts != null)
-            //{
-            //    salaryHeadDTO.CustomerAccountTypeTargetProductId = savingproducts.Id;
-            //    salaryHeadDTO.ProductDescription = savingproducts.Description;
-
-            //}
-
-            return View(salaryPeriodDTO);
+            return View(postingPeriodDTO);
         }
 
         [HttpPost]

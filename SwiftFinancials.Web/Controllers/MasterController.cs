@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -35,6 +36,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
+
+        public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
 
         private IChannelService channelService;
         public IChannelService _channelService
