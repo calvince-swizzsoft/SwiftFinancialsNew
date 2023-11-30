@@ -324,6 +324,7 @@
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
@@ -905,6 +906,7 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\CustomerManagement.cshtml" />
+    <Content Include="Areas\Accounts\Views\Management\CustomerManagement.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

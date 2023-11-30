@@ -215,9 +215,6 @@ namespace SwiftFinancials.Web.Controllers
             return customerTypes;
         }
 
-
-
-
         [NonAction]
         protected List<SelectListItem> GetCCustomerAccountManagementActionSelectList(string selectedValue)
         {
@@ -234,7 +231,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return customerAccountManagementAction;
         }
-        
+
 
         [NonAction]
         protected List<SelectListItem> GetTransactionOwnershipSelectList(string selectedValue)
