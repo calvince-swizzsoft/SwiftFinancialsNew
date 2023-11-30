@@ -1,4 +1,4 @@
-﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryGroupEntryDTO
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.SalaryGroupDTO
 
 @{
     ViewBag.Title = "Salary Groups";
@@ -54,74 +54,145 @@
                         @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
                         <fieldset>
                             <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.SalaryGroupDescription, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.SalaryGroupDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Salary Group Name.", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.SalaryGroupDescription, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Salary Group Name.", @required = "" } })
+                                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                             </div>
+                            <button id="openModalButton" style="color:white; width:200px; background-color:deepskyblue; border-color:deepskyblue; border-style:outset; border-radius:10px">Add Salary Group Entry</button>
+                        </fieldset>
+                        <br />
+                        <!-- Button to trigger the modal -->
 
-                            <h3><u>Salary Group Entry Details</u></h3>
-                            <hr />
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.SalaryHeadId, htmlAttributes: new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(model => model.SalaryHeadId)
-                                    @Html.TextBoxFor(model => model.SalaryHeadDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link salary head." })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#SalaryHeadsLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
-                                </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChargeTypeDescription, htmlAttributes: new { @class = "" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.ChargeTypeDescription, valueType, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.ChargeTypeDescription)
-                                            </div>
-                                        </div>
+                        <!-- The modal -->
+                        <h3><u>Salary Group Entry Details</u></h3>
+                        <div class="form-group">
+                            <div id="salaryGroupModal" class="modal" style="width: 700px; height: 500px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+                                <div class="modal-content" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
+                                    <span class="close" style="position: absolute; top: 10px; right: 10px;">&times;</span>
 
-                                        <div class=" form-group form-group-lg">
-                                            @Html.LabelFor(model => model.MinimumValue, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.MinimumValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.MinimumValue, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-6">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.ChargeType, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ChargeType, "", new { @class = "text-danger" })
+                                    @Html.AntiForgeryToken()
+                                    <h2>Add Salary Group Entry</h2>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Salary Group Name.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RoundingTypeDescription, htmlAttributes: new { @class = "" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.RoundingTypeDescription, roundingTypes, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.RoundingTypeDescription)
+                                        @Html.LabelFor(model => model.SalaryGroupEntry.SalaryHeadCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.SalaryGroupEntry.SalaryHeadCustomerAccountTypeTargetProductId)
+                                            @Html.TextBoxFor(model => model.SalaryGroupEntry.SalaryHeadDescription, new { @class = "GetSalaryHeadsAsync form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link salary head." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#salaryHeadsLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
                                         </div>
                                     </div>
+
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="col-md-13 form-group">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.SalaryGroupEntries[0].ChargeTypeDescription, htmlAttributes: new { @class = "" })
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                        @Html.DropDownListFor(model => model.SalaryGroupEntries[0].ChargeTypeDescription, valueType, new { @class = "form-control input-md" })
+                                                        @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].ChargeTypeDescription)
+                                                    </div>
+                                                </div>
+
+                                                <div class=" form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.SalaryGroupEntries[0].MinimumValue, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.SalaryGroupEntries[0].MinimumValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].MinimumValue, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.SalaryGroupEntries[0].ChargeType, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.SalaryGroupEntries[0].ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].ChargeType, "", new { @class = "text-danger" })
+                                            </div>
+
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.SalaryGroupEntries[0].RoundingTypeDescription, htmlAttributes: new { @class = "" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.SalaryGroupEntries[0].RoundingTypeDescription, roundingTypes, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].RoundingTypeDescription)
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!-- Center the Submit button -->
+                                    <button id="submitEntry" style="margin-top: 20px; color:white; background-color:darkgreen; border-color:darkgreen; width:200px">Submit</button>
                                 </div>
                             </div>
-                        </fieldset>
-                        <div class="ibox-content m-b-sm border-bottom">
-                            @using (Html.BeginForm("Create", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                            {
-                                <div class="row">
-                                    <div class="col-sm-2">
-                                        <div class="form-group">
-                                            <input type="submit" style="width:270px; background-color:darkgreen; border-color:darkgreen" value="Create" class="btn btn-success" />
-                                        </div>
-                                    </div>
-                                </div>
-                            }
                         </div>
+
+                        <row>
+                            <div class="ibox-content m-b-sm border-bottom bg-white text-dark">
+                                <table class="footable table table-stripped toggle-arrow-tiny bg-white  ">
+                                    <thead>
+                                        <tr>
+                                            <th data-hide="phone">Salary Head ID</th>
+                                            <th data-hide="phone">Salary Head</th>
+                                            <th data-hide="phone">Value Type</th>
+                                            <th data-hide="phone">Minimum Value</th>
+                                            <th data-hide="phone">Value</th>
+                                            <th data-hide="phone">Rounding Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.SalaryGroupEntryDTOs != null)
+                                        {
+                                            foreach (var SalaryGroupEntries in ViewBag.SalaryGroupEntryDTOs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @SalaryGroupEntries.SalaryHeadCustomerAccountTypeTargetProductId
+                                                    </td>
+                                                    <td>
+                                                        @SalaryGroupEntries.SalaryHeadDescription
+                                                    </td>
+                                                    <td>
+                                                        @SalaryGroupEntries.ChargeTypeDescription
+                                                    </td>
+                                                    <td>
+                                                        @SalaryGroupEntries.MinimumValue
+                                                    </td>
+                                                    <td>
+                                                        @SalaryGroupEntries.ChargeType
+                                                    </td>
+                                                    <td>
+                                                        @SalaryGroupEntries.RoundingTypeDescription
+                                                    </td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </row>
+                    }
+                </div>
+
+                <div class="ibox-content m-b-sm border-bottom">
+                    @using (Html.BeginForm("Create", "SalaryGroups", new { Area = "HumanResource" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <input type="submit" value="Create Salary Group Entry" class="btn btn-success" style="color: white; width: 200px; background-color: deepskyblue; border-color: deepskyblue; border-style: outset; border-radius:15px; box-shadow:10px" />
+                                </div>
+                            </div>
+                        </div>
+
                     }
                 </div>
             </div>
@@ -129,14 +200,14 @@
     </div>
 </div>
 
-<div class="modal  fade" id="SalaryHeadsLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="salaryHeadsLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Salary Heads LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">Salary Heads Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
             <br />
-            <table id="SalaryHeadsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="salaryHeadsLookupModal" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -147,7 +218,7 @@
             </table>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" style="width: 190px; color: white; width: 200px; background-color: deepskyblue; border-color: deepskyblue; border-style: outset" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -199,6 +270,32 @@
 }
 
 <script>
+    // Open the modal
+    $("#openModalButton").click(function () {
+        $("#salaryGroupModal").css("display", "block");
+    });
+
+    // Close the modal
+    $(".close").click(function () {
+        $("#salaryGroupModal").css("display", "none");
+    });
+
+    $("#submitEntry").click(function () {
+        const salaryGroupID = $("#type").val();
+        const salaryHeadID = $("#SalaryHeadCustomerAccountTypeTargetProductId").val();
+        const chargeType = $("#ChargeTypeDescription").val();
+        const chargePercentage = $("#postingPeriodId").val();
+        const chargeFixedAmount = $("#totalValue").val();
+        const minimumValue = $("#primaryDescription").val();
+        const roundingType = $("#secondaryDescription").val();
+
+        // Perform AJAX request to send the data to your server
+        $.post("/addExpensePayableEntry", { type, chartOfAccountId, branchId, postingPeriodId, totalValue, primaryDescription, secondaryDescription, reference, remarks }, function (response) {
+            // Handle the response from the server
+        });
+    });
+
+
 
     // Here //
     $('.SalaryHeadsLookup').typeahead({
@@ -233,14 +330,15 @@
                     SalaryHeadID = SalaryHeadsMap[item].Id;
                     $('#SalaryHeadId').val(SalaryHeadID);
                     $('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
-                    $('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
+                    //$('#SalaryHeadId').val(ProductsMap[item].SalaryHeadID);
                     $('#SalaryHeadDescription').val(ProductsMap[item].SalaryHeadDescription);
                     //console.log(StationId)
                     return item;
                 }
-            });
-    // Here //
+    });
 
+
+    // Here //
     $('#SalaryHeadsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
