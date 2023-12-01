@@ -55,7 +55,7 @@ namespace SwiftFinancials.Presentation.Contracts.HumanResourcesModule
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginFindEmployeesBySalaryGroupsBranchesAndDepartments(SalaryPeriodDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments, AsyncCallback callback, Object state);
+        IAsyncResult BeginFindEmployeesBySalaryGroupsBranchesAndDepartments(SalaryProcessingDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments, AsyncCallback callback, Object state);
         List<EmployeeDTO> EndFindEmployeesBySalaryGroupsBranchesAndDepartments(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]

@@ -25,7 +25,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
         EmployeeDTO FindEmployee(Guid employeeId, ServiceHeader serviceHeader);
 
-        List<EmployeeDTO> FindEmployees(SalaryPeriodDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments, ServiceHeader serviceHeader);
+        List<EmployeeDTO> FindEmployees(SalaryProcessingDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments, ServiceHeader serviceHeader);
 
         EmployeeDTO FindEmployee(int serialNumber, ServiceHeader serviceHeader);
     }

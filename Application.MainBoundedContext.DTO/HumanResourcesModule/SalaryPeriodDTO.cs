@@ -7,9 +7,9 @@ using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 {
-    public class SalaryPeriodDTO : BindingModelBase<SalaryPeriodDTO>
+    public class SalaryProcessingDTO : BindingModelBase<SalaryProcessingDTO>
     {
-        public SalaryPeriodDTO()
+        public SalaryProcessingDTO()
         {
             AddAllAttributeValidators();
         }

@@ -907,6 +907,7 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\CustomerManagement.cshtml" />
     <Content Include="Areas\Accounts\Views\Management\CustomerManagement.cshtml" />
+    <Content Include="Areas\HumanResource\Views\SalaryProcessing\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

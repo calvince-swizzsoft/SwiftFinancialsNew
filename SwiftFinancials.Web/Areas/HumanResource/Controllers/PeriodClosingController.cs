@@ -44,7 +44,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<SalaryPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<SalaryProcessingDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -72,7 +72,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
             //var savingproducts = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
 
-            SalaryPeriodDTO salaryPeriodDTO = new SalaryPeriodDTO();
+            SalaryProcessingDTO salaryPeriodDTO = new SalaryProcessingDTO();
 
             //if (savingproducts != null)
             //{
@@ -85,7 +85,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SalaryPeriodDTO salaryPeriodDTO, Guid? id)
+        public async Task<ActionResult> Create(SalaryProcessingDTO salaryPeriodDTO, Guid? id)
         {
             salaryPeriodDTO.ValidateAll();
 
@@ -118,7 +118,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, SalaryPeriodDTO salaryPeriodDTO)
+        public async Task<ActionResult> Edit(Guid id, SalaryProcessingDTO salaryPeriodDTO)
         {
             salaryPeriodDTO.ValidateAll();
 

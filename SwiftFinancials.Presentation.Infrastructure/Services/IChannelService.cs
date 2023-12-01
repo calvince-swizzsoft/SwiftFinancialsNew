@@ -888,7 +888,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<EmployeeDTO> FindEmployeeAsync(Guid employeeId, ServiceHeader serviceHeader = null);
 
-        Task<ObservableCollection<EmployeeDTO>> FindEmployeesBySalaryGroupsBranchesAndDepartmentsAsync(SalaryPeriodDTO salaryPeriodDTO, ObservableCollection<SalaryGroupDTO> salaryGroups, ObservableCollection<BranchDTO> branches, ObservableCollection<DepartmentDTO> departments, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<EmployeeDTO>> FindEmployeesBySalaryGroupsBranchesAndDepartmentsAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<SalaryGroupDTO> salaryGroups, ObservableCollection<BranchDTO> branches, ObservableCollection<DepartmentDTO> departments, ServiceHeader serviceHeader = null);
 
         Task<EmployeeDTO> FindEmployeeBySerialNumberAsync(int serialNumber, ServiceHeader serviceHeader = null);
 
@@ -1090,19 +1090,19 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region SalaryPeriodDTO
 
-        Task<PageCollectionInfo<SalaryPeriodDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+        Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<PageCollectionInfo<SalaryPeriodDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+        Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<SalaryPeriodDTO> AddSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
+        Task<SalaryProcessingDTO> AddSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
-        Task<bool> UpdateSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
+        Task<bool> UpdateSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
-        Task<SalaryPeriodDTO> FindSalaryPeriodAsync(Guid salaryPeriodId, ServiceHeader serviceHeader = null);
+        Task<SalaryProcessingDTO> FindSalaryPeriodAsync(Guid salaryPeriodId, ServiceHeader serviceHeader = null);
 
-        Task<bool> ProcessSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader = null);
+        Task<bool> ProcessSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader = null);
 
-        Task<bool> CloseSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
+        Task<bool> CloseSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> PostPaySlipAsync(Guid paySlipId, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
