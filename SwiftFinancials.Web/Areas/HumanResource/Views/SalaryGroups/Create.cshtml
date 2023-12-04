@@ -186,7 +186,6 @@
                                                     <td>
                                                         @SalaryGroupEntries.RoundingType
                                                     </td>
-
                                                 </tr>
                                             }
                                         }
@@ -343,16 +342,15 @@
                 updater: function (item) {
                     var ProductID = "";
                     ProductID = ProductsMap[item].Id;
-                    $('#CustomerAccountTypeTargetProductId').val(ProductID);
-                    $('#CustomerAccountTypeTargetProductId').val(ProductsMap[item].CustomerAccountTypeProductCodeDescription);
-                    $('#ProductDescription').val(ProductsMap[item].ProductDescription);
-                    $('#CustomerAccountTypeProductCode').val(ProductsMap[item].CustomerAccountTypeProductCode);
+                    $('#SalaryHeadId').val(ProductID);
+                    $('#SalaryHeadId').val(ProductsMap[item].CustomerAccountTypeProductCodeDescription);
+                    $('#SalaryHeadDescription').val(ProductsMap[item].SalaryHeadDescription);
                     //console.log(StationId)
                     return item;
                 }
             });
 
-        $('#salaryHeadsGrid').DataTable({
+    $('#salaryHeadsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
@@ -372,24 +370,38 @@
 
                     var selectUrl = '<a  href="/HumanResource/SalaryGroups/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(selectUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
 
                     return nRow;
                 },
         // Display settings
         "aoColumns": [
-            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "10%" },
-            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "5%" },
-            { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "5%" },
-            //{ "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "10%" },
-            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Allowed Withdrawal", "sWidth": "10%" },
-            { "mDataProp": "WithdrawalNoticePeriod", "sTitle": "Withdrawal Notice Period (Days)", "sWidth": "10%" },
+            { "mDataProp": "SalaryHeadId", "sTitle": "Salary Head ID", "sWidth": "20%" },
+            { "mDataProp": "SalaryHeadDescription", "sTitle": "Salary Head", "sWidth": "4%" },
+            { "mDataProp": "SalaryHeadIsOneOff", "sTitle": "Is One-Off?", "sWidth": "4%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-            //{ "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
 
             { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
         "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = salaryHeadsGrid.row(this).data();
+
+      //  $('#CustomerAccountCustomerId').val(data.Id);
+        $('#Code').val(data.Id);
+     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
+        $('input[name=SalaryHeadId]').val(data.PostingPeriodId);
+        $('input[name=SalaryHeadDescription]').val(data.PostingPeriodDescription);
+
+
+        var Code = "";
+        Code = PostingPeriodsMap[item].Id;
+        $('#SalaryHeadId').val(PostingPeriodsMap[item].PostingPeriodId);
+        $('#SalaryHeadDescription').val(PostingPeriodsMap[item].PostingPeriodDescription);
+
+        $('#SalaryHeadsLookup').modal('hide');
     });
     </script>
 }
