@@ -11291,7 +11291,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<ObservableCollection<EmployeeDTO>> FindEmployeesBySalaryGroupsBranchesAndDepartmentsAsync(SalaryPeriodDTO salaryPeriodDTO, ObservableCollection<SalaryGroupDTO> salaryGroups, ObservableCollection<BranchDTO> branches, ObservableCollection<DepartmentDTO> departments, ServiceHeader serviceHeader)
+        public Task<ObservableCollection<EmployeeDTO>> FindEmployeesBySalaryGroupsBranchesAndDepartmentsAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<SalaryGroupDTO> salaryGroups, ObservableCollection<BranchDTO> branches, ObservableCollection<DepartmentDTO> departments, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<EmployeeDTO>>();
 
@@ -14627,9 +14627,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region SalaryPeriodDTO
 
-        public Task<PageCollectionInfo<SalaryPeriodDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
-            var tcs = new TaskCompletionSource<PageCollectionInfo<SalaryPeriodDTO>>();
+            var tcs = new TaskCompletionSource<PageCollectionInfo<SalaryProcessingDTO>>();
 
             ISalaryPeriodService service = GetService<ISalaryPeriodService>(serviceHeader);
 
@@ -14637,7 +14637,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             {
                 try
                 {
-                    PageCollectionInfo<SalaryPeriodDTO> response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriodsByFilterInPage(result);
+                    PageCollectionInfo<SalaryProcessingDTO> response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriodsByFilterInPage(result);
 
                     tcs.TrySetResult(response);
                 }
@@ -14659,9 +14659,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<PageCollectionInfo<SalaryPeriodDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
-            var tcs = new TaskCompletionSource<PageCollectionInfo<SalaryPeriodDTO>>();
+            var tcs = new TaskCompletionSource<PageCollectionInfo<SalaryProcessingDTO>>();
 
             ISalaryPeriodService service = GetService<ISalaryPeriodService>(serviceHeader);
 
@@ -14669,7 +14669,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             {
                 try
                 {
-                    PageCollectionInfo<SalaryPeriodDTO> response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriodsInPage(result);
+                    PageCollectionInfo<SalaryProcessingDTO> response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriodsInPage(result);
 
                     tcs.TrySetResult(response);
                 }
@@ -14691,9 +14691,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<SalaryPeriodDTO> AddSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public Task<SalaryProcessingDTO> AddSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
-            var tcs = new TaskCompletionSource<SalaryPeriodDTO>();
+            var tcs = new TaskCompletionSource<SalaryProcessingDTO>();
 
             ISalaryPeriodService service = GetService<ISalaryPeriodService>(serviceHeader);
 
@@ -14701,7 +14701,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             {
                 try
                 {
-                    SalaryPeriodDTO response = ((ISalaryPeriodService)result.AsyncState).EndAddSalaryPeriod(result);
+                    SalaryProcessingDTO response = ((ISalaryPeriodService)result.AsyncState).EndAddSalaryPeriod(result);
 
                     tcs.TrySetResult(response);
                 }
@@ -14723,7 +14723,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<bool> UpdateSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public Task<bool> UpdateSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
 
@@ -14755,9 +14755,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<SalaryPeriodDTO> FindSalaryPeriodAsync(Guid salaryPeriodId, ServiceHeader serviceHeader)
+        public Task<SalaryProcessingDTO> FindSalaryPeriodAsync(Guid salaryPeriodId, ServiceHeader serviceHeader)
         {
-            var tcs = new TaskCompletionSource<SalaryPeriodDTO>();
+            var tcs = new TaskCompletionSource<SalaryProcessingDTO>();
 
             ISalaryPeriodService service = GetService<ISalaryPeriodService>(serviceHeader);
 
@@ -14765,7 +14765,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             {
                 try
                 {
-                    SalaryPeriodDTO response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriod(result);
+                    SalaryProcessingDTO response = ((ISalaryPeriodService)result.AsyncState).EndFindSalaryPeriod(result);
 
                     tcs.TrySetResult(response);
                 }
@@ -14787,7 +14787,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<bool> ProcessSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader)
+        public Task<bool> ProcessSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
 
@@ -14819,7 +14819,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
-        public Task<bool> CloseSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public Task<bool> CloseSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
 
@@ -19292,6 +19292,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #endregion
 
         #region CustomerAccountDTO
+        //public Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, ServiceHeader serviceHeader)
+        //{
+        //    var tcs = new TaskCompletionSource<CustomerAccountDTO>();
+
+        //    ICustomerAccountService service = GetService<ICustomerAccountService>(serviceHeader);
+
+        //    AsyncCallback asyncCallback = (result =>
+        //    {
+        //        try
+        //        {
+        //            CustomerAccountDTO response = ((ICustomerAccountService)result.AsyncState).EndFindCustomerAccount(result);
+
+        //            tcs.TrySetResult(response);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            HandleFault(ex, (msgcb) =>
+        //            {
+        //                if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+        //            });
+        //        }
+        //        finally
+        //        {
+        //            DisposeService(service as IClientChannel);
+        //        }
+        //    });
+
+        //    service.BeginFindCustomerAccount(customerAccountId, asyncCallback, service);
+
+        //    return tcs.Task;
+        //}
 
         public Task<bool> UpdateCustomerAccountAsync(CustomerAccountDTO customerAccountDTO, ServiceHeader serviceHeader)
         {
@@ -19580,6 +19611,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+
+
+     
 
         public Task<PageCollectionInfo<CustomerAccountDTO>> FindCustomerAccountsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader)
         {
@@ -37493,7 +37527,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task<PageCollectionInfo<AccountClosureRequestDTO>> FindAccountClosureRequestsByFilterInPageAsync(string text, int customerFilter, int pageIndex, int pageSize, bool includeProductDescription, ServiceHeader serviceHeader)
-        {
+       {
             var tcs = new TaskCompletionSource<PageCollectionInfo<AccountClosureRequestDTO>>();
 
             IAccountClosureRequestService service = GetService<IAccountClosureRequestService>(serviceHeader);

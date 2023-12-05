@@ -128,7 +128,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             _appCache = appCache;
         }
 
-        public SalaryPeriodDTO AddNewSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public SalaryProcessingDTO AddNewSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
             if (salaryPeriodDTO != null)
             {
@@ -157,14 +157,14 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                         dbContextScope.SaveChanges(serviceHeader);
 
-                        return salaryPeriod.ProjectedAs<SalaryPeriodDTO>();
+                        return salaryPeriod.ProjectedAs<SalaryProcessingDTO>();
                     }
                 }
             }
             else return null;
         }
 
-        public bool UpdateSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public bool UpdateSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
             if (salaryPeriodDTO == null || salaryPeriodDTO.Id == Guid.Empty)
                 return false;
@@ -204,7 +204,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             }
         }
 
-        public bool ProcessSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, List<EmployeeDTO> employees, ServiceHeader serviceHeader)
+        public bool ProcessSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, List<EmployeeDTO> employees, ServiceHeader serviceHeader)
         {
             var result = default(bool);
 
@@ -692,7 +692,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             return result;
         }
 
-        public bool CloseSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public bool CloseSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
             var result = default(bool);
 
@@ -958,7 +958,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             return result;
         }
 
-        public List<SalaryPeriodDTO> FindSalaryPeriods(ServiceHeader serviceHeader)
+        public List<SalaryProcessingDTO> FindSalaryPeriods(ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -966,13 +966,13 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                 if (salaryPeriods != null && salaryPeriods.Any())
                 {
-                    return salaryPeriods.ProjectedAsCollection<SalaryPeriodDTO>();
+                    return salaryPeriods.ProjectedAsCollection<SalaryProcessingDTO>();
                 }
                 else return null;
             }
         }
 
-        public PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriods(int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriods(int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -986,17 +986,17 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                 if (salaryPeriodPagedCollection != null)
                 {
-                    var pageCollection = salaryPeriodPagedCollection.PageCollection.ProjectedAsCollection<SalaryPeriodDTO>();
+                    var pageCollection = salaryPeriodPagedCollection.PageCollection.ProjectedAsCollection<SalaryProcessingDTO>();
 
                     var itemsCount = salaryPeriodPagedCollection.ItemsCount;
 
-                    return new PageCollectionInfo<SalaryPeriodDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                    return new PageCollectionInfo<SalaryProcessingDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
                 }
                 else return null;
             }
         }
 
-        public PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriods(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriods(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -1010,17 +1010,17 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                 if (salaryPeriodCollection != null)
                 {
-                    var pageCollection = salaryPeriodCollection.PageCollection.ProjectedAsCollection<SalaryPeriodDTO>();
+                    var pageCollection = salaryPeriodCollection.PageCollection.ProjectedAsCollection<SalaryProcessingDTO>();
 
                     var itemsCount = salaryPeriodCollection.ItemsCount;
 
-                    return new PageCollectionInfo<SalaryPeriodDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                    return new PageCollectionInfo<SalaryProcessingDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
                 }
                 else return null;
             }
         }
 
-        public PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriods(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        public PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriods(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -1034,7 +1034,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                 if (salaryPeriodPagedCollection != null)
                 {
-                    var pageCollection = salaryPeriodPagedCollection.PageCollection.ProjectedAsCollection<SalaryPeriodDTO>();
+                    var pageCollection = salaryPeriodPagedCollection.PageCollection.ProjectedAsCollection<SalaryProcessingDTO>();
 
                     if (pageCollection != null && pageCollection.Any())
                     {
@@ -1050,13 +1050,13 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                     var itemsCount = salaryPeriodPagedCollection.ItemsCount;
 
-                    return new PageCollectionInfo<SalaryPeriodDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
+                    return new PageCollectionInfo<SalaryProcessingDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };
                 }
                 else return null;
             }
         }
 
-        public SalaryPeriodDTO FindSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader)
+        public SalaryProcessingDTO FindSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader)
         {
             if (salaryPeriodId != Guid.Empty)
             {
@@ -1066,7 +1066,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 
                     if (salaryPeriod != null)
                     {
-                        return salaryPeriod.ProjectedAs<SalaryPeriodDTO>();
+                        return salaryPeriod.ProjectedAs<SalaryProcessingDTO>();
                     }
                     else return null;
                 }
@@ -1074,9 +1074,9 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             else return null;
         }
 
-        public SalaryPeriodDTO FindCachedSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader)
+        public SalaryProcessingDTO FindCachedSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader)
         {
-            return _appCache.GetOrAdd<SalaryPeriodDTO>(string.Format("{0}_{1}", serviceHeader.ApplicationDomainName, salaryPeriodId.ToString("D")), () =>
+            return _appCache.GetOrAdd<SalaryProcessingDTO>(string.Format("{0}_{1}", serviceHeader.ApplicationDomainName, salaryPeriodId.ToString("D")), () =>
             {
                 return FindSalaryPeriod(salaryPeriodId, serviceHeader);
             });

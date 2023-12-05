@@ -1,5 +1,4 @@
-﻿
-using Infrastructure.Crosscutting.Framework.Attributes;
+﻿using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Utils;

@@ -668,6 +668,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> PrintInHouseChequeAsync(InHouseChequeDTO inHouseChequeDTO, BankLinkageDTO bankLinkageDTO, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
         #endregion
+       
 
         #region FixedDepositDTO
 
@@ -887,7 +888,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<EmployeeDTO> FindEmployeeAsync(Guid employeeId, ServiceHeader serviceHeader = null);
 
-        Task<ObservableCollection<EmployeeDTO>> FindEmployeesBySalaryGroupsBranchesAndDepartmentsAsync(SalaryPeriodDTO salaryPeriodDTO, ObservableCollection<SalaryGroupDTO> salaryGroups, ObservableCollection<BranchDTO> branches, ObservableCollection<DepartmentDTO> departments, ServiceHeader serviceHeader = null);
+        Task<ObservableCollection<EmployeeDTO>> FindEmployeesBySalaryGroupsBranchesAndDepartmentsAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<SalaryGroupDTO> salaryGroups, ObservableCollection<BranchDTO> branches, ObservableCollection<DepartmentDTO> departments, ServiceHeader serviceHeader = null);
 
         Task<EmployeeDTO> FindEmployeeBySerialNumberAsync(int serialNumber, ServiceHeader serviceHeader = null);
 
@@ -1089,19 +1090,19 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region SalaryPeriodDTO
 
-        Task<PageCollectionInfo<SalaryPeriodDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+        Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsByFilterInPageAsync(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<PageCollectionInfo<SalaryPeriodDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
+        Task<PageCollectionInfo<SalaryProcessingDTO>> FindSalaryPeriodsInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
-        Task<SalaryPeriodDTO> AddSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
+        Task<SalaryProcessingDTO> AddSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
-        Task<bool> UpdateSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
+        Task<bool> UpdateSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
-        Task<SalaryPeriodDTO> FindSalaryPeriodAsync(Guid salaryPeriodId, ServiceHeader serviceHeader = null);
+        Task<SalaryProcessingDTO> FindSalaryPeriodAsync(Guid salaryPeriodId, ServiceHeader serviceHeader = null);
 
-        Task<bool> ProcessSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader = null);
+        Task<bool> ProcessSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ObservableCollection<EmployeeDTO> employees, ServiceHeader serviceHeader = null);
 
-        Task<bool> CloseSalaryPeriodAsync(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
+        Task<bool> CloseSalaryPeriodAsync(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> PostPaySlipAsync(Guid paySlipId, int moduleNavigationItemCode, ServiceHeader serviceHeader = null);
 
@@ -1520,6 +1521,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<ObservableCollection<CustomerAccountHistoryDTO>> FindCustomerAccountHistoryByCustomerAccountIdAndManagementActionAsync(Guid customerAccountId, int managementAction, ServiceHeader serviceHeader = null);
 
         Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, bool includeBalances = false, bool includeProductDescription = false, bool includeInterestBalanceForLoanAccounts = false, bool considerMaturityPeriodForInvestmentAccounts = false, ServiceHeader serviceHeader = null);
+
+
+       // Task<CustomerAccountDTO> FindCustomerAccountAsync(Guid customerAccountId, ServiceHeader serviceHeader = null);
+
 
         Task<CustomerAccountDTO> FindCustomerAccountByFullAccountNumberAsync(string fullAccountNumber, bool includeBalances, bool includeProductDescription, bool includeInterestBalanceForLoanAccounts, bool considerMaturityPeriodForInvestmentAccounts, ServiceHeader serviceHeader = null);
 
@@ -2842,6 +2847,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> SettleAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, int accountClosureSettlementOption, ServiceHeader serviceHeader = null);
 
         Task<AccountClosureRequestDTO> FindAccountClosureRequestAsync(Guid accountClosureRequestId, bool includeProductDescription, ServiceHeader serviceHeader = null);
+
         Task<bool> UpdateAccountClosureRequestAsync(AccountClosureRequestDTO accountClosureRequestDTO, ServiceHeader serviceHeader = null);
         #endregion
 

@@ -16,10 +16,10 @@ namespace DistributedServices.MainBoundedContext
     [ServiceBehavior(InstanceContextMode = InstanceContextMode.PerCall)]
     public class SystemGeneralLedgerAccountMappingService : ISystemGeneralLedgerAccountMappingService
     {
-        private readonly ISystemGeneralLedgerAccountMappingAppService _systemGeneralLedgerAccountMappingAppService;
+        private readonly SystemGeneralLedgerAccountMappingAppService _systemGeneralLedgerAccountMappingAppService;
 
         public SystemGeneralLedgerAccountMappingService(
-            ISystemGeneralLedgerAccountMappingAppService systemGeneralLedgerAccountMappingAppService)
+            SystemGeneralLedgerAccountMappingAppService systemGeneralLedgerAccountMappingAppService)
         {
             Guard.ArgumentNotNull(systemGeneralLedgerAccountMappingAppService, nameof(systemGeneralLedgerAccountMappingAppService));
 

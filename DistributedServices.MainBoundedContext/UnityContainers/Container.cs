@@ -151,6 +151,7 @@ namespace DistributedServices.MainBoundedContext.UnityContainers
             Current.RegisterType<ISuperSaverPayableAppService, SuperSaverPayableAppService>();
             Current.RegisterType<IBankToMobileRequestAppService, BankToMobileRequestAppService>();
             Current.RegisterType<IBrokerRequestAppService, BrokerRequestAppService>();
+            Current.RegisterType<ISystemGeneralLedgerAccountMappingService, SystemGeneralLedgerAccountMappingService>();
 
             Current.RegisterType<IFiscalCountAppService, FiscalCountAppService>();
             Current.RegisterType<IExternalChequeAppService, ExternalChequeAppService>();

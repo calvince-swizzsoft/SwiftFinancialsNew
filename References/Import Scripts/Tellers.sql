@@ -1,6 +1,6 @@
-
-INSERT INTO   [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Tellers]([Id]
-      ,[Type]
+/****** Script for SelectTopNRows command from SSMS  ******/
+ INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Tellers]([Id]
+  ,[Type]
       ,[EmployeeId]
       ,[ChartOfAccountId]
       ,[ShortageChartOfAccountId]
@@ -17,8 +17,7 @@ INSERT INTO   [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Tellers]([Id]
       ,[SequentialId]
       ,[CreatedBy]
       ,[CreatedDate])
-
-SELECT [Id]
+SELECT TOP (1000) [Id]
       ,[Type]
       ,[EmployeeId]
       ,[ChartOfAccountId]

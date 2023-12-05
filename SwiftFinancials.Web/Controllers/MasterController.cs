@@ -20,6 +20,7 @@ using System.Collections.ObjectModel;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using Application.MainBoundedContext.DTO.HumanResourcesModule;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -37,6 +38,9 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
         
 
+        public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
+
+        public ObservableCollection<FixedDepositPayableDTO> FixedDepositPayableDTOs;
         private IChannelService channelService;
         public IChannelService _channelService
         {
@@ -214,6 +218,23 @@ namespace SwiftFinancials.Web.Controllers
             customerTypes.AddRange(items);
 
             return customerTypes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetCCustomerAccountManagementActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerAccountManagementAction = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerAccountManagementAction)).Cast<CustomerAccountManagementAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerAccountManagementAction.AddRange(items);
+
+            return customerAccountManagementAction;
         }
 
 
@@ -403,6 +424,57 @@ namespace SwiftFinancials.Web.Controllers
             individualSalutations.AddRange(items);
 
             return individualSalutations;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetSalaryHeadTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> salaryHead = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SalaryHeadType)).Cast<SalaryHeadType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            salaryHead.AddRange(items);
+
+            return salaryHead;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetValueGroupTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> chargeType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ChargeType)).Cast<ChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            chargeType.AddRange(items);
+
+            return chargeType;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetRoundingTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> roudingType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(RoundingType)).Cast<RoundingType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            roudingType.AddRange(items);
+
+            return roudingType;
         }
 
         [NonAction]
@@ -863,7 +935,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return withdrawalNotificationCategories;
         }
+        [NonAction]
+        protected List<SelectListItem> GetCustomerAccountManagementActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerAccountManagementAction = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(CustomerAccountManagementAction)).Cast<CustomerAccountManagementAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerAccountManagementAction.AddRange(items);
+
+            return customerAccountManagementAction;
+        }
         [NonAction]
         protected List<SelectListItem> GetEmployeeCategorySelectList(string selectedValue)
         {
@@ -915,7 +1002,22 @@ namespace SwiftFinancials.Web.Controllers
             return systemGeneralLedgerAccountCodes;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetGLAccountsNameSelectList(string selectedValue)
+        {
+            List<SelectListItem> systemGeneralLedgerAccountCodes = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemGeneralLedgerAccountCode)).Cast<SystemGeneralLedgerAccountCode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemGeneralLedgerAccountCodes.AddRange(items);
+
+            return systemGeneralLedgerAccountCodes;
+        }
 
 
 

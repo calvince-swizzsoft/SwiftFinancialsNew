@@ -5,7 +5,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>AccountClosure</h2>
+        <h2>Account Closure</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -82,25 +82,26 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/frontOffice/AccountClosure/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/frontOffice/AccountClosure/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
+                    var editUrl = '<a  href="/frontOffice/AccountClosure/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/frontOffice/AccountClosure/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var verifyurl = '<a  href="/frontOffice/AccountClosure/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'verify</a>';
+                    var Approvalurl = '<a  href="/frontOffice/AccountClosure/Approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
                     $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl +'&nbsp;' + verifyurl + '&nbsp;' + Approvalurl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
-                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "BranchDescription", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountCustomerTypeDescription", "sTitle": "Customer Type Description", "sWidth": "10%" },
+                    { "mDataProp": "CustomerAccountStatusDescription", "sTitle": "CustomerAccountStatus", "sWidth": "10%" },
+                    { "mDataProp": "CustomerAccountRemarks", "sTitle": "CustomerAccountRemarks", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
-        });
+
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
@@ -108,6 +109,7 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+         });
     </script>
 
 }

@@ -138,6 +138,7 @@
                                             @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                         </div>
+                                      
                                     </div>
                                 </div>
                             </fieldset>
@@ -218,7 +219,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
 
              //Station typehead starts here
 
@@ -354,6 +355,42 @@
                 }
             });
 
+        $('.SavingProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (SavingProducts) {
+                var newSavingProductsData = [];
+                SavingProductsMap = {};
+                $.each(SavingProducts, function (i, SavingProduct) {
+                    newSavingProductsData.push(SavingProduct.Description);
+                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                });
+                process(newSavingProductsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var savingProductId = "";
+        savingProductId = SavingProductsMap[item].Id;
+        $('#SavingProductId').val(savingProductId);
+        //console.log(savingProductId)
+        return item;
+    }
+});
         function captureDetails() {
             var Remarks = document.getElementById('Remark').value;
             var BranchDescription = document.getElementById('BranchDescription').value;
@@ -376,5 +413,5 @@
         }
 
 
-    </script>
+</script>
 }

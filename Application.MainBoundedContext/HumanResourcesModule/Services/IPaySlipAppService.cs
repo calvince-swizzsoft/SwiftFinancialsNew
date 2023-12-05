@@ -11,7 +11,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 {
     public interface IPaySlipAppService
     {
-        bool PurgePaySlips(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader);
+        bool PurgePaySlips(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader);
 
         bool AddNewPaySlips(List<PaySlipDTO> paySlipDTOs, ServiceHeader serviceHeader);
 

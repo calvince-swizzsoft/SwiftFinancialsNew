@@ -45,14 +45,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
              else return this.DataTablesJson(items: new List<DirectDebitDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
          }
 
-        /*public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details()
         {
             await ServeNavigationMenus();
 
-            var directDebitDTO = await _channelService.FindDirectDebitAsync(id, GetServiceHeader());
+            var directDebitDTO = await _channelService.FindDirectDebitsAsync( GetServiceHeader());
 
             return View(directDebitDTO);
-        }*/
+        }
 
         public async Task<ActionResult> Create()
         {
@@ -80,14 +80,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        /*public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var directDebitDTO = await _channelService.FindDirectDebitAsync(id, GetServiceHeader());
+            var directDebitDTO = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
 
             return View(directDebitDTO);
-        }*/
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

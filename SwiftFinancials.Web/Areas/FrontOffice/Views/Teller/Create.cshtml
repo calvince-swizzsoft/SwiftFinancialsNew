@@ -96,8 +96,8 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.EmployeeId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.EmployeeId)
-                                            @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Employee Name" } })
-                                            @Html.ValidationMessageFor(model => model.EmployeeId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.EmployeeId, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Employee Name" } })
+                                            @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
                                             @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -158,7 +158,7 @@
                     var employeeId = "";
                     EmployeeId = EmployeesMap[item].Id;
                     $('#EmployeeId').val(EmployeeId);
-                    $('#EmployeeAddressMobileLine').val(EmployeesMap[item].AddressMobileLine);
+                    $('#EmployeeCustomerFullName').val(EmployeesMap[item].EmployeeCustomerFullName);
                     //console.log(EmployeeId)
                     return item;
                 }

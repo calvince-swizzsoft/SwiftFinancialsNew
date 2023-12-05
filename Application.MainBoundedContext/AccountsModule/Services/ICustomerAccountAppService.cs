@@ -33,6 +33,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
         List<CustomerAccountSummaryDTO> FindCustomerAccounts(Guid[] customerAccountIds, ServiceHeader serviceHeader);
 
+        CustomerAccountDTO FindCustomerAccounts(Guid customerAccountId, ServiceHeader serviceHeader);
+
+
         Task<List<CustomerAccountSummaryDTO>> FindCustomerAccountsAsync(Guid[] customerAccountIds, ServiceHeader serviceHeader);
 
         List<CustomerAccountDTO> FindDefaultSavingsProductCustomerAccounts(Guid customerId, ServiceHeader serviceHeader);

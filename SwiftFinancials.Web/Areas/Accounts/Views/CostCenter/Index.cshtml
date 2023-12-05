@@ -1,12 +1,10 @@
-﻿
-@{
-    ViewBag.Title = "Cheque";
+﻿@{
+    ViewBag.Title = "Cost Center";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-       
-        <h2>Cheques</h2>
+        <h2>Cost Center</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -23,7 +21,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Cheque", "Create", "Cheque", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Cost Center", "Create", "CostCenter", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -39,7 +37,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="ChequesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="debitBatchesGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -65,61 +63,40 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#ChequesGrid').DataTable({
+            $('#debitBatchesGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Cheque", new { Area = "FrontOffice" }))",
+                "sAjaxSource": "@(Url.Action("Index", "CostCenter", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
+
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
+                    var editUrl = '<a  href="/accounts/CostCenter/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/CostCenter/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    //var verifyUrl = '<a  href="/accounts/CostCenter/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    //var authorizeUrl = '<a  href="/accounts/CostCenter/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
 
-
-
-                    var valueDate = new Date(parseInt(aData.ValueDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + valueDate.getHours()).slice(-2);
-                    var m = ("0" + valueDate.getMinutes()).slice(-2);
-                    var s = ("0" + valueDate.getSeconds()).slice(-2);
-                    var dt_ValuedateCreated = $.datepicker.formatDate('dd/mm/yy', valueDate) + " " + h + ":" + m + ":" + s;
-                    aData.ValueDate = dt_ValuedateCreated;
-
-
-
-
-                    var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var approveUrl = '<a  href="/frontOffice/ExpensePayable/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var verifyUrl = '<a  href="/frontOffice/ExpensePayable/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var cancelUrl = '<a  href="/frontOffice/ExpensePayable/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
-
-
-                    $('td:eq(2)', nRow).html(dt_ValuedateCreated);
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + approveUrl + '&nbsp;' + cancelUrl);
-                 //   $('td:eq(9)', nRow).html(verifyUrl + '&nbsp;' + verifyUrl);
-
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;');
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "8%"},
-                    { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
-                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "8%"},
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "4%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "4%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "40%", "bSortable": false }],
-
+                    { "mDataProp": "Description", "sTitle": "Description", "sWidth": "2%" },
+                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
@@ -133,3 +110,4 @@
     </script>
 
 }
+

@@ -28,28 +28,28 @@ namespace DistributedServices.MainBoundedContext
 
         #region Salary Period
 
-        public SalaryPeriodDTO AddSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO)
+        public SalaryProcessingDTO AddSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _salaryPeriodAppService.AddNewSalaryPeriod(salaryPeriodDTO, serviceHeader);
         }
 
-        public bool UpdateSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO)
+        public bool UpdateSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _salaryPeriodAppService.UpdateSalaryPeriod(salaryPeriodDTO, serviceHeader);
         }
 
-        public bool ProcessSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, List<EmployeeDTO> employees)
+        public bool ProcessSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, List<EmployeeDTO> employees)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _salaryPeriodAppService.ProcessSalaryPeriod(salaryPeriodDTO, employees, serviceHeader);
         }
 
-        public bool CloseSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO)
+        public bool CloseSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
@@ -63,28 +63,28 @@ namespace DistributedServices.MainBoundedContext
             return _salaryPeriodAppService.PostPaySlip(paySlipId, moduleNavigationItemCode, serviceHeader);
         }
 
-        public List<SalaryPeriodDTO> FindSalaryPeriods()
+        public List<SalaryProcessingDTO> FindSalaryPeriods()
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _salaryPeriodAppService.FindSalaryPeriods(serviceHeader);
         }
 
-        public PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriodsInPage(int pageIndex, int pageSize)
+        public PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriodsInPage(int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _salaryPeriodAppService.FindSalaryPeriods(pageIndex, pageSize, serviceHeader);
         }
 
-        public PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriodsByFilterInPage(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize)
+        public PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriodsByFilterInPage(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 
             return _salaryPeriodAppService.FindSalaryPeriods(status, startDate, endDate, text, pageIndex, pageSize, serviceHeader);
         }
 
-        public SalaryPeriodDTO FindSalaryPeriod(Guid salaryPeriodId)
+        public SalaryProcessingDTO FindSalaryPeriod(Guid salaryPeriodId)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 

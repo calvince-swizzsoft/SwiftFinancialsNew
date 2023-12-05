@@ -53,7 +53,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             _sqlCommandAppService = sqlCommandAppService;
         }
 
-        public bool PurgePaySlips(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader)
+        public bool PurgePaySlips(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader)
         {
             var result = default(bool);
 
