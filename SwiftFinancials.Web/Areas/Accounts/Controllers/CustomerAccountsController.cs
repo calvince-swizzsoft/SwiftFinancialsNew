@@ -118,7 +118,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            await ServeNavigationMenus();
+           
             bool includeInterestBalanceForLoanAccounts = false;
             bool includeBalances = false;
             bool includeProductDescription = false;

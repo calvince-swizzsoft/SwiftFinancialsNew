@@ -636,5 +636,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                 return Enum.IsDefined(typeof(CustomerAccountStatementType), CustomerAccountStatementType) ? EnumHelper.GetDescription((CustomerAccountStatementType)CustomerAccountStatementType) : string.Empty;
             }
         }
+
+
+        [DataMember]
+        [Display(Name = "Action  Type")]
+        public int CustomerAccountManagementAction { get; set; }
+
+        [DataMember]
+        [Display(Name = "Action Type")]
+        public string CustomerAccountManagementActionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerAccountManagementAction), CustomerAccountManagementAction) ? EnumHelper.GetDescription((CustomerAccountManagementAction)CustomerAccountManagementAction) : string.Empty;
+            }
+        }
+
     }
 }

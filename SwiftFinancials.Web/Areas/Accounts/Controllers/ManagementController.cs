@@ -47,7 +47,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.CCustomerAccountManagementActionSelectList = GetCCustomerAccountManagementActionSelectList(string.Empty);
 
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.CustomerAccountManagementActionSelectList = GetCustomerAccountManagementActionSelectList(string.Empty);
+
 
             return View(customerAccountDTO);
         }
@@ -71,6 +72,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ViewBag.CCustomerAccountManagementActionSelectList = GetCCustomerAccountManagementActionSelectList(customerAccountDTO.CustomerIndividualSalutation.ToString());
 
+
+                ViewBag.CustomerAccountManagementActionSelectList = GetCustomerAccountManagementActionSelectList(customerAccountDTO.CustomerIndividualSalutationDescription.ToString());
+
+
                 return RedirectToAction("CustomerManagement");
             }
             else
@@ -78,6 +83,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 var errorMessages = customerAccountDTO.ErrorMessages;
 
                 ViewBag.CCustomerAccountManagementActionSelectList = GetCCustomerAccountManagementActionSelectList(customerAccountDTO.CustomerIndividualSalutation.ToString());
+
+                ViewBag.CustomerAccountManagementActionSelectList = GetCustomerAccountManagementActionSelectList(customerAccountDTO.CustomerIndividualSalutationDescription.ToString());
+
 
                 return View(customerAccountDTO);
             }
