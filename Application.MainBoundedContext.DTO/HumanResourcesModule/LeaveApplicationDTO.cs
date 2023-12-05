@@ -7,6 +7,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
 {
     public class LeaveApplicationDTO
     {
+
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 

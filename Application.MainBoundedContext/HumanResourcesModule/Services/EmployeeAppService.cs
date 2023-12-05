@@ -221,7 +221,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
             else return null;
         }
 
-        public List<EmployeeDTO> FindEmployees(SalaryPeriodDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments, ServiceHeader serviceHeader)
+        public List<EmployeeDTO> FindEmployees(SalaryProcessingDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments, ServiceHeader serviceHeader)
         {
             var result = new List<EmployeeDTO> { };
 

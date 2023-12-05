@@ -71,7 +71,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SalaryPeriods", new { Area = "HumanResource"}))",
+                "sAjaxSource": "@(Url.Action("Index", "SalaryProcessing", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -84,8 +84,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var create = '<a  href="/HumanResource/SalaryPeriods/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Create</a>';
-                    var viewUrl = '<a  href="/HumanResource/SalaryPeriods/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var create = '<a  href="/HumanResource/SalaryProcessing/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Create</a>';
+                    var viewUrl = '<a  href="/HumanResource/SalaryProcessing/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(7)', nRow).html(dt_Created);
                     $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);

@@ -98,15 +98,18 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
 
-                TempData["AlertMessage"] = "Created Salary Head";
+                TempData["AlertMessage"] = "Salary Head Created Successfully";
                 //await GetChartOfAccountsAsync(id);
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = salaryHeadDTO.ErrorMessages;
+
+                TempData["AlertError"] = "Create Salary Head Failed";
+
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
-                return View(salaryHeadDTO);
+                return View(salaryHeadDTO );
             }
         }
 
@@ -132,6 +135,8 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 await _channelService.UpdateSalaryHeadAsync(salaryHeadDTO, GetServiceHeader());
 
                 ViewBag.SalaryHeadTypeSelectList = GetSalaryHeadTypeSelectList(salaryHeadDTO.Type.ToString());
+
+                TempData["AlertMessage"] = "Salary Head Edited Successfully";
 
                 return RedirectToAction("Index");
             }
@@ -172,6 +177,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 chartOfAccountDTO.AccountName = chartOfAccounts.AccountName;
             }
             return View(chartOfAccountDTO);
+        }
+
+
+        [HttpGet]
+        public ActionResult LoadProducts()
+        {
+            return PartialView("_Products");
         }
     }
 }

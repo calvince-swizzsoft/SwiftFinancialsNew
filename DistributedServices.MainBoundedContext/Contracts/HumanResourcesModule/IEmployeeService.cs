@@ -48,7 +48,7 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        List<EmployeeDTO> FindEmployeesBySalaryGroupsBranchesAndDepartments(SalaryPeriodDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments);
+        List<EmployeeDTO> FindEmployeesBySalaryGroupsBranchesAndDepartments(SalaryProcessingDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]

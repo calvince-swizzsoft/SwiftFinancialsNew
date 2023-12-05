@@ -134,7 +134,7 @@ namespace DistributedServices.MainBoundedContext
             return employeeDTO;
         }
 
-        public List<EmployeeDTO> FindEmployeesBySalaryGroupsBranchesAndDepartments(SalaryPeriodDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments)
+        public List<EmployeeDTO> FindEmployeesBySalaryGroupsBranchesAndDepartments(SalaryProcessingDTO salaryPeriodDTO, List<SalaryGroupDTO> salaryGroups, List<BranchDTO> branches, List<DepartmentDTO> departments)
         {
             var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
 

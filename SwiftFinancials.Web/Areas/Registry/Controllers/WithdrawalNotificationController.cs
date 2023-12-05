@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Services;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Presentation.Infrastructure.Util;
@@ -13,6 +15,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
     public class WithdrawalNotificationController : MasterController
     {
+        public ObservableCollection<WithdrawalNotificationDTO> WithdrawalNotificationDTOs;
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -107,7 +110,60 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
+        public async Task<ActionResult> Search(Guid? id)
+        {
+            //string Remarks = "";
+            await ServeNavigationMenus();
 
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+            
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
+
+            //WithdrawalNotificationDTOs = TempData["WithdrawalNotificationDTOs"] as ObservableCollection<WithdrawalNotificationDTO>;
+
+            if (customer != null)
+            {
+
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.CustomerFullName = customer.FullName;
+                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
+                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.CustomerStationDescription = customer.StationDescription;
+                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                //Session["Test"] =Request.Form["h"] + "";
+                //string mimi = Session["Test"].ToString();
+                if (Session["Remarks"] != null)
+                {
+                    withdrawalNotificationDTO.Remarks = Session["Remarks"].ToString();
+                }
+                if (Session["BranchDescription"] != null)
+                {
+                    withdrawalNotificationDTO.BranchDescription = Session["BranchDescription"].ToString();
+                }
+                //
+            }
+
+            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
+            return View("Create", withdrawalNotificationDTO);
+        }
+
+        [HttpPost]
+        public ActionResult AssignText(string Remarks, string BranchDescription)
+        {
+            Session["Remarks"] = Remarks;
+            Session["BranchDescription"] = BranchDescription;
+            return null;
+        }
 
         public async Task<ActionResult> Edit(Guid id)
         {

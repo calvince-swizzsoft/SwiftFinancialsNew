@@ -12,22 +12,22 @@ namespace SwiftFinancials.Presentation.Contracts.HumanResourcesModule
     {
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginAddSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, AsyncCallback callback, Object state);
-        SalaryPeriodDTO EndAddSalaryPeriod(IAsyncResult result);
+        IAsyncResult BeginAddSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, AsyncCallback callback, Object state);
+        SalaryProcessingDTO EndAddSalaryPeriod(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginUpdateSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, AsyncCallback callback, Object state);
+        IAsyncResult BeginUpdateSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, AsyncCallback callback, Object state);
         bool EndUpdateSalaryPeriod(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginProcessSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, List<EmployeeDTO> employees, AsyncCallback callback, Object state);
+        IAsyncResult BeginProcessSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, List<EmployeeDTO> employees, AsyncCallback callback, Object state);
         bool EndProcessSalaryPeriod(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
-        IAsyncResult BeginCloseSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, AsyncCallback callback, Object state);
+        IAsyncResult BeginCloseSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, AsyncCallback callback, Object state);
         bool EndCloseSalaryPeriod(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
@@ -38,21 +38,21 @@ namespace SwiftFinancials.Presentation.Contracts.HumanResourcesModule
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindSalaryPeriods(AsyncCallback callback, Object state);
-        List<SalaryPeriodDTO> EndFindSalaryPeriods(IAsyncResult result);
+        List<SalaryProcessingDTO> EndFindSalaryPeriods(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindSalaryPeriodsInPage(int pageIndex, int pageSize, AsyncCallback callback, Object state);
-        PageCollectionInfo<SalaryPeriodDTO> EndFindSalaryPeriodsInPage(IAsyncResult result);
+        PageCollectionInfo<SalaryProcessingDTO> EndFindSalaryPeriodsInPage(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindSalaryPeriod(Guid salaryPeriodId, AsyncCallback callback, Object state);
-        SalaryPeriodDTO EndFindSalaryPeriod(IAsyncResult result);
+        SalaryProcessingDTO EndFindSalaryPeriod(IAsyncResult result);
 
         [OperationContract(AsyncPattern = true)]
         [FaultContract(typeof(ApplicationServiceError))]
         IAsyncResult BeginFindSalaryPeriodsByFilterInPage(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, AsyncCallback callback, Object state);
-        PageCollectionInfo<SalaryPeriodDTO> EndFindSalaryPeriodsByFilterInPage(IAsyncResult result);
+        PageCollectionInfo<SalaryProcessingDTO> EndFindSalaryPeriodsByFilterInPage(IAsyncResult result);
     }
 }

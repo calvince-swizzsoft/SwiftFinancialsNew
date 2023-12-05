@@ -86,7 +86,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
             CreateMap<SalaryCardEntry, SalaryCardEntryDTO>();
 
             //SalaryPeriod => SalaryPeriodDTO
-            CreateMap<SalaryPeriod, SalaryPeriodDTO>()
+            CreateMap<SalaryPeriod, SalaryProcessingDTO>()
                 .ForMember(dest => dest.MonthDescription, opt => opt.Ignore())
                 .ForMember(dest => dest.StatusDescription, opt => opt.Ignore())
                 .ForMember(dest => dest.TotalNetPay, opt => opt.MapFrom(src => ComputeTotalNetPay(src)));

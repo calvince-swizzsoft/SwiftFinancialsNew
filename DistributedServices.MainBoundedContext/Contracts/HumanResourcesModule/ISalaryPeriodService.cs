@@ -14,19 +14,19 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        SalaryPeriodDTO AddSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO);
+        SalaryProcessingDTO AddSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        bool UpdateSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO);
+        bool UpdateSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        bool ProcessSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, List<EmployeeDTO> employees);
+        bool ProcessSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, List<EmployeeDTO> employees);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        bool CloseSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO);
+        bool CloseSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
@@ -34,19 +34,19 @@ namespace DistributedServices.MainBoundedContext
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        List<SalaryPeriodDTO> FindSalaryPeriods();
+        List<SalaryProcessingDTO> FindSalaryPeriods();
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriodsInPage(int pageIndex, int pageSize);
+        PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriodsInPage(int pageIndex, int pageSize);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        SalaryPeriodDTO FindSalaryPeriod(Guid salaryPeriodId);
+        SalaryProcessingDTO FindSalaryPeriod(Guid salaryPeriodId);
 
         [OperationContract()]
         [FaultContract(typeof(ApplicationServiceError))]
-        PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriodsByFilterInPage(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize);
+        PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriodsByFilterInPage(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize);
 
         #endregion
     }

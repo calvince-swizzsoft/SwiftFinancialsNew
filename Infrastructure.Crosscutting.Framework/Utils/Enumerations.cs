@@ -2821,9 +2821,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
     public enum LeaveAuthOption
     {
         [Description("Approve")]
-        Approve = 1,
+        Approve = 2,
         [Description("Reject")]
-        Reject = 2,
+        Reject = 4,
     }
 
     public enum IdentityCardType

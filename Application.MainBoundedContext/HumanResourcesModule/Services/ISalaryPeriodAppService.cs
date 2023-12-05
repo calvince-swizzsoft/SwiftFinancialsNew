@@ -8,26 +8,26 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
 {
     public interface ISalaryPeriodAppService
     {
-        SalaryPeriodDTO AddNewSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader);
+        SalaryProcessingDTO AddNewSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader);
 
-        bool UpdateSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader);
+        bool UpdateSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader);
 
-        bool ProcessSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, List<EmployeeDTO> employees, ServiceHeader serviceHeader);
+        bool ProcessSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, List<EmployeeDTO> employees, ServiceHeader serviceHeader);
 
-        bool CloseSalaryPeriod(SalaryPeriodDTO salaryPeriodDTO, ServiceHeader serviceHeader);
+        bool CloseSalaryPeriod(SalaryProcessingDTO salaryPeriodDTO, ServiceHeader serviceHeader);
 
         bool PostPaySlip(Guid paySlipId, int moduleNavigationItemCode, ServiceHeader serviceHeader);
 
-        List<SalaryPeriodDTO> FindSalaryPeriods(ServiceHeader serviceHeader);
+        List<SalaryProcessingDTO> FindSalaryPeriods(ServiceHeader serviceHeader);
 
-        PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriods(int pageIndex, int pageSize, ServiceHeader serviceHeader);
+        PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriods(int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
-        PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriods(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+        PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriods(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
-        PageCollectionInfo<SalaryPeriodDTO> FindSalaryPeriods(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
+        PageCollectionInfo<SalaryProcessingDTO> FindSalaryPeriods(int status, DateTime startDate, DateTime endDate, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
-        SalaryPeriodDTO FindSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader);
+        SalaryProcessingDTO FindSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader);
 
-        SalaryPeriodDTO FindCachedSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader);
+        SalaryProcessingDTO FindCachedSalaryPeriod(Guid salaryPeriodId, ServiceHeader serviceHeader);
     }
 }

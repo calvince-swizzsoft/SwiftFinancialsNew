@@ -38,6 +38,8 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         [Display(Name = "Leave Type")]
         [ValidGuid]
         public Guid LeaveTypeId { get; set; }
+        [Display(Name = "Leave Type")]
+        public string LeaveTypeDescription { get; set; }
 
         [DataMember]
         [Display(Name = "Start Date")]
