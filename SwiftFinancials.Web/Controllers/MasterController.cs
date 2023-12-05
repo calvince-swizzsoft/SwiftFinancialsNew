@@ -35,6 +35,7 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
+        
 
         private IChannelService channelService;
         public IChannelService _channelService
@@ -283,6 +284,40 @@ namespace SwiftFinancials.Web.Controllers
             gender.AddRange(items);
 
             return gender;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetUnitTypes(string selectedValue)
+        {
+            List<SelectListItem> unitTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LeaveUnitTypes)).Cast<LeaveUnitTypes>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            unitTypes.AddRange(items);
+
+            return unitTypes;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetLeaveAuthOption(string selectedValue)
+        {
+            List<SelectListItem> leaveAuthOptions = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LeaveAuthOption)).Cast<LeaveAuthOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            leaveAuthOptions.AddRange(items);
+
+            return leaveAuthOptions;
         }
 
         [NonAction]

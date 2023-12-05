@@ -5,6 +5,12 @@
 
     ViewBag.Title = "Create Withdrawal Notification";
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+
+}
+
+@using(Html.BeginForm("Search", "WithdrawalNotification", new { Area = "Registry" }, FormMethod.Get))
+ { 
+   TempData["Remarks"] = "HAM";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -68,7 +74,8 @@
                                                 @Html.HiddenFor(model => model.CustomerId)
                                                 @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                                    <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+                                                   
                                                 </span>
                                             </div>
                                         </div>
@@ -78,13 +85,13 @@
                                             @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
                                         </div>
-
+                                        
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
                                         </div>
-                                                          
+
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Category, new { @class = "control-label" })
                                             <div class="input-group">
@@ -122,14 +129,14 @@
                                         </div>
                                         <div class="form-group form-group-sm">
                                             @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
                                             @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                         </div>
                                     </div>
                                 </div>
@@ -166,6 +173,7 @@
         </div>
     </div>
 </div>
+<input type='hidden' id='h' name='h' />
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -262,6 +270,7 @@
                 "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
                 "sServerMethod": "POST",
                 // Callback settings
+
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -272,8 +281,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Registry/WithdrawalNotification/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
+                    var selectUrl = '<a  href="/Registry/WithdrawalNotification/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
 
@@ -296,7 +305,7 @@
         $('#CustomerId').val(data.Id);
         $('input[name=CustomerId]').val(data.Id);
         $('input[name=CustomerFullName]').val(data.FullName);
-
+        
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
@@ -345,6 +354,26 @@
                 }
             });
 
+        function captureDetails() {
+            var Remarks = document.getElementById('Remark').value;
+            var BranchDescription = document.getElementById('BranchDescription').value;
+            //var h = document.getElementById('h');
+            //h.value = word;
+            //$.post("Registry/WithdrawalNotification/AssignText", { word });
+            $.ajax({
+                url: "/Registry/WithdrawalNotification/AssignText",
+                type: "POST",
+                data: { "Remarks": Remarks, "BranchDescription": BranchDescription },
+                //success: function (mydata) {
+                //    alert("Saved");
+                //},
+                //error: function (error) {
+                //    alert('failed');
+                //    alert(error);
+                //}
+            });
+            
+        }
 
 
     </script>

@@ -1,7 +1,5 @@
 ﻿@model  Application.MainBoundedContext.DTO.HumanResourcesModule.LeaveTypeDTO
-@{
-    ViewBag.Title = "Leave Types Details";
-}
+@{ ViewBag.Title = "Leave Types Details"; }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Leave Types</h2>
@@ -10,7 +8,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Membership", new { Area = "HumanResource" }, null)
+                @Html.ActionLink("Home", "Index", "LeaveType", new { Area = "HumanResource" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>View</strong>
@@ -49,15 +47,15 @@
                             </p>
 
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.TargetGender)</strong><br>
+                                <strong>@Html.DisplayNameFor(model => model.TargetGenderDescription)</strong><br>
 
-                                @Html.DisplayFor(model => model.TargetGender)<br>
+                                @Html.DisplayFor(model => model.TargetGenderDescription)<br>
                             </p>
 
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.UnitType)</strong><br>
+                                <strong>@Html.DisplayNameFor(model => model.UnitTypeDescription)</strong><br>
 
-                                @Html.DisplayFor(model => model.UnitType)<br>
+                                @Html.DisplayFor(model => model.UnitTypeDescription)<br>
                             </p>
 
                             <p>
@@ -99,3 +97,4 @@
         </div>
     </div>
 </div>
+

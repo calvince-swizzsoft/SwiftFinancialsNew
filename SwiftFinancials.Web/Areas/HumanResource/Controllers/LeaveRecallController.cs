@@ -6,13 +6,13 @@ using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
-using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using SwiftFinancials.Presentation.Infrastructure.Util;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
-    public class LeaveApplicationController : MasterController
+    public class LeaveRecallController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -68,36 +68,102 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
                 return View();
             }
 
-            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+            var Employee = await _channelService.FindEmployersAsync(GetServiceHeader());
 
-            LeaveApplicationBindingModel leaveApplicationBindingModel = new LeaveApplicationBindingModel();
+            LeaveApplicationDTO LeaveApplicationBindingModel = new LeaveApplicationDTO();
 
-            if (employee != null)
+            if (Employee != null)
             {
-                leaveApplicationBindingModel.EmployeeId = employee.Id;
-                leaveApplicationBindingModel.EmployeeCustomerFullName = employee.CustomerIndividualFirstName;
+                //LeaveApplicationBindingModel.EmployeeId = Employee;
+                //LeaveApplicationBindingModel.EmployeeCustomerFullName = customer.FullName;
             }
 
-            return View(leaveApplicationBindingModel);
-            
+            return View(LeaveApplicationBindingModel);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LeaveApplicationBindingModel leaveApplicationBindingModel)
+        public async Task<ActionResult> Create(LeaveApplicationBindingModel LeaveApplicationBindingModel)
         {
-            leaveApplicationBindingModel.ValidateAll();
+            LeaveApplicationBindingModel.ValidateAll();
+            LeaveApplicationDTO leaveApplicationDTO = new LeaveApplicationDTO();
 
-            if (!leaveApplicationBindingModel.HasErrors)
+            if (!LeaveApplicationBindingModel.HasErrors)
             {
-                
-                await _channelService.AddLeaveApplicationAsync(leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(), GetServiceHeader());
+
+                await _channelService.AddLeaveApplicationAsync(leaveApplicationDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = leaveApplicationBindingModel.ErrorMessages;
+                var errorMessages = LeaveApplicationBindingModel.ErrorMessages;
                 //ViewBag.BloodGroupSelectList = GetBloodGroupSelectList(employeeBindingModel.BloodGroup.ToString());
+                return View(LeaveApplicationBindingModel);
+            }
+        }
+
+        public async Task<ActionResult> Recall(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            //var employeeDTO = await _channelService.FindLeaveApplicationAsync(id, GetServiceHeader());
+
+            //return View(employeeDTO);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            ViewBag.LeaveAuthOption = GetLeaveAuthOption(string.Empty);
+
+            var leaveApplication = await _channelService.FindLeaveApplicationAsync(parseId, GetServiceHeader());
+
+            LeaveApplicationBindingModel leaveApplicationBindingModel = new LeaveApplicationBindingModel();
+
+            if (leaveApplication != null)
+            {
+                leaveApplicationBindingModel.Id = leaveApplication.Id;
+                leaveApplicationBindingModel.EmployeeId = leaveApplication.EmployeeId;
+                leaveApplicationBindingModel.EmployeeCustomerFullName = leaveApplication.EmployeeCustomerFullName;
+                leaveApplicationBindingModel.DurationStartDate = leaveApplication.DurationStartDate;
+                leaveApplicationBindingModel.DurationEndDate = leaveApplication.DurationEndDate;
+                leaveApplicationBindingModel.AuthorizationRemarks = leaveApplication.AuthorizationRemarks;
+                leaveApplicationBindingModel.LeaveTypeId = leaveApplication.LeaveTypeId;
+                leaveApplicationBindingModel.LeaveTypeDescription = leaveApplication.LeaveTypeDescription;
+                leaveApplicationBindingModel.Status = leaveApplication.Status;
+                leaveApplicationBindingModel.Reason = leaveApplication.Reason;
+            }
+
+            return View(leaveApplicationBindingModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Recall(Guid id, LeaveApplicationDTO leaveApplicationBindingModel)
+        {
+            //if (ModelState.IsValid)
+            //{
+            //    await _channelService.RecallLeaveApplicationAsync(LeaveApplicationBindingModel, GetServiceHeader());
+
+            //    return RedirectToAction("Index");
+            //}
+            //else
+            //{
+            //    return View(LeaveApplicationBindingModel);
+            //}
+
+            if (ModelState.IsValid)
+            {
+
+                await _channelService.RecallLeaveApplicationAsync(leaveApplicationBindingModel.MapTo<LeaveApplicationDTO>(), GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
                 return View(leaveApplicationBindingModel);
             }
         }

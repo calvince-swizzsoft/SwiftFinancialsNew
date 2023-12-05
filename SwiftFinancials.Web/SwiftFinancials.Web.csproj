@@ -327,6 +327,10 @@
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveApplicationController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
@@ -356,8 +360,6 @@
     <Compile Include="Areas\HumanResource\Controllers\EmployeeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\HolidayController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\LeaveApplicationController.cs" />
-    <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\TrainingPeriodController.cs" />
     <Compile Include="Areas\HumanResource\HumanResourceAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoaningRemarkController.cs" />
@@ -695,10 +697,6 @@
     <Content Include="Areas\HumanResource\Views\EmployeeType\Details.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeType\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeType\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveType\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\ChartOfAccount\Edit.cshtml" />
@@ -807,10 +805,6 @@
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Details.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
-    <Content Include="Areas\HumanResource\Views\LeaveApplication\Edit.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Create.cshtml" />
@@ -868,6 +862,16 @@
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Appraise.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApplication\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApproval\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveApproval\Approve.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveRecall\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveRecall\Recall.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Index.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Create.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
+    <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1331,6 +1335,7 @@
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\HumanResource\Data\" />
+    <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />

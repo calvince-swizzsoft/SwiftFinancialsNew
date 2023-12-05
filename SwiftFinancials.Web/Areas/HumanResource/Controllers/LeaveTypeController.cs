@@ -8,6 +8,8 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using Infrastructure.Crosscutting.Framework.Utils;
+using SwiftFinancials.Presentation.Infrastructure.Util;
 
 namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 {
@@ -57,19 +59,19 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.UnitTypes = GetUnitTypes(string.Empty);
             return View();
         }
 
         [HttpPost]
-       /* public async Task<ActionResult> Create(LeaveTypeBindingModel leaveTypeBindingModel)
+        public async Task<ActionResult> Create(LeaveTypeBindingModel leaveTypeBindingModel)
         {
             leaveTypeBindingModel.ValidateAll();
 
             if (!leaveTypeBindingModel.HasErrors)
             {
-                await _channelService.AddNewLeaveTypeAsync(leaveTypeBindingModel, GetServiceHeader());
-
+                await _channelService.AddNewLeaveTypeAsync(leaveTypeBindingModel.MapTo<LeaveTypeDTO>(), GetServiceHeader());
                 return RedirectToAction("Index");
             }
             else
@@ -78,12 +80,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return View(leaveTypeBindingModel);
             }
-        }*/
+        }
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.UnitTypes = GetUnitTypes(string.Empty);
             var LeaveTypeDTO = await _channelService.FindLeaveTypeAsync(id, GetServiceHeader());
 
             return View(LeaveTypeDTO);
@@ -108,7 +111,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         [HttpGet]
         public async Task<JsonResult> GetLeaveTypesAsync()
         {
-            var leaveTypesDTOs = await _channelService.FindCompaniesAsync(GetServiceHeader());
+            var leaveTypesDTOs = await _channelService.FindLeaveTypesAsync(GetServiceHeader());
 
             return Json(leaveTypesDTOs, JsonRequestBehavior.AllowGet);
         }
