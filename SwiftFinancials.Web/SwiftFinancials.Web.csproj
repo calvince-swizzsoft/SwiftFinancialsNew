@@ -328,6 +328,8 @@
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CashWithdrawalController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ChequesController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
@@ -912,6 +914,9 @@
     <Content Include="Areas\HumanResource\Views\LeaveType\Create.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\LeaveType\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashDeposit\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashDeposit\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1377,8 +1382,8 @@
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
     <Folder Include="Areas\HumanResource\Data\" />
-    <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\HumanResource\Views\Leave\" />
+    <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />

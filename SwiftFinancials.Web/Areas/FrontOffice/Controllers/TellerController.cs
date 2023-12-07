@@ -114,6 +114,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var tellersDTOs = await _channelService.FindTellersAsync(GetServiceHeader());
 
             return Json(tellersDTOs, JsonRequestBehavior.AllowGet);
+
         }
     }
 }
