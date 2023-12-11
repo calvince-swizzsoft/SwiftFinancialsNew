@@ -140,6 +140,77 @@
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
 
+
+
+
+                                        <meta charset="UTF-8">
+                                        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+                                        <style>
+                                            label {
+                                                display: block;
+                                                margin-bottom: 8px;
+                                            }
+                                        </style>
+
+
+                                        <h2>Enter Amount in denomination Form</h2>
+
+                                        <form id="denominationForm" action="#" method="post">
+
+                                            <label for="thousands">Thousands:</label>
+                                            <input type="number" id="thousands" name="thousands" min="0" step="1" oninput="calculateTotal()">
+
+                                            <label for="five_hundreds">Five Hundreds:</label>
+                                            <input type="number" id="five_hundreds" name="five_hundreds" min="0" step="1" oninput="calculateTotal()">
+
+                                            <label for="two_hundreds">Two Hundreds:</label>
+                                            <input type="number" id="two_hundreds" name="two_hundreds" min="0" step="1" oninput="calculateTotal()">
+
+                                            <label for="hundreds">Hundreds:</label>
+                                            <input type="number" id="hundreds" name="hundreds" min="0" step="1" oninput="calculateTotal()">
+
+
+                                            <label for="shillings_20">20 Shillings:</label>
+                                            <input type="number" id="shillings_20" name="shillings_20" min="0" step="1" oninput="calculateTotal()">
+
+                                            <label for="shillings_10">10 Shillings:</label>
+                                            <input type="number" id="shillings_10" name="shillings_10" min="0" step="1" oninput="calculateTotal()">
+
+                                            <label for="shillings_5">5 Shillings:</label>
+                                            <input type="number" id="shillings_5" name="shillings_5" min="0" step="1" oninput="calculateTotal()">
+
+                                            <label for="shilling">1 Shilling:</label>
+                                            <input type="number" id="shilling" name="shilling" min="0" step="1" oninput="calculateTotal()">
+
+
+                                        </form>
+
+                                        <h3>Total Currency Breakdown</h3>
+                                        <p id="totalBreakdown">Total: 0 KES</p>
+
+                                        <script>
+                                            function calculateTotal() {
+                                                // Get values from input fields
+                                                var thousands = parseInt(document.getElementById('thousands').value) || 0;
+                                                var fiveHundreds = parseInt(document.getElementById('five_hundreds').value) || 0;
+                                                var twoHundreds = parseInt(document.getElementById('two_hundreds').value) || 0;
+                                                var hundreds = parseInt(document.getElementById('hundreds').value) || 0;
+                                                var shillings20 = parseInt(document.getElementById('shillings_20').value) || 0;
+                                                var shillings10 = parseInt(document.getElementById('shillings_10').value) || 0;
+                                                var shillings5 = parseInt(document.getElementById('shillings_5').value) || 0;
+                                                var shilling = parseInt(document.getElementById('shilling').value) || 0;
+
+                                                // Calculate total
+                                                var total = thousands * 1000 + fiveHundreds * 500 + twoHundreds * 200 +
+                                                    hundreds * 100 + shillings20 * 20 + shillings10 * 10 + shillings5 * 5 + shilling;
+
+                                                // Update breakdown
+                                                document.getElementById('totalBreakdown').innerHTML = "Total: " + total + " KES";
+                                            }
+                                        </script>
+
+
                                     </div>
                                 </div>
                             </fieldset>
