@@ -232,5 +232,16 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "denomination")]
+        [Required]
+        public double Denomination { get; set; }
+
+
+
+
     }
 }

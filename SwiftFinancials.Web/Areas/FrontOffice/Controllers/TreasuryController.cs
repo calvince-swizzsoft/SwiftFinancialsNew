@@ -28,11 +28,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
              int searchRecordCount = 0;
 
+            bool includeBalances = false;
+
              var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
              var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-             var pageCollectionInfo = await _channelService.FindTreasuriesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,true, GetServiceHeader());
+             var pageCollectionInfo = await _channelService.FindTreasuriesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, includeBalances, GetServiceHeader());
 
              if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
              {
