@@ -1,0 +1,105 @@
+﻿
+@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanRequestDTO
+@{
+    ViewBag.Title = "Create Loan Request";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>LoanRequests</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "LoanRequest", new { Area = "Loaning" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "LoanRequest", new { Area = "Loaning" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "AmountApplied", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ReceivedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ReceivedDate", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.LoanCaseNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanCaseNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "LoanCaseNumber", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.LoanCaseNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.RegisteredBy, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.RegisteredBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredBy", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.RegisteredBy, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.RegisteredDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.RegisteredDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredDate", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.RegisteredDate, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.CancelledBy, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CancelledBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "CancelledBy", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CancelledBy, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.CancelledDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CancelledDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "CancelledDate", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CancelledDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

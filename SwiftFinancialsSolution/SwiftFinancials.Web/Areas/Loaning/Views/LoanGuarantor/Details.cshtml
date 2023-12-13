@@ -1,0 +1,86 @@
+﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
+@{
+    ViewBag.Title = "Loan Guarantor Details";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>System Users</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Membership", new { Area = "Loaning" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CustomerIndividualIdentityCardNumber)</strong><br>
+                                @Html.DisplayFor(model => model.CustomerIndividualIdentityCardNumber)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AppraisalFactor)</strong><br>
+                                @Html.DisplayFor(model => model.AppraisalFactor)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.TotalShares)</strong><br>
+                                @Html.DisplayFor(model => model.TotalShares)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CommittedShares)</strong><br>
+                                @Html.DisplayFor(model => model.CommittedShares)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AmountGuaranteed)</strong><br>
+                                @Html.DisplayFor(model => model.AmountGuaranteed)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CustomerFullName)</strong><br>
+                                @Html.DisplayFor(model => model.CustomerFullName)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.LoanCaseCaseNumber)</strong><br>
+                                @Html.DisplayFor(model => model.LoanCaseCaseNumber)<br>
+                            </p>
+                            <p>
+                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "LoanRegistration", new { id = Model.Id, Area = "Loaning" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

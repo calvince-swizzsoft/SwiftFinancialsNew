@@ -1,0 +1,58 @@
+﻿@{
+    Layout = null;
+
+    ViewBag.Title = "Locked";
+}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title> Locked</title>
+
+    <!-- Primary Inspinia style -->
+    @Styles.Render("~/font-awesome/css")
+    @Styles.Render("~/Content/css")
+
+</head>
+
+<body class="gray-bg">
+
+    <div class="lock-word animated fadeInDown">
+        <span class="first-word">LOCKED</span><span>SCREEN</span>
+    </div>
+    <div class="middle-box text-center lockscreen animated fadeInDown">
+        <div>
+            <div class="m-b-md">
+                <img alt="padlock" class="rounded-circle circle-border" src="~/Images/mia.jpg" width="128" height="128">
+            </div>
+            <h3>@ViewBag.Name</h3>
+            <p>Your are in lock screen.</p>
+            <p>Main app timed out</p>
+            <a href="@Url.Action("Login", "Account")"><i class="fa fa-sign-out"></i> Click here to log in again</a>
+        </div>
+    </div>
+
+    <!-- Section for main scripts render -->
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/plugins/slimScroll")
+    @Scripts.Render("~/bundles/inspinia")
+
+    <!-- Skin config script - only for demo purpose-->
+    @Scripts.Render("~/bundles/skinConfig")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            history.pushState({ page: 1 }, "title 1", "#nbb");
+            window.onhashchange = function (event) {
+                window.location.hash = "nbb";
+            };
+        });
+    </script>
+</body>
+</html>

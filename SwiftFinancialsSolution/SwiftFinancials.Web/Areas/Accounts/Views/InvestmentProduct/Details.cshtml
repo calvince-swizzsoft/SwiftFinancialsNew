@@ -1,0 +1,123 @@
+﻿
+
+@model Application.MainBoundedContext.DTO.AccountsModule.InvestmentProductDTO
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Investment Products</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "InvestmentProduct", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content text-info">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
+
+                                @Html.DisplayFor(model => model.Description)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.MinimumBalance)<br></strong>
+
+                                @Html.DisplayFor(model => model.MinimumBalance)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.MaximumBalance)<br></strong>
+
+                                @Html.DisplayFor(model => model.MaximumBalance)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Priority)<br></strong>
+
+                                @Html.DisplayFor(model => model.Priority)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsLocked)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsPooled)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsPooled)<br>
+                            </p>
+                            </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.MaturityPeriod)<br></strong>
+
+                                @Html.DisplayFor(model => model.MaturityPeriod)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)<br></strong>
+
+                                @Html.DisplayFor(model => model.ChartOfAccountAccountName)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.AnnualPercentageYield)<br></strong>
+
+                                @Html.DisplayFor(model => model.AnnualPercentageYield)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsRefundable)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsRefundable)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.TrackArrears)<br></strong>
+
+                                @Html.DisplayFor(model => model.TrackArrears)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsMandatory)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsMandatory)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                        </div>
+                            </div>
+                        </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "InvestmentProduct", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "InvestmentProduct", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,3 +1,0 @@
-
-
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_EmployeeTypes] ([Id]      ,[ChartOfAccountId]      ,[Description]      ,[Category]      ,[IsLocked]      ,[SequentialId]      ,[CreatedBy]      ,[CreatedDate]) SELECT [Id]      ,[ChartOfAccountId]      ,[Description]      ,[Category]      ,[IsLocked]      ,[SequentialId]      ,[CreatedBy]      ,[CreatedDate]  FROM [SwiftFinancialsDB_TEST].[dbo].[vfin_EmployeeTypes]

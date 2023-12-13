@@ -1,0 +1,135 @@
+﻿@{
+    ViewBag.Title = "Summary";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>@ViewBag.SaccoName</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                Account Summaries
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-4">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Savings products</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-stripped small m-t-md">
+                        <tbody>
+                            @if (ViewBag.SavingsAccounts != null)
+                            {
+                                foreach (var savingsAccount in ViewBag.SavingsAccounts)
+                                {
+                                    <tr>
+                                        <td class="no-borders">
+                                            <i class="fa fa-circle text-navy"></i>
+                                        </td>
+                                        <td class="no-borders">
+                                            @savingsAccount.TargetProductDescription
+                                        </td>
+                                        <td class="no-borders text-right">
+                                            @savingsAccount.AvailableBalance.ToString("n2")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Investment products</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-stripped small m-t-md">
+                        <tbody>
+                            @if (ViewBag.InvestmentAccounts != null)
+                            {
+                                foreach (var investmentAccounts in ViewBag.InvestmentAccounts)
+                                {
+                                    <tr>
+                                        <td class="no-borders">
+                                            <i class="fa fa-circle text-navy"></i>
+                                        </td>
+                                        <td class="no-borders">
+                                            @investmentAccounts.TargetProductDescription
+                                        </td>
+                                        <td class="no-borders text-right">
+                                            @investmentAccounts.BookBalance.ToString("n2")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Loan products</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <table class="table table-stripped small m-t-md">
+                        <tbody>
+                            @if (ViewBag.LoanAccounts != null)
+                            {
+                                foreach (var loanAccounts in ViewBag.LoanAccounts)
+                                {
+                                    <tr>
+                                        <td class="no-borders">
+                                            <i class="fa fa-circle text-danger"></i>
+                                        </td>
+                                        <td class="no-borders">
+                                            @loanAccounts.TargetProductDescription
+                                        </td>
+                                        <td class="no-borders text-right">
+                                            @loanAccounts.BookBalance.ToString("n2")
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

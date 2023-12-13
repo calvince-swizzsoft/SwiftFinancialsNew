@@ -1,0 +1,123 @@
+﻿@model Application.MainBoundedContext.DTO.HumanResourcesModule.EmployeeDTO
+
+@{
+    ViewBag.Title = "Details";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Employees</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Employee", new { Area = "HumanResource" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content text-info">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Customer.FullName)<br></strong>
+
+                                @Html.DisplayFor(model => model.Customer.FullName)<br>
+                            </p>
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.BranchDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.BranchDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.DesignationDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.DesignationDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.DepartmentDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.DepartmentDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.NationalSocialSecurityFundNumber)<br></strong>
+
+                                @Html.DisplayFor(model => model.NationalSocialSecurityFundNumber)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.NationalHospitalInsuranceFundNumber)<br></strong>
+
+                                @Html.DisplayFor(model => model.NationalHospitalInsuranceFundNumber)<br>
+                            </p>
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.OnlineNotificationsEnabled)<br></strong>
+
+                                @Html.DisplayFor(model => model.OnlineNotificationsEnabled)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
+
+                                @Html.DisplayFor(model => model.IsLocked)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.BloodGroup)<br></strong>
+
+                                @Html.DisplayFor(model => model.BloodGroup)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
+
+                                @Html.DisplayFor(model => model.Remarks)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.EnforceBiometricsForLogin)<br></strong>
+
+                                @Html.DisplayFor(model => model.EnforceBiometricsForLogin)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedBy)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedBy)<br>
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "Employee", new { id = Model.Id, Area = "HumanResource" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "Employee", new { Area = "HumanResource" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

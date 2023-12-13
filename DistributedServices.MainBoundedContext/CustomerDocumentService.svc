@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="DistributedServices.MainBoundedContext.CustomerDocumentService" CodeBehind="CustomerDocumentService.svc.cs" %>

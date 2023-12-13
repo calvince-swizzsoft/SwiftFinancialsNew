@@ -1,0 +1,107 @@
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
+
+@{
+    ViewBag.Title = "Details";
+    var chartOfAccountType = ViewBag.ChartOfAccountTypeSelectList as List<SelectListItem>;
+    var journalVoucherTypes = ViewBag.JournalVoucherTypeSelectList as List<SelectListItem>;
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Expense Payable</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "ExpensePayable", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>View</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content text-info">
+                    <div class="row">
+                        <div class="col-lg-6">
+
+
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Type)<br></strong>
+
+                                @Html.DisplayFor(model => model.Type)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ValueDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.ValueDate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+
+                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.ChartOfAccountAccountName)<br></strong>
+
+                                @Html.DisplayFor(model => model.ChartOfAccountAccountName)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.TotalValue)<br></strong>
+
+                                @Html.DisplayFor(model => model.TotalValue)<br>
+                            </p>
+
+
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.StatusDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.StatusDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.BranchDescription)<br></strong>
+
+                                @Html.DisplayFor(model => model.BranchDescription)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.VoucherNumber)<br></strong>
+
+                                @Html.DisplayFor(model => model.VoucherNumber)<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
+
+                                @Html.DisplayFor(model => model.Remarks)<br>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <p>
+                                @Html.ActionLink("Edit", "Edit", "ExpensePayable", new { id = Model.Id, Area = "FrontOffice" }, new { @class = "btn btn-success" })
+                                @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
