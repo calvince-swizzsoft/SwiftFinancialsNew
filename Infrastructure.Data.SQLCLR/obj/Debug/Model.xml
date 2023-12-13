@@ -1,0 +1,1955 @@
+<?xml version="1.0" encoding="utf-8"?>
+<DataSchemaModel FileFormatVersion="1.2" SchemaVersion="2.4" DspName="Microsoft.Data.Tools.Schema.Sql.Sql110DatabaseSchemaProvider" CollationLcid="1033" CollationCaseSensitive="False" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+	<Header>
+		<CustomData Category="AnsiNulls">
+			<Metadata Name="AnsiNulls" Value="True" />
+		</CustomData>
+		<CustomData Category="QuotedIdentifier">
+			<Metadata Name="QuotedIdentifier" Value="True" />
+		</CustomData>
+		<CustomData Category="CompatibilityMode">
+			<Metadata Name="CompatibilityMode" Value="110" />
+		</CustomData>
+		<CustomData Category="Reference" Type="Assembly">
+			<Metadata Name="LogicalName" Value="Infrastructure.Data.SQLCLR.dll" />
+			<Metadata Name="FileName" Value="D:\WORKS\SWIFTFINANCIALSSOLUTION\INFRASTRUCTURE.DATA.SQLCLR\OBJ\DEBUG\INFRASTRUCTURE.DATA.SQLCLR.DLL" />
+			<Metadata Name="AssemblyName" Value="Infrastructure.Data.SQLCLR" />
+			<Metadata Name="PermissionSet" Value="SAFE" />
+			<Metadata Name="Owner" Value="" />
+			<Metadata Name="GenerateSqlClrDdl" Value="True" />
+			<Metadata Name="IsVisible" Value="True" />
+			<Metadata Name="IsModelAware" Value="True" />
+			<Metadata Name="SkipCreationIfEmpty" Value="True" />
+			<Metadata Name="AssemblySymbolsName" Value="D:\works\SwiftFinancialsSolution\Infrastructure.Data.SQLCLR\obj\Debug\Infrastructure.Data.SQLCLR.pdb" />
+		</CustomData>
+		<CustomData Category="SqlCmdVariables" Type="SqlCmdVariable" />
+	</Header>
+	<Model>
+		<Element Type="SqlDatabaseOptions">
+			<Property Name="Collation" Value="SQL_Latin1_General_CP1_CI_AS" />
+			<Property Name="IsAnsiNullDefaultOn" Value="True" />
+			<Property Name="IsAnsiNullsOn" Value="True" />
+			<Property Name="IsAnsiWarningsOn" Value="True" />
+			<Property Name="IsArithAbortOn" Value="True" />
+			<Property Name="IsConcatNullYieldsNullOn" Value="True" />
+			<Property Name="IsTornPageProtectionOn" Value="False" />
+			<Property Name="IsFullTextEnabled" Value="True" />
+			<Property Name="PageVerifyMode" Value="3" />
+			<Property Name="DefaultLanguage" Value="" />
+			<Property Name="DefaultFullTextLanguage" Value="" />
+			<Relationship Name="DefaultFilegroup">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[PRIMARY]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlMultiStatementTableValuedFunction" Name="[dbo].[FindAuditLogs]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogs].[AuditLogId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogs].[EventType]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogs].[TableName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogs].[AdditionalNarration]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogs].[CreatedBy]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogs].[CreatedDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="DataAccess" Value="1" />
+						<Property Name="FillRowMethodName" Value="FindAuditLogs_FillRow" />
+						<Property Name="MethodName" Value="FindAuditLogs" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogs].[@startDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogs].[@endDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogs].[@source]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlMultiStatementTableValuedFunction" Name="[dbo].[FindAuditLogsByUserName]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogsByUserName].[AuditLogId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogsByUserName].[EventType]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogsByUserName].[TableName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogsByUserName].[AdditionalNarration]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogsByUserName].[CreatedBy]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindAuditLogsByUserName].[CreatedDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="DataAccess" Value="1" />
+						<Property Name="FillRowMethodName" Value="FindAuditLogsByUserName_FillRow" />
+						<Property Name="MethodName" Value="FindAuditLogsByUserName" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogsByUserName].[@applicationUserName]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogsByUserName].[@startDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogsByUserName].[@endDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindAuditLogsByUserName].[@source]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlMultiStatementTableValuedFunction" Name="[dbo].[FindFlattenedAuditLogs]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[AuditLogId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[EventType]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[TableName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[RecordID]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[ColumnName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[OriginalValue]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[NewValue]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[CreatedBy]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogs].[CreatedDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="DataAccess" Value="1" />
+						<Property Name="FillRowMethodName" Value="FindFlattenedAuditLogs_FillRow" />
+						<Property Name="MethodName" Value="FindFlattenedAuditLogs" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogs].[@startDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogs].[@endDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogs].[@source]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlMultiStatementTableValuedFunction" Name="[dbo].[FindFlattenedAuditLogsByUserName]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[AuditLogId]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[EventType]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[TableName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[RecordID]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[uniqueidentifier]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[ColumnName]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[OriginalValue]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[NewValue]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[CreatedBy]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Length" Value="256" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[FindFlattenedAuditLogsByUserName].[CreatedDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="DataAccess" Value="1" />
+						<Property Name="FillRowMethodName" Value="FindFlattenedAuditLogsByUserName_FillRow" />
+						<Property Name="MethodName" Value="FindFlattenedAuditLogsByUserName" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogsByUserName].[@applicationUserName]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="IsMax" Value="True" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[nvarchar]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogsByUserName].[@startDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogsByUserName].[@endDate]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FindFlattenedAuditLogsByUserName].[@source]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlScalarFunction" Name="[dbo].[FV]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="MethodName" Value="FV" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FV].[@termInMonths]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FV].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FV].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FV].[@Pmt]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FV].[@PV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[FV].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Type">
+				<Entry>
+					<Element Type="SqlTypeSpecifier">
+						<Property Name="Precision" Value="53" />
+						<Relationship Name="Type">
+							<Entry>
+								<References ExternalSource="BuiltIns" Name="[float]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlScalarFunction" Name="[dbo].[IPmt]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="MethodName" Value="IPmt" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@termInMonths]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@Per]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@PV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@FV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[IPmt].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Type">
+				<Entry>
+					<Element Type="SqlTypeSpecifier">
+						<Property Name="Precision" Value="53" />
+						<Relationship Name="Type">
+							<Entry>
+								<References ExternalSource="BuiltIns" Name="[float]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlScalarFunction" Name="[dbo].[NPer]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="MethodName" Value="NPer" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[NPer].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[NPer].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[NPer].[@Pmt]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[NPer].[@PV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[NPer].[@FV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[NPer].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Type">
+				<Entry>
+					<Element Type="SqlTypeSpecifier">
+						<Property Name="Precision" Value="53" />
+						<Relationship Name="Type">
+							<Entry>
+								<References ExternalSource="BuiltIns" Name="[float]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlScalarFunction" Name="[dbo].[Pmt]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="MethodName" Value="Pmt" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@interestCalculationMode]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@termInMonths]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@PV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@FV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[Pmt].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Type">
+				<Entry>
+					<Element Type="SqlTypeSpecifier">
+						<Property Name="Precision" Value="53" />
+						<Relationship Name="Type">
+							<Entry>
+								<References ExternalSource="BuiltIns" Name="[float]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlScalarFunction" Name="[dbo].[PPmt]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="MethodName" Value="PPmt" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@termInMonths]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@Per]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@PV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@FV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PPmt].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Type">
+				<Entry>
+					<Element Type="SqlTypeSpecifier">
+						<Property Name="Precision" Value="53" />
+						<Relationship Name="Type">
+							<Entry>
+								<References ExternalSource="BuiltIns" Name="[float]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlScalarFunction" Name="[dbo].[PV]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="MethodName" Value="PV" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PV].[@termInMonths]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PV].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PV].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PV].[@Pmt]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PV].[@FV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[PV].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+			<Relationship Name="Type">
+				<Entry>
+					<Element Type="SqlTypeSpecifier">
+						<Property Name="Precision" Value="53" />
+						<Relationship Name="Type">
+							<Entry>
+								<References ExternalSource="BuiltIns" Name="[float]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlMultiStatementTableValuedFunction" Name="[dbo].[RepaymentSchedule]">
+			<Property Name="IsAnsiNullsOn" />
+			<Property Name="IsQuotedIdentifierOn" />
+			<Relationship Name="Columns">
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[Period]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[DueDate]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[datetime]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[StartingBalance]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="2" />
+									<Property Name="Precision" Value="18" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[decimal]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[Payment]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="2" />
+									<Property Name="Precision" Value="18" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[decimal]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[InterestPayment]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="2" />
+									<Property Name="Precision" Value="18" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[decimal]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[PrincipalPayment]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="2" />
+									<Property Name="Precision" Value="18" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[decimal]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSimpleColumn" Name="[dbo].[RepaymentSchedule].[EndingBalance]">
+						<Relationship Name="TypeSpecifier">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Scale" Value="2" />
+									<Property Name="Precision" Value="18" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[decimal]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="FunctionBody">
+				<Entry>
+					<Element Type="SqlClrFunctionImplementation">
+						<Property Name="DataAccess" Value="1" />
+						<Property Name="FillRowMethodName" Value="RepaymentSchedule_FillRow" />
+						<Property Name="MethodName" Value="RepaymentSchedule" />
+						<Property Name="ClassName" Value="UserDefinedFunctions" />
+						<Relationship Name="Assembly">
+							<Entry>
+								<References Name="[Infrastructure.Data.SQLCLR]" />
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Parameters">
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@termInMonths]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@paymentFrequencyPerYear]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@gracePeriod]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@interestCalculationMode]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@APR]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@PV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@FV]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Property Name="Precision" Value="53" />
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[float]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+				<Entry>
+					<Element Type="SqlSubroutineParameter" Name="[dbo].[RepaymentSchedule].[@Due]">
+						<Relationship Name="Type">
+							<Entry>
+								<Element Type="SqlTypeSpecifier">
+									<Relationship Name="Type">
+										<Entry>
+											<References ExternalSource="BuiltIns" Name="[int]" />
+										</Entry>
+									</Relationship>
+								</Element>
+							</Entry>
+						</Relationship>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Schema">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlAssembly" Name="[Infrastructure.Data.SQLCLR]">
+			<Relationship Name="AssemblySources">
+				<Entry>
+					<Element Type="SqlAssemblySource">
+						<Property Name="Source">
+							<Value><![CDATA[0x4D5A90000300000004000000FFFF0000B800000000000000400000000000000000000000000000000000000000000000000000000000000000000000800000000E1FBA0E00B409CD21B8014CCD21546869732070726F6772616D2063616E6E6F742062652072756E20696E20444F53206D6F64652E0D0D0A2400000000000000504500004C010300A62A68650000000000000000E00022200B0130000052000000060000000000000670000000200000008000000000001000200000000200000400000000000000060000000000000000C000000002000000000000030060850000100000100000000010000010000000000000100000000000000000000000B46F00004F00000000800000F00200000000000000000000000000000000000000A000000C0000007C6E00001C0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000200000080000000000000000000000082000004800000000000000000000002E746578740000000C500000002000000052000000020000000000000000000000000000200000602E72737263000000F0020000008000000004000000540000000000000000000000000000400000402E72656C6F6300000C00000000A0000000020000005800000000000000000000000000004000004200000000000000000000000000000000E86F0000000000004800000002000500603C00001C3200000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000133007009E0000000100001100730900000A0AD005000002280A00000A058C22000001280B00000A0B072C7600050D090C082000020000594505000000150000002800000015000000020000003B0000002B4C0203040E040E050E060E0728090000060A2B3B0203040E040E050E060E07280A0000060A2B280203040E040E050E060E07280C0000060A2B150203040E040E050E060E07280D0000060A2B022B00000613042B0011042A0000133002006100000002000011000274030000020A03066F19000006810A00000104066F1B000006810B00000105066F1D000006810C0000010E04066F1F000006810C0000010E05066F21000006810C0000010E06066F23000006810C0000010E07066F25000006810C0000012A00000013300500360000000300001100042300000000000059405B036C5B0A026C2300000000000028405B036C5A0B0607050E040E05280C00000A280D00000A0C2B00082A000013300500360000000300001100042300000000000059405B036C5B0A026C2300000000000028405B036C5A0B0607050E040E05280E00000A280D00000A0C2B00082A0000133005001801000004000011002300000000000000000AD005000002280A00000A028C22000001280B00000A0B0739E400000000052300000000000059405B046C5B0C036C2300000000000028405B046C5A0D02130A110A1309110920000200005945050000001800000018000000180000000500000055000000389400000008090E040E050E06280F00000A0A38830000000E0423000000000000F0BF5A23000000000000000030040E042B0C0E0423000000000000F0BF5A13041104095B13051104085A130611051106580A2B460E0423000000000000F0BF5A23000000000000000030040E042B0C0E0423000000000000F0BF5A13071107052300000000000059405B5A13081107110858036C5B0A2B022B000006280D00000A130B2B00110B2A13300600380000000300001100042300000000000059405B036C5B0A026C2300000000000028405B036C5A0B0605070E040E050E06281000000A280D00000A0C2B00082A13300600380000000300001100042300000000000059405B036C5B0A026C2300000000000028405B036C5A0B0605070E040E050E06281100000A280D00000A0C2B00082A13300500260000000500001100032300000000000059405B026C5B0A0604050E040E05281200000A280D00000A0B2B00072A000013300800100200000600001100730900000A0A281300000A13061206046C281400000A0B052300000000000059405B036C5B0C026C2300000000000028405B036C5A0D0E0423000000000000F0BF5A23000000000000000030040E042B0C0E0423000000000000F0BF5A130408090E040E050E06280F00000A1305161307388201000000110717581308110716FE03130C110C39F90000000003130E110E130D110D1F183036110D1759450600000036000000440000005A0000004F000000C7000000650000002B00110D1F0C2E682B00110D1F182E6B38B2000000110D1F1A2E732B00110D1F342E7E2B00110D206D0100003B830000003891000000120117281500000A0B388500000012011C281600000A0B2B7A12011A281600000A0B2B6F120119281600000A0B2B64120118281600000A0B2B59120117281600000A0B2B4E1201230000000000002E40281400000A0B2B3B1201230000000000002C40281400000A0B2B281201230000000000001C40281400000A0B2B15120123000000000000F03F281400000A0B2B022B00001104085A13091105110959130A1104110A59130B061108281700000A07281800000A1104281900000A281A00000A1105281900000A281A00000A1109281900000A281A00000A110A281900000A281A00000A110B281900000A281A00000A73270000066F1B00000A00110B13040011071758130711076C09FE04130F110F3A6FFEFFFF0613102B0011102A13300800030200000700001100730900000A0A281300000A13061206046C281400000A0B052300000000000059405B036C5B0C026C2300000000000028405B036C5A0D0E0423000000000000F0BF5A23000000000000000030040E042B0C0E0423000000000000F0BF5A13041104095B1305161307387E01000000110717581308110716FE03130B110B39F90000000003130D110D130C110C1F183036110C1759450600000036000000440000005A0000004F000000C7000000650000002B00110C1F0C2E682B00110C1F182E6B38B2000000110C1F1A2E732B00110C1F342E7E2B00110C206D0100003B830000003891000000120117281500000A0B388500000012011C281600000A0B2B7A12011A281600000A0B2B6F120119281600000A0B2B64120118281600000A0B2B59120117281600000A0B2B4E1201230000000000002E40281400000A0B2B3B1201230000000000002C40281400000A0B2B281201230000000000001C40281400000A0B2B15120123000000000000F03F281400000A0B2B022B00001104085A13091104110559130A061108281700000A07281800000A1104281900000A281A00000A1105110958281900000A281A00000A1109281900000A281A00000A1105281900000A281A00000A110A281900000A281A00000A73270000066F1B00000A00110A13040011071758130711076C09FE04130E110E3A73FEFFFF06130F2B00110F2A0013300800390200000800001100730900000A0A281300000A13041204046C281400000A0B052300000000000059405B036C5B0C026C2300000000000028405B036C5A0D16130538E301000000110517581306110516FE03130C110C39F90000000003130E110E130D110D1F183036110D1759450600000036000000440000005A0000004F000000C7000000650000002B00110D1F0C2E682B00110D1F182E6B38B2000000110D1F1A2E732B00110D1F342E7E2B00110D206D0100003B830000003891000000120117281500000A0B388500000012011C281600000A0B2B7A12011A281600000A0B2B6F120119281600000A0B2B64120118281600000A0B2B59120117281600000A0B2B4E1201230000000000002E40281400000A0B2B3B1201230000000000002C40281400000A0B2B281201230000000000001C40281400000A0B2B15120123000000000000F03F281400000A0B2B022B00000809110617596C5908090E040E050E06280F00000A23000000000000000016280E00000A65130708090E040E050E06280F00000A13080811066C090E040E050E06281100000A13090811066C090E040E050E06281000000A130A080911066C5908090E040E050E06280F00000A0E050E06280E00000A65130B061106281700000A07281800000A1107281900000A281A00000A1108281900000A281A00000A1109281900000A281A00000A110A281900000A281A00000A110B281900000A281A00000A73270000066F1B00000A000011051758130511056C09FE04130F110F3A0EFEFFFF0613102B0011102A00000013300800030200000900001100730900000A0A281300000A13071207046C281400000A0B052300000000000059405B036C5B0C026C2300000000000028405B036C5A0D0E0423000000000000F0BF5A23000000000000000030040E042B0C0E0423000000000000F0BF5A13041104095B13051104085A1306161308387801000000110817581309110816FE03130B110B39F90000000003130D110D130C110C1F183036110C1759450600000036000000440000005A0000004F000000C7000000650000002B00110C1F0C2E682B00110C1F182E6B38B2000000110C1F1A2E732B00110C1F342E7E2B00110C206D0100003B830000003891000000120117281500000A0B388500000012011C281600000A0B2B7A12011A281600000A0B2B6F120119281600000A0B2B64120118281600000A0B2B59120117281600000A0B2B4E1201230000000000002E40281400000A0B2B3B1201230000000000002C40281400000A0B2B281201230000000000001C40281400000A0B2B15120123000000000000F03F281400000A0B2B022B00001104110559130A061109281700000A07281800000A1104281900000A281A00000A1105110658281900000A281A00000A1106281900000A281A00000A1105281900000A281A00000A110A281900000A281A00000A73270000066F1B00000A00110A13040011081758130811086C09FE04130E110E3A79FEFFFF06130F2B00110F2A0013300800ED0100000A00001100730900000A0A281300000A13061206046C281400000A0B052300000000000059405B0C0E0423000000000000F0BF5A23000000000000000030040E042B0C0E0423000000000000F0BF5A0D09026C5B130409085A026C5B1305161307387501000000110717581308110716FE03130A110A39F90000000003130C110C130B110B1F183036110B1759450600000036000000440000005A0000004F000000C7000000650000002B00110B1F0C2E682B00110B1F182E6B38B2000000110B1F1A2E732B00110B1F342E7E2B00110B206D0100003B830000003891000000120117281500000A0B388500000012011C281600000A0B2B7A12011A281600000A0B2B6F120119281600000A0B2B64120118281600000A0B2B59120117281600000A0B2B4E1201230000000000002E40281400000A0B2B3B1201230000000000002C40281400000A0B2B281201230000000000001C40281400000A0B2B15120123000000000000F03F281400000A0B2B022B0000091104591309061108281700000A07281800000A09281900000A281A00000A1104110558281900000A281A00000A1105281900000A281A00000A1104281900000A281A00000A1109281900000A281A00000A73270000066F1B00000A0011090D00110717581307110702FE04130D110D3A7DFEFFFF06130E2B00110E2A0000001B300500110100000B000011007E1C00000A0A000F00281D00000A16FE010B0739E9000000000F00FE160F0000016F1E00000A281F00000A2D190F00FE160F0000016F1E00000A72010000706F2000000A2B01160C0839B200000000D008000002280A00000A732100000A0D090F00FE160F0000016F1E00000A732200000A6F2300000A74080000021304732400000A130511046F3800000614FE03130611062C5D000011046F380000066F2500000A13072B301207282600000A13081105720D00007011086F2B00000611086F2D00000611086F2F000006282700000A6F2800000A261207282900000A2DC7DE0F1207FE160300001B6F2A00000A00DC0072750000701105282B00000A0A0000061309DE072600061309DE0011092A0000004134000002000000A60000003D000000E30000000F000000000000000000000007000000000100000701000007000000050000011B3008004F0100000C00001100732C00000A0A727D000070732D00000A0B00076F2E00000A0072AD0000707275000070052C0772620100702B0572AC010070282B00000A72E8010070282F00000A07733000000A0C00086F3100000A72CB0200701F0C6F3200000A0D09026F3300000A00086F3100000A72F50200701A6F3200000A13041104038C0E0000016F3300000A00086F3100000A720B0300701A6F3200000A13051105048C0E0000016F3300000A00086F3400000A1306002B5C000672750000701106166F3500000A282B00000A733600000A283700000A1106176F3800000A1106186F3800000A1106196F3800000A280E000006283900000A11061A6F3800000A11061B6F3A00000A732A0000066F3B00000A260011066F3C00000A130711072D9700DE0D11062C0811066F2A00000A00DC00DE0B082C07086F2A00000A00DC00DE0B072C07076F2A00000A00DC0613082B0011082A00414C000002000000AF0000006F0000001E0100000D000000000000000200000049000000E50000002E0100000B0000000000000002000000120000002A0100003C0100000B0000000000000013300200540000000D000011000274060000020A03067B19000004811800000104067B1A000004810F00000105067B1B000004810F0000010E04067B1C000004810F0000010E05067B1D000004810F0000010E06066F28000006810B0000012A1B300800320100000E00001100732C00000A0A727D000070732D00000A0B00076F2E00000A0072AD0000707275000070042C0772620100702B0572AC010070282B00000A721D030070282F00000A07733000000A0C00086F3100000A72F50200701A6F3200000A0D09028C0E0000016F3300000A00086F3100000A720B0300701A6F3200000A13041104038C0E0000016F3300000A00086F3400000A1305002B5C000672750000701105166F3500000A282B00000A733600000A283700000A1105176F3800000A1105186F3800000A1105196F3800000A280E000006283900000A11051A6F3800000A11051B6F3A00000A732A0000066F3B00000A260011056F3C00000A130611062D9700DE0D11052C0811056F2A00000A00DC00DE0B082C07086F2A00000A00DC00DE0B072C07076F2A00000A00DC0613072B0011072A0000414C000002000000920000006F000000010100000D000000000000000200000049000000C8000000110100000B0000000000000002000000120000000D0100001F0100000B0000000000000013300200540000000D000011000274060000020A03067B19000004811800000104067B1A000004810F00000105067B1B000004810F0000010E04067B1C000004810F0000010E05067B1D000004810F0000010E06066F28000006810B0000012A1B300400380100000F0000110012007E1C00000A283D00000A12017E1C00000A283D00000A12027E1C00000A283D00000A733E00000A0D000F00281D00000A16FE011304110439EA000000000F00FE160F0000016F1E00000A281F00000A2D190F00FE160F0000016F1E00000A72010000706F2000000A2B01161305110539B100000000D008000002280A00000A732100000A130611060F00FE160F0000016F1E00000A732200000A6F2300000A7408000002130711076F3800000614FE03130811082C6E000011076F380000066F2500000A13092B411209282600000A130A00110A6F2B000006733D00000A0A110A6F2D000006733D00000A0B110A6F2F000006733D00000A0C09060708733F00000A6F4000000A00001209282900000A2DB6DE0F1209FE160300001B6F2A00000A00DC00000009130BDE07260009130BDE00110B2A4134000002000000C90000004E000000170100000F00000000000000000000002B000000030100002E01000007000000050000011B300B00BA0100001000001100732C00000A0A727D000070732D00000A0B00076F2E00000A00729D0300707275000070052C0772620100702B0572AC010070282B00000A72E8010070282F00000A07733000000A0C00086F3100000A72CB0200701F0C6F3200000A0D09026F3300000A00086F3100000A72F50200701A6F3200000A13041104038C0E0000016F3300000A00086F3100000A720B0300701A6F3200000A13051105048C0E0000016F3300000A00086F3400000A13060038C10000000011061A6F3800000A281300000613070011076F4100000A130838840000001208284200000A1309000672750000701106166F3500000A282B00000A733600000A283700000A1106176F3800000A1106186F3800000A72750000701106196F3500000A282B00000A733600000A283700000A11096F4300000A11096F4400000A11096F4500000A11061B6F3800000A11061C6F3A00000A733D0000066F3B00000A26001208284600000A3A70FFFFFFDE0F1208FE160600001B6F2A00000A00DC0011066F3C00000A130A110A3A2FFFFFFF00DE0D11062C0811066F2A00000A00DC00DE0B082C07086F2A00000A00DC00DE0B072C07076F2A00000A00DC06130B2B00110B2A00004164000002000000CF00000097000000660100000F0000000000000002000000AF000000DA000000890100000D00000000000000020000004900000050010000990100000B00000000000000020000001200000095010000A70100000B00000000000000133002007B00000011000011000274090000020A03067B26000004811800000104067B27000004810F00000105067B28000004810F0000010E04067B2900000481180000010E05067B2A000004810F0000010E06067B2B000004810F0000010E07067B2C000004810F0000010E08067B2D000004810F0000010E09066F3B000006810B0000012A001B300B009D0100001200001100732C00000A0A727D000070732D00000A0B00076F2E00000A00729D0300707275000070042C0772620100702B0572AC010070282B00000A721D030070282F00000A07733000000A0C00086F3100000A72F50200701A6F3200000A0D09028C0E0000016F3300000A00086F3100000A720B0300701A6F3200000A13041104038C0E0000016F3300000A00086F3400000A13050038C10000000011051A6F3800000A281300000613060011066F4100000A130738840000001207284200000A1308000672750000701105166F3500000A282B00000A733600000A283700000A1105176F3800000A1105186F3800000A72750000701105196F3500000A282B00000A733600000A283700000A11086F4300000A11086F4400000A11086F4500000A11051B6F3800000A11051C6F3A00000A733D0000066F3B00000A26001207284600000A3A70FFFFFFDE0F1207FE160600001B6F2A00000A00DC0011056F3C00000A130911093A2FFFFFFF00DE0D11052C0811056F2A00000A00DC00DE0B082C07086F2A00000A00DC00DE0B072C07076F2A00000A00DC06130A2B00110A2A0000004164000002000000B200000097000000490100000F000000000000000200000092000000DA0000006C0100000D000000000000000200000049000000330100007C0100000B000000000000000200000012000000780100008A0100000B00000000000000133002007B00000011000011000274090000020A03067B26000004811800000104067B27000004810F00000105067B28000004810F0000010E04067B2900000481180000010E05067B2A000004810F0000010E06067B2B000004810F0000010E07067B2C000004810F0000010E08067B2D000004810F0000010E09066F3B000006810B0000012A2202284700000A002A1E027B010000042A2202037D010000042A1E027B020000042A2202037D020000042A1E027B030000042A2202037D030000042A1E027B040000042A2202037D040000042A1E027B050000042A2202037D050000042A1E027B060000042A2202037D060000042A1E027B070000042A2202037D070000042A0013300200450000000000000002284700000A00000203281A000006000204281C000006000205281E00000600020E04282000000600020E05282200000600020E06282400000600020E072826000006002A1E027B1E0000042A2202037D1E0000042ADE02284700000A000002037D1900000402047D1A00000402057D1B000004020E047D1C000004020E057D1D000004020E062829000006002A1E027B1F0000042A2202037D1F0000042A1E027B200000042A2202037D200000042A1E027B210000042A2202037D210000042A1E027B220000042A2202037D220000042A1E027B230000042A2202037D230000042A1E027B240000042A2202037D240000042A1E027B250000042A2202037D250000042A1E027B2E0000042A2202037D2E0000042A0000133002004F0000000000000002284700000A000002037D2600000402047D2700000402057D28000004020E047D29000004020E057D2A000004020E067D2B000004020E077D2C000004020E087D2D000004020E09283C000006002A0042534A4201000100000000000C00000076342E302E33303331390000000005006C00000078110000237E0000E4110000100D000023537472696E677300000000F41E00006C040000235553006023000010000000234755494400000070230000AC0E000023426C6F620000000000000002000001571DA2090902000000FA013300160000010000002F000000090000002E0000003D000000B200000047000000270000006300000012000000050000001000000020000000060000000100000005000000070000000000CC070100000000000600A6060A0A0600C6060A0A06003706F7090F002A0A00000600E00A0A080A007C06BA090A00D902BA090600D5038A0A06000100AF000A001200390A0A004B05390A0A009607390A0A00ED03390A06004E050A080A005C07390A0E00D5094E0806008209170C2700E60900000600040C8A0A0A00DA08390B0A00CE02390B0A00AD09390B0A004E09390B0A001201390A060025000A0806001C060A0A06000506F70906004B06F709060011080A0812009106B6070E0066064E0806009A050A080600F7030A08060015000A0816008C07CA001600EB05CA00060099070A08060068070A0806006A0963000600770963000600E1030A080A00CD08E8080A00B608390B0A006F059A000A00A109E8080A004109E808060015010A080000000037000000000001000100010010009D0A000015000100010002001000FF0A0000150001001900020100000C09000075000800280002010000A503000075001300280002001000200B0000150019002800022010000209000015001F002B00022010009009000015002200320002001000170B0000150026003B00010034018F030100FB01930301006B0197030100720297030100AD02970301008B02970301004C019703060692009B035680AF079E035680A1079E035680FE0C9E035680AC079E035680D90C9E035680E70C9E035680E30C9E035680F50C9E035680F70C9E035680EF0C9E03060692009B0356802403A20356806205A20356807908A20356806708A2035680F60BA2030600E900A60306008B05AA030600BE04AA0306002608AA030600BB0CAA030100DE0193030100A701730101001402730101003302730101008C0173010100C301730101001A01730101004D02AE030600E900A60306008B05AA030600BE04AA0306005100A6030600E504AA0306000807AA0306003507AA030600BB0CAA030100DE01930350200000000096008404B6030100FC20000000009600230CC30309006C210000000096008C00DD031100B0210000000096008F00DD031700F421000000009600350BE8031D001823000000009600340BF40324005C230000000096002F0BF4032B00A0230000000096003C0900043200D42300000000910033040B043800F0250000000091001B040B043F00002800000000910063040B044600482A0000000091004E040B044D00582C00000000910096040B045400542E000000009100FB081B045B00A82F000000009600300521045C005031000000009600660C2C046000B031000000009600650A430467003C33000000009600A50C2C046A009C330000000091001B084D04710014350000000096000F052104720040370000000096003D0C60047600C8370000000096004E0A43048000D839000000009600860C600483005F3A000000008618F10906008D00683A000000008608E80280048D00703A000000008608F30285048D00793A000000008608DB058B048E00813A000000008608E70590048E008A3A000000008608660396048F00923A0000000086087A039B048F009B3A0000000086084F0B96049000A33A0000000086085B0B9B049000AC3A000000008608A20B96049100B43A000000008608B60B9B049100BD3A000000008608670B96049200C53A0000000086087C0B9B049200CE3A000000008608340396049300D63A00000000860846039B049300E03A000000008618F109A1049400313B000000008608A7058B049B00393B000000008608B70590049B00423B000000008618F109B3049C007A3B000000008608D2047A01A200823B000000008608E1041600A2008B3B000000008608F2067A01A300933B00000000860804071600A3009C3B00000000860824077A01A400A43B00000000860831071600A4005F3A000000008618F1090600A500AD3B000000008608AC047A01A500B53B000000008608BA041600A500BE3B00000000860879057A01A600C63B00000000860887051600A600CF3B00000000860840007A01A700D73B0000000086084D001600A700E03B0000000086088608C304A800E83B0000000086089E08CC04A8005F3A000000008618F1090600A900F13B000000008608A7058B04A900F93B000000008608B7059004A900043C000000008618F109D604AA00000001007D0A00000200240900000300FE0200000400BD03000005008800000006008F00101007008C0010100800E406000001007A07020002000A0302000300F305020004008E0302000500DA0B02000600CA0B02000700910B020008005803000001007D0A00000200240900000300880000000400350B101005008F0010100600E406000001007D0A00000200240900000300880000000400350B101005008C0010100600E40600000100BD03000002007D0A000003002409000004008800000005008F00101006008C0010100700E406000001007D0A000002002409000003008800000004003D09000005008F00101006008C0010100700E406000001007D0A000002002409000003008800000004003D09000005008F00101006008C0010100700E40600000100240900000200880000000300350B000004008F00101005008C0010100600E406000001007D0A00000200240900000300FE02000004008800000005008F00101006008C0010100700E406000001007D0A00000200240900000300FE02000004008800000005008F00101006008C0010100700E406000001007D0A00000200240900000300FE02000004008800000005008F00101006008C0010100700E406000001007D0A00000200240900000300FE02000004008800000005008F00101006008C0010100700E406000001007D0A00000200240900000300FE02000004008800000005008F00101006008C0010100700E40600000100EE0B00000100FB0400000200FB0500000300D305000004009E03000001007A0702000200F40002000300950502000400C804020005003A0802000600C50C02000700C70500000100FB0500000200D305000003009E03000001007A0702000200F40002000300950502000400C804020005003A0802000600C50C02000700C70500000100EE0B00000100FB0400000200FB0500000300D305000004009E03000001007A0702000200F40002000300950502000400C80402000500E00002000600F004020007001607020008003E0702000900C50C02000A00C70500000100FB0500000200D305000003009E03000001007A0702000200F40002000300950502000400C80402000500E00002000600F004020007001607020008003E0702000900C50C02000A00C705000001004707000001004707000001004707000001004707000001004707000001004707000001004707000001000A0300000200F305000003008E0300000400DA0B00000500CA0B00000600910B00000700580300000100470700000100F40000000200950500000300C804000004003A0800000500C50C00000600C70500000100470700000100470700000100470700000100470700000100470700000100470700000100470700000100470700000100F40000000200950500000300C804000004005A0000000500F004000006001607000007003E0700000800C50C00000900C7050900F10901001100F10906001900F1090A003100F1090600D100F1090600E100F1091000F100F1091600F900F10906000C00F1090600010109043200E90008013B0019018C004F006900E70A5A0019018F004F001901350B4F001901340B720019012F0B720019013C094F007100CF0CA6007100CA0AAB007100B20AB1007100730AB1005100E70AB7005900E70ABD002901F30AC4006100E70ACB000C000401D3003101080D73017900EB077601290066077A01310111037E0131016F0783018100F10988013901F109160081004D078F018900F10906001400E3099D011C00E20BAD013101D90AB20189005705BA011C000E0C760149019F0506003101D90AC0019900F1090600A100F10916005101160806003101D20ADA01A900F109E101A900BB0AE80159010401EE016901E806F701A9005C09FC017101010801027901F1091600C100E70A0602B90059070E027900E70A1402B90048051A029900040120027101FF0076017900F10916002400F10906002C00F1098A0224000401D3002400E3099D013400E20BAD012C000800AD012C001B00DD022C002D00E20234000E0C76012900F10906000D001D008103080021008A03080024003603080028003B0308002C004003080030004503080034004A03080038004F0308003C005403080040005903080044005E03080048006303080050006803080054006D030D0055008103080058007203080059008A0308005C007703080060007C030D006D008103080071008A030D008900810308008D008A030D00A50081030800A9008A030D00C10081030800C5008A030D00D90081030800DD008A030D00F50081030800F9008A030D0011018103080015018A030D002D018103080031018A030D004901810308004D018A030D0065018103080069018A0320002300390521002B00360321003300260D2E000B0008052E00130011052E001B00300541002B00360341003300260D60002300360361002B00360361003300260D80002300360381002B00360381003300260DA00023003603A1002B003603A1003300260DC00023003603C1002B003603C1003300260DE00023003603E1002B003603E1003300260D00012300360321013B002F0D29014300360341013B003B0D49014300360361013B005D0D69014300360381013B007D0D890143003603A1013B009E0DA90143003603C1013B00BF0DC90143003603E0012300BA06E1013B00CC0D01023B00EE0D20022300320821023B000D0E41023B00190E80022300A00981023B00240EA1023B003A0EC0022300680BC1023B004D0EE1023B006F0E01033B00970E20032B00360340032B00360360032B00360380032B003603A0032B003603C0032B003603C1032B003603C1033300260DE0032B003603E1032B003603E1033300260D00042B00360301042B00360301043300260D20042B00360321042B00360321043300260D40042B00360341042B00360341043300260D60042B00360361042B00360361043300260D80042B00360381042B00360381043300260DA0042B003603A1042B003603A1043300260DC0042B00360300052B00360320052B00360360052B00360380052B003603A0052B003603C0052B003603C1052B003603C1053300260DE0052B00360300062B00360340062B00360360062B00360380062B003603A0062B003603C0062B003603E0062B00360300072B00360320072B00360360072B00360380072B0036031B004300480060007E008400D900FA001C013D015D01C60125022A023C029402E702EC0203000100060008000700090008000C000900100000000303EC040000EB05F10400007E03F6040000D20BF6040000BA0BF6040000800BF60400004A03F6040000BB05F1040000E504FB0400000807FB0400003507FB040000BE04FB0400008B05FB0400005100FB040000A208FF040000BB05F10402001900030001001A00030002001B00050001001C00050002001D00070001001E00070002001F000900010020000900020021000B00010022000B00020023000D00010024000D00020025000F00010026000F0002002800110001002900110002002B00130001002C00130002002D00150001002E00150002002F001700010030001700020032001900010033001900020034001B00010035001B00020036001D00010037001D00020038001F00010039001F0002003B00210001003C0021002B009601A60170027F02CE020480000000000000000000000000000000006D0000000400000000000000000000002403A6000000000004000000000000000000000024039A00000000000400000000000000000000002403F6070000000004000000000000000000000024030A08000000000A00000000000000000000002D03CA00000000000300020004000200050002000600020007000200080002000900020000000000004C6973746031006765745F4974656D310053716C496E743332006765745F4974656D32005475706C656033006765745F4974656D33003C4D6F64756C653E006765745F5265636F72644944007365745F5265636F72644944007265636F726449440053797374656D2E494F00496E6672617374727563747572652E446174612E53514C434C52004150520046560050560076616C75655F5F0053797374656D2E44617461006D73636F726C69620053797374656D2E436F6C6C656374696F6E732E47656E65726963004D6963726F736F66742E56697375616C4261736963007265636F726449640041756469744C6F6749640061756469744C6F674964005265616400416464004973446566696E65640053716C47756964003C5265636F726449443E6B5F5F4261636B696E674669656C64003C506572696F643E6B5F5F4261636B696E674669656C64003C456E64696E6742616C616E63653E6B5F5F4261636B696E674669656C64003C5374617274696E6742616C616E63653E6B5F5F4261636B696E674669656C64003C5461626C654E616D653E6B5F5F4261636B696E674669656C64003C436F6C756D6E4E616D653E6B5F5F4261636B696E674669656C64003C4576656E74547970653E6B5F5F4261636B696E674669656C64003C43726561746564446174653E6B5F5F4261636B696E674669656C64003C447565446174653E6B5F5F4261636B696E674669656C64003C4F726967696E616C56616C75653E6B5F5F4261636B696E674669656C64003C4E657756616C75653E6B5F5F4261636B696E674669656C64003C4175646974496E666F436F6C6C656374696F6E3E6B5F5F4261636B696E674669656C64003C5061796D656E743E6B5F5F4261636B696E674669656C64003C5072696E636970616C5061796D656E743E6B5F5F4261636B696E674669656C64003C496E7465726573745061796D656E743E6B5F5F4261636B696E674669656C640053716C436F6D6D616E6400446174614163636573734B696E64006765745F506572696F64007365745F506572696F64006772616365506572696F6400706572696F640049734E756C6C4F7257686974655370616365005265647563696E6742616C616E6365006765745F456E64696E6742616C616E6365007365745F456E64696E6742616C616E636500656E64696E6742616C616E6365006765745F5374617274696E6742616C616E6365007365745F5374617274696E6742616C616E6365007374617274696E6742616C616E636500736F7572636500496E74657265737443616C63756C6174696F6E4D6F646500696E74657265737443616C63756C6174696F6E4D6F64650049456E756D657261626C650049446973706F7361626C650053716C446F75626C650052756E74696D655479706548616E646C65004765745479706546726F6D48616E646C65005265647563696E6742616C616E63655363686564756C650044696D696E697368696E6742616C616E63655363686564756C650053747261696768744C696E655363686564756C650053747261696768744C696E65416D6F7274697A6174696F6E5363686564756C650052657061796D656E745363686564756C65004669786564496E7465726573745363686564756C65006765745F5461626C654E616D65007365745F5461626C654E616D65007461626C654E616D65006765745F436F6C756D6E4E616D65007365745F436F6C756D6E4E616D6500636F6C756D6E4E616D65006170706C69636174696F6E557365724E616D650046696E64466C617474656E656441756469744C6F67734279557365724E616D650046696E6441756469744C6F67734279557365724E616D650047657453716C4461746554696D6500417070656E644C696E650053747261696768744C696E650053716C446254797065006765745F4576656E7454797065007365745F4576656E7454797065006576656E745479706500446973706F7365006765745F4372656174656444617465007365745F437265617465644461746500637265617465644461746500656E6444617465006765745F44756544617465007365745F4475654461746500647565446174650073746172744461746500446562756767657242726F777361626C65537461746500436F6D70696C657247656E6572617465644174747269627574650044656275676761626C6541747472696275746500446562756767657242726F777361626C6541747472696275746500586D6C4174747269627574654174747269627574650053716C46756E6374696F6E417474726962757465004465736372697074696F6E41747472696275746500436F6D70696C6174696F6E52656C61786174696F6E734174747269627574650052756E74696D65436F6D7061746962696C69747941747472696275746500447565007365745F56616C7565006765745F4F726967696E616C56616C7565007365745F4F726967696E616C56616C7565006F726967696E616C56616C7565006765745F4E657756616C7565007365745F4E657756616C7565006E657756616C75650076616C756500446573657269616C697A650047657453716C537472696E6700546F537472696E6700537461727473576974680061756469744C6F67526573756C744F626A0046696E616E6369616C0053716C446563696D616C0053656D69416E6E75616C00547269416E6E75616C0053797374656D2E436F6D706F6E656E744D6F64656C00496E6672617374727563747572652E446174612E53514C434C522E646C6C006765745F49734E756C6C0053797374656D2E586D6C006765745F4974656D0053797374656D00456E756D004F70656E00446573657269616C697A654164646974696F6E616C4E6172726174696F6E006164646974696F6E616C4E6172726174696F6E0053797374656D2E586D6C2E53657269616C697A6174696F6E0044696D696E697368696E6742616C616E6365416D6F7274697A6174696F6E006765745F4175646974496E666F436F6C6C656374696F6E007365745F4175646974496E666F436F6C6C656374696F6E0053716C506172616D65746572436F6C6C656374696F6E004462436F6E6E656374696F6E0053716C436F6E6E656374696F6E0053797374656D2E446174612E436F6D6D6F6E00466C617474656E4175646974496E666F005061796D656E744672657175656E637950657259656172007061796D656E744672657175656E637950657259656172004E506572004462446174615265616465720053716C44617461526561646572004578656375746552656164657200537472696E67526561646572005465787452656164657200537472696E674275696C646572004175646974496E666F57726170706572004462506172616D657465720053716C506172616D65746572004D6963726F736F66742E53716C5365727665722E53657276657200586D6C53657269616C697A657200476574456E756D657261746F72002E63746F720053797374656D2E446961676E6F73746963730053797374656D2E52756E74696D652E436F6D70696C6572536572766963657300446562756767696E674D6F6465730053797374656D2E446174612E53716C54797065730046696E64466C617474656E656441756469744C6F67730046696E6441756469744C6F6773004164644D6F6E746873007465726D496E4D6F6E7468730053797374656D2E436F6C6C656374696F6E730055736572446566696E656446756E6374696F6E73004164645965617273006765745F506172616D6574657273004164644461797300436F6E63617400466F726D6174004F626A656374006F705F496D706C69636974006F705F4578706C6963697400416D6F7274697A6174696F6E5461626C65526573756C7400466C617474656E656441756469744C6F67526573756C740049506D740050506D740053797374656D2E446174612E53716C436C69656E74006765745F5061796D656E74007365745F5061796D656E74006765745F5072696E636970616C5061796D656E74007365745F5072696E636970616C5061796D656E74007072696E636970616C5061796D656E74006765745F496E7465726573745061796D656E74007365745F496E7465726573745061796D656E7400696E7465726573745061796D656E74007061796D656E74006765745F43757272656E7400636F6E74656E74004669786564496E7465726573740041727261794C697374004D6F76654E6578740053797374656D2E546578740052657061796D656E745363686564756C655F46696C6C526F770046696E64466C617474656E656441756469744C6F67734279557365724E616D655F46696C6C526F770046696E6441756469744C6F67734279557365724E616D655F46696C6C526F770046696E64466C617474656E656441756469744C6F67735F46696C6C526F770046696E6441756469744C6F67735F46696C6C526F770043726561746564427900637265617465644279006765745F546F6461790042694D6F6E74686C790053656D694D6F6E74686C79004461696C790042695765656B6C7900517561727465726C7900456D707479000000000B3C003F0078006D006C00006743006F006C0075006D006E004E0061006D0065003A0020007B0030007D002C0020004F0072006900670069006E0061006C00560061006C00750065003A0020007B0031007D002C0020004E0065007700560061006C00750065003A0020007B0032007D002C0000077B0030007D00002F63006F006E007400650078007400200063006F006E006E0065006300740069006F006E003D0074007200750065000080B3530045004C0045004300540020005B00490064005D002C0020005B004500760065006E00740054007900700065005D002C0020005B005400610062006C0065004E0061006D0065005D002C0020005B004100640064006900740069006F006E0061006C004E006100720072006100740069006F006E005D002C0020005B004300720065006100740065006400420079005D002C0020005B00430072006500610074006500640044006100740065005D0020000049460052004F004D0020005B00640062006F005D002E005B00730077006900660074005F00410075006400690074004C006F006700730041007200630068006900760065005D002000003B460052004F004D0020005B00640062006F005D002E005B00730077006900660074005F00410075006400690074004C006F00670073005D0020000080E15700480045005200450020005B004100700070006C00690063006100740069006F006E0055007300650072004E0061006D0065005D0020003D00200040006100700070006C00690063006100740069006F006E0055007300650072004E0061006D006500200041004E00440020005B00430072006500610074006500640044006100740065005D0020003E003D0020004000730074006100720074004400610074006500200041004E00440020005B00430072006500610074006500640044006100740065005D0020003C003D002000400065006E0064004400610074006500002940006100700070006C00690063006100740069006F006E0055007300650072004E0061006D006500001540007300740061007200740044006100740065000011400065006E0064004400610074006500007F5700480045005200450020005B00430072006500610074006500640044006100740065005D0020003E003D0020004000730074006100720074004400610074006500200041004E00440020005B00430072006500610074006500640044006100740065005D0020003C003D002000400065006E00640044006100740065000080CB530045004C0045004300540020005B00490064005D002C0020005B004500760065006E00740054007900700065005D002C0020005B005400610062006C0065004E0061006D0065005D002C0020005B005200650063006F0072006400490044005D002C0020005B004100640064006900740069006F006E0061006C004E006100720072006100740069006F006E005D002C0020005B004300720065006100740065006400420079005D002C0020005B00430072006500610074006500640044006100740065005D00200000000049C3CC1FB51AF64EB7F5EA6F6F7E0A480004200101080320000105200101111105200101116D042001010E0F070515122501120C021114111412210615122501120C080001128081118085070002021280811C040701120C0607030D0D11350A00050D0D0D0D0D11809105000111350D11070C0D020D0D0D0D0D0D0D1114111411350B00060D0D0D0D0D0D1180910507020D113521071115122501120C11390D0D0D0D113908080D0D0D02111011100215122501120C040000113905200111390D052001113908050001112908060001112D11390600011180950D070001113111809505200101130020071015122501120C11390D0D0D0D113908080D0D02111011100215122501120C21071115122501120C11390D0D113908080D0D0D0D0D02111011100215122501120C20071015122501120C11390D0D0D0D0D113908080D02111011100215122501120C1F070F15122501120C11390D0D0D0D113908080D02111011100215122501120C15070A0E02021241122012450215114901121C121C0E02060E032000020320000E040001020E042001020E062001011280810620011C1280A10615122501121C0820001511490113000615114901121C04200013000700040E0E1C1C1C05200112450E0500020E0E1C130709124D12511255125912591259125D0212210600030E0E0E0E062002010E12510520001280AD08200212590E1180B1042001011C042000125D0420011C0807000111611180BD052001113D08050001113D0E052001112D08042001081C0407011218110708124D1251125512591259125D02122133070C113D113D113D1512250115126503113D113D113D0202124112200215114901121C121C1512250115126503113D113D113D0E1512250115126503113D113D113D0A15126503113D113D113D0920030113001301130239070C124D12511255125912591259125D1512250115126503113D113D113D1511490115126503113D113D113D15126503113D113D113D0212210E1511490115126503113D113D113D04200013010420001302040701122437070B124D1251125512591259125D1512250115126503113D113D113D1511490115126503113D113D113D15126503113D113D113D02122108B77A5C561934E08908B03F5F7F11D50A3A04010000000402000000040300000004040000000406000000040C0000000418000000041A0000000434000000046D010000040002000004010200000402020000040302000004040200000800000000000000000400000000030611290306112D030611310206080306111003061114030611610306113D070615122501121C0C00081221080808080D0D0D08190008011C10112910112D1011311011311011311011311011310A0006113508080D0D0D080B000711350808080D0D0D080B0007113508080D0D0D0D080A00061135080D0D0D0D080F000715122501120C0808080D0D0D080500010E113D0A000412210E1139113908160007011C10116110113D10113D10113D10113D10112D090003122111391139081200011512250115126503113D113D113D113D1F000A011C10116110113D10113D10116110113D10113D10113D10113D10112D0420001129052001011129042000112D05200101112D0420001131052001011131112007011129112D113111311131113111310F2006011161113D113D113D113D112D08200015122501121C0920010115122501121C152009011161113D113D1161113D113D113D113D112D0428001129042800112D04280011310328000E08280015122501121C0801000800000000001E01000100540216577261704E6F6E457863657074696F6E5468726F777301080100070100000000817F010003005455794D6963726F736F66742E53716C5365727665722E5365727665722E446174614163636573734B696E642C2053797374656D2E446174612C2056657273696F6E3D342E302E302E302C2043756C747572653D6E65757472616C2C205075626C69634B6579546F6B656E3D623737613563353631393334653038390A4461746141636365737301000000540E1146696C6C526F774D6574686F644E616D651952657061796D656E745363686564756C655F46696C6C526F77540E0F5461626C65446566696E6974696F6E80AE506572696F6420696E742C2044756544617465206461746574696D652C205374617274696E6742616C616E636520646563696D616C2831382C32292C205061796D656E7420646563696D616C2831382C32292C20496E7465726573745061796D656E7420646563696D616C2831382C32292C205072696E636970616C5061796D656E7420646563696D616C2831382C32292C20456E64696E6742616C616E636520646563696D616C2831382C32298176010003005455794D6963726F736F66742E53716C5365727665722E5365727665722E446174614163636573734B696E642C2053797374656D2E446174612C2056657273696F6E3D342E302E302E302C2043756C747572653D6E65757472616C2C205075626C69634B6579546F6B656E3D623737613563353631393334653038390A4461746141636365737301000000540E1146696C6C526F774D6574686F644E616D651F46696E6441756469744C6F67734279557365724E616D655F46696C6C526F77540E0F5461626C65446566696E6974696F6E809F41756469744C6F67496420756E697175656964656E7469666965722C204576656E7454797065206E7661726368617228323536292C205461626C654E616D65206E7661726368617228323536292C204164646974696F6E616C4E6172726174696F6E206E76617263686172284D4158292C20437265617465644279206E7661726368617228323536292C204372656174656444617465206461746574696D65816C010003005455794D6963726F736F66742E53716C5365727665722E5365727665722E446174614163636573734B696E642C2053797374656D2E446174612C2056657273696F6E3D342E302E302E302C2043756C747572653D6E65757472616C2C205075626C69634B6579546F6B656E3D623737613563353631393334653038390A4461746141636365737301000000540E1146696C6C526F774D6574686F644E616D651546696E6441756469744C6F67735F46696C6C526F77540E0F5461626C65446566696E6974696F6E809F41756469744C6F67496420756E697175656964656E7469666965722C204576656E7454797065206E7661726368617228323536292C205461626C654E616D65206E7661726368617228323536292C204164646974696F6E616C4E6172726174696F6E206E76617263686172284D4158292C20437265617465644279206E7661726368617228323536292C204372656174656444617465206461746574696D6581C6010003005455794D6963726F736F66742E53716C5365727665722E5365727665722E446174614163636573734B696E642C2053797374656D2E446174612C2056657273696F6E3D342E302E302E302C2043756C747572653D6E65757472616C2C205075626C69634B6579546F6B656E3D623737613563353631393334653038390A4461746141636365737301000000540E1146696C6C526F774D6574686F644E616D652846696E64466C617474656E656441756469744C6F67734279557365724E616D655F46696C6C526F77540E0F5461626C65446566696E6974696F6E80E641756469744C6F67496420756E697175656964656E7469666965722C204576656E7454797065206E7661726368617228323536292C205461626C654E616D65206E7661726368617228323536292C205265636F7264494420756E697175656964656E7469666965722C20436F6C756D6E4E616D65206E76617263686172284D6178292C204F726967696E616C56616C7565206E76617263686172284D6178292C204E657756616C7565206E76617263686172284D6178292C20437265617465644279206E7661726368617228323536292C204372656174656444617465206461746574696D6581BC010003005455794D6963726F736F66742E53716C5365727665722E5365727665722E446174614163636573734B696E642C2053797374656D2E446174612C2056657273696F6E3D342E302E302E302C2043756C747572653D6E65757472616C2C205075626C69634B6579546F6B656E3D623737613563353631393334653038390A4461746141636365737301000000540E1146696C6C526F774D6574686F644E616D651E46696E64466C617474656E656441756469744C6F67735F46696C6C526F77540E0F5461626C65446566696E6974696F6E80E641756469744C6F67496420756E697175656964656E7469666965722C204576656E7454797065206E7661726368617228323536292C205461626C654E616D65206E7661726368617228323536292C205265636F7264494420756E697175656964656E7469666965722C20436F6C756D6E4E616D65206E76617263686172284D6178292C204F726967696E616C56616C7565206E76617263686172284D6178292C204E657756616C7565206E76617263686172284D6178292C20437265617465644279206E7661726368617228323536292C204372656174656444617465206461746574696D650801000000000000000B010006416E6E75616C00002101001C53656D692D416E6E75616C202865766572792036206D6F6E7468732900001F01001A517561727465726C79202865766572792033206D6F6E7468732900002001001B5472692D416E6E75616C202865766572792034206D6F6E7468732900002001001B42692D4D6F6E74686C79202865766572792032206D6F6E7468732900000C0100074D6F6E74686C7900002101001C53656D692D4D6F6E74686C79202874776963652061206D6F6E74682900001E01001942692D5765656B6C79202865766572792032207765656B732900000B0100065765656B6C7900000A0100054461696C790000150100105265647563696E672042616C616E636500001201000D5374726169676874204C696E6500002101001C416D6F7274697A6174696F6E20285374726169676874204C696E6529000027010022416D6F7274697A6174696F6E202844696D696E697368696E672042616C616E63652900001301000E466978656420496E74657265737400000000000000A62A686500000000020000001C010000986E00009850000052534453AC8EC15A8CEF88468DF1433C08DEF22101000000443A5C776F726B735C537769667446696E616E6369616C73536F6C7574696F6E5C496E6672617374727563747572652E446174612E53514C434C525C6F626A5C44656275675C496E6672617374727563747572652E446174612E53514C434C522E70646200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000DC6F00000000000000000000F66F0000002000000000000000000000000000000000000000000000E86F0000000000000000000000005F436F72446C6C4D61696E006D73636F7265652E646C6C0000000000FF2500200010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100100000001800008000000000000000000000000000000100010000003000008000000000000000000000000000000100000000004800000058800000940200000000000000000000940234000000560053005F00560045005200530049004F004E005F0049004E0046004F0000000000BD04EFFE00000100000000000000000000000000000000003F000000000000000400000002000000000000000000000000000000440000000100560061007200460069006C00650049006E0066006F00000000002400040000005400720061006E0073006C006100740069006F006E00000000000000B004F4010000010053007400720069006E006700460069006C00650049006E0066006F000000D001000001003000300030003000300034006200300000002C0002000100460069006C0065004400650073006300720069007000740069006F006E000000000020000000300008000100460069006C006500560065007200730069006F006E000000000030002E0030002E0030002E00300000005E001F00010049006E007400650072006E0061006C004E0061006D006500000049006E006600720061007300740072007500630074007500720065002E0044006100740061002E00530051004C0043004C0052002E0064006C006C00000000002800020001004C006500670061006C0043006F00700079007200690067006800740000002000000066001F0001004F0072006900670069006E0061006C00460069006C0065006E0061006D006500000049006E006600720061007300740072007500630074007500720065002E0044006100740061002E00530051004C0043004C0052002E0064006C006C0000000000340008000100500072006F006400750063007400560065007200730069006F006E00000030002E0030002E0030002E003000000038000800010041007300730065006D0062006C0079002000560065007200730069006F006E00000030002E0030002E0030002E0030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000007000000C000000083000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000]]></Value>
+						</Property>
+					</Element>
+				</Entry>
+			</Relationship>
+			<Relationship Name="Authorizer">
+				<Entry>
+					<References ExternalSource="BuiltIns" Name="[dbo]" />
+				</Entry>
+			</Relationship>
+		</Element>
+		<Element Type="SqlAssemblyFile" Name="[Infrastructure.Data.SQLCLR].[Infrastructure.Data.SQLCLR.pdb]">
+			<Property Name="Source">
+				<Value><![CDATA[0x4D6963726F736F667420432F432B2B204D534620372E30300D0A1A4453000000000200000200000057000000940100000000000053000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000C0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF38000000000000000000F0FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0BCA3101380000000010000000100000000000001700FFFF04000000FFFF03000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000BCA3101380000000010000000100000000000001800FFFF04000000FFFF0300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000942E3101A62A686501000000AC8EC15A8CEF88468DF1433C08DEF22100000000000000000100000001000000000000000000000000000000DC51330100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000BCA310138000000001000000010000000000000FFFFFFFF04000000FFFF030000000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000BCA310138000000001000000010000000000000FFFFFFFF04000000FFFF030000000000FFFFFFFF00000000FFFFFFFF00000000FFFFFFFF000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F862513FC607D311905300C04FA302A1C4454B99E9E6D211903F00C04FA302A10B9D865A1166D311BD2A0000F80849BD0FD02988B8111342878B770E8597AC16200000000000000046CE57B9CFAF4A5E228924E645F36BDA5457F4710D049D1AC52B3ABA353A5418000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F862513FC607D311905300C04FA302A1C4454B99E9E6D211903F00C04FA302A10B9D865A1166D311BD2A0000F80849BD0FD02988B8111342878B770E8597AC1620000000000000000813D3A9237552339BBD25066E5141395DF0B26CC1121E64F61BB01D1176790B000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000F862513FC607D311905300C04FA302A1C4454B99E9E6D211903F00C04FA302A10B9D865A1166D311BD2A0000F80849BD0FD02988B8111342878B770E8597AC162000000000000000820D57E19110B281BB9A191D9958391EC159094982937744C3FEB26D48E9929B0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000CF18000000000000CF180000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FEEFFEEF01000000D401000000443A5C776F726B735C537769667446696E616E6369616C73536F6C7574696F6E5C496E6672617374727563747572652E446174612E53514C434C525C46696E616E6369616C732E63730000643A5C776F726B735C737769667466696E616E6369616C73736F6C7574696F6E5C696E6672617374727563747572652E646174612E73716C636C725C66696E616E6369616C732E637300443A5C776F726B735C537769667446696E616E6369616C73536F6C7574696F6E5C496E6672617374727563747572652E446174612E53514C434C525C46696E6441756469744C6F672E637300643A5C776F726B735C737769667466696E616E6369616C73736F6C7574696F6E5C696E6672617374727563747572652E646174612E73716C636C725C66696E6461756469746C6F672E637300433A5C55736572735C537573616E5C417070446174615C4C6F63616C5C54656D705C2E4E45544672616D65776F726B2C56657273696F6E3D76342E352E322E53716C436C72417474726962757465732E637300633A5C75736572735C737573616E5C617070646174615C6C6F63616C5C74656D705C2E6E65746672616D65776F726B2C76657273696F6E3D76342E352E322E73716C636C72617474726962757465732E6373000B000000000000004B00000000000000010000004C000000000000002E01000096000000E20000008101000000000000070000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001BE23001D8000000D5CAF0E45523DA01010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000030000000600000001000000320000000000000081010000280000001BE23001154EAB02680000002E0100004B000000810100006500000000000000000000004C000000280000001BE23001A68A8BC868000000010000004B0000004C000000650000000000000000000000E2000000280000001BE230011D0241B268000000960000004B000000E20000006500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000003A002A110000000084010000000000009E00000000000000000000000100000600000000010000000052657061796D656E745363686564756C65000016000311040000003C0100009E00000000000000010000000A0024115553797374656D001A0024115553797374656D2E446174612E53716C54797065730000001E002411554D6963726F736F66742E53716C5365727665722E536572766572001A002411554D6963726F736F66742E56697375616C426173696300001E0024115553797374656D2E436F6C6C656374696F6E732E47656E65726963001A0024115553797374656D2E436F6D706F6E656E744D6F64656C0000160024115553797374656D2E436F6C6C656374696F6E73002A0020110000000001000011000000000000000072657061796D656E745363686564756C654C6973740000000200060042000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040000000C000000010007000406000014000000011002582480BE0280BE16010200060042002A11000000005002000000000000610000000000000000000000020000069E000000010000000052657061796D656E745363686564756C655F46696C6C526F770000160003118801000010020000610000009E000000010000002A00201100000000020000110000000000000000616D6F7274697A6174696F6E5461626C65526573756C7400020006003A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C00000001000006040600020C00000001240000020006002A002A1100000000140300000000000036000000000000000000000003000006FF00000001000000004656001600031154020000D002000036000000FF000000010000001A0020110000000003000011000000000000000052617465000000001A002011010000000300001100000000000000004E50657200000000020006003E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000100000604060002100000000113015316010000020006002A002A1100000000D803000000000000360000000000000000000000040000063501000001000000005056001600031118030000940300003600000035010000010000001A0020110000000003000011000000000000000052617465000000001A002011010000000300001100000000000000004E50657200000000020006003E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000100000604060002100000000113015316010000020006002E002A1100000000F405000000000000180100000000000000000000050000066B0100000100000000506D740000000016000311DC03000094050000180100006B0100000100000026002011000000000400001100000000000000007061796D656E74506572506572696F6400000000160003110C04000090050000E400000092010000010000001A0020110200000004000011000000000000000052617465000000001A002011030000000400001100000000000000004E50657200000000160003114C0400008C050000C3000000B20100000100000022002011040000000400001100000000000000007374617274696E6742616C616E63650026002011050000000400001100000000000000007072696E636970616C5061796D656E74000000002200201106000000040000110000000000000000696E7465726573745061796D656E740032002011070000000400001100000000000000006669786564496E7465726573745374617274696E6742616C616E63650000000032002011080000000400001100000000000000006669786564496E746572657374496E7465726573745061796D656E74000000000200060002000600020006005A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C00000001000006040600032C000000011302420180AF0180F301831A0183670183B00184A30184FD2481390281391601000000020006002E002A1100000000BC060000000000003800000000000000000000000600000683020000010000000050506D7400000016000311F8050000780600003800000083020000010000001A0020110000000003000011000000000000000052617465000000001A002011010000000300001100000000000000004E50657200000000020006003E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000100000604060002100000000113015316010000020006002E002A1100000000840700000000000038000000000000000000000007000006BB020000010000000049506D7400000016000311C00600004007000038000000BB020000010000001A0020110000000003000011000000000000000052617465000000001A002011010000000300001100000000000000004E50657200000000020006003E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000100000604060002100000000113015316010000020006002E002A11000000002C0800000000000026000000000000000000000008000006F302000001000000004E5065720000001600031188070000EC07000026000000F3020000010000001A002011000000000500001100000000000000005261746500000000020006003A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C00000001000006040600000C000000011316010200060042002A1100000000840A0000000000001002000000000000000000000900000619030000010000000044696D696E697368696E6742616C616E63655363686564756C65001600031130080000180A00001002000019030000010000001A00201100000000060000110000000000000000726573756C7400001A0020110100000006000011000000000000000064756544617465001A0020110200000006000011000000000000000052617465000000001A002011030000000600001100000000000000004E5065720000000022002011040000000600001100000000000000007374617274696E6742616C616E6365001A002011050000000600001100000000000000007061796D656E74001600031174080000140A0000990100008803000001000000160020110700000006000011000000000000000069000000160003113C090000100A00007C01000090030000010000001A00201108000000060000110000000000000000706572696F6400002200201109000000060000110000000000000000696E7465726573745061796D656E7400260020110A0000000600001100000000000000007072696E636970616C5061796D656E7400000000220020110B000000060000110000000000000000656E64696E6742616C616E636500000002000600020006000200060066000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C000000010000060406000238000000012A016C0180AD0180ED018136018177000181C60181F80188D10189130189570282172482430282430281BD160100000200060042002A1100000000BC0C0000000000000302000000000000000000000A0000062905000001000000005265647563696E6742616C616E63655363686564756C650000000016000311880A0000540C00000302000029050000010000001A00201100000000070000110000000000000000726573756C7400001A0020110100000007000011000000000000000064756544617465001A0020110200000007000011000000000000000052617465000000001A002011030000000700001100000000000000004E5065720000000022002011040000000700001100000000000000007374617274696E6742616C616E63650026002011050000000700001100000000000000007072696E636970616C5061796D656E740000000016000311CC0A0000500C0000950100008F0500000100000016002011070000000700001100000000000000006900000016000311A00B00004C0C00007801000097050000010000001A00201108000000070000110000000000000000706572696F6400002200201109000000070000110000000000000000696E7465726573745061796D656E7400220020110A000000070000110000000000000000656E64696E6742616C616E636500000002000600020006000200060062000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C000000010000060406000134000000012A016C0180AD0180ED018136018177000181B60181E80188C10189030282072482330282330281AD160100020006004A002A11000000001C0F0000000000003902000000000000000000000B0000062C070000010000000053747261696768744C696E65416D6F7274697A6174696F6E5363686564756C6500000016000311C00C0000B00E0000390200002C070000010000001A00201100000000080000110000000000000000726573756C7400001A0020110100000008000011000000000000000064756544617465001A0020110200000008000011000000000000000052617465000000001A002011030000000800001100000000000000004E50657200000000160003110C0D0000AC0E0000FA010000630700000100000016002011050000000800001100000000000000006900000016000311940D0000A80E0000DD0100006B070000010000001A00201106000000080000110000000000000000706572696F64000022002011070000000800001100000000000000007374617274696E6742616C616E6365001A002011080000000800001100000000000000007061796D656E74002200201109000000080000110000000000000000696E7465726573745061796D656E7400260020110A0000000800001100000000000000007072696E636970616C5061796D656E7400000000220020110B000000080000110000000000000000656E64696E6742616C616E636500000002000600020006000200060066000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C000000010000060406000238000000012A016C0180AD0180ED0001813801816A0188430188C60189170189790189DC0281892481B50281B502812F16010000020006003E002A110000000050110000000000000302000000000000000000000C00000665090000010000000053747261696768744C696E655363686564756C6500000016000311200F0000E81000000302000065090000010000001A00201100000000090000110000000000000000726573756C7400001A0020110100000009000011000000000000000064756544617465001A0020110200000009000011000000000000000052617465000000001A002011030000000900001100000000000000004E5065720000000022002011040000000900001100000000000000007374617274696E6742616C616E63650026002011050000000900001100000000000000007072696E636970616C5061796D656E74000000002200201106000000090000110000000000000000696E7465726573745061796D656E740016000311600F0000E41000008F010000D1090000010000001600201108000000090000110000000000000000690000001600031158100000E010000072010000D9090000010000001A00201109000000090000110000000000000000706572696F640000220020110A000000090000110000000000000000656E64696E6742616C616E636500000002000600020006000200060062000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C000000010000060406000134000000012A016C0180AD0180ED0181360181770181B4000181F40182260188FF0282452482710282710281EB160100020006003E002A11000000006413000000000000ED01000000000000000000000D000006680B000001000000004669786564496E7465726573745363686564756C650000160003115411000000130000ED010000680B0000010000001A002011000000000A0000110000000000000000726573756C7400001A002011010000000A000011000000000000000064756544617465001A002011020000000A0000110000000000000000526174650000000022002011030000000A00001100000000000000007374617274696E6742616C616E63650026002011040000000A00001100000000000000007072696E636970616C5061796D656E740000000022002011050000000A0000110000000000000000696E7465726573745061796D656E74001600031194110000FC1200008B010000C20B00000100000016002011070000000A0000110000000000000000690000001600031170120000F81200006F010000CA0B0000010000001A002011080000000A0000110000000000000000706572696F64000022002011090000000A0000110000000000000000656E64696E6742616C616E63650000000200060002000600020006005E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C000000010000060406000030000000012A016C0180AD0180D3018114018159000181A80181E20188BB02820124822D02822D02819F1601020006003A002A1100000000CC150000000000001101000000000000000000000E000006550D00000100000000466C617474656E4175646974496E666F00000016000311681300007415000011010000550D0000010000001E002411554D6963726F736F66742E53716C5365727665722E536572766572000A0024115553797374656D00160024115553797374656D2E436F6C6C656374696F6E73001E0024115553797374656D2E436F6C6C656374696F6E732E47656E6572696300120024115553797374656D2E44617461000000001A0024115553797374656D2E446174612E53716C436C69656E7400001A0024115553797374656D2E446174612E53716C54797065730000000E0024115553797374656D2E494F0000120024115553797374656D2E54657874000000001E0024115553797374656D2E586D6C2E53657269616C697A6174696F6E0000001A002011000000000B0000110000000000000000726573756C74000016000311A413000070150000B2000000A40D0000010000001E002011030000000B000011000000000000000073657269616C697A657200001A002011040000000B0000110000000000000000777261707065720016002011050000000B00001100000000000000007362000016000311CC1400006C15000030000000FD0D0000010000001A002011080000000B00001100000000000000006974656D0000000002000600020006000200060052000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040000000C00000001000A0004060001240000000110024E02808301810D0181620181D70282080682610182611601000200060042002A1100000000F8170000000000004F01000000000000000000000F000006660E0000010000000046696E6441756469744C6F67734279557365724E616D650000000016000311D0150000A41700004F010000660E00000100000026002011000000000C0000110000000000000000726573756C74436F6C6C656374696F6E000000001600031114160000A0170000400100006D0E0000010000001E002011010000000C0000110000000000000000636F6E6E656374696F6E000016000311541600009C1700001F010000800E00000100000022002011020000000C000011000000000000000073656C656374456D61696C7300000000160003118C16000098170000E3000000AF0E0000010000002E002011030000000C00001100000000000000006170706C69636174696F6E557365724E616D65506172616D0000000022002011040000000C0000110000000000000000737461727444617465506172616D000022002011050000000C0000110000000000000000656E6444617465506172616D0000000016000311C816000094170000840000000D0F00000100000022002011060000000C000011000000000000000061756469744C6F67735265616465720002000600020006000200060002000600020006004E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E00000604060000200000000116015A0180E10182D401839F0184420184E502853D1601020006004A002A1100000000C41800000000000054000000000000000000000010000006B50F0000010000000046696E6441756469744C6F67734279557365724E616D655F46696C6C526F770000000016000311FC1700008418000054000000B50F00000100000022002011000000000D000011000000000000000061756469744C6F67526573756C740000020006003A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E000006040600020C000000011B00000200060036002A1100000000B41A0000000000003201000000000000000000001100000609100000010000000046696E6441756469744C6F6773000016000311C8180000601A000032010000091000000100000026002011000000000E0000110000000000000000726573756C74436F6C6C656374696F6E0000000016000311001900005C1A00002301000010100000010000001E002011010000000E0000110000000000000000636F6E6E656374696F6E00001600031140190000581A000002010000231000000100000022002011020000000E000011000000000000000073656C656374456D61696C73000000001600031178190000541A0000C6000000521000000100000022002011030000000E0000110000000000000000737461727444617465506172616D000022002011040000000E0000110000000000000000656E6444617465506172616D0000000016000311B4190000501A000084000000931000000100000022002011050000000E000011000000000000000061756469744C6F67735265616465720002000600020006000200060002000600020006004E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E00000604060003200000000116015A0180E10182A30183460183E90284411601000000020006003E002A1100000000741B000000000000540000000000000000000000120000063B110000010000000046696E6441756469744C6F67735F46696C6C526F77000016000311B81A0000341B0000540000003B1100000100000022002011000000000D000011000000000000000061756469744C6F67526573756C740000020006003A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E000006040600020C000000011B00000200060046002A1100000000481D000000000000380100000000000000000000130000068F1100000100000000446573657269616C697A654164646974696F6E616C4E6172726174696F6E0016000311781B0000E81C0000380100008F110000010000001E002011000000000F0000110000000000000000636F6C756D6E4E616D65000022002011010000000F00001100000000000000006F726967696E616C4E616D65000000001E002011020000000F00001100000000000000006E657756616C7565000000001A002011030000000F0000110000000000000000726573756C74000016000311C01B0000E41C0000B100000006120000010000001E002011060000000F000011000000000000000073657269616C697A657200001A002011070000000F0000110000000000000000777261707065720016000311581C0000E01C0000410000005A120000010000001A0020110A0000000F00001100000000000000006974656D000000000200060002000600020006005A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E000006040600032C000000011601550180960180CD0281310281660181F00182450282B606830F01830F1601000000020006004A002A11000000000820000000000000BA010000000000000000000014000006C7120000010000000046696E64466C617474656E656441756469744C6F67734279557365724E616D65000000160003114C1D0000A81F0000BA010000C7120000010000002600201100000000100000110000000000000000726573756C74436F6C6C656374696F6E0000000016000311981D0000A41F0000AB010000CE120000010000001E00201101000000100000110000000000000000636F6E6E656374696F6E000016000311D81D0000A01F00008A010000E112000001000000220020110200000010000011000000000000000073656C656374456D61696C730000000016000311101E00009C1F00004E01000010130000010000002E002011030000001000001100000000000000006170706C69636174696F6E557365724E616D65506172616D000000002200201104000000100000110000000000000000737461727444617465506172616D00002200201105000000100000110000000000000000656E6444617465506172616D00000000160003114C1E0000981F0000EF0000006E13000001000000220020110600000010000011000000000000000061756469744C6F67735265616465720016000311DC1E0000941F0000C10000007C1300000100000022002011070000001000001100000000000000006175646974496E666F5475706C65730016000311181F0000901F0000840000009B1300000100000022002011090000001000001100000000000000006175646974496E666F5475706C650000020006000200060002000600020006000200060002000600020006005A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E000006040600032C0000000116015A0180E10182E00183AB01844E0184F101859C06860A01860A02854916010000000200060052002A1100000000DC200000000000007B00000000000000000000001500000681140000010000000046696E64466C617474656E656441756469744C6F67734279557365724E616D655F46696C6C526F77000000160003110C2000009C2000007B0000008114000001000000220020110000000011000011000000000000000061756469744C6F67526573756C740000020006003A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E000006040600020C00000001240000020006003E002A11000000005C230000000000009D010000000000000000000016000006FC140000010000000046696E64466C617474656E656441756469744C6F67730016000311E0200000002300009D010000FC140000010000002600201100000000120000110000000000000000726573756C74436F6C6C656374696F6E000000001600031120210000FC2200008E01000003150000010000001E00201101000000120000110000000000000000636F6E6E656374696F6E00001600031160210000F82200006D0100001615000001000000220020110200000012000011000000000000000073656C656374456D61696C73000000001600031198210000F42200003101000045150000010000002200201103000000120000110000000000000000737461727444617465506172616D00002200201104000000120000110000000000000000656E6444617465506172616D0000000016000311D4210000F0220000EF0000008615000001000000220020110500000012000011000000000000000061756469744C6F6773526561646572001600031134220000EC220000C1000000941500000100000022002011060000001200001100000000000000006175646974496E666F5475706C6573001600031170220000E822000084000000B31500000100000022002011080000001200001100000000000000006175646974496E666F5475706C6500000200060002000600020006000200060002000600020006000200060056000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E00000604060002280000000116015A0180E10182AF0183520183F50184A006850E01850E02844D160100000200060046002A110000000024240000000000007B00000000000000000000001700000699160000010000000046696E64466C617474656E656441756469744C6F67735F46696C6C526F77001600031160230000E42300007B0000009916000001000000220020110000000011000011000000000000000061756469744C6F67526573756C740000020006003A000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004020000040100000C0000000E000006040600020C0000000124000002000600F20000000801000000000000010001009E0000000000000014000000FC0000000000000064000080010000006500008007000000670000801D000000EEEFFE802000000068000080210000006900008023000000EEEFFE8025000000EEEFFE80470000006C000080580000006D0000805A000000700000806B000000710000806D000000730000807E00000074000080800000007600008091000000770000809300000079000080950000007B000080960000007D0000809B0000007E0000800500060009004900090056000000000009000A000D004600000000000000000015008E0015001B0015008B0015001B001500880015001B001500890015001B0015001B0009000A000900260005000600F2000000900000009E0000000100010061000000000000000A00000084000000000000008100008001000000820000800800000084000080140000008500008020000000860000802C0000008700008039000000880000804600000089000080530000008A000080600000008B000080050006000900660009003100090033000900430009003300090043000900450009003F0005000600F200000054000000FF0000000100010036000000000000000500000048000000000000008F00008001000000900000801000000092000080200000009400008034000000950000800500060009003D00090046000900400005000600F2000000540000003501000001000100360000000000000005000000480000000000000099000080010000009A000080100000009C000080200000009E000080340000009F0000800500060009003D00090046000900400005000600F2000000440100006B010000010001001801000000000000190000003801000000000000A300008001000000A40000800B000000A600008021000000EEEFFE8027000000A700008028000000A800008037000000AA00008047000000AC0000804A000000EEEFFE804E000000EEEFFE8074000000AF00008082000000B000008087000000B5000080B0000000B7000080B6000000B9000080BC000000BB000080C2000000BD000080C4000000C0000080ED000000C2000080FD000000C400008006010000C600008008010000C80000800A010000CA0000800B010000CC00008015010000CD0000800500060009003300090056000000000009000A000D0041000D004A000D00460000000000000000001500580015001B0015004A00150046001500470015004B0015001B0015005700150068001500750015001B0015001B0009000A000900210005000600F20000005400000083020000010001003800000000000000050000004800000000000000D100008001000000D200008010000000D400008020000000D600008036000000D70000800500060009003D00090046000900460005000600F200000054000000BB020000010001003800000000000000050000004800000000000000DB00008001000000DC00008010000000DE00008020000000E000008036000000E10000800500060009003D00090046000900460005000600F200000048000000F3020000010001002600000000000000040000003C00000000000000E500008001000000E600008010000000E800008024000000E90000800500060009003D000900400005000600F20000007002000019030000010001001002000000000000320000006402000000000000EC00008001000000ED00008007000000EF00008018000000F100008027000000F300008037000000F500008060000000F70000806F000000F900008072000000EEEFFE8077000000FA00008078000000FB0000807E000000FD00008085000000EEEFFE808C000000FE0000808D000000FF00008090000000EEEFFE8094000000EEEFFE80F100000002010080FA00000003010080FF0000000501008008010000060100800A010000080100801301000009010080150100000B0100801E0100000C010080200100000E010080290100000F0100802B0100001101008034010000120100803601000014010080470100001501008049010000170100805A010000180100805C0100001A0100806D0100001B0100806F0100001D010080800100001E0100808201000020010080840100002201008085010000240100808B010000260100809201000028010080990100002A010084EE01000030010080F201000031010080F3010000F9000080F9010000F900008001020000EEEFFE8008020000330100800D0200003401008005000600090054000900400009003D000900460009003E0009004A000E0017000000000009000A000D0020000D001800000000000D000E0011004A0000000000000000001900370019001F001900380019001F001900380019001F001900380019001F001900380019001F001900380019001F001900370019001F001900370019001F001900360019001F001900360019001F0019001F000D000E000D003F000D0041000D0047000D0014000D002D0009000A002300260019002100000000000900170005000600F20000006402000029050000010001000302000000000000310000005802000000000000370100800100000038010080070000003A010080180000003C010080270000003E01008037000000400100806000000042010080660000004401008069000000EEEFFE806E000000450100806F0000004601008075000000480100807C000000EEEFFE808300000049010080840000004A01008087000000EEEFFE808B000000EEEFFE80E80000004D010080F10000004E010080F600000050010080FF0000005101008001010000530100800A010000540100800C0100005601008015010000570100801701000059010080200100005A010080220100005C0100802B0100005D0100802D0100005F0100803E01000060010080400100006201008051010000630100805301000065010080640100006601008066010000680100807701000069010080790100006B0100807B0100006D0100807C0100006F01008082010000710100808901000073010084E101000079010080E50100007A010080E601000044010080EC01000044010080F4010000EEEFFE80FB0100007C010080000200007D01008005000600090054000900400009003D000900460009003E0009003A000E0017000000000009000A000D0020000D001800000000000D000E0011004A0000000000000000001900370019001F001900380019001F001900380019001F001900380019001F001900380019001F001900380019001F001900370019001F001900370019001F001900360019001F001900360019001F0019001F000D000E000D003F000D0047000D0014000D002D0009000A002300260019002100000000000900170005000600F2000000640200002C07000001000100390200000000000031000000580200000000000080010080010000008101008007000000830100801800000085010080270000008701008037000000890100803A000000EEEFFE803F0000008A010080400000008B010080460000008D0100804D000000EEEFFE80540000008E010080550000008F01008058000000EEEFFE805C000000EEEFFE80B900000092010080C200000093010080C700000095010080D000000096010080D200000098010080DB00000099010080DD0000009B010080E60000009C010080E80000009E010080F10000009F010080F3000000A1010080FC000000A2010080FE000000A40100800F010000A501008011010000A701008022010000A801008024010000AA01008035010000AB01008037010000AD01008048010000AE0100804A010000B00100804C010000B20100804D010000B401008074010000B601008083010000B801008095010000BA010080A7010000BC010080C6010000BE0100841B020000C30100801C0200008901008022020000890100802A020000EEEFFE8031020000C501008036020000C601008005000600090054000900400009003D00090046000E0017000000000009000A000D0020000D001800000000000D000E0011004A0000000000000000001900370019001F001900380019001F001900380019001F001900380019001F001900380019001F001900380019001F001900370019001F001900370019001F001900360019001F001900360019001F0019001F000D000E000D0080000D004E000D005F000D0060000D008A000D00140009000A002300260019002100000000000900170005000600F20000006402000065090000010001000302000000000000310000005802000000000000C901008001000000CA01008007000000CC01008018000000CE01008027000000D001008037000000D201008060000000D401008066000000D60100806C000000D80100806F000000EEEFFE8074000000D901008075000000DA0100807B000000DC01008082000000EEEFFE8089000000DD0100808A000000DE0100808D000000EEEFFE8091000000EEEFFE80EE000000E1010080F7000000E2010080FC000000E401008005010000E501008007010000E701008010010000E801008012010000EA0100801B010000EB0100801D010000ED01008026010000EE01008028010000F001008031010000F101008033010000F301008044010000F401008046010000F601008057010000F701008059010000F90100806A010000FA0100806C010000FC0100807D010000FD0100807F010000FF010080810100000102008082010000030200808901000005020084E10100000B020080E50100000C020080E6010000D8010080EC010000D8010080F4010000EEEFFE80FB0100000E020080000200000F02008005000600090054000900400009003D000900460009003E0009003A0009003B000E0017000000000009000A000D0020000D001800000000000D000E0011004A0000000000000000001900370019001F001900380019001F001900380019001F001900380019001F001900380019001F001900380019001F001900370019001F001900370019001F001900360019001F001900360019001F0019001F000D000E000D0047000D0014000D002D0009000A002300260019002100000000000900170005000600F200000058020000680B000001000100ED01000000000000300000004C020000000000001202008001000000130200800700000015020080180000001702008024000000190200804C0000001B020080520000001D0200805A0000001F0200805D000000EEEFFE8062000000200200806300000021020080690000002302008070000000EEEFFE80770000002402008078000000250200807B000000EEEFFE807F000000EEEFFE80DC00000028020080E500000029020080EA0000002B020080F30000002C020080F50000002E020080FE0000002F020080000100003102008009010000320200800B01000034020080140100003502008016010000370200801F01000038020080210100003A020080320100003B020080340100003D020080450100003E020080470100004002008058010000410200805A010000430200806B010000440200806D010000460200806F01000048020080700100004A020080760100004C020084CD01000052020080D001000053020080D10100001F020080D70100001F020080DE010000EEEFFE80E501000055020080EA010000560200800500060009005400090040000900230009003E000900420009004A000E0017000000000009000A000D0020000D001800000000000D000E0011004A0000000000000000001900370019001F001900380019001F001900380019001F001900380019001F001900380019001F001900380019001F001900370019001F001900370019001F001900360019001F001900360019001F0019001F000D000E000D0047000D0013000D002D0009000A002B002E0019002900000000000900170005000600F20000008C010000550D00000100010011010000080000001F00000080010000000000003F00008001000000400000800700000043000080080000004400008013000000EEEFFE8019000000450000801A0000004600008049000000EEEFFE804F000000470000805000000048000080600000004A0000807F0000004C000080860000004E00008092000000EEEFFE80960000004F00008097000000500000809800000050000080A6000000EEEFFE80A800000050000080B100000051000080D800000050000080E3000000EEEFFE80F200000052000080F300000054000080000100005500008001010000560000800201000058000080070100005A000080080100005A000080090100005A0000800E0100005B000080050006000900230009000A000D002100000000000D000E0011006E00000000001100120015005200150072001500320015003D000000000015001600190020002E0049000000000022002A001D00A5002B002D00000000001500160015003700110012000D000E000D001B0009000E000F00100011001F0005000600F200000098010000660E0000010001004F01000008000000200000008C010000000000006200008001000000630000800700000065000080120000006600008013000000670000801A00000069000085490000006F0000804A000000700000805D000000710000806500000073000080780000007400008086000000760000809900000077000080A700000079000080AF0000007A000080B0000000EEEFFE80B20000007C000080B30000007D0000800D0100007E0000800E0100007B00008017010000EEEFFE801B0100007F0000801E010000EEEFFE802A010000EEEFFE802B010000800000802E010000EEEFFE8038010000EEEFFE8039010000810000803C010000EEEFFE8046010000EEEFFE8047010000830000804C0100008400008005000600090036001000570009000A000D001F0014001C000D000E00110081001100460011006D00110032001100690011002E001800540011001200000000001500160019002F011500160015003300000000001100120000000000000000000D000E00000000000000000009000A0000000000000000000900210005000600F200000084000000B50F0000010001005400000008000000090000007800000000000000870000800100000088000080080000008A000080140000008B000080200000008C0000802C0000008D000080390000008E000080460000008F00008053000000900000800500060009004B000900300009002E0009002E000900420009002E000900320005000600F200000080010000091000000100010032010000080000001E0000007401000000000000970000800100000098000080070000009A000080120000009B000080130000009C0000801A0000009E00008549000000A40000804A000000A50000805C000000A600008069000000A80000807C000000A90000808A000000AB00008092000000AC00008093000000EEEFFE8095000000AE00008096000000AF000080F0000000B0000080F1000000AD000080FA000000EEEFFE80FE000000B100008001010000EEEFFE800D010000EEEFFE800E010000B200008011010000EEEFFE801B010000EEEFFE801C010000B30000801F010000EEEFFE8029010000EEEFFE802A010000B50000802F010000B600008005000600090036001000570009000A000D001F0014001C000D000E0011006D00110032001100690011002E001800540011001200000000001500160019002F011500160015003300000000001100120000000000000000000D000E00000000000000000009000A0000000000000000000900210005000600F2000000840000003B110000010001005400000008000000090000007800000000000000B900008001000000BA00008008000000BC00008014000000BD00008020000000BE0000802C000000BF00008039000000C000008046000000C100008053000000C20000800500060009004B000900300009002E0009002E000900420009002E000900320005000600F2000000D40100008F11000001000100380100000800000025000000C801000000000000E100008001000000E20000800D000000E400008019000000E600008025000000E80000802B000000EB0000802C000000EC00008038000000EEEFFE803F000000ED00008040000000EE00008070000000EEEFFE8077000000EF00008078000000F000008089000000F2000080A9000000F4000080B5000000EEEFFE80B9000000F5000080BA000000F6000080BB000000F6000080C9000000EEEFFE80CB000000F6000080D4000000F7000080D5000000F8000080E2000000FA000080EF000000FC000080FC000000FE0000800B010000FF0000800C010000F600008017010000EEEFFE8026010000000100802701000001010080280100000201008029010000040100802E010000060100802F01000006010080300100000601008035010000070100800500060009003C0009003E0009003A000900490009000A000D002100000000000D000E0011006E000000000011001200150052001500720015003D000000000015001600190020002E0049000000000022002A0019001A001D0049001D004E001D0045001D00780019001A002B002D000000000015001600110012000D000E000D001B0009000E000F00100011001F0005000600F200000004020000C712000001000100BA0100000800000029000000F8010000000000000E010080010000000F0100800700000011010080120000001201008013000000130100801A00000015010085490000001B0100804A0000001C0100805D0000001D010080650000001F010080780000002001008086000000220100809900000023010080A700000025010080AF00000026010080B0000000EEEFFE80B500000028010080B600000029010080C50000002B010080C60000002B010080CF000000EEEFFE80D40000002B010080DD0000002C010080DE0000002D010080570100002E010080580100002B01008066010000EEEFFE80750100002F01008076010000270100807F010000EEEFFE80860100003001008089010000EEEFFE8095010000EEEFFE80960100003101008099010000EEEFFE80A3010000EEEFFE80A401000032010080A7010000EEEFFE80B1010000EEEFFE80B201000034010080B70100003501008005000600090036001000570009000A000D001F0014001C000D000E00110081001100460011006D00110032001100690011002E001800540011001200000000001500160019006F001900200038004700000000002200340019001A001D007F0119001A0035003700000000001500160015003300000000001100120000000000000000000D000E00000000000000000009000A0000000000000000000900210005000600F2000000A800000081140000010001007B000000080000000C0000009C00000000000000380100800100000039010080080000003B010080140000003C010080200000003D0100802C0000003E010080390000003F0100804600000040010080530000004101008060000000420100806D000000430100807A000000440100800500060009005D000900300009002E0009002E0009002C00090030000900360009002C0009002E000900320005000600F2000000EC010000FC140000010001009D0100000800000027000000E0010000000000004B010080010000004C010080070000004E010080120000004F01008013000000500100801A0000005201008549000000580100804A000000590100805C0000005A010080690000005C0100807C0000005D0100808A0000005F010080920000006001008093000000EEEFFE8098000000620100809900000063010080A800000065010080A900000065010080B2000000EEEFFE80B700000065010080C000000066010080C1000000670100803A010000680100803B0100006501008049010000EEEFFE805801000069010080590100006101008062010000EEEFFE80690100006A0100806C010000EEEFFE8078010000EEEFFE80790100006B0100807C010000EEEFFE8086010000EEEFFE80870100006C0100808A010000EEEFFE8094010000EEEFFE80950100006E0100809A0100006F01008005000600090036001000570009000A000D001F0014001C000D000E0011006D00110032001100690011002E001800540011001200000000001500160019006F001900200038004700000000002200340019001A001D007F0119001A0035003700000000001500160015003300000000001100120000000000000000000D000E00000000000000000009000A0000000000000000000900210005000600F2000000A800000099160000010001007B000000080000000C0000009C000000000000007201008001000000730100800800000075010080140000007601008020000000770100802C000000780100803900000079010080460000007A010080530000007B010080600000007C0100806D0000007D0100807A0000007E0100800500060009005D000900300009002E0009002E0009002C00090030000900360009002C0009002E000900320005000600F40000001000000001000000000000009600000000000000B800000000000000200000003800000060000000780000008C000000A4000000B8000000D0000000E4000000FC00000010010000280100003C010000540100006801000080010000AC010000C4010000EC01000004020000340200004C0200007002000088020000AC020000C4020000E4020000FC020000240300003C0300006C03000084030000A0030000B8030000DC030000F4030000240400003C0400006C04000084040000BC040000D4040000FC04000014050000440500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000004000000F4000000080000002E010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000036002A11000000003C00000000000000070000000000000000000000320000063518000001000000006765745F5461626C654E616D6500000200060036002A11000000007800000000000000080000000000000000000000330000063C18000001000000007365745F5461626C654E616D6500000200060036002A1100000000B400000000000000070000000000000000000000340000064418000001000000006765745F4576656E745479706500000200060036002A1100000000F000000000000000080000000000000000000000350000064B18000001000000007365745F4576656E745479706500000200060036002A11000000002C01000000000000070000000000000000000000360000065318000001000000006765745F5265636F726449440000000200060036002A11000000006801000000000000080000000000000000000000370000065A18000001000000007365745F5265636F726449440000000200060042002A1100000000B001000000000000070000000000000000000000380000066218000001000000006765745F4175646974496E666F436F6C6C656374696F6E000000000200060042002A1100000000F801000000000000080000000000000000000000390000066918000001000000007365745F4175646974496E666F436F6C6C656374696F6E0000000002000600F200000024000000351800000100010007000000000000000100000018000000000000003300008023002700F2000000240000003C1800000100010008000000000000000100000018000000000000003300008028002C00F200000024000000441800000100010007000000000000000100000018000000000000003600008023002700F2000000240000004B1800000100010008000000000000000100000018000000000000003600008028002C00F200000024000000531800000100010007000000000000000100000018000000000000003900008022002600F2000000240000005A1800000100010008000000000000000100000018000000000000003900008027002B00F200000024000000621800000100010007000000000000000100000018000000000000003B00008036003A00F200000024000000691800000100010008000000000000000100000018000000000000003B0000803B003F00F4000000080000009600000000000000400000005C0500007805000090050000AC050000C4050000E0050000F8050000140600002C06000048060000600600007C06000094060000BC060000D4060000FC0600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000003A002A110000000040000000000000000700000000000000000000003B0000067118000001000000006765745F437265617465644461746500000000020006003A002A110000000080000000000000000800000000000000000000003C0000067818000001000000007365745F437265617465644461746500000000020006002E002A1100000000E4000000000000004F00000000000000000000003D0000068018000001000000002E63746F7200002E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004010000040100000C0000002A00000602000600F20000002400000071180000010001000700000000000000010000001800000000000000D00000802A002E00F20000002400000078180000010001000800000000000000010000001800000000000000D00000802F003300F2000000A800000080180000010001004F000000000000000C0000009C00000000000000D200008007000000D300008008000000D40000800F000000D500008016000000D60000801D000000D700008025000000D80000802D000000D900008035000000DA0000803D000000DB00008045000000DC0000804E000000DD0000800900E80009000A000D0025000D0023000D0023000D0021000D0025000D002B000D0021000D0023000D00270009000A00F40000000800000096000000000000001800000014070000340700004C0700006C0700008407000098070000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000032002A11000000003800000000000000070000000000000000000000190000061417000001000000006765745F506572696F64000200060032002A110000000070000000000000000800000000000000000000001A0000061B17000001000000007365745F506572696F64000200060036002A1100000000AC000000000000000700000000000000000000001B0000062317000001000000006765745F44756544617465000000000200060036002A1100000000E8000000000000000800000000000000000000001C0000062A17000001000000007365745F4475654461746500000000020006003E002A11000000002C010000000000000700000000000000000000001D0000063217000001000000006765745F5374617274696E6742616C616E636500000000020006003E002A110000000070010000000000000800000000000000000000001E0000063917000001000000007365745F5374617274696E6742616C616E6365000000000200060036002A1100000000AC010000000000000700000000000000000000001F0000064117000001000000006765745F5061796D656E74000000000200060036002A1100000000E801000000000000080000000000000000000000200000064817000001000000007365745F5061796D656E7400000000020006003E002A11000000002C02000000000000070000000000000000000000210000065017000001000000006765745F496E7465726573745061796D656E7400000000020006003E002A11000000007002000000000000080000000000000000000000220000065717000001000000007365745F496E7465726573745061796D656E7400000000020006003E002A1100000000B402000000000000070000000000000000000000230000065F17000001000000006765745F5072696E636970616C5061796D656E74000000020006003E002A1100000000F802000000000000080000000000000000000000240000066617000001000000007365745F5072696E636970616C5061796D656E74000000020006003A002A11000000003803000000000000070000000000000000000000250000066E17000001000000006765745F456E64696E6742616C616E63650000020006003A002A11000000007803000000000000080000000000000000000000260000067517000001000000007365745F456E64696E6742616C616E63650000020006002E002A1100000000B004000000000000450000000000000000000000270000067D17000001000000002E63746F720000160003117C0300007C040000450000007D170000010000000A0024115553797374656D001A0024115553797374656D2E446174612E53716C54797065730000001E002411554D6963726F736F66742E53716C5365727665722E536572766572001A002411554D6963726F736F66742E56697375616C426173696300001E0024115553797374656D2E436F6C6C656374696F6E732E47656E65726963001A0024115553797374656D2E436F6D706F6E656E744D6F64656C0000160024115553797374656D2E436F6C6C656374696F6E7300020006002E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004010000040000000C0000000100070002000600F200000024000000141700000100010007000000000000000100000018000000000000000D00008022002600F2000000240000001B1700000100010008000000000000000100000018000000000000000D00008027002B00F200000024000000231700000100010007000000000000000100000018000000000000000F00008026002A00F2000000240000002A1700000100010008000000000000000100000018000000000000000F0000802B002F00F20000002400000032170000010001000700000000000000010000001800000000000000110000802D003100F200000024000000391700000100010008000000000000000100000018000000000000001100008032003600F200000024000000411700000100010007000000000000000100000018000000000000001300008025002900F20000002400000048170000010001000800000000000000010000001800000000000000130000802A002E00F20000002400000050170000010001000700000000000000010000001800000000000000150000802D003100F200000024000000571700000100010008000000000000000100000018000000000000001500008032003600F2000000240000005F170000010001000700000000000000010000001800000000000000170000802E003200F200000024000000661700000100010008000000000000000100000018000000000000001700008033003700F2000000240000006E170000010001000700000000000000010000001800000000000000190000802B002F00F200000024000000751700000100010008000000000000000100000018000000000000001900008030003400F2000000900000007D1700000100010045000000000000000A00000084000000000000001B000080070000001C000080080000001D000080100000001E000080180000001F0000802000000020000080290000002100008032000000220000803B0000002300008044000000240000800900D00009000A000D001D000D001F000D002F000D001F000D002F000D0031000D002B0009000A00F400000008000000010000000000000078000000B0070000CC070000E40700000008000018080000340800004C0800006808000080080000A4080000BC080000E0080000F8080000140900002C0900004809000060090000840900009C090000C0090000D8090000FC090000140A0000380A0000500A0000700A0000880A0000A80A0000C00A0000D40A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000400000036002A11000000003C000000000000000700000000000000000000002B0000060818000001000000006765745F436F6C756D6E4E616D65000200060036002A110000000078000000000000000800000000000000000000002C0000060F18000001000000007365745F436F6C756D6E4E616D6500020006003A002A1100000000B8000000000000000700000000000000000000002D0000061718000001000000006765745F4F726967696E616C56616C75650000020006003A002A1100000000F8000000000000000800000000000000000000002E0000061E18000001000000007365745F4F726967696E616C56616C756500000200060036002A110000000034010000000000000700000000000000000000002F0000062618000001000000006765745F4E657756616C75650000000200060036002A11000000007001000000000000080000000000000000000000300000062D18000001000000007365745F4E657756616C756500000002000600F200000024000000081800000100010007000000000000000100000018000000000000002600008024002800F2000000240000000F1800000100010008000000000000000100000018000000000000002600008029002D00F200000024000000171800000100010007000000000000000100000018000000000000002900008027002B00F2000000240000001E180000010001000800000000000000010000001800000000000000290000802C003000F200000024000000261800000100010007000000000000000100000018000000000000002C00008022002600F2000000240000002D1800000100010008000000000000000100000018000000000000002C00008027002B00F400000008000000960000000000000030000000EC0A00000C0B0000240B0000440B00005C0B00007C0B0000940B0000B40B0000CC0B0000E80B0000000C00001C0C00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000040000003A002A1100000000400000000000000007000000000000000000000028000006C217000001000000006765745F437265617465644461746500000000020006003A002A1100000000800000000000000008000000000000000000000029000006C917000001000000007365745F437265617465644461746500000000020006002E002A1100000000F4010000000000003700000000000000000000002A000006D117000001000000002E63746F7200001600031184000000C001000037000000D1170000010000001E002411554D6963726F736F66742E53716C5365727665722E536572766572000A0024115553797374656D00160024115553797374656D2E436F6C6C656374696F6E73001E0024115553797374656D2E436F6C6C656374696F6E732E47656E6572696300120024115553797374656D2E44617461000000001A0024115553797374656D2E446174612E53716C436C69656E7400001A0024115553797374656D2E446174612E53716C54797065730000000E0024115553797374656D2E494F0000120024115553797374656D2E54657874000000001E0024115553797374656D2E586D6C2E53657269616C697A6174696F6E000000020006002E000404C93FEAC6B359D649BC250902BBABB460000000004D0044003200000004010000040000000C00000001000A0002000600F200000024000000C2170000010001000700000000000000010000001800000000000000150000802A002E00F200000024000000C9170000010001000800000000000000010000001800000000000000150000802F003300F200000084000000D117000001000100370000000000000009000000780000000000000017000080070000001800008008000000190000800F0000001A000080160000001B0000801D0000001C000080250000001D0000802D0000001E000080360000001F0000800900A90009000A000D0025000D0023000D0023000D0037000D0023000D00270009000A00F400000008000000960000000000000018000000340C0000540C00006C0C00008C0C0000A40C0000B80C00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FFFFFFFF1A092FF1A0030000C403000061000000010000003502000001000000DD0300000100000035080000010000000100000001000000C1090000010000000D0B000001000000790500000100000035070000010000008D00000001000000710200000100000025040000010000006908000001000000FD09000001000000450B000001000000AD050000010000006D07000001000000B9030000010000004D020000010000006D03000001000000490900000100000079000000010000003D04000001000000A5000000010000001D0C0000010000008507000001000000C10A000001000000A50C0000010000001507000001000000350C0000010000004D070000010000006D0C000001000000C5010000010000003D030000010000002100000001000000ED01000001000000A10300000100000001080000010000008509000001000000B90C00000100000011010000010000002503000001000000FD040000010000001509000001000000A90A000001000000E90B0000010000004906000001000000250B000001000000ED0A0000010000003D010000010000004505000001000000D50A0000010000007D06000001000000B900000001000000AD020000010000006D04000001000000A508000001000000390A0000010000007D0B0000010000009506000001000000D506000001000000E1050000010000009907000001000000E507000001000000B107000001000000FD020000010000008503000001000000F503000001000000E500000001000000E502000001000000BD04000001000000E108000001000000710A000001000000B50B0000010000009D09000001000000D504000001000000610900000100000015060000010000003900000001000000BD080000010000008108000001000000D100000001000000C5020000010000004D080000010000001908000001000000050200000100000081010000010000002901000001000000FD0000000100000069010000010000001505000001000000150A000001000000550C000001000000D909000001000000BD060000010000005D050000010000009105000001000000AD01000001000000CD070000010000008D0C000001000000F905000001000000C505000001000000FD060000010000008504000001000000F9080000010000002D090000010000005501000001000000010C000001000000890A000001000000510A000001000000CD0B0000010000005D0B000001000000950B00000100000061060000010000002D0600000100000089020000010000000104000002080040040100000802000000000000000000000000000000000000010400000208000004010000080A000000000000000000000000000000000000000004000200000004108004080000000002000000040040020000000000002001040000020800000401000000000000000000000000000000000000000000000104000002080000040100000800000000800008000000000000000000000000010000000200000004000000080000000000000000000000000000000000000001040000020800000481000808020000010010000000000000000100402000000104000002080000042900800800000000000000000008000000000001001000000000000000000000000000000000000000000000000000000000000000000000A000000002002000080000000000000000000012000020000000000000000002000000000000020A00200004000000000000004000040000000000000000000200000001000000088000080400000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080000000100100000000000000000000000000000000000000000000000000000000000000800000044004400000000000000000000000002002000000000000000000000000000008000080000400000000000000000000C0000001800000024000000300000003C0000004800000054000000600000006C0000007800000084000000900000009C000000A8000000B4000000C0000000CC000000D8000000E4000000F0000000FC0000000801000014010000200100002C0100005001000068010000800100008C01000098010000A4010000B0010000BC010000C8010000D4010000E0010000EC010000F801000004020000100200001C0200002802000034020000400200004C0200005802000064020000700200007C0200008802000094020000A0020000AC020000B8020000C4020000D0020000DC020000E8020000F4020000000300000C0300001803000024030000300300003C0300004803000054030000600300006C0300007803000084030000900300009C030000A8030000B4030000C0030000CC030000D8030000E4030000F0030000FC0300000804000014040000200400002C0400003804000044040000500400005C0400006804000074040000800400008C04000098040000A4040000B0040000BC040000C8040000D4040000E0040000EC040000F804000004050000100500001C0500002805000034050000400500004C050000580500006405000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001E0025110000000004000000010052657061796D656E745363686564756C6500160029110000000004000000010030363030303030310000260025110000000088010000010052657061796D656E745363686564756C655F46696C6C526F7700160029110000000088010000010030363030303030320000120025110000000054020000010046560000000016002911000000005402000001003036303030303033000012002511000000001803000001005056000000001600291100000000180300000100303630303030303400001200251100000000DC0300000100506D740000001600291100000000DC0300000100303630303030303500001200251100000000F8050000010050506D7400001600291100000000F80500000100303630303030303600001200251100000000C0060000010049506D7400001600291100000000C006000001003036303030303037000012002511000000008807000001004E50657200001600291100000000880700000100303630303030303800002A0025110000000030080000010044696D696E697368696E6742616C616E63655363686564756C65000000001600291100000000300800000100303630303030303900002600251100000000880A000001005265647563696E6742616C616E63655363686564756C650000001600291100000000880A0000010030363030303010000000000000000000000000000000000000000000000000000000FFFFFFFF1A092FF10000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000306100002E00251100000000C00C0000010053747261696768744C696E65416D6F7274697A6174696F6E5363686564756C6500001600291100000000C00C00000100303630303030306200002200251100000000200F0000010053747261696768744C696E655363686564756C6500001600291100000000200F000001003036303030303063000022002511000000005411000001004669786564496E7465726573745363686564756C65001600291100000000541100000100303630303030306400001E00251100000000681300000100466C617474656E4175646974496E666F00001600291100000000681300000100303630303030306500002600251100000000D0150000010046696E6441756469744C6F67734279557365724E616D650000001600291100000000D01500000100303630303030306600002E00251100000000FC170000010046696E6441756469744C6F67734279557365724E616D655F46696C6C526F770000001600291100000000FC1700000100303630303030313000001A00251100000000C8180000010046696E6441756469744C6F6773001600291100000000C81800000100303630303030313100002200251100000000B81A0000010046696E6441756469744C6F67735F46696C6C526F77001600291100000000B81A00000100303630303030313200002E00251100000000781B00000100446573657269616C697A654164646974696F6E616C4E6172726174696F6E000000001600291100000000781B00000100303630303030313300002E002511000000004C1D0000010046696E64466C617474656E656441756469744C6F67734279557365724E616D65000016002911000000004C1D000001003036303030303134000036002511000000000C200000010046696E64466C617474656E656441756469744C6F67734279557365724E616D655F46696C6C526F77000016002911000000000C2000000100303630303030313500002600251100000000E0200000010046696E64466C617474656E656441756469744C6F6773000000001600291100000000E02000000100303630303030313600002E0025110000000060230000010046696E64466C617474656E656441756469744C6F67735F46696C6C526F77000000001600291100000000602300000100303630303030313700001A002511000000000400000005006765745F5461626C654E616D65001600291100000000040000000500303630303030333200001A002511000000004000000005007365745F5461626C654E616D65001600291100000000400000000500303630303030333300001A002511000000007C00000005006765745F4576656E74547970650016002911000000007C0000000500303630303030333400001A00251100000000B800000005007365745F4576656E7454797065001600291100000000B80000000500303630303030333500001A00251100000000F400000005006765745F5265636F7264494400001600291100000000F40000000500303630303030333600001A002511000000003001000005007365745F5265636F72644944000016002911000000003001000005003036303030303337000026002511000000006C01000005006765745F4175646974496E666F436F6C6C656374696F6E00000016002911000000006C0100000500303630303030333800002600251100000000B401000005007365745F4175646974496E666F436F6C6C656374696F6E0000001600291100000000B40100000500303630303030333900001E002511000000000400000006006765745F43726561746564446174650000001600291100000000040000000600303630303030336200001E002511000000004400000006007365745F437265617465644461746500000016002911000000004400000006003036303030303363000012002511000000008400000006002E63746F72001600291100000000840000000600303630303030336400001A002511000000000400000002006765745F506572696F64000000001600291100000000040000000200303630303030313900001A002511000000003C00000002007365745F506572696F640000000016002911000000003C0000000200303630303030316100001A002511000000007400000002006765745F447565446174650000001600291100000000740000000200303630303030316200001A00251100000000B000000002007365745F447565446174650000001600291100000000B00000000200303630303030316300002200251100000000EC00000002006765745F5374617274696E6742616C616E63650000001600291100000000EC00000002003036303030303164000022002511000000003001000002007365745F5374617274696E6742616C616E63650000001600291100000000300100000200303630303030316500001A002511000000007401000002006765745F5061796D656E740000001600291100000000740100000200303630303030316600001A00251100000000B001000002007365745F5061796D656E740000001600291100000000B00100000200303630303030323000002200251100000000EC01000002006765745F496E7465726573745061796D656E740000001600291100000000EC01000002003036303030303231000022002511000000003002000002007365745F496E7465726573745061796D656E7400000016002911000000003002000002003036303030303232000022002511000000007402000002006765745F5072696E636970616C5061796D656E7400001600291100000000740200000200303630303030323300002200251100000000B802000002007365745F5072696E636970616C5061796D656E7400001600291100000000B80200000200303630303030323400001E00251100000000FC02000002006765745F456E64696E6742616C616E6365001600291100000000FC0200000200303630303030323500001E002511000000003C03000002007365745F456E64696E6742616C616E63650016002911000000003C03000002003036303030303236000012002511000000007C03000002002E63746F720016002911000000007C0300000200303630303030323700001E002511000000000400000004006765745F436F6C756D6E4E616D65000000001600291100000000040000000400303630303030326200001E002511000000004000000004007365745F436F6C756D6E4E616D65000000001600291100000000400000000400303630303030326300001E002511000000007C00000004006765745F4F726967696E616C56616C75650016002911000000007C0000000400303630303030326400001E00251100000000BC00000004007365745F4F726967696E616C56616C7565001600291100000000BC0000000400303630303030326500001A00251100000000FC00000004006765745F4E657756616C756500001600291100000000FC0000000400303630303030326600001A002511000000003801000004007365745F4E657756616C756500001600291100000000380100000400303630303030333000001E002511000000000400000003006765745F43726561746564446174650000001600291100000000040000000300303630303030323800001E002511000000004400000003007365745F437265617465644461746500000016002911000000004400000003003036303030303239000012002511000000008400000003002E63746F720016002911000000008400000003003036303030303261000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000FFFFFFFF770931010100000014001C8E15001374160001001C0300005C0600002C0000002C010000000000000000000016000000190000000000EEC00000000000000000FFFF000000000000FFFFFFFF00000000FFFF0000000000000000000000000D002824000000000000F81D00000200000000000000000000000000000055736572446566696E656446756E6374696F6E7300373141414145453800000000000000FFFF000000000000FFFFFFFF00000000FFFF0000000000000000000000001100B404000000000000100300000100000000000000000000000000000055736572446566696E656446756E6374696F6E732E416D6F7274697A6174696F6E5461626C65526573756C7400433039414336383400000000000000FFFF000000000000FFFFFFFF00000000FFFF0000000000000000000000001300F801000000000000F40000000100000000000000000000000000000055736572446566696E656446756E6374696F6E732E41756469744C6F67526573756C740041383544424137360000000000000000FFFF000000000000FFFFFFFF00000000FFFF00000000000000000000000012007401000000000000180100000100000000000000000000000000000055736572446566696E656446756E6374696F6E732E4175646974496E666F0032374234453841460000000000FFFF000000000000FFFFFFFF00000000FFFF0000000000000000000000000F00FC01000000000000700100000100000000000000000000000000000055736572446566696E656446756E6374696F6E732E4175646974496E666F57726170706572003336343736363442000000000000FFFF000000000000FFFFFFFF00000000FFFF0000000000000000000000001000E800000000000000180100000100000000000000000000000000000055736572446566696E656446756E6374696F6E732E466C617474656E656441756469744C6F67526573756C7400443233374335333900000000000000FFFF000000000000FFFFFFFF00000000FFFF0000000000000000000000000E00040000000000000010000000010000000000000000000000000000003C44616E676C696E67446F63756D656E74732A32323333343362642D613835392D343161332D393063302D3964666131303166316139353E0037464244413244320000002DBA2EF101000000000000009E00000000000000000000000000000000000000010000009E000000610000000000000000000000000000000000000001000000FF000000360000000000000000000000000000000000000001000000350100003600000000000000000000000000000000000000010000006B01000018010000000000000000000000000000000000000100000083020000380000000000000000000000000000000000000001000000BB020000380000000000000000000000000000000000000001000000F302000026000000000000000000000000000000000000000100000019030000100200000000000000000000000000000000000001000000290500000302000000000000000000000000000000000000010000002C07000039020000000000000000000000000000000000000100000065090000030200000000000000000000000000000000000001000000680B0000ED0100000000000000000000000000000000000001000000550D0000110100000000000000000000000000000000000001000000660E00004F0100000000000000000000000000000000000001000000B50F0000540000000000000000000000000000000000000001000000091000003201000000000000000000000000000000000000010000003B1100005400000000000000000000000000000000000000010000008F110000380100000000000000000000000000000000000001000000C7120000BA0100000000000000000000000000000000000001000000811400007B0000000000000000000000000000000000000001000000FC1400009D0100000000000000000000000000000000000001000000991600007B0000000000000000000000000000000000000001000000141700000700000000000000010000000000000000000000010000001B170000080000000000000001000000000000000000000001000000231700000700000000000000010000000000000000000000010000002A1700000800000000000000010000000000000000000000010000003217000007000000000000000100000000000000000000000100000039170000080000000000000001000000000000000000000001000000411700000700000000000000010000000000000000000000010000004817000008000000000000000100000000000000000000000100000050170000070000000000000001000000000000000000000001000000571700000800000000000000010000000000000000000000010000005F170000070000000000000001000000000000000000000001000000661700000800000000000000010000000000000000000000010000006E170000070000000000000001000000000000000000000001000000751700000800000000000000010000000000000000000000010000007D170000450000000000000001000000000000000000000001000000C2170000070000000000000002000000000000000000000001000000C9170000080000000000000002000000000000000000000001000000D1170000370000000000000002000000000000000000000001000000081800000700000000000000030000000000000000000000010000000F180000080000000000000003000000000000000000000001000000171800000700000000000000030000000000000000000000010000001E180000080000000000000003000000000000000000000001000000261800000700000000000000030000000000000000000000010000002D180000080000000000000003000000000000000000000001000000351800000700000000000000040000000000000000000000010000003C180000080000000000000004000000000000000000000001000000441800000700000000000000040000000000000000000000010000004B180000080000000000000004000000000000000000000001000000531800000700000000000000040000000000000000000000010000005A18000008000000000000000400000000000000000000000100000062180000070000000000000004000000000000000000000001000000691800000800000000000000040000000000000000000000010000007118000007000000000000000500000000000000000000000100000078180000080000000000000005000000000000000000000001000000801800004F00000000000000050000000000000000000000020002000D01000000000100FFFFFFFF00000000CF1800000802000000000000FFFFFFFF00000000FFFFFFFF0700080000000200030004000500060007000200010001000100010001000100000000004A000000000000004A0000004A0000004A0000004A00000096000000443A5C776F726B735C537769667446696E616E6369616C73536F6C7574696F6E5C496E6672617374727563747572652E446174612E53514C434C525C46696E616E6369616C732E637300443A5C776F726B735C537769667446696E616E6369616C73536F6C7574696F6E5C496E6672617374727563747572652E446174612E53514C434C525C46696E6441756469744C6F672E637300433A5C55736572735C537573616E5C417070446174615C4C6F63616C5C54656D705C2E4E45544672616D65776F726B2C56657273696F6E3D76342E352E322E53716C436C72417474726962757465732E637300000000FEEFFEEF010000000100000000010000000000000000000000FFFFFFFFFFFFFFFFFFFF0C00FFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000942E3101A62A686501000000AC8EC15A8CEF88468DF1433C08DEF221350100002F4C696E6B496E666F002F544D4361636865002F6E616D6573002F7372632F686561646572626C6F636B002F7372632F66696C65732F643A5C776F726B735C737769667466696E616E6369616C73736F6C7574696F6E5C696E6672617374727563747572652E646174612E73716C636C725C66696E616E6369616C732E6373002F7372632F66696C65732F643A5C776F726B735C737769667466696E616E6369616C73736F6C7574696F6E5C696E6672617374727563747572652E646174612E73716C636C725C66696E6461756469746C6F672E6373002F7372632F66696C65732F633A5C75736572735C737573616E5C617070646174615C6C6F63616C5C74656D705C2E6E65746672616D65776F726B2C76657273696F6E3D76342E352E322E73716C636C72617474726962757465732E637300070000000E00000001000000A607000000000000800000000A000000D70000000B000000130000000700000000000000050000000A000000060000001A000000080000002B0000000900000000000000DC5133010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001700000020000000A9010000380000003F0B000038000000000000000000000014020000D800000068000000680000006800000028000000DC42000018000000B00300001C02000040080000C002000008030000740700002C000000D00C00000300000051000000060000004B0000004C0000004D0000004E0000004F00000050000000070000000C0000000D0000000E00000008000000090000000A0000000B0000000F000000100000001100000012000000130000001400000015000000160000001700000018000000190000001A0000001B0000001C0000001D0000001E0000001F000000200000002100000022000000230000002400000025000000260000002700000028000000290000002A0000002B0000002C0000002D0000002E0000002F000000300000003100000032000000330000003400000035000000360000003700000038000000390000003A0000003B0000003C0000003D0000003E0000003F000000400000004100000042000000440000004300000045000000460000004700000048000000490000004A0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000005200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000]]></Value>
+			</Property>
+			<Relationship Name="Assembly">
+				<Entry>
+					<References Name="[Infrastructure.Data.SQLCLR]" />
+				</Entry>
+			</Relationship>
+		</Element>
+	</Model>
+</DataSchemaModel>

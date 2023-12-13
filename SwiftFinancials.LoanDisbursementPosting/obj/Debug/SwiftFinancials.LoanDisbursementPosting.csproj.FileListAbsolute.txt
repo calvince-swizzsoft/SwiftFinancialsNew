@@ -1,0 +1,5 @@
+D:\works\SwiftFinancialsSolutions\SwiftFinancials.LoanDisbursementPosting\bin\Debug\SwiftFinancials.LoanDisbursementPosting.dll
+D:\works\SwiftFinancialsSolutions\SwiftFinancials.LoanDisbursementPosting\bin\Debug\SwiftFinancials.LoanDisbursementPosting.pdb
+D:\works\SwiftFinancialsSolutions\SwiftFinancials.LoanDisbursementPosting\obj\Debug\SwiftFinancials.LoanDisbursementPosting.csproj.CoreCompileInputs.cache
+D:\works\SwiftFinancialsSolutions\SwiftFinancials.LoanDisbursementPosting\obj\Debug\SwiftFinancials.LoanDisbursementPosting.dll
+D:\works\SwiftFinancialsSolutions\SwiftFinancials.LoanDisbursementPosting\obj\Debug\SwiftFinancials.LoanDisbursementPosting.pdb
