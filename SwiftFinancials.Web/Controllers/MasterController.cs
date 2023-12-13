@@ -631,6 +631,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetIncomeAdjustmentTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> incomeAdjustmentType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(IncomeAdjustmentType)).Cast<IncomeAdjustmentType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            incomeAdjustmentType.AddRange(items);
+
+            return incomeAdjustmentType;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetLoanRegistrationGuarantorSecurityModeSelectList(string selectedValue)
         {
             List<SelectListItem> loanRegistrationGuarantorSecurityModes = new List<SelectListItem>();

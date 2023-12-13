@@ -26,11 +26,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             int searchRecordCount = 0;
 
+            int loanRequestFilter = 0;
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanRequestsByFilterInPageAsync(DateTime.Today, DateTime.Today, jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanRequestsByFilterInPageAsync(DateTime.Today, DateTime.Today, jQueryDataTablesModel.sSearch, loanRequestFilter, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
