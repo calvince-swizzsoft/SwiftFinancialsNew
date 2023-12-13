@@ -1,5 +1,0 @@
-D:\works\SwiftFinancialsSolutions\SwiftFinancials.TextAlertDispatcher\bin\Debug\SwiftFinancials.TextAlertDispatcher.dll
-D:\works\SwiftFinancialsSolutions\SwiftFinancials.TextAlertDispatcher\bin\Debug\SwiftFinancials.TextAlertDispatcher.pdb
-D:\works\SwiftFinancialsSolutions\SwiftFinancials.TextAlertDispatcher\obj\Debug\SwiftFinancials.TextAlertDispatcher.csproj.CoreCompileInputs.cache
-D:\works\SwiftFinancialsSolutions\SwiftFinancials.TextAlertDispatcher\obj\Debug\SwiftFinancials.TextAlertDispatcher.dll
-D:\works\SwiftFinancialsSolutions\SwiftFinancials.TextAlertDispatcher\obj\Debug\SwiftFinancials.TextAlertDispatcher.pdb
