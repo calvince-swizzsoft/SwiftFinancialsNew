@@ -101,7 +101,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(cashDepositRequestDTO);
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Create(CashDepositRequestDTO cashDepositRequestDTO)
         {

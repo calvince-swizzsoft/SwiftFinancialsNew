@@ -46,12 +46,12 @@
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EmployerId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.EmployerId)
-                                        @Html.EditorFor(model => model.EmployerDescription, new { htmlAttributes = new { @class = "EmployersLookup form-control required", placeholder = "Employer Description" } })
-                                        @Html.ValidationMessageFor(model => model.EmployerId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Employers[0].Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Employers[0].Description)
+                                        @Html.EditorFor(model => model.Employers[0].Description, new { htmlAttributes = new { @class = "EmployersLookup form-control required", placeholder = "Employer Description" } })
+                                        @Html.ValidationMessageFor(model => model.Employers[0].Description, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
+                                    <div class="form-group form-group-lg"> @* Section *@
                                         @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -59,17 +59,17 @@
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection)
                                         </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
+                                    <div class="form-group form-group-lg"> @* Investment Balance *@
                                         @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Investment Balance" } })
                                         @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
+                                    <div class="form-group form-group-lg"> @* Loan Balance *@
                                         @Html.LabelFor(model => model.LoanProductLoanBalance, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.LoanProductLoanBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Balance", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.LoanProductLoanBalance, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group" id="data_3">
+                                    <div class="form-group" id="data_3"> @* Received Date *@
                                         @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "" })
                                         <div class="input-group date">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
@@ -82,10 +82,10 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.StationId)
-                                        @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Station" } })
+                                        @Html.LabelFor(model => model.Stations[0].ZoneDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Stations[0].ZoneDescription)
+                                        @Html.ValidationMessageFor(model => model.Stations[0].ZoneDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Stations[0].ZoneDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Station" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestCalculationMode, new { @class = "control-label" })

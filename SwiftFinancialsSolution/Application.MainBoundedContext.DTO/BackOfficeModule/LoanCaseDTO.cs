@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.RegistryModule;
+using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
@@ -977,5 +978,14 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public IList<LoanGuarantorDTO> LoanGuarantors { get; set; }
 
         public LoanGuarantorDTO LoanGuarantor { get; set; }
+
+        public List<EmployerDTO> Employers { get; set; }
+
+        public EmployerDTO Employer { get; set; }
+
+
+        public List<StationDTO> Stations { get; set; }
+
+        public StationDTO Station { get; set; }
     }
 }
