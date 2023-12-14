@@ -73,16 +73,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View();
         }
 
-        //protected void submitEntry(SalaryGroupDTO salaryGroupDTO)
-        //{
-        //    var salaryGroupStatus = salaryGroupDTO.Description;
-
-        //    if (salaryGroupStatus == null)
-        //    {
-        //        TempData["AlertMessage"] = "Salary Group Name is required to proceed!";
-        //    }
-        //}
-
         [HttpPost]
         public async Task<ActionResult> Add(SalaryGroupDTO salaryGroupDTO)
         {
@@ -96,7 +86,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             foreach (var salaryGroupEntryDTO in salaryGroupDTO.SalaryGroupEntries)
             {
 
-                salaryGroupEntryDTO.SalaryHeadCustomerAccountTypeTargetProductId = salaryGroupEntryDTO.Id;
+                salaryGroupEntryDTO.SalaryGroupId = salaryGroupEntryDTO.SalaryGroupId;
                 salaryGroupEntryDTO.SalaryHeadDescription = salaryGroupEntryDTO.SalaryHeadDescription;
                 salaryGroupEntryDTO.ChargeType = salaryGroupEntryDTO.ChargeType;
                 salaryGroupEntryDTO.MinimumValue = salaryGroupEntryDTO.MinimumValue;
@@ -135,7 +125,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                     foreach (var salaryGroupEntry in salaryGroupDTO.SalaryGroupEntries)
                     {
-                        salaryGroupEntry.SalaryHeadCustomerAccountTypeTargetProductId = salaryGroupEntry.Id;
+                        salaryGroupEntry.SalaryGroupId = salaryGroupEntry.SalaryGroupId;
                         salaryGroupEntry.SalaryHeadDescription = salaryGroupEntry.SalaryHeadDescription;
                         salaryGroupEntry.ChargeType = salaryGroupEntry.ChargeType;
                         salaryGroupEntry.MinimumValue = salaryGroupEntry.MinimumValue;
@@ -172,174 +162,41 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
         {
             await ServeNavigationMenus();
 
-            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
-            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            return View(expensePayableDTO);
+            var salaryGroupDTO = await _channelService.FindSalaryGroupAsync(id, GetServiceHeader());
+
+            ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(string.Empty);
+            ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(string.Empty);
+
+            return View(salaryGroupDTO);
 
 
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, ExpensePayableDTO expensePayableDTO)
+        public async Task<ActionResult> Edit(Guid id, SalaryGroupDTO salaryGroupDTO)
         {
 
-            expensePayableDTO.ValidateAll();
-            if (!expensePayableDTO.HasErrors)
+            salaryGroupDTO.ValidateAll();
+            if (!salaryGroupDTO.HasErrors)
             {
-                await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+                await _channelService.UpdateSalaryGroupAsync(salaryGroupDTO, GetServiceHeader());
+
+                ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
+                ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = expensePayableDTO.ErrorMessages;
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
-                return View(expensePayableDTO);
+                var errorMessages = salaryGroupDTO.ErrorMessages;
+
+                ViewBag.RoundingTypeSelectList = GetRoundingTypeSelectList(salaryGroupDTO.ToString());
+                ViewBag.ValueTypeSelectList = GetChargeTypeSelectList(salaryGroupDTO.ToString());
+
+                return View(salaryGroupDTO);
             }
         }
-
-
-        public async Task<ActionResult> Verify(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
-            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(string.Empty);
-
-            return View(expensePayableDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
-        {
-            expensePayableDTO.ValidateAll();
-
-            var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
-
-            if (!expensePayableDTO.HasErrors)
-            {
-
-                await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
-
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = expensePayableDTO.ErrorMessages;
-
-                return View(expensePayableDTO);
-            }
-        }
-
-        public async Task<ActionResult> Approve(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
-
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
-            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            return View(expensePayableDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approve(Guid id, ExpensePayableDTO expensePayableDTO)
-        {
-
-            expensePayableDTO.ValidateAll();
-
-            if (!expensePayableDTO.HasErrors)
-            {
-                var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
-
-                var moduleNavigationItemCode = expensePayableDTO.ModuleNavigationItemCode;
-
-                await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, moduleNavigationItemCode, GetServiceHeader());
-
-                await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = expensePayableDTO.ErrorMessages;
-
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
-                return View(expensePayableDTO);
-            }
-        }
-
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-
-
-        //[httpget]
-        //public async task<jsonresult> getexpensepayablesasync()
-        //{
-        //    var expensepayabledtos = await _channelservice.findexpensepayablesasync(getserviceheader());
-
-        //    return json(expensepayabledtos, jsonrequestbehavior.allowget);
-        //}
     }
 }
 
