@@ -87,19 +87,17 @@
                                     @Html.AntiForgeryToken()
                                     <h2>Add Salary Group Entry</h2>
                                     <br />
-                                    <div class="col-md-10 form-group">
-                                        @Html.LabelFor(model => model.SalaryGroupEntries[0].SalaryHeadId, htmlAttributes: new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
+                                    <div class="col-lg-7">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.SalaryGroupEntries[0].SalaryHeadId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.SalaryGroupEntries[0].SalaryHeadId)
-                                            @Html.TextBoxFor(model => model.SalaryGroupEntries[0].SalaryHeadDescription, new { @class = "GetProductsAsync form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Salary Head..." })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#SalaryheadsLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
+                                            @Html.EditorFor(model => model.SalaryGroupEntries[0].SalaryHeadDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill Salary Head..." } })
+                                            @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].SalaryHeadId, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-5">
+                                        <div class="col-lg-6">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.SalaryGroupEntries[0].ChargeTypeDescription, new { @class = "control-label" })
                                                 <div class="input-group">
@@ -116,7 +114,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-5">
+                                        <div class="col-lg-6">
                                             <div class="form-group form-group-lg" style="text-align: center;">
                                                 @Html.LabelFor(model => model.SalaryGroupEntries[0].ChargeType, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.SalaryGroupEntries[0].ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @required = "" } })
@@ -136,7 +134,7 @@
 
 
                                     <!-- Center the Submit button -->
-                                    <button id="submitEntry" class="btn btn-outline-secondary" style="margin-top: 20px; margin-bottom:20px; width:200px; align-self:center">Submit</button>
+                                    <button id="submitEntry" class="btn btn-primary" style="margin-top: 20px; margin-bottom:20px; width:200px; align-self:center">Submit</button>
                                 </div>
                             </div>
                         </div>
@@ -279,7 +277,86 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
+
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
 
         // Open the modal
         $("#openModalButton").click(function () {
@@ -309,20 +386,20 @@
         });
 
 
-
-     $('.SalaryHeadsLookup').typeahead({
+        //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetSalaryHeadsAsync", "Salary", new { Area = "HumanResource" })',
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
                         { query: query },
-                        function (Stations) {
-                            var newProductsData = [];
-                            ProductsMap = {};
-                            $.each(Products, function (i, Product) {
-                                newProductsData.push(Product.Description);
-                                ProductsMap[Product.Description] = Product;
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
                             });
-                            process(newProductsData); return;
+                            process(newBranchesData); return;
                         });
                 },
                 matcher: function (item) {
@@ -338,68 +415,13 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var ProductID = "";
-                    ProductID = ProductsMap[item].Id;
-                    $('#SalaryHeadId').val(ProductID);
-                    $('#SalaryHeadId').val(ProductsMap[item].CustomerAccountTypeProductCodeDescription);
-                    $('#SalaryHeadDescription').val(ProductsMap[item].SalaryHeadDescription);
-                    //console.log(StationId)
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
                     return item;
                 }
             });
 
-    $('#salaryHeadsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Salary", new { Area = "HumanResource" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                  var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/HumanResource/SalaryGroups/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "SalaryHeadId", "sTitle": "Salary Head ID", "sWidth": "20%" },
-            { "mDataProp": "SalaryHeadDescription", "sTitle": "Salary Head", "sWidth": "4%" },
-            { "mDataProp": "SalaryHeadIsOneOff", "sTitle": "Is One-Off?", "sWidth": "4%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-
-            { "mDataProp": "selectUrl", "sTitle": "", "sWidth": "10%" ,"bSortable": false}],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = salaryHeadsGrid.row(this).data();
-
-      //  $('#CustomerAccountCustomerId').val(data.Id);
-        $('#Code').val(data.Id);
-     //   $('input[name=CustomerAccountCustomerId]').val(data.Id);
-        $('input[name=SalaryHeadId]').val(data.PostingPeriodId);
-        $('input[name=SalaryHeadDescription]').val(data.PostingPeriodDescription);
-
-
-        var Code = "";
-        Code = PostingPeriodsMap[item].Id;
-        $('#SalaryHeadId').val(PostingPeriodsMap[item].PostingPeriodId);
-        $('#SalaryHeadDescription').val(PostingPeriodsMap[item].PostingPeriodDescription);
-
-        $('#SalaryHeadsLookup').modal('hide');
-    });
-    </script>
+</script>
 }
