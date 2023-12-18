@@ -70,6 +70,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(incomeAdjustment.Type.ToString());
 
+
                 return RedirectToAction("Index");
             }
             else
