@@ -86,11 +86,13 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             foreach (var salaryGroupEntryDTO in salaryGroupDTO.SalaryGroupEntries)
             {
 
-                salaryGroupEntryDTO.SalaryGroupId = salaryGroupEntryDTO.SalaryGroupId;
+                salaryGroupEntryDTO.SalaryGroupId = salaryGroupDTO.Id;
                 salaryGroupEntryDTO.SalaryHeadDescription = salaryGroupEntryDTO.SalaryHeadDescription;
                 salaryGroupEntryDTO.ChargeType = salaryGroupEntryDTO.ChargeType;
                 salaryGroupEntryDTO.MinimumValue = salaryGroupEntryDTO.MinimumValue;
                 salaryGroupEntryDTO.RoundingType = salaryGroupEntryDTO.RoundingType;
+                
+               
             };
 
             TempData["SalaryGroupEntryDTO"] = SalaryGroupEntryDTOs;
@@ -196,6 +198,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
 
                 return View(salaryGroupDTO);
             }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetSalaryHeadsAsync(Guid id)
+        {
+            var salaryHeadsDTO = await _channelService.FindSalaryHeadAsync(id, GetServiceHeader());
+
+            return Json(salaryHeadsDTO, JsonRequestBehavior.AllowGet);
         }
     }
 }

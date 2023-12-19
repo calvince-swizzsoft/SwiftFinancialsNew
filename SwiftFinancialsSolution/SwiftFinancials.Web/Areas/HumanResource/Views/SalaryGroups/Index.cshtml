@@ -87,25 +87,22 @@
                     var create = '<a  href="/HumanResource/SalaryGroups/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Create</a>';
                     var viewUrl = '<a  href="/HumanResource/SalaryGroups/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     //{ "mDataProp": "Description", "sTitle": "Type", "sWidth": "15%" },
-                    { "mDataProp": "SalaryHead", "sTitle": "Salary Head", "sWidth": "15%" },
-                    { "mDataProp": "IsOneOff", "sTitle": "Is One Off?", "sWidth": "8%" },
-                    { "mDataProp": "ValueType", "sTitle": "Value Type", "sWidth": "10%" },
-                    { "mDataProp": "PercentageValue", "sTitle": "Percentage Value", "sWidth": "8%" },
-                    { "mDataProp": "FixedValue", "sTitle": "Fixed Value", "sWidth": "10%" },
-                    { "mDataProp": "MinimumValue", "sTitle": "Minimum Value", "sWidth": "18%" },
-                    { "mDataProp": "RoundingType", "sTitle": "Rounding Type", "sWidth": "5%" },
+                    { "mDataProp": "Description", "sTitle": "Salary Group Name", "sWidth": "15%" },
+                    { "mDataProp": "SalaryGroupEntries[0].SalaryHeadDescription", "sTitle": "Salary Head", "sWidth": "8%" },               
+                    
+                    
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     //{ "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%" },
 
-                    { "mDataProp": "viewUrl", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });

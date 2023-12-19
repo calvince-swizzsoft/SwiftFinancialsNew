@@ -88,12 +88,14 @@
                                     <h2>Add Salary Group Entry</h2>
                                     <br />
                                     <div class="col-lg-7">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.SalaryGroupEntries[0].SalaryHeadId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.SalaryGroupEntries[0].SalaryHeadId)
-                                            @Html.EditorFor(model => model.SalaryGroupEntries[0].SalaryHeadDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill Salary Head..." } })
-                                            @Html.ValidationMessageFor(model => model.SalaryGroupEntries[0].SalaryHeadId, "", new { @class = "text-danger" })
+
+                                        <div class="form-group form-group-lg" style="text-align: center;">
+                                            @Html.LabelFor(model => model.SalaryGroupEntry.SalaryHeadId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.SalaryGroupEntry.SalaryHeadId)
+                                            @Html.ValidationMessageFor(model => model.SalaryGroupEntry.SalaryHeadId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.SalaryGroupEntry.SalaryHeadDescription, new { htmlAttributes = new { @class = "SalaryHeadLookup form-control required", placeholder = "Salary Head Lookup" } })
                                         </div>
+
                                     </div>
 
                                     <div class="row">
@@ -146,7 +148,7 @@
                                 <table class="footable table table-stripped toggle-arrow-tiny bg-white  ">
                                     <thead>
                                         <tr>
-                                            <th data-hide="phone">Salary Head</th>
+                                            <th data-hide="phone">Description</th>
                                             <th data-hide="phone">Is One-Off?</th>
                                             <th data-hide="phone">Value Type</th>
                                             <th data-hide="phone">Percentage Value</th>
@@ -162,7 +164,7 @@
                                             {
                                                 <tr>
                                                     <td>
-                                                        @SalaryGroupEntries.SalaryHeadDescription
+                                                        @SalaryGroupEntries.Description
                                                     </td>
                                                     <td>
                                                         @SalaryGroupEntries.SalaryHeadIsOneOff
@@ -209,29 +211,6 @@
     </div>
 </div>
 
-<div class="modal  fade" id="SalaryheadsLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Products LookUp<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <br />
-            <table id="salaryHeadsGrid" class="table table-striped table-bordered table-hover" style="width:50%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" style="width:190px" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 
 @section Styles{
@@ -277,129 +256,31 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
-
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-        });
+    <script>
 
 
+    $('#data_3 .input-group.date').datepicker({
+        startView: 2,
+        todayBtn: "linked",
+        keyboardNavigation: false,
+        forceParse: false,
+        autoclose: true,
+    });
 
-        // Open the modal
-        $("#openModalButton").click(function () {
-            $("#expenseModal").css("display", "block");
-        });
-
-        // Close the modal
-        $(".close").click(function () {
-            $("#expenseModal").css("display", "none");
-        });
-
-        $("#submitEntry").click(function () {
-            const salaryHead = $("#SalaryHeadDescription").val();
-            const isOneOff = $("#SalaryHeadIsOneOff").val();
-            const Value = $("#ChargeTypeDescription").val();
-            const percentageValue = $("#ChargePercentage").val();
-            const fixedValue = $("#ChargeFixedAmount").val();
-            const minimumValue = $("#MinimumValue").val();
-            const roundingType = $("#RoundingType").val();
-            //const reference = $("#reference").val();
-            //const remarks = $("#remarks").val();
-
-            // Perform AJAX request to send the data to your server
-            $.post("/addSalaryGroupEntry", { salaryHead, isOneOff, Value, percentageValue, fixedValue, minimumValue, roundingType }, function (response) {
-                // Handle the response from the server
-            });
-        });
-
-
-        //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
+         //SalaryHead typehead starts here
+            $('.SalaryHeadLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        '@Url.Action("GetSalaryHeadsAsync", "SalaryGroups",new{ Area = "HumanResource" })',
                         { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
+                        function (SalaryHead) {
+                            var newSalaryHeadData = [];
+                            SalaryHeadMap = {};
+                            $.each(SalaryHead, function (i, SalaryHead) {
+                                newSalaryHeadData.push(SalaryHead.Description);
+                                SalaryHeadMap[SalaryHead.Description] = SalaryHead;
                             });
-                            process(newBranchesData); return;
+                            process(newSalaryHeadData); return;
                         });
                 },
                 matcher: function (item) {
@@ -415,13 +296,139 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var BranchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
+                    var SalaryHeadId = "";
+                    SalaryHeadId = SalaryHeadMap[item].Id;
+                    $('#SalaryHeadId').val(SalaryHeadId);
+                    //console.log(SalaryHeadId)
                     return item;
                 }
             });
 
-</script>
+
+
+
+
+    // Open the modal
+    $("#openModalButton").click(function () {
+        $("#expenseModal").css("display", "block");
+    });
+
+    // Close the modal
+    $(".close").click(function () {
+        $("#expenseModal").css("display", "none");
+    });
+
+    $("#submitEntry").click(function () {
+        const salaryHead = $("#SalaryHeadDescription").val();
+        const isOneOff = $("#SalaryHeadIsOneOff").val();
+        const Value = $("#ChargeTypeDescription").val();
+        const percentageValue = $("#ChargePercentage").val();
+        const fixedValue = $("#ChargeFixedAmount").val();
+        const minimumValue = $("#MinimumValue").val();
+        const roundingType = $("#RoundingType").val();
+
+        // Perform AJAX request to send the data to your server
+        $.post("/addSalaryGroupEntry", { salaryHead, isOneOff, Value, percentageValue, fixedValue, minimumValue, roundingType }, function (response) {
+            // Handle the response from the server
+        });
+    });
+
+
+    //Branch typehead starts here
+    $('#SalaryHeadDescription').on('input', function () {
+        var query = $(this).val();
+
+        // Perform AJAX request to get salary heads
+        $.getJSON('/SalaryGroups/GetSalaryHeads', { query: query }, function (data) {
+            // Update UI with the fetched data
+            updateAutofillResults(data);
+        });
+    });
+
+    function updateAutofillResults(data) {
+        // Clear previous results
+        $('#autofillResults').empty();
+
+        // Append new results to a container (e.g., a dropdown)
+        $.each(data, function (index, item) {
+            $('#autofillResults').append($('<option>', {
+                value: item.id,
+                text: item.description
+            }));
+        });
+    }
+
+
+    $(document).ready(function () {
+        $("#wizard").steps();
+        $("#form").steps({
+            bodyTag: "fieldset",
+            onStepChanging: function (event, currentIndex, newIndex) {
+                // Always allow going backward even if the current step contains invalid fields!
+                if (currentIndex > newIndex) {
+                    return true;
+                }
+
+                // Forbid suppressing "Warning" step if the user is to young
+                if (newIndex === 3 && Number($("#age").val()) < 18) {
+                    return false;
+                }
+
+                var form = $(this);
+
+                // Clean up if user went backward before
+                if (currentIndex < newIndex) {
+                    // To remove error styles
+                    $(".body:eq(" + newIndex + ") label.error", form).remove();
+                    $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                }
+
+                // Disable validation on fields that are disabled or hidden.
+                form.validate().settings.ignore = ":disabled,:hidden";
+
+                // Start validation; Prevent going forward if false
+                return form.valid();
+            },
+            onStepChanged: function (event, currentIndex, priorIndex) {
+                // Suppress (skip) "Warning" step if the user is old enough.
+                if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                    $(this).steps("next");
+                }
+
+                // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                if (currentIndex === 2 && priorIndex === 3) {
+                    $(this).steps("previous");
+                }
+            },
+            onFinishing: function (event, currentIndex) {
+                var form = $(this);
+
+                // Disable validation on fields that are disabled.
+                // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                form.validate().settings.ignore = ":disabled";
+
+                // Start validation; Prevent form submission if false
+                return form.valid();
+            },
+            onFinished: function (event, currentIndex) {
+                var form = $(this);
+
+                // Submit form input
+                form.submit();
+            }
+        }).validate({
+            errorPlacement: function (error, element) {
+                element.before(error);
+            },
+            rules: {
+                confirm: {
+                    equalTo: "#password"
+                }
+            }
+        });
+
+
+    });
+
+    </script>
 }
