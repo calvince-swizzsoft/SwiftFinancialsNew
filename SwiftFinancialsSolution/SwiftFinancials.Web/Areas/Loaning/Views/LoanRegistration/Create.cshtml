@@ -47,26 +47,89 @@
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <h1>Products Linkage</h1>
+                        <h1>Customer</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-md-6 form-group">
                                     @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Product..." })
+                                        @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
+                                    </div>
+
+                                    <br />
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @* Loan Balance *@
+                                        @Html.LabelFor(model => model.LoanProductLoanBalance, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanProductLoanBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Balance", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.LoanProductLoanBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-6 form-group">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanInterestCalculationMode, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.LoanProductLatestIncome, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanProductLatestIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "Latest Income", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.LoanProductLatestIncome, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Investments Balance", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-2">
+                                    <div class="text-center">
+                                        <div style="margin-top: 10px">
+                                            <i class="fa fa-user-plus" style="font-size: 70px;color: #e5e5e5 "></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>Employer</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Employers[0].Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Employers[0].Description)
+                                        @Html.EditorFor(model => model.Employers[0].Description, new { htmlAttributes = new { @class = "EmployersLookup form-control required", @placeholder = "Enter space to autofill employer..." } })
+                                        @Html.ValidationMessageFor(model => model.Employers[0].Description, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerReference1)
+                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control required", placeholder = "Account number" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerReference2)
+                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control required", placeholder = "Membership number" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @* Section *@
+                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.LoanInterestCalculationMode, loanInterestCalculationModes, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode)
+                                            @Html.DropDownListFor(model => model.LoanRegistrationLoanProductSection, loanRegistrationLoanProductSections, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection)
                                         </div>
                                     </div>
                                 </div>
@@ -79,35 +142,6 @@
                                 </div>
                             </div>
                         </fieldset>
-
-                        @*<h1>Salary Head Details</h1>
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-8">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control required", placeholder = "Salary Head Name..." } })
-                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Type, type, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.TypeDescription)
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="text-center">
-                                            <div style="margin-top: 20px">
-                                                <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </fieldset>*@
 
 
                         @*<h1>G/L Account Linkage</h1>
@@ -330,43 +364,446 @@
             });
 
 
-            //ChartOfAccount typehead starts here
-$('.ChartOfAccountsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-            { query: query },
-            function (ChartOfAccounts) {
-                var newChartOfAccountsData = [];
-                ChartOfAccountsMap = {};
-                $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                    newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                    ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                });
-                process(newChartOfAccountsData); return;
+           //Employer typehead starts here
+            $('.EmployersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Employers) {
+                            var newEmployersData = [];
+                            EmployersMap = {};
+                            $.each(Employers, function (i, Employer) {
+                                newEmployersData.push(Employer.Description);
+                                EmployersMap[Employer.Description] = Employer;
+                            });
+                            process(newEmployersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var employerId = "";
+                    EmployerId = EmployersMap[item].Id;
+                    $('#Employers[0].Description').val(EmployerId);
+                    //console.log(EmployerId)
+                    return item;
+                }
             });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var chartOfAccountId = "";
-        ChartOfAccountId = ChartOfAccountsMap[item].Id;
-        $('#ChartOfAccountId').val(ChartOfAccountId);
-        //console.log(ChartOfAccountId)
-        return item;
-    }
-});
-        });
+
+            $('.GuarantorCustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i,Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var customerId = "";
+                    CustomerId = CustomersMap[item].Id;
+                    $('#LoanGuarantors[0].CustomerId').val(CustomerId);
+                    //console.log(CustomerId)
+                    return item;
+                }
+            });
+            //Branch typehead starts here
+    $       ('.LoanGuarantorsBranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#LoanGuarantors[0].LoanCaseBranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+            //LoanPurpose typehead starts here
+            $('.LoanPurposesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLoanPurposesAsync", "LoanPurpose", new { Area = "Loaning" })',
+                        { query: query },
+                        function (LoanPurposes) {
+                            var newLoanPurposesData = [];
+                            LoanPurposesMap = {};
+                            $.each(LoanPurposes, function (i, LoanPurpose) {
+                                newLoanPurposesData.push(LoanPurpose.Description);
+                                LoanPurposesMap[LoanPurpose.Description] = LoanPurpose;
+                            });
+                            process(newLoanPurposesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var loanPurposeId = "";
+                    LoanPurposeId = LoanPurposesMap[item].Id;
+                    $('#LoanPurposeId').val(LoanPurposeId);
+                    //console.log(LoanPurposeId)
+                    return item;
+                }
+            });
+            //LoanProduct typehead starts here
+            $('.LoanProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLoanProductsAsync", "LoanProduct", new { Area = "Accounts" })',
+                        { query: query },
+                        function (LoanProducts) {
+                            var newLoanProductsData = [];
+                            LoanProductsMap = {};
+                            $.each(LoanProducts, function (i, LoanProduct) {
+                                newLoanProductsData.push(LoanProduct.Description);
+                                LoanProductsMap[LoanProduct.Description] = LoanProduct;
+                            });
+                            process(newLoanProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var loanProductId = "";
+                    LoanProductId = LoanProductsMap[item].Id;
+                    $('#LoanProductId').val(LoanProductId);
+                    //console.log(LoanProductId)
+                    return item;
+                }
+            });
+            //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+            //SavingsProduct typehead starts here
+            $('.SavingsProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+                        { query: query },
+                        function (SavingsProducts) {
+                            var newSavingsProductsData = [];
+                            SavingsProductsMap = {};
+                            $.each(SavingsProducts, function (i, SavingsProduct) {
+                                newSavingsProductsData.push(SavingsProduct.Description);
+                                SavingsProductsMap[SavingsProduct.Description] = SavingsProduct;
+                            });
+                            process(newSavingsProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var savingsProductId = "";
+                    SavingsProductId = SavingsProductsMap[item].Id;
+                    $('#SavingsProductId').val(SavingsProductId);
+                    //console.log(SavingsProductId)
+                    return item;
+                }
+            });
+
+            //GuarantorEmployer typehead starts here
+    $       ('.LoanGuarantorsEmployersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Employers) {
+                            var newEmployersData = [];
+                            EmployersMap = {};
+                            $.each(Employers, function (i, Employer) {
+                                newEmployersData.push(Employer.Description);
+                                EmployersMap[Employer.Description] = Employer;
+                            });
+                            process(newEmployersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var employerId = "";
+                    EmployerId = EmployersMap[item].Id;
+                    $('#LoanGuarantors[0].EmployerId').val(EmployerId);
+                    //console.log(EmployerId)
+                    return item;
+                }
+            });
+            //Station typehead starts here
+            $('.StationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var StationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#StationId').val(StationId);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+            //GuarantorStation typehead starts here
+    $       ('.LoanGuarantorStationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var StationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#LoanGuarantors[0].StationId').val(StationId);
+                    //console.log(StationId)
+                    return item;
+                }
+    });
+
+                   });
+
+
+
+        //$("#wizard").steps();
+        //$("#form").steps({
+        //    bodyTag: "fieldset",
+        //    onStepChanging: function (event, currentIndex, newIndex) {
+        //        // Always allow going backward even if the current step contains invalid fields!
+        //        if (currentIndex > newIndex) {
+        //            return true;
+        //        }
+
+        //        // Forbid suppressing "Warning" step if the user is to young
+        //        if (newIndex === 3 && Number($("#age").val()) < 18) {
+        //            return false;
+        //        }
+
+        //        var form = $(this);
+
+        //        // Clean up if user went backward before
+        //        if (currentIndex < newIndex) {
+        //            // To remove error styles
+        //            $(".body:eq(" + newIndex + ") label.error", form).remove();
+        //            $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+        //        }
+
+        //        // Disable validation on fields that are disabled or hidden.
+        //        form.validate().settings.ignore = ":disabled,:hidden";
+
+        //        // Start validation; Prevent going forward if false
+        //        return form.valid();
+        //    },
+        //    onStepChanged: function (event, currentIndex, priorIndex) {
+        //        // Suppress (skip) "Warning" step if the user is old enough.
+        //        if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+        //            $(this).steps("next");
+        //        }
+
+        //        // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+        //        if (currentIndex === 2 && priorIndex === 3) {
+        //            $(this).steps("previous");
+        //        }
+        //    },
+        //    onFinishing: function (event, currentIndex) {
+        //        var form = $(this);
+
+        //        // Disable validation on fields that are disabled.
+        //        // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+        //        form.validate().settings.ignore = ":disabled";
+
+        //        // Start validation; Prevent form submission if false
+        //        return form.valid();
+        //    },
+        //    onFinished: function (event, currentIndex) {
+        //        var form = $(this);
+
+        //        // Submit form input
+        //        form.submit();
+        //    }
+        //}).validate({
+        //    errorPlacement: function (error, element) {
+        //        element.before(error);
+        //    },
+        //    rules: {
+        //        confirm: {
+        //            equalTo: "#password"
+        //        }
+        //    }
+        //});
+
+        //$('#data_3 .input-group.date').datepicker({
+        //    startView: 2,
+        //    todayBtn: "linked",
+        //    keyboardNavigation: false,
+        //    forceParse: false,
+        //    autoclose: true,
+        //});
 
     </script>
 }
