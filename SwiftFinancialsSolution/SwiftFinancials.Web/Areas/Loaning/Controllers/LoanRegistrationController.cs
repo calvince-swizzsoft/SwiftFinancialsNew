@@ -74,10 +74,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             var loanProduct = await _channelService.FindLoanProductsAsync(GetServiceHeader());
 
-            LoanProductDTO loanProductDTO = new LoanProductDTO();
+            //await GetLoanProducts(id);
+
+            //LoanProductDTO loanProductDTO = new LoanProductDTO();
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
-            if (customer != null && loanProduct != null)
+            if (customer != null)
             {
                 loanCaseDTO.CustomerId = customer.Id;
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
@@ -85,14 +87,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
                 loanCaseDTO.CustomerReference1 = customer.Reference1;
 
-                loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
+                //loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
             }
-
-            //LoanProductDTO loanProductDTO = new LoanProductDTO();
-            //if (loanProduct!=null)
-            //{
-            //    loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
-            //}
 
             return View(loanCaseDTO);
         }
@@ -324,5 +320,36 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             return Json(loanCasesDTOs, JsonRequestBehavior.AllowGet);
         }
+
+
+        //[HttpGet]
+        //public async Task<ActionResult>GetLoanProducts(Guid? id)
+        //{
+        //    await ServeNavigationMenus();
+        //    ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+        //    ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+        //    ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+        //    ViewBag.LoanGuarantorDTOs = null;
+
+        //    Guid parseId;
+
+        //    if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+        //    {
+        //        return View();
+        //    }
+
+
+        //    var loanProduct = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+
+        //    LoanProductDTO loanProductDTO = new LoanProductDTO();
+        //    LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+            
+        //    if (loanProduct != null)
+        //    {
+        //        loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
+        //    }
+
+        //    return View(loanProductDTO);
+        //}
     }
 }
