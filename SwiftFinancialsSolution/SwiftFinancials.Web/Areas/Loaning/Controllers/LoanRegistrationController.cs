@@ -86,6 +86,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
                 loanCaseDTO.CustomerReference1 = customer.Reference1;
+                loanCaseDTO.CustomerIndividualIdentityCardNumber = customer.IdentificationNumber;
+                //loanCaseDTO.Employers[0].Description = customer.StationZoneDivisionEmployerDescription;
+                loanCaseDTO.CustomerReference3 = customer.Reference3;
+                //loanCaseDTO.Stations[0].ZoneDescription = customer.StationZoneDescription;
 
                 //loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
             }
