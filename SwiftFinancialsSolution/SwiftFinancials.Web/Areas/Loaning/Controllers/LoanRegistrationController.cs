@@ -71,6 +71,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            //var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
@@ -79,6 +80,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerId = customer.Id;
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
                 loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
+                loanCaseDTO.CustomerReference2 = customer.Reference2;
+                loanCaseDTO.CustomerReference1 = customer.Reference1;
+
+                //loanCaseDTO.LoanProductInvestmentsBalance = customerAccount.PrincipalBalance;
+                //loanCaseDTO.LoanProductInvestmentsBalance = customerAccount.PrincipalBalance;
+
+                //if(customerAccount!=null)
+                //{
+
+                //}
             }
 
             return View(loanCaseDTO);
