@@ -6,6 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -71,11 +72,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-            //var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+            var loanProduct = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+
+            LoanProductDTO loanProductDTO = new LoanProductDTO();
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
-
-            if (customer != null)
+            if (customer != null && loanProduct != null)
             {
                 loanCaseDTO.CustomerId = customer.Id;
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
@@ -83,14 +85,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
                 loanCaseDTO.CustomerReference1 = customer.Reference1;
 
-                //loanCaseDTO.LoanProductInvestmentsBalance = customerAccount.PrincipalBalance;
-                //loanCaseDTO.LoanProductInvestmentsBalance = customerAccount.PrincipalBalance;
-
-                //if(customerAccount!=null)
-                //{
-
-                //}
+                loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
             }
+
+            //LoanProductDTO loanProductDTO = new LoanProductDTO();
+            //if (loanProduct!=null)
+            //{
+            //    loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
+            //}
 
             return View(loanCaseDTO);
         }
