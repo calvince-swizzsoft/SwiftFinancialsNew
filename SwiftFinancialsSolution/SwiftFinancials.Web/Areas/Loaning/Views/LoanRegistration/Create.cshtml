@@ -70,7 +70,13 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Employers[0].Description, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.Employers[0].Description)
-                                        @Html.EditorFor(model => model.Employers[0].Description, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Employer", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.Employers[0].Description, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control required",
+                                                @placeholder = "Employer"@*, @readonly = "readonly"*@ }
+                                        })
                                         @Html.ValidationMessageFor(model => model.Employers[0].Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -101,7 +107,13 @@
                                         @Html.LabelFor(model => model.Stations[0].ZoneDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.Stations[0].ZoneDescription)
                                         @Html.ValidationMessageFor(model => model.Stations[0].ZoneDescription, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.Stations[0].ZoneDescription, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Station", @readonly="readonly" } })
+                                        @Html.EditorFor(model => model.Stations[0].ZoneDescription, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control required",
+                                                @placeholder = "Station"@*, @readonly="readonly"*@ }
+                                        })
                                     </div>
                                 </div>
                                 <div class="col-lg-2">
@@ -143,10 +155,9 @@
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanPurposeId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.LoanPurposeId)
-                                        @Html.ValidationMessageFor(model => model.LoanPurposeId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", @placeholder = "Loan Purpose Name" } })
+                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Rate" } })
+                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
                                     </div>
 
                                     <div class="form-group form-group-lg">
@@ -157,10 +168,9 @@
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.AmountApplied)
-                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
-                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
                                     </div>
 
                                     <div class="form-group form-group-lg">
@@ -168,14 +178,7 @@
                                         @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Maximum Amount Percentage" } })
                                         @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
                                     </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
-
 
 
                                 <div class="col-md-6 form-group">
@@ -228,17 +231,37 @@
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Annual Percentage Rate" } })
-                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LoanPurposeId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanPurposeId)
+                                        @Html.ValidationMessageFor(model => model.LoanPurposeId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", @placeholder = "Loan Purpose Name" } })
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
-                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.AmountApplied)
+                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
+                                <div class="col-md-12 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text..." } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
                                     <div class="form-group" id="data_3">
                                         @* Received Date *@
                                         @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "" })
@@ -246,12 +269,6 @@
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             <input type="text" name="receiveddate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
                                         </div>
-                                    </div>
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
 
                                     <div class="col-lg-4">
@@ -263,39 +280,39 @@
                                     </div>
                                 </div>
 
-                                <div class="ibox-content m-b-sm border-bottom bg-info text-dark" style="width:100%; margin-left:30px">
-                                    <table class="footable table table-stripped toggle-arrow-tiny">
-                                        <thead>
-                                            <tr>
-                                                <th data-toggle="true">Customer FullName</th>
-                                                <th data-hide="phone">Amount Guaranteed</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.LoanGuarantorDTOs != null)
-                                            {
-                                                foreach (var loanGuarantors in ViewBag.LoanGuarantorDTOs)
+                                    <div class="ibox-content m-b-sm border-bottom bg-info text-dark" style="width:100%; margin-left:30px">
+                                        <table class="footable table table-stripped toggle-arrow-tiny">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Customer FullName</th>
+                                                    <th data-hide="phone">Amount Guaranteed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.LoanGuarantorDTOs != null)
                                                 {
-                                                    <tr>
-                                                        <td>
-                                                            @loanGuarantors.CustomerFullName
-                                                        </td>
-                                                        <td>
-                                                            @loanGuarantors.AmountGuaranteed
-                                                        </td>
-                                                    </tr>
+                                                    foreach (var loanGuarantors in ViewBag.LoanGuarantorDTOs)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @loanGuarantors.CustomerFullName
+                                                            </td>
+                                                            <td>
+                                                                @loanGuarantors.AmountGuaranteed
+                                                            </td>
+                                                        </tr>
+                                                    }
                                                 }
-                                            }
-                                        </tbody>
-                                        <tfoot>
-                                            <div class="form-group">
-                                                <input type="submit" value="Create" class="btn btn-success" />
-                                            </div>
-                                        </tfoot>
-                                    </table>
+                                            </tbody>
+                                            <tfoot>
+                                                <div class="form-group">
+                                                    <input type="submit" value="Create" class="btn btn-success" />
+                                                </div>
+                                            </tfoot>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
-                        </fieldset>
+</fieldset>
                     }
                 </div>
             </div>
