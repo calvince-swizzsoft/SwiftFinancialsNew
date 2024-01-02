@@ -89,9 +89,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerIndividualIdentityCardNumber = customer.IdentificationNumber;
                 //loanCaseDTO.Employers[0].Description = customer.StationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerReference3 = customer.Reference3;
-                //loanCaseDTO.Stations[0].ZoneDescription = customer.StationZoneDescription;
-
-                //loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
             }
 
             return View(loanCaseDTO);
@@ -103,6 +100,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var receiveddate = Request["receiveddate"];
 
             loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            loanCaseDTO.AmountApplied = 4000;
 
             loanCaseDTO.ValidateAll();
 
