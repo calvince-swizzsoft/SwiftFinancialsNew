@@ -324,34 +324,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        //[HttpGet]
-        //public async Task<ActionResult>GetLoanProducts(Guid? id)
-        //{
-        //    await ServeNavigationMenus();
-        //    ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-        //    ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-        //    ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
-        //    ViewBag.LoanGuarantorDTOs = null;
-
-        //    Guid parseId;
-
-        //    if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return View();
-        //    }
-
-
-        //    var loanProduct = await _channelService.FindLoanProductsAsync(GetServiceHeader());
-
-        //    LoanProductDTO loanProductDTO = new LoanProductDTO();
-        //    LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
-            
-        //    if (loanProduct != null)
-        //    {
-        //        loanCaseDTO.LoanRegistrationLoanProductSection = loanProductDTO.LoanRegistrationLoanProductSection;
-        //    }
-
-        //    return View(loanProductDTO);
-        //}
+        public async Task<ActionResult> StandingOrder(Guid? id)
+        {
+            return View();
+        }
     }
 }
