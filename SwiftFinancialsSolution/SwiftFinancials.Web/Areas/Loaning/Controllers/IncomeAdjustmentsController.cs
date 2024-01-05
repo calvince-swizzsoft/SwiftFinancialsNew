@@ -47,9 +47,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanRequestDTO = await _channelService.FindIncomeAdjustmentAsync(id, GetServiceHeader());
+            var IncomeAdjustmentDTO = await _channelService.FindIncomeAdjustmentAsync(id, GetServiceHeader());
 
-            return View(loanRequestDTO);
+            return View(IncomeAdjustmentDTO);
         }
 
         public async Task<ActionResult> Create()

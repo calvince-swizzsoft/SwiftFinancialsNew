@@ -87,8 +87,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 cashDepositRequestDTO.CustomerAccountCustomerId = customer.Id;
                 cashDepositRequestDTO.CustomerAccountId = customer.Id;
                 cashDepositRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-              //  accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                //  accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                 cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
+                cashDepositRequestDTO.Remarks = customer.Remarks;
                 cashDepositRequestDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.CustomerPersonalIdentificationNumber;
 
 
