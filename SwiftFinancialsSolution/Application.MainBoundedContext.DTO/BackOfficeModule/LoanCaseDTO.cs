@@ -68,6 +68,13 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [ValidGuid]
         public Guid CustomerId { get; set; }
 
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        [ValidGuid]
+        public Guid GuarantorByCustomerId { get; set; }
+
+
         [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerType { get; set; }
@@ -127,7 +134,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string CustomerNonIndividualRegistrationNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "Personal Identification Number")]
+        [Display(Name = "PIN")] // Personal Identification Number
         public string CustomerPersonalIdentificationNumber { get; set; }
 
         [DataMember]
@@ -222,6 +229,22 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public int CustomerStationZoneDivisionEmployerRetirementAge { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string CustomerStationZoneDivisionEmployerDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string GuarantorCustomerStationZoneDivisionEmployerDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public string CustomerStation { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public string GuarantorCustomerStation { get; set; }
 
         [DataMember]
         public bool CustomerStationZoneDivisionEmployerEnforceRetirementAge { get; set; }
@@ -493,6 +516,11 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Investments Balance")]
         public decimal LoanProductInvestmentsBalance { get; set; }
+
+        [DataMember]
+        [Display(Name = "Total Shares")]
+        public decimal LoanProductTotalSharesInvestmentsBalance { get; set; }
+
 
         [DataMember]
         [Display(Name = "Loan Balance")]
@@ -974,6 +1002,11 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return ValidationResult.Success;
             }
         }
+
+
+        [DataMember]
+        [Display(Name = "Employer Name")]
+        public string EmployerName { get; set; }
 
         public IList<LoanGuarantorDTO> LoanGuarantors { get; set; }
 
