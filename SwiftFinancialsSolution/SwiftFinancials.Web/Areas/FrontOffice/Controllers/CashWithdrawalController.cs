@@ -90,8 +90,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 //  accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                 cashWithdrawalRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
                 cashWithdrawalRequestDTO.CustomerAccountCustomerAccountTypeTargetProductCode = customer.CustomerAccountTypeProductCode;
-
-
+                cashWithdrawalRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
+                cashWithdrawalRequestDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
+                cashWithdrawalRequestDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
+                cashWithdrawalRequestDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
+                cashWithdrawalRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
+                cashWithdrawalRequestDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.CustomerPersonalIdentificationNumber;
+                cashWithdrawalRequestDTO.CustomerAccountRemarks = customer.Remarks;
+                cashWithdrawalRequestDTO.BranchDescription = customer.BranchDescription;
             }
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);

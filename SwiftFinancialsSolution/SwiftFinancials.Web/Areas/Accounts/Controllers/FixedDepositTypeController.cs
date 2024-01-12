@@ -102,12 +102,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-       /* [HttpGet]
-        public async Task<JsonResult> GetFixedDepositTypesAsync()
+        [HttpGet]
+        public async Task<JsonResult> GetFixedDepositTypesAsync(Guid chequeTypeId)
         {
-            var fixedDepositTypeDTOs = await _channelService.FindFixedDepositTypesAsync(GetServiceHeader());
+            var fixedDepositTypeDTOs = await _channelService.FindFixedDepositTypeAsync(chequeTypeId,GetServiceHeader());
 
             return Json(fixedDepositTypeDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        }
     }
 }

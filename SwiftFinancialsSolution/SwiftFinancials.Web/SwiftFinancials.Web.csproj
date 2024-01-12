@@ -329,6 +329,7 @@
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CashTransferController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashWithdrawalController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ChequesController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
@@ -391,6 +392,7 @@
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
@@ -920,6 +922,8 @@
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
