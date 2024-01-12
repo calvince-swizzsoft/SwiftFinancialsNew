@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -72,23 +73,36 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-            var loanProduct = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+            var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+            var invetmentBalance = await _channelService.FindInvestmentProductAsync(parseId, GetServiceHeader());
+            var employer = await _channelService.FindEmployerAsync(parseId, GetServiceHeader());
+            var zone = await _channelService.FindZoneAsync(parseId, GetServiceHeader());
 
             //await GetLoanProducts(id);
 
             //LoanProductDTO loanProductDTO = new LoanProductDTO();
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+            //EmployerDTO employerDTO = new EmployerDTO();
+
             if (customer != null)
             {
+                //Loanee
                 loanCaseDTO.CustomerId = customer.Id;
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
                 loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
                 loanCaseDTO.CustomerReference1 = customer.Reference1;
                 loanCaseDTO.CustomerIndividualIdentityCardNumber = customer.IdentificationNumber;
-                //loanCaseDTO.Employers[0].Description = customer.StationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerReference3 = customer.Reference3;
+
+                loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                loanCaseDTO.CustomerStation = customer.StationDescription;
+
+                //loanCaseDTO.GuarantorByCustomerId = customer.Id;
+                //loanCaseDTO.CustomerSerialNumber = customer.SerialNumber;
+                //loanCaseDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
+                //loanCaseDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
             }
 
             return View(loanCaseDTO);
@@ -100,7 +114,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var receiveddate = Request["receiveddate"];
 
             loanCaseDTO.ReceivedDate = DateTime.ParseExact(Request["receiveddate"].ToString(), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            loanCaseDTO.AmountApplied = 4000;
 
             loanCaseDTO.ValidateAll();
 
@@ -129,6 +142,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
                 }
 
+                TempData["AlertMessage"] = "Successfully applied for loan amounting to Kshs." + loanCaseDTO.AmountApplied;
+
                 return RedirectToAction("Index");
             }
             else
@@ -137,6 +152,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+                TempData["AlertMessage"] = errorMessages;
+
                 return View(loanCaseDTO);
             }
         }
