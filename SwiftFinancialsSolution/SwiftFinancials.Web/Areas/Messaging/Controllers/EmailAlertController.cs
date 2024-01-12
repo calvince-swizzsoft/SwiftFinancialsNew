@@ -1,9 +1,9 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.MessagingModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
-using Infrastructure.Crosscutting.Framework.Utils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,11 +29,13 @@ namespace SwiftFinancials.Web.Areas.Messaging.Controllers
 
             int searchRecordCount = 0;
 
+            int daysCap = 0;
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindEmailAlertsByFilterInPageAsync((int)DLRStatus.Delivered, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,30, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindEmailAlertsByFilterInPageAsync((int)DLRStatus.Delivered, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, daysCap, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -69,6 +71,8 @@ namespace SwiftFinancials.Web.Areas.Messaging.Controllers
                 await ServeNavigationMenus();
 
                 TempData["Error"] = emailAlertBindingModel.ErrorMessages;
+
+                await _channelService.AddEmailAlertAsync(emailAlertBindingModel, GetServiceHeader());
 
                 return View();
             }

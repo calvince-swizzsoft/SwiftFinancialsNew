@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using SwiftFinancials.Presentation.Infrastructure.Util;
+using System.Collections.ObjectModel;
 
 namespace SwiftFinancials.Web.Areas.Messaging.Controllers
 {
@@ -27,11 +29,13 @@ namespace SwiftFinancials.Web.Areas.Messaging.Controllers
 
             int searchRecordCount = 0;
 
+            int daysCap = 0;
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindTextAlertsByFilterInPageAsync((int)DLRStatus.Delivered, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, 10, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindTextAlertsByFilterInPageAsync((int)DLRStatus.Delivered, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, daysCap, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -67,17 +71,18 @@ namespace SwiftFinancials.Web.Areas.Messaging.Controllers
             {
                 await ServeNavigationMenus();
 
+                await _channelService.AddTextAlertsAsync(new System.Collections.ObjectModel.ObservableCollection<TextAlertDTO> { textAlertBindingModel }, GetServiceHeader());
+
                 TempData["Error"] = textAlertBindingModel.ErrorMessages; 
 
                 return View();
             }
+           
 
-            //var textAlertDTO = await _channelService.AddTextAlertsAsync(textAlertBindingModel, GetServiceHeader());
-
-            //if (textAlertDTO != null)
-            //{
-            //    return RedirectToAction("Index", "TextAlert", new { Area = "Messaging" });
-            //}
+            if (textAlertBindingModel != null)
+            {
+                return RedirectToAction("Index", "TextAlert", new { Area = "Messaging" });
+            }
 
             return View();
         }

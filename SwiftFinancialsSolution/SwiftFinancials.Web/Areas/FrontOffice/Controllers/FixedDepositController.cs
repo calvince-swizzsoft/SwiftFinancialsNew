@@ -31,7 +31,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-            bool includeProductDescription = true;
+            bool includeProductDescription = false;
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
@@ -96,11 +96,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             }
 
+
+
+            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
+
+            FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
+
+            if (fixedDepositTypeDTO != null)
+            {
+
+                fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
+                fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
+                fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
+                fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
+                fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
+            }
+
+
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
-
-            return View(accountClosureRequestDTO);
+            
+            return View(fixedDepositTypeDTOs);
         }
 
 
@@ -122,7 +139,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 fixedDepositPayableDTO.CustomerAccountBranchId = fixedDepositPayableDTO.CustomerAccountBranchId;
                 fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription = fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription;
                 fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection = fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection;
-               
+
                 FixedDepositPayableDTOs.Add(fixedDepositPayableDTO);
             };
 
@@ -156,7 +173,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var errorMessages = fixedDepositDTO.ErrorMessages;
 
-                return View(fixedDepositDTO);
+                return View();
             }
         }
 
