@@ -345,6 +345,7 @@
     <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
@@ -924,6 +925,7 @@
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
     <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
