@@ -89,6 +89,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 //Loanee
                 loanCaseDTO.CustomerId = customer.Id;
+
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
                 loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
@@ -142,7 +143,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
                 }
 
-                TempData["AlertMessage"] = "Successfully applied for loan amounting to Kshs." + loanCaseDTO.AmountApplied;
+                TempData["AlertMessage"] = "Loan registration successful.";
 
                 return RedirectToAction("Index");
             }
@@ -153,7 +154,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                TempData["AlertMessage"] = errorMessages;
+                TempData["AlertMessage"] = "Loan registration failed.";
 
                 return View(loanCaseDTO);
             }

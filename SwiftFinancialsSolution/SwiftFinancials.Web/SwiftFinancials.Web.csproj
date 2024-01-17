@@ -925,6 +925,8 @@
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
     <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />

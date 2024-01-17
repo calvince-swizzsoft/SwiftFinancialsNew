@@ -92,8 +92,8 @@
                     //var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     //aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/loaning/AttachGuarantor/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/loaning/AttachGuarantor/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
 
                     $('td:eq(7)', nRow).html(dt_Created);
                     $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + appraiseUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl);
