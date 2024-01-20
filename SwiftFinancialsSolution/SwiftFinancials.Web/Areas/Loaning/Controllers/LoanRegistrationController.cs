@@ -9,6 +9,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -78,9 +79,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var employer = await _channelService.FindEmployerAsync(parseId, GetServiceHeader());
             var zone = await _channelService.FindZoneAsync(parseId, GetServiceHeader());
 
-            //await GetLoanProducts(id);
-
-            //LoanProductDTO loanProductDTO = new LoanProductDTO();
+            var data = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId, 0, true, GetServiceHeader());
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
             //EmployerDTO employerDTO = new EmployerDTO();
@@ -100,15 +99,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerStation = customer.StationDescription;
 
-                //loanCaseDTO.GuarantorByCustomerId = customer.Id;
-                //loanCaseDTO.CustomerSerialNumber = customer.SerialNumber;
-                //loanCaseDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
-                //loanCaseDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                ViewBag.StandingOrdersDTOs = data;
             }
 
             return View(loanCaseDTO);
         }
 
+        
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {

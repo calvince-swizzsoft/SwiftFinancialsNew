@@ -828,7 +828,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\web.config" />
     <Content Include="Areas\FrontOffice\Views\Shared\_Layout.cshtml" />
@@ -928,10 +927,13 @@
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\tabbing.css" />
+    <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />

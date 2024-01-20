@@ -2,10 +2,9 @@
 
 @{
     ViewBag.Title = "Loan Registration";
-    var loanInterestCalculationModes = ViewBag.LoanInterestCalculationModeSelectList as List<SelectListItem>;
-    var loanRegistrationLoanProductSections = ViewBag.LoanRegistrationLoanProductSectionSelectList as List<SelectListItem>;
 }
 
+<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 <link href="~/Scripts/css/tabbing.css" rel="stylesheet" />
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -22,9 +21,6 @@
                 <strong>Create</strong>
             </li>
         </ol>
-    </div>
-    <div class="col-lg-2">
-
     </div>
 </div>
 
@@ -44,17 +40,28 @@
                     </div>
                 </div>
 
+                <div class="navigation-tab">
+                    <ul class="nav nav-tabs">
+                        <li class="nav-item">
+                            @Html.ActionLink("Attach Guarantor", "Index", "AttachGuarantor", new { Area = "Loaning" }, new { @class = "nav-link" })
+                        </li>
+                        <li class="nav-item">
+                            @Html.ActionLink("Add Collateral", "Index", "AddCollateral", new { Area = "Loaning" }, new { @class = "nav-link" })
+                        </li>
+                    </ul>
+                </div>
+
                 @if (TempData["AlertMessage"] != null)
                 {
-                <div class="alert alert-success">
-                    <strong>Failed !</strong> @TempData["AlertMessage"]
+                    <div class="alert alert-success">
+                        <strong>Failed !</strong> @TempData["AlertMessage"]
 
-                    <button type="button" class="close" data-dismiss="alert">
-                        <span>
-                            &times;
-                        </span>
-                    </button>
-                </div>
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>
+                                &times;
+                            </span>
+                        </button>
+                    </div>
                 }
 
                 <div class="ibox-content">
@@ -64,7 +71,6 @@
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                         <h1>Customer Linkage</h1>
-
                         <fieldset>
                             <div class="row">
                                 <div class="col-md-12 form-group">
@@ -157,7 +163,7 @@
                                                 @placeholder = "Kshs.0.00",
                                                 disabled = "disabled"
                                             }
-})
+    })
                                         @Html.ValidationMessageFor(model => model.LoanProductLoanBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -399,8 +405,8 @@
                                                                         @standingOrders.LoanRegistrationStandingOrderTrigger
                                                                     </td>
                                                                     @*<td>
-                                                                        @loanGuarantors.AmountGuaranteed
-                                                                    </td>*@
+                                                                            @loanGuarantors.AmountGuaranteed
+                                                                        </td>*@
                                                                 </tr>
                                                             }
                                                         }
@@ -749,9 +755,7 @@
         var data = companiesGrid.row(this).data();
 
         $('#CustomerId').val(data.Id);
-        $('#GuarantorByCustomerId').val(data.Id);
         $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerIdCustomerId]').val(data.Id);
         $('input[name=CustomerFullName]').val(data.FullName);
         //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
@@ -795,7 +799,6 @@
                     var CompanyId = "";
                     CompanyId = CompaniesMap[item].Id;
                     $('#CompanyId').val(CompanyId);
-                    $('#GuarantorByCustomerId').val(CompanyId);
 
                     //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
                     return item;

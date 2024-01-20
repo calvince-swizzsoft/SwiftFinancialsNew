@@ -70,12 +70,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
         [DataMember]
-        [Display(Name = "Customer")]
-        [ValidGuid]
-        public Guid GuarantorByCustomerId { get; set; }
-
-
-        [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerType { get; set; }
 
@@ -166,6 +160,14 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return result;
             }
         }
+
+
+
+
+        [DataMember]
+        [Display(Name = "Loanee")]
+        public string CustomerLoaneeFullName { get; set; }
+
 
         [DataMember]
         [Display(Name = "Identity Card Number")]
