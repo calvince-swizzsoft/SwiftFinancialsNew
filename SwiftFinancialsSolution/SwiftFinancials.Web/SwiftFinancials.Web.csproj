@@ -345,6 +345,7 @@
     <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AddCollateralController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -1399,6 +1400,7 @@
     <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
+    <Folder Include="Areas\Loaning\Views\AddCollateral\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />

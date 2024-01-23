@@ -25,7 +25,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string text, int pageIndex, int pageSize)
         {
             int totalRecordCount = 0;
 
@@ -35,7 +35,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanGuarantorsByFilterInPageAsync(text, pageIndex, pageSize, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -45,29 +45,74 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            var loanguarantorsDTO = await _channelService.FindLoanGuarantorAsync(id, GetServiceHeader());
 
-            return View(loanCaseDTO);
+            return View(loanguarantorsDTO);
         }
 
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
-            return View();
+            if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out var parseId))
+            {
+                return View();
+            }
+
+            //var loanCase = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
+            var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            var loanGuarantorsDTO = new LoanGuarantorDTO();
+
+            if (customer != null)
+            {
+
+                loanGuarantorsDTO.CustomerId = customer.Id;
+                loanGuarantorsDTO.CustomerIndividualFirstName = customer.FullName;
+                loanGuarantorsDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                loanGuarantorsDTO.CustomerSerialNumber = customer.SerialNumber;
+                loanGuarantorsDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                loanGuarantorsDTO.StationDescription = customer.StationDescription;
+                
+            }
+
+            return View(loanGuarantorsDTO);
         }
 
+
         [HttpPost]
-        public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
+        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
-            return View();
+            loanGuarantorDTO.ValidateAll();
+            Guid sourceCustomerAccountId = loanGuarantorDTO.Id;
+            Guid destinationLoanProductId = loanGuarantorDTO.Id;
+            int navigatmoduleNavigationItemCode = 0;
+           
+
+
+            if (!loanGuarantorDTO.HasErrors)
+            {
+                await _channelService.AttachLoanGuarantorsAsync(sourceCustomerAccountId, destinationLoanProductId,  LoanGuarantorDTOs, navigatmoduleNavigationItemCode, GetServiceHeader());
+
+                ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(loanGuarantorDTO.Status.ToString());
+
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = loanGuarantorDTO.ErrorMessages;
+
+                return View("index");
+            }
         }
 
         public async Task<ActionResult> Edit(Guid id)
@@ -81,6 +126,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(LoanCaseDTO loanCaseDTO)
         {
+            await ServeNavigationMenus();
             return View();
         }
     }
