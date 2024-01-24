@@ -61,7 +61,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out var parseId))
+
+           
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
@@ -72,17 +76,38 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanGuarantorsDTO = new LoanGuarantorDTO();
 
-            if (customer != null)
+            if (loanCases != null)
             {
 
-                loanGuarantorsDTO.CustomerId = customer.Id;
-                loanGuarantorsDTO.CustomerIndividualFirstName = customer.FullName;
-                loanGuarantorsDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                loanGuarantorsDTO.CustomerSerialNumber = customer.SerialNumber;
-                loanGuarantorsDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                loanGuarantorsDTO.StationDescription = customer.StationDescription;
-                
+                loanGuarantorsDTO.LoaneeCustomerId = loanCases.CustomerId;
+                loanGuarantorsDTO.LoanCaseCaseNumber = loanCases.CaseNumber;
+                loanGuarantorsDTO.CustomerFullName = loanCases.CustomerFullName;
+                loanGuarantorsDTO.LoanCaseAmountApplied = loanCases.AmountApplied;
+                loanGuarantorsDTO.CustomerReference1 = loanCases.CustomerReference1;
+                loanGuarantorsDTO.CustomerReference2 = loanCases.CustomerReference2;
+                loanGuarantorsDTO.CustomerReference3 = loanCases.CustomerReference3;
+                loanGuarantorsDTO.LoanCaseLoanPurposeDescription = loanCases.LoanPurposeDescription;
+                loanGuarantorsDTO.LoanProductDescription = loanCases.LoanProductDescription;
+                loanGuarantorsDTO.StationDescription = loanCases.CustomerStationZoneDivisionEmployerDescription;
+                loanGuarantorsDTO.EmployerDescription = loanCases.EmployerName;
+
+
+                //if (customer != null)
+                //{
+                //    loanGuarantorsDTO.CustomerId = customer.Id;
+                //    loanGuarantorsDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                //    //loanGuarantorsDTO.CommittedShares = customer.
+                //}
             }
+
+
+            if (customer != null)
+            {
+                loanGuarantorsDTO.CustomerId = customer.Id;
+                loanGuarantorsDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                //loanGuarantorsDTO.CommittedShares = customer.com
+            }
+
 
             return View(loanGuarantorsDTO);
         }
