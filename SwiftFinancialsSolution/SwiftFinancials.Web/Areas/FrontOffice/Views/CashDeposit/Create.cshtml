@@ -1,17 +1,18 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.CashDepositRequestDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO
+
 @{
     /**/
 
-    ViewBag.Title = "Create Cash Deposit";
-
+    ViewBag.Title = "Create Cash Transactions";
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
-
-    var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
+    var frontOfficeTransactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
+ 
 }
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Cash Deposit</h2>
+        <h2>Cash Transactions</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -65,68 +66,53 @@
                                     <div class="col-lg-6">
 
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.CustomerAccountId, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.Id, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.CustomerAccountId)
-                                                @Html.TextBoxFor(model => model.CustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.Id)
+                                                @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                                    <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+
                                                 </span>
                                             </div>
                                         </div>
 
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerAccountRemarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountRemarks, "", new { @class = "text-danger" })
-                                        </div>
-
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "Saving products", @class = "SavingProductsLookup form-control required", placeholder = "Description.." } })
                                         </div>
 
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer File Number" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", placeholder = "Investment Product Description.." } })
                                         </div>
+
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Type, frontOfficeTransactionType, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Type)
+                                            </div>
                                         </div>
+
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
-                                            @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "TotalValue" } })
+                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                         </div>
-
-
-
-
-
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Personal File Number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                        </div>
 
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2">
@@ -137,99 +123,55 @@
                                     </div>
 
 
-                                    @*denominations form starts from here *@
+                                    <div class="col-lg-6">
 
-                                    <meta charset="UTF-8">
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <style>
-                                        label {
-                                            display: block;
-                                            margin-bottom: 8px;
-                                        }
-
-                                        #denominationForm {
-                                            display: list-item; /* Hide the form by default */
-                                        }
-                                    </style>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerSerialNumber, "", new { @class = "text-danger" })
+                                        </div>
 
 
-                                    <script>
-                                        function toggleForm() {
-                                            var form = document.getElementById('denominationForm');
-                                            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-                                        }
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
 
-                                        function calculateTotal() {
-                                            // Get values from input fields
-                                            var thousands = parseInt(document.getElementById('thousands').value) || 0;
-                                            var fiveHundreds = parseInt(document.getElementById('five_hundreds').value) || 0;
-                                            var twoHundreds = parseInt(document.getElementById('two_hundreds').value) || 0;
-                                            var hundreds = parseInt(document.getElementById('hundreds').value) || 0;
-                                            var shillings20 = parseInt(document.getElementById('shillings_20').value) || 0;
-                                            var shillings10 = parseInt(document.getElementById('shillings_10').value) || 0;
-                                            var shillings5 = parseInt(document.getElementById('shillings_5').value) || 0;
-                                            var shilling = parseInt(document.getElementById('shilling').value) || 0;
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Membership Number" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "product type", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
+                                        </div>
 
-                                            // Calculate total
-                                            var total = thousands * 1000 + fiveHundreds * 500 + twoHundreds * 200 +
-                                                hundreds * 100 + shillings20 * 20 + shillings10 * 10 + shillings5 * 5 + shilling;
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Membership Number" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                        </div>
 
-                                            // Update breakdown
-                                            document.getElementById('totalBreakdown').innerHTML = "Total: " + total + " KES";
-                                        }
-                                    </script>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                        </div>
 
-                                    <button onclick="toggleForm()">Denominations Form</button>
-                                    <div class="col-lg-6" id="denominationForm">
-                                        <h2>Enter Amount in Kenyan Shillings</h2>
-
-                                        <form action="#" method="post">
-                                            <!-- Your form content here the textboxes for the Denominations  -->
-                                            <label for="thousands">Thousands:</label>
-                                            <input type="number" id="thousands" name="thousands" min="0" step="1" oninput="calculateTotal()">
-
-                                            <label for="five_hundreds">Five Hundreds:</label>
-                                            <input type="number" id="five_hundreds" name="five_hundreds" min="0" step="1" oninput="calculateTotal()">
-
-                                            <label for="two_hundreds">Two Hundreds:</label>
-                                            <input type="number" id="two_hundreds" name="two_hundreds" min="0" step="1" oninput="calculateTotal()">
-
-                                            <label for="hundreds">Hundreds:</label>
-                                            <input type="number" id="hundreds" name="hundreds" min="0" step="1" oninput="calculateTotal()">
-
-
-                                            <label for="shillings_20">20 Shillings:</label>
-                                            <input type="number" id="shillings_20" name="shillings_20" min="0" step="1" oninput="calculateTotal()">
-
-                                            <label for="shillings_10">10 Shillings:</label>
-                                            <input type="number" id="shillings_10" name="shillings_10" min="0" step="1" oninput="calculateTotal()">
-
-                                            <label for="shillings_5">5 Shillings:</label>
-                                            <input type="number" id="shillings_5" name="shillings_5" min="0" step="1" oninput="calculateTotal()">
-
-                                            <label for="shilling">1 Shilling:</label>
-                                            <input type="number" id="shilling" name="shilling" min="0" step="1" oninput="calculateTotal()">
-
-
-                                            <h3>Total Currency</h3>
-                                            <p id="totalBreakdown">Total: 0 KES</p>
-                                        </form>
                                     </div>
-                                    @*The lookup ends here *@
-
-
-
-
                                 </div>
-
-
-
                             </fieldset>
-
                         </div>
-
                     }
-
                 </div>
 
             </div>
@@ -260,6 +202,7 @@
         </div>
     </div>
 </div>
+<input type='hidden' id='h' name='h' />
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -304,15 +247,118 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
 
 
 
 
 
 
+        $('#CustomerAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                //Station typehead starts here
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+            // Display settings
+            "aoColumns": [
+
+                { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },               
+                { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                { "mDataProp": "CustomerReference1", "sTitle": "customer", "sWidth": "2%" },
+                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
+                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "2%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
+        });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = CustomerAccountsGrid.row(this).data();
+        $('#Id').val(data.Id);
+        $('#Id').val(data.CustomerId);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+
+        $('#id').val(CustomersMap[item].CustomerAccountId);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
+        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+        $('#Remarks').val(CustomersMap[item].Remarks);
+        $('#customerLookupModal').modal('hide');
+    });
+
+
+
+        ///// Investment products lookup /////
+$('.InvestmentProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (InvestmentProducts) {
+                var newInvestmentProductsData = [];
+                InvestmentProductsMap = {};
+                $.each(InvestmentProducts, function (i, InvestmentProduct) {
+                    newInvestmentProductsData.push(InvestmentProduct.Description);
+                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
+                });
+                process(newInvestmentProductsData);
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var investmentProductId = "";
+        investmentProductId = InvestmentProductsMap[item].Id;
+        $('#InvestmentProductId').val(investmentProductId);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
+        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
+
+        //console.log(investmentProductId)
+        return item;
+    }
+});
+
+
+             //Station typehead starts here
+
             $('.StationsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
@@ -353,15 +399,15 @@
             });
 
 
-
-        $('#CustomerAccountsGrid').DataTable({
+    $('#customersGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
                 "sServerMethod": "POST",
                 // Callback settings
+
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -374,40 +420,39 @@
 
                     var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
 
                     return nRow;
                 },
         // Display settings
         "aoColumns": [
-
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
-             });
+    });
 
     $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#CustomerAccountId').val(data.Id);
-        $('input[name=CustomerAccountId]').val(data.Id);
-        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
+        var data = customersGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=CustomerFullName]').val(data.FullName);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
         $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
+        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#customerLookupModal').modal('hide');
     });
+
 
          //Branch typehead starts here
             $('.BranchesLookup').typeahead({
@@ -446,7 +491,63 @@
                 }
             });
 
+        $('.SavingProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (SavingProducts) {
+                var newSavingProductsData = [];
+                SavingProductsMap = {};
+                $.each(SavingProducts, function (i, SavingProduct) {
+                    newSavingProductsData.push(SavingProduct.Description);
+                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                });
+                process(newSavingProductsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var savingProductId = "";
+        savingProductId = SavingProductsMap[item].Id;
+        $('#SavingProductId').val(savingProductId);
+        //console.log(savingProductId)
+        return item;
+    }
+});
+        function captureDetails() {
+            var Remarks = document.getElementById('Remark').value;
+            var BranchDescription = document.getElementById('BranchDescription').value;
+            //var h = document.getElementById('h');
+            //h.value = word;
+            //$.post("Registry/WithdrawalNotification/AssignText", { word });
+            $.ajax({
+                url: "/Registry/WithdrawalNotification/AssignText",
+                type: "POST",
+                data: { "Remarks": Remarks, "BranchDescription": BranchDescription },
+                //success: function (mydata) {
+                //    alert("Saved");
+                //},
+                //error: function (error) {
+                //    alert('failed');
+                //    alert(error);
+                //}
+            });
+
+        }
 
 
-    </script>
+</script>
 }

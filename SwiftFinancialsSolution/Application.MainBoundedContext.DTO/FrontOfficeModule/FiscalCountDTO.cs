@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
 using Infrastructure.Crosscutting.Framework.Utils;
+using System.Collections.Generic;
 
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
@@ -22,7 +23,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        
+
         public Guid BranchId { get; set; }
 
         [DataMember]
@@ -50,7 +51,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "G/L Account")]
-        
+
         public Guid ChartOfAccountId { get; set; }
 
         [DataMember]
@@ -189,7 +190,9 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Destination Branch")]
-        
+
         public Guid DestinationBranchId { get; set; }
+              
+    
     }
 }

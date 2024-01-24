@@ -43,7 +43,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         }
 
         [Display(Name = "Status")]
-        public byte Status { get; set; }
+        public int Status { get; set; }
 
         [Display(Name = "Status")]
         public string StatusDescription

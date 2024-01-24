@@ -21,6 +21,7 @@ using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
+using SwiftFinancials.Presentation.Infrastructure.Models;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -38,7 +39,7 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
-        
+        public ObservableCollection<TransactionModel> TransactionModels;
 
         public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
 
@@ -258,6 +259,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetFrontOfficeTransactionTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> frontOfficeTransactionType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(FrontOfficeTransactionType)).Cast<FrontOfficeTransactionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            frontOfficeTransactionType.AddRange(items);
+
+            return frontOfficeTransactionType;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetJournalVoucherStatusSelectList(string selectedValue)
         {
             List<SelectListItem> journalVoucherStatuses = new List<SelectListItem>();
@@ -290,6 +308,22 @@ namespace SwiftFinancials.Web.Controllers
             tellerTypes.AddRange(items);
 
             return tellerTypes;
+        }
+
+        protected List<SelectListItem> GetCashTransferTransactionTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> cashTransferTransactionType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CashTransferTransactionType)).Cast<CashTransferTransactionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            cashTransferTransactionType.AddRange(items);
+
+            return cashTransferTransactionType;
         }
 
         [NonAction]
