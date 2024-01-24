@@ -35,6 +35,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTOs;
 
+        public ObservableCollection<LoanGuarantorDTO> StandingOrdersDTOs;
+
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
         public ObservableCollection<TransactionModel> TransactionModels;

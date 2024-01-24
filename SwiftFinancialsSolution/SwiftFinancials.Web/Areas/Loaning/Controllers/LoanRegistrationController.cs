@@ -9,6 +9,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -78,9 +79,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var employer = await _channelService.FindEmployerAsync(parseId, GetServiceHeader());
             var zone = await _channelService.FindZoneAsync(parseId, GetServiceHeader());
 
-            //await GetLoanProducts(id);
-
-            //LoanProductDTO loanProductDTO = new LoanProductDTO();
+            var data = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId, 0, true, GetServiceHeader());
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
             //EmployerDTO employerDTO = new EmployerDTO();
@@ -89,6 +88,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 //Loanee
                 loanCaseDTO.CustomerId = customer.Id;
+
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
                 loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
@@ -99,15 +99,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerStation = customer.StationDescription;
 
-                //loanCaseDTO.GuarantorByCustomerId = customer.Id;
-                //loanCaseDTO.CustomerSerialNumber = customer.SerialNumber;
-                //loanCaseDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
-                //loanCaseDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                ViewBag.StandingOrdersDTOs = data;
             }
 
             return View(loanCaseDTO);
         }
 
+        
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {
@@ -142,7 +140,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                         await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
                 }
 
-                TempData["AlertMessage"] = "Successfully applied for loan amounting to Kshs." + loanCaseDTO.AmountApplied;
+                TempData["AlertMessage"] = "Loan registration successful.";
 
                 return RedirectToAction("Index");
             }
@@ -153,7 +151,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                TempData["AlertMessage"] = errorMessages;
+                TempData["AlertMessage"] = "Loan registration failed.";
 
                 return View(loanCaseDTO);
             }

@@ -32,6 +32,18 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Employer")]
         public string EmployerDescription { get; set; }
 
+
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public Guid? GuarantorEmployerId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string GuarantorEmployerDescription { get; set; }
+
+
+
         [DataMember]
         [Display(Name = "Station")]
         public Guid? StationId { get; set; }
@@ -39,6 +51,21 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Station")]
         public string StationDescription { get; set; }
+
+
+
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public Guid? GuarantorStationId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public string GuarantorStationDescription { get; set; }
+
+
+
+
 
         [DataMember]
         [Display(Name = "Amount Applied")]
@@ -70,7 +97,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public int LoaneeCustomerType { get; set; }
 
         [DataMember]
-        [Display(Name = "Customer Type")]
+        [Display(Name = "Customer")]
         public string LoaneeCustomerTypeDescription
         {
             get
@@ -229,6 +256,26 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return string.Format("{0}", CustomerSerialNumber).PadLeft(7, '0');
             }
         }
+
+
+
+
+        [DataMember]
+        [Display(Name = "Serial Number")]
+        public int GuarantorCustomerSerialNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Serial Number")]
+        public string GuarantorPaddedCustomerSerialNumber
+        {
+            get
+            {
+                return string.Format("{0}", GuarantorCustomerSerialNumber).PadLeft(7, '0');
+            }
+        }
+
+
+
 
         [DataMember]
         [Display(Name = "Customer Type")]

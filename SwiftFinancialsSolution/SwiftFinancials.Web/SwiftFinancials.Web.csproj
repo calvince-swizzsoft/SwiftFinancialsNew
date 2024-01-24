@@ -346,6 +346,8 @@
     <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AddCollateralController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
@@ -828,7 +830,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\web.config" />
     <Content Include="Areas\FrontOffice\Views\Shared\_Layout.cshtml" />
@@ -925,6 +926,11 @@
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
     <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashManagement\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Approval.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
@@ -932,6 +938,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\tabbing.css" />
+    <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -1397,6 +1404,7 @@
     <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
+    <Folder Include="Areas\Loaning\Views\AddCollateral\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />

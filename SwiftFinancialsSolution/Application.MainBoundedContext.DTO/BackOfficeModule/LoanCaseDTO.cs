@@ -70,12 +70,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
         [DataMember]
-        [Display(Name = "Customer")]
-        [ValidGuid]
-        public Guid GuarantorByCustomerId { get; set; }
-
-
-        [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerType { get; set; }
 
@@ -167,12 +161,20 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
             }
         }
 
+
+
+
+        [DataMember]
+        [Display(Name = "Loanee")]
+        public string CustomerLoaneeFullName { get; set; }
+
+
         [DataMember]
         [Display(Name = "Identity Card Number")]
         public string CustomerIndividualIdentityCardNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "Payroll Numbers")]
+        [Display(Name = "Payroll Number")]
         public string CustomerIndividualPayrollNumbers { get; set; }
 
         [DataMember]
@@ -521,6 +523,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Total Shares")]
         public decimal LoanProductTotalSharesInvestmentsBalance { get; set; }
 
+        [DataMember]
+        [Display(Name = "Committed Shares")]
+        public decimal LoanProductCommittedSharesInvestmentsBalance { get; set; }
 
         [DataMember]
         [Display(Name = "Loan Balance")]
@@ -870,9 +875,15 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Total Number of Guarantors")]
         public int TotalNumberOfGuarantors { get; set; }
 
-        [Display(Name = "Total Amount Guaranteed")]
+        [Display(Name = "Amount Guaranteed")]
         [CustomValidation(typeof(LoanCaseDTO), "ValidateLoanSecurity", ErrorMessage = "Security is required for the selected loan product and following conditions must be met:-\n\n-If guarantor security mode is income, the total number of guarantors must not be less than the minimum required\n-If guarantor security mode is investments, the total amount guaranteed must not be less than the amount applied")]
         public decimal TotalAmountGuaranteed { get; set; }
+
+
+        [Display(Name = "Amount Pledged")]
+        public decimal TotalAmountPledged { get; set; }
+
+
 
         [Display(Name = "Total Collateral")]
         public decimal TotalCollateralAmount { get; set; }

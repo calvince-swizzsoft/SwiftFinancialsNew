@@ -1,0 +1,37 @@
+﻿/* site.css */
+
+.navigation-tab {
+    margin-bottom: 20px;
+    text-align: center; /* Center-align the tabs */
+}
+
+.nav-tabs {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    overflow: hidden;
+    display: inline-block; /* Make sure the container only takes the necessary width */
+}
+
+.nav-item {
+    display: inline-block; /* Display tabs in a row */
+    float: none; /* Remove float */
+}
+
+.nav-link {
+    padding: 15px 20px;
+    color: #495057;
+    font-weight: bold;
+    border: 1px solid transparent;
+    border-radius: 8px 8px 0 0;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    display: block; /* Ensure the link takes the full width of its container */
+}
+
+    .nav-link:hover {
+        background-color: #e9ecef;
+    }
+
+    .nav-link.active {
+        background-color: #007bff;
+        color: #fff;
+    }
