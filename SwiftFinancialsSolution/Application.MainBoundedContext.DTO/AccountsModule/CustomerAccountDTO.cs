@@ -652,5 +652,27 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public int Type { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string TypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(FrontOfficeTransactionType), Type) ? EnumHelper.GetDescription((FrontOfficeTransactionType)Type) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Amount Applied")]
+        [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount applied must be greater than zero!")]
+        public decimal TotalValue { get; set; }
+
+
+
     }
 }

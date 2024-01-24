@@ -82,42 +82,42 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-            AccountClosureRequestDTO accountClosureRequestDTO = new AccountClosureRequestDTO();
+            FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
 
             if (customer != null)
             {
-                accountClosureRequestDTO.CustomerAccountCustomerId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                accountClosureRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
+                fixedDepositDTO.CustomerAccountCustomerId = customer.Id;
+                fixedDepositDTO.CustomerAccountId = customer.Id;
+                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
+                fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                fixedDepositDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
+                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
 
 
             }
 
 
 
-            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
+            //var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
 
-            FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
+            //FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
 
-            if (fixedDepositTypeDTO != null)
-            {
+            //if (fixedDepositTypeDTO != null)
+            //{
 
-                fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
-                fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
-                fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
-                fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
-                fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
-            }
+            //    fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
+            //    fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
+            //    fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
+            //    fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
+            //    fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
+            //}
 
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
             
-            return View(fixedDepositTypeDTOs);
+            return View(fixedDepositDTO);
         }
 
 

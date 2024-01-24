@@ -20,46 +20,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            //Guid parseId;
+            Guid parseId;
 
-            //if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            //{
-            //    return View();
-            //}
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
 
-            //bool includeBalances = false;
-            //bool includeProductDescription = false;
-            //bool includeInterestBalanceForLoanAccounts = false;
-            //bool considerMaturityPeriodForInvestmentAccounts = false;
+            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
 
+           
 
-            //var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            CashTransferRequestDTO cashTransferRequestDTO = new CashTransferRequestDTO();
 
-            //CashTransferRequestDTO cashDepositRequestDTO = new CashTransferRequestDTO();
+            if (employee != null)
+            {
+                cashTransferRequestDTO.EmployeeId = employee.Id;
+                cashTransferRequestDTO.EmployeeCustomerIndividualFirstName = employee.CustomerFullName;
+                cashTransferRequestDTO.EmployeeCustomerIndividualLastName = employee.CustomerIndividualFirstName;
+            }
 
-            //if (customer != null)
-            //{
-                //cashDepositRequestDTO.CustomerAccountCustomerId = customer.Id;
-                //cashDepositRequestDTO.CustomerAccountId = customer.Id;
-                //cashDepositRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                ////  accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                //cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                //cashDepositRequestDTO.Remarks = customer.Remarks;
-                //cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                //cashDepositRequestDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                //cashDepositRequestDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                //cashDepositRequestDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                //cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                //cashDepositRequestDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.CustomerPersonalIdentificationNumber;
-
-
-           // }
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.TellerTypeSelectList = GetCashTransferTransactionTypeSelectList(string.Empty);
 
-            return View("Create");
+            return View(cashTransferRequestDTO);
         }
 
         [HttpPost]
@@ -74,7 +60,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else
             {
 
-                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(cashTransferRequestDTO.Status.ToString());
+                ViewBag.TellerTypeSelectList = GetCashTransferTransactionTypeSelectList(cashTransferRequestDTO.Status.ToString());
 
                 return View(cashTransferRequestDTO);
             }

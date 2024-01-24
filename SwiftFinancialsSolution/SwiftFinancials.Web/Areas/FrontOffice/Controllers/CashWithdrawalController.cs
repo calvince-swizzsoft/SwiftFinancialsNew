@@ -27,6 +27,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
+            int pageIndex = 0;
+            int pageSize = 0;
 
             int searchRecordCount = 0;
 
@@ -38,7 +40,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.sEcho, 1, 1, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.sEcho, pageIndex, pageSize, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -102,7 +104,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
 
             return View(cashWithdrawalRequestDTO);
         }
@@ -128,6 +130,43 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
+
+
+        public async Task<ActionResult> Approval()
+        {
+            await ServeNavigationMenus();
+            Guid id = new Guid();
+
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var CashWithdrawal = await _channelService.FindCashWithdrawalRequestAsync(id, GetServiceHeader());
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            return View(CashWithdrawal);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Approval(CashWithdrawalRequestDTO cashWithdrawalRequestDTO)
+        {
+            cashWithdrawalRequestDTO.ValidateAll();
+
+            int customerTransactionAuthOption = 0;
+            if (!cashWithdrawalRequestDTO.HasErrors)
+            {
+                await _channelService.AuthorizeCashWithdrawalRequestAsync(cashWithdrawalRequestDTO, customerTransactionAuthOption, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = cashWithdrawalRequestDTO.ErrorMessages;
+                ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(cashWithdrawalRequestDTO.Category.ToString());
+                return View(cashWithdrawalRequestDTO);
+            }
+
+        }
 
 
         [HttpGet]

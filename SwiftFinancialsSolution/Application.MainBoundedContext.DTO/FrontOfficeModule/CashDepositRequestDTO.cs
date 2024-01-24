@@ -240,6 +240,20 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Required]
         public double Denomination { get; set; }
 
+        [DataMember]
+        [Display(Name = "Type")]
+        public int Type { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string TypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(FrontOfficeTransactionType), Type) ? EnumHelper.GetDescription((FrontOfficeTransactionType)Type) : string.Empty;
+            }
+        }
+
 
 
 

@@ -8,11 +8,6 @@
 
 }
 
-@using (Html.BeginForm("Create", "MultiDestination", new { Area = "Registry" }, FormMethod.Get))
-{
-    TempData["Remarks"] = "HAM";
-}
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h2>Multi Destination</h2>
@@ -110,7 +105,7 @@
                                             @Html.LabelFor(model => model.DestinationDepartmentId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.DestinationDepartmentId)
                                             @Html.ValidationMessageFor(model => model.DestinationDepartmentId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.DestinationDepartmentDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.EditorFor(model => model.DestinationDepartmentDescription, new { htmlAttributes = new { @id = "Departments", @class = "DepartmentsLookup form-control required", placeholder = "Description.." } })
                                         </div>
 
                                     </div>
@@ -195,11 +190,6 @@
 
     <script>
         ////////
-
-
-
-
-
 
         $('.DepartmentsLookup').typeahead({
     source: function (query, process) {
@@ -327,9 +317,9 @@
     $("#s tbody").on("click", "tr", function () {
         var data = customersGrid.row(this).data();
 
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
+        $('#FileRegisterCustomerId').val(data.Id);
+        $('input[name=FileRegisterCustomerId]').val(data.Id);
+        $('input[name=FileRegisterCustomerFullName]').val(data.FullName);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;

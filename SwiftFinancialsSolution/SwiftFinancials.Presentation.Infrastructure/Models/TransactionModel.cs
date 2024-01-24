@@ -1,7 +1,9 @@
 ﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Models
@@ -262,5 +264,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
                 }
             }
         }
+
+        public List<TransactionModel> TransactionModels { get; set; }
+        public FiscalCountDTO transactionModels { get; set; }
     }
 }

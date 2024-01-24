@@ -62,8 +62,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         public async Task<ActionResult> Create(Guid? id)
         {
+          
+            
             await ServeNavigationMenus();
-
+            ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -80,51 +82,59 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-            CashDepositRequestDTO cashDepositRequestDTO = new CashDepositRequestDTO();
+            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
 
             if (customer != null)
             {
-                cashDepositRequestDTO.CustomerAccountCustomerId = customer.Id;
-                cashDepositRequestDTO.CustomerAccountId = customer.Id;
-                cashDepositRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                //  accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                cashDepositRequestDTO.Remarks = customer.Remarks;
-                cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                cashDepositRequestDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                cashDepositRequestDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                cashDepositRequestDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                cashDepositRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;                
-                cashDepositRequestDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.CustomerPersonalIdentificationNumber;
-                cashDepositRequestDTO.CustomerAccountRemarks = customer.Remarks;
-                cashDepositRequestDTO.BranchDescription = customer.BranchDescription;
+                customerAccountDTO.Id = customer.Id;
+                customerAccountDTO.Id = customer.Id;
+                customerAccountDTO.CustomerIndividualFirstName = customer.CustomerFullName;
+                customerAccountDTO.CustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                customerAccountDTO.CustomerSerialNumber = customer.CustomerSerialNumber;
+                customerAccountDTO.CustomerReference1 = customer.CustomerReference1;
+                customerAccountDTO.CustomerReference2 = customer.CustomerReference2;
+                customerAccountDTO.CustomerReference3 = customer.CustomerReference3;
+                customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
+                customerAccountDTO.Remarks = customer.Remarks;
+                customerAccountDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
+
 
             }
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
 
-            return View(cashDepositRequestDTO);
+            return View(customerAccountDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CashDepositRequestDTO cashDepositRequestDTO)
+        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
+        
         {
-            cashDepositRequestDTO.ValidateAll();
+           
+                               
 
-            if (!cashDepositRequestDTO.HasErrors)
+            customerAccountDTO.ValidateAll();
+            customerAccountDTO.Id = customerAccountDTO.CustomerId;
+            if (!customerAccountDTO.HasErrors)
             {
-                await _channelService.AddCashDepositRequestAsync(cashDepositRequestDTO, GetServiceHeader());
+                decimal totalValue =customerAccountDTO.TotalValue;
+                int frontOfficeTransactionType = customerAccountDTO.Type;
+
+                await _channelService.ComputeTellerCashTariffsAsync(customerAccountDTO, totalValue, frontOfficeTransactionType, GetServiceHeader());
+
+                ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(customerAccountDTO.CustomerAccountManagementActionDescription.ToString());
 
                 return RedirectToAction("Create");
             }
             else
             {
-                var errorMessages = cashDepositRequestDTO.ErrorMessages;
-                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(cashDepositRequestDTO.CustomerAccountCustomerTypeDescription.ToString());
+                var errorMessages = customerAccountDTO.ErrorMessages;
+                // ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(cashDepositRequestDTO.CustomerAccountCustomerTypeDescription.ToString());
+                ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(customerAccountDTO.Type.ToString());
 
-                return View(cashDepositRequestDTO);
+                return View(customerAccountDTO);
             }
         }
 

@@ -32,21 +32,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
-            WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
+            FileMovementHistoryDTO fileMovementHistoryDTO = new FileMovementHistoryDTO();
 
             if (customer != null)
             {
 
-                withdrawalNotificationDTO.CustomerId = customer.Id;
-                withdrawalNotificationDTO.CustomerFullName = customer.FullName;
-                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
-                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                withdrawalNotificationDTO.CustomerStationDescription = customer.StationDescription;
-                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                fileMovementHistoryDTO.FileRegisterCustomerId = customer.Id;
+                fileMovementHistoryDTO.FileRegisterCustomerIndividualFirstName = customer.FullName;
+                //fileMovementHistoryDTO. = customer.IndividualPayrollNumbers;
+                //fileMovementHistoryDTO. = customer.SerialNumber;
+                //fileMovementHistoryDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                //fileMovementHistoryDTO.CustomerStationDescription = customer.StationDescription;
+                //fileMovementHistoryDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
             }
 
-            return View(withdrawalNotificationDTO);
+            return View(fileMovementHistoryDTO);
         }
         [HttpPost]
         public async Task<ActionResult> Create(FileMovementHistoryDTO fileMovementHistoryDTO)

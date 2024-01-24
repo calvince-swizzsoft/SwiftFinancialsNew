@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.CashTransferRequestDTO
+﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.FiscalCountDTO
 
 @{
     /**/
@@ -9,13 +9,13 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Cash Transfer</h2>
+        <h2>Cash Management</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "CashTransfer", new { Area = "FrontOffice" }, null)
+                @Html.ActionLink("Home", "Index", "CashManagement", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -50,7 +50,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "CashTransfer", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
@@ -62,16 +62,6 @@
                                 <div class="row">
                                     <div class="col-lg-6">
 
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.EmployeeId)
-                                                @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#EmployeeLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
@@ -80,11 +70,24 @@
                                         </div>
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DestinationBranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DestinationBranchId)
+                                            @Html.ValidationMessageFor(model => model.DestinationBranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                         </div>
 
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.PostingPeriodId)
+                                            @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
+                                        </div>
 
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-10">
@@ -94,37 +97,41 @@
                                     </div>
                                     <div class="col-lg-6">
 
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.TellerId, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.TellerId)
+                                                @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#EmployeeLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group" id="data_3">
-                                            @Html.LabelFor(model => model.AcknowledgedDate, htmlAttributes: new { @class = "" })
-                                            <div class="input-group date">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                <input type="text" name="DurationEndDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                            </div>
+                                            @Html.LabelFor(model => model.TotalAmount, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Amount", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger" })
                                         </div>
 
 
-                                        @*<div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Status, LeaveTYpes, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.Status)
-                                            </div>
+
+                                        <div class="form-group form-group-lg" style="text-align: center;">
+                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountId)
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
+                                        </div>
+
+
+                                        @*<div class="form-group form-group-lg" style="text-align: center;">
+                                            @Html.LabelFor(model => model.ChartOfAccountCostCenterId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountCostCenterId)
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountCostCenterId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.transactionModels, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
                                         </div>*@
 
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.Utilized, htmlAttributes: new { @class = "" })
-                                            @Html.LabelFor(model => model.Utilized, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                            @Html.ValidationMessageFor(model => model.Utilized, "", new { @class = "text-danger" })
-                                        </div>
 
 
                                     </div>
@@ -218,6 +225,122 @@
 
 
 
+
+    //ChartOfAccount typehead starts here
+        $('.EntriesChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+
+         //Branch typehead starts here
+    $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId  = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+
+          //PostingPeriod typehead starts here
+            $('.PostingPeriodsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        { query: query },
+                        function (PostingPeriods) {
+                            var newPostingPeriodsData = [];
+                            PostingPeriodsMap = {};
+                            $.each(PostingPeriods, function (i, PostingPeriod) {
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                            });
+                            process(newPostingPeriodsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var postingPeriodId = "";
+                    PostingPeriodId = PostingPeriodsMap[item].Id;
+                    $('#PostingPeriodId').val(PostingPeriodId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+
+
         $(document).ready(function () {
             $('#data_3 .input-group.date').datepicker({
                 startView: 2,
@@ -274,7 +397,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource" }))",
+                "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -287,19 +410,19 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/frontoffice/CashTransfer/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/frontoffice/CashManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
 
                     return nRow;
                 },
-        // Display settings
+            // Display settings
             "aoColumns": [
-                { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
-                { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
-                { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
+                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
+                { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
             "aaSorting": [[0, "desc"]]
@@ -308,10 +431,10 @@
     $("#s tbody").on("click", "tr", function () {
         var data = EmployeesGrid.row(this).data();
 
-        $('#EmployeeId').val(data.i);
-        $('input[name=EmployeeId]').val(data.Id);
-        $('input[name=EmployeeCustomerFullName]').val(data.FullName);
-        $('input[name=EmployeeCustomerFullName]').val(data.Description);
+        $('#TellerId').val(data.i);
+        $('input[name=TellerId]').val(data.Id);
+        $('input[name=TellerDescription]').val(data.FullName);
+        $('input[name=TellerDescription]').val(data.Description);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
