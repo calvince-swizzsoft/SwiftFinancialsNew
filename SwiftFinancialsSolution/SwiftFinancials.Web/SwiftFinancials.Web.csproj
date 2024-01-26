@@ -926,7 +926,6 @@
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
     <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
@@ -934,6 +933,7 @@
     <Content Include="Areas\FrontOffice\Views\CashManagement\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Approval.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1390,7 +1390,6 @@
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Account\ForceChangePassword.cshtml" />
     <Content Include="Views\Account\Lockout.cshtml" />
-    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

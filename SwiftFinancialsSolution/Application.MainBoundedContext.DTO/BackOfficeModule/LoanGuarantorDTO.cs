@@ -33,7 +33,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string EmployerDescription { get; set; }
 
 
-
         [DataMember]
         [Display(Name = "Employer")]
         public Guid? GuarantorEmployerId { get; set; }
@@ -41,7 +40,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Employer")]
         public string GuarantorEmployerDescription { get; set; }
-
 
 
         [DataMember]
@@ -135,6 +133,17 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Other Names")]
         public string LoaneeCustomerIndividualLastName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Loanee")]
+        public string CustomerFullName { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Guarantor")]
+        public string GuarantorCustomerFullName { get; set; }
+
+
 
         [DataMember]
         [Display(Name = "Group Name")]
@@ -239,7 +248,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
         [DataMember]
-        [Display(Name = "Guarantor Customer")]
+        [Display(Name = "Guarantor")]
         [ValidGuid]
         public Guid CustomerId { get; set; }
 
@@ -258,8 +267,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
 
-
-
         [DataMember]
         [Display(Name = "Serial Number")]
         public int GuarantorCustomerSerialNumber { get; set; }
@@ -273,8 +280,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return string.Format("{0}", GuarantorCustomerSerialNumber).PadLeft(7, '0');
             }
         }
-
-
 
 
         [DataMember]
@@ -322,38 +327,13 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string CustomerNonIndividualRegistrationNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "Personal Identification Number")]
+        [Display(Name = "PIN")]
         public string CustomerPersonalIdentificationNumber { get; set; }
 
         [DataMember]
         [Display(Name = "Date Established")]
         public DateTime? CustomerNonIndividualDateEstablished { get; set; }
 
-        [DataMember]
-        [Display(Name = "Customer Name")]
-        public string CustomerFullName
-        {
-            get
-            {
-                var result = string.Empty;
-
-                switch ((CustomerType)CustomerType)
-                {
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.Individual:
-                        result = string.Format("{0} {1} {2}", CustomerIndividualSalutationDescription, CustomerIndividualFirstName, CustomerIndividualLastName).Trim();
-                        break;
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.Partnership:
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.Corporation:
-                    case Infrastructure.Crosscutting.Framework.Utils.CustomerType.MicroCredit:
-                        result = CustomerNonIndividualDescription;
-                        break;
-                    default:
-                        break;
-                }
-
-                return result;
-            }
-        }
 
         [DataMember]
         [Display(Name = "Identity Card Type")]
