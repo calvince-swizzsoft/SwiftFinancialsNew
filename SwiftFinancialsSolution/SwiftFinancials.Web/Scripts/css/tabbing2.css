@@ -3,6 +3,7 @@
 .navigation-tab {
     margin-bottom: 20px;
     text-align: center; /* Center-align the tabs */
+    font-weight:500;
 }
 
 .nav-tabs {

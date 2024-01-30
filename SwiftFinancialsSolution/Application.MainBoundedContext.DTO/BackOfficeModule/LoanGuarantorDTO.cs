@@ -86,7 +86,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string LoanCaseBranchCompanyDescription { get; set; }
 
         [DataMember]
-        [Display(Name = "Loan Customer")]
+        [Display(Name = "Loanee")]
         [ValidGuid]
         public Guid? LoaneeCustomerId { get; set; }
 
@@ -356,6 +356,12 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Payroll Numbers")]
         public string CustomerIndividualPayrollNumbers { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Payroll Numbers")]
+        public string GuarantorIndividualPayrollNumbers { get; set; }
+
 
         [DataMember]
         [Display(Name = "Mobile Line")]
