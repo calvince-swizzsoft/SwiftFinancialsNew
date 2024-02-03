@@ -6,13 +6,13 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Loan Approval</h2>
+        <h1>Loaning</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Approve", "Home", new { Area = "" }, null)
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Approve", "ApproveLoan", new { Area = "Loaning" }, null)
+                @Html.ActionLink("Home", "Index", "ApproveLoan", new { Area = "Loaning" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Approve</strong>
@@ -26,6 +26,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Loan Approval</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -128,7 +129,7 @@
                                         @Html.ValidationMessageFor(model => model.AppraisedNetIncome, "", new { @class = "text-danger" })
                                     </div>
                                     <div>
-                                        @Html.ActionLink("Back to List", " ", "Approve", new { Area = "Loaning" }, new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Back to List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">

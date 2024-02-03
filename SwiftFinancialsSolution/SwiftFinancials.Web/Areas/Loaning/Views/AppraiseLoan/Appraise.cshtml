@@ -1,21 +1,21 @@
 ﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 
 @{
-    ViewBag.Title = "Loan Approval";
-    var loanApprovalOption = ViewBag.LoanApprovalOptionSelectList as List<SelectListItem>;
+    ViewBag.Title = "Appraise Loan";
+    var loanAppraisalOption = ViewBag.LoanAppraisalOptionSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Loan Approval</h2>
+        <h1>Loaning</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Approve", "Home", new { Area = "" }, null)
+                @Html.ActionLink("Dashboard", "Appraise", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Approve", "ApproveLoan", new { Area = "Loaning" }, null)
+                @Html.ActionLink("Home", "Appraise", "AppraiseLoan", new { Area = "Loaning" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Approve</strong>
+                <strong>Appraise</strong>
             </li>
         </ol>
     </div>
@@ -26,6 +26,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Loan Appraisal</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -36,7 +37,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Approve", "ApproveLoan", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
@@ -56,7 +57,7 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Branch Name", disabled = "disabled" } })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Branch", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -71,27 +72,17 @@
                                         @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Purpose", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.LoanPurposeDescription, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SystemAppraisalRemarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.SystemAppraisalRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "System Appraisal Remarks", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.SystemAppraisalRemarks, "", new { @class = "text-danger" })
-                                    </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerType, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Type", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerType, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CustomerTypeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Type", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerTypeDescription, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", @placeholder = "Term In Months", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AppraisalRemarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.AppraisalRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Apppraisal Remarks", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.AppraisalRemarks, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -107,14 +98,14 @@
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.SavingsProductDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Savings product", disabled = "disabled" } })
+                                        @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Savings Product", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.SavingsProductDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
+                        <h2>Appraisal Details</h2>
                         <fieldset>
-                            <h2>Appraisal Details</h2>
                             <div class="row">
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
@@ -128,7 +119,7 @@
                                         @Html.ValidationMessageFor(model => model.AppraisedNetIncome, "", new { @class = "text-danger" })
                                     </div>
                                     <div>
-                                        @Html.ActionLink("Back to List", " ", "Approve", new { Area = "Loaning" }, new { @class = "btn btn-success" })
+                                        @Html.ActionLink("Back to List", " ", "AppraiseLoan", new { Area = "Loaning" }, new { @class = "btn btn-success" })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -150,22 +141,27 @@
                                         @Html.ValidationMessageFor(model => model.TotalPaybackAmount, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ApprovalRemarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.ApprovalRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Appproval Remarks" } })
-                                        @Html.ValidationMessageFor(model => model.ApprovalRemarks, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.SystemAppraisalRemarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.SystemAppraisalRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "System Appraisal Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.SystemAppraisalRemarks, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanApprovalOption, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.AppraisalRemarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AppraisalRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Apppraisal Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.AppraisalRemarks, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanAppraisalOption, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.LoanApprovalOption, loanApprovalOption, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.LoanApprovalOption)
+                                            @Html.DropDownListFor(model => model.LoanAppraisalOption, loanAppraisalOption, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.LoanAppraisalOption)
                                         </div>
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        <input type="submit" value="Approve" class="btn btn-primary" />
+                                        <input type="submit" value="Appraise" class="btn btn-primary" />
                                     </div>
                                 </div>
                             </div>
@@ -177,125 +173,3 @@
         </div>
     </div>
 </div>
-
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
-}
-
-@section Scripts{
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
-
-
-    <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-        });
-    </script>
-}

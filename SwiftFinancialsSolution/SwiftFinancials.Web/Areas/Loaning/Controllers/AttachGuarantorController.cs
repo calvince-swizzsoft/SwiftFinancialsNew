@@ -14,16 +14,27 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
-    public class AttachGuarantorController : MasterController
+
+    public class LoaneeData
+    {
+        public Guid? LoaneeID { get; set; }
+        public int LoanCaseNumber { get; set; }
+        public decimal amountApplied { get; set; }
+        public string customerRefernce1 { get; set; }
+        public string customerReference2 { get; set; }
+        public string customerFullName { get; set; }
+    }
+
+
+    public class GuarantorData
     {
 
-        public string customer_FullName { get; set; }
-        public int Loan_CaseNumber { get; set; }
-        public decimal Loan_CaseAmountApplied { get; set; }
-        public string customer_Reference1 { get; set; }
-        public string customer_Reference2 { get; set; }
+    }
 
 
+
+    public class AttachGuarantorController : MasterController
+    {
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -75,11 +86,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 return View();
             }
-            
+
             var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             var loanGuarantorsDTO = new LoanGuarantorDTO();
+
+            LoaneeData loanee = new LoaneeData();
 
             if (loanCases != null)
             {
@@ -91,34 +104,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorsDTO.CustomerReference1 = loanCases.CustomerReference1;
                 loanGuarantorsDTO.CustomerReference2 = loanCases.CustomerReference2;
                 loanGuarantorsDTO.CustomerReference3 = loanCases.CustomerReference3;
-                loanGuarantorsDTO.LoanCaseLoanPurposeDescription = loanCases.LoanPurposeDescription;
-                loanGuarantorsDTO.LoanProductDescription = loanCases.LoanProductDescription;
-                loanGuarantorsDTO.StationDescription = loanCases.CustomerStationZoneDivisionEmployerDescription;
-                loanGuarantorsDTO.EmployerDescription = loanCases.EmployerName;
-
 
             }
 
-            if (customer != null)
-            {
-                if (loanGuarantorsDTO.CustomerId == loanGuarantorsDTO.LoaneeCustomerId)
-                {
-                    TempData["AlertMessage"] = "Loanee cannot be attached as guarantor";
+            //if (customer != null)
+            //{
+            //    loanGuarantorsDTO.CustomerId = customer.Id;
+            //    loanGuarantorsDTO.GuarantorCustomerFullName = customer.FullName;
+            //    loanGuarantorsDTO.GuarantorCustomerSerialNumber = customer.SerialNumber;
+            //    loanGuarantorsDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+            //    loanGuarantorsDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
+            //    loanGuarantorsDTO.GuarantorStationDescription = customer.StationDescription;
+            //    loanGuarantorsDTO.GuarantorIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
 
-                    return View(loanGuarantorsDTO);
-                }
-                else
-                {
-                    loanGuarantorsDTO.CustomerId = customer.Id;
-                    loanGuarantorsDTO.GuarantorCustomerFullName = customer.FullName;
-                    loanGuarantorsDTO.GuarantorCustomerSerialNumber = customer.SerialNumber;
-                    loanGuarantorsDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                    loanGuarantorsDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
-                    loanGuarantorsDTO.GuarantorStationDescription = customer.StationDescription;
-                    loanGuarantorsDTO.GuarantorIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                }
+            //}
 
-            }
             return View(loanGuarantorsDTO);
         }
 
@@ -129,7 +129,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             //string Remarks = "";
             await ServeNavigationMenus();
 
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            //ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             Guid parseId;
 
@@ -142,107 +142,161 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanGuarantorsDTO = new LoanGuarantorDTO();
 
-            var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
 
-            if (loanCases != null)
+            if (Session["LoanCaseAmountApplied"] != null)
             {
-
-                loanGuarantorsDTO.LoaneeCustomerId = loanCases.CustomerId;
-                loanGuarantorsDTO.LoanCaseCaseNumber = loanCases.CaseNumber;
-                loanGuarantorsDTO.CustomerFullName = loanCases.CustomerFullName;
-                loanGuarantorsDTO.LoanCaseAmountApplied = loanCases.AmountApplied;
-                loanGuarantorsDTO.CustomerReference1 = loanCases.CustomerReference1;
-                loanGuarantorsDTO.CustomerReference2 = loanCases.CustomerReference2;
-                loanGuarantorsDTO.CustomerReference3 = loanCases.CustomerReference3;
-                loanGuarantorsDTO.LoanCaseLoanPurposeDescription = loanCases.LoanPurposeDescription;
-                loanGuarantorsDTO.LoanProductDescription = loanCases.LoanProductDescription;
-                loanGuarantorsDTO.StationDescription = loanCases.CustomerStationZoneDivisionEmployerDescription;
-                loanGuarantorsDTO.EmployerDescription = loanCases.EmployerName;
-
-
-                if (Session["LoanCaseAmountApplied"] != null)
-                {
-                    loanGuarantorsDTO.LoanCaseCaseNumber = Convert.ToInt32(Session["LoancaseNumber"].ToString());
-                }
-                if (Session["CustomerFullName"] != null)
-                {
-                    loanGuarantorsDTO.CustomerFullName = Session["CustomerFullName"].ToString();
-                }
-                if (Session["LoanCaseAmountApplied"] != null)
-                {
-                    loanGuarantorsDTO.LoanCaseAmountApplied = Convert.ToDecimal(Session["LoanCaseAmountApplied"].ToString());
-                }
-                if (Session["CustomerReference1"] != null)
-                {
-                    loanGuarantorsDTO.CustomerReference1 = Session["CustomerReference1"].ToString();
-                }
-                if (Session["CustomerReference2"] != null)
-                {
-                    loanGuarantorsDTO.CustomerReference2 = Session["CustomerReference2"].ToString();
-                }
-
-
-
-
+                loanGuarantorsDTO.LoanCaseAmountApplied = Convert.ToDecimal(Session["LoanCaseAmountApplied"].ToString());
+            }
+            if (Session["CustomerFullName"] != null)
+            {
+                loanGuarantorsDTO.CustomerFullName = Session["CustomerFullName"].ToString();
+            }
+            if (Session["LoanCaseAmountApplied"] != null)
+            {
+                loanGuarantorsDTO.LoanCaseAmountApplied = Convert.ToDecimal(Session["LoanCaseAmountApplied"].ToString());
+            }
+            if (Session["CustomerReference1"] != null)
+            {
+                loanGuarantorsDTO.CustomerReference1 = Session["CustomerReference1"].ToString();
+            }
+            if (Session["CustomerReference2"] != null)
+            {
+                loanGuarantorsDTO.CustomerReference2 = Session["CustomerReference2"].ToString();
+            }
+            if (Session["LoanCaseCaseNumber"] != null)
+            {
+                loanGuarantorsDTO.LoanCaseCaseNumber = Convert.ToInt32(Session["LoanCaseCaseNumber"].ToString());
             }
 
-            
+
+
+
+
+
             if (customer != null)
             {
-                if (loanGuarantorsDTO.CustomerId == loanGuarantorsDTO.LoaneeCustomerId)
-                {
-                    TempData["AlertMessage"] = "Loanee cannot be attached as guarantor";
+                loanGuarantorsDTO.CustomerId = customer.Id;
+                loanGuarantorsDTO.GuarantorCustomerFullName = customer.FullName;
+                loanGuarantorsDTO.GuarantorCustomerSerialNumber = customer.SerialNumber;
+                loanGuarantorsDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                loanGuarantorsDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
+                loanGuarantorsDTO.GuarantorStationDescription = customer.StationDescription;
+                loanGuarantorsDTO.GuarantorIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
 
-                    return View(loanGuarantorsDTO);
-                }
-                else
-                {
-                    loanGuarantorsDTO.CustomerId = customer.Id;
-                    loanGuarantorsDTO.GuarantorCustomerFullName = customer.FullName;
-                    loanGuarantorsDTO.GuarantorCustomerSerialNumber = customer.SerialNumber;
-                    loanGuarantorsDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                    loanGuarantorsDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
-                    loanGuarantorsDTO.GuarantorStationDescription = customer.StationDescription;
-                    loanGuarantorsDTO.GuarantorIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-
-                }
-               
             }
 
-
-            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
             return View("Create", loanGuarantorsDTO);
         }
 
 
 
         [HttpPost]
-        public ActionResult LoaneeData(int LoanCaseCaseNumber, string CustomerFullName, decimal LoanCaseAmountApplied, string CustomerReference1,
+        public ActionResult LoaneeData(string LoanCaseCaseNumber, string CustomerFullName, string LoanCaseAmountApplied, string CustomerReference1,
             string CustomerReference2)
         {
+
             Session["LoanCaseCaseNumber"] = LoanCaseCaseNumber;
             Session["CustomerFullName"] = CustomerFullName;
             Session["LoanCaseAmountApplied"] = LoanCaseAmountApplied;
             Session["CustomerReference1"] = CustomerReference1;
             Session["CustomerReference2"] = CustomerReference2;
 
+
             return null;
         }
 
 
+        //[HttpPost]
+        //public ActionResult GuarantorData(string LoanCaseCaseNumber, string CustomerFullName) //, string CustomerFullName, decimal LoanCaseAmountApplied, string CustomerReference1,string CustomerReference2)
+        //{
+        //    Session["LoanCaseCaseNumber"] = LoanCaseCaseNumber;
+        //    Session["CustomerFullName"] = CustomerFullName;
+        //    //Session["LoanCaseAmountApplied"] = LoanCaseAmountApplied;
+        //    //Session["CustomerReference1"] = CustomerReference1;
+        //    //Session["CustomerReference2"] = CustomerReference2;
+
+        //    return null;
+        //}
+
+
+
+        //[HttpPost]
+        //public async Task<ActionResult> Add(LoanGuarantorDTO loanGuarantorDTO)
+        //{
+        //    await ServeNavigationMenus();
+
+        //    TempData["LoanGuarantorDTO"] /*as ObservableCollection<LoanGuarantorDTO>*/ = LoanGuarantorsDTO;
+
+        //    if (LoanGuarantorsDTO == null)
+        //        LoanGuarantorsDTO = new ObservableCollection<LoanGuarantorDTO>();
+
+        //    foreach (var loanguarantor in loanGuarantorDTO.LoanGuarantors)
+        //    {
+        //        loanguarantor.LoanCaseCaseNumber = loanguarantor.LoanCaseCaseNumber;
+        //        loanguarantor.CustomerFullName = loanguarantor.CustomerFullName;
+        //        loanguarantor.LoanCaseAmountApplied = loanguarantor.LoanCaseAmountApplied;
+        //        LoanGuarantorsDTO.Add(loanGuarantorDTO);
+        //    };
+
+        //    TempData["LoanGuarantorsDTO"] = LoanGuarantorsDTO;
+
+        //    TempData["LoanGuarantors"] = loanGuarantorDTO;
+
+
+        //    return View("Create", loanGuarantorDTO);
+        //}
+
+
 
         [HttpPost]
-        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
+        public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO, Guid? id)
         {
             loanGuarantorDTO.ValidateAll();
 
+            //string Remarks = "";
+            await ServeNavigationMenus();
+
+            //ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            var loanGuarantorsDTO = new LoanGuarantorDTO();
+
+            //if (customer != null)
+            //{
+            //    if (loanGuarantorsDTO.CustomerId == loanCases.CustomerId)
+            //    {
+            //        TempData["AlertMessage"] = "Loanee cannot be attached as guarantor";
+
+            //        return View(loanGuarantorsDTO);
+            //    }
+            //    else
+            //    {
+            Guid sourceCustomerID;
+            Guid destinationProductID;
+
+            //ObservableCollection<LoanGuarantorDTO> loanGuarantors;
+
+            sourceCustomerID = (Guid)loanGuarantorDTO.LoaneeCustomerId;
+            destinationProductID = (Guid)loanGuarantorDTO.LoanProductId;
+
+            int moduleNavigationCode = 0;
+
             if (!loanGuarantorDTO.HasErrors)
             {
-                await _channelService.AddLoanGuarantorAsync(loanGuarantorDTO, GetServiceHeader());
+                await _channelService.AttachLoanGuarantorsAsync(sourceCustomerID, destinationProductID, LoanGuarantorsDTO, moduleNavigationCode, GetServiceHeader());
 
                 TempData["AlertMessage"] = "Loan guarantor added successfully.";
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Create");
             }
             else
             {
@@ -252,35 +306,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 return View(loanGuarantorDTO);
             }
+            //    }
+            //}
+
+            //return View(loanGuarantorDTO);
         }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
-        //{
-        //    loanGuarantorDTO.ValidateAll();
-        //    Guid sourceCustomerAccountId = loanGuarantorDTO.Id;
-        //    Guid destinationLoanProductId = loanGuarantorDTO.Id;
-        //    int navigatmoduleNavigationItemCode = 0;
-
-
-
-        //    if (!loanGuarantorDTO.HasErrors)
-        //    {
-        //        await _channelService.AttachLoanGuarantorsAsync(sourceCustomerAccountId, destinationLoanProductId,  LoanGuarantorDTOs, navigatmoduleNavigationItemCode, GetServiceHeader());
-
-        //        ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(loanGuarantorDTO.Status.ToString());
-
-
-        //        return RedirectToAction("Index");
-        //    }
-        //    else
-        //    {
-        //        var errorMessages = loanGuarantorDTO.ErrorMessages;
-
-        //        return View("index");
-        //    }
-        //}
 
         public async Task<ActionResult> Edit(Guid id)
         {
