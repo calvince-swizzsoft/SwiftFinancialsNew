@@ -62,8 +62,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         public async Task<ActionResult> Create(Guid? id)
         {
-          
-            
+
+
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
             Guid parseId;
@@ -87,7 +87,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (customer != null)
             {
                 customerAccountDTO.Id = customer.Id;
-                customerAccountDTO.Id = customer.Id;
+                //customerAccountDTO.fu = customer.CustomerId;
+                
                 customerAccountDTO.CustomerIndividualFirstName = customer.CustomerFullName;
                 customerAccountDTO.CustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                 customerAccountDTO.CustomerSerialNumber = customer.CustomerSerialNumber;
@@ -97,7 +98,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
                 customerAccountDTO.Remarks = customer.Remarks;
                 customerAccountDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
-
+               
 
             }
 
@@ -110,16 +111,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         [HttpPost]
         public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
+
         
         {
-           
-                               
-
             customerAccountDTO.ValidateAll();
             customerAccountDTO.Id = customerAccountDTO.CustomerId;
             if (!customerAccountDTO.HasErrors)
             {
-                decimal totalValue =customerAccountDTO.TotalValue;
+                decimal totalValue = customerAccountDTO.TotalValue;
                 int frontOfficeTransactionType = customerAccountDTO.Type;
 
                 await _channelService.ComputeTellerCashTariffsAsync(customerAccountDTO, totalValue, frontOfficeTransactionType, GetServiceHeader());
