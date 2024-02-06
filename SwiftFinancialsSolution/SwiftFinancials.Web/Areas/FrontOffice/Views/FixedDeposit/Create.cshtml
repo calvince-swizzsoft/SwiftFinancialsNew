@@ -9,6 +9,13 @@
     var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
 }
 
+@using (Html.BeginForm("Search", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Get))
+{
+    TempData["Description"] = "HAM";
+    TempData["CustomerAccountCustomerIndividualFirstName"] = "HAM";
+}
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h2>FixedDeposit</h2>
@@ -132,7 +139,7 @@
                                         </div>
 
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.FixedDepositTypeId, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.FixedDepositTypeDescription, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.HiddenFor(model => model.FixedDepositTypeId)
                                                 @Html.TextBoxFor(model => model.FixedDepositTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
@@ -255,7 +262,27 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
+
+    @*<script>
+            // Disable automatic page refresh
+            window.onload = function () {
+                window.addEventListener("beforeunload", function (e) {
+                    e.preventDefault();
+                });
+            };
+
+        </script>*@
+
+    <script>
+
+        // Disable automatic page refresh
+        window.onload = function () {
+            window.addEventListener("beforeunload", function (e) {
+                e.preventDefault();
+            });
+        };
+
+
 
     $('#FixedDepositeTypesGrid').DataTable({
                 // Ajax settings
@@ -285,7 +312,7 @@
         // Display settings
         "aoColumns": [
 
-            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "3%" },
+            { "mDataProp": "Name", "sTitle": "Name", "sWidth": "3%" },
             { "mDataProp": "Months", "sTitle": "Months", "sWidth": "4%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
@@ -296,15 +323,15 @@
         var data = CustomerAccountsGrid.row(this).data();
         $('#FixedDepositTypeId').val(data.Id);
         $('input[name=FixedDepositTypeId]').val(data.Id);
-        $('input[name=FixedDepositTypeDescription]').val(data.Description);
+        $('input[name=Description]').val(data.Description);
 
         var FixedDepositTypeId = "";
         FixedDepositTypeId = FixedDepositTypesMap[item].Id;
 
         $('#FixedDepositTypeId').val(FixedDepositTypesMap[item].FixedDepositTypeId);
-        $('#FixedDepositTypeDescription').val(FixedDepositTypesMap[item].Description);
-        $('#FixedDepositTypeId').val(CustomersMap[item].Fullname);
-        //$('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#Description').val(FixedDepositTypesMap[item].Description);
+        $('#FixedDepositTypeId').val(CustomersMap[item].Id);
+        $('#FixedDepositTypeDescription').val(CustomersMap[item].Description);
         //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
         //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
@@ -455,5 +482,5 @@
 
 
 
-</script>
+    </script>
 }

@@ -73,12 +73,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View();
             }
 
-
             bool includeBalances = false;
             bool includeProductDescription = false;
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
-
 
             var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
@@ -92,33 +90,27 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                 fixedDepositDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
                 fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
-
-
             }
 
+            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
 
+            FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
 
-            //var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
-
-            //FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
-
-            //if (fixedDepositTypeDTO != null)
-            //{
-
-            //    fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
-            //    fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
-            //    fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
-            //    fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
-            //    fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
-            //}
-
+            if (fixedDepositTypeDTO != null)
+            {
+                fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
+                fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
+                fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
+                fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
+                fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
+            }
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-
             ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
-            
+
             return View(fixedDepositDTO);
         }
+
 
 
         [HttpPost]
@@ -265,8 +257,79 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        public async Task<ActionResult> Search(Guid? id)
+        {
+            //string Remarks = "";
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+            FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
+
+            if (customer != null)
+            {
+                fixedDepositDTO.CustomerAccountCustomerId = customer.Id;
+                fixedDepositDTO.CustomerAccountId = customer.Id;
+                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
+                fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                fixedDepositDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
+                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
+            }
+
+            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
+
+            FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
+
+            if (fixedDepositTypeDTO != null)
+            {
+                fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
+                fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
+                fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
+                fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
+                fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
+            }
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+
+            if (Session["Description"] != null)
+                {
+                fixedDepositTypeDTOs.Description = Session["Description"].ToString();
+                }
+            if (Session["Remarks"] != null)
+            {
+                fixedDepositDTO.Remarks = Session["Remarks"].ToString();
+            }
+            if (Session["CustomerAccountCustomerIndividualFirstName"] != null)
+            {
+                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = Session["CustomerAccountCustomerIndividualFirstName"].ToString();
+            }
+            //
 
 
+            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
+            return View("Create", fixedDepositTypeDTOs);
+    }
+
+        [HttpPost]
+        public ActionResult AssignText(string Remarks, string Description)
+        {
+            
+            Session["Description"] = Description;
+            return null;
+        }
 
     }
 }

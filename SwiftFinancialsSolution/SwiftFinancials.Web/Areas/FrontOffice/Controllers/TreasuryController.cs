@@ -107,12 +107,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
-        /*[HttpGet]
-        public async Task<JsonResult> GetTreasuriesAsync()
-        {
-            var treasuriesDTOs = await _channelService.FindTreasuriesAsync(GetServiceHeader());
+        //[HttpGet]
+        //public async Task<JsonResult> GetTreasuriesAsync()
+        //{
+        //    var treasuriesDTOs = await _channelService.FindTreasuriesAsync(GetServiceHeader());
 
-            return Json(treasuriesDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+        //    return Json(treasuriesDTOs, JsonRequestBehavior.AllowGet);
+        //}
     }
 }

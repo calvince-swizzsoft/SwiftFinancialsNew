@@ -40,6 +40,15 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public string TellerDescription { get; set; }
 
         [DataMember]
+        [Display(Name = "Treasury")]
+        [ValidGuid]
+        public Guid TreasuryId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Treasury")]
+        public string TreasuryDescription { get; set; }
+
+        [DataMember]
         [Display(Name = "Posting Period")]
         [ValidGuid]
 
@@ -192,7 +201,11 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Destination Branch")]
 
         public Guid DestinationBranchId { get; set; }
-              
-    
+
+
+        [DataMember]
+        [Display(Name = "Description")]
+        public string Description { get; set; }
+
     }
 }
