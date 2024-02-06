@@ -347,8 +347,11 @@
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AddCollateralController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AppraiseLoanController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
@@ -384,6 +387,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanProductAppraisalController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
@@ -934,6 +938,10 @@
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Approval.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\ApproveLoan\Approve.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

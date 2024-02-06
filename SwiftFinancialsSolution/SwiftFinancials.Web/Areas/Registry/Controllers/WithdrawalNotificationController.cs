@@ -162,6 +162,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             Session["Remarks"] = Remarks;
             Session["BranchDescription"] = BranchDescription;
+
             return null;
         }
 

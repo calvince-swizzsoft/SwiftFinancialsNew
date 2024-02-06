@@ -192,6 +192,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
+
+
+
         public async Task<ActionResult> Appraise(Guid id)
         {
             await ServeNavigationMenus();
@@ -224,6 +227,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
+
         public async Task<ActionResult> Approve(Guid id)
         {
             await ServeNavigationMenus();
@@ -251,37 +255,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 var errorMessages = loanCaseDTO.ErrorMessages;
                 ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
-                return View(loanCaseDTO);
-            }
-        }
-
-        public async Task<ActionResult> Verify(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
-            ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(string.Empty);
-
-            return View(loanCaseDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(LoanCaseDTO loanCaseDTO)
-        {
-            var loanAuditOption = loanCaseDTO.LoanAuditOption;
-            loanCaseDTO.ValidateAll();
-
-            if (!loanCaseDTO.HasErrors)
-            {
-                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanAuditOption, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = loanCaseDTO.ErrorMessages;
-                ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(loanCaseDTO.LoanAuditOption.ToString());
                 return View(loanCaseDTO);
             }
         }
@@ -322,6 +295,41 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View(loanCaseDTO);
             }
         }
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(string.Empty);
+
+            return View(loanCaseDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(LoanCaseDTO loanCaseDTO)
+        {
+            var loanAuditOption = loanCaseDTO.LoanAuditOption;
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
+            {
+                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanAuditOption, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = loanCaseDTO.ErrorMessages;
+                ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(loanCaseDTO.LoanAuditOption.ToString());
+                return View(loanCaseDTO);
+            }
+        }
+
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetLoanCasesAsync()
