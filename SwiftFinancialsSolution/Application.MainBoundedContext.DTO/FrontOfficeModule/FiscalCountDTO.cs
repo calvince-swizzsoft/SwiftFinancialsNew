@@ -48,6 +48,19 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Treasury")]
         public string TreasuryDescription { get; set; }
 
+
+
+        [DataMember]
+        [Display(Name = "Bank")]
+        [ValidGuid]
+        public Guid BankId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Treasury")]
+        public string BankDescription { get; set; }
+
+
+
         [DataMember]
         [Display(Name = "Posting Period")]
         [ValidGuid]

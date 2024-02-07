@@ -97,71 +97,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
 
-            switch ((TreasuryTransactionType)fiscalCountDTO.TransactionType)
+            var bankDTO = await _channelService.FindBankAsync(parseId, GetServiceHeader());
+
+            if (bankDTO != null)
             {
 
-                case TreasuryTransactionType.BankToTreasury:
-                    var bankLinkageDTO = await _channelService.FindBankLinkageAsync(parseId, GetServiceHeader());
+                fiscalCountDTO.BranchId = bankDTO.Id;
+                fiscalCountDTO.BranchDescription = bankDTO.Description;
+                fiscalCountDTO.Description = bankDTO.Description;
+              
+            }
+
+
+            var tellers = await _channelService.FindTellerAsync(parseId, includeBalance, GetServiceHeader());
 
 
 
-                    if (bankLinkageDTO != null)
-                    {
+            if (tellers != null)
+            {
+                fiscalCountDTO.TellerId = tellers.EmployeeCustomerId;
+                fiscalCountDTO.Description = tellers.EmployeeCustomerFullName;
 
-                        fiscalCountDTO.Description = bankLinkageDTO.BankName;
-                    }
-
-
-                    break;
-
-                case TreasuryTransactionType.TreasuryToBank:
-
-                    bankLinkageDTO = await _channelService.FindBankLinkageAsync(parseId, GetServiceHeader());
+            }
 
 
-                    if (bankLinkageDTO != null)
-                    {
-
-                        fiscalCountDTO.Description = bankLinkageDTO.BankName;
+            var treasury = await _channelService.FindTreasuryAsync(parseId, includeBalance, GetServiceHeader());
 
 
 
-                    }
+            if (treasury != null)
+            {
+                fiscalCountDTO.TreasuryId = treasury.Id;
+                fiscalCountDTO.Description = treasury.Description;
 
-
-                    break;
-
-                case TreasuryTransactionType.TreasuryToTeller:
-
-                    var tellers = await _channelService.FindTellerAsync(parseId, includeBalance, GetServiceHeader());
-
-
-
-                    if (tellers != null)
-                    {
-                        fiscalCountDTO.TellerId = tellers.EmployeeCustomerId;
-                        fiscalCountDTO.Description = tellers.EmployeeCustomerFullName;
-
-                    }
-
-
-                    break;
-
-                case TreasuryTransactionType.TreasuryToTreasury:
-
-                    var treasury = await _channelService.FindTreasuryAsync(parseId, includeBalance, GetServiceHeader());
-
-
-
-                    if (treasury != null)
-                    {
-                        fiscalCountDTO.TellerId = treasury.Id;
-                        fiscalCountDTO.Description = treasury.Description;
-
-                    }
-
-
-                    break;
             }
 
             return View(fiscalCountDTO);

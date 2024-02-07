@@ -102,6 +102,25 @@
                                             </div>
                                         </div>
 
+                                       
+                                        @*<div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.TreasuryId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TreasuryId, new { htmlAttributes = new { @id = "TreasuryId", @class = "form-control", @placeholder = "TreasuryId" } })
+                                            @Html.ValidationMessageFor(model => model.TreasuryId, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @id = "BranchId", @class = "form-control", @placeholder = "BranchId" } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        </div>
+
+
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.TellerId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TellerId, new { htmlAttributes = new { @id = "TellerId", @class = "form-control", @placeholder = "TellerId" } })
+                                            @Html.ValidationMessageFor(model => model.TellerId, "", new { @class = "text-danger" })
+                                        </div>*@
 
 
                                     </div>
@@ -419,7 +438,7 @@
                     var branchId = "";
                     BranchId  = BranchesMap[item].Id;
                     $('#BranchId').val(BranchId);
-                    $('#BranchDescription').val(Branch);
+                    $('#BranchDescription').val(Description);
                     //console.log(BranchId)
                     return item;
                 }
@@ -556,8 +575,8 @@
 
         $('#TellerId').val(data.Id);
         $('input[name=TellerId]').val(data.Id);
-        $('input[name=EmployeeCustomerId]').val(data.Description);
-        $('input[name=EmployeeCustomerFullName]').val(data.FullName);
+        $('input[name=EmployeeCustomerId]').val(data.Id);
+        $('input[name=EmployeeCustomerFullName]').val(data.Description);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
@@ -657,14 +676,14 @@
 
         //$('#TellerId').val(data.i);
         //$('input[name=TellerId]').val(data.Id);
-        $('input[name=TreasuryId]').val(data.id);
+        $('input[name=TreasuryId]').val(data.Id);
         $('input[name=Description]').val(data.Description);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
         $('#Description').val(CustomersMap[item].Description);
-        $('#TreasuryDescription').val(CustomersMap[item].FullName);
-        //$('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#TreasuryDescription').val(CustomersMap[item].Description);
+        $('#TreasuryId').val(CustomersMap[item].Id);
         //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
         //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#TresuriesLookupModal').modal('hide');
@@ -677,7 +696,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts" }))",
+                "sAjaxSource": "@(Url.Action("Index", "Bank", new { Area = "Admin" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -692,18 +711,17 @@
 
                     var selectUrl = '<a  href="/FrontOffice/CashManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(selectUrl);
 
               return nRow;
           },
-          // Display settings
-          "aoColumns": [
-              { "mDataProp": "BankBranchName", "sTitle": "Branch Name", "sWidth": "15%" },
-              { "mDataProp": "BranchDescription", "sTitle": "Company Branch Name", "sWidth": "15%" },
-              { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
-              { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-              { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            // Display settings
+            "aoColumns": [
+                { "mDataProp": "Description", "sTitle": "Bank", "sWidth": "15%" },
+                { "mDataProp": "Code", "sTitle": "Code", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
             "aaSorting": [[0, "desc"]]
 
         });
@@ -712,16 +730,16 @@
         var data = BankssGrid.row(this).data();
 
         $('#Id').val(data.Id);
-        $('input[name=Id]').val(data.Id);
+        $('input[name=BranchId]').val(data.Id);
         $('input[name=BranchId]').val(data.BranchId);
-        $('input[name=BranchDescription]').val(data.Branch);
+        $('input[name=BranchDescription]').val(data.Description);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
-        $('#Id').val(CustomersMap[item].Id);
+        $('#BranchId').val(CustomersMap[item].Id);
         $('#BranchDescription').val(CustomersMap[item].FullName);
         $('#BranchDescription').val(CustomersMap[item].Description);
-        $('#BankBranchName').val(CustomersMap[item].FullName);
+        $('#BankBranchName').val(CustomersMap[item].Description);
         //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
         //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#BankssLookupModal').modal('hide');
