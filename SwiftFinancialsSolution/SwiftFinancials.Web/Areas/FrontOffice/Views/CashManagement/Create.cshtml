@@ -9,6 +9,7 @@
 
     var treasuryTransactionTypes = ViewBag.TreasuryTransactionTypeSelectList as List<SelectListItem>;
 
+
 }
 
 @using (Html.BeginForm("Search", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Get))
@@ -68,16 +69,15 @@
 
 
                             <fieldset>
+
                                 <div class="row">
                                     <div class="col-lg-6">
 
-
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TransactionType, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.TransactionType, htmlAttributes: new { @class = "" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.TransactionType, treasuryTransactionTypes, new { @class = "form-control input-md", id = "TransactionType" })
-
+                                                @Html.DropDownListFor(model => model.TransactionType, treasuryTransactionTypes, new { @id = "TransactionType", @class = "form-control input-md" })
                                                 @Html.ValidationMessageFor(model => model.TransactionType)
                                             </div>
                                         </div>
@@ -89,51 +89,39 @@
                                             @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger" })
                                         </div>
 
-
-
-
-
-
-
-
-                                        <div class="form-group form-group-sm">
-                                            <div class="col-md-offset-6">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
-
-                                       
-                                        @*<div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.TreasuryId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.TreasuryId, new { htmlAttributes = new { @id = "TreasuryId", @class = "form-control", @placeholder = "TreasuryId" } })
-                                            @Html.ValidationMessageFor(model => model.TreasuryId, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @id = "BranchId", @class = "form-control", @placeholder = "BranchId" } })
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        </div>
-
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.TellerId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.TellerId, new { htmlAttributes = new { @id = "TellerId", @class = "form-control", @placeholder = "TellerId" } })
-                                            @Html.ValidationMessageFor(model => model.TellerId, "", new { @class = "text-danger" })
-                                        </div>*@
-
-
                                     </div>
 
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
 
+                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+                                        <script>
+                                            $(document).ready(function () {
+                                                $('#Description').blur(function () {
+                                                    var description = $(this).val();
+                                                    if (description.trim() === "") {
+                                                        $(this).addClass('is-invalid');
+                                                        $('#description-error').text('Description cannot be empty');
+                                                    } else {
+                                                        $(this).removeClass('is-invalid');
+                                                        $('#description-error').text('');
+                                                    }
+                                                });
+                                            });
+                                        </script>
 
                                         <div class="form-group form-group-sm">
                                             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @id = "Description", @class = "form-control", @placeholder = "Description", disabled = "disabled" } })
-                                            @Html.HiddenFor(model => model.Description)                                        
-                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                            @Html.HiddenFor(model => model.Description)
+                                            @Html.HiddenFor(model => model.PostingPeriodId)
+                                            @Html.HiddenFor(model => model.BranchDescription)
+                                            @Html.HiddenFor(model => model.TellerDescription)
+                                            @Html.HiddenFor(model => model.TreasuryDescription)
+                                            @Html.HiddenFor(model => model.TellerId)
+                                            @Html.HiddenFor(model => model.TreasuryId)
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            <div id="description-error" class="text-danger"></div>
                                         </div>
 
 
@@ -143,12 +131,95 @@
                                             @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                         </div>
 
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Denominations form starts from here -->
+                                    <meta charset="UTF-8">
+                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                                    <style>
+                                        label {
+                                            display: block;
+                                            margin-bottom: 8px;
+                                        }
+
+                                        #denominationForm {
+                                            display: list-item; /* Hide the form by default */
+                                        }
+                                    </style>
+
+                                    <script>
+                                        // Define denominations and their values
+                                        const denominations = {
+                                            "Thousands": 1000,
+                                            "Five Hundreds": 500,
+                                            "Two Hundreds": 200,
+                                            "Hundreds": 100,
+                                            "20 Shillings": 20,
+                                            "10 Shillings": 10,
+                                            "5 Shillings": 5,
+                                            "1 Shilling": 1,
+                                            "50 Cents": 0.50
+                                        };
+
+                                        function toggleForm() {
+                                            var form = document.getElementById('denominationForm');
+                                            form.style.display = form.style.display === 'none' ? 'block' : 'none';
+                                        }
+
+                                        function calculateTotal() {
+                                            var total = 0;
+
+                                            // Calculate total based on denominations
+                                            for (const denomination in denominations) {
+                                                const value = denominations[denomination];
+                                                const input = document.getElementById(denomination.replace(/\s+/g, '_').toLowerCase());
+                                                const amount = parseInt(input.value) || 0;
+                                                total += amount * value;
+                                            }
+
+                                            // Update breakdown
+                                            document.getElementById('totalBreakdown').innerHTML = "Total: " + total + " KES";
+                                        }
+                                    </script>
+
+                                    <button onclick="toggleForm()">Denominations Form</button>
+                                    <div class="col-lg-6" id="denominationForm">
+                                        <h2>Enter Amount in Kenyan Shillings</h2>
+
+                                        <form action="#" method="post">
+                                            <!-- Your form content here, dynamically generated based on denominations -->
+                                            <script>
+                                                // Generate input fields dynamically based on denominations
+                                                for (const denomination in denominations) {
+                                                    document.write('<label for="' + denomination.replace(/\s+/g, '_').toLowerCase() + '">' + denomination + ':</label>');
+                                                    document.write('<input type="number" id="' + denomination.replace(/\s+/g, '_').toLowerCase() + '" name="' + denomination.replace(/\s+/g, '_').toLowerCase() + '" min="0" step="1" oninput="calculateTotal()">');
+                                                }
+                                            </script>
+
+                                            <h3>Total Currency</h3>
+                                            <p id="totalBreakdown">Total: 0 KES</p>
+                                        </form>
+                                    </div>
+                                    <!-- The lookup ends here -->
+                                </div>
 
 
+
+
+                                <div class="row">
+
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
 
 
                                     </div>
+
                                 </div>
+
 
                             </fieldset>
 
@@ -170,10 +241,6 @@
 
 
 
-@*<script>
-
-
-</script>*@
 
 
 
@@ -335,28 +402,58 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
-
+<script>
         $(document).ready(function () {
-            //////////transaction type is the dropdowns id/////
-            $('#TransactionType').change(function () {
-                var selectedValue = $(this).val();
+            var selectedValue = localStorage.getItem('selectedTransactionType'); // Get selected value from local storage
+            var modalShown = false; // Flag to track if modal has been shown for the selected value
 
+            // Function to show the appropriate modal based on the selected value without delay
+            function showCorrectModal() {
                 // Hide all modals initially
-                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal,#TresuriesLookupModa').modal('hide');
+                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
 
-                // Show the modal based on the selected value
-                if (selectedValue === '1') {
-                    $('#TresuriesLookupModal').modal('show');
-                } else if (selectedValue === '2') {
-                    $('#BankssLookupModal').modal('show');
-                } else if (selectedValue === '4') {
-                    $('#BankssLookupModal').modal('show');
+                // Show the modal based on the selected value if it hasn't been shown before
+                if (!modalShown) {
+                    switch (selectedValue) {
+                        case '1':
+                            $('#TresuriesLookupModal').modal('show'); // Show modal
+                            setTimeout(function () {
+                                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
+                            }, 10); // 10 minutes timeout
+                            break;
+                        case '2':
+                        case '4':
+                            $('#BankssLookupModal').modal('show'); // Show modal
+                            setTimeout(function () {
+                                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
+                            }, 10); // 10 minutes timeout
+                            break;
+                        case '8':
+                            $('#EmployeeLookupModal').modal('show'); // Show modal
+                            setTimeout(function () {
+                                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
+                            }, 10); // 10 minutes timeout
+                            break;
+                        default:
+                            // Handle default case if necessary
+                            break;
+                    }
+                    modalShown = true; // Set flag to true indicating modal has been shown
                 }
-                else if (selectedValue === '8') {
-                    $('#EmployeeLookupModal').modal('show');
-                }
+            }
+
+            // Handle dropdown change event
+            $('#TransactionType').change(function () {
+                selectedValue = $(this).val();
+                localStorage.setItem('selectedTransactionType', selectedValue); // Save selected value to local storage
+                modalShown = false; // Reset flag when dropdown value changes
+                showCorrectModal();
             });
+
+            // Initialize dropdown with persisted value
+            if (selectedValue) {
+                $('#TransactionType').val(selectedValue).change();
+            }
         });
 
 
@@ -532,61 +629,66 @@
                     return item;
                 }
             });
+$('#EmployeesGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
+    "sServerMethod": "POST",
+    // Callback settings
+    "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+        var h = ("0" + createdDate.getHours()).slice(-2);
+        var m = ("0" + createdDate.getMinutes()).slice(-2);
+        var s = ("0" + createdDate.getSeconds()).slice(-2);
+        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+        aData.CreatedDate = dt_Created;
+
+        var selectUrl = '<button data-id="' + aData.Id + '" data-full-name="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
+
+        $('td:eq(4)', nRow).html(dt_Created);
+        $('td:eq(5)', nRow).html(selectUrl);
+
+        return nRow;
+    },
+    // Display settings
+    "aoColumns": [
+        { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+        { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+        { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
+        { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
+        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+        { "mDataProp": null, "sTitle": "", "sWidth": "10%", "bSortable": false }
+    ],
+    "aaSorting": [[0, "desc"]]
+});
+
+// Event delegation for dynamically added select buttons
+$("#EmployeesGrid tbody").on("click", ".select-btn", function() {
+    var id = $(this).data('id');
+    var fullName = $(this).data('full-name');
+
+    // Set values based on selected data
+    $('#TellerId').val(id);
+    $('input[name=EmployeeCustomerId]').val(id);
+    $('#Description').val(fullName); // Set the selected full name to the Description textbox
+
+    // Close the modal
+    $('#EmployeeLookupModal').modal('hide');
+});
 
 
-        $('#EmployeesGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Teller", new { Area = "FrontOffice" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/frontoffice/CashManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
 
-                    return nRow;
-                },
-            // Display settings
-            "aoColumns": [
-                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
-                { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
-                { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-            "aaSorting": [[0, "desc"]]
-    });
 
-    $("#s tbody").on("click", "tr", function () {
-        var data = EmployeesGrid.row(this).data();
 
-        $('#TellerId').val(data.Id);
-        $('input[name=TellerId]').val(data.Id);
-        $('input[name=EmployeeCustomerId]').val(data.Id);
-        $('input[name=EmployeeCustomerFullName]').val(data.Description);
 
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#TellerDescription').val(CustomersMap[item].FullName);
-        $('#EmployeeCustomerIndividualFirstName').val(CustomersMap[item].FullName);
-        //$('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#EmployeeLookupModal').modal('hide');
-    });
+
+
 
     $(document).ready(function () {
         $('#data_3 .input-group.date').datepicker({
@@ -635,120 +737,141 @@
             });
 
 
-          $('#TresuriessGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Treasury", new { Area = "FrontOffice" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/frontoffice/CashManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                  $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                  return nRow;
-              },
-              // Display settings
-              "aoColumns": [
-
-                  { "mDataProp": "Description", "sTitle": "Treasury Name", "sWidth": "15%" },
-                  { "mDataProp": "ChartOfAccountAccountName", "sTitle": "COA Name", "sWidth": "15%" },
-                  { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
-                  { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                  { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-            "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = TresuriessGrid.row(this).data();
-
-        //$('#TellerId').val(data.i);
-        //$('input[name=TellerId]').val(data.Id);
-        $('input[name=TreasuryId]').val(data.Id);
-        $('input[name=Description]').val(data.Description);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#Description').val(CustomersMap[item].Description);
-        $('#TreasuryDescription').val(CustomersMap[item].Description);
-        $('#TreasuryId').val(CustomersMap[item].Id);
-        //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#TresuriesLookupModal').modal('hide');
-    });
-
-
-
-        $('#BankssGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Bank", new { Area = "Admin" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/CashManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(selectUrl);
-
-              return nRow;
-          },
-            // Display settings
-            "aoColumns": [
-                { "mDataProp": "Description", "sTitle": "Bank", "sWidth": "15%" },
-                { "mDataProp": "Code", "sTitle": "Code", "sWidth": "10%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-            "aaSorting": [[0, "desc"]]
-
-        });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = BankssGrid.row(this).data();
-
-        $('#Id').val(data.Id);
-        $('input[name=BranchId]').val(data.Id);
-        $('input[name=BranchId]').val(data.BranchId);
-        $('input[name=BranchDescription]').val(data.Description);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#BranchId').val(CustomersMap[item].Id);
-        $('#BranchDescription').val(CustomersMap[item].FullName);
-        $('#BranchDescription').val(CustomersMap[item].Description);
-        $('#BankBranchName').val(CustomersMap[item].Description);
-        //$('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        //$('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#BankssLookupModal').modal('hide');
-    });
 
 
 
 
-    </script>
+
+
+$('#TresuriessGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("Index", "Treasury", new { Area = "FrontOffice" }))",
+    "sServerMethod": "POST",
+    // Callback settings
+    "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+        var h = ("0" + createdDate.getHours()).slice(-2);
+        var m = ("0" + createdDate.getMinutes()).slice(-2);
+        var s = ("0" + createdDate.getSeconds()).slice(-2);
+        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+        aData.CreatedDate = dt_Created;
+
+        var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
+
+        $('td:eq(3)', nRow).html(dt_Created);
+        $('td:eq(4)', nRow).html(selectUrl);
+
+        return nRow;
+    },
+    // Display settings
+    "aoColumns": [
+        { "mDataProp": "Description", "sTitle": "Treasury Name", "sWidth": "15%" },
+        { "mDataProp": "ChartOfAccountAccountName", "sTitle": "COA Name", "sWidth": "15%" },
+        { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
+        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+        { "mDataProp": null, "sTitle": "", "sWidth": "10%", "bSortable": false }
+    ],
+    "aaSorting": [[0, "desc"]]
+});
+
+$("#TresuriessGrid tbody").on("click", ".select-btn", function() {
+    var id = $(this).data('id');
+    var description = $(this).data('description');
+
+    // Set values based on selected data
+    $('input[name=TreasuryId]').val(id);
+    $('input[name=Description]').val(description);
+
+    // Close the modal permanently
+    $('#TresuriesLookupModal').modal('hide');
+});
+
+// Add click event for lookup buttons to mimic the behavior of select button
+$("#TresuriessGrid tbody").on("click", ".lookup-btn", function() {
+    var id = $(this).data('id');
+    var description = $(this).data('description');
+
+    // Set values based on selected data
+    $('input[name=TreasuryId]').val(id);
+    $('input[name=Description]').val(description);
+
+    // Close the modal permanently
+    $('#TresuriesLookupModal').modal('hide');
+});
+
+
+
+
+$('#BankssGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("Index", "Bank", new { Area = "Admin" }))",
+    "sServerMethod": "POST",
+    // Callback settings
+    "fnRowCallback": function(nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+        var h = ("0" + createdDate.getHours()).slice(-2);
+        var m = ("0" + createdDate.getMinutes()).slice(-2);
+        var s = ("0" + createdDate.getSeconds()).slice(-2);
+        var dt_Created = ("0" + createdDate.getDate()).slice(-2) + "/" + ("0" + (createdDate.getMonth() + 1)).slice(-2) + "/" + createdDate.getFullYear() + " " + h + ":" + m + ":" + s;
+        aData.CreatedDate = dt_Created;
+
+        var selectUrl = '<button data-id="' + aData.Id + '" data-description="' + aData.Description + '" class="btn btn-outline-info select-btn">Select</button>';
+
+        $('td:eq(2)', nRow).html(dt_Created);
+        $('td:eq(3)', nRow).html(selectUrl);
+
+        return nRow;
+    },
+    // Display settings
+    "aoColumns": [
+        { "mDataProp": "Description", "sTitle": "Bank", "sWidth": "15%" },
+        { "mDataProp": "Code", "sTitle": "Code", "sWidth": "10%" },
+        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+        { "mDataProp": null, "sTitle": "", "sWidth": "10%", "bSortable": false }
+    ],
+    "aaSorting": [[0, "desc"]]
+});
+
+$("#BankssGrid tbody").on("click", ".select-btn", function() {
+    var id = $(this).data('id');
+    var description = $(this).data('description');
+
+    // Set values based on selected data
+    $('#Id').val(id);
+    $('input[name=BranchId]').val(id);
+    $('#Description').val(description);
+
+    // Close the modal
+    $('#BankssLookupModal').modal('hide');
+});
+
+// Behavior for lookup buttons
+$(".lookup-btn").click(function() {
+    var id = $(this).data('id');
+    var description = $(this).data('description');
+
+    // Set values based on selected data
+    $('#Id').val(id);
+    $('input[name=BranchId]').val(id);
+    $('#Description').val(description);
+
+    // Close the modal
+    $('#BankssLookupModal').modal('hide');
+});
+
+
+
+
+
+
+
+</script>
 }
 
 

@@ -15,6 +15,7 @@ using SwiftFinancials.Presentation.Infrastructure.Models;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
+
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class CashManagementController : MasterController
@@ -57,9 +58,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     fiscalCountDTO.Reference = Session["Reference"].ToString();
                 }
-                if (Session["TellerDescription"] != null)
+                if (Session["TotalAmount"] != null)
                 {
-                    fiscalCountDTO.TellerDescription = Session["TellerDescription"].ToString();
+                    fiscalCountDTO.TotalAmount = Session["TotalAmount"].ToString();
                 }
                 if (Session["BranchDescription"] != null)
                 {
@@ -73,16 +74,40 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
         [HttpPost]
-        public ActionResult AssignText(string Reference, string TellerDescription)
+        public ActionResult AssignText(string Reference, string TotalAmount)
         {
-            Session["TellerDescription"] = TellerDescription;
+            Session["TotalAmount"] = TotalAmount;
             Session["Reference"] = Reference;
             return null;
         }
 
+
+
+
+
+
+        public ActionResult YourAction()
+        {
+            ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
+            return View();
+        }
+
+
+
+
         public async Task<ActionResult> Create(Guid? id, FiscalCountDTO fiscalCountDTO)
         {
             await ServeNavigationMenus();
+            // Retrieve the SelectList from ViewBag
+            var selectList = ViewBag.TreasuryTransactionTypeSelectList as SelectList;
+
+            // Check if selectList is not null and has a selected value
+            if (selectList != null)
+            {
+                var selectedValue = selectList.SelectedValue;
+                // Now you have the selected value
+            }
+
 
             ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
@@ -105,7 +130,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 fiscalCountDTO.BranchId = bankDTO.Id;
                 fiscalCountDTO.BranchDescription = bankDTO.Description;
                 fiscalCountDTO.Description = bankDTO.Description;
-              
+
+                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(TreasuryTransactionType.TreasuryToBank.ToString());
+
+                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(TreasuryTransactionType.BankToTreasury.ToString());
             }
 
 
@@ -117,7 +145,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 fiscalCountDTO.TellerId = tellers.EmployeeCustomerId;
                 fiscalCountDTO.Description = tellers.EmployeeCustomerFullName;
-
+                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(TreasuryTransactionType.TreasuryToTeller.ToString());
             }
 
 
@@ -129,7 +157,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 fiscalCountDTO.TreasuryId = treasury.Id;
                 fiscalCountDTO.Description = treasury.Description;
-
+                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(TreasuryTransactionType.TreasuryToTreasury.ToString());
             }
 
             return View(fiscalCountDTO);

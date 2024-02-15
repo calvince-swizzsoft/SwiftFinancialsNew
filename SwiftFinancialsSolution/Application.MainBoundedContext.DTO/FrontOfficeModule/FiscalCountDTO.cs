@@ -23,7 +23,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Branch")]
-
+        
         public Guid BranchId { get; set; }
 
         [DataMember]
@@ -32,7 +32,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Teller")]
-        [ValidGuid]
+        
         public Guid TellerId { get; set; }
 
         [DataMember]
@@ -41,29 +41,16 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "Treasury")]
-        [ValidGuid]
+       
         public Guid TreasuryId { get; set; }
 
         [DataMember]
         [Display(Name = "Treasury")]
         public string TreasuryDescription { get; set; }
 
-
-
-        [DataMember]
-        [Display(Name = "Bank")]
-        [ValidGuid]
-        public Guid BankId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Treasury")]
-        public string BankDescription { get; set; }
-
-
-
         [DataMember]
         [Display(Name = "Posting Period")]
-        [ValidGuid]
+        
 
         public Guid PostingPeriodId { get; set; }
 
