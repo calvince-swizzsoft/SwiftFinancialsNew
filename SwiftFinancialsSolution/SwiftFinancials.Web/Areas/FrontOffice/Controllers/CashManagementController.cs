@@ -174,13 +174,37 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (!fiscalCountDTO.HasErrors)
             {
+                var tariffs = new ObservableCollection<TariffWrapper>();
 
                 TransactionModel transactionModel = new TransactionModel();
 
-                await _channelService.AddCashManagementJournalAsync(fiscalCountDTO, transactionModel, GetServiceHeader());
+                var Journal = await _channelService.AddJournalAsync(transactionModel, tariffs, GetServiceHeader());
 
 
-                ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(fiscalCountDTO.TransactionType.ToString());
+                if (Journal != null)
+                {
+                    var Fiscal = new ObservableCollection<FiscalCountDTO>();
+
+                    foreach (var fiscalCountDTO1 in Fiscal)
+                    {
+                        fiscalCountDTO1.BranchId = Journal.Id;
+                        fiscalCountDTO1.PostingPeriodId = Journal.Id;
+                        fiscalCountDTO1.TellerId = Journal.Id;
+                        fiscalCountDTO1.TreasuryId = Journal.Id;
+                        
+
+
+                        Fiscal.Add(fiscalCountDTO1);
+                    };
+
+                    if (Fiscal.Any())
+                        await _channelService.AddCashManagementJournalAsync(fiscalCountDTO, transactionModel, GetServiceHeader());
+
+                }
+
+
+
+
 
                 return RedirectToAction("Index");
             }
