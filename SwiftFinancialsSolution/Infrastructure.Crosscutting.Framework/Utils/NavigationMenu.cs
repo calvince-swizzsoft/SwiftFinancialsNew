@@ -120,6 +120,29 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Customer Accounts", Icon="fa fa-database", ControllerName="CustomerAccounts", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 24},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Loaning Products", Icon="fa fa-money", ControllerName=" LoanProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 25},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Management", Icon="fa fa-tasks", ControllerName="Management", ActionName="CustomerManagement", AreaName = "Accounts", Code = 0x000059D8 + 26},
+
+                //////recurring procedures////////
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Recurring Procedures", Icon="fa fa-money", Code = 0x000059D8 + 27},
+                new NavigationMenu{AreaCode = 0x000059D8 + 27, IsArea = false, Description = "Loan Indefinite Charges", Icon="fa fa-bars", ControllerName="LoanIndefiniteCharges", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 28},
+                new NavigationMenu{AreaCode = 0x000059D8 + 27, IsArea = false, Description = "Savings Dynamic Fees", Icon="fa fa-bars", ControllerName="SavingsDynamicFees", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 29},
+                new NavigationMenu{AreaCode = 0x000059D8 + 27, IsArea = false, Description = "Loan Interest Capitalization", Icon="fa fa-bars", ControllerName="LoanInterestCapitalization", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 30},
+                new NavigationMenu{AreaCode = 0x000059D8 + 27, IsArea = false, Description = "Standing Order Execution", Icon="fa fa-bars", ControllerName="Standingorderexecution", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 31},
+
+                 //////Batch  procedures////////
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Batch Procedures", Icon="fa fa-money", Code = 0x000059D8 + 32},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Voucher", Icon="fa fa-bars", ControllerName="Voucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 33},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Credit", Icon="fa fa-bars", ControllerName="Credit", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 34},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Debit", Icon="fa fa-bars", ControllerName="Debit", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 35},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Refund", Icon="fa fa-bars", ControllerName="Refund", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 36},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Wire Transfer", Icon="fa fa-bars", ControllerName="WireTransfer", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 37},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Disbursement", Icon="fa fa-bars", ControllerName="Disbursement", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 38},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Reversal", Icon="fa fa-bars", ControllerName="Reversal", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 39},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "Inter-Account Transfer", Icon="fa fa-bars", ControllerName="InterAccountTransfer", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 40},
+                new NavigationMenu{AreaCode = 0x000059D8 + 32, IsArea = false, Description = "General Ledger", Icon="fa fa-bars", ControllerName="GeneralLedger", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 41},
+
+
+
+
                 //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)
