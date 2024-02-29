@@ -91,18 +91,18 @@
                     var authorizeUrl = '<a  href="/accounts/BatchOrigination_Voucher/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
 
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl /*+ '&nbsp;' + verifyUrl + '&nbsp;'+ authorizeUrl*/ );
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;'+ authorizeUrl );
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "18%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "9%" },
                     { "mDataProp": "VoucherNumber", "sTitle": "Voucher Number", "sWidth": "3%" },
-                    { "mDataProp": "Status", "sTitle": "Status", "sWidth": "10%" },
-                    { "mDataProp": "PostedEntries", "sTitle": "Posted Entries", "sWidth": "7%" },
-                    { "mDataProp": "ChartOfAccountAccountType", "sTitle": "Type", "sWidth": "3%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "3%" },
+                    { "mDataProp": "Status", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "PostedEntries", "sTitle": "Posted Entries", "sWidth": "3%" },
+                    { "mDataProp": "ChartOfAccountAccountType", "sTitle": "Type", "sWidth": "5%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "30%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]

@@ -92,45 +92,45 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Reconciliation", Icon="fa fa-bars", Code = 0x000059D8 + 6},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Budget Management", Icon="fa fa-bars", Code = 0x000059D8 + 7},
 
-                //Batch Procedures
-                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Batch Origination", Icon="fa fa-bars", Code = 0x000059D8 + 8},
-                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Batch Verification", Icon="fa fa-bars", Code = 0x000059D8 + 9},
-                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Batch Authorization", Icon="fa fa-bars", Code = 0x000059D8 + 10},
+                ////Batch Procedures
+                //new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Batch Origination", Icon="fa fa-bars", Code = 0x000059D8 + 8},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Batch Verification", Icon="fa fa-bars", Code = 0x000059D8 + 9},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Batch Authorization", Icon="fa fa-bars", Code = 0x000059D8 + 10},
 
                 //Batch Origination
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Voucher", Icon="fa fa-cog", ControllerName="BatchOrigination_Voucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 11},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Credit", Icon="fa fa-cog", ControllerName="BatchOrigination_Credit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Debit", Icon="fa fa-cog", ControllerName="BatchOrigination_Debit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 13},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Refund", Icon="fa fa-cog", ControllerName="BatchOrigination_Refund", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 14},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Wire Transfer", Icon="fa fa-cog", ControllerName="BatchOrigination_WireTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchOrigination_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchOrigination_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchOrigination_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
-                new NavigationMenu{AreaCode = 0x000059D8 + 8, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchOrigination_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Voucher", Icon="fa fa-cog", ControllerName="BatchOrigination_Voucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 11},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Credit", Icon="fa fa-cog", ControllerName="BatchOrigination_Credit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Debit", Icon="fa fa-cog", ControllerName="BatchOrigination_Debit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 13},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Refund", Icon="fa fa-cog", ControllerName="BatchOrigination_Refund", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 14},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Wire Transfer", Icon="fa fa-cog", ControllerName="BatchOrigination_WireTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchOrigination_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchOrigination_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 17},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchOrigination_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 18},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchOrigination_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 19},
 
 
-                //Batch Verification
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Vouchers", Icon="fa fa-cog", ControllerName="BatchVerification_Voucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 20},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Credit", Icon="fa fa-cog", ControllerName="BatchVerification_Credit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 21},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Debit", Icon="fa fa-cog", ControllerName="BatchVerification_Debit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 22},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Refund", Icon="fa fa-cog", ControllerName="BatchVerification_Refund", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 23},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Wire Transfer", Icon="fa fa-cog", ControllerName="BatchVerification_WireTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 24},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchVerification_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 25},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchVerification_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 26},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchVerification_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 27},
-                new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchVerification_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 28},
+                ////Batch Verification
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Vouchers", Icon="fa fa-cog", ControllerName="JournalVoucher", ActionName="Verify", AreaName = "Accounts", Code = 0x000059D8 + 20},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Credit", Icon="fa fa-cog", ControllerName="BatchVerification_Credit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 21},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Debit", Icon="fa fa-cog", ControllerName="BatchVerification_Debit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 22},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Refund", Icon="fa fa-cog", ControllerName="BatchVerification_Refund", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 23},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Wire Transfer", Icon="fa fa-cog", ControllerName="BatchVerification_WireTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 24},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchVerification_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 25},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchVerification_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 26},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchVerification_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 27},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 9, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchVerification_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 28},
 
 
-                //Batch Authorization
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Vouchers", Icon="fa fa-cog", ControllerName="BatchAuthorization_Voucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 29},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Credit", Icon="fa fa-cog", ControllerName="BatchAuthorization_Credit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 30},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Debit", Icon="fa fa-cog", ControllerName="BatchAuthorization_Debit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 31},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Refund", Icon="fa fa-cog", ControllerName="BatchAuthorization_Refund", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 32},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Wire Transfer", Icon="fa fa-cog", ControllerName="BatchAuthorization_WireTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 33},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchAuthorization_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 34},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchAuthorization_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 35},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchAuthorization_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 36},
-                new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchAuthorization_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 37},
+                ////Batch Authorization
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Vouchers", Icon="fa fa-cog", ControllerName="BatchAuthorization_Voucher", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 29},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Credit", Icon="fa fa-cog", ControllerName="BatchAuthorization_Credit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 30},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Debit", Icon="fa fa-cog", ControllerName="BatchAuthorization_Debit", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 31},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Refund", Icon="fa fa-cog", ControllerName="BatchAuthorization_Refund", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 32},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Wire Transfer", Icon="fa fa-cog", ControllerName="BatchAuthorization_WireTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 33},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchAuthorization_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 34},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchAuthorization_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 35},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchAuthorization_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 36},
+                //new NavigationMenu{AreaCode = 0x000059D8 + 10, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchAuthorization_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 37},
 
 
                 //Recurring Procedures
