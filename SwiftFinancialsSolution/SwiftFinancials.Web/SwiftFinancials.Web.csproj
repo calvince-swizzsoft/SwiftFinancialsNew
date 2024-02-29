@@ -307,6 +307,8 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchVerification_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
@@ -942,6 +944,13 @@
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchVerification_Voucher\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
