@@ -17,15 +17,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+
             return View();
         }
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
+            RecurringBatchDTO recurringBatchDTO = new RecurringBatchDTO();
+
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
+
+            ViewBag.MonthsSelectList = GetMonthsAsync(recurringBatchDTO.Type.ToString());
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 

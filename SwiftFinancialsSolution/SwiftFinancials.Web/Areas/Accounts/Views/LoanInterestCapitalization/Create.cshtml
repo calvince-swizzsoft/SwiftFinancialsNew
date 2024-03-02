@@ -5,12 +5,12 @@
     var Months = ViewBag.MonthsSelectList as List<SelectListItem>;
     var ChargeType = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
     var ConcessionType = ViewBag.ConcessionTypeSelectList as List<SelectListItem>;
-    ViewBag.Title = "loan indefinate charge";
+    ViewBag.Title = "LoanInterestCapitalization";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>loan Indefinate Charge</h2>
+        <h2>LoanInterestCapitalization</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -77,10 +77,11 @@
                 </div>
 
                 <div class="form-group form-group-lg">
-                    @Html.LabelFor(model => model.InterestCapitalizationMonths, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.InterestCapitalizationMonths, new { htmlAttributes = new { @class = "form-control", @placeholder = "Interest Capitalization Months", @required = "" } })
-                    @Html.ValidationMessageFor(model => model.InterestCapitalizationMonths, "", new { @class = "text-danger" })
+                    @Html.LabelFor(m => m.InterestCapitalizationMonths, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(m => m.InterestCapitalizationMonths, new { htmlAttributes = new { @class = "form-control", @placeholder = "Interest Capitalization Months", @required = "" } })
+                    @Html.ValidationMessageFor(m => m.InterestCapitalizationMonths, "", new { @class = "text-danger" })
                 </div>
+
 
                 <div class="form-group form-group-lg">
                     @Html.CheckBoxFor(model => model.EnforceMonthValueDate, htmlAttributes: new { @class = "" })
@@ -153,7 +154,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-<script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready(function () {
     // Function to save the state of the header checkbox to local storage
     function saveCheckboxState(key, state) {
@@ -165,67 +166,6 @@ $(document).ready(function () {
         return localStorage.getItem(key) === 'true';
     }
 
-
-
-
-
-     $('#LoanProductsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var editUrl = '<a  href="/accounts/LoanProduct/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/LoanProduct/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Loan Product Name", "sWidth": "15%" },
-                    { "mDataProp": "LoanRegistrationLoanProductSectionDescription", "sTitle": "Loan Product Section", "sWidth": "15%" },
-                    { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term in Months", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-        });
-        });
-
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // Initialize the DataTable
     var table = $('#LoanProductsGrid').DataTable({
         // Ajax settings
@@ -233,6 +173,7 @@ $(document).ready(function () {
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
+
         "sServerMethod": "POST",
         // Callback settings
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -245,7 +186,8 @@ $(document).ready(function () {
 
             var editUrl = '<a href="/accounts/LoanProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
             var viewUrl = '<a href="/accounts/LoanProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
-            var checkbox = '<input type="checkbox" class="rowCheckbox" id="checkbox_' + aData.Id + '" data-id="' + aData.Id + '">';
+            var checkbox = '<input type="checkbox" class="rowCheckbox" id="checkbox_' + aData.Id + '">';
+           // $('td:eq(3)', nRow).html(dt_Created);
             $('td:eq(0)', nRow).html(checkbox);
 
             return nRow;
@@ -293,36 +235,7 @@ $(document).ready(function () {
             saveCheckboxState('headerCheckbox', false);
         }
     });
-
-    // Event listener for the "Create" button
-    $(".btn-success").click(function(e) {
-        e.preventDefault(); // Prevent the default form submission
-
-        // Collect IDs of selected checkboxes
-        var selectedIds = [];
-        $('.rowCheckbox:checked').each(function() {
-            var id = $(this).data('id');
-            selectedIds.push(id);
-        });
-
-        // Perform AJAX request
-        $.ajax({
-            url: '@Url.Action("CreateBatch", "LoanIndefiniteCharges")',
-            type: 'POST',
-            traditional: true, // Ensure jQuery properly serializes arrays
-            data: { ids: selectedIds }, // Send the array of IDs to the server
-            success: function(result) {
-                console.log("Batch created successfully");
-                alert("Batch created successfully");
-            },
-            error: function(xhr, status, error) {
-                console.error(error);
-            }
-        });
-    });
-
-
-
+});
 
 
 
@@ -385,5 +298,5 @@ $(document).ready(function () {
             });
         });
     });
-</script>
+    </script>
 }

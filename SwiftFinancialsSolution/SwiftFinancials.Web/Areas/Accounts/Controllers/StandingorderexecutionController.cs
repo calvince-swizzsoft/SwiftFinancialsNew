@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -11,7 +12,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class LoanIndefiniteChargesController : MasterController
+    public class StandingorderexecutionController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -21,6 +22,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             return View();
         }
+
+
+
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
@@ -66,6 +70,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<RecurringBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -75,21 +80,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(loanProductDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id, JQueryDataTablesModel jQueryDataTablesModel)
+        [HttpPost]
+        public async Task<ActionResult> Add(RecurringBatchDTO recurringBatchDTO, List<HttpPostedFileBase> selectedFiles)
         {
             await ServeNavigationMenus();
+
+            var recurringBatchDTOs = TempData["RecurringBatchDTOs"] as ObservableCollection<RecurringBatchDTO>;
+
+            if (recurringBatchDTOs == null)
+                recurringBatchDTOs = new ObservableCollection<RecurringBatchDTO>();
+
+            // Assuming ExpensePayableEntryDTOs is defined somewhere in your controller
+            foreach (var recouringDTO in recurringBatchDTO.Entries)
+            {
+                // Assuming you need to do some processing before adding to the collection
+                // Add your logic here...
+
+                recurringBatchDTOs.Add(recouringDTO);
+            }
+
+            TempData["RecurringBatchDTOs"] = recurringBatchDTOs;
+
+            // Populate ViewBag or ViewData if needed for rendering in the view
+            ViewBag.RecurringBatchDTOs = recurringBatchDTOs;
+
+            return RedirectToAction("Create", recurringBatchDTO);
+        }
+
+
+
+        public async Task<ActionResult> Create(Guid? id)
+        {
             
-            int status = 0;
-            DateTime startDate = DateTime.Now;
-
-            DateTime endDate = DateTime.Now;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindRecurringBatchesByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
@@ -104,17 +126,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
-            var loanProduct = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+            var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
-            LoanProductDTO loanProductDTO = new LoanProductDTO();
+            RecurringBatchDTO loanProductDTO = new RecurringBatchDTO();
 
             if (loanProduct != null)
             {
-                loanProductDTO.ChartOfAccountId = loanProduct.Id;
-                loanProductDTO.InterestReceivedChartOfAccountId = loanProduct.Id;
-                loanProductDTO.InterestReceivableChartOfAccountId = loanProduct.Id;
-                loanProductDTO.InterestChargedChartOfAccountId = loanProduct.Id;
-                loanProductDTO.ChartOfAccountName = loanProduct.AccountName;
+                loanProductDTO.Month = loanProduct.LoanRegistrationTermInMonths;
+                loanProductDTO.PostingPeriodId = loanProduct.Id;
+                //loanProductDTO.EnforceMonthValueDate = loanProduct.Id;
+                //loanProductDTO.InterestChargedChartOfAccountId = loanProduct.Id;
                 //loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
             }
             return View();
@@ -138,11 +159,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = recurringBatchDTO.ErrorMessages;
-               
+
                 return View(recurringBatchDTO);
             }
         }
-
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();

@@ -11,14 +11,20 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class LoanIndefiniteChargesController : MasterController
+    public class LoanInterestCapitalizationController : MasterController
     {
 
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
+
+
+            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
             return View();
         }
 
@@ -26,14 +32,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             RecurringBatchDTO recurringBatchDTO = new RecurringBatchDTO();
-
-            ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Type.ToString());
-
-            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(recurringBatchDTO.Priority.ToString());
-
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());
             ViewBag.MonthsSelectList = GetMonthsAsync(recurringBatchDTO.Type.ToString());
-
-
+            ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Type.ToString());
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(recurringBatchDTO.Priority.ToString());
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(recurringBatchDTO.Type.ToString());
             int totalRecordCount = 0;
             int searchRecordCount = 0;
             bool includeInterestBalanceForLoanAccounts = false;
@@ -78,7 +81,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create(Guid? id, JQueryDataTablesModel jQueryDataTablesModel)
         {
             await ServeNavigationMenus();
-            
+
             int status = 0;
             DateTime startDate = DateTime.Now;
 
@@ -138,7 +141,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = recurringBatchDTO.ErrorMessages;
-               
+
                 return View(recurringBatchDTO);
             }
         }

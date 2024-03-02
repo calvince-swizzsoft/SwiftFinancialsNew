@@ -41,6 +41,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
+        public ObservableCollection<ExpensePayableEntryDTO> RecouringBatchDTOs;
+
         public ObservableCollection<TransactionModel> TransactionModels;
 
         public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;

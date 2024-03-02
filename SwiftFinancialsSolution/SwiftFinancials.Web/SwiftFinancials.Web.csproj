@@ -324,8 +324,11 @@
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanIndefiniteChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LoanInterestCapitalizationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SavingsDynamicFeesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
@@ -945,6 +948,11 @@
     <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanIndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanIndefiniteCharges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanInterestCapitalization\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanInterestCapitalization\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Standingorderexecution\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsDynamicFees\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsDynamicFees\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

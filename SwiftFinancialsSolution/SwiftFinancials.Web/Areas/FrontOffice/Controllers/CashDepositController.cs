@@ -87,7 +87,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (customer != null)
             {
                 customerAccountDTO.Id = customer.Id;
-                //customerAccountDTO.fu = customer.CustomerId;
+                customerAccountDTO.CustomerId = customer.CustomerId;
                 
                 customerAccountDTO.CustomerIndividualFirstName = customer.CustomerFullName;
                 customerAccountDTO.CustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
