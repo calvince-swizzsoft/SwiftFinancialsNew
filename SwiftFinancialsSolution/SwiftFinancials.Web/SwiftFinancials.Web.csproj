@@ -969,6 +969,9 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1429,7 +1432,6 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
-    <Folder Include="Areas\Accounts\Views\BatchOrigination_Disbursement\" />
     <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
