@@ -46,6 +46,11 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string Remarks { get; set; }
 
         [DataMember]
+        [Display(Name = "Remarks")]
+        [Required]
+        public string Remarks2 { get; set; }
+
+        [DataMember]
         [Display(Name = "Status")]
         public int Status { get; set; }
 

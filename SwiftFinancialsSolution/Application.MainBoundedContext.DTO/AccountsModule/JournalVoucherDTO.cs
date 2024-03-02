@@ -244,7 +244,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         }
         
         [DataMember]
-        [Display(Name = "Principal")]
+        [Display(Name = "Principal Amount")]
         public decimal TotalValue { get; set; }
 
         [DataMember]

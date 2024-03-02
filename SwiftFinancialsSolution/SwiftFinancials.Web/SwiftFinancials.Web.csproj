@@ -52,16 +52,16 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -307,6 +307,13 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_RefundController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_ReversalController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
@@ -946,6 +953,31 @@
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Reversal\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Reversal\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanIndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanIndefiniteCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\LoanInterestCapitalization\Index.cshtml" />
@@ -961,6 +993,8 @@
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\js\openDifferentSection.js" />
+    <Content Include="Scripts\js\sectionsAlternate.js" />
     <Content Include="Scripts\messageAlert.js" />
     <Content Include="Scripts\plugins\blueimp\jquery.blueimp-gallery.min.js" />
     <Content Include="Scripts\plugins\bootstrap-markdown\bootstrap-markdown.js" />
@@ -1413,6 +1447,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
+    <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />

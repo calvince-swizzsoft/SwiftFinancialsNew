@@ -329,6 +329,8 @@
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CashManagementController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CashTransferController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashWithdrawalController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ChequesController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
@@ -344,7 +346,12 @@
     <Compile Include="Areas\HumanResource\Controllers\LeaveApprovalController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveRecallController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\LeaveTypeController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AddCollateralController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AppraiseLoanController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRegistrationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\PostingPeriodController.cs" />
@@ -380,6 +387,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanProductAppraisalController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
@@ -391,6 +399,7 @@
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
@@ -825,7 +834,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\web.config" />
     <Content Include="Areas\FrontOffice\Views\Shared\_Layout.cshtml" />
@@ -920,10 +928,25 @@
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashManagement\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Approval.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\ApproveLoan\Approve.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\tabbing.css" />
+    <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
@@ -1375,7 +1398,6 @@
     <Content Include="Scripts\bootstrap.min.js.map" />
     <Content Include="Views\Account\ForceChangePassword.cshtml" />
     <Content Include="Views\Account\Lockout.cshtml" />
-    <Content Include="_ViewStart.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1389,6 +1411,7 @@
     <Folder Include="Areas\HumanResource\Views\Leave\" />
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
+    <Folder Include="Areas\Loaning\Views\AddCollateral\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />
