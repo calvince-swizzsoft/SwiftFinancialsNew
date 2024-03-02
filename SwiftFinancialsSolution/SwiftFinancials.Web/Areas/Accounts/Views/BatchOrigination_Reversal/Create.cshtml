@@ -1,8 +1,8 @@
 ﻿
-@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanDisbursementBatchDTO
+@model  Application.MainBoundedContext.DTO.AccountsModule.JournalReversalBatchDTO
 
 @{
-    ViewBag.Title = "Create Loan Disbursement Batch";
+    ViewBag.Title = "Create Reversal Journal";
 
     var priority = ViewBag.Priority as List<SelectListItem>;
     //var batchType = ViewBag.BatchType as List<SelectListItem>;
@@ -12,6 +12,96 @@
 
 }
 
+
+@*Styling*@
+@*<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+    }
+
+    .navbar {
+        background-color: #3498db;
+        overflow: hidden;
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .navbar a {
+            float: left;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 16px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+            .navbar a:hover {
+                background-color: #2980b9;
+            }
+
+    .section {
+        display: none;
+        padding: 20px;
+    }
+</style>*@
+@*Styling*@
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .table-container {
+        width: 80%;
+        overflow-x: auto;
+        margin: 20px auto;
+    }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        border: 1px solid #dddddd;
+        text-align: left;
+        padding: 8px;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+</style>
+
+<script>
+    $(document).ready(function () {
+        // Example data (replace with your dynamic data)
+        var data = [
+            { name: 'John Doe', age: 25, city: 'New York' },
+            { name: 'Jane Doe', age: 30, city: 'San Francisco' },
+            // Add more rows as needed
+        ];
+
+        // Populate the table
+        var tbody = $('#myTable tbody');
+        $.each(data, function (index, item) {
+            var row = $('<tr>');
+            row.append($('<td>').text(item.name));
+            row.append($('<td>').text(item.age));
+            row.append($('<td>').text(item.city));
+            // Add more columns as needed
+            tbody.append(row);
+        });
+    });
+
+</script>
+
+<script src="~/Scripts/js/openDifferentSection.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+@*<script src="~/Scripts/js/sectionsAlternate.js"></script>*@
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -20,7 +110,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "BatchOrigination_Disbursement", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "BatchOrigination_Reversal", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -45,9 +135,9 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Loan Disbursement Batch</h2>
+                    <h2>Create Reversal Journal</h2>
                     <hr />
-                    @Html.ActionLink("Back to List", "Index", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                    @Html.ActionLink("Back to List", "Index", "BatchOrigination_Reversal", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -58,58 +148,62 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "BatchOrigination_Reversal", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
                         <fieldset>
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.TypeDescription, disbursementType, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.TypeDescription)
+                            @*<div class="navbar">
+                                <a href="#" onclick="openSection('section1')">Reversal Batch Remarks</a>
+                                
+                            </div>*@
+
+                            <div id="section1" class="section">
+                                <h2>Reversal Batch Remarks</h2>
+
+                                <div class="row">
+                                    <div class="col-md-12 form-group">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Describe the type of reversal", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.PriorityDescription, priority, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.PriorityDescription)
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanProductCategoryDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.LoanProductCategoryDescription, category, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.LoanProductCategoryDescription)
-                                        </div>
-                                    </div>
+                                <div>
+                                    <button onclick="openSection('section2')">Create</button>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+
+                            <div id="section2" class="section">
+                                <div class="row">
+                                    <div class="col-md-8 form-group">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.BatchNumber, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.BatchNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.BatchNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-4 form-group">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Remarks2, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.Remarks2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks2, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group form-group-sm">
-                                <input type="submit" value="Create" class="btn btn-primary" />
+
+                                
+
+
+
+                                <div class="form-group form-group-sm">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
                             </div>
                         </fieldset>
                     }

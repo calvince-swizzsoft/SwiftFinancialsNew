@@ -61,6 +61,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
             ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
@@ -87,6 +88,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
+                ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
 
                 return View(loanDisbursementBatchDTO);
             }
@@ -137,6 +139,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
             ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
 
+            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
+
 
             var loanDisbursementBatchDTO = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
 
@@ -157,6 +161,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
 
+                ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
+
                 return RedirectToAction("Index");
             }
             else
@@ -166,6 +172,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
+
+                ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
 
                 return View(loanDisbursementBatchDTO);
             }
@@ -178,6 +186,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
             ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+
+            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
 
             var loanDisbursementBatchDTO = await _channelService.FindLoanDisbursementBatchAsync(id, GetServiceHeader());
 
@@ -202,6 +212,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
 
+                ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
+
                 return RedirectToAction("Index");
             }
             else
@@ -211,6 +223,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
+
+                ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
 
                 return View(loanDisbursementBatchDTO);
             }

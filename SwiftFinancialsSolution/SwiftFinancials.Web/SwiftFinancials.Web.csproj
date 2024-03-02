@@ -311,6 +311,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_RefundController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_ReversalController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
@@ -969,9 +970,10 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Reversal\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Reversal\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -980,6 +982,8 @@
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\js\openDifferentSection.js" />
+    <Content Include="Scripts\js\sectionsAlternate.js" />
     <Content Include="Scripts\messageAlert.js" />
     <Content Include="Scripts\plugins\blueimp\jquery.blueimp-gallery.min.js" />
     <Content Include="Scripts\plugins\bootstrap-markdown\bootstrap-markdown.js" />
