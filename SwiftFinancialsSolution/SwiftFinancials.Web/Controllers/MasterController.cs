@@ -295,6 +295,9 @@ namespace SwiftFinancials.Web.Controllers
         }
 
 
+
+
+
         [NonAction]
         protected List<SelectListItem> GetTellerTypeSelectList(string selectedValue)
         {
@@ -1268,6 +1271,42 @@ namespace SwiftFinancials.Web.Controllers
                 return (DashboardAppConfigSection)ConfigurationManager.GetSection("dashboardAppConfiguration");
             }
             catch { return null; }
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetWireTransferBatchTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> wireTransferBatchType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(WireTransferBatchType)).Cast<WireTransferBatchType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            wireTransferBatchType.AddRange(items);
+
+            return wireTransferBatchType;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetLoanDisbursementTypeBatchTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> disbursementType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DisbursementType)).Cast<DisbursementType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            disbursementType.AddRange(items);
+
+            return disbursementType;
         }
     }
 }

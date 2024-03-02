@@ -309,7 +309,10 @@
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_RefundController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
@@ -957,8 +960,15 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Authorize.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1419,6 +1429,8 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
+    <Folder Include="Areas\Accounts\Views\BatchOrigination_Disbursement\" />
+    <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
