@@ -119,26 +119,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO, GetServiceHeader());
 
-                if (loanCase != null)
-                {
-                    var loanGuarantors = new ObservableCollection<LoanGuarantorDTO>();
+                //if (loanCase != null)
+                //{
+                //    var loanGuarantors = new ObservableCollection<LoanGuarantorDTO>();
 
-                    foreach (var loanGuarantorDTO in loanCaseDTO.LoanGuarantors)
-                    {
-                        loanGuarantorDTO.LoanCaseId = loanCase.Id;
-                        loanGuarantorDTO.LoaneeCustomerId = loanGuarantorDTO.LoaneeCustomerId;
-                        loanGuarantorDTO.LoanCaseId = loanCase.Id;
-                        loanGuarantorDTO.CustomerIndividualIdentityCardNumber = loanGuarantorDTO.CustomerIndividualIdentityCardNumber;
-                        loanGuarantorDTO.AmountGuaranteed = loanGuarantorDTO.AmountGuaranteed;
-                        loanGuarantorDTO.AppraisalFactor = loanGuarantorDTO.AppraisalFactor;
-                        loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
-                        loanGuarantorDTO.CustomerId = loanGuarantorDTO.CustomerId;
-                        loanGuarantors.Add(loanGuarantorDTO);
-                    };
+                //    foreach (var loanGuarantorDTO in loanCaseDTO.LoanGuarantors)
+                //    {
+                //        loanGuarantorDTO.LoanCaseId = loanCase.Id;
+                //        loanGuarantorDTO.LoaneeCustomerId = loanGuarantorDTO.LoaneeCustomerId;
+                //        loanGuarantorDTO.LoanCaseId = loanCase.Id;
+                //        loanGuarantorDTO.CustomerIndividualIdentityCardNumber = loanGuarantorDTO.CustomerIndividualIdentityCardNumber;
+                //        loanGuarantorDTO.AmountGuaranteed = loanGuarantorDTO.AmountGuaranteed;
+                //        loanGuarantorDTO.AppraisalFactor = loanGuarantorDTO.AppraisalFactor;
+                //        loanGuarantorDTO.CommittedShares = loanGuarantorDTO.CommittedShares;
+                //        loanGuarantorDTO.CustomerId = loanGuarantorDTO.CustomerId;
+                //        loanGuarantors.Add(loanGuarantorDTO);
+                //    };
 
-                    if (loanGuarantors.Any())
-                        await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
-                }
+                //    if (loanGuarantors.Any())
+                //        await _channelService.UpdateLoanGuarantorsByLoanCaseIdAsync(loanCase.Id, loanGuarantors, GetServiceHeader());
+                //}
 
                 TempData["AlertMessage"] = "Loan registration successful.";
 
@@ -151,7 +151,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                TempData["AlertMessage"] = "Loan registration failed.";
+                TempData["AlertMessage"] = "Loan registration failed. (" + errorMessages + ")";
 
                 return View(loanCaseDTO);
             }
