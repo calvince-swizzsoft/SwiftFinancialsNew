@@ -95,25 +95,24 @@
                     var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    //var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    //var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    
-                    $('td:eq(5)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + appraiseUrl);
+                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+
+                    $('td:eq(4)', nRow).html(dt_ReceivedDate);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(viewUrl + /*'&nbsp;' + */editUrl + /*'&nbsp;' +*/ appraiseUrl + /*'&nbsp;' +*/verifyUrl + /*'&nbsp;' +*/ approveUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "15%" },
-                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "3%" },
-                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%"},
-                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan purpose", "sWidth": "10%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "10%" },
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%"},
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan purpose", "sWidth": "5%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "ReceivedDate", "sTitle": "Received Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "40%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });
