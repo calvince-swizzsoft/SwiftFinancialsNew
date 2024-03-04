@@ -17,15 +17,16 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class AppraiseLoanController : MasterController
     {
-        public async Task<ActionResult> Appraise(Guid id)
+        public async Task<ActionResult> Appraise()
+
         {
             await ServeNavigationMenus();
-
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+            int caseNumber = 0;
+            await _channelService.FindLoanCaseByLoanCaseNumberAsync(caseNumber, GetServiceHeader());
 
             ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
 
-            return View(loanCaseDTO);
+            return View();
         }
 
         [HttpPost]
