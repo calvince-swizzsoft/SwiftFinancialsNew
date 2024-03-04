@@ -5,12 +5,12 @@
     var Months = ViewBag.MonthsSelectList as List<SelectListItem>;
     var ChargeType = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
     var ConcessionType = ViewBag.ConcessionTypeSelectList as List<SelectListItem>;
-    ViewBag.Title = "LoanIndefiniteCharges";
+    ViewBag.Title = "Loanindefinatecharge";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Loan Indefinite Charges</h2>
+        <h2>Loanindefinatecharge</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -98,11 +98,15 @@
                 </div>
 
 
-                <div class="col-sm-1">
-                    <div class="form-group">
-                        <input type="submit" value="Create" class="btn btn-success" />
+                <form action="/create" method="post">
+                    <!-- 'action' should point to the endpoint where you handle the creation -->
+                    <div class="col-sm-1">
+                        <div class="form-group">
+                            <input type="submit" value="Create" class="btn btn-success" />
+                        </div>
                     </div>
-                </div>
+                </form>
+
 
             </div>
         </div>
@@ -183,8 +187,8 @@ $(document).ready(function () {
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-            var editUrl = '<a href="/accounts/LoanProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
-            var viewUrl = '<a href="/accounts/LoanProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
             var checkbox = '<input type="checkbox" class="rowCheckbox" id="checkbox_' + aData.Id + '">';
            // $('td:eq(3)', nRow).html(dt_Created);
             $('td:eq(0)', nRow).html(checkbox);
@@ -207,7 +211,7 @@ $(document).ready(function () {
     });
 
     // Place the header checkbox anywhere on the grid
-    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="headerCheckbox"> Select All</div>');
+    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="headerCheckbox"> Select $ Deselect All</div>');
 
     // Event listener for header checkbox
     $('#headerCheckbox').on('change', function () {
@@ -282,7 +286,7 @@ $(document).ready(function () {
             e.preventDefault(); // Prevent the default form submission
             // Perform AJAX request
             $.ajax({
-                url: '@Url.Action("Create", "LoanIndefiniteCharges")', // Specify the URL of the controller action
+                url: '@Url.Action("Create", "LoanIndefinateCharge")', // Specify the URL of the controller action
                 type: 'POST',
                 data: { }, // You can pass any data you need here
                 success: function(result) {
