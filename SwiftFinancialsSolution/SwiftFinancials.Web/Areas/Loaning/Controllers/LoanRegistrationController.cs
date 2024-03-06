@@ -79,7 +79,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var employer = await _channelService.FindEmployerAsync(parseId, GetServiceHeader());
             var zone = await _channelService.FindZoneAsync(parseId, GetServiceHeader());
 
-            var data = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId, 0, true, GetServiceHeader());
+            //var data = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId, 0, true, GetServiceHeader());
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
             //EmployerDTO employerDTO = new EmployerDTO();
@@ -99,7 +99,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerStation = customer.StationDescription;
 
-                ViewBag.StandingOrdersDTOs = data;
+                //ViewBag.StandingOrdersDTOs = data;
             }
 
             return View(loanCaseDTO);
@@ -151,7 +151,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                TempData["AlertMessage"] = "Loan registration failed. (" + errorMessages + ")";
+                TempData["AlertMessage"] = "Loan registration failed " + Convert.ToString(errorMessages);
 
                 return View(loanCaseDTO);
             }

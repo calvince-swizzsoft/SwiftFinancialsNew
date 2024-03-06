@@ -50,9 +50,17 @@
                                         @Html.ValidationMessageFor(model => model.CaseNumber, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanProductDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan product", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.LoanProductDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationLoanProductSection, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control required",
+                                                @placeholder = "",
+                                                @readonly = ""
+                                            }
+                                        })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "" })
@@ -62,14 +70,15 @@
                                 </div>
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerFullName, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer", disabled = "disabled" } })
+                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanPurposeDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Loan Purpose", disabled = "disabled" } })
+                                        @Html.LabelFor(model => model.LoanPurposeId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanPurposeId)
                                         @Html.ValidationMessageFor(model => model.LoanPurposeId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @class = "LoanPurposesLookup form-control required", @placeholder = "" } })
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
@@ -96,9 +105,10 @@
                                         @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SavingsProductDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Savings Product", disabled = "disabled" } })
+                                        @Html.LabelFor(model => model.SavingsProductId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.SavingsProductId)
                                         @Html.ValidationMessageFor(model => model.SavingsProductId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.SavingsProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "" } })
                                     </div>
                                 </div>
                             </div>
@@ -152,8 +162,9 @@
                                         @Html.ValidationMessageFor(model => model.AppraisalRemarks, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Apppraisal Remarks" } })
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "" } })
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
