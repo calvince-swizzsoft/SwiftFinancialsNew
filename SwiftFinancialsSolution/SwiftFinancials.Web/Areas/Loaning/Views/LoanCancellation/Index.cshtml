@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Loan Registration";
+    ViewBag.Title = "Loan Appraisal";
 }
 
 
@@ -38,35 +38,6 @@
 </style>
 
 
-<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-
-<script>
-    $(document).ready(function () {
-        // Initially activate the first tab
-        $('.nav-tabs li:first-child a').addClass('active');
-        $('#tab1').addClass('active');
-
-        // Handle tab click event
-        $('.tab-link').on('click', function (e) {
-            e.preventDefault();
-
-            // Deactivate all tabs
-            $('.tab-link').removeClass('active');
-            $('.tab-content').removeClass('active');
-
-            // Activate the clicked tab
-            $(this).addClass('active');
-            $($(this).attr('href')).addClass('active');
-        });
-    });
-</script>
-
-
-
-
-
-
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Loaning</h1>
@@ -86,7 +57,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Registration</h2>
+                    <h2>Loan Verification</h2>
 
 
                     <div id="tabs-container">
@@ -98,8 +69,9 @@
                         </ul>
                     </div>
 
-                    <hr />
-                    @Html.ActionLink("Register Loan", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+
+                    @*<hr />
+                        @Html.ActionLink("Register Loan", "Appraise", "AppraiseLoan", new { Area = "Loaning" }, new { @class = "btn btn-primary" })*@
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -146,7 +118,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
+                "sAjaxSource": "@(Url.Action("Index", "LoanVerification", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -167,16 +139,12 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+                    var viewUrl = '<a  href="/loaning/LoanCancellation/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var cancelUrl = '<a  href="/loaning/LoanCancellation/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
                     $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp; &nbsp;' + editUrl);
+                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp; &nbsp;' + cancelUrl);
 
                     return nRow;
                 },

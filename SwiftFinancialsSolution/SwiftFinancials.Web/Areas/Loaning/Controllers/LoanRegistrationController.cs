@@ -75,6 +75,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+
             var invetmentBalance = await _channelService.FindInvestmentProductAsync(parseId, GetServiceHeader());
             var employer = await _channelService.FindEmployerAsync(parseId, GetServiceHeader());
             var zone = await _channelService.FindZoneAsync(parseId, GetServiceHeader());
@@ -141,6 +142,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 //}
 
                 TempData["AlertMessage"] = "Loan registration successful.";
+
+                Session["AmountApplied"] = loanCaseDTO.AmountApplied;
 
                 return RedirectToAction("Index");
             }
@@ -212,7 +215,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             var loanAppraisalOption = loanCaseDTO.LoanAppraisalOption;
 
+            //if (Session["AmountApplied"] != null)
+            //{
+            //    loanCaseDTO.AmountApplied = (decimal)Session["AmountApplied"];
+            //}
+
             loanCaseDTO.ValidateAll();
+
             if (!loanCaseDTO.HasErrors)
             {
                 await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanAppraisalOption, 1, GetServiceHeader());
@@ -281,7 +290,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
-                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanCancellationOption, GetServiceHeader());
+                await _channelService.CancelLoanCaseAsync(loanCaseDTO, loanCancellationOption, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

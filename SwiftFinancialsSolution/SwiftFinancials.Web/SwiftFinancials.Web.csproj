@@ -985,6 +985,14 @@
     <Content Include="Areas\Accounts\Views\Standingorderexecution\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\SavingsDynamicFees\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\SavingsDynamicFees\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\ApproveLoan\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\ApproveLoan\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanVerification\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanVerification\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanCancellation\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
