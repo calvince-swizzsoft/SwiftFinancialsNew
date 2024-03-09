@@ -162,6 +162,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
 
+        [DataMember]
+        [Display(Name ="Customer")]
+        public string CustomerName { get; set; }
 
 
         [DataMember]

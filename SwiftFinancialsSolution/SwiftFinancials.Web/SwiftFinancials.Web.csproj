@@ -991,8 +991,8 @@
     <Content Include="Areas\Loaning\Views\ApproveLoan\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanCancellation\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

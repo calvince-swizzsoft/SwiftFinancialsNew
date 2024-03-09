@@ -165,12 +165,30 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
-            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+            var cusomerEditDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
-            return View(loanCaseDTO);
+            LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+
+            if (cusomerEditDTO != null)
+            {
+                //Loanee
+                loanCaseDTO.CustomerId = cusomerEditDTO.Id;
+                loanCaseDTO.CustomerLoaneeFullName = cusomerEditDTO.CustomerFullName;
+                loanCaseDTO.AmountApplied = cusomerEditDTO.AmountApplied;
+                //loanCaseDTO.BranchDescription = cusomerEditDTO.BranchDescription;
+                loanCaseDTO.CustomerReference1 = cusomerEditDTO.CustomerReference1;
+                loanCaseDTO.CustomerReference2 = cusomerEditDTO.CustomerReference2;
+                loanCaseDTO.CustomerReference3 = cusomerEditDTO.CustomerReference3;
+                loanCaseDTO.SavingsProductDescription = cusomerEditDTO.SavingsProductDescription;
+                //loanCaseDTO.LoanPurposeDescription = cusomerEditDTO.LoanPurposeDescription;
+                loanCaseDTO.Remarks = cusomerEditDTO.Remarks;
+                loanCaseDTO.MaximumAmountPercentage = cusomerEditDTO.MaximumAmountPercentage;
+                loanCaseDTO.LoanRegistrationTermInMonths = cusomerEditDTO.LoanRegistrationTermInMonths;
+                loanCaseDTO.LoanRegistrationMaximumAmount = cusomerEditDTO.LoanRegistrationMaximumAmount;
+                loanCaseDTO.LoanInterestAnnualPercentageRate = cusomerEditDTO.LoanInterestAnnualPercentageRate;
+            }
+
+                return View(loanCaseDTO);
         }
 
         [HttpPost]
@@ -188,9 +206,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             else
             {
                 var errorMessages = loanCaseDTO.ErrorMessages;
-                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
-                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
-                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+                //ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                //ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                //ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 return View(loanCaseDTO);
             }
         }

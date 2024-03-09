@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Loan Appraisal";
+    ViewBag.Title = "Loan Cancellation";
 }
 
 
@@ -57,7 +57,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Verification</h2>
+                    <h2>Loan Cancellation</h2>
 
 
                     <div id="tabs-container">
@@ -118,7 +118,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanVerification", new { Area = "Loaning"}))",
+                "sAjaxSource": "@(Url.Action("Index", "LoanCancellation", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
