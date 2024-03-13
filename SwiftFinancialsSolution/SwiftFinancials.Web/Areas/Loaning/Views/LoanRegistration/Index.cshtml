@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Loan Registration";
+    ViewBag.Title = "Loan Cases";
 }
 
 
@@ -8,13 +8,16 @@
     #tabs-container {
         background-color: #f5f5f5;
         border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
         margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
     }
 
     .nav-tabs {
-        padding: 15px 0;
+        padding: 10px 0; /* Adjusted padding */
         list-style: none;
         margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
     }
 
         .nav-tabs li {
@@ -24,8 +27,9 @@
 
         .nav-tabs a {
             text-decoration: none;
-            font-size: 16px;
+            font-size: 14px;
             color: #333;
+            font-weight: bold; /* Set font weight to bold */
             padding: 10px 15px;
             border-bottom: 2px solid transparent;
             transition: border-bottom-color 0.3s ease-in-out;
@@ -86,20 +90,31 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Registration</h2>
-
+                    <h2>Loan Cases</h2>
+                    <hr />
+                    <p>
+                        The following are the correct steps to follow for disbursement to be made:
+                        <ol>
+                            <li>Register Loan</li>
+                            <li>Appraise Loan</li>
+                            <li>Approve Loan</li>
+                            <li>Verify Loan</li>
+                        </ol>
+                        For already registered loans, proceed to Appraise
+                    </p>
+                    <hr />
 
                     <div id="tabs-container">
                         <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Register Loan", "Create", "LoanRegistration")</li>
                             <li>@Html.ActionLink("Appraise Loan", "Index", "AppraiseLoan")</li>
                             <li>@Html.ActionLink("Approve Loan", "Index", "ApproveLoan")</li>
                             <li>@Html.ActionLink("Verify Loan", "Index", "LoanVerification")</li>
                             <li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>
+                            <li>@Html.ActionLink("Attach Guarantor", "Index", "AttachGuarantor")</li>
                         </ul>
                     </div>
 
-                    <hr />
-                    @Html.ActionLink("Register Loan", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -173,24 +188,24 @@
                     var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
                     var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
                     var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp; &nbsp;' + editUrl);
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;&nbsp;&nbsp;' + editUrl + ''/* + attachGuarantorUrl*/);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "5%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%"},
                     { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "5%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "40%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });

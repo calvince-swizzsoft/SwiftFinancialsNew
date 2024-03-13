@@ -168,14 +168,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
                                                             //... Loan Cases...//
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-bars", Code = 0x00005DC0 + 9},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 9, IsArea = false, Description = "Loan Registration", Icon="fa fa-cog", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 10},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 9, IsArea = false, Description = "Attach Guarantor", Icon="fa fa-cog", ControllerName="AttachGuarantor", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 11},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-money", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 9},
+                //new NavigationMenu{AreaCode = 0x00005DC0 + 9, IsArea = false, Description = "Loan Registration", Icon="fa fa-cog", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 10},
+                //new NavigationMenu{AreaCode = 0x00005DC0 + 9, IsArea = false, Description = "Attach Guarantor", Icon="fa fa-cog", ControllerName="AttachGuarantor", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 11},
               
 
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon="fa fa-bars", ControllerName="DataCapture", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 16},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Guarantors", Icon="fa fa-bars", ControllerName="LoanGuarantor", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 17},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Income Adjustment", Icon="fa fa-bars", ControllerName="IncomeAdjustments", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 18},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon="fa fa-bars", ControllerName="DataCapture", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 10},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Guarantors", Icon="fa fa-bars", ControllerName="LoanGuarantor", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 11},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Income Adjustment", Icon="fa fa-bars", ControllerName="IncomeAdjustments", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 12},
 
 
 
