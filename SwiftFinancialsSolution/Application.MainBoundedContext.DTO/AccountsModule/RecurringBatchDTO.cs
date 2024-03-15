@@ -128,8 +128,16 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
-        public List<RecurringBatchDTO> Entries { get; set; }
+        public List<RecurringBatchDTO> SelectedRows { get; set; }
+        [DataMember]
+        [Display(Name = "CheckedCheckboxIds?")]
+        public bool CheckedCheckboxIds { get; set; }
+        [DataMember]
+        [Display(Name = "CheckedRowsData?")]
+        public bool CheckedRowsData { get; set; }
+        public List<RecurringBatchEntryDTO> RecouringBatchEntries { get; set; }
 
+       
     }
    
 }
