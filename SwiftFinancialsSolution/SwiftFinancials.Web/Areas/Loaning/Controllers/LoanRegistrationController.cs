@@ -75,11 +75,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+
             var invetmentBalance = await _channelService.FindInvestmentProductAsync(parseId, GetServiceHeader());
             var employer = await _channelService.FindEmployerAsync(parseId, GetServiceHeader());
             var zone = await _channelService.FindZoneAsync(parseId, GetServiceHeader());
 
-            var data = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId, 0, true, GetServiceHeader());
+            //var data = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId, 0, true, GetServiceHeader());
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
             //EmployerDTO employerDTO = new EmployerDTO();
@@ -99,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerStation = customer.StationDescription;
 
-                ViewBag.StandingOrdersDTOs = data;
+                //ViewBag.StandingOrdersDTOs = data;
             }
 
             return View(loanCaseDTO);
@@ -142,6 +143,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 TempData["AlertMessage"] = "Loan registration successful.";
 
+                Session["AmountApplied"] = loanCaseDTO.AmountApplied;
+
                 return RedirectToAction("Index");
             }
             else
@@ -151,7 +154,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
 
-                TempData["AlertMessage"] = "Loan registration failed. (" + errorMessages + ")";
+                TempData["AlertMessage"] = "Loan registration failed " + Convert.ToString(errorMessages);
 
                 return View(loanCaseDTO);
             }
@@ -162,12 +165,30 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
-            ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
-            ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+            var cusomerEditDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
-            return View(loanCaseDTO);
+            LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+
+            if (cusomerEditDTO != null)
+            {
+                //Loanee
+                loanCaseDTO.CustomerId = cusomerEditDTO.Id;
+                loanCaseDTO.CustomerLoaneeFullName = cusomerEditDTO.CustomerFullName;
+                loanCaseDTO.AmountApplied = cusomerEditDTO.AmountApplied;
+                //loanCaseDTO.BranchDescription = cusomerEditDTO.BranchDescription;
+                loanCaseDTO.CustomerReference1 = cusomerEditDTO.CustomerReference1;
+                loanCaseDTO.CustomerReference2 = cusomerEditDTO.CustomerReference2;
+                loanCaseDTO.CustomerReference3 = cusomerEditDTO.CustomerReference3;
+                loanCaseDTO.SavingsProductDescription = cusomerEditDTO.SavingsProductDescription;
+                //loanCaseDTO.LoanPurposeDescription = cusomerEditDTO.LoanPurposeDescription;
+                loanCaseDTO.Remarks = cusomerEditDTO.Remarks;
+                loanCaseDTO.MaximumAmountPercentage = cusomerEditDTO.MaximumAmountPercentage;
+                loanCaseDTO.LoanRegistrationTermInMonths = cusomerEditDTO.LoanRegistrationTermInMonths;
+                loanCaseDTO.LoanRegistrationMaximumAmount = cusomerEditDTO.LoanRegistrationMaximumAmount;
+                loanCaseDTO.LoanInterestAnnualPercentageRate = cusomerEditDTO.LoanInterestAnnualPercentageRate;
+            }
+
+                return View(loanCaseDTO);
         }
 
         [HttpPost]
@@ -185,9 +206,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             else
             {
                 var errorMessages = loanCaseDTO.ErrorMessages;
-                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
-                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
-                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+                //ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                //ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                //ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 return View(loanCaseDTO);
             }
         }
@@ -212,7 +233,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             var loanAppraisalOption = loanCaseDTO.LoanAppraisalOption;
 
+            //if (Session["AmountApplied"] != null)
+            //{
+            //    loanCaseDTO.AmountApplied = (decimal)Session["AmountApplied"];
+            //}
+
             loanCaseDTO.ValidateAll();
+
             if (!loanCaseDTO.HasErrors)
             {
                 await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanAppraisalOption, 1, GetServiceHeader());
@@ -281,7 +308,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
-                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanCancellationOption, GetServiceHeader());
+                await _channelService.CancelLoanCaseAsync(loanCaseDTO, loanCancellationOption, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

@@ -1,6 +1,6 @@
 ﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
-    ViewBag.Title = "Loan Registration Details";
+    ViewBag.Title = "Loan Approval Details";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -10,7 +10,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "LoanRegistration", new { Area = "Loaning" }, null)
+                @Html.ActionLink("Home", "Index", "ApproveLoan", new { Area = "Loaning" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>View</strong>
@@ -24,7 +24,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Registration Details</h2>
+                    <h2>Loan Approval Details</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

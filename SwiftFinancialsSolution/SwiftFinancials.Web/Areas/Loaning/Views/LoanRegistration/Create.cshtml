@@ -41,15 +41,15 @@
                 </div>
 
                 @*<div class="navigation-tab">
-                    <ul class="nav nav-tabs">
-                        <li class="nav-item">
-                            @Html.ActionLink("Attach Guarantor", "Create", "AttachGuarantor", new { Area = "Loaning" }, new { @class = "nav-link" })
-                        </li>
-                        <li class="nav-item">
-                            @Html.ActionLink("Add Collateral", "Index", "AddCollateral", new { Area = "Loaning" }, new { @class = "nav-link" })
-                        </li>
-                    </ul>
-                </div>*@
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                @Html.ActionLink("Attach Guarantor", "Create", "AttachGuarantor", new { Area = "Loaning" }, new { @class = "nav-link" })
+                            </li>
+                            <li class="nav-item">
+                                @Html.ActionLink("Add Collateral", "Index", "AddCollateral", new { Area = "Loaning" }, new { @class = "nav-link" })
+                            </li>
+                        </ul>
+                    </div>*@
 
                 @if (TempData["AlertMessage"] != null)
                 {
@@ -380,19 +380,24 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    @section Styles{
-                        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-                        @Styles.Render("~/plugins/wizardStepsStyles")
-                    }
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
 
-                    @section Scripts{
-                        @Scripts.Render("~/plugins/dataTables")
-                        @Scripts.Render("~/plugins/wizardSteps")
-                        @Scripts.Render("~/plugins/validate")
-                        @Scripts.Render("~/plugins/typehead")
+@section Scripts{
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
 
-                        <script>
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -999,5 +1004,5 @@
         //    autoclose: true,
         //});
 
-                        </script>
-                    }
+    </script>
+}
