@@ -75,11 +75,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(loanProductDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+        public async Task<ActionResult> Create(Guid? id, JQueryDataTablesModel jQueryDataTablesModel)
         {
             await ServeNavigationMenus();
             
-           
+            int status = 0;
+            DateTime startDate = DateTime.Now;
+
+            DateTime endDate = DateTime.Now;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindRecurringBatchesByStatusAndFilterInPageAsync(status, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
@@ -107,34 +117,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 loanProductDTO.ChartOfAccountName = loanProduct.AccountName;
                 //loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
             }
-            return View("Create");
+            return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<LoanProductDTO> selectedRows)
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO)
         {
             recurringBatchDTO.ValidateAll();
-            int Priority = recurringBatchDTO.Priority;
+
             if (!recurringBatchDTO.HasErrors)
             {
-                foreach (var selectedRow in selectedRows)
-                {
-                    var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
-                    savingsProductDTO.AutomateLedgerFeeCalculation = true;
-                    await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
-
-                }
+                await _channelService.CapitalizeInterestAsync(1, GetServiceHeader());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(recurringBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(recurringBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(recurringBatchDTO.Type.ToString());
-                return RedirectToAction("Create");
+                return RedirectToAction("Index");
             }
-
             else
             {
                 var errorMessages = recurringBatchDTO.ErrorMessages;
+               
                 return View(recurringBatchDTO);
             }
         }

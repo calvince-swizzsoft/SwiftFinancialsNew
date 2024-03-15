@@ -6,18 +6,17 @@ using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
-using Newtonsoft.Json;
 using Serilog.Core;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-
+  
 
     public class SavingsDynamicFeesController : MasterController
     {
-
+       
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -28,59 +27,74 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out _))
             {
                 return View();
             }
 
-            var recurringBatchDTOs = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
+            var loanProduct = await _channelService.FindChartOfAccountAsync(id.Value, GetServiceHeader());
 
-            RecurringBatchDTO RecurringBatch = new RecurringBatchDTO();
-
-            if (recurringBatchDTOs != null)
+            if (loanProduct != null)
             {
-                RecurringBatch.Id = recurringBatchDTOs.Id;
-                RecurringBatch.BranchDescription = recurringBatchDTOs.Description;
-                //RecurringBatch.PostingPeriodDescription = recurringBat;
-                //RecurringBatch.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                //RecurringBatch.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                //RecurringBatch.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
+                var loanProductDTO = new LoanProductDTO
+                {
+                    ChartOfAccountId = loanProduct.Id,
+                    InterestReceivedChartOfAccountId = loanProduct.Id,
+                    InterestReceivableChartOfAccountId = loanProduct.Id,
+                    InterestChargedChartOfAccountId = loanProduct.Id,
+                    ChartOfAccountName = loanProduct.AccountName
+                };
+                return View(loanProductDTO);
             }
             return View();
         }
+        [HttpPost]
+        public async Task<ActionResult> Add(RecurringBatchDTO recurringBatchDTO, List<HttpPostedFileBase> selectedFiles)
+        {
+            await ServeNavigationMenus();
 
+            var recurringBatchDTOs = TempData["RecurringBatchDTOs"] as ObservableCollection<RecurringBatchDTO>;
+
+            if (recurringBatchDTOs == null)
+                recurringBatchDTOs = new ObservableCollection<RecurringBatchDTO>();
+
+           // Assuming ExpensePayableEntryDTOs is defined somewhere in your controller
+            foreach (var recouringDTO in recurringBatchDTO.Entries)
+            {
+                // Assuming you need to do some processing before adding to the collection
+                // Add your logic here...
+
+                recurringBatchDTOs.Add(recouringDTO);
+            }
+
+            TempData["RecurringBatchDTOs"] = recurringBatchDTOs;
+
+            // Populate ViewBag or ViewData if needed for rendering in the view
+            ViewBag.RecurringBatchDTOs = recurringBatchDTOs;
+
+            return RedirectToAction("Create", recurringBatchDTO);
+        }
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<SavingsProductDTO> selectedRows)
-        {           
-            
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<HttpPostedFileBase> selectedFiles)
+        {
             recurringBatchDTO.ValidateAll();
-         int Priority=  recurringBatchDTO.Priority;
+
             if (!recurringBatchDTO.HasErrors)
             {
-                foreach (var selectedRow in selectedRows)
-                {
-                    var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
-                    savingsProductDTO.AutomateLedgerFeeCalculation = true;
-                    await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
-
-                }
+                await _channelService.CapitalizeInterestAsync(1, GetServiceHeader());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(recurringBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(recurringBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(recurringBatchDTO.Type.ToString());
-                return RedirectToAction("Create");
+                return RedirectToAction("Index");
             }
-
             else
             {
                 var errorMessages = recurringBatchDTO.ErrorMessages;
                 return View(recurringBatchDTO);
             }
-
         }
 
         [HttpGet]
