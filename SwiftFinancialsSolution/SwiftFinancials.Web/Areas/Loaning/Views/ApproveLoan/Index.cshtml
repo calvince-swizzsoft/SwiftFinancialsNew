@@ -58,20 +58,10 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Loan Approval</h2>
+                    <hr />
 
+                    @Html.ActionLink("Back", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
 
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Appraise Loan", "Index", "AppraiseLoan")</li>
-                            <li>@Html.ActionLink("Approve Loan", "Index", "ApproveLoan")</li>
-                            <li>@Html.ActionLink("Verify Loan", "Index", "LoanVerification")</li>
-                            <li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>
-                        </ul>
-                    </div>
-
-
-                    @*<hr />
-                        @Html.ActionLink("Register Loan", "Appraise", "AppraiseLoan", new { Area = "Loaning" }, new { @class = "btn btn-primary" })*@
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -143,8 +133,8 @@
                     var approveLoanUrl = '<a  href="/loaning/ApproveLoan/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp; &nbsp;' + approveLoanUrl);
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp; &nbsp;' + approveLoanUrl);
 
                     return nRow;
                 },
@@ -155,7 +145,6 @@
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%"},
                     { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "5%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "40%", "bSortable": false }],

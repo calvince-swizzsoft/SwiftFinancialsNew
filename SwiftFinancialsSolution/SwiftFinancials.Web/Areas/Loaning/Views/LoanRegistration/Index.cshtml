@@ -96,22 +96,24 @@
                         The following are the correct steps to follow for disbursement to be made:
                         <ol>
                             <li>Register Loan</li>
+                            <li>Attach Guarantor</li>
                             <li>Appraise Loan</li>
                             <li>Approve Loan</li>
                             <li>Verify Loan</li>
                         </ol>
-                        For already registered loans, proceed to Appraise
+                        For already registered loans, proceed to <strong><big><u>Attach Guarantor</u></big></strong>
                     </p>
                     <hr />
 
                     <div id="tabs-container">
                         <ul class="nav-tabs">
                             <li>@Html.ActionLink("Register Loan", "Create", "LoanRegistration")</li>
+                            <li>@Html.ActionLink("Attach Guarantor", "Index", "AttachGuarantor")</li>
                             <li>@Html.ActionLink("Appraise Loan", "Index", "AppraiseLoan")</li>
                             <li>@Html.ActionLink("Approve Loan", "Index", "ApproveLoan")</li>
                             <li>@Html.ActionLink("Verify Loan", "Index", "LoanVerification")</li>
-                            <li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>
-                            <li>@Html.ActionLink("Attach Guarantor", "Index", "AttachGuarantor")</li>
+                            @*<li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>*@
+
                         </ul>
                     </div>
 
