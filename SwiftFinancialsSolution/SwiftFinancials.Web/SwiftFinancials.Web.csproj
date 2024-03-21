@@ -1001,6 +1001,7 @@
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
     <Content Include="Scripts\js\openDifferentSection.js" />
     <Content Include="Scripts\js\sectionsAlternate.js" />
     <Content Include="Scripts\messageAlert.js" />

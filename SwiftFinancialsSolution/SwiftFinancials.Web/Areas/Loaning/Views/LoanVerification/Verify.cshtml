@@ -268,11 +268,10 @@
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div>
-                                    <input type="submit" name="name" value="Verify" />
-                                </div>
-                            </div>
+                            @using (Html.BeginForm("Verify", "LoanVerification", new { Area = "Loaning" }, FormMethod.Post))
+                            {
+                                <input type="submit" name="name" value="Verify" />
+                            }
                         </fieldset>
                     }
 

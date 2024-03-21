@@ -40,8 +40,6 @@
                     @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-
-                        <h2>Loan Details</h2>
                         <fieldset>
 
                             <div class="row">
@@ -98,6 +96,40 @@
                                         @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
+                                   {
+                                       htmlAttributes = new
+                                       {
+                                           @id = "CustomerPersonalIdentificationNumber",
+                                           @class = "form-control required",
+                                           @placeholder = "Personal Identification Number",
+                                           @readonly = "readonly"
+                                       }
+                                   })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new
+                                   {
+                                       htmlAttributes = new
+                                       {
+                                           @id = "CustomerPersonalIdentificationNumber",
+                                           @class = "form-control required",
+                                           @placeholder = "Personal Identification Number",
+                                           @readonly = "readonly"
+                                       }
+                                   })
+                                        @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
 
                             <div class="row">
@@ -137,30 +169,60 @@
                                         @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-
-                                <div class="col-md-3 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
-                                   {
-                                       htmlAttributes = new
-                                       {
-                                           @id = "CustomerPersonalIdentificationNumber",
-                                           @class = "form-control required",
-                                           @placeholder = "Personal Identification Number",
-                                           @readonly = "readonly"
-                                       }
-                                   })
-                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
                             </div>
 
-
-
                             <div class="row">
-                                <div>
-                                    <input type="submit" name="name" value="Appraise" />
+                                <div class="col-lg-6">
+                                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
+                                    {
+                                        <input type="submit" name="name" value="Approve" />
+                                    }
+                                </div>
+                                @*Guarantors Modal Popup*@
+
+                                <div class="col-lg-6">
+                                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
+                                    {
+                                        <button type="button" class="btn btn-primary" id="toggleModalBtn">
+                                            View Guarantors
+                                        </button>
+
+                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3 class="modal-title" id="exampleModalLabel">Guarantors</h3>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Loan Number</th>
+                                                                    <th>Guarantor</th>
+                                                                    <th>Amount Applied</th>
+                                                                    <th>Amount Guaranteed</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Data 1</td>
+                                                                    <td>Data 2</td>
+                                                                    <td>Data 3</td>
+                                                                    <td>Data 4</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
                                 </div>
                             </div>
                         </fieldset>
@@ -239,7 +301,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
+    <script src="~/Scripts/js/GuarantorsModalPopUp.js"></script>
     <script>
         $(document).ready(function () {
             $("#wizard").steps();
