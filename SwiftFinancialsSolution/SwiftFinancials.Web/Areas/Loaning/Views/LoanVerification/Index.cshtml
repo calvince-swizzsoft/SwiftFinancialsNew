@@ -130,7 +130,7 @@
                     aData.ReceivedDate = dt_ReceivedDate;
 
                     var viewUrl = '<a  href="/loaning/LoanVerification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyUrl = '<a  href="/loaning/LoanVerification/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var verifyUrl = '<a  href="/loaning/LoanVerification/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
                     $('td:eq(6)', nRow).html(dt_Created);
@@ -146,7 +146,7 @@
                     { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "AuditedDate", "sTitle": "Audited Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "40%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
