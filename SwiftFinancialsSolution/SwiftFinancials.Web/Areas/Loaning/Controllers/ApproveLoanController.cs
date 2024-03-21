@@ -71,6 +71,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
             ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(string.Empty);
 
             return View(loanCaseDTO);
@@ -81,17 +82,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> Approve(LoanCaseDTO loanCaseDTO)
         {
             var loanApprovalOption = loanCaseDTO.LoanApprovalOption;
-            loanCaseDTO.ValidateAll();
 
-            if (!loanCaseDTO.HasErrors)
+            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
+
+            loanDTO.ValidateAll();
+
+            if (!loanDTO.HasErrors)
             {
-                await _channelService.ApproveLoanCaseAsync(loanCaseDTO, loanApprovalOption, GetServiceHeader());
+                await _channelService.ApproveLoanCaseAsync(loanDTO, loanApprovalOption, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = loanCaseDTO.ErrorMessages;
+                var errorMessages = loanDTO.ErrorMessages;
                 ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
                 return View(loanCaseDTO);
             }

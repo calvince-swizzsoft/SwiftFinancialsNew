@@ -114,15 +114,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
         {
-            var loanAppraisalOption = loanCaseDTO.LoanAppraisalOption;
-
             var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
             loanDTO.ValidateAll();
 
             if (!loanDTO.HasErrors)
             {
-                await _channelService.AppraiseLoanCaseAsync(loanDTO, loanAppraisalOption, 1, GetServiceHeader());
+                await _channelService.AppraiseLoanCaseAsync(loanDTO, loanCaseDTO.LoanAppraisalOption, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
