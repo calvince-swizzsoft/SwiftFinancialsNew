@@ -461,6 +461,7 @@
                 }
             }).validate({
                 errorPlacement: function (error, element) {
+
                     element.before(error);
                 },
                 rules: {
@@ -516,6 +517,8 @@
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
         $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
         $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+
+
         $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
         $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#CompaniesLookup').modal('hide');

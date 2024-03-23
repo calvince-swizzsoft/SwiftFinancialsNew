@@ -48,7 +48,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 .ForMember(dest => dest.LoaneeCustomerIndividualSalutationDescription, opt => opt.Ignore())
                 .ForMember(dest => dest.LoaneeCustomerFullName, opt => opt.Ignore())
                 .ForMember(dest => dest.CustomerIndividualSalutationDescription, opt => opt.Ignore())
-                .ForMember(dest => dest.CustomerFullName, opt => opt.Ignore())
+                //.ForMember(dest => dest.CustomerFullName, opt => opt.Ignore())
                 .ForMember(dest => dest.LoanProductLoanRegistrationGuarantorSecurityModeDescription, opt => opt.Ignore());
 
             //LoanAppraisalFactor => LoanAppraisalFactorDTO
