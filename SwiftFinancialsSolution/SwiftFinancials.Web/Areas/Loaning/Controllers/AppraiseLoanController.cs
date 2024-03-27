@@ -64,35 +64,70 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<ActionResult> Appraise(Guid Id)
+        public async Task<ActionResult> Appraise(Guid Id, Guid? id)
 
         {
             await ServeNavigationMenus();
             int caseNumber = 0;
-            await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
 
-            //ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
+            ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(string.Empty);
 
-            return View();
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+
+            var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
+            
+
+            LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
+            
+
+            if (loaneeCustomer != null)
+            {
+                loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
+                loanCaseDTO.CustomerId = loaneeCustomer.CustomerId;
+                loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualFirstName;
+                loanCaseDTO.CustomerReference2 = loaneeCustomer.CustomerReference2;
+                loanCaseDTO.CustomerReference1 = loaneeCustomer.CustomerReference1;
+                loanCaseDTO.LoanProductDescription = loaneeCustomer.LoanProductDescription;
+                loanCaseDTO.CustomerReference3 = loaneeCustomer.CustomerReference3;
+                loanCaseDTO.LoanPurposeDescription = loaneeCustomer.LoanPurposeDescription;
+                loanCaseDTO.LoanRegistrationMaximumAmount = loaneeCustomer.LoanRegistrationMaximumAmount;
+                loanCaseDTO.MaximumAmountPercentage = loaneeCustomer.MaximumAmountPercentage;
+                loanCaseDTO.AmountApplied = loaneeCustomer.AmountApplied;
+                loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
+                loanCaseDTO.BranchDescription = loaneeCustomer.BranchDescription;
+
+            }
+
+            return View(loanCaseDTO);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Appraise(LoanCaseDTO loanCaseDTO)
         {
-            var loanAppraisalOption = loanCaseDTO.LoanAppraisalOption;
+            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
-            loanCaseDTO.ValidateAll();
-            if (!loanCaseDTO.HasErrors)
+            loanDTO.ValidateAll();
+
+            if (!loanDTO.HasErrors)
             {
-                await _channelService.AppraiseLoanCaseAsync(loanCaseDTO, loanAppraisalOption, 1, GetServiceHeader());
+                await _channelService.AppraiseLoanCaseAsync(loanDTO, loanCaseDTO.LoanAppraisalOption, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = loanCaseDTO.ErrorMessages;
-                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
+                var errorMessages = loanDTO.ErrorMessages;
+                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
                 return View(loanCaseDTO);
             }
         }

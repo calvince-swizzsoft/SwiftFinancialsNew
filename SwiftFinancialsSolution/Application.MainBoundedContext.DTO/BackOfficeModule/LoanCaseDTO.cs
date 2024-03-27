@@ -477,11 +477,11 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         }
 
         [DataMember]
-        [Display(Name = "Loan Audit Option")]
+        [Display(Name = "Verification Action")]
         public int LoanAuditOption { get; set; }
 
         [DataMember]
-        [Display(Name = "Loan Audit Option")]
+        [Display(Name = "Verification Action")]
         public string LoanAuditOptionDescription
         {
             get

@@ -105,7 +105,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.LoaneeCustomerIndividualLastName = loanCaseDTO.CustomerIndividualLastName;
                 loanGuarantorDTO.LoanCaseAmountApplied = loanCaseDTO.AmountApplied;
                 loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
-                loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
+                //loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
                 loanGuarantorDTO.LoanProductDescription = loanCaseDTO.LoanProductDescription;
             }
 

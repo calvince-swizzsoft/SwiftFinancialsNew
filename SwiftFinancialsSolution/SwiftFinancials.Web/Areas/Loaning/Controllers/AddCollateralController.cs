@@ -81,7 +81,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 loanGuarantorsDTO.CustomerId = loanCases.CustomerId;
                 loanGuarantorsDTO.LoanCaseCaseNumber = loanCases.CaseNumber;
-                loanGuarantorsDTO.CustomerFullName = loanCases.CustomerFullName;
+                //loanGuarantorsDTO.CustomerFullName = loanCases.CustomerFullName;
                 loanGuarantorsDTO.LoanCaseAmountApplied = loanCases.AmountApplied;
                 loanGuarantorsDTO.CustomerReference1 = loanCases.CustomerReference1;
                 loanGuarantorsDTO.CustomerReference2 = loanCases.CustomerReference2;

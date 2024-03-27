@@ -35,7 +35,7 @@ namespace SwiftFinancials.Web.Areas.Loaning
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Approved, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CaseNumber, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -80,18 +80,19 @@ namespace SwiftFinancials.Web.Areas.Loaning
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(LoanCaseDTO loanCaseDTO)
         {
-            var loanAuditOption = loanCaseDTO.LoanAuditOption;
-            loanCaseDTO.ValidateAll();
+            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
-            if (!loanCaseDTO.HasErrors)
+            loanDTO.ValidateAll();
+
+            if (!loanDTO.HasErrors)
             {
-                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanAuditOption, GetServiceHeader());
+                await _channelService.AuditLoanCaseAsync(loanDTO, loanCaseDTO.LoanAuditOption, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = loanCaseDTO.ErrorMessages;
+                var errorMessages = loanDTO.ErrorMessages;
                 ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(loanCaseDTO.LoanAuditOption.ToString());
                 return View(loanCaseDTO);
             }

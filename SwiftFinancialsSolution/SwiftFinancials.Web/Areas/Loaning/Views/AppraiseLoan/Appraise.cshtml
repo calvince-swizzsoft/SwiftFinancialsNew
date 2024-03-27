@@ -40,19 +40,14 @@
                     @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-
-                        <h2>Loan Details</h2>
                         <fieldset>
 
                             <div class="row">
                                 <div class="col-md-3 form-group">
-                                    @Html.LabelFor(model => model.CaseNumber, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.CaseNumber)
-                                        @Html.TextBoxFor(model => model.CaseNumber, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Loan..." })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#companyLookupModal" @*onclick="captureDetails();"*@><span class="fa fa-search"></span></a>
-                                        </span>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CaseNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.CaseNumber, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CaseNumber, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                     </div>
                                 </div>
 
@@ -60,7 +55,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.EditorFor(model => model.CustomerFullName, new
+                                        @Html.EditorFor(model => model.CustomerIndividualFirstName, new
                                         {
                                             htmlAttributes = new
                                             {
@@ -104,31 +99,52 @@
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanProductId, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanProductDescription, new
+                                        @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
                                    {
                                        htmlAttributes = new
                                        {
-                                           @id = "CustomerReference2",
-                                           @class = "form-control",
-                                           @placeholder = "Membership Number",
-                                           disabled = "disabled"
+                                           @id = "CustomerPersonalIdentificationNumber",
+                                           @class = "form-control required",
+                                           @placeholder = "Personal Identification Number",
+                                           @readonly = "readonly"
                                        }
                                    })
-                                        @Html.ValidationMessageFor(model => model.LoanProductId, "", new { @class = "text-danger" })
+                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanPurposeId, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.LoanPurposeId, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new
+                                   {
+                                       htmlAttributes = new
+                                       {
+                                           @id = "CustomerPersonalIdentificationNumber",
+                                           @class = "form-control required",
+                                           @placeholder = "Personal Identification Number",
+                                           @readonly = "readonly"
+                                       }
+                                   })
+                                        @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanAppraisalOption, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.LoanAppraisalOption, loanAppraisalOption, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.LoanAppraisalOption)
+                                        </div>
+                                    </div>
+                                </div>
+
+
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
@@ -153,31 +169,61 @@
                                         @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-
-                                <div class="col-md-3 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
-                                   {
-                                       htmlAttributes = new
-                                       {
-                                           @id = "CustomerPersonalIdentificationNumber",
-                                           @class = "form-control required",
-                                           @placeholder = "Personal Identification Number",
-                                           @readonly = "readonly"
-                                       }
-                                   })
-                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
                             </div>
 
-
-
                             <div class="row">
-                               <div>
-                                   <input type="submit" name="name" value="Appraise" />
-                               </div>
+                                <div class="col-lg-6">
+                                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
+                                    {
+                                        <input type="submit" name="name" value="Appraise" />
+                                    }
+                                </div>
+                                @*Guarantors Modal Popup*@
+
+                                <div class="col-lg-6">
+                                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
+                                    {
+                                        <button type="button" class="btn btn-primary" id="toggleModalBtn">
+                                            View Guarantors
+                                        </button>
+
+                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog modal-lg" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h3 class="modal-title" id="exampleModalLabel">Guarantors</h3>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <table id="example" class="table table-striped table-bordered" style="width:100%">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Loan Number</th>
+                                                                    <th>Guarantor</th>
+                                                                    <th>Amount Applied</th>
+                                                                    <th>Amount Guaranteed</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Data 1</td>
+                                                                    <td>Data 2</td>
+                                                                    <td>Data 3</td>
+                                                                    <td>Data 4</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                </div>
                             </div>
                         </fieldset>
 
@@ -255,7 +301,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
+    <script src="~/Scripts/js/GuarantorsModalPopUp.js"></script>
     <script>
         $(document).ready(function () {
             $("#wizard").steps();
@@ -557,362 +603,5 @@
                     return item;
                 }
             });
-            //Branch typehead starts here
-    $       ('.LoanGuarantorsBranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var BranchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#LoanGuarantors[0].LoanCaseBranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-            //LoanPurpose typehead starts here
-            $('.LoanPurposesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLoanPurposesAsync", "LoanPurpose", new { Area = "Loaning" })',
-                        { query: query },
-                        function (LoanPurposes) {
-                            var newLoanPurposesData = [];
-                            LoanPurposesMap = {};
-                            $.each(LoanPurposes, function (i, LoanPurpose) {
-                                newLoanPurposesData.push(LoanPurpose.Description);
-                                LoanPurposesMap[LoanPurpose.Description] = LoanPurpose;
-                            });
-                            process(newLoanPurposesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var loanPurposeId = "";
-                    LoanPurposeId = LoanPurposesMap[item].Id;
-                    $('#LoanPurposeId').val(LoanPurposeId);
-                    //console.log(LoanPurposeId)
-                    return item;
-                }
-            });
-            //LoanProduct typehead starts here
-            $('.LoanProductsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetLoanProductsAsync", "LoanProduct", new { Area = "Accounts" })',
-                        { query: query },
-                        function (LoanProducts) {
-                            var newLoanProductsData = [];
-                            LoanProductsMap = {};
-                            $.each(LoanProducts, function (i, LoanProduct) {
-                                newLoanProductsData.push(LoanProduct.Description);
-                                LoanProductsMap[LoanProduct.Description] = LoanProduct;
-                            });
-                            process(newLoanProductsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var loanProductId = "";
-                    LoanProductId = LoanProductsMap[item].Id;
-                    $('#LoanProductId').val(LoanProductId);
-
-                    $('#LoanRegistrationTermInMonths').val(LoanProductsMap[item].LoanRegistrationTermInMonths);
-                    $('#LoanRegistrationLoanProductSection').val(LoanProductsMap[item].LoanRegistrationLoanProductSection);
-                    $('#LoanInterestAnnualPercentageRate').val(LoanProductsMap[item].LoanInterestAnnualPercentageRate);
-                    $('#LoanRegistrationMaximumAmount').val(LoanProductsMap[item].LoanRegistrationMaximumAmount);
-                    $('#LoanInterestCalculationMode').val(LoanProductsMap[item].LoanInterestCalculationMode);
-                    //console.log(LoanProductId)
-                    return item;
-                }
-            });
-            //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var BranchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-            //SavingsProduct typehead starts here
-            $('.SavingsProductsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-                        { query: query },
-                        function (SavingsProducts) {
-                            var newSavingsProductsData = [];
-                            SavingsProductsMap = {};
-                            $.each(SavingsProducts, function (i, SavingsProduct) {
-                                newSavingsProductsData.push(SavingsProduct.Description);
-                                SavingsProductsMap[SavingsProduct.Description] = SavingsProduct;
-                            });
-                            process(newSavingsProductsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var savingsProductId = "";
-                    SavingsProductId = SavingsProductsMap[item].Id;
-                    $('#SavingsProductId').val(SavingsProductId);
-                    //console.log(SavingsProductId)
-                    return item;
-                }
-            });
-
-            //GuarantorEmployer typehead starts here
-    $       ('.LoanGuarantorsEmployersLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetEmployersAsync", "Employer", new { Area = "Registry" })',
-                        { query: query },
-                        function (Employers) {
-                            var newEmployersData = [];
-                            EmployersMap = {};
-                            $.each(Employers, function (i, Employer) {
-                                newEmployersData.push(Employer.Description);
-                                EmployersMap[Employer.Description] = Employer;
-                            });
-                            process(newEmployersData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var employerId = "";
-                    EmployerId = EmployersMap[item].Id;
-                    $('#LoanGuarantors[0].EmployerId').val(EmployerId);
-                    //console.log(EmployerId)
-                    return item;
-                }
-            });
-            //Station typehead starts here
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var StationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
-            //GuarantorStation typehead starts here
-    $       ('.LoanGuarantorStationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var StationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#LoanGuarantors[0].StationId').val(StationId);
-                    //console.log(StationId)
-                    return item;
-                }
-    });
-
-                   });
-
-
-                // Capture Data to prevent data loss during Lookup
-        function captureDetails() {
-            var LoancaseNumber = document.getElementById('LoanCaseCaseNumber').value;
-            var CustomerFullName = document.getElementById('CustomerFullName').value;
-            var LoanCaseAmountApplied = document.getElementById('LoanCaseAmountApplied').value;
-            var CustomerReference1 = document.getElementById('CustomerReference1').value;
-            var CustomerReference2 = document.getElementById('CustomerReference2').value;
-
-            alert(LoancaseNumber);
-
-            $.ajax({
-                url: "/loaning/attachguarantor/LoaneeData",
-                type: "POST",
-                data: {
-                    "LoanCaseCaseNumber": LoancaseNumber,
-                    "CustomerFullName": CustomerFullName,
-                    "LoanCaseAmountApplied": LoanCaseAmountApplied,
-                    "CustomerReference1": CustomerReference1,
-                    "CustomerReference2": CustomerReference2,
-                },
-                success: function (mydata) {
-                    alert("Saved");
-                },
-                error: function (error) {
-                    alert('Failed');
-                    alert(error.responseText); // Display the error responseText in the alert
-                }
-            });
-        }
-
-
-
-
-        //function captureDetails2() {
-        //    var LoancaseNumber = document.getElementById('LoanCaseCaseNumber').value;
-        //    var CustomerFullName = document.getElementById('CustomerFullName').value; // Uncommented this line
-
-        //    alert(LoancaseNumber);
-
-        //    $.ajax({
-        //        url: "/loaning/attachguarantor/GuarantorData",
-        //        type: "POST",
-        //        data: {
-        //            "LoanCaseCaseNumber": LoancaseNumber,
-        //            "CustomerFullName": CustomerFullName
-        //        },
-        //        //success: function (mydata) {
-        //        //    alert("Saved");
-        //        //},
-        //        //error: function (error) {
-        //        //    alert('Failed');
-        //        //    alert(error);
-        //        //}
-        //    });
-        //}
-
-
-
     </script>
 }
