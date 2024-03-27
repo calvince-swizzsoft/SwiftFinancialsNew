@@ -398,6 +398,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanProductAppraisalController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanRestructuringController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
@@ -993,6 +994,10 @@
     <Content Include="Areas\Loaning\Views\LoanVerification\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRestructuring\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRestructuring\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRestructuring\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Add.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1002,6 +1007,7 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
+    <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
     <Content Include="Scripts\js\openDifferentSection.js" />
     <Content Include="Scripts\js\sectionsAlternate.js" />
     <Content Include="Scripts\messageAlert.js" />
@@ -1538,7 +1544,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:58870/</IISUrl>
+          <IISUrl>http://localhost:59421/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

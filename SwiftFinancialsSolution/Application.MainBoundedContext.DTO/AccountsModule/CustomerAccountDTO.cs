@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
@@ -531,6 +532,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+        //[DataMember]
+        //[Display(Name = "Full Account Number")]
+        //public string FullAcctNumber { get; set; }
+
+
         [DataMember]
         [Display(Name = "Scored Loan Disbursement Product Code")]
         public int ScoredLoanDisbursementProductCode { get; set; }
@@ -671,8 +678,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Amount Applied")]
         [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount applied must be greater than zero!")]
         public decimal TotalValue { get; set; }
-
-
 
     }
 }
