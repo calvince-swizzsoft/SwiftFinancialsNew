@@ -9,7 +9,7 @@
     var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
 }
 
-@using (Html.BeginForm("Search", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Get))
+@using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Get))
 {
     TempData["Description"] = "HAM";
     TempData["CustomerAccountCustomerIndividualFirstName"] = "HAM";
@@ -139,7 +139,7 @@
                                         </div>
 
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.FixedDepositTypeDescription, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.FixedDepositTypeId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.HiddenFor(model => model.FixedDepositTypeId)
                                                 @Html.TextBoxFor(model => model.FixedDepositTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
@@ -312,7 +312,7 @@
         // Display settings
         "aoColumns": [
 
-            { "mDataProp": "Name", "sTitle": "Name", "sWidth": "3%" },
+            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "3%" },
             { "mDataProp": "Months", "sTitle": "Months", "sWidth": "4%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],

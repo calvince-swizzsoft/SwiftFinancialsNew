@@ -52,7 +52,9 @@
                                 <div class="col-md-6 form-group">
                                     @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
-                                        @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Product..." })
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+
+                                        @Html.TextBoxFor(model => model.ProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Link Product..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>
                                         </span>

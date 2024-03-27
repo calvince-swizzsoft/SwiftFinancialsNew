@@ -322,6 +322,7 @@
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CustomerAccountsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CustomerAccountstandingorderController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
@@ -993,6 +994,10 @@
     <Content Include="Areas\Loaning\Views\LoanVerification\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Standingorderexecution\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Standingorderexecution\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
