@@ -12,10 +12,10 @@
     //// Setting values in session
     var id = ViewBag.BenefactorCustomerAccountId;
     var BenefactorCustomerAccountCustomerFullName = ViewBag.BenefactorCustomerAccountCustomerFullName;
-
+    Session["BenefactorProductDescription"] = Model?.BenefactorProductDescription;
 }
 
-@using (Html.BeginForm("Search", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Get))
+@using (Html.BeginForm("Create", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Get))
 {
 
 
@@ -150,7 +150,7 @@
                                                     @Html.HiddenFor(model => model.BenefactorCustomerAccountId)
                                                     @Html.TextBoxFor(model => model.BenefactorCustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                     <span class="input-group-addon">
-                                                        <a id="searchButton2" data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                        <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
                                                     </span>
                                                 </div>
                                             </div>
@@ -183,12 +183,12 @@
                                             @Html.HiddenFor(model => model.BeneficiaryCustomerAccountId)
                                             @Html.TextBoxFor(model => model.BeneficiaryCustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                             <span class="input-group-addon">
-                                                <a id="searchButton" data-toggle="modal" data-target="#BeneficiarycustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#BeneficiarycustomerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
 
-                                    <script>
+                                    @*<script>
                                         document.addEventListener("DOMContentLoaded", function () {
                                             // Select the search button element
                                             var searchButton = document.getElementById("searchButton");
@@ -211,7 +211,7 @@
                                                 captureDetails3();
                                             });
                                         });
-                                    </script>
+                                    </script>*@
 
                                     <div class="col-md-4">
                                         <div class="form-group">
@@ -345,7 +345,12 @@
                                                 </div>
                                             </div>
 
-
+                                            @*<div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.BeneficiaryCustomerAccountId, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.BeneficiaryCustomerAccountId)
+                                                    @Html.ValidationMessageFor(model => model.BeneficiaryCustomerAccountId, "", new { @class = "text-danger" })
+                                                    @Html.EditorFor(model => model.BeneficiaryCustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "BeneficiaryGrid", @class = "BeneficiaryGrid form-control required", placeholder = "Description.." } })
+                                                </div>*@
 
 
                                         </div>
@@ -482,14 +487,9 @@
 
     <script>
 
+  
 
 
-
-
-
-
-
-$(document).ready(function() {
     // Benefactor Customer Accounts lookup
 
     $('#BenefactorCustomerAccountsGrid').DataTable({
@@ -509,8 +509,22 @@ $(document).ready(function() {
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-           // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
-            var selectButton = '<a href= "/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+            // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
+            var selectButton = '<a href="/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
+
+            // Assuming you are using jQuery
+            $(document).ready(function () {
+                // Attach click event handler to the link
+                $('.select-link').click(function (event) {
+                    // Prevent default action (page reload)
+                    event.preventDefault();
+                    // You can add additional logic here if needed
+
+                    // Optionally, if you want to navigate programmatically after preventing default action:
+                    window.location.href = $(this).attr('href');
+                });
+            });
+
             $('td:eq(4)', nRow).html(dt_Created);
             $('td:eq(5)', nRow).html(selectButton);
 
@@ -528,41 +542,41 @@ $(document).ready(function() {
         "aaSorting": [[0, "desc"]]
     });
 
-    // Click event handler for Beneficiary select button
-    $('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-        event.isDefaultPrevented();
-        var id = $(this).data('id');
-        console.log("BeneBenefactor Button clicked. ID: " + id);
-    }).on("click", "tr", function () {
-        var data = $('#BenefactorCustomerAccountsGrid').DataTable().row(this).data();
+    //// Click event handler for Beneficiary select button
+    //$('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
+    //    event.isDefaultPrevented();
+    //    var id = $(this).data('id');
+    //    console.log("BeneBenefactor Button clicked. ID: " + id);
+    //}).on("click", "tr", function () {
+    //    var data = $('#BenefactorCustomerAccountsGrid').DataTable().row(this).data();
 
-        // Populate fields with selected data
-        $('#BenefactorCustomerAccountCustomerId').val(data.Id);
-        $('#BenefactorCustomerAccountCustomerId').val(data.BenefactorCustomerAccountCustomerId);
-        $('#BenefactorCustomerAccountId').val(data.BenefactorCustomerAccountId);
-        $('input[name=BenefactorCustomerAccountCustomerFullName]').val(data.BenefactorCustomerAccountCustomerFullName);
-        $('input[name=BenefactorCustomerAccountCustomerId]').val(data.BenefactorCustomerAccountCustomerId);
+    //    // Populate fields with selected data
+    //    $('#BenefactorCustomerAccountCustomerId').val(data.Id);
+    //    $('#BenefactorCustomerAccountCustomerId').val(data.BenefactorCustomerAccountCustomerId);
+    //    $('#BenefactorCustomerAccountId').val(data.BenefactorCustomerAccountId);
+    //    $('input[name=BenefactorCustomerAccountCustomerFullName]').val(data.BenefactorCustomerAccountCustomerFullName);
+    //    $('input[name=BenefactorCustomerAccountCustomerId]').val(data.BenefactorCustomerAccountCustomerId);
 
-        // Assuming CustomersMap is defined and contains appropriate data
-        if (CustomersMap[data.Id]) {
-            $('#BenefactorCustomerAccountId').val(CustomersMap[data.Id].BenefactorCustomerAccountId);
-            $('#BenefactorCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BenefactorCustomerAccountCustomerFullName);
-        }
+    //    // Assuming CustomersMap is defined and contains appropriate data
+    //    if (CustomersMap[data.Id]) {
+    //        $('#BenefactorCustomerAccountId').val(CustomersMap[data.Id].BenefactorCustomerAccountId);
+    //        $('#BenefactorCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BenefactorCustomerAccountCustomerFullName);
+    //    }
 
-        $('#BenefactorProductDescription').val(data.BenefactorProductDescription);
+    //    $('#BenefactorProductDescription').val(data.BenefactorProductDescription);
 
-        // Hide modal
-        $('#BenefactorcustomerLookupModal').modal('hide');
-    });
-    $('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-        event.preventDefault();
-        var id = $(this).data('id');
-        console.log("Benefactor Button clicked. ID: " + id);
+    //    // Hide modal
+    //    $('#BenefactorcustomerLookupModal').modal('hide');
+    //});
+    //$('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
+    //    event.preventDefault();
+    //    var id = $(this).data('id');
+    //    console.log("Benefactor Button clicked. ID: " + id);
 
-        // Modify the URL to navigate to the specified path
-        var selectButton = '/Accounts/CustomerAccountstandingorder/create/' + id;
-        window.location.href = selectButton;
-    });
+    //    // Modify the URL to navigate to the specified path
+    //    var selectButton = '/Accounts/CustomerAccountstandingorder/create/' + id;
+    //    window.location.href = selectButton;
+    //});
 
 
 
@@ -630,18 +644,18 @@ $(document).ready(function() {
         // Hide modal
         $('#BeneficiarycustomerLookupModal').modal('hide');
     });
-    $('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-        event.isDefaultPrevented();
-        var id = $(this).data('id');
-        console.log("Beneficiary Button clicked. ID: " + id);
+    //$('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function (event) {
+    //    event.isDefaultPrevented();
+    //    var id = $(this).data('id');
+    //    console.log("Beneficiary Button clicked. ID: " + id);
 
-        // Modify the URL to navigate to the specified path
-        var selectButton = '/Accounts/CustomerAccountstandingorder/Search/' + id;
-        window.location.href = selectButton;
-    });
+    //    // Modify the URL to navigate to the specified path
+    //    var selectButton = '/Accounts/CustomerAccountstandingorder/Search/' + id;
+    //    window.location.href = selectButton;
+    //});
     // Prevent form submission reload
 
-});
+
 
 
                 $('#data_3 .input-group.date').datepicker({
@@ -651,6 +665,32 @@ $(document).ready(function() {
                     forceParse: false,
                     autoclose: true,
                 });
+
+
+        //$(document).ready(function () {
+        //    // Make an AJAX request to your Create action
+        //    $.ajax({
+        //        url: '/CustomerAccountstandingorder/Create',
+        //        type: 'GET',
+        //        success: function (data) {
+        //            // Check if there is an error in the response
+        //            if (data.error) {
+        //                // Display the error message to the user
+        //                alert(data.error); // You can use a more sophisticated UI for showing errors
+        //            } else {
+        //                // Render the received data on the page
+        //                // Assuming you have a function to render the data in the appropriate HTML elements
+        //                renderData(data);
+        //            }
+        //        },
+        //        error: function () {
+        //            // Handle errors if the AJAX request fails
+        //            alert('Error occurred while fetching data');
+        //        }
+        //    });
+        //});
+
+
 
         //document.addEventListener("BenefactorcustomerLookupModal", function () {
         //    var inputField = document.getElementById('benefactorCustomerFullName');
@@ -686,7 +726,7 @@ $(document).ready(function() {
         //    captureDetails2();
         //});
 
-        function captureDetails2() {
+        @*function captureDetails2() {
             var BenefactorCustomerAccountCustomerFullName = BenefactorCustomerAccountId.localStorage; // Replace with actual value obtained from lookup
             var BenefactorCustomerAccountId = "BenefactorCustomerAccountId"; // Replace with actual value obtained from lookup
 
@@ -720,7 +760,7 @@ $(document).ready(function() {
 
 
         function captureDetails3() {
-            var BeneficiaryCustomerAccountCustomerFullName = "BeneficiaryCustomerAccountCustomerFullName"; // Replace with actual value obtained from lookup
+            var BeneficiaryCustomerAccountCustomerFullName = "BeneficiaryCustomerAccountCustomerFullName".preventDefault(arguments.BeneficiaryCustomerAccountId); // Replace with actual value obtained from lookup
             var BeneficiaryCustomerAccountId = "BeneficiaryCustomerAccountId"; // Replace with actual value obtained from lookup
 
             // Assign captured data to the appropriate input fields
@@ -751,6 +791,50 @@ $(document).ready(function() {
             });
         }
 
+
+
+
+          //Company typehead starts here
+    $('.BeneficiaryGrid').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLoanProductsAsync", "CustomerAccountstandingorder", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
+                            });
+                            process(newCompaniesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#BeneficiaryCustomerAccountCustomerId').val(data.Id);
+                    $('#BeneficiaryCustomerAccountCustomerId').val(data.BeneficiaryCustomerAccountId);
+                    $('#BeneficiaryCustomerAccountId').val(data.BeneficiaryCustomerAccountId);
+                    $('input[name=BeneficiaryCustomerAccountCustomerFullName]').val(data.BeneficiaryCustomerAccountCustomerFullName);
+                    $('input[name=BeneficiaryCustomerAccountCustomerId]').val(data.BeneficiaryCustomerAccountId);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    return item;
+                }
+            });*@
 
 
 

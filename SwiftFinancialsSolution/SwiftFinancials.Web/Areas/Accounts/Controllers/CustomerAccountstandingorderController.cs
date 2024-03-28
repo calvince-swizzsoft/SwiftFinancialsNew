@@ -61,7 +61,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-        public ActionResult AssignText(string BenefactorCustomerAccountCustomerFullName, Guid ? BenefactorCustomerAccountId)
+        public ActionResult AssignText(string BenefactorCustomerAccountCustomerFullName, Guid? BenefactorCustomerAccountId)
         {
             // Store data in session
             Session["BenefactorCustomerAccountCustomerFullName"] = BenefactorCustomerAccountCustomerFullName;
@@ -88,7 +88,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             StandingOrderDTO standingOrderDTO = new StandingOrderDTO();
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
 
@@ -103,28 +102,29 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bool includeProductDescription = false;
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
-        
 
-                if (standingOrderDTO.BenefactorCustomerAccountId !=null)
+            if (standingOrderDTO.BenefactorCustomerAccountId != null)
+            {
+                var benefactorAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+                if (benefactorAccounts == null)
                 {
-                    var benefactorAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-                    if (benefactorAccounts != null)
-                    {
-                        standingOrderDTO.BenefactorCustomerAccountId = benefactorAccounts.Id;
-                        standingOrderDTO.BenefactorCustomerAccountCustomerIndividualFirstName = benefactorAccounts.CustomerIndividualFirstName;
-                        standingOrderDTO.BenefactorCustomerAccountCustomerIndividualLastName = benefactorAccounts.CustomerFullName;
-                        standingOrderDTO.BenefactorCustomerAccountCustomerSerialNumber = benefactorAccounts.CustomerSerialNumber;
-                        standingOrderDTO.BenefactorProductDescription = benefactorAccounts.CustomerAccountTypeProductCodeDescription;
-
-                        TempData.Keep("BenefactorCustomerAccountId");
-                        TempData.Keep("BenefactorCustomerAccountCustomerFullName");
-                        TempData.Keep("BenefactorProductDescription");
-                        // Store data in session for Benefactor
-
-                    }
-
+                    // Return a JSON response indicating the error
+                    return Json(new { error = "Benefactor account not found" });
                 }
+
+                standingOrderDTO.BenefactorCustomerAccountId = benefactorAccounts.Id;
+                standingOrderDTO.BenefactorCustomerAccountCustomerIndividualFirstName = benefactorAccounts.CustomerIndividualFirstName;
+                standingOrderDTO.BenefactorCustomerAccountCustomerIndividualLastName = benefactorAccounts.CustomerFullName;
+                standingOrderDTO.BenefactorCustomerAccountCustomerSerialNumber = benefactorAccounts.CustomerSerialNumber;
+                standingOrderDTO.BenefactorProductDescription = benefactorAccounts.CustomerAccountTypeProductCodeDescription;
+
+                TempData.Keep("BenefactorCustomerAccountId");
+                TempData.Keep("BenefactorCustomerAccountCustomerFullName");
+                TempData.Keep("BenefactorProductDescription");
+                // Store data in session for Benefactor
+
+            }
             Session["BeneficiaryCustomerAccountCustomerIndividualFirstName"] = standingOrderDTO.BeneficiaryCustomerAccountCustomerIndividualFirstName;
             Session["BeneficiaryCustomerAccountCustomerIndividualLastName"] = standingOrderDTO.BeneficiaryCustomerAccountCustomerFullName;
             Session["BeneficiaryCustomerAccountCustomerSerialNumber"] = standingOrderDTO.BeneficiaryCustomerAccountCustomerSerialNumber;
@@ -135,7 +135,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             Session["BenefactorCustomerAccountCustomerSerialNumber"] = standingOrderDTO.BenefactorCustomerAccountCustomerSerialNumber;
             Session["BenefactorProductDescription"] = standingOrderDTO.BenefactorProductDescription;
             cache["BenefactorCustomerAccountCustomerFullName"] = standingOrderDTO.BenefactorCustomerAccountCustomerFullName;
-           
+
 
             //if (standingOrderDTO.BeneficiaryCustomerAccountId != null)
             //{
@@ -152,7 +152,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             //        standingOrderDTO.BeneficiaryCustomerAccountCustomerIndividualIdentityCardNumber = beneficiaryAccounts.CustomerIndividualIdentityCardNumber;
             //    }
             //}
-           
+
             if (Session["BenefactorCustomerAccountId"] != null)
             {
                 string accountIdString = Session["BenefactorCustomerAccountId"].ToString();
@@ -616,9 +616,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpGet]
         public async Task<JsonResult> GetLoanProductsAsync()
         {
-            var loanProductsDTOs = await _channelService.FindLoanProductsAsync(GetServiceHeader());
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
 
-            return Json(loanProductsDTOs, JsonRequestBehavior.AllowGet);
+            StandingOrderDTO standingOrderDTO = new StandingOrderDTO();
+            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
+
+            var beneficiaryAccounts = await _channelService.FindCustomerAccountAsync(customerAccountDTO.Id, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+            if (beneficiaryAccounts != null)
+            {
+                // Store data in session for Beneficiary
+                standingOrderDTO.BeneficiaryCustomerAccountId = beneficiaryAccounts.CustomerId;
+                standingOrderDTO.BeneficiaryCustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerIndividualFirstName;
+                standingOrderDTO.BeneficiaryCustomerAccountCustomerIndividualLastName = beneficiaryAccounts.CustomerFullName;
+                standingOrderDTO.BeneficiaryCustomerAccountCustomerSerialNumber = beneficiaryAccounts.CustomerSerialNumber;
+                standingOrderDTO.BeneficiaryProductDescription = beneficiaryAccounts.CustomerAccountTypeProductCodeDescription;
+                standingOrderDTO.BeneficiaryCustomerAccountCustomerIndividualIdentityCardNumber = beneficiaryAccounts.CustomerIndividualIdentityCardNumber;
+
+                Session["BeneficiaryCustomerAccountId"] = beneficiaryAccounts.CustomerId;
+                Session["BeneficiaryCustomerAccountCustomerIndividualFirstName"] = beneficiaryAccounts.CustomerIndividualFirstName;
+                Session["BeneficiaryCustomerAccountCustomerIndividualLastName"] = beneficiaryAccounts.CustomerFullName;
+                Session["BeneficiaryCustomerAccountCustomerSerialNumber"] = beneficiaryAccounts.CustomerSerialNumber;
+                Session["BeneficiaryProductDescription"] = beneficiaryAccounts.CustomerAccountTypeProductCodeDescription;
+                Session["BeneficiaryCustomerAccountCustomerIndividualIdentityCardNumber"] = beneficiaryAccounts.CustomerIndividualIdentityCardNumber;
+            }
+            TempData.Keep("BeneficiaryCustomerAccountId");
+            TempData.Keep("BeneficiaryCustomerAccountCustomerFullName");
+            TempData.Keep("BeneficiaryProductDescription");
+
+
+            return Json(standingOrderDTO, JsonRequestBehavior.AllowGet);
         }
     }
 }
