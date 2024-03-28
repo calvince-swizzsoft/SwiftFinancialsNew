@@ -6,6 +6,8 @@ using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -19,6 +21,14 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
+
+        [DataMember]
+        public LoanCaseDTO LoanCase { get; set; }
+
+
+        [DataMember]
+        public CustomerDTO Customer { get; set; }
+
 
         [DataMember]
         [Display(Name = "Loan Number")]
@@ -51,8 +61,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string StationDescription { get; set; }
 
 
-
-
         [DataMember]
         [Display(Name = "Station")]
         public Guid? GuarantorStationId { get; set; }
@@ -60,9 +68,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Station")]
         public string GuarantorStationDescription { get; set; }
-
-
-
 
 
         [DataMember]
@@ -479,7 +484,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
             var bindingModel = context.ObjectInstance as LoanGuarantorDTO;
             if (bindingModel == null)
                 throw new NotSupportedException("ObjectInstance must be LoanGuarantorDTO");
-
             if (!bindingModel.LoanProductLoanRegistrationMicrocredit)
             {
                 var result = ValidationResult.Success;

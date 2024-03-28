@@ -1,4 +1,5 @@
-﻿using Application.MainBoundedContext.DTO.RegistryModule;
+﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
@@ -1034,5 +1035,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public List<StationDTO> Stations { get; set; }
 
         public StationDTO Station { get; set; }
+
+
+
+        public List<CustomerAccountDTO> CustomerAccountsDTO { get; set; }
+        public CustomerAccountDTO SalaryGroupEntry { get; set; }
     }
 }

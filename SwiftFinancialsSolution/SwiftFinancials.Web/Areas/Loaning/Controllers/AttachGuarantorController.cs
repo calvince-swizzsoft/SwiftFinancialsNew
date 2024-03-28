@@ -12,8 +12,21 @@ using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
+using System.Data.SqlClient; 
+using System.Data;
+
+
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
+    public class TabContentModel
+    {
+        public string Tab1Content { get; set; }
+        public string Tab2Content { get; set; }
+        public string Tab3Content { get; set; }
+    }
+
+
+
     public class AttachGuarantorController : MasterController
     {
         public async Task<ActionResult> Index()
@@ -24,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string text, int pageIndex, int pageSize)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string text, int pageIndex, int pageSize, LoanCaseDTO loancaseDTO)
         {
             int totalRecordCount = 0;
 
@@ -34,7 +47,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanGuarantorsByFilterInPageAsync(text, pageIndex, pageSize, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByCustomerAccountTypeTargetProductIdInPageAsync(loancaseDTO.Id, pageIndex, pageSize, true, true, true, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -58,7 +71,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorsDTO, CustomerAccountDTO customerAccountDTO)
+        public async Task<ActionResult> Create(Guid? id,LoanGuarantorDTO loanGuarantorDTO, CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
 
@@ -70,29 +83,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
             var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
-            var guarantorDTO = await _channelService.FindLoanGuarantorAsync(parseId, GetServiceHeader());
-
-            var customerAccounts = await _channelService.FindCustomerAccountAsync(customerAccountDTO.Id, false, true, false, false);
-
-            //var loanGuarantorsDTO = new LoanGuarantorDTO();
-
-            if (loanCases != null)
+            if(loanCases != null)
             {
-                loanGuarantorsDTO.LoanCaseId = loanCases.Id;
-                loanGuarantorsDTO.LoaneeCustomerId = loanCases.CustomerId;
-                loanGuarantorsDTO.CustomerFullName = loanCases.CustomerFullName;
-                loanGuarantorsDTO.LoanCaseCaseNumber = loanCases.CaseNumber;
-                loanGuarantorsDTO.LoanCaseAmountApplied = loanCases.AmountApplied;
-                loanGuarantorsDTO.CustomerReference1 = loanCases.CustomerReference1;
-                loanGuarantorsDTO.CustomerReference2 = loanCases.CustomerReference2;
-                loanGuarantorsDTO.CustomerReference3 = loanCases.CustomerReference3;
+                loanGuarantorDTO.LoanCase = loanCases;
+
+                Session["loanCases"] = loanGuarantorDTO.LoanCase;
             }
 
-            return View(loanGuarantorsDTO);
+            return View(loanGuarantorDTO);
         }
 
+
+        public async Task<ActionResult> Add(LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+
+
+            return View();
+        }
 
 
         public async Task<ActionResult> Search(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
@@ -106,43 +116,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
+            
+            if (Session["loanCases"] != null)
+            {
+                loanGuarantorDTO.LoanCase = Session["loanCases"] as LoanCaseDTO;
+            }
+
+
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-
-            //var loanGuarantorsDTO = new LoanGuarantorDTO();
-
-
-            if (Session["LoanCaseAmountApplied"] != null)
-            {
-                loanGuarantorDTO.LoanCaseAmountApplied = Convert.ToDecimal(Session["LoanCaseAmountApplied"].ToString());
-            }
-            if (Session["CustomerFullName"] != null)
-            {
-                loanGuarantorDTO.CustomerFullName = Session["CustomerFullName"].ToString();
-            }
-            if (Session["CustomerReference1"] != null)
-            {
-                loanGuarantorDTO.CustomerReference1 = Session["CustomerReference1"].ToString();
-            }
-            if (Session["CustomerReference2"] != null)
-            {
-                loanGuarantorDTO.CustomerReference2 = Session["CustomerReference2"].ToString();
-            }
-            if (Session["LoanCaseCaseNumber"] != null)
-            {
-                loanGuarantorDTO.LoanCaseCaseNumber = Convert.ToInt32(Session["LoanCaseCaseNumber"].ToString());
-            }
-
 
             if (customer != null)
             {
-                loanGuarantorDTO.CustomerId = customer.Id;
-                loanGuarantorDTO.GuarantorCustomerFullName = customer.FullName;
-                loanGuarantorDTO.GuarantorCustomerSerialNumber = customer.SerialNumber;
-                loanGuarantorDTO.GuarantorEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                loanGuarantorDTO.CustomerPersonalIdentificationNumber = customer.IdentificationNumber;
-                loanGuarantorDTO.GuarantorStationDescription = customer.StationDescription;
-                loanGuarantorDTO.GuarantorIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                loanGuarantorDTO.Customer = customer;
 
+                Session["Customer"] = loanGuarantorDTO.Customer;
             }
 
             return View("Create", loanGuarantorDTO);
@@ -151,16 +138,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public ActionResult LoaneeData(string LoanCaseCaseNumber, string CustomerFullName, string LoanCaseAmountApplied, string CustomerReference1,
-            string CustomerReference2)
+        public ActionResult CustomerAccountsData(string CustomerAccountFullAccountNumber, string CustomerAccountStatus, string CustomerAccountRemarks, string CustomerAccountBookBalance,
+            string CustomerAccountCustomerFullName,string CustomerAccountTypeDescription, string CustomerAccountCustomerIndividualPayrollNumbers,
+            string CustomerAccountCustomerReference3,string CustomerAccountCustomerReference2, string CustomerAccountCustomerReference1)
         {
 
-            Session["LoanCaseCaseNumber"] = LoanCaseCaseNumber;
-            Session["CustomerFullName"] = CustomerFullName;
-            Session["LoanCaseAmountApplied"] = LoanCaseAmountApplied;
-            Session["CustomerReference1"] = CustomerReference1;
-            Session["CustomerReference2"] = CustomerReference2;
-
+            Session["CustomerAccountFullAccountNumber"] = CustomerAccountFullAccountNumber;
+            Session["CustomerAccountStatus"] = CustomerAccountStatus;
+            Session["CustomerAccountRemarks"] = CustomerAccountRemarks;
+            Session["CustomerAccountBookBalance"] = CustomerAccountBookBalance;
+            Session["CustomerAccountCustomerFullName"] = CustomerAccountCustomerFullName;
+            Session["CustomerAccountTypeDescription"] = CustomerAccountTypeDescription;
+            Session["CustomerAccountCustomerIndividualPayrollNumbers"] = CustomerAccountCustomerIndividualPayrollNumbers;
+            Session["CustomerAccountCustomerReference3"] = CustomerAccountCustomerReference3;
+            Session["CustomerAccountCustomerReference2"] = CustomerAccountCustomerReference2;
+            Session["CustomerAccountCustomerReference1"] = CustomerAccountCustomerReference1;
 
             return null;
         }
@@ -169,27 +161,28 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {
-            var loancases = await _channelService.FindLoanCasesAsync(GetServiceHeader());
+            var customerDTO = await _channelService.FindCustomerAsync(loanGuarantorDTO.Customer.Id, GetServiceHeader());
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(loanGuarantorDTO.LoanCase.Id, GetServiceHeader());
+
+            loanGuarantorDTO.CustomerId = customerDTO.Id;
+            loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
+            loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
+            loanGuarantorDTO.TotalShares = 10000;
+            loanGuarantorDTO.CommittedShares = 10000;
+            loanGuarantorDTO.AmountPledged = 10000;
+            loanGuarantorDTO.AppraisalFactor = 1;
+            loanGuarantorDTO.LoanCaseId = loanCaseDTO.Id;
+            loanGuarantorDTO.LoanCaseBranchId = loanCaseDTO.BranchId;
+
 
             loanGuarantorDTO.ValidateAll();
 
             await ServeNavigationMenus();
 
-            //var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
-           // var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-
-            var loanCaseDTO = await _channelService.FindLoanCaseAsync((Guid)loanGuarantorDTO.LoanCaseId, GetServiceHeader());
-
-            //var customerAccountDTO=await _channelService.findcustomeraccount
-
-            //Guid sourceCustomerID = customer.Id;
-            //Guid destinationProductID = customerAccount.CustomerAccountTypeTargetProductId;
-
-            int moduleNavigationCode = 0;
-
             if (!loanGuarantorDTO.HasErrors)
             {
-                //await _channelService.AttachLoanGuarantorsAsync(sourceCustomerID, destinationProductID, LoanGuarantorsDTO, moduleNavigationCode, GetServiceHeader());
+                var AddLoanGuarantor = await _channelService.AddLoanGuarantorAsync(loanGuarantorDTO, GetServiceHeader());
 
                 TempData["AlertMessage"] = "Loan guarantor added successfully.";
 
