@@ -44,8 +44,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(salaryGroupDTO => salaryGroupDTO.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 

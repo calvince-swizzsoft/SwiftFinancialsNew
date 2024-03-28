@@ -4,7 +4,6 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
     public class StandingOrderDTO : BindingModelBase<StandingOrderDTO>
