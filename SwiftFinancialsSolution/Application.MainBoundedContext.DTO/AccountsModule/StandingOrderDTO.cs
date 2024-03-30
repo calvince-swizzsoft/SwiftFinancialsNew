@@ -17,6 +17,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
+
+        [DataMember]
+        public CustomerAccountDTO Beneficiary { get; set; }
+
+        [DataMember]
+        public CustomerAccountDTO benefactor { get; set; }
+
         [DataMember]
         [Display(Name = "Benefactor Customer Account")]
         [ValidGuid]
