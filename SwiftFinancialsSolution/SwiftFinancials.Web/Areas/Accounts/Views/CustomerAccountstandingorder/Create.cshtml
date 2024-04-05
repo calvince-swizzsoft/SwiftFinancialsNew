@@ -10,72 +10,24 @@
     var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
     var StandingOrderTriggers = ViewBag.loanRegistrationStandingOrderTriggers as List<SelectListItem>;
     //// Setting values in session
-    var id = ViewBag.BenefactorCustomerAccountId;
-    var BenefactorCustomerAccountCustomerFullName = ViewBag.BenefactorCustomerAccountCustomerFullName;
+    ///  if (Session["beneficiaryAccounts"] != null)
+    {
+
+        Session["beneficiaryAccounts"] = Model?.Beneficiary;
+    }
+
 
 }
 
-@using (Html.BeginForm("Search", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Get))
+@using (Html.BeginForm("Create", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Get))
 {
 
 
-    if (Session["BenefactorCustomerAccountId"] != null)
+    if (Session["beneficiaryAccounts"] != null)
     {
-        id = (Guid)Session["BenefactorCustomerAccountId"];
-        // Make use of the id here
+
+        Session["beneficiaryAccounts"] = Model?.Beneficiary;
     }
-
-    Session["BenefactorCustomerAccountCustomerFullName"] = BenefactorCustomerAccountCustomerFullName;
-    Session["BenefactorCustomerAccountId"] = id;
-
-    // Retrieving values from session
-    var idFromSession = Session["BenefactorCustomerAccountId"];
-    var firstNameFromSession = Session["BeneficiaryCustomerAccountCustomerFullName"];
-    var accountIdFromSession = Session["BenefactorCustomerAccountId"];
-
-    TempData.Keep("BenefactorCustomerAccountId");
-    TempData.Keep("BenefactorCustomerAccountCustomerFullName");
-    TempData.Keep("BenefactorProductDescription");
-    // When updating the data, store it in both session and localStorage
-    Session["BenefactorCustomerAccountId"] = Model?.BenefactorCustomerAccountId;
-    Session["BenefactorCustomerAccountCustomerFullName"] = Model?.BenefactorCustomerAccountCustomerFullName;
-    Session["BenefactorCustomerAccountCustomerIndividualLastName"] = Model?.BenefactorCustomerAccountCustomerIndividualLastName;
-    Session["BenefactorCustomerAccountCustomerSerialNumber"] = Model?.BenefactorCustomerAccountCustomerSerialNumber;
-    Session["BenefactorProductDescription"] = Model?.BenefactorProductDescription;
-    <script>
-        // Function to save data to localStorage whenever it's updated
-        function saveData() {
-            localStorage.setItem("BenefactorCustomerAccountId", document.getElementById("BenefactorCustomerAccountId").value);
-            localStorage.setItem("BenefactorCustomerAccountCustomerFullName", document.getElementById("BenefactorCustomerAccountCustomerFullName").value);
-            localStorage.setItem("BenefactorCustomerAccountCustomerIndividualLastName", document.getElementById("BenefactorCustomerAccountCustomerIndividualLastName").value);
-            localStorage.setItem("BenefactorCustomerAccountCustomerSerialNumber", document.getElementById("BenefactorCustomerAccountCustomerSerialNumber").value);
-            localStorage.setItem("BenefactorProductDescription", document.getElementById("BenefactorProductDescription").value);
-        }
-
-        // Add event listeners to form fields to save data on change
-        document.getElementById("BenefactorCustomerAccountId").addEventListener("change", saveData);
-        document.getElementById("BenefactorCustomerAccountCustomerFullName").addEventListener("change", saveData);
-        document.getElementById("BenefactorCustomerAccountCustomerIndividualLastName").addEventListener("change", saveData);
-        document.getElementById("BenefactorCustomerAccountCustomerSerialNumber").addEventListener("change", saveData);
-        document.getElementById("BenefactorProductDescription").addEventListener("change", saveData);
-
-        // Retrieve data from localStorage on window load
-        window.onload = function () {
-            var BenefactorCustomerAccountId = localStorage.getItem("BenefactorCustomerAccountId");
-            var BenefactorCustomerAccountCustomerFullName = localStorage.getItem("BenefactorCustomerAccountCustomerFullName");
-            var BenefactorCustomerAccountCustomerIndividualLastName = localStorage.getItem("BenefactorCustomerAccountCustomerIndividualLastName");
-            var BenefactorCustomerAccountCustomerSerialNumber = localStorage.getItem("BenefactorCustomerAccountCustomerSerialNumber");
-            var BenefactorProductDescription = localStorage.getItem("BenefactorProductDescription");
-
-            // Set values in the form
-            document.getElementById("BenefactorCustomerAccountId").value = BenefactorCustomerAccountId || "";
-            document.getElementById("BenefactorCustomerAccountCustomerFullName").value = BenefactorCustomerAccountCustomerFullName || "";
-            document.getElementById("BenefactorCustomerAccountCustomerIndividualLastName").value = BenefactorCustomerAccountCustomerIndividualLastName || "";
-            document.getElementById("BenefactorCustomerAccountCustomerSerialNumber").value = BenefactorCustomerAccountCustomerSerialNumber || "";
-            document.getElementById("BenefactorProductDescription").value = BenefactorProductDescription || "";
-        }
-    </script>
-
 
 
 }
@@ -138,19 +90,19 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-
+                            <h2></h2>
                             <fieldset>
                                 <div class="row">
                                     <div class="col-md-12">
                                         <!-- Benefactor -->
                                         <div class="row">
                                             <div class="col-md-4">
-                                                @Html.LabelFor(model => model.BenefactorCustomerAccountId, new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.benefactor.FullAccountNumber, new { @class = "control-label" })
                                                 <div class="input-group" data-autoclose="true">
-                                                    @Html.HiddenFor(model => model.BenefactorCustomerAccountId)
-                                                    @Html.TextBoxFor(model => model.BenefactorCustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                    @Html.HiddenFor(model => model.benefactor.CustomerId)
+                                                    @Html.TextBoxFor(model => model.benefactor.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                     <span class="input-group-addon">
-                                                        <a id="searchButton2" data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                        <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
                                                     </span>
                                                 </div>
                                             </div>
@@ -159,75 +111,87 @@
 
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    @Html.LabelFor(model => model.BenefactorCustomerAccountCustomerFullName, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.BenefactorCustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "BenefactorCustomerAccountCustomerFullName", @class = "form-control", @placeholder = "FullName", disabled = "disabled" } })
-                                                    @Html.ValidationMessageFor(model => model.BenefactorCustomerAccountCustomerFullName, "", new { @class = "text-danger" })
+                                                    @Html.LabelFor(model => model.benefactor.CustomerFullName, htmlAttributes: new { @class = "" })
+                                                    @Html.HiddenFor(model => model.benefactor.CustomerId)
+                                                    @Html.EditorFor(model => model.benefactor.CustomerFullName, new { htmlAttributes = new { @id = "BenefactorCustomerAccountCustomerFullName", @class = "form-control", @placeholder = "FullName", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.benefactor.CustomerId, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
+
                                             <div class="col-md-4">
                                                 <div class="form-group">
-                                                    @Html.LabelFor(model => model.BenefactorProductDescription, htmlAttributes: new { @class = "" })
-                                                    @Html.EditorFor(model => model.BenefactorProductDescription, new { htmlAttributes = new { @id = "BenefactorProductDescription", @class = "form-control", @placeholder = "BenefactorProductDescription", disabled = "disabled" } })
-                                                    @Html.ValidationMessageFor(model => model.BenefactorProductDescription, "", new { @id = "BenefactorProductDescription", @class = "text-danger" })
+                                                    @Html.LabelFor(model => model.benefactor.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.benefactor.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @id = "BenefactorProductDescription", @class = "form-control", @placeholder = "BenefactorProductDescription", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.benefactor.CustomerAccountTypeProductCodeDescription, "", new { @id = "BenefactorProductDescription", @class = "text-danger" })
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+
+
                                 <!-- Beneficiary -->
 
                                 <div class="row">
                                     <div class="col-md-4">
-                                        @Html.LabelFor(model => model.BeneficiaryCustomerAccountId, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.Beneficiary.FullAccountNumber, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.BeneficiaryCustomerAccountId)
-                                            @Html.TextBoxFor(model => model.BeneficiaryCustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            @Html.HiddenFor(model => model.Beneficiary.CustomerId)
+                                            @Html.TextBoxFor(model => model.Beneficiary.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                             <span class="input-group-addon">
-                                                <a id="searchButton" data-toggle="modal" data-target="#BeneficiarycustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#BeneficiarycustomerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
 
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function () {
-                                            // Select the search button element
-                                            var searchButton = document.getElementById("searchButton");
+                                    @*<script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                // Select the search button element
+                                                var searchButton = document.getElementById("searchButton");
 
-                                            // Add event listener to the search button
-                                            searchButton.addEventListener("click", function () {
-                                                // Call your function here if needed
-                                                captureDetails2();
+                                                // Add event listener to the search button
+                                                searchButton.addEventListener("click", function () {
+                                                    // Call your function here if needed
+                                                    captureDetails2();
+                                                });
                                             });
-                                        });
-                                    </script>
-                                    <script>
-                                        document.addEventListener("DOMContentLoaded", function () {
-                                            // Select the search button element
-                                            var searchButton = document.getElementById("searchButton2");
+                                        </script>
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function () {
+                                                // Select the search button element
+                                                var searchButton = document.getElementById("searchButton2");
 
-                                            // Add event listener to the search button
-                                            searchButton.addEventListener("click", function () {
-                                                // Call your function here if needed
-                                                captureDetails3();
+                                                // Add event listener to the search button
+                                                searchButton.addEventListener("click", function () {
+                                                    // Call your function here if needed
+                                                    captureDetails3();
+                                                });
                                             });
-                                        });
-                                    </script>
+                                        </script>*@
+
+
 
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.BeneficiaryCustomerAccountCustomerFullName, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.BeneficiaryCustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "BeneficiaryCustomerAccountCustomerFullName", @class = "form-control", @placeholder = "FullName", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.BeneficiaryCustomerAccountCustomerFullName, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Beneficiary.CustomerFullName, htmlAttributes: new { @class = "" })
+                                            @Html.HiddenFor(model => model.Beneficiary.CustomerId)
+                                            @Html.EditorFor(model => model.Beneficiary.CustomerFullName, new { htmlAttributes = new { @id = "BenefactorCustomerAccountCustomerFullName", @class = "form-control", @placeholder = "Beneficiary FullName", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Beneficiary.CustomerId, "", new { @class = "text-danger" })
+
                                         </div>
                                     </div>
 
+
                                     <div class="col-md-4">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.BeneficiaryProductDescription, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.BeneficiaryProductDescription, new { htmlAttributes = new { @id = "BeneficiaryProductDescription", @class = "form-control", @placeholder = "ProductDescription", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.BeneficiaryProductDescription, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Beneficiary.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Beneficiary.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @id = "BeneficiaryProductDescription", @class = "form-control", @placeholder = "FullName", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Beneficiary.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+
+
 
                                 </div>
 
@@ -339,13 +303,27 @@
 
                                             <div class="col-lg-4">
                                                 <div class="form-group">
-                                                    @Html.LabelFor(model => model.Interest, htmlAttributes: new { @class = "" })
+                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
                                                     @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remarks", @class = "form-control", @placeholder = "Remarks" } })
                                                     @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
 
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    @Html.LabelFor(model => model.CapitalizedInterest, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.CapitalizedInterest, new { htmlAttributes = new { @id = "CapitalizedInterest", @class = "form-control", @placeholder = "Remarks" } })
+                                                    @Html.ValidationMessageFor(model => model.CapitalizedInterest, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
 
+
+                                            @*<div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.BeneficiaryCustomerAccountId, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.BeneficiaryCustomerAccountId)
+                                                    @Html.ValidationMessageFor(model => model.BeneficiaryCustomerAccountId, "", new { @class = "text-danger" })
+                                                    @Html.EditorFor(model => model.BeneficiaryCustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "BeneficiaryGrid", @class = "BeneficiaryGrid form-control required", placeholder = "Description.." } })
+                                                </div>*@
 
 
                                         </div>
@@ -485,11 +463,6 @@
 
 
 
-
-
-
-
-$(document).ready(function() {
     // Benefactor Customer Accounts lookup
 
     $('#BenefactorCustomerAccountsGrid').DataTable({
@@ -509,8 +482,22 @@ $(document).ready(function() {
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-           // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
-            var selectButton = '<a href= "/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+            // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
+            var selectButton = '<a href="/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
+
+            // Assuming you are using jQuery
+            $(document).ready(function () {
+                // Attach click event handler to the link
+                $('.select-link').click(function (event) {
+                    // Prevent default action (page reload)
+                    event.preventDefault();
+                    // You can add additional logic here if needed
+
+                    // Optionally, if you want to navigate programmatically after preventing default action:
+                    window.location.href = $(this).attr('href');
+                });
+            });
+
             $('td:eq(4)', nRow).html(dt_Created);
             $('td:eq(5)', nRow).html(selectButton);
 
@@ -528,41 +515,41 @@ $(document).ready(function() {
         "aaSorting": [[0, "desc"]]
     });
 
-    // Click event handler for Beneficiary select button
-    $('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-        event.isDefaultPrevented();
-        var id = $(this).data('id');
-        console.log("BeneBenefactor Button clicked. ID: " + id);
-    }).on("click", "tr", function () {
-        var data = $('#BenefactorCustomerAccountsGrid').DataTable().row(this).data();
+    //// Click event handler for Beneficiary select button
+    //$('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
+    //    event.isDefaultPrevented();
+    //    var id = $(this).data('id');
+    //    console.log("BeneBenefactor Button clicked. ID: " + id);
+    //}).on("click", "tr", function () {
+    //    var data = $('#BenefactorCustomerAccountsGrid').DataTable().row(this).data();
 
-        // Populate fields with selected data
-        $('#BenefactorCustomerAccountCustomerId').val(data.Id);
-        $('#BenefactorCustomerAccountCustomerId').val(data.BenefactorCustomerAccountCustomerId);
-        $('#BenefactorCustomerAccountId').val(data.BenefactorCustomerAccountId);
-        $('input[name=BenefactorCustomerAccountCustomerFullName]').val(data.BenefactorCustomerAccountCustomerFullName);
-        $('input[name=BenefactorCustomerAccountCustomerId]').val(data.BenefactorCustomerAccountCustomerId);
+    //    // Populate fields with selected data
+    //    $('#BenefactorCustomerAccountCustomerId').val(data.Id);
+    //    $('#BenefactorCustomerAccountCustomerId').val(data.BenefactorCustomerAccountCustomerId);
+    //    $('#BenefactorCustomerAccountId').val(data.BenefactorCustomerAccountId);
+    //    $('input[name=BenefactorCustomerAccountCustomerFullName]').val(data.BenefactorCustomerAccountCustomerFullName);
+    //    $('input[name=BenefactorCustomerAccountCustomerId]').val(data.BenefactorCustomerAccountCustomerId);
 
-        // Assuming CustomersMap is defined and contains appropriate data
-        if (CustomersMap[data.Id]) {
-            $('#BenefactorCustomerAccountId').val(CustomersMap[data.Id].BenefactorCustomerAccountId);
-            $('#BenefactorCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BenefactorCustomerAccountCustomerFullName);
-        }
+    //    // Assuming CustomersMap is defined and contains appropriate data
+    //    if (CustomersMap[data.Id]) {
+    //        $('#BenefactorCustomerAccountId').val(CustomersMap[data.Id].BenefactorCustomerAccountId);
+    //        $('#BenefactorCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BenefactorCustomerAccountCustomerFullName);
+    //    }
 
-        $('#BenefactorProductDescription').val(data.BenefactorProductDescription);
+    //    $('#BenefactorProductDescription').val(data.BenefactorProductDescription);
 
-        // Hide modal
-        $('#BenefactorcustomerLookupModal').modal('hide');
-    });
-    $('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-        event.preventDefault();
-        var id = $(this).data('id');
-        console.log("Benefactor Button clicked. ID: " + id);
+    //    // Hide modal
+    //    $('#BenefactorcustomerLookupModal').modal('hide');
+    //});
+    //$('#BenefactorCustomerAccountsGrid').on('click', '.select-btn', function (event) {
+    //    event.preventDefault();
+    //    var id = $(this).data('id');
+    //    console.log("Benefactor Button clicked. ID: " + id);
 
-        // Modify the URL to navigate to the specified path
-        var selectButton = '/Accounts/CustomerAccountstandingorder/create/' + id;
-        window.location.href = selectButton;
-    });
+    //    // Modify the URL to navigate to the specified path
+    //    var selectButton = '/Accounts/CustomerAccountstandingorder/create/' + id;
+    //    window.location.href = selectButton;
+    //});
 
 
 
@@ -605,43 +592,43 @@ $(document).ready(function() {
     });
 
     // Click event handler for Beneficiary select button
-    $('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function(event) {
-        event.isDefaultPrevented();
-        var id = $(this).data('id');
-        console.log("Beneficiary Button clicked. ID: " + id);
-    }).on("click", "tr", function () {
-        var data = $('#BeneficiaryCustomerAccountsGrid').DataTable().row(this).data();
+    //$('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function(event) {
+    //    event.isDefaultPrevented();
+    //    var id = $(this).data('id');
+    //    console.log("Beneficiary Button clicked. ID: " + id);
+    //}).on("click", "tr", function () {
+    //    var data = $('#BeneficiaryCustomerAccountsGrid').DataTable().row(this).data();
 
-        // Populate fields with selected data
-        $('#BeneficiaryCustomerAccountCustomerId').val(data.Id);
-        $('#BeneficiaryCustomerAccountCustomerId').val(data.BeneficiaryCustomerAccountId);
-        $('#BeneficiaryCustomerAccountId').val(data.BeneficiaryCustomerAccountId);
-        $('input[name=BeneficiaryCustomerAccountCustomerFullName]').val(data.BeneficiaryCustomerAccountCustomerFullName);
-        $('input[name=BeneficiaryCustomerAccountCustomerId]').val(data.BeneficiaryCustomerAccountId);
+    //    // Populate fields with selected data
+    //    $('#BeneficiaryCustomerAccountCustomerId').val(data.Id);
+    //    $('#BeneficiaryCustomerAccountCustomerId').val(data.BeneficiaryCustomerAccountId);
+    //    $('#BeneficiaryCustomerAccountId').val(data.BeneficiaryCustomerAccountId);
+    //    $('input[name=BeneficiaryCustomerAccountCustomerFullName]').val(data.BeneficiaryCustomerAccountCustomerFullName);
+    //    $('input[name=BeneficiaryCustomerAccountCustomerId]').val(data.BeneficiaryCustomerAccountId);
 
-        // Assuming CustomersMap is defined and contains appropriate data
-        if (CustomersMap[data.Id]) {
-            $('#BeneficiaryCustomerAccountId').val(CustomersMap[data.Id].BeneficiaryCustomerAccountId);
-            $('#BeneficiaryCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BeneficiaryCustomerAccountCustomerFullName);
-        }
+    //    // Assuming CustomersMap is defined and contains appropriate data
+    //    if (CustomersMap[data.Id]) {
+    //        $('#BeneficiaryCustomerAccountId').val(CustomersMap[data.Id].BeneficiaryCustomerAccountId);
+    //        $('#BeneficiaryCustomerAccountCustomerFullName').val(CustomersMap[data.Id].BeneficiaryCustomerAccountCustomerFullName);
+    //    }
 
-        $('#BeneficiaryProductDescription').val(data.BeneficiaryProductDescription);
+    //    $('#BeneficiaryProductDescription').val(data.BeneficiaryProductDescription);
 
-        // Hide modal
-        $('#BeneficiarycustomerLookupModal').modal('hide');
-    });
-    $('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function (event) {
-        event.isDefaultPrevented();
-        var id = $(this).data('id');
-        console.log("Beneficiary Button clicked. ID: " + id);
+    //    // Hide modal
+    //    $('#BeneficiarycustomerLookupModal').modal('hide');
+    //});
+    //$('#BeneficiaryCustomerAccountsGrid').on('click', '.select-btn', function (event) {
+    //    event.isDefaultPrevented();
+    //    var id = $(this).data('id');
+    //    console.log("Beneficiary Button clicked. ID: " + id);
 
-        // Modify the URL to navigate to the specified path
-        var selectButton = '/Accounts/CustomerAccountstandingorder/Search/' + id;
-        window.location.href = selectButton;
-    });
+    //    // Modify the URL to navigate to the specified path
+    //    var selectButton = '/Accounts/CustomerAccountstandingorder/Search/' + id;
+    //    window.location.href = selectButton;
+    //});
     // Prevent form submission reload
 
-});
+
 
 
                 $('#data_3 .input-group.date').datepicker({
@@ -651,6 +638,32 @@ $(document).ready(function() {
                     forceParse: false,
                     autoclose: true,
                 });
+
+
+        //$(document).ready(function () {
+        //    // Make an AJAX request to your Create action
+        //    $.ajax({
+        //        url: '/CustomerAccountstandingorder/Create',
+        //        type: 'GET',
+        //        success: function (data) {
+        //            // Check if there is an error in the response
+        //            if (data.error) {
+        //                // Display the error message to the user
+        //                alert(data.error); // You can use a more sophisticated UI for showing errors
+        //            } else {
+        //                // Render the received data on the page
+        //                // Assuming you have a function to render the data in the appropriate HTML elements
+        //                renderData(data);
+        //            }
+        //        },
+        //        error: function () {
+        //            // Handle errors if the AJAX request fails
+        //            alert('Error occurred while fetching data');
+        //        }
+        //    });
+        //});
+
+
 
         //document.addEventListener("BenefactorcustomerLookupModal", function () {
         //    var inputField = document.getElementById('benefactorCustomerFullName');
@@ -686,7 +699,7 @@ $(document).ready(function() {
         //    captureDetails2();
         //});
 
-        function captureDetails2() {
+        @*function captureDetails2() {
             var BenefactorCustomerAccountCustomerFullName = BenefactorCustomerAccountId.localStorage; // Replace with actual value obtained from lookup
             var BenefactorCustomerAccountId = "BenefactorCustomerAccountId"; // Replace with actual value obtained from lookup
 
@@ -720,7 +733,7 @@ $(document).ready(function() {
 
 
         function captureDetails3() {
-            var BeneficiaryCustomerAccountCustomerFullName = "BeneficiaryCustomerAccountCustomerFullName"; // Replace with actual value obtained from lookup
+            var BeneficiaryCustomerAccountCustomerFullName = "BeneficiaryCustomerAccountCustomerFullName".preventDefault(arguments.BeneficiaryCustomerAccountId); // Replace with actual value obtained from lookup
             var BeneficiaryCustomerAccountId = "BeneficiaryCustomerAccountId"; // Replace with actual value obtained from lookup
 
             // Assign captured data to the appropriate input fields
@@ -751,6 +764,50 @@ $(document).ready(function() {
             });
         }
 
+
+
+
+          //Company typehead starts here
+    $('.BeneficiaryGrid').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLoanProductsAsync", "CustomerAccountstandingorder", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
+                            });
+                            process(newCompaniesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#BeneficiaryCustomerAccountCustomerId').val(data.Id);
+                    $('#BeneficiaryCustomerAccountCustomerId').val(data.BeneficiaryCustomerAccountId);
+                    $('#BeneficiaryCustomerAccountId').val(data.BeneficiaryCustomerAccountId);
+                    $('input[name=BeneficiaryCustomerAccountCustomerFullName]').val(data.BeneficiaryCustomerAccountCustomerFullName);
+                    $('input[name=BeneficiaryCustomerAccountCustomerId]').val(data.BeneficiaryCustomerAccountId);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    return item;
+                }
+            });*@
 
 
 
