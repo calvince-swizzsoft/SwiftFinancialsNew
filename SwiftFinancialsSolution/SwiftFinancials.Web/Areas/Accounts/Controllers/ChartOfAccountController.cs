@@ -37,6 +37,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(ChartOfAccount => ChartOfAccount.CreatedDate).ToList();
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -71,11 +72,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!chartOfAccountDTO.HasErrors)
             {
                 await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["ErrorMessage"] = "Edit Unsuccessful.";
                 var errorMessages = chartOfAccountDTO.ErrorMessages;
 
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
@@ -89,6 +91,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(string.Empty);
+            ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(string.Empty);
+
             var chartOfAccountDTO = await _channelService.FindChartOfAccountAsync(id, GetServiceHeader());
 
             return View(chartOfAccountDTO);
@@ -98,15 +103,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, ChartOfAccountDTO chartOfAccountBindingModel)
         {
-            if (ModelState.IsValid)
+            if (!chartOfAccountBindingModel.HasErrors)
             {
                 await _channelService.UpdateChartOfAccountAsync(chartOfAccountBindingModel, GetServiceHeader());
+                ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountBindingModel.AccountType.ToString());
+                ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountBindingModel.AccountCategory.ToString());
 
+                TempData["SuccessMessage"] = "Edit successful.";
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(chartOfAccountBindingModel);
+
+                TempData["ErrorMessage"] = "Edit Unsuccessful.";
+                return View("Create");
             }
         }
 

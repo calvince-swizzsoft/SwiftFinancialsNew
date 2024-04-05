@@ -51,7 +51,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period" } })
+                                        @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period" } })
                                         @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>

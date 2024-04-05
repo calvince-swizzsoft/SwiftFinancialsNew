@@ -75,7 +75,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var benefactorAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
 
-            if (standingOrderDTO!= null)
+            if (standingOrderDTO != null)
             {
                 standingOrderDTO.benefactor = benefactorAccounts;
                 Session["benefactorAccounts"] = standingOrderDTO.benefactor;
@@ -119,7 +119,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             //beneficiaryAccounts.CustomerId = standingOrderDTO.BeneficiaryCustomerAccountId;
 
-          
+
             standingOrderDTO.Beneficiary = Session["beneficiaryAccounts"] as CustomerAccountDTO;
 
             standingOrderDTO.benefactor = Session["benefactorAccounts"] as CustomerAccountDTO;
@@ -202,6 +202,46 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Create", standingOrderDTO);
         }
 
-       
+
+
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+            ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
+            return View(expensePayableDTO);
+
+
+        }
+
+        ////[HttpPost]
+        ////[ValidateAntiForgeryToken]
+        ////public async Task<ActionResult> Edit(Guid id, StandingOrderDTO standingOrderDTO)
+        ////{
+
+        ////    standingOrderDTO.ValidateAll();
+        ////    if (!standingOrderDTO.HasErrors)
+        ////    {
+        ////        await _channelService.UpdateStandingOrderAsync(standingOrderDTO, GetServiceHeader());
+        ////        ViewBag.MonthsSelectList = GetMonthsAsync(standingOrderDTO.ScheduleFrequency.ToString());
+        ////        ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(standingOrderDTO.ScheduleFrequency.ToString());
+        ////        ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(standingOrderDTO.ChargeType.ToString());
+
+        ////        return RedirectToAction("Index");
+        ////    }
+        ////    else
+        ////    {
+        ////        var errorMessages = standingOrderDTO.ErrorMessages;
+        ////        ViewBag.MonthsSelectList = GetMonthsAsync(standingOrderDTO.ScheduleFrequency.ToString());
+        ////        ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(standingOrderDTO.ScheduleFrequency.ToString());
+        ////        ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(standingOrderDTO.ChargeType.ToString());
+        ////        return View(standingOrderDTO);
+        ////    }
+        //}
+
+
     }
 }
