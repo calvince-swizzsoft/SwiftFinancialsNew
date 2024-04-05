@@ -21,7 +21,23 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create G/L Account Determination", "Create", "SystemGeneralLedgerAccountMapping", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Map Control Account", "Create", "SystemGeneralLedgerAccountMapping", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+
+                    <br /><br />
+
+                    @if (TempData["AlertMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AlertMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -92,10 +108,10 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "SystemGeneralLedgerAccountCode", "sTitle": "System G/L Account Code", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Mapped G/L Account", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],
+                    { "mDataProp": "SystemGeneralLedgerAccountCodeDescription", "sTitle": "System G/L Account Code", "sWidth": "10%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "Mapped G/L Account", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
