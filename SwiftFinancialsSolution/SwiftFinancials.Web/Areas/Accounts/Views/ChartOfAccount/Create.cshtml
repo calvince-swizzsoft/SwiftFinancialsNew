@@ -1,4 +1,15 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.ChartOfAccountDTO
+
+
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["ErrorMessage"]
+    </div>
+}
+
+
 @{
     ViewBag.Title = "Chart Of Accounts";
 

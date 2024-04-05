@@ -68,9 +68,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!commissionDTO.ErrorMessages.Any())
             {
-                var commission = await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
 
-                if (commission != null)
+                if (commissionDTO != null)
                 {
                     //Update CommissionSplits
 
@@ -80,12 +80,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
                         {
-                            commissionSplitDTO.CommissionId = commission.Id;
-
+                            commissionSplitDTO.CommissionId = commissionDTO.Id;
+                            commissionDTO.CommissionSplitChartOfAccountId = commissionSplitDTO.ChartOfAccountId;
+                            commissionSplitDTO.ChartOfAccountCostCenterId = commissionDTO.CommissionSplit.ChartOfAccountId;
                             commissionSplits.Add(commissionSplitDTO);
                         }
-
-                        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commission.Id, commissionSplits, GetServiceHeader());
+                        if (commissionSplits.Any())
+                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
                     }
 
                     //Update CommissionLevies
@@ -96,12 +97,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
                         {
-                            commissionLevyDTO.CommissionId = commission.Id;
+                            commissionLevyDTO.CommissionId = commissionDTO.Id;
+                            commissionDTO.CommissionSplitChartOfAccountId = commissionDTO.Id;
 
                             commissionLevies.Add(commissionLevyDTO);
                         }
 
-                        await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commission.Id, commissionLevies, GetServiceHeader());
+                        await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionDTO.Id, commissionLevies, GetServiceHeader());
                     }
                 }
 

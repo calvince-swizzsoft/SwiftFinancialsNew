@@ -123,6 +123,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!levyDTO.HasErrors)
             {
                 var levy = await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
+                TempData["SuccessMessage"] = "Create successful.";
+
 
                 if (levy != null)
                 {
