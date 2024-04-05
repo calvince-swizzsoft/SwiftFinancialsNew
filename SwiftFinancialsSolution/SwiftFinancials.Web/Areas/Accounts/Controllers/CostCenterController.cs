@@ -63,17 +63,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CostCenterDTO costCenterDTO)
         {
+            costCenterDTO.CreatedDate = DateTime.Today;
+
             costCenterDTO.ValidateAll();
 
             if (!costCenterDTO.HasErrors)
             {
                 await _channelService.AddCostCenterAsync(costCenterDTO, GetServiceHeader());
 
+                TempData["AlertMessage"] = "Cost Centre created successfully";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = costCenterDTO.ErrorMessages;
+
+                TempData["Error"] = "Failed to create Cost Centre";
 
                 return View(costCenterDTO);
             }
@@ -90,17 +96,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CostCenterDTO costCenterBindingModel)
+        public async Task<ActionResult> Edit(Guid id, CostCenterDTO costCenterDTO)
         {
+            costCenterDTO.CreatedDate = DateTime.Today;
+
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCostCenterAsync(costCenterBindingModel, GetServiceHeader());
+                await _channelService.UpdateCostCenterAsync(costCenterDTO, GetServiceHeader());
+
+                TempData["Edit"] = "Edited Cost Center successfully";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                return View(costCenterBindingModel);
+                return View(costCenterDTO);
             }
         }
 

@@ -136,28 +136,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-
-        [HttpPost]
-        public ActionResult CustomerAccountsData(string CustomerAccountFullAccountNumber, string CustomerAccountStatus, string CustomerAccountRemarks, string CustomerAccountBookBalance,
-            string CustomerAccountCustomerFullName,string CustomerAccountTypeDescription, string CustomerAccountCustomerIndividualPayrollNumbers,
-            string CustomerAccountCustomerReference3,string CustomerAccountCustomerReference2, string CustomerAccountCustomerReference1)
-        {
-
-            Session["CustomerAccountFullAccountNumber"] = CustomerAccountFullAccountNumber;
-            Session["CustomerAccountStatus"] = CustomerAccountStatus;
-            Session["CustomerAccountRemarks"] = CustomerAccountRemarks;
-            Session["CustomerAccountBookBalance"] = CustomerAccountBookBalance;
-            Session["CustomerAccountCustomerFullName"] = CustomerAccountCustomerFullName;
-            Session["CustomerAccountTypeDescription"] = CustomerAccountTypeDescription;
-            Session["CustomerAccountCustomerIndividualPayrollNumbers"] = CustomerAccountCustomerIndividualPayrollNumbers;
-            Session["CustomerAccountCustomerReference3"] = CustomerAccountCustomerReference3;
-            Session["CustomerAccountCustomerReference2"] = CustomerAccountCustomerReference2;
-            Session["CustomerAccountCustomerReference1"] = CustomerAccountCustomerReference1;
-
-            return null;
-        }
-
-
         [HttpPost]
         public async Task<ActionResult> Create(LoanGuarantorDTO loanGuarantorDTO)
         {

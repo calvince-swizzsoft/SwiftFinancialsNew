@@ -1003,6 +1003,8 @@
     <Content Include="Areas\Accounts\Views\Standingorderexecution\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CostCenter\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
