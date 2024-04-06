@@ -163,6 +163,10 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
 
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Charges", Icon="fa fa-bars", ControllerName="Charge", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
+
+
+
 
 
                 //Loaning - area 24,000
