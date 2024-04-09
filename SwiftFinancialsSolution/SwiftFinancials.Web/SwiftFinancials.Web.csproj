@@ -317,6 +317,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ChargeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -1009,10 +1010,12 @@
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
+
     <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
+
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
