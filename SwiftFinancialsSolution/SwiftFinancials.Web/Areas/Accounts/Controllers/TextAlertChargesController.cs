@@ -57,6 +57,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+            ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
+            ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+           
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
@@ -75,6 +79,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
+                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 return View(levyDTO);
             }

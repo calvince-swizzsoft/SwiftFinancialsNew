@@ -113,10 +113,15 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
+<<<<<<< HEAD:SwiftFinancialsSolution/SwiftFinancials.Web/Areas/Accounts/Views/IndefiniteCharges/Index.cshtml
+                    var editUrl = '<a  href="/accounts/IndefiniteCharges/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/IndefiniteCharges/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+=======
                     var editUrl = '<a  href="/accounts/CostCenter/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/CostCenter/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     //var verifyUrl = '<a  href="/accounts/CostCenter/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
                     //var authorizeUrl = '<a  href="/accounts/CostCenter/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
+>>>>>>> 2f474e0142c8e456a4398206361d93645fcd2f70:SwiftFinancialsSolution/SwiftFinancials.Web/Areas/Accounts/Views/Charge/Index.cshtml
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;');

@@ -58,16 +58,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+            ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
+            ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
+
+
+
+
+
             return View();
         }
 
         [HttpPost]
+        public async Task<ActionResult> Create(CommissionDTO levyDTO)
         public async Task<ActionResult> Create(DynamicChargeDTO levyDTO)
         {
             levyDTO.ValidateAll();
 
             if (!levyDTO.HasErrors)
             {
+                await _channelService.AddCommissionAsync(levyDTO, GetServiceHeader());
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.ChargeBenefactor.ToString());
+                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
+                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.ChargeBenefactor.ToString());
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.ChargeBenefactor.ToString());
+                ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
                 await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
@@ -75,6 +92,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
+                //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 return View(levyDTO);
             }
