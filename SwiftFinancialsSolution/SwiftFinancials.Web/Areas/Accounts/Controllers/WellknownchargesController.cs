@@ -13,51 +13,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class WellknownchargesController : MasterController
     {
-        public async Task<ActionResult> Index()
+
+        public async Task<ActionResult> Create(Guid? id, DynamicChargeDTO dynamicChargeDTO)
         {
             await ServeNavigationMenus();
+            Guid parseId;
 
-            return View();
-        }
-
-        [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindDebitBatchesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(debitBatch => debitBatch.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return View();
             }
-            else return this.DataTablesJson(items: new List<DebitBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
 
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+            ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
+            ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);  
+           var J=await  _channelService.FindDynamicChargeAsync(parseId, GetServiceHeader());
 
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
-
-            return View(debitBatchDTO);
-        }
-        public async Task<ActionResult> Create()
-        {
-            await ServeNavigationMenus();
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
 
@@ -75,7 +48,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoveryMode.ToString());
+                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
+                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoveryMode.ToString());
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoveryMode.ToString());
+                ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
+
                 return View(levyDTO);
             }
         }

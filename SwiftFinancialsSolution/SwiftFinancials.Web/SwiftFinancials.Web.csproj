@@ -1011,7 +1011,6 @@
     <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />

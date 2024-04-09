@@ -209,6 +209,29 @@ namespace SwiftFinancials.Web.Controllers
 
             return recordStatusSelectList;
         }
+        [NonAction]
+        protected List<SelectListItem> GetSystemTransactionTypeList(string selectedValue)
+        {
+            List<SelectListItem> systemTransactionType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SystemTransactionType)).Cast<SystemTransactionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemTransactionType.AddRange(items);
+
+            return systemTransactionType;
+        }
+
+
+
+
+
+
+
 
         [NonAction]
         protected List<SelectListItem> GetCustomerTypeSelectList(string selectedValue)
@@ -1263,6 +1286,64 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
+
+
+
+
+        [NonAction]
+        protected List<SelectListItem> GetAlternateChannelKnownChargeTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> alternateChannelKnownChargeType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(AlternateChannelKnownChargeType)).Cast<AlternateChannelKnownChargeType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            alternateChannelKnownChargeType.AddRange(items);
+
+            return alternateChannelKnownChargeType;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetAlternateChannelTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> alternateChannelType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(AlternateChannelType)).Cast<AlternateChannelType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            alternateChannelType.AddRange(items);
+
+            return alternateChannelType;
+        }
+
+
+
+
+
+        [NonAction]
+        protected List<SelectListItem> GetChargeBenefactorSelectList(string selectedValue)
+        {
+            List<SelectListItem> ChargeBenefactor = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ChargeBenefactor)).Cast<ChargeBenefactor>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            ChargeBenefactor.AddRange(items);
+
+            return ChargeBenefactor;
+        }
 
 
         [NonAction]
