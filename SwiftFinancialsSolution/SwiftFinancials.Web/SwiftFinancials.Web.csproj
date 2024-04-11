@@ -893,7 +893,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Approval.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
-    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Create.cshtml" />
@@ -1009,12 +1008,11 @@
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
-
     <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
-
+    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -13,21 +13,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class WellknownchargesController : MasterController
     {
-
-        public async Task<ActionResult> Create(Guid? id, DynamicChargeDTO dynamicChargeDTO)
         public async Task<ActionResult> Index()
         {
-            await ServeNavigationMenus();
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             return View();
         }
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-            {
-                return View();
+        {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -49,14 +42,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<DebitBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
+        }
 
-            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-            ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
-            ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);  
-           var J=await  _channelService.FindDynamicChargeAsync(parseId, GetServiceHeader());
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
