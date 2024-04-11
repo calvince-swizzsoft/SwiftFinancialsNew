@@ -98,6 +98,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateSystemGeneralLedgerAccountMappingAsync(systemGeneralLedgerAccountMappingDTO, GetServiceHeader());
 
+                TempData["EditMessage"] = "Successfully edited G/L Account Determination";
+
                 return RedirectToAction("Index");
             }
             else
