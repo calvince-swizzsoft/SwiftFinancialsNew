@@ -52,16 +52,16 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -306,7 +306,15 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_RefundController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_ReversalController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_VoucherController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
@@ -315,17 +323,25 @@
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CustomerAccountsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CustomerAccountstandingorderController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\IndefiniteChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LoanIndefiniteChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\LoanInterestCapitalizationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\SavingsDynamicFeesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
@@ -387,6 +403,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanProductAppraisalController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanPurposeController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\LoanRestructuringController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
@@ -876,7 +893,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Approval.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
-    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Create.cshtml" />
@@ -942,6 +958,61 @@
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Credit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Debit\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Reversal\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Reversal\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanIndefiniteCharges\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanIndefiniteCharges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanInterestCapitalization\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\LoanInterestCapitalization\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Standingorderexecution\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsDynamicFees\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\SavingsDynamicFees\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\ApproveLoan\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\ApproveLoan\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanVerification\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanVerification\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanCancellation\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanCancellation\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRestructuring\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRestructuring\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRestructuring\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\Add.cshtml" />
+    <Content Include="Areas\Accounts\Views\Standingorderexecution\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Standingorderexecution\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CostCenter\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -950,6 +1021,10 @@
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
+    <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
+    <Content Include="Scripts\js\openDifferentSection.js" />
+    <Content Include="Scripts\js\sectionsAlternate.js" />
     <Content Include="Scripts\messageAlert.js" />
     <Content Include="Scripts\plugins\blueimp\jquery.blueimp-gallery.min.js" />
     <Content Include="Scripts\plugins\bootstrap-markdown\bootstrap-markdown.js" />
@@ -1402,6 +1477,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
+    <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
@@ -1483,7 +1559,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:58870/</IISUrl>
+          <IISUrl>http://localhost:59421/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
