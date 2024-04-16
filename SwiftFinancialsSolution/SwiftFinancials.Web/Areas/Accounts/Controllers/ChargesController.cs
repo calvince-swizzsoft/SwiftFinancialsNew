@@ -1,12 +1,14 @@
-﻿using Application.MainBoundedContext.DTO;
-using Application.MainBoundedContext.DTO.AccountsModule;
-using SwiftFinancials.Web.Controllers;
-using SwiftFinancials.Web.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
+using SwiftFinancials.Presentation.Infrastructure.Util;
+using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
@@ -36,8 +38,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(costCenter => costCenter.CreatedDate).ToList();
-
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -53,6 +53,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(commissionDTO);
         }
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -65,19 +66,54 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             commissionDTO.ValidateAll();
 
-            if (!commissionDTO.HasErrors)
+            if (!commissionDTO.ErrorMessages.Any())
             {
-                await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
 
-                TempData["AlertMessage"] = "Charge created successfully";
+                if (commissionDTO != null)
+                {
+                    //Update CommissionSplits
+
+                    var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
+
+                    if (commissionDTO.CommissionSplits.Any())
+                    {
+                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
+                        {
+                            commissionSplitDTO.CommissionId = commissionDTO.Id;
+                            commissionDTO.CommissionSplitChartOfAccountId = commissionSplitDTO.ChartOfAccountId;
+                            commissionSplitDTO.ChartOfAccountCostCenterId = commissionDTO.CommissionSplit.ChartOfAccountId;
+                            commissionSplits.Add(commissionSplitDTO);
+                        }
+                        if (commissionSplits.Any())
+                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
+                    }
+
+                    //Update CommissionLevies
+
+                    var commissionLevies = new ObservableCollection<CommissionLevyDTO>();
+
+                    if (commissionDTO.CommissionLevies.Any())
+                    {
+                        foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
+                        {
+                            commissionLevyDTO.CommissionId = commissionDTO.Id;
+                            commissionDTO.CommissionSplitChartOfAccountId = commissionDTO.Id;
+
+                            commissionLevies.Add(commissionLevyDTO);
+                        }
+
+                        await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionDTO.Id, commissionLevies, GetServiceHeader());
+                    }
+                }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = commissionDTO.ErrorMessages;
+                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
 
-                TempData["Error"] = "Failed to create Charge";
+                TempData["Error"] = string.Join(",", allErrors);
 
                 return View(commissionDTO);
             }
@@ -100,8 +136,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
-                TempData["Edit"] = "Edited Charge successfully";
-
                 return RedirectToAction("Index");
             }
             else
@@ -111,11 +145,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetCostCentersAsync()
+        public async Task<JsonResult> GetCommissionsAsync()
         {
-            var costCenterDTOs = await _channelService.FindCostCentersAsync(GetServiceHeader());
+            var commissionsDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
 
-            return Json(costCenterDTOs, JsonRequestBehavior.AllowGet);
+            return Json(commissionsDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }
