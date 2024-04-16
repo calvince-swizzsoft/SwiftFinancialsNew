@@ -317,6 +317,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -1478,6 +1479,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
+    <Folder Include="Areas\Accounts\Views\Charges\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
