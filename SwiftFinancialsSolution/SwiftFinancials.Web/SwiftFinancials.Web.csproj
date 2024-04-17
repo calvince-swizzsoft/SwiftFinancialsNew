@@ -306,6 +306,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AddGeneralLedgerController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
@@ -1010,12 +1011,12 @@
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CostCenter\Details.cshtml" />
-
     <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
-
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

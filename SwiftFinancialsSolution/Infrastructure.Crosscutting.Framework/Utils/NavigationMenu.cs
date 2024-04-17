@@ -166,6 +166,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Charges", Icon="fa fa-bars", ControllerName="Charge", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Text Alert  Charges ", Icon="fa fa-bars", ControllerName="TextAlertCharges", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 89},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Alternate Channels", Icon="fa fa-bars", ControllerName="AlternateChannels", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 90},
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "System G/L Accounts", Icon="fa fa-paperclip", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Close Posting Period", Icon="fa fa-paperclip", ControllerName="ClosePostingPeriod", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 92},
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Add GeneralLedger", Icon="fa fa-money", ControllerName="AddGeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
 
 
 
