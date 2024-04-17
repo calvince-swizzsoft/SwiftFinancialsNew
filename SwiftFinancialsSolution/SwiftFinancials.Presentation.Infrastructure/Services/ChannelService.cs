@@ -40095,5 +40095,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             }
 #endif
         }
+
+        public Task AddCommissionAsync(DynamicChargeDTO levyDTO, ServiceHeader serviceHeader)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

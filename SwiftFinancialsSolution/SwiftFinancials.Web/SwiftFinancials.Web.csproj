@@ -52,16 +52,16 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -318,7 +318,7 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\ChargeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -895,7 +895,6 @@
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Approval.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Settlement.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\DeathClaim.cshtml" />
-    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\SystemGeneralLedgerAccountMapping\Create.cshtml" />
@@ -1015,6 +1014,9 @@
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />

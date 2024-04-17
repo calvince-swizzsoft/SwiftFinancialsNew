@@ -62,12 +62,22 @@
                         <h1>Well known charges</h1>
                         <div class="row">
                             <div class="col-lg-6">
+                                @*<div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.DebitTypeId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.DebitTypeId)
+                                        @Html.ValidationMessageFor(model => model.DebitTypeId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "DebitTypesLookup form-control required", placeholder = "Description.." } })
+                                    </div>
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.RecoveryMode, new { @class = "control-label" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(model => model.RecoveryMode, trans, new { @class = "form-control input-md" })
                                         @Html.ValidationMessageFor(model => model.RecoveryMode)
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
                             </div>
@@ -79,6 +89,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.RecoveryMode, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                         @Html.DropDownListFor(model => model.RecoveryMode, h, new { @class = "form-control input-md" })
@@ -94,13 +105,22 @@
                                     @Html.EditorFor(model => model.Installments, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Installments, "", new { @class = "text-danger" })
                                 </div>
+                                            @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Priority)
                             </div>
 
 
+                                    </div>*@
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                         </div>
                         <div class="form-group form-group-sm">
                             <div class="col-md-offset-2">
                                 <input type="submit" value="Create" class="btn btn-primary" />
+                            </div>
+                        </div>
                             </div>
                         </div>
                     }

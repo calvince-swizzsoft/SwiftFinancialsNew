@@ -55,17 +55,62 @@
                                         @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Vision, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Mission, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Mission, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Mission, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Motto, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
+                                    </div>
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecoverArrearsOnCashDeposit, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.RecoverArrearsOnCashDeposit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.RecoverArrearsOnCashDeposit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecoverArrearsOnExternalChequeClearance, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.RecoverArrearsOnExternalChequeClearance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.RecoverArrearsOnExternalChequeClearance, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecoverArrearsOnFixedDepositPayment, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.RecoverArrearsOnFixedDepositPayment, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.RecoverArrearsOnFixedDepositPayment, "", new { @class = "text-danger" })
+                                    </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EnforceTwoFactorAuthentication, htmlAttributes: new { @class = "" })
-                                        @Html.CheckBoxFor(model => model.EnforceTwoFactorAuthentication)
-                                        @Html.ValidationMessageFor(model => model.EnforceTwoFactorAuthentication, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.RecoveryPriority, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TrackGuarantorCommittedInvestments, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.TrackGuarantorCommittedInvestments, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.TrackGuarantorCommittedInvestments, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-4">
@@ -146,6 +191,176 @@
                                         @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
 
                                         @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+
+                        <h1>Options</h1>
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceTwoFactorAuthentication, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceTwoFactorAuthentication)
+                                        @Html.ValidationMessageFor(model => model.EnforceTwoFactorAuthentication, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ApplicationMembershipTextAlertsEnabled, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.ApplicationMembershipTextAlertsEnabled)
+                                        @Html.ValidationMessageFor(model => model.ApplicationMembershipTextAlertsEnabled, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceBudgetControl, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceBudgetControl)
+                                        @Html.ValidationMessageFor(model => model.EnforceBudgetControl, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceBiometricsForCashWithdrawal, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceBiometricsForCashWithdrawal)
+                                        @Html.ValidationMessageFor(model => model.EnforceBiometricsForCashWithdrawal, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceCustomerAccountMakerChecker, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceCustomerAccountMakerChecker)
+                                        @Html.ValidationMessageFor(model => model.EnforceCustomerAccountMakerChecker, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceFixedDepositBands, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceFixedDepositBands)
+                                        @Html.ValidationMessageFor(model => model.EnforceFixedDepositBands, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceInvestmentProductExemptions, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceInvestmentProductExemptions)
+                                        @Html.ValidationMessageFor(model => model.EnforceInvestmentProductExemptions, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceMobileToBankReconciliationVerification, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceMobileToBankReconciliationVerification)
+                                        @Html.ValidationMessageFor(model => model.EnforceMobileToBankReconciliationVerification, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceSingleUserSession, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceSingleUserSession)
+                                        @Html.ValidationMessageFor(model => model.EnforceSingleUserSession, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceSystemLock, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceSystemLock)
+                                        @Html.ValidationMessageFor(model => model.EnforceSystemLock, "", new { @class = "text-danger" })
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceTellerCashTransferAcknowledgement, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceTellerCashTransferAcknowledgement)
+                                        @Html.ValidationMessageFor(model => model.EnforceTellerCashTransferAcknowledgement, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EnforceTellerLimits, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.EnforceTellerLimits)
+                                        @Html.ValidationMessageFor(model => model.EnforceTellerLimits, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ExcludeChargesInTransactionReceipt, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.ExcludeChargesInTransactionReceipt)
+                                        @Html.ValidationMessageFor(model => model.ExcludeChargesInTransactionReceipt, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt)
+                                        @Html.ValidationMessageFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ExcludeCustomerAccountBalanceInTransactionReceipt, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.ExcludeCustomerAccountBalanceInTransactionReceipt)
+                                        @Html.ValidationMessageFor(model => model.ExcludeCustomerAccountBalanceInTransactionReceipt, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassExpensePayableAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassExpensePayableAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassExpensePayableAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassCreditBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassCreditBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassCreditBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassDebitBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassDebitBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassDebitBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassGeneralLedgerAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassGeneralLedgerAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassGeneralLedgerAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassInterAccountTransferBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassInterAccountTransferBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassInterAccountTransferBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassJournalReversalBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassJournalReversalBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassJournalReversalBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassJournalVoucherAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassJournalVoucherAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassJournalVoucherAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassLoanDisbursementBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassLoanDisbursementBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassLoanDisbursementBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassRefundBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassRefundBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassRefundBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BypassWireTransferBatchAudit, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.BypassWireTransferBatchAudit)
+                                        @Html.ValidationMessageFor(model => model.BypassWireTransferBatchAudit, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AllowDebitBatchToOverdrawAccount, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.AllowDebitBatchToOverdrawAccount)
+                                        @Html.ValidationMessageFor(model => model.AllowDebitBatchToOverdrawAccount, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerMembershipTextAlertsEnabled, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.CustomerMembershipTextAlertsEnabled)
+                                        @Html.ValidationMessageFor(model => model.CustomerMembershipTextAlertsEnabled, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IsFileTrackingEnforced, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.IsFileTrackingEnforced)
+                                        @Html.ValidationMessageFor(model => model.IsFileTrackingEnforced, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.IsWithholdingTaxAgent, htmlAttributes: new { @class = "" })
+                                        @Html.CheckBoxFor(model => model.IsWithholdingTaxAgent)
+                                        @Html.ValidationMessageFor(model => model.IsWithholdingTaxAgent, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>

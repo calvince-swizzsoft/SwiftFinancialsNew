@@ -61,7 +61,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         #region MembershipService
 
         Task<PageCollectionInfo<UserDTO>> FindMembershipByFilterInPageAsync(string text, int pageIndex, int pageSize, List<string> sortFields, bool sortAscending, ServiceHeader serviceHeader);
-
+        Task AddCommissionAsync(DynamicChargeDTO levyDTO, ServiceHeader serviceHeader);
         Task<PageCollectionInfo<RoleDTO>> FindMembershipRolesByFilterInPageAsync(string text, int pageIndex, int pageSize, List<string> sortFields, bool sortAscending, ServiceHeader serviceHeader);
 
         Task<UserDTO> AddNewMembershipAsync(UserDTO userDTO, ServiceHeader serviceHeader);

@@ -4,7 +4,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Cost Center</h2>
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -21,6 +21,8 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Cost Center</h2>
+                    <hr />
                     @Html.ActionLink("Create Cost Center", "Create", "CostCenter", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
                     <br />
@@ -123,10 +125,10 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Description", "sWidth": "30%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "30%" },
                     { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "30%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

@@ -108,7 +108,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Chart of Accounts", Icon="fa fa-usb", ControllerName="ChartOfAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 42},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Commissions", Icon="fa fa-users", ControllerName="Commission", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 43},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Journals", Icon="fa fa-calculator", ControllerName="Journal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 44},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cost Centers", Icon="fa fa-calculator", ControllerName="CostCenter", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 45},
+                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cost Centers", Icon="fa fa-money", ControllerName="CostCenter", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 45},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Credit Types", Icon="fa fa-calculator", ControllerName="CreditType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 46},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Debit Types", Icon="fa fa-calculator", ControllerName="DebitType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 47},
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Levies", Icon="fa fa-calculator", ControllerName="Levy", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 48},
@@ -144,7 +144,6 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Management", Icon="fa fa-tasks", ControllerName="Management", ActionName="CustomerManagement", AreaName = "Accounts", Code = 0x000059D8 + 78},
 
 
-
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Customer Accounts", Icon="fa fa-money", Code = 0x000059D8 +79 },
                 new NavigationMenu{AreaCode = 0x000059D8 + 79, IsArea = false, Description = "Customer Accounts", Icon="fa fa-database", ControllerName="CustomerAccounts", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 80},
                 new NavigationMenu{AreaCode = 0x000059D8 + 79, IsArea = false, Description = "CustomerStanding Order", Icon="fa fa-bars", ControllerName="CustomerAccountstandingorder", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 81},
@@ -159,16 +158,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Well known charges", Icon="fa fa-bars", ControllerName="Wellknowncharges", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 87},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Indefinite Charges", Icon="fa fa-bars", ControllerName="IndefiniteCharges", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 88},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Text Alert  Charges ", Icon="fa fa-bars", ControllerName="TextAlertCharges ", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 89},
-               new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Well known charges", Icon="fa fa-bars", ControllerName="Wellknowncharges", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 90},
-
-
-
-               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Charges", Icon="fa fa-bars", ControllerName="Charge", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
-               new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Text Alert  Charges ", Icon="fa fa-bars", ControllerName="TextAlertCharges", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 89},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Alternate Channels", Icon="fa fa-bars", ControllerName="AlternateChannels", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 90},
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "System G/L Accounts", Icon="fa fa-paperclip", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Close Posting Period", Icon="fa fa-paperclip", ControllerName="ClosePostingPeriod", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 92},
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Add GeneralLedger", Icon="fa fa-money", ControllerName="AddGeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
+
+
+
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Charges", Icon="fa fa-money", ControllerName="Charges", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
 
 
 

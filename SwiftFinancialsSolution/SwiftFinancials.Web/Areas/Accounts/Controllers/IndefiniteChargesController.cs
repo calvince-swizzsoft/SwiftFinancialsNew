@@ -63,25 +63,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO)
         public async Task<ActionResult> Create(CommissionDTO commissionDTO)
         {
-            commissionDTO.ValidateAll();
+            levyDTO.ValidateAll();
 
-            if (!commissionDTO.HasErrors)
+            if (!levyDTO.HasErrors)
             {
-                var commission = new ObservableCollection<LevyDTO>();
-
-
-                var j = commissionDTO.Id;
-                await _channelService.UpdateLeviesByCommissionIdAsync(j, commission, GetServiceHeader());
+                await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = commissionDTO.ErrorMessages;
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(commissionDTO.ComplementType.ToString());
-                return View(commissionDTO);
+                var errorMessages = levyDTO.ErrorMessages;
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
+                return View(levyDTO);
             }
         }
 

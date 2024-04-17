@@ -61,6 +61,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
            
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
 
@@ -81,6 +82,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 return View(levyDTO);
             }
         }
