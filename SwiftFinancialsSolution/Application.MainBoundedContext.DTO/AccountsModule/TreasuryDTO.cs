@@ -23,6 +23,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public Guid Id { get; set; }
 
         [DataMember]
+        public TreasuryDTO Treasury { get; set; }
+        
+        [DataMember]
+        public TreasuryDTO Treasury2 { get; set; }
+
+        [DataMember]
         [Display(Name = "Branch")]
         [ValidGuid]
         public Guid BranchId { get; set; }

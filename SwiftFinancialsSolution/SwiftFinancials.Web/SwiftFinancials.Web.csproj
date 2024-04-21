@@ -342,6 +342,7 @@
     <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
@@ -843,7 +844,6 @@
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
@@ -1016,6 +1016,9 @@
     <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

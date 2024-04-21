@@ -67,11 +67,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AddInvestmentProductAsync(investmentProductDTO, GetServiceHeader());
 
+                TempData["AlertMessage"] = "Investment Product created successfully";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = investmentProductDTO.ErrorMessages;
+
+                TempData["Error"] = "Failed to create Investments Product";
+
                 ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(investmentProductDTO.Priority.ToString());
                 return View(investmentProductDTO);
             }
@@ -93,6 +98,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateInvestmentProductAsync(investmentProductBindingModel, GetServiceHeader());
+
+                TempData["Edit"] = "Edited Invetsments Product successfully";
+
+
                 ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(investmentProductBindingModel.Priority.ToString());
                 return RedirectToAction("Index");
             }

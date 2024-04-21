@@ -175,5 +175,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Pool G/L Account Cost Center")]
         public string PoolChartOfAccountCostCenterDescription { get; set; }
+
+
+        public ChartOfAccountDTO chartOfAccount { get; set; }
     }
 }

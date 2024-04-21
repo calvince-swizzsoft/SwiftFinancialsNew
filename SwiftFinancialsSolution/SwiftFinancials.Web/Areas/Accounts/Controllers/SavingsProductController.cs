@@ -69,11 +69,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AddSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
+                TempData["AlertMessage"] = "Savings Product created successfully";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = savingsProductDTO.ErrorMessages;
+
+                TempData["Error"] = "Failed to create Savings Product";
 
                 return View(savingsProductDTO);
             }
@@ -95,6 +99,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateSavingsProductAsync(savingsProductBindingModel, GetServiceHeader());
+
+                TempData["Edit"] = "Edited Savings Product successfully";
 
                 return RedirectToAction("Index");
             }

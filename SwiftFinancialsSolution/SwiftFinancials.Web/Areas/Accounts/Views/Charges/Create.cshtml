@@ -7,6 +7,77 @@
 
 }
 
+
+<style>
+    #tabs-container {
+        background-color: none;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        width: 50%;
+    }
+
+    .nav-tabs {
+        padding: 10px 0; /* Adjusted padding */
+        list-style: none;
+        margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold; /* Set font weight to bold */
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+            .nav-tabs a:active {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initially activate the first tab
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        // Handle tab click event
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            // Deactivate all tabs
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            // Activate the clicked tab
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+    });
+</script>
+
+
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -43,6 +114,17 @@
                         </div>
                     }
 
+
+                    <div id="tabs-container">
+                        <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Tiers", "Charges")</li>
+                            <li>@Html.ActionLink("Levies", "Levies", "Charges")</li>
+                        </ul>
+                    </div>
+
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -78,8 +160,8 @@
                         </fieldset>
 
 
-                        <fieldset title="Use this section to split the charge into one or more than one different G/L Accounts">
-                            <center><h2>Charge Splitting</h2></center>
+                        <fieldset>
+                            <center><h2 title="Use this section to split the charge into one or more than one different G/L Accounts">Charge Splitting</h2></center>
                             <h3>Charge Details</h3>
                             <br />
 
@@ -115,11 +197,11 @@
                                 </div>
                             </div>
 
-                            <div class="row" style="margin-top:10px; background-color:skyblue; border-radius:6px; ">
+                            <div class="row">
                                 <div class="col-lg-8">
                                 </div>
 
-                                <div class="col-lg-2" style="color:white; ">
+                                <div class="col-lg-2">
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.Leviable, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
@@ -127,14 +209,73 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Add" class="btn btn-primary" />
+                                @using (Html.BeginForm("Add", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                                {
+                                    <div class="col-lg-2">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" value="Add" class="btn btn-primary" />
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
 
                         </fieldset>
+
+                        <div style="background-color: whitesmoke;">
+                            <center>
+                                <h3><strong>Charge Splitting</strong></h3>
+                            </center>
+                            <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+                                <table id="Guarantors" class="display nowrap" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>Select</th>
+                                            <th>G/L Account Name</th>
+                                            <th>G/L Account Cost Center</th>
+                                            <th>Name</th>
+                                            <th>Percentage</th>
+                                            <th>Leviable?</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody style="width:2100px;">
+
+                                        @if (ViewBag.ChargeSplits != null)
+                                        {
+                                            foreach (var data in ViewBag.ChargeSplits)
+                                            {
+
+                                            }
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+
+
+
+                            <div class="row">
+                                <div class="col-lg-8">
+                                </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                                {
+                                    <div class="col-lg-2">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                        <hr />
                     }
                 </div>
 
@@ -228,7 +369,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -241,19 +382,18 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Registry/WithdrawalNotification/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/Charges/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
 
                     return nRow;
                 },
         // Display settings
         "aoColumns": [
-            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
-            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
-            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
-            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+            { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "IsLockedDescription", "sTitle": "Is Locked?", "sWidth": "2%" },
+            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
@@ -262,19 +402,82 @@
     $("#s tbody").on("click", "tr", function () {
         var data = customersGrid.row(this).data();
 
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
+        $('#CommissionSplit.ChartOfAccountId').val(data.Id);
+        $('input[name=CommissionSplit.ChartOfAccountId]').val(data.Id);
+        $('input[name=CommissionSplit.ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#customerLookupModal').modal('hide');
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].ChartOfAccountAccountName);
     });
 
     </script>
+
+
+
+
+
+
+    <style>
+        .table-container {
+            display: none;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        table {
+            border-collapse: collapse;
+            white-space: nowrap; /* Prevent line breaks in table cells */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #Guarantors {
+            table-layout: fixed; /* Forces the table to use the fixed layout algorithm */
+        }
+
+            #Guarantors th, #Guarantors td {
+                white-space: nowrap; /* Prevents wrapping of text within cells */
+                overflow: hidden; /* Hides any content that exceeds the cell dimensions */
+                text-overflow: ellipsis; /* Displays an ellipsis (...) when content overflows */
+                padding: 8px; /* Adjust padding as needed */
+            }
+
+
+        /* Styling for the button */
+        .toggle-button {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: darkgreen;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        /* Styling for the section */
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .section.open {
+                display: block;
+            }
+    </style>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#Guarantors').DataTable({
+                scrollX: true // Enable horizontal scrolling
+            });
+        });
+
+    </script>
+
+
+
 }
