@@ -69,6 +69,22 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Is Locked?")]
         public bool IsLocked { get; set; }
 
+
+        [DataMember]
+        [Display(Name = "Excise Duty")]
+        public bool ExciseDuty { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Withholding Tax")]
+        public bool WithHoldingTax { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "School")]
+        public bool School { get; set; }
+
+
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }

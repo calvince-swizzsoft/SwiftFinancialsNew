@@ -318,6 +318,7 @@
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\Charges_LeviesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -1022,6 +1023,7 @@
     <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Tiers\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Tiers\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

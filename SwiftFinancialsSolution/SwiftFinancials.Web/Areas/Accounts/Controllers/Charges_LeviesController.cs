@@ -12,9 +12,9 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class TiersController : MasterController
+    public class Charges_LeviesController : MasterController
     {
-        public async Task<ActionResult> Create()
+         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 

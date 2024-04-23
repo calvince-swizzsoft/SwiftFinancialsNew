@@ -118,8 +118,8 @@
                     <div id="tabs-container">
                         <ul class="nav-tabs">
                             <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                            <li>@Html.ActionLink("Tiers", "Index", "Tiers")</li>
-                            <li>@Html.ActionLink("Levies", "Levies", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
                         </ul>
                     </div>
 
@@ -160,13 +160,12 @@
                                     </div>
                                 </div>
                             </div>
-                            <hr />
                         </fieldset>
 
+                        <br />
 
                         <fieldset>
                             <center><h2 title="Use this section to split the charge into one or more than one different G/L Accounts">Charge Splitting</h2></center>
-                            <h3>Charge Details</h3>
                             <br />
 
                             <div class="row">
@@ -225,7 +224,8 @@
 
                         </fieldset>
 
-                        <div style="background-color: whitesmoke;">
+                        <hr />
+                       
                             <center>
                                 <h3><strong>Charge Splitting Details</strong></h3>
                             </center>
@@ -278,7 +278,6 @@
                                     </div>
                                 }
                             </div>
-                        </div>
                         <hr />
                     }
                 </div>
