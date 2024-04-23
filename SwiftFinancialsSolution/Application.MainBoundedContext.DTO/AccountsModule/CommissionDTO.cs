@@ -24,6 +24,29 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Required]
         public string Description { get; set; }
 
+
+        [DataMember]
+        [Display(Name = "Charge Type")]
+        public int ChargeType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Charge Type")]
+        public string ChargeTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ChargeType), ChargeType) ? EnumHelper.GetDescription((ChargeType)ChargeType) : string.Empty;
+            }
+        }
+
+        [DataMember]
+        [Display(Name = "Range (Lower Limit)")]
+        public decimal LowerLimit { get; set; }
+
+        [DataMember]
+        [Display(Name = "Range (Upper Limit)")]
+        public decimal UpperLimit { get; set; }
+
         [DataMember]
         [Display(Name = "Maximum Charge")]
         public decimal MaximumCharge { get; set; }

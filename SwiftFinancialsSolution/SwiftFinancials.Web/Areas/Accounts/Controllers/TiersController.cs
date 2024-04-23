@@ -58,7 +58,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            //GetValueGroupTypeSelectList
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
+
 
             return View();
         }
@@ -114,6 +115,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+
+                ViewBag.chargeType = GetChargeTypeSelectList(commissionDTO.ToString());
 
                 TempData["Error"] = string.Join(",", allErrors);
 
