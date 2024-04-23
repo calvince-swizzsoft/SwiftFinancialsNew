@@ -44,6 +44,7 @@
                 border-bottom-color: #007bff;
                 color: #007bff;
             }
+
             .nav-tabs a:active {
                 border-bottom-color: #007bff;
                 color: #007bff;
@@ -86,7 +87,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Charges", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "Tiers", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -99,7 +100,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Charges</h2>
+                    <h2>Add Tiers</h2>
 
                     @if (TempData["Error"] != null)
                     {
@@ -114,17 +115,6 @@
                         </div>
                     }
 
-
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                            <li>@Html.ActionLink("Tiers", "Index", "Tiers")</li>
-                            <li>@Html.ActionLink("Levies", "Levies", "Charges")</li>
-                        </ul>
-                    </div>
-
-
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -135,12 +125,12 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "Tiers", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
 
-                            <h1>Charges</h1>
+                            <h1>Tiers</h1>
                             <br />
 
                             <div class="row">
@@ -163,67 +153,6 @@
                             <hr />
                         </fieldset>
 
-
-                        <fieldset>
-                            <center><h2 title="Use this section to split the charge into one or more than one different G/L Accounts">Charge Splitting</h2></center>
-                            <h3>Charge Details</h3>
-                            <br />
-
-                            <div class="row">
-                                <div class="col-lg-4">
-
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.CommissionSplit.ChartOfAccountId, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.CommissionSplit.ChartOfAccountId)
-                                            @Html.TextBoxFor(model => model.CommissionSplit.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link G/L Account" })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplit.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommissionSplit.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Description" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplit.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplit.Percentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommissionSplit.Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "100.00000%" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplit.Percentage, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-8">
-                                </div>
-
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.Leviable, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.Leviable, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                @using (Html.BeginForm("Add", "Charges", new { Area = "Accounts" }, FormMethod.Post))
-                                {
-                                    <div class="col-lg-2">
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" value="Add" class="btn btn-primary" />
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-
-                        </fieldset>
 
                         <div style="background-color: whitesmoke;">
                             <center>

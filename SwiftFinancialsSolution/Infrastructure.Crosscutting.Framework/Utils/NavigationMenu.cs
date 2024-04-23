@@ -165,10 +165,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Charges", Icon="fa fa-money", ControllerName="Charges", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Financial Products", Icon="fa fa-bars", Code = 0x000059D8 + 92},
-                new NavigationMenu{AreaCode = 0x000059D8 + 92, IsArea = false, Description = "Saving Products", Icon="fa-envelope-square", ControllerName="SavingsProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
-                new NavigationMenu{AreaCode = 0x000059D8 + 92, IsArea = false, Description = "Investment Product", Icon="fa fa-tasks", ControllerName="InvestmentProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 94},
-                
-                new NavigationMenu{AreaCode = 0x000059D8 + 92, IsArea = false, Description = "Loaning Products", Icon="fa fa-money", ControllerName=" LoanProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 95},
+                new NavigationMenu{AreaCode = 0x000059D8 + 92, IsArea = false, Description = "Savings Products", Icon="fa-fa-money", ControllerName="SavingsProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
+                new NavigationMenu{AreaCode = 0x000059D8 + 92, IsArea = false, Description = "Investments Product", Icon="fa fa-money", ControllerName="InvestmentProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 94},
+                new NavigationMenu{AreaCode = 0x000059D8 + 92, IsArea = false, Description = "Loan Products", Icon="fa fa-money", ControllerName="LoanProduct", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 95},
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Treasuries", Icon="fa fa-tasks", ControllerName="Treasuries", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 96},
 

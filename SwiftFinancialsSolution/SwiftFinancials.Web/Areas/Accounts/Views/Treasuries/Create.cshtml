@@ -63,22 +63,13 @@
                     @using (Html.BeginForm("Create", "Treasuries", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                         <fieldset>
                             <div class="row">
                                 <div class="col-md-6 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.Description)
-                                        @Html.EditorFor(model => model.Description, new
-                                   {
-                                       htmlAttributes = new
-                                       {
-                                           @id = "CustomerFullName",
-                                           @class = "form-control required",
-                                           @placeholder = "Enter Treasury Name"
-                                       }
-    })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter Treasury Name" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -364,7 +355,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/Treasuries/Brach/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/Treasuries/Branch/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);

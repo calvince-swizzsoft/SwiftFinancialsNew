@@ -342,6 +342,7 @@
     <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TiersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
@@ -1019,6 +1020,9 @@
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasuries\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Tiers\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\Tiers\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
