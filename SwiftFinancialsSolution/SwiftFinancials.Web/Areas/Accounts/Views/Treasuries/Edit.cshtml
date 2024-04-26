@@ -1,0 +1,566 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.TreasuryDTO
+
+@{
+    ViewBag.Title = "Create Treasury";
+}
+
+<!-- _Layout.cshtml or individual views -->
+<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Treasury", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+    <div class="col-lg-2">
+
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <h2>Edit Treasury</h2>
+
+                    @*@Html.ActionLink("Back", "Index", "Treasury", new { Area = "Accounts" }, new { @class = "btn btn-primary" })*@
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                @if (TempData["AlertMessage"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Failed !</strong> @TempData["AlertMessage"]
+
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>
+                                &times;
+                            </span>
+                        </button>
+                    </div>
+                }
+
+                <div class="ibox-content">
+                    @using (Html.BeginForm("Edit", "Treasuries", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter Treasury Name" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
+
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.ChartOfAccountName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.TextBoxFor(model => model.ChartOfAccountName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link G/L Account..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#companyLookupModal" @*onclick="captureDetails();"*@><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RangeLowerLimit, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.RangeLowerLimit, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RangeUpperLimit, new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.RangeUpperLimit, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @id = "CustomerReference1",
+                                                @class = "form-control required",
+                                                @placeholder = "Kshs.0.00"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.RangeUpperLimit, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Branch..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#GuarantorLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <input type="submit" style="width:200px;" class="btn btn-primary" value="Update" />
+                                </div>
+                            </div>
+
+                        </fieldset>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<div class="modal  fade" id="GuarantorLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Branch Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="guarantorsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+
+    <script src="~/Scripts/js/GuarantorsModalPopUp.js"></script>
+
+    <script src="~/Scripts/js/handleTogglingTheSectionAndButtonText.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('#companiesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/Treasuries/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+            "aoColumns": [
+            { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+            { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = companiesGrid.row(this).data();
+
+        $('#ChartOfAccountId').val(data.Id);
+        $('input[name=ChartOfAccountId]').val(data.Id);
+        $('input[name=ChartOfAccountName]').val(data.ChartOfAccountName);
+
+        $('#ChartOfAccountName').val(CompaniesMap[item].ChartOfAccountName);
+        $('#CompaniesLookup').modal('hide');
+    });
+
+
+            //Company typehead starts here
+            $('.CompaniesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCompaniesAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
+                            });
+                            process(newCompaniesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    $('#ChartOfAccountName').val(ChartOfAccountName);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    return item;
+                }
+            });
+                                    //Guarantors
+
+            $('#guarantorsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Branch", new { Area = "Admin" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/Treasuries/Branch2/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Branch Name", "sWidth": "10%" },
+                    { "mDataProp": "CompanyDescription", "sTitle": "Company", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = companiesGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('#CustomerFullName').val(LoanProductsMap[item].CustomerFullName);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CompaniesLookup').modal('hide');
+    });
+
+
+            //Company typehead starts here
+            $('.CompaniesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCompaniesAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
+                            });
+                            process(newCompaniesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#CompanyId').val(CompanyId);
+                    $('#GuarantorByCustomerId').val(CompanyId);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    return item;
+                }
+            });
+
+
+
+            $('.GuarantorCustomersLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCustomersAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Customers) {
+                            var newCustomersData = [];
+                            CustomersMap = {};
+                            $.each(Customers, function (i,Customer) {
+                                newCustomersData.push(Customer.FullName);
+                                CustomersMap[Customer.FullName] = Customer;
+                            });
+                            process(newCustomersData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var customerId = "";
+                    CustomerId = CustomersMap[item].Id;
+                    $('#LoanGuarantors[0].CustomerId').val(CustomerId);
+                    //console.log(CustomerId)
+                    return item;
+                }
+            });
+
+                   });
+
+
+                // Capture Data to prevent data loss during Lookup
+        function captureDetails() {
+            /*var CustomerAccountFullAccountNumber = document.getElementById('CustomerAccount.FullAccountNumber').value;*/
+            var CustomerAccountStatus = document.getElementById('CustomerAccount.Status').value;
+            var CustomerAccountRemarks = document.getElementById('CustomerAccount.Remarks').value;
+            var CustomerAccountBookBalance = document.getElementById('CustomerAccount.BookBalance').value;
+            var CustomerAccountCustomerFullName = document.getElementById('CustomerAccount.CustomerFullName').value;
+            var CustomerAccountTypeDescription = document.getElementById('CustomerAccount.TypeDescription').value;
+            var CustomerAccountCustomerIndividualPayrollNumbers = document.getElementById('CustomerAccount.CustomerIndividualPayrollNumbers').value;
+            var CustomerAccountCustomerReference3 = document.getElementById('CustomerAccount.CustomerReference3').value;
+            var CustomerAccountCustomerReference2 = document.getElementById('CustomerAccount.CustomerReference2').value;
+            var CustomerAccountCustomerReference1 = document.getElementById('CustomerAccount.CustomerReference1').value;
+
+            alert(LoancaseNumber);
+
+            $.ajax({
+                url: "/loaning/attachguarantor/CustomerAccountsData",
+                type: "POST",
+                data: {
+                    /*"CustomerAccount.FullAccountNumber": CustomerAccountFullAccountNumber,*/
+                    "CustomerAccount.Status": CustomerAccountStatus,
+                    "CustomerAccount.Remarks": CustomerAccountRemarks,
+                    "CustomerAccount.BookBalance": CustomerAccountBookBalance,
+                    //"CustomerAccount.CustomerFullName": CustomerAccountCustomerFullName,
+                    //"CustomerAccount.TypeDescription": CustomerAccountTypeDescription,
+                    "CustomerAccount.CustomerIndividualPayrollNumbers": CustomerAccountCustomerIndividualPayrollNumbers,
+                    "CustomerAccount.CustomerReference3": CustomerAccountCustomerReference3,
+                    "CustomerAccount.CustomerReference2": CustomerAccountCustomerReference2,
+                    "CustomerAccount.CustomerReference1": CustomerAccountCustomerReference1,
+                },
+                //success: function (mydata) {
+                //    alert("Saved");
+                //},
+                //error: function (error) {
+                //    alert('Failed');
+                //    alert(error.responseText); // Display the error responseText in the alert
+                //}
+            });
+        }
+    </script>
+
+    <style>
+        .table-container {
+            display: none;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        table {
+            border-collapse: collapse;
+            white-space: nowrap; /* Prevent line breaks in table cells */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #Guarantors {
+            table-layout: fixed; /* Forces the table to use the fixed layout algorithm */
+        }
+
+            #Guarantors th, #Guarantors td {
+                white-space: nowrap; /* Prevents wrapping of text within cells */
+                overflow: hidden; /* Hides any content that exceeds the cell dimensions */
+                text-overflow: ellipsis; /* Displays an ellipsis (...) when content overflows */
+                padding: 8px; /* Adjust padding as needed */
+            }
+
+
+        /* Styling for the button */
+        .toggle-button {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: darkgreen;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        /* Styling for the section */
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .section.open {
+                display: block;
+            }
+    </style>
+
+
+    <script>
+        $(document).ready(function () {
+            $('#Guarantors').DataTable({
+                scrollX: true // Enable horizontal scrolling
+            });
+        });
+
+    </script>
+}

@@ -140,6 +140,41 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
+        public async Task<ActionResult> Branch2(Guid? id, TreasuryDTO treasuryDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            if (Session["ChartOfAccountId"] != null)
+            {
+                treasuryDTO.ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
+            }
+
+
+            var branches = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+            if (branches != null)
+            {
+                treasuryDTO.BranchId = branches.Id;
+                treasuryDTO.BranchDescription = branches.Description;
+
+                Session["BranchDescription"] = treasuryDTO.BranchDescription;
+            }
+
+            return View("Create", treasuryDTO);
+        }
+
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();

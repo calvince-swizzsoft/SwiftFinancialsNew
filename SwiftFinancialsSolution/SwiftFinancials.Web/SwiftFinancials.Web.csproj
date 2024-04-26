@@ -1027,6 +1027,8 @@
     <Content Include="Areas\Accounts\Views\Charges_Levies\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
