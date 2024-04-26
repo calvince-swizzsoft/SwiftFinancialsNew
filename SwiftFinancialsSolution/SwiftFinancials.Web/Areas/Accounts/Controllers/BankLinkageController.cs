@@ -122,6 +122,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<ActionResult> Create(BankLinkageDTO bankLinkageDTO)
         {
@@ -145,18 +146,56 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
+        public async Task<ActionResult> branch2(Guid? id, BankLinkageDTO bankLinkageDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            if (Session["bankName2"] != null)
+            {
+                bankLinkageDTO.BankName = Session["bankName"].ToString();
+            }
+
+
+            var branches = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+
+            if (branches != null)
+            {
+                bankLinkageDTO.BranchId = branches.Id;
+                bankLinkageDTO.BranchDescription = branches.Description;
+                bankLinkageDTO.BankBranchName = branches.Description;
+
+                Session["BranchDescription2"] = bankLinkageDTO.BranchDescription;
+                Session["BankBranchName2"] = bankLinkageDTO.BankBranchName;
+            }
+
+            return View("Edit", bankLinkageDTO);
+        }
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var bankLinkageDTO = await _channelService.FindBankLinkageAsync(id, GetServiceHeader());
+            var bankLinkagesDTO = await _channelService.FindBankLinkageAsync(id, GetServiceHeader());
 
-            return View(bankLinkageDTO);
+            return View(bankLinkagesDTO);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, BankLinkageDTO bankLinkageBindingModel)
+        public async Task<ActionResult> Edit(Guid? id, BankLinkageDTO bankLinkageBindingModel)
         {
             if (ModelState.IsValid)
             {
