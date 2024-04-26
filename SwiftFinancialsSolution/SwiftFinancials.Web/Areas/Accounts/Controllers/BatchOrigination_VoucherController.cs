@@ -156,7 +156,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                         await _channelService.UpdateJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, journalVoucherEntries, GetServiceHeader());
                 }
+
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+
                 ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
 
                 ViewBag.JournalVoucherEntries = await _channelService.FindJournalVoucherEntriesByJournalVoucherIdAsync(journalVoucher.Id, GetServiceHeader());

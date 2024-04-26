@@ -1,5 +1,7 @@
 ﻿@{
-    ViewBag.Title = "Bank Linkage";
+    ViewBag.Title = "Customer Accounts";
+
+    var loanAppraisalOption = ViewBag.LoanAppraisalOptionSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -21,39 +23,9 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Bank Linkages</h2>
+                    <h2>Customer Accounts</h2>
                     <hr />
-                    @Html.ActionLink("Create Bank Linkage", "Create", "BankLinkage", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
-
-                    <br />
-                    <br />
-
-                    @if (TempData["AlertMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-
-                    @if (TempData["Edit"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
-                        </div>
-                    }
-
+                    @Html.ActionLink("Create Customer Account", "Create", "Register", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -69,7 +41,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="debitBatchesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="CustomersGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -95,12 +67,12 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#debitBatchesGrid').DataTable({
+            $('#CustomersGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Register", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -113,23 +85,24 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/BankLinkage/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/BankLinkage/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;');
+                    var editUrl = '<a  href="/Accounts/Register/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/Accounts/Register/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BankBranchName", "sTitle": "Branch Name", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
-                    { "mDataProp": "BankName", "sTitle": "Bank Name", "sWidth": "10%" },
-                    { "mDataProp": "BankAccountNumber", "sTitle": "Bank Account Number", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "15%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "10%" },
+                    { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
@@ -143,4 +116,3 @@
     </script>
 
 }
-

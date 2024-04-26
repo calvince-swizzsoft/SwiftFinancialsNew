@@ -51,11 +51,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(investmentProductDTO);
         }
-        public async Task<ActionResult> Create()
+
+
+        public  async Task<ActionResult>Parent(InvestmentProductDTO investmentProductDTO, Guid? id)
+        {
+
+
+            return View("Create", investmentProductDTO);
+        }
+
+
+        public async Task<ActionResult> Create(Guid? id, InvestmentProductDTO investmentProductDTO)
         {
             await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var parentGL = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+            if (parentGL != null)
+            {
+                investmentProductDTO.ParentId = parentGL.ParentId;
+                investmentProductDTO.ChartOfAccountAccountName = parentGL.ParentAccountName;
+            }
+
             ViewBag.RecoveryPrioritySelectList = GetRecoveryPrioritySelectList(string.Empty);
-            return View();
+
+            return View(investmentProductDTO);
         }
 
         [HttpPost]

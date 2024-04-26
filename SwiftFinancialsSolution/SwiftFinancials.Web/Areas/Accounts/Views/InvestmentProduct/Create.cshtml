@@ -84,9 +84,10 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance" } })
-                                    @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ChartOfAccountId)
+                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account.." } })
                                 </div>
                             </div>
                         </div>
@@ -94,9 +95,9 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaximumBalance" } })
-                                    @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance" } })
+                                    @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -120,25 +121,22 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link G/L Account..." })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
-                                        </span>
-                                    </div>
+                                    @Html.LabelFor(model => model.MaximumBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaximumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaximumBalance" } })
+                                    @Html.ValidationMessageFor(model => model.MaximumBalance, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>
 
                         <div class="row">
                             <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ParentId, htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.ParentId, new { @class = "control-label" })
+                                <div class="input-group" data-autoclose="true">
                                     @Html.HiddenFor(model => model.ParentId)
-                                    @Html.EditorFor(model => model.ParentId, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", @placeholder = "Parent" } })
-                                    @Html.ValidationMessageFor(model => model.ParentId, "", new { @class = "text-danger" })
+                                    @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Parent G/L Account..." })
+                                    <span class="input-group-addon">
+                                        <a data-toggle="modal" data-target="#companyLookupModal" @*onclick="captureDetails();"*@><span class="fa fa-search"></span></a>
+                                    </span>
                                 </div>
                             </div>
 
@@ -185,6 +183,18 @@
                                     @Html.ValidationMessageFor(model => model.IsPooled, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.TransferBalanceToParentOnMembershipTermination, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.TransferBalanceToParentOnMembershipTermination, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                    @Html.ValidationMessageFor(model => model.TransferBalanceToParentOnMembershipTermination, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3"></div>
 
                             <div class="col-lg-2">
                                 <div class="form-group form-group-sm">
@@ -200,13 +210,13 @@
 </div>
 
 
-<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">G/L Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Customer's Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -222,9 +232,6 @@
         </div>
     </div>
 </div>
-<input type='hidden' id='h' name='h' />
-
-
 
 
 @section Styles{
@@ -271,22 +278,87 @@
     @Scripts.Render("~/plugins/duallist")
 
     <script>
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
 
-             //Station typehead starts here
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
 
-            $('.StationsLookup').typeahead({
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+     //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
                         { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
                             });
-                            process(newStationsData); return;
+                            process(newChartOfAccountsData); return;
                         });
                 },
                 matcher: function (item) {
@@ -302,27 +374,28 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
                     return item;
                 }
             });
+        });
+    </script>
 
 
-    $('#customersGrid').DataTable({
+    @*Lookup*@
+<script>
+        $(document).ready(function () {
+            $('#companiesGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccounts", new { Area = "Accounts" }))",
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
                 "sServerMethod": "POST",
                 // Callback settings
-
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -335,54 +408,46 @@
 
                     var selectUrl = '<a  href="/Accounts/InvestmentProduct/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
 
                     return nRow;
                 },
         // Display settings
         "aoColumns": [
-            { "mDataProp": "AccountCode", "sTitle": "Account Code", "sWidth": "15%" },
-            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "15%" },
-            { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "10%" },
-            { "mDataProp": "IsLockedDescription", "sTitle": "Is Locked?", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            { "mDataProp": "ParentAccountName", "sTitle": "Parent G/L Account", "sWidth": "3%" },
+            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "5%" },
+            { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
     });
 
     $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
+        var data = companiesGrid.row(this).data();
 
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
+        $('#ParentId').val(data.Id);
+        $('input[name=ParentId]').val(data.Id);
+        $('input[name=ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
 
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#customerLookupModal').modal('hide');
+        $('#ChartOfAccountAccountName').val(ChartOfAccountsMap[item].ChartOfAccountAccountName);
+        $('#CompaniesLookup').modal('hide');
     });
 
-
-         //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
+         //Company typehead starts here
+            @*$('.CompaniesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        '@Url.Action("GetCompaniesAsync", "Customer", new { Area = "Registry" })',
                         { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
                             });
-                            process(newBranchesData); return;
+                            process(newCompaniesData); return;
                         });
                 },
                 matcher: function (item) {
@@ -398,71 +463,16 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#CustomerId').val(CustomerId);
+                    $('#CustomerFullName').val(CustomerFullName);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
                     return item;
                 }
-            });
+            });*@
+</script>
+}
 
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        //console.log(savingProductId)
-        return item;
-    }
-});
-        function captureDetails() {
-            var Remarks = document.getElementById('Remark').value;
-            var BranchDescription = document.getElementById('BranchDescription').value;
-            //var h = document.getElementById('h');
-            //h.value = word;
-            //$.post("Registry/WithdrawalNotification/AssignText", { word });
-            $.ajax({
-                url: "/Registry/WithdrawalNotification/AssignText",
-                type: "POST",
-                data: { "Remarks": Remarks, "BranchDescription": BranchDescription },
-                //success: function (mydata) {
-                //    alert("Saved");
-                //},
-                //error: function (error) {
-                //    alert('failed');
-                //    alert(error);
-                //}
-            });
-
-        }
-
-
-    </script>
 }
