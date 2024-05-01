@@ -110,6 +110,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+                TempData["EditError"] = "Failed to Edit Cost Center";
+
                 return View(costCenterDTO);
             }
         }
