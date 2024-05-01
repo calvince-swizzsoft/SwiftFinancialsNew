@@ -68,7 +68,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!bankLinkageDTO.HasErrors)
             {
                 await _channelService.AddBankLinkageAsync(bankLinkageDTO, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else

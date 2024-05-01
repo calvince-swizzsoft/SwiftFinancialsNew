@@ -79,7 +79,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!postingPeriodDTO.HasErrors)
             {
                 await _channelService.AddPostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else
@@ -114,6 +114,71 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(postingPeriodDTO);
             }
         }
+
+
+
+        public async Task<ActionResult> Close(Guid id,PostingPeriodDTO postingPeriodDTO2)
+        {
+            await ServeNavigationMenus();
+
+            var postingPeriodDTO = await _channelService.FindPostingPeriodAsync(id, GetServiceHeader());
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+           
+
+        
+
+            if (postingPeriodDTO != null)
+            {
+
+                postingPeriodDTO2.Id = postingPeriodDTO.Id;
+                postingPeriodDTO2.Description = postingPeriodDTO.Description;
+                postingPeriodDTO2.CreatedDate = postingPeriodDTO.CreatedDate;
+                postingPeriodDTO2.DurationEndDate = postingPeriodDTO.DurationEndDate;
+                postingPeriodDTO2.DurationStartDate = postingPeriodDTO.DurationStartDate;
+                
+            }
+            return View(postingPeriodDTO2);
+        }
+
+           
+        
+
+        [HttpPost]
+        public async Task<ActionResult> Close(PostingPeriodDTO postingPeriodDTO)
+        {
+            int moduleNavigationItemCode = 0;
+            var startDate = Request["startDate"];
+
+            var endDate = Request["endDate"];
+            var closedate = Request["closedate"];
+
+
+            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
+
+            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
+            closedate = postingPeriodDTO.ClosedDate.ToString();
+
+
+            if (!postingPeriodDTO.HasErrors)
+            {
+                await _channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, GetServiceHeader());
+                await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(postingPeriodDTO);
+            }
+        }
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetPostingPeriodsAsync()

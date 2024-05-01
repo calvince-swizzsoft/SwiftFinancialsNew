@@ -87,7 +87,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetEntries, GetServiceHeader());
                 }
-
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else

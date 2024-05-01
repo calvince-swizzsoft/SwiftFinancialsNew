@@ -12,9 +12,9 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class AddGeneralLedgerController : MasterController
+    public class ClosePostingPeriodController : MasterController
     {
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(Guid id)
         {
             await ServeNavigationMenus();
 
@@ -23,23 +23,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, GeneralLedgerDTO generalLedgerDTO)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-            GeneralLedgerDTO generalLedgerDTO = new GeneralLedgerDTO();
 
             DateTime startDate = generalLedgerDTO.CreatedDate;
 
             DateTime endDate = startDate;
-
+            int journalEntryFilter = 0;
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate,endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,  GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, journalEntryFilter, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -72,14 +71,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(GeneralLedgerDTO generalLedgerDTO)
         {
-            
+
             generalLedgerDTO.ValidateAll();
 
             if (!generalLedgerDTO.HasErrors)
             {
                 await _channelService.AddGeneralLedgerAsync(generalLedgerDTO.MapTo<GeneralLedgerDTO>(), GetServiceHeader());
                 ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(generalLedgerDTO.Status.ToString());
-                TempData["SuccessMessage"] = "Create successful.";
+
                 return RedirectToAction("Index");
             }
             else

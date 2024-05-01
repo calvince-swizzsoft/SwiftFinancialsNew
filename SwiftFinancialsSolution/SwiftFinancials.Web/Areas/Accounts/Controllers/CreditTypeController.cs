@@ -67,7 +67,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!creditTypeDTO.HasErrors)
             {
                 await _channelService.AddCreditTypeAsync(creditTypeDTO, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else

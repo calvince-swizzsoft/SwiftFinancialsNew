@@ -307,7 +307,7 @@
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
     <Compile Include="Areas\Accounts\Controllers\AddGeneralLedgerController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
@@ -321,6 +321,7 @@
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
@@ -1013,12 +1014,14 @@
     <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\PostingPeriod\Close.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1484,6 +1487,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
+    <Folder Include="Areas\Accounts\Views\ClosePostingPeriod\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />

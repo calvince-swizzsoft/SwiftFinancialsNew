@@ -23,6 +23,18 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Posting Period", "Create", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -100,11 +112,11 @@
 
                     var editUrl = '<a  href="/accounts/PostingPeriod/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/PostingPeriod/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
+                    var CloseUrl = '<a  href="/accounts/PostingPeriod/Close/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Close</a>';
                     $('td:eq(1)', nRow).html(dt_StartDate);
                     $('td:eq(2)', nRow).html(dt_EndDate);                    
                     $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + "&nbsp" + CloseUrl);
 
                     return nRow;
                 },
@@ -113,7 +125,7 @@
                     { "mDataProp": "Description", "sTitle": "Description" },
                     { "mDataProp": "DurationStartDate", "sTitle": "Start Date"},
                     { "mDataProp": "DurationEndDate", "sTitle": "End Date"},
-                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?" },
+                    { "mDataProp": "ClosedDate", "sTitle": "Closed Date" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],
                 "aaSorting": [[0, "desc"]]

@@ -64,7 +64,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         public async Task<ActionResult> Create(DynamicChargeDTO levyDTO)
-        public async Task<ActionResult> Create(CommissionDTO commissionDTO)
+
         {
             levyDTO.ValidateAll();
 

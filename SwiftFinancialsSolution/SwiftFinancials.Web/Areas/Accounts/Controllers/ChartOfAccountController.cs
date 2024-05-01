@@ -71,13 +71,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!chartOfAccountDTO.HasErrors)
             {
-                await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
+                var result =await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
+
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else
             {
-                TempData["ErrorMessage"] = "Edit Unsuccessful.";
+                TempData["ErrorMessage"] = "Edit Unsuccessful.";                
                 var errorMessages = chartOfAccountDTO.ErrorMessages;
 
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
