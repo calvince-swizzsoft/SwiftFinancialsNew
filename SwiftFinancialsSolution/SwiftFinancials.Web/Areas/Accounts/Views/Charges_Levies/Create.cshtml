@@ -1,0 +1,285 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Charges";
+
+    var chargeType = ViewBag.chargeType as List<SelectListItem>;
+
+}
+
+
+<style>
+    #tabs-container {
+        background-color: none;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        width: 50%;
+    }
+
+    .nav-tabs {
+        padding: 10px 0; /* Adjusted padding */
+        list-style: none;
+        margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold; /* Set font weight to bold */
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+            .nav-tabs a:active {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initially activate the first tab
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        // Handle tab click event
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            // Deactivate all tabs
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            // Activate the clicked tab
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+    });
+</script>
+
+
+
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Charges_Levies", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Levies</h2>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Failed !</strong> @TempData["Error"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
+
+                    <div id="tabs-container">
+                        <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                        </ul>
+                    </div>
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    @using (Html.BeginForm("Create", "Charges_Levies", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.ExciseDuty, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.ExciseDuty, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                        @Html.ValidationMessageFor(model => model.ExciseDuty, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.WithHoldingTax, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.WithHoldingTax, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                        @Html.ValidationMessageFor(model => model.WithHoldingTax, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.School, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.School, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
+                                        @Html.ValidationMessageFor(model => model.School, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/Charges/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "IsLockedDescription", "sTitle": "Is Locked?", "sWidth": "2%" },
+            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#CommissionSplit.ChartOfAccountId').val(data.Id);
+        $('input[name=CommissionSplit.ChartOfAccountId]').val(data.Id);
+        $('input[name=CommissionSplit.ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].ChartOfAccountAccountName);
+    });
+
+    </script>
+}

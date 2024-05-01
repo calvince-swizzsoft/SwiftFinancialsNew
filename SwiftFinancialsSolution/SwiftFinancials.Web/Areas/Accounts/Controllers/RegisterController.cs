@@ -1,9 +1,13 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
+using SwiftFinancials.Presentation.Infrastructure.Util;
+using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -16,6 +20,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
+
+            ViewBag.AccountType = GetProductCodeSelectList(string.Empty);
 
             return View();
         }
@@ -57,9 +63,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(debitBatchDTO);
         }
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+
             Guid parseId;
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -67,6 +75,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             bool includeBalances = false;
             bool includeProductDescription = false;
@@ -93,7 +102,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
             }
-           
+
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);

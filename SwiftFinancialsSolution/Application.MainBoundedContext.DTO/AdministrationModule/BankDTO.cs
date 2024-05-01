@@ -61,5 +61,9 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
                 _bankBranches = new HashSet<BankBranchDTO>(value);
             }
         }
+
+
+        [DataMember]
+        public BankBranchDTO BankBranch { get; set; }
     }
 }

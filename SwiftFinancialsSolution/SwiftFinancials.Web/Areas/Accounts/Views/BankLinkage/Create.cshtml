@@ -10,7 +10,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Bank Linkage</h2>
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -41,6 +41,22 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Create Bank Linkage</h2>
+                    <br />
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Success !</strong> @TempData["Edit"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -55,83 +71,181 @@
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                        <h1>Primary details</h1>
                         <fieldset>
                             <div class="form-horizontal">
                                 <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank name ", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.BankName, "", new { @class = "text-danger" })
+                                    <div class="col-md-6 form-group">
+                                        @Html.LabelFor(model => model.BankName, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.Id)
+                                            @Html.TextBoxFor(model => model.BankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder="Link Bank..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
                                         </div>
+                                    </div>
+
+                                    <div class="col-md-6 form-group">
+                                        @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder="Link Branch..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#branchLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.ChartOfAccountId)
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Account Name" } })
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account" } })
                                             @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-                                    <div class="col-lg-4">
+
+                                    <div class="col-md-6 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Branch name ", @required = "" } })
+                                            @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Branch name ", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.BankBranchName, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Company Branch Name" } })
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        </div>
                                     </div>
-                                    <div class="col-lg-4">
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Bank Account number ", @required = "" } })
+                                            @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Type in Bank Account Number", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.BankAccountNumber, "", new { @class = "text-danger" })
                                         </div>
+                                    </div>
+
+                                    <div class="col-md-6 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2 col-md-10">
+                                            <input type="submit" value="Create" style="width: 200px;" class="btn btn-primary" />
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </fieldset>
-
-                        <div class="form-group form-group-sm">
-                            <div class="col-md-offset-2 col-md-10">
-                                <input type="submit" value="Create" class="btn btn-primary" />
-                            </div>
-                        </div>
                     }
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    @*<a href="~/GlobalVariable.cs">~/GlobalVariable.cs</a>*@
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Bank Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-    @section Styles{
-        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-        @Styles.Render("~/plugins/wizardStepsStyles")
-    }
 
-    @section Scripts{
-        @Scripts.Render("~/plugins/wizardSteps")
-        @Scripts.Render("~/plugins/validate")
-        @Scripts.Render("~/plugins/typehead")
+<div class="modal  fade" id="branchLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Branch Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="branchesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-        <script>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -274,5 +388,116 @@
                 }
             });
         });</script>
+
+
+
+
+
+    <script>
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Bank", new { Area = "Admin" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BankLinkage/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Bank Name", "sWidth": "15%" },
+            { "mDataProp": "Code", "sTitle": "Code", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=CustomerFullName]').val(data.FullName);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#customerLookupModal').modal('hide');
+    });
+
+
+
+
+
+        $('#branchesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Branch", new { Area = "Admin" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BankLinkage/branch/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "CompanyDescription", "sTitle": "Company Name", "sWidth": "15%" },
+            { "mDataProp": "Description", "sTitle": "Branch Name", "sWidth": "10%" },
+            { "mDataProp": "AddressEmail", "sTitle": "Email Address", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#BranchId').val(data.Id);
+        $('input[name=BranchId]').val(data.Id);
+        $('input[name=BranchDescription]').val(data.BranchDescription);
+
+        var BranchId = "";
+        BranchId = BranchesMap[item].Id;
+        $('#BranchDescription').val(BranchesMap[item].BranchDescription);
+        $('#branchLookupModal').modal('hide');
+    });
+
+    </script>
+}
+
     }
-</div>

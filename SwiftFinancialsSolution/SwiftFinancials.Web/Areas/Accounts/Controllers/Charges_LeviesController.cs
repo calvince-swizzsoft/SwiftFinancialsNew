@@ -12,51 +12,14 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class ChargesController : MasterController
+    public class Charges_LeviesController : MasterController
     {
-        public async Task<ActionResult> Index()
+         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
-            return View();
-        }
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
-        [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-        public async Task<ActionResult> Details(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
-
-            return View(commissionDTO);
-        }
-
-        public async Task<ActionResult> Create()
-        {
-            await ServeNavigationMenus();
 
             return View();
         }
@@ -113,43 +76,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
 
+                ViewBag.chargeType = GetChargeTypeSelectList(commissionDTO.ToString());
+
                 TempData["Error"] = string.Join(",", allErrors);
 
                 return View(commissionDTO);
             }
-        }
-
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
-
-            return View(commissionDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CommissionDTO commissionDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(commissionDTO);
-            }
-        }
-
-        [HttpGet]
-        public async Task<JsonResult> GetCommissionsAsync()
-        {
-            var commissionsDTOs = await _channelService.FindCommissionsAsync(GetServiceHeader());
-
-            return Json(commissionsDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

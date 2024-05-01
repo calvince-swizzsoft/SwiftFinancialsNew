@@ -53,12 +53,75 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(bankLinkageDTO);
         }
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id, BankLinkageDTO bankLinkageDTO)
         {
             await ServeNavigationMenus();
 
-            return View();
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            if (Session["BranchDescription"] != null && Session["BankBranchName"] != null)
+            {
+                bankLinkageDTO.BranchDescription = Session["BranchDescription"].ToString();
+                bankLinkageDTO.BankBranchName = Session["BankBranchName"].ToString();
+            }
+
+
+            var bank = await _channelService.FindBankAsync(parseId, GetServiceHeader());
+
+            if (bank != null)
+            {
+                bankLinkageDTO.Id = bank.Id;
+                bankLinkageDTO.BankName = bank.Description;
+
+                Session["bankName"] = bankLinkageDTO.BankName;
+            }
+
+            return View(bankLinkageDTO);
         }
+
+
+        public async Task<ActionResult> branch(Guid? id, BankLinkageDTO bankLinkageDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+
+            if (Session["bankName"] != null)
+            {
+                bankLinkageDTO.BankName = Session["bankName"].ToString();
+            }
+
+
+            var branches = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+
+            if (branches != null)
+            {
+                bankLinkageDTO.BranchId = branches.Id;
+                bankLinkageDTO.BranchDescription = branches.Description;
+                bankLinkageDTO.BankBranchName = branches.Description;
+
+                Session["BranchDescription"] = bankLinkageDTO.BranchDescription;
+                Session["BankBranchName"] = bankLinkageDTO.BankBranchName;
+            }
+
+            return View("Create", bankLinkageDTO);
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult> Create(BankLinkageDTO bankLinkageDTO)
@@ -68,33 +131,77 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!bankLinkageDTO.HasErrors)
             {
                 await _channelService.AddBankLinkageAsync(bankLinkageDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Create successful.";
+
+                TempData["AlertMessage"] = "Bank Linkage Created Successfully";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = bankLinkageDTO.ErrorMessages;
 
+                TempData["Error"] = "Failed to create Bank Linkage";
+
                 return View(bankLinkageDTO);
             }
         }
+
+
+
+        public async Task<ActionResult> branch2(Guid? id, BankLinkageDTO bankLinkageDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            if (Session["bankName2"] != null)
+            {
+                bankLinkageDTO.BankName = Session["bankName"].ToString();
+            }
+
+
+            var branches = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+
+            if (branches != null)
+            {
+                bankLinkageDTO.BranchId = branches.Id;
+                bankLinkageDTO.BranchDescription = branches.Description;
+                bankLinkageDTO.BankBranchName = branches.Description;
+
+                Session["BranchDescription2"] = bankLinkageDTO.BranchDescription;
+                Session["BankBranchName2"] = bankLinkageDTO.BankBranchName;
+            }
+
+            return View("Edit", bankLinkageDTO);
+        }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var bankLinkageDTO = await _channelService.FindBankLinkageAsync(id, GetServiceHeader());
+            var bankLinkagesDTO = await _channelService.FindBankLinkageAsync(id, GetServiceHeader());
 
-            return View(bankLinkageDTO);
+            return View(bankLinkagesDTO);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, BankLinkageDTO bankLinkageBindingModel)
+        public async Task<ActionResult> Edit(Guid? id, BankLinkageDTO bankLinkageBindingModel)
         {
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateBankLinkageAsync(bankLinkageBindingModel, GetServiceHeader());
+
+                TempData["Edit"] = "Successfully Edited Bank Linkage";
 
                 return RedirectToAction("Index");
             }
@@ -103,14 +210,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(bankLinkageBindingModel);
             }
         }
-
-        /*[HttpGet]
-        public async Task<JsonResult> GetBankLinkagesAsync()
-        {
-            var bankLinkageDTOs = await _channelService.FindBankLinkagesAsync(GetServiceHeader());
-
-            return Json(bankLinkageDTOs, JsonRequestBehavior.AllowGet);
-        }*/
     }
 }
 

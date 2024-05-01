@@ -80,6 +80,7 @@
                                 <div class="col-md-12 form-group">
                                     @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.CustomerId)
                                         @Html.TextBoxFor(model => model.CustomerId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>

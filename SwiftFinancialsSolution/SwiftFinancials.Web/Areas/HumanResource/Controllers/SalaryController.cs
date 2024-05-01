@@ -78,7 +78,6 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             {
                 salaryHeadDTO.CustomerAccountTypeTargetProductId = savingproducts.Id;
                 salaryHeadDTO.ProductDescription = savingproducts.Description;
-
             }
 
             return View(salaryHeadDTO);

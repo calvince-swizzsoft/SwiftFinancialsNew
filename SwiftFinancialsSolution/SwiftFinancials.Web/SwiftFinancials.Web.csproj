@@ -319,6 +319,7 @@
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\Charges_LeviesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
@@ -340,10 +341,13 @@
     <Compile Include="Areas\Accounts\Controllers\LoanInterestCapitalizationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsDynamicFeesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TiersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
@@ -845,7 +849,6 @@
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
@@ -1017,6 +1020,16 @@
     <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Tiers\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Tiers\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\PostingPeriod\Close.cshtml" />
