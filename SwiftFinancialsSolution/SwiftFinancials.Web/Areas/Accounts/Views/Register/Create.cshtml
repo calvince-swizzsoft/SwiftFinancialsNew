@@ -7,6 +7,9 @@
 <!-- _Layout.cshtml or individual views -->
 <link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 
+    var m = ViewBag.alternateChannelType as List<SelectListItem>;
+}
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Accounts</h1>
@@ -24,6 +27,14 @@
     </div>
     <div class="col-lg-2">
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
     </div>
 </div>
 
@@ -94,6 +105,10 @@
                                         @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "PayrollNumbers", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                             </div>
 
                             <div class="row">
@@ -140,6 +155,10 @@
         })
                                         @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
                                     </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account  Number" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -197,6 +216,7 @@
                                         @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+
                             </div>
 
                             <div class="row">
@@ -206,13 +226,19 @@
                                         <input type="submit" style="width:200px;" class="btn btn-primary" value="Create" />
                                     }
                                 </div>
+
                             </div>
                         </fieldset>
+                        </div>
                     }
 
+
                 </div>
+
             </div>
+
         </div>
+
     </div>
 </div>
 

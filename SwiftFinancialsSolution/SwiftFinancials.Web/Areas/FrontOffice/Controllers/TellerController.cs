@@ -55,12 +55,27 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(tellerDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+            Guid parseId;
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
 
-            return View();
+            var customer = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+
+            TellerDTO employeeBindingModel = new TellerDTO();
+
+            if (customer != null)
+            {
+                employeeBindingModel.EmployeeId = customer.Id;
+                employeeBindingModel.EmployeeCustomerIndividualFirstName = customer.CustomerFullName;
+            }
+
+            return View(employeeBindingModel);
         }
 
         [HttpPost]
@@ -71,7 +86,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (!tellerDTO.HasErrors)
             {
                 await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());
-
+                ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else
