@@ -78,15 +78,14 @@
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name" } })
-                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account.." } })
                                 </div>
                             </div>
@@ -95,9 +94,10 @@
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance" } })
-                                    @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.ParentChartOfAccountNameDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ParentId)
+                                    @Html.ValidationMessageFor(model => model.ParentChartOfAccountNameDescription, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ParentChartOfAccountNameDescription, new { htmlAttributes = new { @class = "ParentChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account.." } })
                                 </div>
                             </div>
 
@@ -130,13 +130,10 @@
 
                         <div class="row">
                             <div class="col-lg-6">
-                                @Html.LabelFor(model => model.ParentId, new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(model => model.ParentId)
-                                    @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Parent G/L Account..." })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#companyLookupModal" @*onclick="captureDetails();"*@><span class="fa fa-search"></span></a>
-                                    </span>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MinimumBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MinimumBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Minimum Balance" } })
+                                    @Html.ValidationMessageFor(model => model.MinimumBalance, "", new { @class = "text-danger" })
                                 </div>
                             </div>
 
@@ -210,29 +207,6 @@
 </div>
 
 
-<div class="modal  fade" id="companyLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3 class="font-bold">Customer's Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="companiesGrid" class="table table-striped table-bordered table-hover" style="width:100%">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -277,7 +251,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -345,6 +319,8 @@
                     }
                 }
             });
+
+
      //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
@@ -382,72 +358,24 @@
                 }
             });
         });
-    </script>
 
 
-    @*Lookup*@
-<script>
-        $(document).ready(function () {
-            $('#companiesGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/InvestmentProduct/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "ParentAccountName", "sTitle": "Parent G/L Account", "sWidth": "3%" },
-            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "5%" },
-            { "mDataProp": "AccountTypeDescription", "sTitle": "Account Type", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
-            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = companiesGrid.row(this).data();
-
-        $('#ParentId').val(data.Id);
-        $('input[name=ParentId]').val(data.Id);
-        $('input[name=ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
-
-        $('#ChartOfAccountAccountName').val(ChartOfAccountsMap[item].ChartOfAccountAccountName);
-        $('#CompaniesLookup').modal('hide');
-    });
-
-         //Company typehead starts here
-            @*$('.CompaniesLookup').typeahead({
+         //ChartOfAccount typehead starts here
+    $('.ParentChartOfAccountsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetCompaniesAsync", "Customer", new { Area = "Registry" })',
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
                         { query: query },
-                        function (Companies) {
-                            var newCompaniesData = [];
-                            CompaniesMap = {};
-                            $.each(Companies, function (i, Company) {
-                                newCompaniesData.push(Company.Description);
-                                CompaniesMap[Company.Description] = Company;
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
                             });
-                            process(newCompaniesData); return;
+                            process(newChartOfAccountsData); return;
                         });
                 },
                 matcher: function (item) {
@@ -463,16 +391,12 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var CompanyId = "";
-                    CompanyId = CompaniesMap[item].Id;
-                    $('#CustomerId').val(CustomerId);
-                    $('#CustomerFullName').val(CustomerFullName);
-
-                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    var ParentId = "";
+                    ParentId = ChartOfAccountsMap[item].Id;
+                    $('#ParentId').val(ParentId);
+                    //console.log(ChartOfAccountId)
                     return item;
                 }
-            });*@
+            });
 </script>
-}
-
 }

@@ -55,6 +55,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         public  async Task<ActionResult>Parent(InvestmentProductDTO investmentProductDTO, Guid? id)
         {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            var parentGL = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+            if(parentGL!=null)
+            {
+                investmentProductDTO.ParentId = parentGL.ParentId;
+                investmentProductDTO.ParentChartOfAccountNameDescription = parentGL.ParentAccountName;
+            }
 
 
             return View("Create", investmentProductDTO);
