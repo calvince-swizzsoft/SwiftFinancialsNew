@@ -22,11 +22,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Parent")]
         public Guid? ParentId { get; set; }
 
-
         [DataMember]
         [Display(Name = "Parent G/L Account")]
         public string ParentChartOfAccountNameDescription { get; set; }
-
 
         [DataMember]
         [Display(Name = "Code")]
