@@ -37,7 +37,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(ChartOfAccount => ChartOfAccount.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderBy(ChartOfAccount => ChartOfAccount.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -78,7 +79,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Edit Unsuccessful.";                
+                TempData["ErrorMessage"] = "Create Unsuccessful.";                
                 var errorMessages = chartOfAccountDTO.ErrorMessages;
 
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());

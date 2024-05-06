@@ -75,7 +75,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             bool includeBalances = false;
             bool includeProductDescription = false;

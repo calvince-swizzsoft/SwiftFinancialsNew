@@ -57,37 +57,53 @@
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TransactionOwnershipDescription, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.TransactionOwnershipDescription, transactionOwnerships, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.TransactionOwnershipDescription)
+
+
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-sm">
+                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountId)
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TransactionOwnershipDescription, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.TransactionOwnershipDescription, transactionOwnerships, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.TransactionOwnershipDescription)
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="form-group form-group-sm">
+                                        <div class="col-md-offset-2">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
-                                </div>
-                            </div>
+                            </fieldset>
+
+
                         </div>
                     }
                 </div>
@@ -96,18 +112,17 @@
     </div>
 </div>
 
+    @section Styles{
+        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+        @Styles.Render("~/plugins/wizardStepsStyles")
+    }
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-}
+    @section Scripts{
+        @Scripts.Render("~/plugins/wizardSteps")
+        @Scripts.Render("~/plugins/validate")
+        @Scripts.Render("~/plugins/typehead")
 
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-
-    <script>
+        <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -212,4 +227,4 @@
                 }
             });
             }); </script>
-}
+    }

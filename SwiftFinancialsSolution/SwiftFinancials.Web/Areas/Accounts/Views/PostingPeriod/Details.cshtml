@@ -38,54 +38,50 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.Description)</strong>
 
-                                @Html.DisplayFor(model => model.Description)<br>
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
                             </p>
 
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.DurationStartDate)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.DurationStartDate)</strong>
 
-                                @Html.DisplayFor(model => model.DurationStartDate)<br>
+                                @Html.TextBoxFor(model => model.DurationStartDate, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.DurationEndDate)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.DurationEndDate)</strong>
 
-                                @Html.DisplayFor(model => model.DurationEndDate)<br>
+                                @Html.TextBoxFor(model => model.DurationEndDate, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
 
-                                @Html.DisplayFor(model => model.IsLocked)<br>
+                                @Html.CheckBoxFor(model => model.IsLocked)<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsActive)<br></strong>
 
-                                @Html.DisplayFor(model => model.IsActive)<br>
+                                @Html.CheckBoxFor(model => model.IsActive)<br>
                             </p>
                         </div>
                         <div class="col-lg-6">
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsClosed)<br></strong>
 
-                                @Html.DisplayFor(model => model.IsClosed)<br>
+                                @Html.CheckBoxFor(model => model.IsClosed)<br>
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.ClosedBy)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.ClosedBy)</strong>
 
-                                @Html.DisplayFor(model => model.ClosedBy)<br>
+                                @Html.TextBoxFor(model => model.ClosedBy, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.ClosedDate)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.ClosedDate)</strong>
 
-                                @Html.DisplayFor(model => model.ClosedDate)<br>
+                                @Html.TextBoxFor(model => model.ClosedDate, new { @class = "form-control", @readonly = "readonly" })
                             </p>
-                            <p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+
                         </div>
                     </div>
 

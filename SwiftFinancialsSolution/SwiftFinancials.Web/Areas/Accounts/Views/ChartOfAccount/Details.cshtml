@@ -38,68 +38,64 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.AccountName)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.AccountName)</strong>
 
-                                @Html.DisplayFor(model => model.AccountName)<br>
+                                @Html.TextBoxFor(model => model.AccountName, new { @class = "form-control", @readonly = "readonly" })
                             </p>
 
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Parent)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.Parent)</strong>
 
-                                @Html.DisplayFor(model => model.Parent)<br>
+                                @Html.TextBoxFor(model => model.Parent, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.AccountCode)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.AccountCode)</strong>
 
-                                @Html.DisplayFor(model => model.AccountCode)<br>
+                                @Html.TextBoxFor(model => model.AccountCode, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.AccountCategory)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.AccountCategory)</strong>
 
-                                @Html.DisplayFor(model => model.AccountCategory)<br>
+                                @Html.TextBoxFor(model => model.AccountCategory, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.AccountType)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.AccountType)</strong>
 
-                                @Html.DisplayFor(model => model.AccountType)<br>
+                                @Html.TextBoxFor(model => model.AccountType, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Depth)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.Depth)</strong>
 
-                                @Html.DisplayFor(model => model.Depth)<br>
+                                @Html.TextBoxFor(model => model.Depth, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                         </div>
                         <div class="col-lg-6">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsControlAccount)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IsControlAccount)</strong>
 
-                                @Html.DisplayFor(model => model.IsControlAccount)<br>
+                                @Html.CheckBoxFor(model => model.IsControlAccount, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsReconciliationAccount)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IsReconciliationAccount)</strong>
 
-                                @Html.DisplayFor(model => model.IsReconciliationAccount)<br>
+                                @Html.CheckBoxFor(model => model.IsReconciliationAccount, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.PostAutomaticallyOnly)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.PostAutomaticallyOnly)</strong>
 
-                                @Html.DisplayFor(model => model.PostAutomaticallyOnly)<br>
+                                @Html.CheckBoxFor(model => model.PostAutomaticallyOnly, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong>
 
-                                @Html.DisplayFor(model => model.IsLocked)<br>
+                                @Html.CheckBoxFor(model => model.IsLocked, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
+                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
                             </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedBy)<br></strong>
 
-                                @Html.DisplayFor(model => model.CreatedBy)<br>
-                            </p>
                         </div>
                     </div>
 

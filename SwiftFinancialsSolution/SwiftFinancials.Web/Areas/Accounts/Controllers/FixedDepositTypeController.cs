@@ -36,6 +36,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(levy => levy.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -66,7 +68,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!fixedDepositTypeDTO.HasErrors)
             {
                 await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO,true);
-
+                TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
             else

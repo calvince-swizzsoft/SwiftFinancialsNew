@@ -38,25 +38,29 @@
                     <div class="row">
                         <div class="col-lg-6">
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+                                <strong>@Html.DisplayNameFor(model => model.Description)</strong>
 
-                                @Html.DisplayFor(model => model.Description)<br>
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
-                                <strong>@Html.DisplayNameFor(model => model.Months)</strong><br>
+                                <strong>@Html.DisplayNameFor(model => model.Months)</strong>
 
-                                @Html.DisplayFor(model => model.Months)<br>
+                                @Html.TextBoxFor(model => model.Months, new { @class = "form-control", @readonly = "readonly" })
+                            </p>
+
+                        </div>
+                        <div class="col-lg-6">
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)</strong>
+
+                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
 
                                 @Html.DisplayFor(model => model.IsLocked)<br>
                             </p>
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
                         </div>
                     </div>
 

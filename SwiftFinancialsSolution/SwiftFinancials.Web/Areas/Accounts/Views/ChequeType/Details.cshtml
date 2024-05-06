@@ -34,38 +34,48 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-lg-6">
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.MaturityPeriod)</strong><br>
 
-                                @Html.DisplayFor(model => model.MaturityPeriod)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.ChargeRecoveryMode)</strong><br>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                </div>
 
-                                @Html.DisplayFor(model => model.ChargeRecoveryMode)<br>
-                            </p>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
 
-                                @Html.DisplayFor(model => model.IsLocked)<br>
-                            </p>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.MaturityPeriod, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.MaturityPeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "MaturityPeriod", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.MaturityPeriod, "", new { @class = "text-danger" })
+                                </div>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
 
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+                                    @Html.DisplayFor(model => model.IsLocked)<br>
+                                </p>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.ChargeRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ChargeRecoveryMode, new { htmlAttributes = new { @class = "form-control", @placeholder = "ChargeRecoveryMode", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.ChargeRecoveryMode, "", new { @class = "text-danger" })
+                                </div>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+                                <div class="form-group form-group-sm">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "CreatedDate", disabled = "disabled" } })
+                                    @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                                </div>
+
+
+                            </div>
+
                         </div>
-                    </div>
-
+                    </fieldset>
                     <div class="row">
                         <div class="col-lg-12">
                             <p>

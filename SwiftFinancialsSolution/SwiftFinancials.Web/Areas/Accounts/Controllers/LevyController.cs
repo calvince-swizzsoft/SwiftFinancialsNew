@@ -146,7 +146,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 
                 ViewBag.LevySplits = await _channelService.FindLevySplitsByLevyIdAsync(levy.Id, GetServiceHeader());
-
                 return RedirectToAction("Index");
             }
             else
