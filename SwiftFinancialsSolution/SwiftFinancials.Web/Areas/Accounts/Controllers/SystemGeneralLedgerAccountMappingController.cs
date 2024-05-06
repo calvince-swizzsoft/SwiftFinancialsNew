@@ -79,6 +79,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = systemGeneralLedgerAccountMappingDTO.ErrorMessages;
                 ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode.ToString());
+
+                TempData["CreateError"] = "Failed to Map G/L Account";
+
                 return View(systemGeneralLedgerAccountMappingDTO);
             }
         }
@@ -109,6 +112,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode.ToString());
+
+                TempData["EditError"] = "Failed to edit G/L Account Determination";
 
                 return View(systemGeneralLedgerAccountMappingDTO);
             }

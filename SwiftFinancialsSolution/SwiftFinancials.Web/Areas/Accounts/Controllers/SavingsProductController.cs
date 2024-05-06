@@ -79,6 +79,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["Error"] = "Failed to create Savings Product";
 
+                TempData["BackEnd"] = errorMessages;
+
                 return View(savingsProductDTO);
             }
         }
