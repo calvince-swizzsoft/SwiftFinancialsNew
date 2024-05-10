@@ -58,6 +58,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+
             return View();
         }
 
@@ -70,11 +73,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AddDirectDebitAsync(directDebitDTO, GetServiceHeader());
 
+                TempData["Create"] = "Successfully Created Direct Debit";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = directDebitDTO.ErrorMessages;
+
+                ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCode.ToString());
+                ViewBag.ChargeType = GetChargeTypeSelectList(directDebitDTO.ChargeType.ToString());
+
+                TempData["CreateError"] = "Failed to create Direct Debit";
 
                 return View(directDebitDTO);
             }
@@ -85,6 +95,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var directDebitDTO = await _channelService.FindDirectDebitsAsync(GetServiceHeader());
+
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
 
             return View(directDebitDTO);
         }
@@ -97,10 +110,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateDirectDebitAsync(directDebitBindingModel, GetServiceHeader());
 
+                TempData["Edit"] = "Successfully Edited Direct Debit";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                ViewBag.ProductCode = GetProductCodeSelectList(directDebitBindingModel.CustomerAccountTypeProductCode.ToString());
+                ViewBag.ChargeType = GetChargeTypeSelectList(directDebitBindingModel.ChargeType.ToString());
+
+                TempData["EditError"] = "Failed to Edit Direct Debit";
+
                 return View(directDebitBindingModel);
             }
         }
