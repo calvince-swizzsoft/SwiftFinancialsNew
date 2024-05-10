@@ -606,6 +606,7 @@
     <Content Include="Images\bank.jpg" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
+    <Content Include="Images\table.png" />
     <Content Include="Reports\Report.aspx" />
     <Content Include="Reports\ReportViewer.aspx" />
     <Content Include="Scripts\app\inspinia.js" />
