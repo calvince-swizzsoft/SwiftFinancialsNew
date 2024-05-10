@@ -15,6 +15,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
     {
         public async Task<ActionResult> Index()
         {
+            await ServeNavigationMenus();
             return View();
         }
 
@@ -56,6 +57,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+
+
             return View();
         }
 
@@ -67,7 +71,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!levyDTO.HasErrors)
             {
                 await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoveryMode.ToString());
+                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
+                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoveryMode.ToString());
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoveryMode.ToString());
+                ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
 
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 return RedirectToAction("Index");
             }
             else
