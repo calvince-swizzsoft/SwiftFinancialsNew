@@ -53,6 +53,45 @@
                                     <div class="sk-double-bounce2"></div>
                                 </div>
 
+                                <fieldset>
+                                    <div class="row">
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.Month, Months, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.Month)
+                                                </div>
+                                            </div>
+
+
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.PostingPeriodId)
+                                                @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
+                                                    @Html.ValidationMessageFor(model => model.Priority)
+                                                </div>
+                                            </div>
+                                            <div class="form-group form-group-lg">
+                                                @Html.CheckBoxFor(model => model.EnforceMonthValueDate, htmlAttributes: new { @class = "" })
+                                                @Html.LabelFor(model => model.EnforceMonthValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnforceMonthValueDate?" } })
+                                                @Html.ValidationMessageFor(model => model.EnforceMonthValueDate, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+
+
                                 <div class="table-responsive">
                                     <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
                                         <tbody>
@@ -69,38 +108,6 @@
 
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                    @Html.DropDownListFor(model => model.Month, Months, new { @class = "form-control input-md" })
-                                    @Html.ValidationMessageFor(model => model.Month)
-                                </div>
-                            </div>
-
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.PostingPeriodId)
-                                @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period" } })
-                            </div>
-                                                    
-
-                            <div class="form-group form-group-lg">
-                                @Html.CheckBoxFor(model => model.EnforceMonthValueDate, htmlAttributes: new { @class = "" })
-                                @Html.LabelFor(model => model.EnforceMonthValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnforceMonthValueDate?" } })
-                                @Html.ValidationMessageFor(model => model.EnforceMonthValueDate, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                    @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
-                                    @Html.ValidationMessageFor(model => model.Priority)
-                                </div>
-                            </div>
 
 
                             <div class="form-group form-group-sm">
@@ -162,7 +169,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-<script type="text/javascript">
+    <script type="text/javascript">
 $(document).ready(function () {
     // Function to save the state of the header checkbox to local storage
     function saveCheckboxState(key, state) {
@@ -351,5 +358,5 @@ $(document).ready(function () {
                 }
             });
         });
-</script>
+    </script>
 }
