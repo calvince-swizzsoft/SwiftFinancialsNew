@@ -69,11 +69,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AddUnPayReasonAsync(unPayReasonDTO, GetServiceHeader());
 
+                TempData["Create"] = "Unpay Reason Created Successfully";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = unPayReasonDTO.ErrorMessages;
+
+                TempData["CreateError"] = "Failed to Create Unpay Reason";
 
                 return View(unPayReasonDTO);
             }
@@ -96,10 +100,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateUnPayReasonAsync(unPayReasonBindingModel, GetServiceHeader());
 
+                TempData["Edit"] = "Unpay Reason Edited Successfully";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["EditError"] = "Failed to Edit Unpay Reason";
+
                 return View(unPayReasonBindingModel);
             }
         }
