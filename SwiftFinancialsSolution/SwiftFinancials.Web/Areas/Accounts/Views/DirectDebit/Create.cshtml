@@ -32,10 +32,10 @@
                 <div class="ibox-title">
                     <h2>Create Direct Debit</h2>
 
-                    @if (TempData["Error"] != null)
+                    @if (TempData["CreateError"] != null)
                     {
                         <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["Error"]
+                            <strong>Failed !</strong> @TempData["CreateError"]
 
                             <button type="button" class="close" data-dismiss="alert">
                                 <span>
@@ -82,13 +82,11 @@
                                 </div>
 
                                 <div class="col-lg-6">
-                                    @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                        @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Savings Product..." })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>
-                                        </span>
+                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "SavingsProductsLookup form-control required", placeholder = "Description.." } })
                                     </div>
                                 </div>
                             </div>
@@ -161,113 +159,97 @@
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
-
 
     <script>
         $(document).ready(function () {
-            $('#companiesGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+                    var form = $(this);
 
-                    var selectUrl = '<a  href="/Accounts/DirectDebit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(selectUrl);
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
 
-                    return nRow;
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
                 },
-        // Display settings
-            "aoColumns": [
-                { "mDataProp": "Code", "sTitle": "Code", "sWidth": "5%" },
-                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
-                { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "5%" },
-                { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "5%" },
-                { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "5%" },
-                { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maimum Withdrawal", "sWidth": "5%" },
-                { "mDataProp": "WithdrawalNoticePeriod", "sTitle": "Withdrawal Notice Period (Days)", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
-            { "mDataProp": "CreatedDate", "sTitle": "Action","sWidth":"20%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
 
-    $("#s tbody").on("click", "tr", function () {
-        var data = companiesGrid.row(this).data();
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
 
-        $('#CustomerAccountTypeTargetProductId').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
 
-        $('#CompaniesLookup').modal('hide');
-    });
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
 
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
 
-            //Company typehead starts here
-            $('.CompaniesLookup').typeahead({
+        });
+        //SavingsProduct typehead starts here
+            $('.SavingsProductsLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetCompaniesAsync", "SavingsProduct", new { Area = "Accounts" })',
+                        '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
                         { query: query },
-                        function (Companies) {
-                            var newCompaniesData = [];
-                            CompaniesMap = {};
-                            $.each(Companies, function (i, Company) {
-                                newCompaniesData.push(Company.Description);
-                                CompaniesMap[Company.Description] = Company;
+                        function (SavingsProducts) {
+                            var newSavingsProductsData = [];
+                            SavingsProductsMap = {};
+                            $.each(SavingsProducts, function (i, SavingsProduct) {
+                                newSavingsProductsData.push(SavingsProduct.Description);
+                                SavingsProductsMap[SavingsProduct.Description] = SavingsProduct;
                             });
-                            process(newCompaniesData); return;
+                            process(newSavingsProductsData); return;
                         });
                 },
                 matcher: function (item) {
@@ -283,11 +265,10 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var CompanyId = "";
-                    CompanyId = CompaniesMap[item].Id;
-                    $('#CustomerAccountTypeTargetProductId').val(CustomerAccountTypeTargetProductId);
-                    $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription);
-
+                    var savingsProductId = "";
+                    SavingsProductId = SavingsProductsMap[item].Id;
+                    $('#SavingsProductId').val(SavingsProductId);
+                    //console.log(SavingsProductId)
                     return item;
                 }
             });
