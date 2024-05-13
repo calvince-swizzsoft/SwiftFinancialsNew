@@ -132,13 +132,13 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Customer Accounts", Icon="fa fa-users", Code = 0x000059D8 + 40},
                 new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Register", Icon="fa fa-database", ControllerName="CoA_Register", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 41},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Management", Icon="fa fa-tasks", ControllerName="Management", ActionName="CustomerManagement", AreaName = "Accounts", Code = 0x000059D8 + 42},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Signatories", Icon="fa fa-bars", ControllerName="Signatories", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 43},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Cheque Books", Icon="fa fa-bars", ControllerName="ChequeBooks", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 44},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Standing Orders", Icon="fa fa-bars", ControllerName="StandingOrders", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 45},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Intra Account Transfer", Icon="fa fa-bars", ControllerName="IntraAccountTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 46},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Mobile To Bank", Icon="fa fa-bars", ControllerName="MobileToBank", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 47},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "E-Statements", Icon="fa fa-bars", ControllerName="E_Statements", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 48},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Management", Icon="fa fa-tasks", ControllerName="CoA_Management", ActionName="CustomerManagement", AreaName = "Accounts", Code = 0x000059D8 + 42},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Signatories", Icon="fa fa-bars", ControllerName="CoA_Signatories", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 43},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Cheque Books", Icon="fa fa-bars", ControllerName="CoA_ChequeBooks", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 44},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Standing Orders", Icon="fa fa-bars", ControllerName="CoA_StandingOrders", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 45},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Intra Account Transfer", Icon="fa fa-bars", ControllerName="CoA_IntraAccountTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 46},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Mobile To Bank", Icon="fa fa-bars", ControllerName="CoA_MobileToBank", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 47},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "E-Statements", Icon="fa fa-bars", ControllerName="CoA_eStatements", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 48},
                 
            
                 new NavigationMenu{AreaCode = 0x000059D8 + 3, IsArea = false, Description = "Loan Indefinite Charges", Icon="fa fa-bars", ControllerName="LoanIndefiniteCharges", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 49},
