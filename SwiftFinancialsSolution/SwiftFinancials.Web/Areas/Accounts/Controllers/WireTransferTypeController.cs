@@ -44,17 +44,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<WireTransferTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-        //public async Task<ActionResult> Details(Guid id)
-        //{
-        //    await ServeNavigationMenus();
+        public async Task<ActionResult> Details(Guid id)
+        {
+            await ServeNavigationMenus();
 
-        //    var wireTransferTypeDTO = await _channelService.FindWireTransferTypesAsync(id, GetServiceHeader());
+            var wireTransferTypeDTO = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
 
-        //    return View(wireTransferTypeDTO);
-        //}
+            return View(wireTransferTypeDTO);
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
+            ViewBag.TransactionOwnership = GetTransactionOwnershipSelectList(string.Empty);
 
             return View();
         }
@@ -68,24 +70,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AddWireTransferTypeAsync(wireTransferTypeDTO, GetServiceHeader());
 
+                TempData["AlertMessage"] = "Successfully Created Wire Transfer Type";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = wireTransferTypeDTO.ErrorMessages;
 
+                ViewBag.TransactionOwnership = GetTransactionOwnershipSelectList(wireTransferTypeDTO.TransactionOwnershipDescription);
+
+                TempData["CreateError"] = "Failed to Create Wire Transfer Type";
+
                 return View(wireTransferTypeDTO);
             }
         }
-
-        //public async Task<ActionResult> Edit(Guid id)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    var wireTransferTypeDTO = await _channelService.FindWireTransferTypesAsync(id, GetServiceHeader());
-
-        //    return View(wireTransferTypeDTO);
-        //}
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -95,10 +94,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateWireTransferTypeAsync(wireTransferTypeBindingModel, GetServiceHeader());
 
+                TempData["Edit"] = "Successfully Edited Wire Transfer Type";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["EditError"] = "Failed to Edit Wire Transfer Type";
+
                 return View(wireTransferTypeBindingModel);
             }
         }

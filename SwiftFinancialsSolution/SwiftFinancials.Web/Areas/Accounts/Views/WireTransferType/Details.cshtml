@@ -5,7 +5,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Wire Transfer Types</h2>
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -26,6 +26,7 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <div class="ibox-tools">
+                        <h2>Wire Transfer Type Details</h2>
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -36,40 +37,29 @@
                 </div>
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-lg-6">
-                          
+                        <div class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.Description)
+                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                        </div>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)</strong><br>
+                        <div class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.TransactionOwnershipDescription)
+                            @Html.EditorFor(model => model.TransactionOwnershipDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                        </div>
 
-                                @Html.DisplayFor(model => model.Description)<br>
-                            </p>
-
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TransactionOwnership)</strong><br>
-
-                                @Html.DisplayFor(model => model.TransactionOwnership)<br>
-                            </p>
-
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.IsLocked)</strong><br>
-
-                                @Html.DisplayFor(model => model.IsLocked)<br>
-                            </p>
-
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
-
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+                        <div class="col-lg-4">
+                            @Html.DisplayNameFor(model => model.CreatedDate)
+                            @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                         </div>
                     </div>
+
                     <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "WireTransferType", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "WireTransferType", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                            </p>
+                        <div class="col-lg-3">
+                            @Html.ActionLink("Edit", "Edit", "WireTransferType", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
+                        </div>
+
+                        <div class="col-lg-3">
+                            @Html.ActionLink("Back to List", "Index", "WireTransferType", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                         </div>
                     </div>
                 </div>

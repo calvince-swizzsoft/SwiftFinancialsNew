@@ -1,6 +1,4 @@
-﻿
-
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -12,7 +10,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class UnPayReasonController : MasterController
+    public class CoA_RegisterController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -32,26 +30,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindUnPayReasonsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(costCenter => costCenter.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<UnPayReasonDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var unPayReasonDTO = await _channelService.FindUnPayReasonAsync(id, GetServiceHeader());
+            var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
 
-            return View(unPayReasonDTO);
+            return View(customerAccountDTO);
         }
         public async Task<ActionResult> Create()
         {
@@ -61,25 +61,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(UnPayReasonDTO unPayReasonDTO)
+        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
         {
-            unPayReasonDTO.ValidateAll();
+            customerAccountDTO.CreatedDate = DateTime.Today;
 
-            if (!unPayReasonDTO.HasErrors)
+            customerAccountDTO.ValidateAll();
+
+            if (!customerAccountDTO.HasErrors)
             {
-                await _channelService.AddUnPayReasonAsync(unPayReasonDTO, GetServiceHeader());
+                await _channelService.AddCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
 
-                TempData["Create"] = "Unpay Reason Created Successfully";
+                TempData["AlertMessage"] = "Customer Account created successfully";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = unPayReasonDTO.ErrorMessages;
+                var errorMessages = customerAccountDTO.ErrorMessages;
 
-                TempData["CreateError"] = "Failed to Create Unpay Reason";
+                TempData["Error"] = "Failed to create Customer Account";
 
-                return View(unPayReasonDTO);
+                return View(customerAccountDTO);
             }
         }
 
@@ -87,38 +89,31 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var unPayReasonDTO = await _channelService.FindUnPayReasonAsync(id, GetServiceHeader());
+            var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
 
-            return View(unPayReasonDTO);
+            return View(customerAccountDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, UnPayReasonDTO unPayReasonBindingModel)
+        public async Task<ActionResult> Edit(Guid id, CustomerAccountDTO customerAccountDTO)
         {
+            customerAccountDTO.CreatedDate = DateTime.Today;
+
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateUnPayReasonAsync(unPayReasonBindingModel, GetServiceHeader());
+                await _channelService.UpdateCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
 
-                TempData["Edit"] = "Unpay Reason Edited Successfully";
+                TempData["Edit"] = "Edited Customer Account successfully";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                TempData["EditError"] = "Failed to Edit Unpay Reason";
+                TempData["EditError"] = "Failed to Edit Customer Account";
 
-                return View(unPayReasonBindingModel);
+                return View(customerAccountDTO);
             }
         }
-
-        /*[HttpGet]
-        public async Task<JsonResult> GetUnPayReasonsAsync()
-        {
-            var unPayReasonDTOs = await _channelService.FindUnPayReasonsAsync(GetServiceHeader());
-
-            return Json(unPayReasonDTOs, JsonRequestBehavior.AllowGet);
-        }*/
     }
 }
-

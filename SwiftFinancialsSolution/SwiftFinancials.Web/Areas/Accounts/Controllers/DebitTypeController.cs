@@ -63,11 +63,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(DebitTypeDTO debitTypeDTO)
         {
+            debitTypeDTO.CustomerAccountTypeTargetProductId = debitTypeDTO.CustomerAccountTypeTargetProductId;
+
             debitTypeDTO.ValidateAll();
 
             if (!debitTypeDTO.HasErrors)
             {
                 await _channelService.AddDebitTypeAsync(debitTypeDTO, GetServiceHeader());
+
+                TempData["Create"] = "Successfully Created Debit Type";
 
                 return RedirectToAction("Index");
             }
@@ -75,6 +79,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = debitTypeDTO.ErrorMessages;
                 ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
+
+                TempData["CreateError"] = "Failed to Create Debit Type";
 
                 return View(debitTypeDTO);
             }
@@ -97,10 +103,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateDebitTypeAsync(debitTypeDTOBindingModel, GetServiceHeader());
                 ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTOBindingModel.CustomerAccountTypeProductCode.ToString());
+
+                TempData["Edit"] = "Successfully Edited Debit Type";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["EditError"] = "Failed to Edit Debit Type";
+
                 return View(debitTypeDTOBindingModel);
             }
         }

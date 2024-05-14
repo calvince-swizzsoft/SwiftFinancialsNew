@@ -322,6 +322,7 @@
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
@@ -606,6 +607,7 @@
     <Content Include="Images\bank.jpg" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
+    <Content Include="Images\table.png" />
     <Content Include="Reports\Report.aspx" />
     <Content Include="Reports\ReportViewer.aspx" />
     <Content Include="Scripts\app\inspinia.js" />
@@ -1034,6 +1036,7 @@
     <Content Include="Areas\Accounts\Views\PostingPeriod\Close.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Register\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
