@@ -40,9 +40,42 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+        private double _chargePercentage;
+
         [DataMember]
         [Display(Name = "Percentage")]
-        public double ChargePercentage { get; set; }
+        public double ChargePercentage
+        {
+            get { return _chargePercentage; }
+            set
+            {
+                // Ensure the value is between 0 and 100
+                if (value < 0 || value > 100)
+                {
+                    throw new ArgumentOutOfRangeException("Charge percentage must be between 0 and 100.");
+                }
+
+                // If the sum of all percentages would exceed 100, throw an exception
+                if (TotalPercentage + value - _chargePercentage > 100)
+                {
+                    throw new InvalidOperationException("Total percentage cannot exceed 100.");
+                }
+
+                _chargePercentage = value;
+            }
+        }
+
+        // Assuming you have a collection of ChargePercentage values
+        public double TotalPercentage { get; set; } // Sum of all percentages
+
+        // Method to recalculate the total percentage whenever ChargePercentage is modified
+        private void RecalculateTotalPercentage()
+        {
+            // Logic to sum up all ChargePercentage values
+            // and assign the result to TotalPercentage
+        }
+
+
 
         [DataMember]
         [Display(Name = "Fixed Amount")]

@@ -171,10 +171,11 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Alternate Channels", Icon="fa fa-money", Code = 0x000059D8 + 73},
                new NavigationMenu{AreaCode = 0x000059D8 + 73, IsArea = false, Description = "Register", Icon="fa fa-money", ControllerName="Register", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 74},
+               new NavigationMenu{AreaCode = 0x000059D8 + 73, IsArea = false, Description = "Management", Icon="fa fa-money", ControllerName="Management", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 75},
 
 
-               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Budget Managements", Icon="fa fa-money", Code = 0x000059D8 + 75},
-               new NavigationMenu{AreaCode = 0x000059D8 + 75, IsArea = false, Description = "BudgetManagement", Icon="fa fa-money", ControllerName="BudgetManagement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 76},
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Budget Managements", Icon="fa fa-money", Code = 0x000059D8 + 76},
+               new NavigationMenu{AreaCode = 0x000059D8 + 76, IsArea = false, Description = "BudgetManagement", Icon="fa fa-money", ControllerName="BudgetManagement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 77},
 
 
 

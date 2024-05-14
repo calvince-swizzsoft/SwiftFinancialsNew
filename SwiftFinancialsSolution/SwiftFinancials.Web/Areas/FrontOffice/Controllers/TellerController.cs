@@ -67,16 +67,25 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View();
             }
 
-            var customer = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
             TellerDTO employeeBindingModel = new TellerDTO();
 
             if (customer != null)
             {
+                employeeBindingModel.EmployeeCustomerId = customer.Id;
                 employeeBindingModel.EmployeeId = customer.Id;
-                employeeBindingModel.EmployeeCustomerIndividualFirstName = customer.CustomerFullName;
-            }
+                employeeBindingModel.EmployeeCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
+                
+                
+                employeeBindingModel.EmployeeCustomerIndividualLastName = customer.CustomerIndividualLastName;
 
+
+            }
             return View(employeeBindingModel);
         }
 

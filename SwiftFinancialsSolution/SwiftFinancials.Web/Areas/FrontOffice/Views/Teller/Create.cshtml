@@ -94,23 +94,23 @@
                                         @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.EmployeeCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.EmployeeCustomerId)
-                                        @Html.EditorFor(model => model.EmployeeCustomerId, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
-                                        @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
-                                    </div>
-
                                     @*<div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.EmployeeId)
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
+                                            @Html.LabelFor(model => model.EmployeeCustomerFullName, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.EmployeeCustomerId)
+                                            @Html.EditorFor(model => model.EmployeeCustomerId, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
                                         </div>*@
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.EmployeeCustomerId)
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
@@ -130,10 +130,10 @@
 <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary">
-                <h3 class="font-bold">Employee Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -196,10 +196,65 @@
 
     <script>
 
+        $('#CustomerAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/FrontOffice/Teller/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CustomerReference1", "sTitle": "customer number", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+             });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = CustomerAccountsGrid.row(this).data();
+        $('#CustomerAccountId').val(data.Id);
+        $('input[name=CustomerAccountId]').val(data.Id);
+        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
+        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
+        $('#customerLookupModal').modal('hide');
+    });
 
 
 
-             @*$('#customersGrid').DataTable({
+             $('#customersGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
@@ -217,7 +272,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/FrontOffice/Telle/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/FrontOffice/Teller/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
@@ -244,7 +299,7 @@
             //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
 
             $('#customerLookupModal').modal('hide');
-        });*@
+        });
 
 
              //Employee typehead starts here

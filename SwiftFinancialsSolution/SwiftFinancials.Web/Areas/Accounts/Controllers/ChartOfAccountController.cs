@@ -70,9 +70,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             chartOfAccountDTO.ValidateAll();
 
+
             if (!chartOfAccountDTO.HasErrors)
             {
                 var result =await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
+                if(result.ErrorMessageResult!=null || result.ErrorMessageResult!=string.Empty)
+                {
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+                    return View("Create");
+                }
 
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
@@ -81,7 +87,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 TempData["ErrorMessage"] = "Create Unsuccessful.";                
                 var errorMessages = chartOfAccountDTO.ErrorMessages;
-
+              
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
                 ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
 
