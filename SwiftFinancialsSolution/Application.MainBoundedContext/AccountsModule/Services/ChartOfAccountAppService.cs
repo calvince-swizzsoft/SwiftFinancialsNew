@@ -64,7 +64,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                 List<string> sortFields = new List<string> { "SequentialId" };
 
-                return await  _chartOfAccountRepository.AllMatchingPagedAsync<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
+                return await _chartOfAccountRepository.AllMatchingPagedAsync<ChartOfAccountDTO>(spec, pageIndex, pageSize, sortFields, true, serviceHeader);
             }
         }
 
@@ -105,7 +105,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var matchedChartOfAccounts = _chartOfAccountRepository.AllMatching(spec, serviceHeader);
 
                     if (matchedChartOfAccounts != null && matchedChartOfAccounts.Any())
-                        throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        chartOfAccountDTO.ErrorMessageResult = string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode);
+                        return chartOfAccountDTO;
+                    }
+
+
                     else
                     {
                         // Get persisted item
@@ -309,7 +315,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     glAccount.ParentId = node.ParentId;
                     glAccount.Category = node.AccountCategory;
                     glAccount.CategoryDescription = EnumHelper.GetDescription((ChartOfAccountCategory)node.AccountCategory);
-                    glAccount.Type =(int) node.AccountType;
+                    glAccount.Type = (int)node.AccountType;
                     glAccount.TypeDescription = EnumHelper.GetDescription((ChartOfAccountType)node.AccountType);
                     glAccount.Code = node.AccountCode;
                     glAccount.Description = node.AccountName;

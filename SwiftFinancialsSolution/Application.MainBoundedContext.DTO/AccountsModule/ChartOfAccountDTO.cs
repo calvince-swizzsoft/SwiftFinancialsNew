@@ -15,6 +15,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             AddAllAttributeValidators();
         }
 
+       
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
@@ -175,5 +176,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
             return ValidationResult.Success;
         }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
+
     }
 }

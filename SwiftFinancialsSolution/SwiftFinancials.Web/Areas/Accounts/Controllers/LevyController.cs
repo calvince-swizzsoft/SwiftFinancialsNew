@@ -92,6 +92,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 
+           
             return View("Create", levyDTO);
         }
 
@@ -146,6 +147,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 
                 ViewBag.LevySplits = await _channelService.FindLevySplitsByLevyIdAsync(levy.Id, GetServiceHeader());
+                ViewBag.LevySplitDTOs = null;
+                ViewBag.LevySplits = null;
                 return RedirectToAction("Index");
             }
             else
