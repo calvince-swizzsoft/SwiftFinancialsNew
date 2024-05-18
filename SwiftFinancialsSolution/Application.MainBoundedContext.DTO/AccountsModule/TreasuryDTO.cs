@@ -24,9 +24,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         public TreasuryDTO Treasury { get; set; }
-        
-        [DataMember]
-        public TreasuryDTO Treasury2 { get; set; }
 
         [DataMember]
         [Display(Name = "Branch")]
@@ -109,5 +106,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Book Balance")]
         public decimal BookBalance { get; set; }
+
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

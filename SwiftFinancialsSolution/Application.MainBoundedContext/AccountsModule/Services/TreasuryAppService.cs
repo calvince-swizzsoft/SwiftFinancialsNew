@@ -52,7 +52,9 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var treasuries = _treasuryRepository.AllMatching(spec, serviceHeader);
 
                     if (treasuries != null && treasuries.Any())
+                    {
                         return null;
+                    }
                     else
                     {
                         var range = new Range(treasuryDTO.RangeLowerLimit, treasuryDTO.RangeUpperLimit);

@@ -20,6 +20,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
+            TempData["Levies"] = await _channelService.FindLeviesAsync(GetServiceHeader());
 
             return View();
         }

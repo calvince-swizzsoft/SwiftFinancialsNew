@@ -182,5 +182,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
         public ChartOfAccountDTO chartOfAccount { get; set; }
+
+        [DataMember]
+        [Display(Name = "Id")]
+        public Guid ProductId { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Product")]
+        public string ProductName { get; set; }
     }
 }

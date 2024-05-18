@@ -1037,6 +1037,7 @@
     <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Register\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Register\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
