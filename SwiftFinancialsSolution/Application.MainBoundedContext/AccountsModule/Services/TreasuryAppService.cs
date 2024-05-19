@@ -53,7 +53,13 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                     if (treasuries != null && treasuries.Any())
                     {
-                        return null;
+
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        treasuryDTO.ErrorMessageResult = string.Format("Sorry, but Treasury Code {0} already exists!", treasuryDTO.Code);
+
+                        return treasuryDTO;
+
+                        //return null;
                     }
                     else
                     {

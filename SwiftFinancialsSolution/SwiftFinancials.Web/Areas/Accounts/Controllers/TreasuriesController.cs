@@ -37,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(savingsProduct => savingsProduct.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(treasuries => treasuries.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -172,7 +172,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!treasuryDTO.HasErrors)
             {
-                await _channelService.AddTreasuryAsync(treasuryDTO, GetServiceHeader());
+                var result = await _channelService.AddTreasuryAsync(treasuryDTO, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
+                {
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    return View("Create");
+                }
+
+                //TempData["SuccessMessage"] = "Create successful.";
+                //return RedirectToAction("Index");
 
                 TempData["AlertMessage"] = "Treasury created successfully";
 
@@ -187,9 +197,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
            
         }
-
-
-
 
 
         public async Task<ActionResult> Search2(Guid? id, TreasuryDTO treasuryDTO)
