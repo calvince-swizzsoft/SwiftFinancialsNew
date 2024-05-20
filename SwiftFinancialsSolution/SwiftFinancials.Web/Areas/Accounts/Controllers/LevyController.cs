@@ -38,7 +38,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(levy => levy.CreatedDate).ToList();
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -76,10 +78,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (LevySplitDTOs == null)
                 LevySplitDTOs = new ObservableCollection<LevySplitDTO>();
 
-            foreach (var levySplitDTO  in levyDTO.LevySplits)
+            foreach (var levySplitDTO in levyDTO.LevySplits)
             {
                 levySplitDTO.Description = levySplitDTO.Description;
                 levySplitDTO.ChartOfAccountId = levyDTO.Id;//Temporary 
+                levySplitDTO.ChartOfAccountAccountName = levyDTO.Description;
                 levySplitDTO.Percentage = levySplitDTO.Percentage;
                 LevySplitDTOs.Add(levySplitDTO);
             };
@@ -92,7 +95,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 
-           
+
             return View("Create", levyDTO);
         }
 
@@ -125,7 +128,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var levy = await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
                 TempData["SuccessMessage"] = "Create successful.";
-
+                TempData["LevyDTO"] = "";
 
                 if (levy != null)
                 {
@@ -142,13 +145,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     if (levySplits.Any())
                         await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                    TempData["LevySplitDTO"] = "";
                 }
 
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 
                 ViewBag.LevySplits = await _channelService.FindLevySplitsByLevyIdAsync(levy.Id, GetServiceHeader());
-                ViewBag.LevySplitDTOs = null;
-                ViewBag.LevySplits = null;
+
+
+
                 return RedirectToAction("Index");
             }
             else
@@ -164,51 +169,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var levyViewModel = await _channelService.FindLevyAsync(id, GetServiceHeader());
+            var levy = await _channelService.FindLevyAsync(id, GetServiceHeader());
+            var k = await _channelService.FindLevySplitsByLevyIdAsync(id, GetServiceHeader());
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
-            return View(levyViewModel);
+            return View(levy);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(LevyViewModel levyViewModel)
+        public async Task<ActionResult> Edit(LevyDTO levyDTO)
         {
-            levyViewModel.ValidateAll();
-
-            if (!levyViewModel.HasErrors)
+            if (!levyDTO.HasErrors)
             {
-                var levyDTO = new LevyDTO()
-                {
-                    Description = levyViewModel.LevyDescription,
-                    ChargeType = levyViewModel.ChargeType,
-                    IsLocked = levyViewModel.LevyIsLocked,
-                };
 
-                var levy = await _channelService.AddLevyAsync(levyDTO, GetServiceHeader());
 
-                if (levy != null)
+                var j = await _channelService.UpdateLevyAsync(levyDTO, GetServiceHeader());
+                TempData["SuccessMessage"] = "Edit successful.";
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
+
+                if (levyDTO != null)
                 {
-                    var levySplitDTO = new LevySplitDTO()
-                    {
-                        LevyId = levy.Id,
-                        Description = levyViewModel.LevySplitDescription,
-                        ChartOfAccountId = levyViewModel.LevySplitChartOfAccountId,
-                        Percentage = levyViewModel.LevySplitPercentage,
-                    };
                     var levySplits = new ObservableCollection<LevySplitDTO>();
 
-                    levySplits.Add(levySplitDTO);
-
-                    await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                    await _channelService.UpdateLevySplitsByLevyIdAsync(levyDTO.Id, levySplits, GetServiceHeader());
                 }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = levyViewModel.ErrorMessages;
+                var errorMessages = levyDTO.ErrorMessages;
 
-                return View(levyViewModel);
+                return View(levyDTO);
             }
         }
 

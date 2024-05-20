@@ -53,21 +53,49 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(fixedDepositTypeDTO);
         }
-        public async Task<ActionResult> Create()
+
+        public async Task<ActionResult> Create(Guid? Id)
         {
             await ServeNavigationMenus();
 
+            Guid parseId;
+
+            if (Id == Guid.Empty || !Guid.TryParse(Id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+
+
+            FixedDepositTypeDTO loanProductDTO = new FixedDepositTypeDTO();
+
+            if (loanProduct != null)
+            {
+                loanProductDTO.Months = loanProduct.LoanRegistrationTermInMonths;
+                //loanProductDTO.] = loanProduct.Id;
+                //loanProductDTO.EnforceMonthValueDate = loanProduct.Id;
+                //loanProductDTO.InterestChargedChartOfAccountId = loanProduct.Id;
+                //loanProductDTO.InterestReceivedChartOfAccountAccountName = loanProduct.AccountName;
+            }
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO)
+        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO, List<LoanProductDTO> selectedRows)
         {
             fixedDepositTypeDTO.ValidateAll();
-
+            bool enforceFixedDepositBands = false;
             if (!fixedDepositTypeDTO.HasErrors)
             {
-                await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO,true);
+                var result = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, enforceFixedDepositBands);
+               // if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
+                    if (result.ErrorMessageResult != null )
+                    {
+                        TempData["ErrorMsg"] = result.ErrorMessageResult;
+                        await ServeNavigationMenus();
+                        return View();
+                    }
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
@@ -94,7 +122,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel,true);
+                await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel, true);
 
                 return RedirectToAction("Index");
             }
@@ -105,9 +133,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetFixedDepositTypesAsync(Guid chequeTypeId)
+        public async Task<JsonResult> GetFixedDepositTypesAsync(Guid fixeddepositid)
         {
-            var fixedDepositTypeDTOs = await _channelService.FindFixedDepositTypeAsync(chequeTypeId,GetServiceHeader());
+            var fixedDepositTypeDTOs = await _channelService.FindFixedDepositTypeAsync(fixeddepositid, GetServiceHeader());
 
             return Json(fixedDepositTypeDTOs, JsonRequestBehavior.AllowGet);
         }

@@ -80,7 +80,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 {
                     var fixedDepositTypeDTOs = FindFixedDepositTypesByMonths(fixedDepositTypeDTO.Months, serviceHeader);
 
-                    if (fixedDepositTypeDTOs != null && fixedDepositTypeDTOs.Count() > 0) throw new InvalidOperationException(string.Format("Months '{0}' already defined.", fixedDepositTypeDTO.Months));
+                    if (fixedDepositTypeDTOs != null && fixedDepositTypeDTOs.Count() > 0)
+                        //throw new InvalidOperationException(string.Format("Months '{0}' already defined.", fixedDepositTypeDTO.Months));
+                        fixedDepositTypeDTO.ErrorMessageResult = string.Format("Months '{0}' already defined.", fixedDepositTypeDTO.Months);
+                    return fixedDepositTypeDTO;
                 }
 
                 using (var dbContextScope = _dbContextScopeFactory.Create())
