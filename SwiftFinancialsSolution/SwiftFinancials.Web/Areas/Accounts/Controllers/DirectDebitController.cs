@@ -54,9 +54,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(directDebitDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id, DirectDebitDTO directDebitDTO)
         {
             await ServeNavigationMenus();
+
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var savingsProduct = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);

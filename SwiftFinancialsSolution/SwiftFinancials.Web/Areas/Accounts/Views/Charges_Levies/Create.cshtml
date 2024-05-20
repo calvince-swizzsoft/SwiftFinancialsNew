@@ -7,6 +7,7 @@
 
     var chargeType = ViewBag.chargeType as List<SelectListItem>;
 
+
 }
 
 
@@ -51,6 +52,13 @@
                 border-bottom-color: #007bff;
                 color: #007bff;
             }
+
+
+    .bordered-fieldset {
+        border: 1px solid #000; /* black border with a width of 2px */
+        padding: 10px; /* optional: add some padding inside the fieldset */
+        border-radius: 5px; /* optional: add rounded corners */
+    }
 </style>
 
 
@@ -118,14 +126,6 @@
                     }
 
 
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                        </ul>
-                    </div>
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -139,36 +139,19 @@
                     @using (Html.BeginForm("Create", "Charges_Levies", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+
+                        var lists = TempData["Levies"] as List<string>;
+
                         <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.ExciseDuty, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.ExciseDuty, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
-                                        @Html.ValidationMessageFor(model => model.ExciseDuty, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.WithHoldingTax, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.WithHoldingTax, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
-                                        @Html.ValidationMessageFor(model => model.WithHoldingTax, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.School, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.School, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Pooled?" } })
-                                        @Html.ValidationMessageFor(model => model.School, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
+                            @if (lists != null && lists.Any())
+                            {
+                                <ul>
+                                    @foreach (var levies in lists)
+                                    {
+                                        <li>@levies</li>
+                                    }
+                                </ul>
+                            }
                         </fieldset>
                     }
                 </div>

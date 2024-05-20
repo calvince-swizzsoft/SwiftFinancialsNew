@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
@@ -18,6 +19,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }
+
+        // Getting and Setting values from the Registry Module
+        [DataMember]
+        public CustomerDTO Customers { get; set; }
 
         [DataMember]
         [Display(Name = "Customer")]

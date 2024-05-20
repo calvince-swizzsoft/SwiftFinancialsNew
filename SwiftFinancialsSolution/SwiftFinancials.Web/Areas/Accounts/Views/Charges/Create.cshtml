@@ -4,7 +4,6 @@
     /**/
 
     ViewBag.Title = "Create Charges";
-
 }
 
 
@@ -44,6 +43,7 @@
                 border-bottom-color: #007bff;
                 color: #007bff;
             }
+
             .nav-tabs a:active {
                 border-bottom-color: #007bff;
                 color: #007bff;
@@ -101,10 +101,10 @@
                 <div class="ibox-title">
                     <h2>Create Charges</h2>
 
-                    @if (TempData["Error"] != null)
+                    @if (TempData["CreateError"] != null)
                     {
-                        <div class="alert alert-success">
-                            <strong>Failed !</strong> @TempData["Error"]
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["CreateError"]
 
                             <button type="button" class="close" data-dismiss="alert">
                                 <span>
@@ -113,16 +113,6 @@
                             </button>
                         </div>
                     }
-
-
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                        </ul>
-                    </div>
-
 
 
                     <div class="ibox-tools">
@@ -147,7 +137,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Cost Center name" } })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Name..." } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -163,14 +153,23 @@
                         </fieldset>
 
                         <br />
+                        <hr />
+
+                        <div id="tabs-container">
+                            <ul class="nav-tabs">
+                                <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
+                                <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                                <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                            </ul>
+                        </div>
+
+
 
                         <fieldset>
-                            <center><h2 title="Use this section to split the charge into one or more than one different G/L Accounts">Charge Splitting</h2></center>
+                            <h2 title="Use this section to split the charge into one or more than one different G/L Accounts">Charge Splitting</h2>
                             <br />
-
                             <div class="row">
                                 <div class="col-lg-4">
-
                                     <div class="col-md-13 form-group">
                                         @Html.LabelFor(model => model.CommissionSplit.ChartOfAccountId, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
@@ -221,63 +220,64 @@
                                     </div>
                                 }
                             </div>
-
                         </fieldset>
 
-                        <hr />
-                       
-                            <center>
-                                <h3><strong>Charge Splitting Details</strong></h3>
-                            </center>
-                            <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-                                <table id="Guarantors" class="display nowrap" style="width:100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Select</th>
-                                            <th>G/L Account Name</th>
-                                            <th>G/L Account Cost Center</th>
-                                            <th>Name</th>
-                                            <th>Percentage</th>
-                                            <th>Leviable?</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style="width:2100px;">
+                        <br />
+                        <br />
 
-                                        @if (ViewBag.ChargeSplits != null)
+
+                        <center>
+                            <h3><strong>Charge Splitting Details</strong></h3>
+                        </center>
+                        <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+                            <table id="Guarantors" class="display nowrap" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Select</th>
+                                        <th>G/L Account Name</th>
+                                        <th>G/L Account Cost Center</th>
+                                        <th>Name</th>
+                                        <th>Percentage</th>
+                                        <th>Leviable?</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="width:2100px;">
+
+                                    @if (ViewBag.ChargeSplits != null)
+                                    {
+                                        foreach (var data in ViewBag.ChargeSplits)
                                         {
-                                            foreach (var data in ViewBag.ChargeSplits)
-                                            {
 
-                                            }
                                         }
+                                    }
 
-                                    </tbody>
-                                </table>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+
+                        <div class="row">
+                            <div class="col-lg-8">
                             </div>
 
-
-
-                            <div class="row">
-                                <div class="col-lg-8">
+                            <div class="col-lg-2">
+                                <div class="form-group form-group-lg">
+                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                 </div>
+                            </div>
 
+                            @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                            {
                                 <div class="col-lg-2">
-                                    <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Create" class="btn btn-primary" />
                                     </div>
                                 </div>
-
-                                @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
-                                {
-                                    <div class="col-lg-2">
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
-                                        </div>
-                                    </div>
-                                }
-                            </div>
+                            }
+                        </div>
                         <hr />
                     }
                 </div>

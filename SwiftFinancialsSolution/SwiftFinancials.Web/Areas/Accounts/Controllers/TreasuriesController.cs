@@ -1,5 +1,6 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.AdministrationModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -36,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(savingsProduct => savingsProduct.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(treasuries => treasuries.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -53,55 +54,89 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(treasuryDTO);
         }
+
+
+
+        public async Task<ActionResult> Search(Guid? id, TreasuryDTO treasuryDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            if (Session["chartOfAccountId"] != null)
+            {
+                treasuryDTO.ChartOfAccountId = (Guid)Session["chartOfAccountId"];
+                treasuryDTO.ChartOfAccountAccountName = Session["chartOfAccountName"].ToString();
+            }
+
+            if(Session["treasuryName"] != null)
+            {
+                treasuryDTO.Description = Session["treasuryName"].ToString();
+            }
+
+            if(Session["lowerLimit"] != null)
+            {
+                treasuryDTO.RangeLowerLimit = Convert.ToDecimal(Session["lowerLimit"]);
+            }
+
+            if(Session["upperLimit"] != null)
+            {
+                treasuryDTO.RangeUpperLimit = Convert.ToDecimal(Session["upperLimit"]);
+            }
+
+
+            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+
+            if (branch != null)
+            {
+                treasuryDTO.BranchId = branch.Id;
+                treasuryDTO.BranchDescription = branch.Description;
+
+                Session["BranchId"] = treasuryDTO.BranchId;
+                Session["BranchDescription"] = treasuryDTO.BranchDescription;
+
+
+                Session["Description"] = treasuryDTO.Description;
+                Session["RangeLowerLimit"] = treasuryDTO.RangeLowerLimit;
+                Session["RangeUpperLimit"] = treasuryDTO.RangeUpperLimit;
+            }
+
+            return View("Create", treasuryDTO);
+        }
+
+
         public async Task<ActionResult> Create(Guid? id, TreasuryDTO treasuryDTO)
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-
-            if (Session["BranchId"] != null && Session["treasuryName"] != null
-                && Session["lowerLimit"] != null && Session["upperLimit"] != null)
+            if (Session["BranchId"] != null)
             {
                 treasuryDTO.BranchId = (Guid)Session["BranchId"];
-
-                treasuryDTO.Description = Session["treasuryName"].ToString();
-                treasuryDTO.RangeLowerLimit = Convert.ToDecimal(Session["lowerLimit"].ToString());
-                treasuryDTO.RangeUpperLimit = Convert.ToDecimal(Session["upperLimit"].ToString());
+                treasuryDTO.BranchDescription = Session["BranchDescription"].ToString();
             }
 
-
-            var treasuryName = treasuryDTO.Description;
-            var lowerLimit = treasuryDTO.RangeLowerLimit;
-            var upperLimit = treasuryDTO.RangeUpperLimit;
-
-
-            var glAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
-
-            if (glAccount != null)
+            if(Session["Description"] != null)
             {
-                treasuryDTO.ChartOfAccountId = glAccount.Id;
-
-
-                Session["ChartOfAccountId"] = treasuryDTO.ChartOfAccountId;
-
-                Session["treasuryName2"] = treasuryName;
-                Session["lowerLimit2"] = lowerLimit;
-                Session["upperLimit2"] = upperLimit;
+                treasuryDTO.Description = Session["Description"].ToString();
             }
 
-            return View(treasuryDTO);
-        }
+            if(Session["RangeLowerLimit"] != null)
+            {
+                treasuryDTO.RangeLowerLimit = Convert.ToDecimal(Session["RangeLowerLimit"]);
+            }
 
+            if(Session["RangeUpperLimit"] != null)
+            {
+                treasuryDTO.RangeUpperLimit = Convert.ToDecimal(Session["RangeUpperLimit"]);
+            }
 
-        public async Task<ActionResult> Branch(Guid? id, TreasuryDTO treasuryDTO)
-        {
-            await ServeNavigationMenus();
 
             Guid parseId;
 
@@ -110,37 +145,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
 
-            if (Session["ChartOfAccountId"] != null && Session["treasuryName2"] != null
-                && Session["lowerLimit2"] != null && Session["upperLimit2"] != null)
+
+            if (chartOfAccount != null)
             {
-                treasuryDTO.ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
+                treasuryDTO.ChartOfAccountId = chartOfAccount.Id;
+                treasuryDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
 
-                treasuryDTO.Description = Session["treasuryName2"].ToString();
-                treasuryDTO.RangeLowerLimit = Convert.ToDecimal(Session["lowerLimit2"].ToString());
-                treasuryDTO.RangeUpperLimit = Convert.ToDecimal(Session["upperLimit2"].ToString());
+                Session["chartOfAccountId"] = treasuryDTO.ChartOfAccountId;
+                Session["chartOfAccountName"] = treasuryDTO.ChartOfAccountAccountName;
+
+                Session["treasuryName"] = treasuryDTO.Description;
+                Session["lowerLimit"] = treasuryDTO.RangeLowerLimit;
+                Session["upperLimit"] = treasuryDTO.RangeUpperLimit;
             }
-
-
-            var branches = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
-
-            if(branches != null)
-            {
-                treasuryDTO.BranchId = branches.Id;
-                treasuryDTO.BranchDescription = branches.Description;
-
-                var treasuryName = treasuryDTO.Description;
-                var lowerLimit = treasuryDTO.RangeLowerLimit;
-                var upperLimit = treasuryDTO.RangeUpperLimit;
-
-
-                Session["BranchId"] = treasuryDTO.BranchId;
-                Session["treasuryName"] = treasuryName;
-                Session["lowerLimit"] = lowerLimit;
-                Session["upperLimit"] = upperLimit;
-            }
-
-            return View("Create", treasuryDTO);
+           
+            return View(treasuryDTO);
         }
 
 
@@ -151,7 +172,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!treasuryDTO.HasErrors)
             {
-                await _channelService.AddTreasuryAsync(treasuryDTO, GetServiceHeader());
+                var result = await _channelService.AddTreasuryAsync(treasuryDTO, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
+                {
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    return View("Create");
+                }
+
+                //TempData["SuccessMessage"] = "Create successful.";
+                //return RedirectToAction("Index");
 
                 TempData["AlertMessage"] = "Treasury created successfully";
 
@@ -161,15 +192,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = treasuryDTO.ErrorMessages;
 
-                TempData["Error"] = "Failed to create Treasury";
-
                 return View(treasuryDTO);
+                //return Json(new { success = false, message = "Validation failed", errors = ModelState.Values.SelectMany(v => v.Errors).Select(e => e.ErrorMessage).ToList() });
             }
+           
         }
 
 
-
-        public async Task<ActionResult> Branch2(Guid? id, TreasuryDTO treasuryDTO)
+        public async Task<ActionResult> Search2(Guid? id, TreasuryDTO treasuryDTO)
         {
             await ServeNavigationMenus();
 
@@ -181,24 +211,47 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
 
-            if (Session["ChartOfAccountId"] != null)
+            if (Session["chartOfAccountId2"] != null)
             {
-                treasuryDTO.ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
+                treasuryDTO.ChartOfAccountId = (Guid)Session["chartOfAccountId2"];
+                treasuryDTO.ChartOfAccountAccountName = Session["chartOfAccountName2"].ToString();
+            }
+
+            if (Session["treasuryName"] != null)
+            {
+                treasuryDTO.Description = Session["treasuryName"].ToString();
+            }
+
+            if (Session["lowerLimit"] != null)
+            {
+                treasuryDTO.RangeLowerLimit = Convert.ToDecimal(Session["lowerLimit"]);
+            }
+
+            if (Session["upperLimit"] != null)
+            {
+                treasuryDTO.RangeUpperLimit = Convert.ToDecimal(Session["upperLimit"]);
             }
 
 
-            var branches = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
+            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
 
-            if (branches != null)
+            if (branch != null)
             {
-                treasuryDTO.BranchId = branches.Id;
-                treasuryDTO.BranchDescription = branches.Description;
+                treasuryDTO.BranchId = branch.Id;
+                treasuryDTO.BranchDescription = branch.Description;
 
-                Session["BranchDescription"] = treasuryDTO.BranchDescription;
+                Session["BranchId2"] = treasuryDTO.BranchId;
+                Session["BranchDescription2"] = treasuryDTO.BranchDescription;
+
+
+                Session["Description2"] = treasuryDTO.Description;
+                Session["RangeLowerLimit2"] = treasuryDTO.RangeLowerLimit;
+                Session["RangeUpperLimit2"] = treasuryDTO.RangeUpperLimit;
             }
 
-            return View("Create", treasuryDTO);
+            return View("Edit", treasuryDTO);
         }
+
 
 
 
@@ -208,8 +261,56 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var treasuryDTO = await _channelService.FindTreasuryAsync(id, false, GetServiceHeader());
 
+            if (Session["BranchId"] != null)
+            {
+                treasuryDTO.BranchId = (Guid)Session["BranchId"];
+                treasuryDTO.BranchDescription = Session["BranchDescription"].ToString();
+            }
+
+            if (Session["Description"] != null)
+            {
+                treasuryDTO.Description = Session["Description"].ToString();
+            }
+
+            if (Session["RangeLowerLimit"] != null)
+            {
+                treasuryDTO.RangeLowerLimit = Convert.ToDecimal(Session["RangeLowerLimit"]);
+            }
+
+            if (Session["RangeUpperLimit"] != null)
+            {
+                treasuryDTO.RangeUpperLimit = Convert.ToDecimal(Session["RangeUpperLimit"]);
+            }
+
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var chartOfAccount = await _channelService.FindChartOfAccountAsync(parseId, GetServiceHeader());
+
+
+            if (chartOfAccount != null)
+            {
+                treasuryDTO.ChartOfAccountId = chartOfAccount.Id;
+                treasuryDTO.ChartOfAccountAccountName = chartOfAccount.AccountName;
+
+                Session["chartOfAccountId"] = treasuryDTO.ChartOfAccountId;
+                Session["chartOfAccountName"] = treasuryDTO.ChartOfAccountAccountName;
+
+                Session["treasuryName"] = treasuryDTO.Description;
+                Session["lowerLimit"] = treasuryDTO.RangeLowerLimit;
+                Session["upperLimit"] = treasuryDTO.RangeUpperLimit;
+            }
+
+            return View(treasuryDTO);
+
             return View(treasuryDTO);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -219,7 +320,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateTreasuryAsync(treasuryDTO, GetServiceHeader());
 
-                TempData["Edit"] = "Edited Treasury successfully";
+                TempData["Edit"] = "Successfully Edited Treasury";
 
                 return RedirectToAction("Index");
             }

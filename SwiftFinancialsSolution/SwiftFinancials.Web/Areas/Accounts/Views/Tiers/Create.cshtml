@@ -117,15 +117,6 @@
                         </div>
                     }
 
-
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                        </ul>
-                    </div>
-
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -150,7 +141,22 @@
                                 </div>
                             </div>
 
+                            <hr />                           
+                            <br />
+
+
+                            <div id="tabs-container">
+                                <ul class="nav-tabs">
+                                    <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
+                                    <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                                    <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                                </ul>
+                            </div>
+
+
+                                                @*Tiers DataTable*@
                             <h1>Tier Details</h1>
+                            <br />
 
                             <div class="row">
                                 <div class="col-lg-4">
@@ -195,35 +201,36 @@
                             </div>
                         </fieldset>
 
-                        <hr />
-                        
-                            <center>
-                                <h3><strong>Tiers</strong></h3>
-                            </center>
-                            <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-                                <table id="Guarantors" class="display nowrap" style="width:100%;">
-                                    <thead>
-                                        <tr>
-                                            <th>Range (Lower Limit)</th>
-                                            <th>Range (Upper  Limit)</th>
-                                            <th>Charge Type</th>
-                                            <th>Percentage</th>
-                                            <th>Fixed Amount</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody style="width:2100px;">
+                        <br />
+                        <br />
 
-                                        @if (ViewBag.ChargeSplits != null)
+                        <center>
+                            <h3><strong>Tiers</strong></h3>
+                        </center>
+                        <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+                            <table id="Guarantors" class="display nowrap" style="width:100%;">
+                                <thead>
+                                    <tr>
+                                        <th>Range (Lower Limit)</th>
+                                        <th>Range (Upper  Limit)</th>
+                                        <th>Charge Type</th>
+                                        <th>Percentage</th>
+                                        <th>Fixed Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="width:2100px;">
+
+                                    @if (ViewBag.ChargeSplits != null)
+                                    {
+                                        foreach (var data in ViewBag.ChargeSplits)
                                         {
-                                            foreach (var data in ViewBag.ChargeSplits)
-                                            {
 
-                                            }
                                         }
+                                    }
 
-                                    </tbody>
-                                </table>
-                            </div>
+                                </tbody>
+                            </table>
+                        </div>
                     }
                 </div>
 

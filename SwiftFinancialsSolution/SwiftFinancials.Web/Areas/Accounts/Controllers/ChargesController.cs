@@ -58,6 +58,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            //CommissionDTO commissionDTO = new CommissionDTO();
+
+            //var commissionID = commissionDTO.Id;
+
+            //var data = await _channelService.FindCommissionSplitsByCommissionIdAsync(commissionID, GetServiceHeader());
+
+            //TempData["Charges"] = data;
+
             return View();
         }
 
@@ -69,6 +77,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!commissionDTO.ErrorMessages.Any())
             {
                 await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+
+                TempData["Create"] = "Successfully Created Charge";
 
                 if (commissionDTO != null)
                 {
@@ -87,24 +97,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         }
                         if (commissionSplits.Any())
                             await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
+
+                        TempData["UpdateCommissionSplits"] = "Charges Split updates Successfully";
                     }
-
-                    //Update CommissionLevies
-
-                    //var commissionLevies = new ObservableCollection<CommissionLevyDTO>();
-
-                    //if (commissionDTO.CommissionLevies.Any())
-                    //{
-                    //    foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
-                    //    {
-                    //        commissionLevyDTO.CommissionId = commissionDTO.Id;
-                    //        commissionDTO.CommissionSplitChartOfAccountId = commissionDTO.Id;
-
-                    //        commissionLevies.Add(commissionLevyDTO);
-                    //    }
-
-                    //    await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionDTO.Id, commissionLevies, GetServiceHeader());
-                    //}
                 }
 
                 return RedirectToAction("Index");
@@ -114,6 +109,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
 
                 TempData["Error"] = string.Join(",", allErrors);
+
+                TempData["CreateError"] = "Failed to Create Charge";
 
                 return View(commissionDTO);
             }
@@ -136,10 +133,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
+                TempData["Edit"] = "Successfully Edit Charge";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["EditError"] = "Failed to Edit Charge";
+
                 return View(commissionDTO);
             }
         }
