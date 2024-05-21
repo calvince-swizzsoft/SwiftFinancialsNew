@@ -94,16 +94,16 @@
                                         @Html.ValidationMessageFor(model => model.ShortageChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
 
-                                    @*<div class="form-group form-group-lg">
+                                    <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.EmployeeCustomerFullName, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.EmployeeCustomerId)
-                                            @Html.EditorFor(model => model.EmployeeCustomerId, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.EditorFor(model => model.EmployeeCustomerFullName, new { htmlAttributes = new { @class = "EmployeesLookup form-control required", placeholder = "Description.." } })
                                             @Html.ValidationMessageFor(model => model.EmployeeCustomerFullName, "", new { @class = "text-danger" })
-                                        </div>*@
+                                        </div>
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.EmployeeId, new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.EmployeeCustomerId)
+                                        @Html.HiddenFor(model => model.EmployeeId)
                                         <div class="input-group" data-autoclose="true">
                                             @Html.TextBoxFor(model => model.EmployeeCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                             <span class="input-group-addon">
@@ -201,7 +201,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                 "sAjaxSource": "@(Url.Action("Index", "Employee", new { Area = "HumanResource"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -221,16 +221,15 @@
 
                     return nRow;
                 },
-        // Display settings
-        "aoColumns": [
-
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CustomerReference1", "sTitle": "customer number", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
+            // Display settings
+            "aoColumns": [
+                { "mDataProp": "Customer.FullName", "sTitle": "Name", "sWidth": "15%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
+                { "mDataProp": "DepartmentDescription", "sTitle": "DepartmentDescription", "sWidth": "15%" },
+                { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "15%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
              });
 
     $("#s tbody").on("click", "tr", function () {

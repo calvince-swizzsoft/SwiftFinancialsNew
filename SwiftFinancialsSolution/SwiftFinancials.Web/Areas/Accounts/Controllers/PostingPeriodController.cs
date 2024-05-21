@@ -103,6 +103,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, PostingPeriodDTO postingPeriodDTO)
         {
+            var startDate = Request["startDate"];
+
+            var endDate = Request["endDate"];
+
+            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
+
+            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
             if (ModelState.IsValid)
             {
                 await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());

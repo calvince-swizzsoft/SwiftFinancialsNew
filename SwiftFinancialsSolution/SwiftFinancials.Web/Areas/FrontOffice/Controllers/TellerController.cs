@@ -57,32 +57,31 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(tellerDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+        public async Task<ActionResult> Create(Guid? id, TellerDTO employeeBindingModel)
         {
             await ServeNavigationMenus();
             Guid parseId;
             ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
+            //var employees = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+            //bool includeBalances = false;
+            //bool includeProductDescription = false;
+            //bool includeInterestBalanceForLoanAccounts = false;
+            //bool considerMaturityPeriodForInvestmentAccounts = false;
+            var customer = await _channelService.FindEmployeeAsync(employeeBindingModel.Id, GetServiceHeader());
 
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            TellerDTO employeeBindingModel = new TellerDTO();
+            
 
             if (customer != null)
             {
                 employeeBindingModel.EmployeeCustomerId = customer.Id;
                 employeeBindingModel.EmployeeId = customer.Id;
                 employeeBindingModel.EmployeeCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                
-                
-                employeeBindingModel.EmployeeCustomerIndividualLastName = customer.CustomerIndividualLastName;
+
 
 
             }
@@ -93,7 +92,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Create(TellerDTO tellerDTO)
         {
             tellerDTO.ValidateAll();
-
+            tellerDTO.EmployeeId = tellerDTO.EmployeeCustomerId;
             if (!tellerDTO.HasErrors)
             {
                 await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());

@@ -43,6 +43,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
         {
             if (levyDTO != null)
             {
+                levyDTO.ErrorMessageResult = string.Format("ChargePercentage cant be more than 100%", levyDTO.ChargePercentage);
+                
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var charge = new Charge(levyDTO.ChargeType, levyDTO.ChargePercentage, levyDTO.ChargeFixedAmount);

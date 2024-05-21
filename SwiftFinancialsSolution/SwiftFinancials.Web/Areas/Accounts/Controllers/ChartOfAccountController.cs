@@ -68,17 +68,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ChartOfAccountDTO chartOfAccountDTO)
         {
+           // await ServeNavigationMenus();
+
             chartOfAccountDTO.ValidateAll();
 
 
             if (!chartOfAccountDTO.HasErrors)
             {
                 var result =await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
-                if(result.ErrorMessageResult!=null || result.ErrorMessageResult!=string.Empty)
+                if(result.ErrorMessageResult!=null )
                 {
                     TempData["ErrorMsg"] = result.ErrorMessageResult;
-                    return View("Create");
+                    await ServeNavigationMenus();
+                    return View();
                 }
+
+                ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
+                ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
 
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
