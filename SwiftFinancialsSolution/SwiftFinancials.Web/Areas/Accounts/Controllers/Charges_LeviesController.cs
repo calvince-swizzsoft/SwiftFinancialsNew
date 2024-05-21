@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Newtonsoft.Json;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -20,7 +21,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
-            TempData["Levies"] = await _channelService.FindLeviesAsync(GetServiceHeader());
+            //TempData["Levies"] = await _channelService.FindLeviesAsync(GetServiceHeader());
+
+            var levies = await _channelService.FindLeviesAsync(GetServiceHeader());
+
+            TempData["Levies"] = JsonConvert.SerializeObject(levies); // Serialize the data to store it in TempData
 
             return View();
         }

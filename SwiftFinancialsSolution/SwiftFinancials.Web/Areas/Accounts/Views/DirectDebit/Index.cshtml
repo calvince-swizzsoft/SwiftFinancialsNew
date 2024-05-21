@@ -116,17 +116,17 @@
                     var editUrl = '<a  href="/accounts/DirectDebit/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/DirectDebit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
                     { "mDataProp": "CustomerAccountTypeProductCode", "sTitle": "Product Code", "sWidth": "5%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
                     { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "10%" },
-                    { "mDataProp": "ChargeType", "sTitle": "Charge Type", "sWidth": "5%" },
+                    { "mDataProp": "ChargeTypeDescription", "sTitle": "Charge Type", "sWidth": "5%" },
                     { "mDataProp": "ChargePercentage", "sTitle": "Percentage", "sWidth": "5%" },
                     { "mDataProp": "ChargeFixedAmount", "sTitle": "Fixed Amount", "sWidth": "10%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "3%" },
