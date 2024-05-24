@@ -1,12 +1,12 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionDTO
 
+
 @{
     /**/
 
     ViewBag.Title = "Create Charges";
 
     var chargeType = ViewBag.chargeType as List<SelectListItem>;
-
 
 }
 
@@ -140,19 +140,20 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        var lists = TempData["Levies"] as List<string>;
+                        var leviesJson = TempData["Levies"].ToString();
+                        //var levies = JsonConvert.DeserializeObject<List<Application.MainBoundedContext.DTO.AccountsModule.LevyDTO>>(leviesJson); // Adjust type according to your data
 
-                        <fieldset>
-                            @if (lists != null && lists.Any())
-                            {
-                                <ul>
-                                    @foreach (var levies in lists)
-                                    {
-                                        <li>@levies</li>
-                                    }
-                                </ul>
-                            }
-                        </fieldset>
+
+                        @if (TempData["Levies"] != null)
+                        {
+                            <ul>
+                                @foreach (var levy in levies)
+                                {
+                                    <li>@levy.SomeProperty</li>
+                                    <!-- Adjust according to your model properties -->
+                                }
+                            </ul>
+                        }
                     }
                 </div>
 
@@ -265,4 +266,57 @@
     });
 
     </script>
+
+
+
+
+    @*<script type="text/javascript">
+            $(document).ready(function () {
+                $('#BankGrid').DataTable({
+                    // Ajax settings
+                    "sPaginationType": "full_numbers",
+                    "bProcessing": true,
+                    "bServerSide": true,
+                    "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts"}))",
+                    "sServerMethod": "POST",
+                    // Callback settings
+                    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                       var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                        var h = ("0" + createdDate.getHours()).slice(-2);
+                        var m = ("0" + createdDate.getMinutes()).slice(-2);
+                        var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                        aData.CreatedDate = dt_Created;
+
+                        var editUrl = '<a  href="/accounts/BankLinkage/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                        var viewUrl = '<a  href="/accounts/BankLinkage/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
+                        $('td:eq(5)', nRow).html(dt_Created);
+                        $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+
+                        return nRow;
+                    },
+                    // Display settings
+                    "aoColumns": [
+                        { "mDataProp": "BankBranchName", "sTitle": "Branch Name", "sWidth": "10%" },
+                        { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account", "sWidth": "20%" },
+                        { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
+                        { "mDataProp": "BankName", "sTitle": "Bank Name", "sWidth": "10%" },
+                        { "mDataProp": "BankAccountNumber", "sTitle": "Bank Account Number", "sWidth": "10%" },
+
+                        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                        { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+                    "aaSorting": [[0, "desc"]]
+            });
+            });
+
+            $(document).ajaxStart(function () {
+                $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+            });
+            $(document).ajaxStop(function () {
+                $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+            });
+        </script>*@
 }

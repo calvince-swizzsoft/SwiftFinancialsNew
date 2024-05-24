@@ -53,6 +53,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(costCenterDTO);
         }
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();

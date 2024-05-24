@@ -127,6 +127,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
                 }
+
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(recurringBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Type.ToString());

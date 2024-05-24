@@ -54,10 +54,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(directDebitDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id, DirectDebitDTO directDebitDTO)
+
+        public async Task<ActionResult> SavingsProduct(Guid? id, DirectDebitDTO directDebitDTO)
         {
             await ServeNavigationMenus();
 
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+
+            //if (Session["Name"] != null)
+            //{
+            //    directDebitDTO.Description = Session["Name"].ToString();
+            //}
+
+            //if(Session["ProductCode"] != null)
+            //{
+                
+            //}
+
+            //if(Session["ChargeType"] != null)
+            //{
+                
+            //}
+
+            //if(Session["Percentage"] != null)
+            //{
+            //    directDebitDTO.ChargePercentage = Convert.ToDouble(Session["Percentage"]);
+            //}
 
             Guid parseId;
 
@@ -67,9 +90,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
             var savingsProduct = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
+            if (savingsProduct != null)
+            {
+                directDebitDTO.CustomerAccountTypeTargetProductId = savingsProduct.Id;
+                directDebitDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
+            }
+
+            return View("Create", directDebitDTO);
+        }
+
+
+        public async Task<ActionResult> Create(Guid? id, DirectDebitDTO directDebitDTO)
+        {
+            await ServeNavigationMenus();
 
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+
+            //Session["Name"] = directDebitDTO.Description;
+            //Session["ProductCode"] = directDebitDTO.CustomerAccountTypeProductCodeDescription;
+            //Session["ChargeType"] = directDebitDTO.ChargeTypeDescription;
+            //Session["Percentage"] = directDebitDTO.ChargePercentage;
 
             return View();
         }
@@ -91,7 +132,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = directDebitDTO.ErrorMessages;
 
-                ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCode.ToString());
+                ViewBag.ProductCode = GetProductCodeSelectList(directDebitDTO.CustomerAccountTypeProductCodeDescription.ToString());
                 ViewBag.ChargeType = GetChargeTypeSelectList(directDebitDTO.ChargeType.ToString());
 
                 TempData["CreateError"] = "Failed to create Direct Debit";

@@ -43,6 +43,7 @@
                         @Html.AntiForgeryToken()
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
                             <div class="ibox-content">
                                 <div class="sk-spinner sk-spinner-double-bounce">
                                     <div class="sk-double-bounce1"></div>
@@ -64,6 +65,7 @@
                                 <label for="headerCheckbox" style="font-weight: bold; color: blue;">Select All</label>
 
                             </div>
+
 
                             <div class="form-group form-group-lg">
                                 @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })

@@ -56,7 +56,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-
         public async Task<ActionResult> Search(Guid? id, TreasuryDTO treasuryDTO)
         {
             await ServeNavigationMenus();
