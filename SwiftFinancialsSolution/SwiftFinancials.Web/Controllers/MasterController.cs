@@ -33,7 +33,7 @@ namespace SwiftFinancials.Web.Controllers
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
 
-        public ObservableCollection<DynamicChargeDTO> ApplicableChargeDTOs;
+        public ObservableCollection<CommissionDTO> CommissionDTOs;
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 

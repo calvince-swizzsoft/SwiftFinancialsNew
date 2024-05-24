@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -54,7 +55,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> Create(Guid? id, DebitTypeDTO debitTypeDTO)
+        public async Task<ActionResult> SavingsProduct(Guid? id, DebitTypeDTO debitTypeDTO)
         {
             await ServeNavigationMenus();
 
@@ -73,51 +74,87 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 debitTypeDTO.CustomerAccountTypeTargetProductId = savingsProduct.Id;
                 debitTypeDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
+
+                Session["savingsProductid"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
+                Session["SavingsProductDescription"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
+
+                //Session["Description"] = debitTypeDTO.Description;
+
+                //Session["ProductCode"] = debitTypeDTO.CustomerAccountTypeTargetProductCode;
+                //Session["ProductCodeDescription"] = debitTypeDTO.CustomerAccountTypeProductCodeDescription;
             }
 
-            return View(debitTypeDTO);
+            return View("Create", debitTypeDTO);
+        }
+
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
+
+            return View();
+        }
+
+
+        public async Task<ActionResult> DebitType(DebitTypeDTO debitTypeDTO)
+        {
+            Session["Description"] = debitTypeDTO.Description;
+            Session["ProductCode"] = debitTypeDTO.ProductCode;
+            Session["isLocked"] = debitTypeDTO.IsLocked;
+
+            return View("Create", debitTypeDTO);
         }
 
 
         [HttpPost]
         public async Task<ActionResult> Create(DebitTypeDTO debitTypeDTO, List<DebitTypeDTO> selectedRows)
         {
+            debitTypeDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductid"];
+            debitTypeDTO.CustomerAccountTypeTargetProductDescription = Session["SavingsProductDescription"].ToString();
+
+            debitTypeDTO.Description = Session["Description"].ToString();
+            debitTypeDTO.ProductCode = Convert.ToInt32(Session["ProductCode"].ToString());
+            debitTypeDTO.IsLocked = (bool)Session["isLocked"];
+
             debitTypeDTO.ValidateAll();
 
             if (!debitTypeDTO.HasErrors)
             {
+                var result= await _channelService.AddDebitTypeAsync(debitTypeDTO, GetServiceHeader());
+
+
                 foreach (var selectedRow in selectedRows)
                 {
+                    Session["selectedRows"] = selectedRow;
+
                     var commissionsDTO = await _channelService.FindCommissionAsync(selectedRow.Id, GetServiceHeader());
 
-                    await _channelService.UpdateCommissionAsync(commissionsDTO, GetServiceHeader());
+                    CommissionDTOs = (ObservableCollection<CommissionDTO>)Session["selectedRows"];
+
+                    await _channelService.UpdateCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, CommissionDTOs, GetServiceHeader());
+
+                    //CommissionDTOs = (ObservableCollection<CommissionDTO>)Session["selectedRows"];
                 }
 
-                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
 
-                return RedirectToAction("Create");
+                TempData["Create"] = "Successfully Created Debit Type";
+
+                return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = debitTypeDTO.ErrorMessages;
-                //ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
+
+                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
 
                 TempData["CreateError"] = "Failed to Create Debit Type";
 
                 return View(debitTypeDTO);
             }
-
-
-
-            //if (!debitTypeDTO.HasErrors)
-            //{
-            //    await _channelService.AddDebitTypeAsync(debitTypeDTO, GetServiceHeader());
-
-            //    TempData["Create"] = "Successfully Created Debit Type";
-
-            //    return RedirectToAction("Index");
-            //}
         }
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -127,6 +164,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(debitTypeDTO);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
