@@ -109,7 +109,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(DebitTypeDTO debitTypeDTO, List<DebitTypeDTO> selectedRows)
+        public async Task<ActionResult> Create(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             debitTypeDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductid"];
             debitTypeDTO.CustomerAccountTypeTargetProductDescription = Session["SavingsProductDescription"].ToString();
@@ -124,19 +124,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var result= await _channelService.AddDebitTypeAsync(debitTypeDTO, GetServiceHeader());
 
+                await _channelService.UpdateCommissionsByDebitTypeIdAsync(result.Id, selectedRows, GetServiceHeader());
 
-                foreach (var selectedRow in selectedRows)
-                {
-                    Session["selectedRows"] = selectedRow;
+                //foreach (var selectedRow in selectedRows)
+                //{
+                //    Session["selectedRows"] = selectedRow;
 
-                    var commissionsDTO = await _channelService.FindCommissionAsync(selectedRow.Id, GetServiceHeader());
+                //    var commissionsDTO = await _channelService.FindCommissionAsync(selectedRow.Id, GetServiceHeader());
 
-                    CommissionDTOs = (ObservableCollection<CommissionDTO>)Session["selectedRows"];
+                //    //CommissionDTOs = (ObservableCollection<CommissionDTO>)Session["selectedRows"];
 
-                    await _channelService.UpdateCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, CommissionDTOs, GetServiceHeader());
+                //    await _channelService.UpdateCommissionsByDebitTypeIdAsync(result.Id, CommissionDTOs, GetServiceHeader());
 
-                    //CommissionDTOs = (ObservableCollection<CommissionDTO>)Session["selectedRows"];
-                }
+                //    //CommissionDTOs = (ObservableCollection<CommissionDTO>)Session["selectedRows"];
+                //}
 
 
                 TempData["Create"] = "Successfully Created Debit Type";
