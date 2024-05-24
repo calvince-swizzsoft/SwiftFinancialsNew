@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -82,13 +83,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO, List<LoanProductDTO> selectedRows)
+        public async Task<ActionResult> Create(FixedDepositTypeDTO fixedDepositTypeDTO, ObservableCollection<LevyDTO> selectedRows)
         {
             fixedDepositTypeDTO.ValidateAll();
             bool enforceFixedDepositBands = false;
             if (!fixedDepositTypeDTO.HasErrors)
             {
-                var result = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, enforceFixedDepositBands);
+                var result = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, enforceFixedDepositBands,GetServiceHeader());
+                await _channelService.UpdateLeviesByFixedDepositTypeIdAsync(fixedDepositTypeDTO.Id, selectedRows, GetServiceHeader());
                // if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
                     if (result.ErrorMessageResult != null )
                     {

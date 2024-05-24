@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.AccountsModule.DynamicChargeDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.SystemTransactionTypeInCommissionDTO
 
 @{
     /**/
@@ -61,38 +61,34 @@
                         @Html.AntiForgeryToken()
                         <h1>Well known charges</h1>
                         <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.InstallmentsBasisValue, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.Installments)
-                                    @Html.ValidationMessageFor(model => model.Installments, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.Installments, new { htmlAttributes = new { @class = "DebitTypesLookup form-control required", placeholder = "Description.." } })
-                                </div>
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.RecoverySource, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.ComplementType, htmlAttributes: new { @class = "" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.RecoverySource, trans, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.RecoverySource)
+                                        @Html.DropDownListFor(model => model.ComplementType, h, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.ComplementType)
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.SystemTransactionType, htmlAttributes: new { @class = "" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.SystemTransactionType, trans, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.SystemTransactionType)
                                     </div>
                                 </div>
 
                             </div>
 
                             <div class="col-lg-6">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.Installments, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Installments, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Installments, "", new { @class = "text-danger" })
-                                </div>
-
-
-
+                              
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.ComplementFixedAmount, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.ComplementFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Value", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ComplementFixedAmount, "", new { @class = "text-danger" })
                                 </div>
+
                                 <div class="form-group form-group-sm">
                                     <div class="col-md-offset-2">
                                         <input type="submit" value="Create" class="btn btn-primary" />
