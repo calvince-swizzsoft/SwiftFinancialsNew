@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -58,39 +59,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO)
+        public async Task<ActionResult> Create(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO, ObservableCollection<CommissionDTO> commissions,ChargeDTO chargeDTO)
         {
-            levyDTO.ValidateAll();
-
-            if (!levyDTO.HasErrors)
+            systemTransactionTypeInCommissionDTO.ValidateAll();
+            int SystemTransactionType = 0;
+            if (!systemTransactionTypeInCommissionDTO.HasErrors)
             {
-                await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
-                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoveryMode.ToString());
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
-                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoveryMode.ToString());
-                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoveryMode.ToString());
-                ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
+                await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType,commissions,chargeDTO, GetServiceHeader());
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.SystemTransactionType.ToString());
+                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                //ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.ComplementType.ToString());
 
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
+                //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = levyDTO.ErrorMessages;
-                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoveryMode.ToString());
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
-                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoveryMode.ToString());
-                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoveryMode.ToString());
-                ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
+                var errorMessages = systemTransactionTypeInCommissionDTO.ErrorMessages;
+                //ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                //ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
+                //ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
 
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
-                return View(levyDTO);
+                //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
+                return View(systemTransactionTypeInCommissionDTO);
             }
         }
 
