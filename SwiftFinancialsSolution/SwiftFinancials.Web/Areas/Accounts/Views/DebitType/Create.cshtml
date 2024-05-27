@@ -83,15 +83,18 @@
 
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ProductCode, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.CustomerAccountTypeProductCode, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.ProductCode, productCode, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.ProductCode)
+                                            @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCode, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode)
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <br />
+
                             <div class="row">
                                 <div class="col-lg-3"></div>
                                 <div class="col-lg-3"></div>
@@ -103,7 +106,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
-                                    <button type="button" class="btn btn-info" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
+                                    <button type="button" class="btn btn-primary" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
                                 </div>
                             </div>
 
@@ -117,10 +120,7 @@
 
                                         @Html.AntiForgeryToken()
                                         <h2>Applicable Charges</h2>
-                                        @*<button class="tablinks" style="background-color: grey; border-radius: 6px; height: 45px; color: white;" disabled>
-                                                <img src="~/Images/table.png" style="width: 20px; background-color: grey; color:grey; height: 20px;" /> Applicable charges
-                                            </button>*@
-
+                                       
                                         <div style="text-align: left;">
                                             <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
                                             <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
@@ -138,23 +138,9 @@
                                             </table>
                                         </div>
 
-                                        <button id="submitEntry" class="btn btn-secondary" style="margin-top: 20px; margin-bottom: 10px;">Create</button>
+                                        <button id="submit-btn" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px; width: 200px;">Create</button>
 
                                     </div>
-                                </div>
-                            </div>
-
-
-                            <div class="row">
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-4"></div>
-
-                                <div class="col-lg-2">
-
-                                </div>
-
-                                <div class="col-lg-3">
-                                    <input type="submit" id="submit-btn" style="width:200px;" value="Create" class="btn btn-primary" />
                                 </div>
                             </div>
                         </fieldset>
@@ -257,7 +243,7 @@
                 CustomerAccountTypeTargetProductId: document.querySelector('[name="CustomerAccountTypeTargetProductId"]').value,
                 CustomerAccountTypeTargetProductDescription: document.querySelector('[name="CustomerAccountTypeTargetProductDescription"]').value,
                 Description: document.querySelector('[name="Description"]').value,
-                ProductCode: document.querySelector('[name="ProductCode"]').value,
+                CustomerAccountTypeProductCode: document.querySelector('[name="CustomerAccountTypeProductCode"]').value,
                 IsLocked: document.querySelector('[name="IsLocked"]').checked
             };
 
@@ -407,24 +393,7 @@
         });
 
 
-        //Ajax code to send data to Database
-        @*$(document).ready(function () {
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("Create", "DebitType", new { Area = "Accounts" })',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        alert('Form submitted successfully!');
-                    },
-                    error: function (xhr, status, error) {
-                        alert('An error occurred: ' + xhr.responseText);
-                    }
-                });
-            });*@
-
-
+       
 
         $('#submit-btn').click(function () {
             var selectedRowsData = [];
@@ -498,37 +467,10 @@
         $('#CustomerAccountTypeTargetProductId').val(data.Id);
         $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
         $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
-        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
     });
 
     </script>
 
-    <script>
-        $('#submitEntry').click(function () {
-            var selectedRowsData = [];
-            $('.rowCheckbox:checked').each(function () {
-                var rowData = {
-                    Id: $(this).data('id'),
-                    // Add other properties you want to include
-                };
-                selectedRowsData.push(rowData);
-            });
-
-            // Send the selected rows data to the backend using AJAX
-            $.ajax({
-                url: '/Accounts/DebitType/Create',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(selectedRowsData),
-                success: function (response) {
-                    // Handle success response
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response
-                }
-            });
-        });
-    </script>
 
 
     <style>
