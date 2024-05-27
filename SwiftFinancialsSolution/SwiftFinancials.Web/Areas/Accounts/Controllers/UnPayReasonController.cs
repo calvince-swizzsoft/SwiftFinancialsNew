@@ -6,6 +6,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -53,6 +54,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(unPayReasonDTO);
         }
+
+
+        public async Task<ActionResult> UnpayReason(UnPayReasonDTO unpayReasonDTO)
+        {
+            Session["Description"] = unpayReasonDTO.Description;
+            Session["Code"] = unpayReasonDTO.Code;
+            Session["isLocked"] = unpayReasonDTO.IsLocked;
+
+            return View("Create", unpayReasonDTO);
+        }
+
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -60,14 +74,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Create(UnPayReasonDTO unPayReasonDTO)
-        {
-            unPayReasonDTO.ValidateAll();
 
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create(UnPayReasonDTO unPayReasonDTO, ObservableCollection<CommissionDTO> selectedRows)
+        {
+            unPayReasonDTO.Description = Session["Description"].ToString();
+            unPayReasonDTO.Code = Convert.ToInt32(Session["Code"].ToString());
+            unPayReasonDTO.IsLocked = (bool)Session["isLocked"];
+
+            unPayReasonDTO.ValidateAll();
+            
             if (!unPayReasonDTO.HasErrors)
             {
-                await _channelService.AddUnPayReasonAsync(unPayReasonDTO, GetServiceHeader());
+                var result = await _channelService.AddUnPayReasonAsync(unPayReasonDTO, GetServiceHeader());
+
+                await _channelService.UpdateCommissionsByUnPayReasonIdAsync(result.Id, selectedRows, GetServiceHeader());
 
                 TempData["Create"] = "Unpay Reason Created Successfully";
 
@@ -83,6 +106,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -91,6 +116,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(unPayReasonDTO);
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -112,13 +139,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        /*[HttpGet]
-        public async Task<JsonResult> GetUnPayReasonsAsync()
-        {
-            var unPayReasonDTOs = await _channelService.FindUnPayReasonsAsync(GetServiceHeader());
-
-            return Json(unPayReasonDTOs, JsonRequestBehavior.AllowGet);
-        }*/
+      
     }
 }
 
