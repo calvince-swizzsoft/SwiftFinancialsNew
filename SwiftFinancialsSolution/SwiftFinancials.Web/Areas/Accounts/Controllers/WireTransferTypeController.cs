@@ -5,6 +5,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -44,6 +45,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<WireTransferTypeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -52,6 +55,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(wireTransferTypeDTO);
         }
+
+
+        public async Task<ActionResult> WireTransferType(WireTransferTypeDTO wireTransferTypeDTO)
+        {
+            Session["ChartOfAccountId"] = wireTransferTypeDTO.ChartOfAccountId;
+            Session["ChartOfAccountName"] = wireTransferTypeDTO.ChartOfAccountAccountName;
+            Session["Description"] = wireTransferTypeDTO.Description;
+            Session["TransactionOwnership"] = wireTransferTypeDTO.TransactionOwnership;
+            Session["IsLocked"] = wireTransferTypeDTO.IsLocked;
+
+            return View("Create", wireTransferTypeDTO);
+        }
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -61,8 +78,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
         [HttpPost]
-        public async Task<ActionResult> Create(WireTransferTypeDTO wireTransferTypeDTO)
+        public async Task<ActionResult> Create(WireTransferTypeDTO wireTransferTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             wireTransferTypeDTO.ValidateAll();
 
@@ -86,6 +104,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, WireTransferTypeDTO wireTransferTypeBindingModel)
@@ -105,6 +125,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(wireTransferTypeBindingModel);
             }
         }
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetWireTransferTypesAsync()

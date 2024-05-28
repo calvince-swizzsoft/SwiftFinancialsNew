@@ -130,77 +130,7 @@
                     @using (Html.BeginForm("Create", "Tiers", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter name" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr />                           
-                            <br />
-
-
-                            <div id="tabs-container">
-                                <ul class="nav-tabs">
-                                    <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                                    <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                                    <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                                </ul>
-                            </div>
-
-
-                                                @*Tiers DataTable*@
-                            <h1>Tier Details</h1>
-                            <br />
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LowerLimit, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                                        @Html.ValidationMessageFor(model => model.LowerLimit, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChargeTypeDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.ChargeTypeDescription, chargeType, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.ChargeTypeDescription)
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.UpperLimit, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.UpperLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                                        @Html.ValidationMessageFor(model => model.UpperLimit, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                @using (Html.BeginForm("Create", "Tiers", new { Area = "Accounts" }, FormMethod.Post))
-                                {
-                                    <div class="col-lg-9"></div>
-
-                                    <div class="col-lg-2">
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" style="width:200px;" value="Add" class="btn btn-primary" />
-                                        </div>
-                                    </div>
-                                }
-                            </div>
-                        </fieldset>
-
+                       
                         <br />
                         <br />
 

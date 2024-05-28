@@ -58,13 +58,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            //CommissionDTO commissionDTO = new CommissionDTO();
-
-            //var commissionID = commissionDTO.Id;
-
-            //var data = await _channelService.FindCommissionSplitsByCommissionIdAsync(commissionID, GetServiceHeader());
-
-            //TempData["Charges"] = data;
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
             return View();
         }
@@ -111,6 +105,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 TempData["Error"] = string.Join(",", allErrors);
 
                 TempData["CreateError"] = "Failed to Create Charge";
+
+                ViewBag.chargeType = GetChargeTypeSelectList(commissionDTO.ChargeTypeDescription.ToString());
 
                 return View(commissionDTO);
             }

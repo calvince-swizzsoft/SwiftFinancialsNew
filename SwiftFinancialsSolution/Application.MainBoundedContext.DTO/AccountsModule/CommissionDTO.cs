@@ -27,7 +27,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
         [DataMember]
-        [Display(Name = "Charge Type")]
+        [Display(Name = "Charge")]
         public int ChargeType { get; set; }
 
         [DataMember]
