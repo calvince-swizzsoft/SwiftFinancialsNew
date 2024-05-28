@@ -54,9 +54,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(debitBatchDTO);
         }
+
+
+        public async Task<ActionResult> Wellknowncharges(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO)
+        {
+            Session["ComplementFixedAmount"] = systemTransactionTypeInCommissionDTO.ComplementFixedAmount;
+            Session["SystemTransactionType"] = systemTransactionTypeInCommissionDTO.SystemTransactionType;
+            Session["ComplementType"] = systemTransactionTypeInCommissionDTO.ComplementType;
+
+            return View("Create",systemTransactionTypeInCommissionDTO);
+        }
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
@@ -66,13 +79,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO, ObservableCollection<CommissionDTO> commissions,ChargeDTO chargeDTO)
+        public async Task<ActionResult> Create(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO, ObservableCollection<CommissionDTO> selectedRows, ChargeDTO chargeDTO)
         {
+            systemTransactionTypeInCommissionDTO.ComplementFixedAmount =Convert.ToInt32( Session["ComplementFixedAmount"].ToString());
+            systemTransactionTypeInCommissionDTO.SystemTransactionType = Convert.ToInt32(Session["SystemTransactionType"].ToString());
+            systemTransactionTypeInCommissionDTO.ComplementType= Convert.ToInt32(Session["ComplementType"].ToString());
+
+            //debitTypeDTO.ProductCode = Convert.ToInt32(Session["ProductCode"].ToString());
+            //debitTypeDTO.IsLocked = (bool)Session["isLocked"];
+
+
             systemTransactionTypeInCommissionDTO.ValidateAll();
-            int SystemTransactionType = 0;
+            int SystemTransactionType = systemTransactionTypeInCommissionDTO.SystemTransactionType;
             if (!systemTransactionTypeInCommissionDTO.HasErrors)
             {
-                await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType,commissions,chargeDTO, GetServiceHeader());
+                var j=await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType,selectedRows,chargeDTO, GetServiceHeader());
+
                 ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.SystemTransactionType.ToString());
                 //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
                 //ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
@@ -80,7 +102,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.ComplementType.ToString());
 
                 //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
-                return RedirectToAction("Index");
+                TempData["Create"] = "Successfully Well known charges";
+                return View("Create");
             }
             else
             {
