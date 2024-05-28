@@ -93,7 +93,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int SystemTransactionType = systemTransactionTypeInCommissionDTO.SystemTransactionType;
             if (!systemTransactionTypeInCommissionDTO.HasErrors)
             {
-                var j=await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType,selectedRows,chargeDTO, GetServiceHeader());
+                var j = await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType, selectedRows, chargeDTO, GetServiceHeader());
 
                 ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.SystemTransactionType.ToString());
                 //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
@@ -102,8 +102,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.ComplementType.ToString());
 
                 //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
-                TempData["Create"] = "Successfully Well known charges";
+                TempData["Successfully"] = "Successfully Created Well known charges";
+                
+
+               await ServeNavigationMenus();
                 return View("Create");
+
             }
             else
             {
