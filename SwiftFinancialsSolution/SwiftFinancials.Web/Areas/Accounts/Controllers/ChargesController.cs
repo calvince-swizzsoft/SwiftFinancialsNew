@@ -63,6 +63,37 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(CommissionDTO commissionDTO)
+        {
+            await ServeNavigationMenus();
+
+            ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+
+            if (ChargeSplitDTOs == null)
+                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
+
+            foreach (var chargeSplitDTOs in commissionDTO.CommissionSplits)
+            {
+                chargeSplitDTOs.Description = chargeSplitDTOs.Description;
+                chargeSplitDTOs.MaximumCharge = chargeSplitDTOs.MaximumCharge;
+
+                ChargeSplitDTOs.Add(chargeSplitDTOs);
+            };
+
+            TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
+
+            TempData["ChargeDTO"] = commissionDTO;
+
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+
+            return View("Create", commissionDTO);
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> Create(CommissionDTO commissionDTO)
         {
@@ -70,40 +101,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!commissionDTO.ErrorMessages.Any())
             {
-                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
-
-                TempData["Create"] = "Successfully Created Charge";
-
-                if (commissionDTO != null)
-                {
-                    //Update CommissionSplits
-
-                    var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
-
-                    if (commissionDTO.CommissionSplits.Any())
-                    {
-                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
-                        {
-                            commissionSplitDTO.CommissionId = commissionDTO.Id;
-                            commissionDTO.CommissionSplitChartOfAccountId = commissionSplitDTO.ChartOfAccountId;
-                            commissionSplitDTO.ChartOfAccountCostCenterId = commissionDTO.CommissionSplit.ChartOfAccountId;
-                            commissionSplits.Add(commissionSplitDTO);
-                        }
-                        if (commissionSplits.Any())
-                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
-
-                        TempData["UpdateCommissionSplits"] = "Charges Split updates Successfully";
-                    }
-                }
-
+                await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+               
                 return RedirectToAction("Index");
             }
             else
             {
-                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
-
-                TempData["Error"] = string.Join(",", allErrors);
-
                 TempData["CreateError"] = "Failed to Create Charge";
 
                 ViewBag.chargeType = GetChargeTypeSelectList(commissionDTO.ChargeTypeDescription.ToString());

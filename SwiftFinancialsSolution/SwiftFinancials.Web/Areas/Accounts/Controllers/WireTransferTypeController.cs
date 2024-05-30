@@ -1,5 +1,4 @@
-﻿
-using Application.MainBoundedContext.DTO;
+﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -8,6 +7,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
@@ -20,6 +20,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View();
         }
+
+
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
@@ -57,38 +59,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> WireTransferType(WireTransferTypeDTO wireTransferTypeDTO)
-        {
-            Session["ChartOfAccountId"] = wireTransferTypeDTO.ChartOfAccountId;
-            Session["ChartOfAccountName"] = wireTransferTypeDTO.ChartOfAccountAccountName;
-            Session["Description"] = wireTransferTypeDTO.Description;
-            Session["TransactionOwnership"] = wireTransferTypeDTO.TransactionOwnership;
-            Session["IsLocked"] = wireTransferTypeDTO.IsLocked;
-
-            return View("Create", wireTransferTypeDTO);
-        }
-
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
 
-            ViewBag.TransactionOwnership = GetTransactionOwnershipSelectList(string.Empty);
+            ViewBag.transactionOwnership = GetTransactionOwnershipSelectList(string.Empty);
 
             return View();
         }
 
 
+
+        public async Task<ActionResult> WireTransferType(WireTransferTypeDTO wireTransferTypeDTO)
+        {
+
+            return View("Create", wireTransferTypeDTO);
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> Create(WireTransferTypeDTO wireTransferTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
+
             wireTransferTypeDTO.ValidateAll();
 
             if (!wireTransferTypeDTO.HasErrors)
             {
-                await _channelService.AddWireTransferTypeAsync(wireTransferTypeDTO, GetServiceHeader());
+                var result = await _channelService.AddWireTransferTypeAsync(wireTransferTypeDTO, GetServiceHeader());
 
-                TempData["AlertMessage"] = "Successfully Created Wire Transfer Type";
+                await _channelService.UpdateCommissionsByWireTransferTypeIdAsync(result.Id, selectedRows, GetServiceHeader());
+
+                TempData["Create"] = "Successfully Created Wire Transfer Type";
 
                 return RedirectToAction("Index");
             }
@@ -96,7 +99,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = wireTransferTypeDTO.ErrorMessages;
 
-                ViewBag.TransactionOwnership = GetTransactionOwnershipSelectList(wireTransferTypeDTO.TransactionOwnershipDescription);
+                ViewBag.transactionOwnership = GetTransactionOwnershipSelectList(wireTransferTypeDTO.TransactionOwnershipDescription.ToString());
 
                 TempData["CreateError"] = "Failed to Create Wire Transfer Type";
 
@@ -105,35 +108,102 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
+        public async Task<ActionResult> Edit(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
+
+            var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
+
+            await GetApplicableCharges(id);
+
+            return View(debitTypeDTO);
+        }
+
+
+        public async Task<ActionResult> GetApplicableCharges(Guid id)
+        {
+            await _channelService.FindCommissionsByDebitTypeIdAsync(id, GetServiceHeader());
+
+            return View();
+        }
+
+
+        public async Task<ActionResult> SavingsProductEdit(Guid? id, DebitTypeDTO debitTypeDTO)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var savingsProduct = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
+
+            if (savingsProduct != null)
+            {
+                debitTypeDTO.CustomerAccountTypeTargetProductId = savingsProduct.Id;
+                debitTypeDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
+
+                Session["savingsProductid2"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
+                Session["SavingsProductDescription2"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
+            }
+
+            return View("Edit", debitTypeDTO);
+        }
+
+
+        public async Task<ActionResult> DebitTypeEdit(DebitTypeDTO debitTypeDTO)
+        {
+            Session["Description2"] = debitTypeDTO.Description;
+            Session["ProductCode2"] = debitTypeDTO.ProductCode;
+            Session["isLocked2"] = debitTypeDTO.IsLocked;
+
+            return View("Edit", debitTypeDTO);
+        }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, WireTransferTypeDTO wireTransferTypeBindingModel)
+        public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
+            debitTypeDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductid2"];
+            debitTypeDTO.CustomerAccountTypeTargetProductDescription = Session["SavingsProductDescription2"].ToString();
+
+            debitTypeDTO.Description = Session["Description2"].ToString();
+            debitTypeDTO.ProductCode = Convert.ToInt32(Session["ProductCode2"].ToString());
+            debitTypeDTO.IsLocked = (bool)Session["isLocked2"];
+
+            debitTypeDTO.ValidateAll();
+
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateWireTransferTypeAsync(wireTransferTypeBindingModel, GetServiceHeader());
+                var result = await _channelService.UpdateDebitTypeAsync(debitTypeDTO, GetServiceHeader());
 
-                TempData["Edit"] = "Successfully Edited Wire Transfer Type";
+                var findDebitId = await _channelService.FindDebitTypeAsync(debitTypeDTO.Id, GetServiceHeader());
+
+                await _channelService.UpdateCommissionsByDebitTypeIdAsync(findDebitId.Id, selectedRows, GetServiceHeader());
+
+                TempData["Edit"] = "Successfully Edited Debit Type";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                TempData["EditError"] = "Failed to Edit Wire Transfer Type";
+                var errorMessages = debitTypeDTO.ErrorMessages;
 
-                return View(wireTransferTypeBindingModel);
+                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
+
+                TempData["EditError"] = "Failed to Edit Debit Type";
+
+                return View(debitTypeDTO);
             }
         }
-
-
-
-        [HttpGet]
-        public async Task<JsonResult> GetWireTransferTypesAsync()
-        {
-            var wireTransferTypeDTOs = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
-
-            return Json(wireTransferTypeDTOs, JsonRequestBehavior.AllowGet);
-        }
     }
+
 }
