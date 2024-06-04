@@ -53,6 +53,40 @@
 </style>
 
 
+<style>
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+
+
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
 <script>
@@ -103,6 +137,16 @@
                 <div class="ibox-title">
                     <h2>Create Charges</h2>
 
+                    <br />
+
+                    <div id="tabs-container">
+                        <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                        </ul>
+                    </div>
+
                     @if (TempData["CreateError"] != null)
                     {
                         <div class="alert alert-danger">
@@ -131,23 +175,12 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <div id="tabs-container">
-                            <ul class="nav-tabs">
-                                <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
-                                <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                                <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                            </ul>
-                        </div>
-
-                        <br />
-
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Name..." } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -168,10 +201,10 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.CommissionSplit.ChartOfAccountId, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].ChartOfAccountId, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.CommissionSplit.ChartOfAccountId)
-                                            @Html.TextBoxFor(model => model.CommissionSplit.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link G/L Account" })
+                                            @Html.HiddenFor(model => model.chargeSplit[0].ChartOfAccountId)
+                                            @Html.TextBoxFor(model => model.chargeSplit[0].ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link G/L Account" })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
@@ -181,17 +214,17 @@
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplit.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommissionSplit.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Description" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplit.Description, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
+                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplit.Percentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommissionSplit.Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "100.00000%" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplit.Percentage, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "00.00000%" } })
+                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
@@ -204,9 +237,9 @@
 
                                 <div class="col-lg-2">
                                     <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.Leviable, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.Leviable, "", new { @class = "text-danger" })
+                                        @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -221,14 +254,13 @@
                             <br />
 
                             <row>
-                                <table id="ChargeSplits" class="table table-striped table-bordered table-hover" style="text-wrap:normal;" width="100%">
+                                <table id="ChargeSplits" class="table table-striped table-hover" style="text-wrap:normal; color: black;" width="100%">
                                     <thead>
                                         <tr>
                                             <th data-toggle="true" width="20%">G/L Account Name</th>
-                                            <th data-toggle="true" width="20%">G/L Account Cost Center</th>
                                             <th data-toggle="true" width="20%">Name</th>
-                                            <th data-toggle="true" width="20%">Percentage</th>
-                                            <th data-toggle="true" width="20%">Leviable</th>
+                                            <th data-toggle="true" width="5%">Percentage</th>
+                                            <th data-toggle="true" width="2%">Leviable</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -238,10 +270,16 @@
                                             {
                                                 <tr>
                                                     <td>
+                                                        @commissionSplit.ChartOfAccountAccountName
+                                                    </td>
+                                                    <td>
                                                         @commissionSplit.Description
                                                     </td>
                                                     <td>
-                                                        @commissionSplit.MaximumCharge
+                                                        @commissionSplit.Percentage
+                                                    </td>
+                                                    <td>
+                                                        @commissionSplit.Leviable
                                                     </td>
                                                 </tr>
                                             }
@@ -517,7 +555,7 @@ $(document).ready(function () {
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/Charges/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/Charges/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
@@ -535,18 +573,56 @@ $(document).ready(function () {
     });
 
     $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
+        var data = companiesGrid.row(this).data();
 
-        $('#CommissionSplit.ChartOfAccountId').val(data.Id);
-        $('input[name=CommissionSplit.ChartOfAccountId]').val(data.Id);
-        $('input[name=CommissionSplit.ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].ChartOfAccountAccountName);
+        $('#chartOfAccount.Id').val(data.Id);
+        $('input[name=chartOfAccount.Id]').val(data.Id);
+        $('#chartOfAccount.AccountName').val(CustomersMap[item].chartOfAccount.AccountName);
+        $('#CompaniesLookup').modal('hide');
     });
 
+
+
+         //Company typehead starts here
+            $('.CompaniesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCompaniesAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
+                            });
+                            process(newCompaniesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#CompanyId').val(CompanyId);
+                    $('#GuarantorByCustomerId').val(CompanyId);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    return item;
+                }
+            });
     </script>
+
 
 
 

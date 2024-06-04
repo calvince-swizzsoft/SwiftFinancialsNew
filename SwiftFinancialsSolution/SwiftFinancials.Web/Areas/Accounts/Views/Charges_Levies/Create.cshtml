@@ -11,6 +11,51 @@
 }
 
 
+
+<style>
+    #tabs-container {
+        background-color: none;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        width: 50%;
+    }
+
+    .nav-tabs {
+        padding: 10px 0; /* Adjusted padding */
+        list-style: none;
+        margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold; /* Set font weight to bold */
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+
+            .nav-tabs a:active {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+
 <style>
     #tabs-container {
         background-color: none;
@@ -112,6 +157,16 @@
                 <div class="ibox-title">
                     <h2>Levies</h2>
 
+                    <br />
+
+                    <div id="tabs-container">
+                        <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                        </ul>
+                    </div>
+
                     @if (TempData["Error"] != null)
                     {
                         <div class="alert alert-success">
@@ -140,20 +195,48 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        var leviesJson = TempData["Levies"].ToString();
-                        //var levies = JsonConvert.DeserializeObject<List<Application.MainBoundedContext.DTO.AccountsModule.LevyDTO>>(leviesJson); // Adjust type according to your data
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.Id)
+                                            @Html.TextBoxFor(model => model.Description, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Charge..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#chargeLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
 
+                            <br />
+                            <br />
 
-                        @if (TempData["Levies"] != null)
-                        {
-                            <ul>
-                                @foreach (var levy in levies)
-                                {
-                                    <li>@levy.SomeProperty</li>
-                                    <!-- Adjust according to your model properties -->
-                                }
-                            </ul>
-                        }
+                            <div id="levies" class="tab-content">
+
+                                <center>
+                                    <div style="text-align: left;">
+                                        <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
+                                        <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
+                                    </div>
+                                </center>
+
+                                <div class="table-responsive">
+                                    <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                        <tbody>
+                                            <tr>
+                                                <td colspan="7" class="dataTables_empty">
+                                                    Loading data from server
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </fieldset>
                     }
                 </div>
 
@@ -161,6 +244,32 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal  fade" id="chargeLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Charges Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -205,6 +314,160 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+
+
+
+    <script>
+$(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#headerCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#headerCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('headerCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
+                $('#headerCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('headerCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
+    });
+
+    // Initialize the DataTable
+    var table = $('#LoanProductsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Levy", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="headerCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#headerCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+    $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#headerCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('headerCheckbox', false);
+        }
+    });
+        });
+
+
+
+
+        $('#submit-btn').click(function () {
+            var selectedRowsData = [];
+            $('.rowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/DebitType/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+    </script>
+
+
     <script>
 
         $(document).ready(function () {
@@ -223,7 +486,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
+                "sAjaxSource": "@(Url.Action("Index", "commission", new { Area = "Accounts" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -236,7 +499,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/Charges/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/Tiers/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
@@ -245,9 +508,9 @@
                 },
         // Display settings
         "aoColumns": [
-            { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "10%" },
-            { "mDataProp": "IsLockedDescription", "sTitle": "Is Locked?", "sWidth": "2%" },
-            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "MaximumCharge", "sTitle": "Maximum Charge", "sWidth": "3%" },
+            { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "2%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
@@ -266,57 +529,4 @@
     });
 
     </script>
-
-
-
-
-    @*<script type="text/javascript">
-            $(document).ready(function () {
-                $('#BankGrid').DataTable({
-                    // Ajax settings
-                    "sPaginationType": "full_numbers",
-                    "bProcessing": true,
-                    "bServerSide": true,
-                    "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts"}))",
-                    "sServerMethod": "POST",
-                    // Callback settings
-                    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                       var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                        var h = ("0" + createdDate.getHours()).slice(-2);
-                        var m = ("0" + createdDate.getMinutes()).slice(-2);
-                        var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                        aData.CreatedDate = dt_Created;
-
-                        var editUrl = '<a  href="/accounts/BankLinkage/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                        var viewUrl = '<a  href="/accounts/BankLinkage/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
-                        $('td:eq(5)', nRow).html(dt_Created);
-                        $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
-
-                        return nRow;
-                    },
-                    // Display settings
-                    "aoColumns": [
-                        { "mDataProp": "BankBranchName", "sTitle": "Branch Name", "sWidth": "10%" },
-                        { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account", "sWidth": "20%" },
-                        { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
-                        { "mDataProp": "BankName", "sTitle": "Bank Name", "sWidth": "10%" },
-                        { "mDataProp": "BankAccountNumber", "sTitle": "Bank Account Number", "sWidth": "10%" },
-
-                        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                        { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
-                    "aaSorting": [[0, "desc"]]
-            });
-            });
-
-            $(document).ajaxStart(function () {
-                $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-            });
-            $(document).ajaxStop(function () {
-                $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-            });
-        </script>*@
 }

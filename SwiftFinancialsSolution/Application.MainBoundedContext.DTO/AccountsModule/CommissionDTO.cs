@@ -186,5 +186,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         {
             throw new NotImplementedException();
         }
+
+
+        public CommissionSplitDTO chargeSplits { get; set; }
+
+        public List<CommissionSplitDTO> chargeSplit { get; set; }
     }
 }
