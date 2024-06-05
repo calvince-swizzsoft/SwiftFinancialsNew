@@ -86,5 +86,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Maximum Charge")]
         public decimal MaximumCharge { get; set; }
+
+        public static implicit operator CommissionSplitDTO(ChartOfAccountDTO v)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

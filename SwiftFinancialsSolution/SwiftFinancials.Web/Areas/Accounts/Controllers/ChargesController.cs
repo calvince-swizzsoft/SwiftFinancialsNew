@@ -64,6 +64,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
+        public async Task<ActionResult> Charge(CommissionDTO commissionDTO)
+        {
+            Session["Description"] = commissionDTO.Description;
+            Session["MaximumCharge"] = commissionDTO.MaximumCharge;
+
+            return View("Create", commissionDTO);
+        }
+
+
         public async Task<ActionResult> Search(Guid? id, CommissionDTO commissionDTO)
         {
             await ServeNavigationMenus();
@@ -79,9 +88,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (GLAccountChartOfAccount != null)
             {
-                //commissionDTO.chartOfAccount = GLAccountChartOfAccount;
+                commissionDTO.chartOfAccount = GLAccountChartOfAccount;
 
-                //Session["GLAccount"] = commissionDTO.chartOfAccount;
+                Session["GLAccount"] = commissionDTO.chargeSplits;
             }
 
             return View("Create", commissionDTO);
@@ -95,19 +104,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
 
+            var glAccount = commissionDTO.chargeSplits;
+
             if (ChargeSplitDTOs == null)
                 ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
 
             foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
             {
                 chargeSplitDTO.Description = chargeSplitDTO.Description;
-                chargeSplitDTO.MaximumCharge = chargeSplitDTO.MaximumCharge;
-                chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
-                chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+                chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
                 chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
                 chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
 
                 ChargeSplitDTOs.Add(chargeSplitDTO);
+
+                Session["Description"] = chargeSplitDTO.Description;
+                Session["ChartOfAccountId"] = chargeSplitDTO.ChartOfAccountId;
+                Session["ChartOfAccountAccountName"] = chargeSplitDTO.ChartOfAccountAccountName;
+                Session["Percentage"] = chargeSplitDTO.Percentage;
+                Session["Leviable"] = chargeSplitDTO.Leviable;
             };
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
@@ -124,21 +140,53 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CommissionDTO commissionDTO)
         {
+            commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
+
+            commissionDTO.chargeSplit[0].Description = Session["Description"].ToString();
+            commissionDTO.chargeSplit[0].ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
+            commissionDTO.chargeSplit[0].ChartOfAccountAccountName = Session["ChartOfAccountAccountName"].ToString();
+            commissionDTO.chargeSplit[0].Percentage = Convert.ToDouble(Session["Percentage"].ToString());
+            commissionDTO.chargeSplit[0].Leviable = (bool)Session["Leviable"];
+
+            //commissionDTO.ChargeSplitsTotalPercentage = 100;
+
             commissionDTO.ValidateAll();
 
-            if (!commissionDTO.ErrorMessages.Any())
+            if (!commissionDTO.HasErrors)
             {
-                var result = await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+                var charge = await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
 
-                //await _channelService.UpdateCommissionSplitsByCommissionIdAsync(result.Id, commissionDTO.CommissionsplitSplits, GetServiceHeader());
+                TempData["SuccessMessage"] = "Successfully Created Charge";
+                TempData["ChargeDTO"] = "";
+
+                if (charge != null)
+                {
+                    var chargeSplits = new ObservableCollection<CommissionSplitDTO>();
+
+                    foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+                    {
+                        chargeSplitDTO.Description = chargeSplitDTO.Description;
+                        chargeSplitDTO.MaximumCharge = chargeSplitDTO.MaximumCharge;
+                        chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
+                        chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                        chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                        chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+                        chargeSplits.Add(chargeSplitDTO);
+                    };
+
+                    if (chargeSplits.Any())
+                        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(charge.Id, chargeSplits, GetServiceHeader());
+                    TempData["ChargeSplitDTOs"] = "";
+                }
 
                 return RedirectToAction("Index");
             }
             else
             {
-                TempData["CreateError"] = "Failed to Create Charge";
+                var errorMessages = commissionDTO.ErrorMessages;
 
-                ViewBag.chargeType = GetChargeTypeSelectList(commissionDTO.ChargeTypeDescription.ToString());
+                TempData["CreateError"] = "Failed to Create Charge";
 
                 return View(commissionDTO);
             }
