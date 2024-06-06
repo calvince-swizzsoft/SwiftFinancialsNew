@@ -58,7 +58,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         public async Task<ActionResult> Wellknowncharges(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO)
         {
-            Session["ComplementFixedAmount"] = systemTransactionTypeInCommissionDTO.ComplementFixedAmount;
+          //  Session["ComplementFixedAmount"] = systemTransactionTypeInCommissionDTO.ComplementFixedAmount;
             Session["SystemTransactionType"] = systemTransactionTypeInCommissionDTO.SystemTransactionType;
             Session["ComplementType"] = systemTransactionTypeInCommissionDTO.ComplementType;
 
@@ -81,7 +81,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(SystemTransactionTypeInCommissionDTO systemTransactionTypeInCommissionDTO, ObservableCollection<CommissionDTO> selectedRows, ChargeDTO chargeDTO)
         {
-            systemTransactionTypeInCommissionDTO.ComplementFixedAmount =Convert.ToInt32( Session["ComplementFixedAmount"].ToString());
+           // systemTransactionTypeInCommissionDTO.ComplementFixedAmount =Convert.ToInt32( Session["ComplementFixedAmount"].ToString());
             systemTransactionTypeInCommissionDTO.SystemTransactionType = Convert.ToInt32(Session["SystemTransactionType"].ToString());
             systemTransactionTypeInCommissionDTO.ComplementType= Convert.ToInt32(Session["ComplementType"].ToString());
 
@@ -93,7 +93,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int SystemTransactionType = systemTransactionTypeInCommissionDTO.SystemTransactionType;
             if (!systemTransactionTypeInCommissionDTO.HasErrors)
             {
-                var j = await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType, selectedRows, chargeDTO, GetServiceHeader());
+               await _channelService.MapSystemTransactionTypeToCommissionsAsync(SystemTransactionType, selectedRows, chargeDTO, GetServiceHeader());
 
                 ViewBag.SystemTransactionType = GetSystemTransactionTypeList(systemTransactionTypeInCommissionDTO.SystemTransactionType.ToString());
                 //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(systemTransactionTypeInCommissionDTO.RecoveryMode.ToString());
@@ -103,9 +103,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
                 TempData["Successfully"] = "Successfully Created Well known charges";
-                
+                Session["ComplementFixedAmount"] = null;
+ 
 
-               await ServeNavigationMenus();
+                await ServeNavigationMenus();
                 return View("Create");
 
             }

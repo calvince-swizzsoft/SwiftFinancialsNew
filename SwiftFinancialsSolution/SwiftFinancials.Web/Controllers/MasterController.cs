@@ -218,7 +218,7 @@ namespace SwiftFinancials.Web.Controllers
         {
             List<SelectListItem> systemTransactionType = new List<SelectListItem>();
 
-            var items = Enum.GetValues(typeof(SystemTransactionType)).Cast<SystemTransactionType>().Select(v => new SelectListItem
+            var items = Enum.GetValues(typeof(SystemTransactionCode)).Cast<SystemTransactionCode>().Select(v => new SelectListItem
             {
                 Text = GetEnumDescription(v),
                 Value = ((int)v).ToString(),
@@ -632,6 +632,40 @@ namespace SwiftFinancials.Web.Controllers
             return ChargeType;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetDynamicChargeRecoveryModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> dynamicChargeRecoveryMode = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DynamicChargeRecoveryMode)).Cast<DynamicChargeRecoveryMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            dynamicChargeRecoveryMode.AddRange(items);
+
+            return dynamicChargeRecoveryMode;
+        }
+        [NonAction]
+        protected List<SelectListItem> GetDynamicChargeRecoverySourceSelectList(string selectedValue)
+        {
+            List<SelectListItem> dynamicChargeRecoverySource = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DynamicChargeRecoverySource)).Cast<DynamicChargeRecoverySource>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            dynamicChargeRecoverySource.AddRange(items);
+
+            return dynamicChargeRecoverySource;
+        }
+
+        
         [NonAction]
         protected List<SelectListItem> GetTreasuryTransactionTypeSelectList(string selectedValue)
         {

@@ -124,8 +124,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel, true);
-
+               
+              await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel, true);
+                if (fixedDepositTypeBindingModel.ErrorMessageResult != null)
+                {
+                    TempData["ErrorMsg"] = fixedDepositTypeBindingModel.ErrorMessageResult;
+                    await ServeNavigationMenus();
+                    return View();
+                }
+                TempData["SuccessMessage"] = "Edit successful.";
                 return RedirectToAction("Index");
             }
             else

@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -60,25 +61,29 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
             ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-           
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO)
+        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO,CustomerAccountDTO customerAccountDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             levyDTO.ValidateAll();
-
+            
             if (!levyDTO.HasErrors)
             {
-                await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
+                await _channelService.ComputeTariffsByTextAlertAsync(levyDTO.RecoverySource,customerAccountDTO.TotalValue,customerAccountDTO, GetServiceHeader());
+                TempData["Successfully"] = "Successfully Text Alart Charges";
+                await ServeNavigationMenus();
+                return RedirectToAction("Create");
             }
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
+                ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoverySource.ToString());
+
                 ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoverySource.ToString());

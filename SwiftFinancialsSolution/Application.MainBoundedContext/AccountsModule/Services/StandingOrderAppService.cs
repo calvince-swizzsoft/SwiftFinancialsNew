@@ -67,8 +67,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 var existingStandingOrders = FindStandingOrders(standingOrderDTO.BenefactorCustomerAccountId, standingOrderDTO.BeneficiaryCustomerAccountId, standingOrderDTO.Trigger, serviceHeader);
 
                 if (existingStandingOrders != null && existingStandingOrders.Any())
-                    throw new InvalidOperationException(string.Format("Sorry, but a standing order with trigger '{0}' already exists!", EnumHelper.GetDescription((StandingOrderTrigger)standingOrderDTO.Trigger)));
+                    //throw new InvalidOperationException(string.Format("Sorry, but a standing order with trigger '{0}' already exists!", EnumHelper.GetDescription((StandingOrderTrigger)standingOrderDTO.Trigger)));
 
+                    standingOrderDTO.ErrorMessageResult = string.Format("Sorry, but a standing order with trigger '{0}' already exists!", EnumHelper.GetDescription((StandingOrderTrigger)standingOrderDTO.Trigger));
+               
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
                     var duration = new Duration(standingOrderDTO.DurationStartDate, standingOrderDTO.DurationEndDate);

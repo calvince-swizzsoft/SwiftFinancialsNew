@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -135,11 +136,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 return View();
             }
-
-           
-
-        
-
             if (postingPeriodDTO != null)
             {
 
@@ -160,23 +156,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Close(PostingPeriodDTO postingPeriodDTO)
         {
             int moduleNavigationItemCode = 0;
-            var startDate = Request["startDate"];
+            var closeddate = Request["closeddate"];
+            var Enddate = Request["Enddate"];
+            var StartDate = Request["StartDate"];
 
-            var endDate = Request["endDate"];
-            var closedate = Request["closedate"];
+            postingPeriodDTO.DurationStartDate = DateTime.ParseExact((Request["StartDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
+            postingPeriodDTO.DurationEndDate = DateTime.ParseExact((Request["Enddate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
+            postingPeriodDTO.ClosedDate = DateTime.ParseExact((Request["closeddate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
-            closedate = postingPeriodDTO.ClosedDate.ToString();
 
 
             if (!postingPeriodDTO.HasErrors)
             {
                 await _channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, GetServiceHeader());
                 await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "posting period Closed successful.";
                 return RedirectToAction("Index");
             }
             else

@@ -15,11 +15,13 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class RegisterController : MasterController
+    public class AlternatechannelManagementController : MasterController
     {
         public async Task<ActionResult> Index()
         {
-            await ServeNavigationMenus();       
+            await ServeNavigationMenus();
+
+            ViewBag.AccountType = GetProductCodeSelectList(string.Empty);
 
             return View();
         }
@@ -30,18 +32,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
+            int alternateChannelFilter = 0;
+
+            bool includeProductDescription = false;
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindAlternateChannelsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1,jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false,GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindAlternateChannelsByFilterInPageAsync(jQueryDataTablesModel.sSearch, alternateChannelFilter, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(debitBatch => debitBatch.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -49,6 +54,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else return this.DataTablesJson(items: new List<AlternateChannelDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -93,6 +99,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
                 alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                 alternateChannelDTO.Remarks = customer.Remarks;
+                alternateChannelDTO.CardNumber = customer.FullAccountNumber;
+
 
             }
 
@@ -109,13 +117,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             alternateChannelDTO.ValidateAll();
 
+
             if (!alternateChannelDTO.HasErrors)
             {
                 await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
                 TempData["SuccessMessage"] = "Create successful.";
                 ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-
+                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
                 ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
+                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.ChargeBenefactor.ToString());
+                //ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
+                // await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
 
                 return RedirectToAction("Create");
             }
@@ -219,157 +231,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        public async Task<ActionResult> Linking(Guid? id)
-        {
-            await ServeNavigationMenus();
 
-            Guid parseId;
-            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            //var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            AlternateChannelDTO alternateChannelDTO = new AlternateChannelDTO();
-
-            if (customer != null)
-            {
-                alternateChannelDTO.CustomerAccountCustomerId = customer.Id;
-                alternateChannelDTO.CustomerAccountId = customer.Id;
-                alternateChannelDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                alternateChannelDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                alternateChannelDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                alternateChannelDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                alternateChannelDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
-                alternateChannelDTO.Remarks = customer.Remarks;
-                alternateChannelDTO.CardNumber = customer.FullAccountNumber;
-
-
-            }
-
-            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
-
-            return View(alternateChannelDTO);
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> Linking(AlternateChannelDTO alternateChannelDTO)
-        {
-            alternateChannelDTO.ValidateAll();
-
-
-            if (!alternateChannelDTO.HasErrors)
-            {
-                await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Create successful.";
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.ChargeBenefactor.ToString());
-                //ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
-                // await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
-
-                return RedirectToAction("Create");
-            }
-            else
-            {
-                var errorMessages = alternateChannelDTO.ErrorMessages;
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                return View(alternateChannelDTO);
-            }
-        }
-
-
-        public async Task<ActionResult> History(Guid? id)
-        {
-            await ServeNavigationMenus();
-
-            Guid parseId;
-            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            //var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            AlternateChannelDTO alternateChannelDTO = new AlternateChannelDTO();
-
-            if (customer != null)
-            {
-                alternateChannelDTO.CustomerAccountCustomerId = customer.Id;
-                alternateChannelDTO.CustomerAccountId = customer.Id;
-                alternateChannelDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                alternateChannelDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                alternateChannelDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                alternateChannelDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                alternateChannelDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
-                alternateChannelDTO.Remarks = customer.Remarks;
-                alternateChannelDTO.CardNumber = customer.FullAccountNumber;
-
-
-            }
-
-            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
-
-            return View(alternateChannelDTO);
-        }
-
-
-        [HttpPost]
-        public async Task<ActionResult> History(AlternateChannelDTO alternateChannelDTO)
-        {
-            alternateChannelDTO.ValidateAll();
-
-
-            if (!alternateChannelDTO.HasErrors)
-            {
-                await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Create successful.";
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                //ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.ChargeBenefactor.ToString());
-                //ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
-                // await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
-
-                return RedirectToAction("Create");
-            }
-            else
-            {
-                var errorMessages = alternateChannelDTO.ErrorMessages;
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                return View(alternateChannelDTO);
-            }
-        }
 
         [HttpGet]
         public async Task<JsonResult> GetDebitBatchesAsync()
