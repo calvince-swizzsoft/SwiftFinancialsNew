@@ -4,6 +4,8 @@
     /**/
 
     ViewBag.Title = "Create Charges";
+
+    var chargeType = ViewBag.chargeType as List<SelectListItem>;
 }
 
 
@@ -49,6 +51,40 @@
                 color: #007bff;
             }
 </style>
+
+
+<style>
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
 
 
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -101,6 +137,16 @@
                 <div class="ibox-title">
                     <h2>Create Charges</h2>
 
+                    <br />
+
+                    <div id="tabs-container">
+                        <ul class="nav-tabs">
+                            <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
+                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                        </ul>
+                    </div>
+
                     @if (TempData["CreateError"] != null)
                     {
                         <div class="alert alert-danger">
@@ -125,20 +171,16 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Add", "Charges", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+
                         <fieldset>
-
-                            <h1>Charges</h1>
-                            <br />
-
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Name..." } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -150,118 +192,107 @@
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
 
-                        <br />
-                        <hr />
-
-                        <div id="tabs-container">
-                            <ul class="nav-tabs">
-                                <li>@Html.ActionLink("Charge Splitting", "Create", "Charges")</li>
-                                <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                                <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                            </ul>
-                        </div>
-
-
-
-                        <fieldset>
-                            <h2 title="Use this section to split the charge into one or more than one different G/L Accounts">Charge Splitting</h2>
                             <br />
+                            <hr />
+
+                            @*chargeType Splitting*@
+                            <h2>Charge Splitting</h2>
+
+                            <br />
+
                             <div class="row">
                                 <div class="col-lg-4">
-                                    <div class="col-md-13 form-group">
-                                        @Html.LabelFor(model => model.CommissionSplit.ChartOfAccountId, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.CommissionSplit.ChartOfAccountId)
-                                            @Html.TextBoxFor(model => model.CommissionSplit.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link G/L Account" })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.chargeSplits.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Id)
+                                        @Html.ValidationMessageFor(model => model.chargeSplits.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Link G/L Account..." } })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplit.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommissionSplit.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Description" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplit.Description, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
+                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommissionSplit.Percentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommissionSplit.Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "100.00000%" } })
-                                        @Html.ValidationMessageFor(model => model.CommissionSplit.Percentage, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "00.00000%" } })
+                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
 
+                            <br />
+
                             <div class="row">
-                                <div class="col-lg-8">
-                                </div>
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-3"></div>
 
-                                <div class="col-lg-2">
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
-                                        @Html.CheckBoxFor(model => model.Leviable, htmlAttributes: new { @class = "" })
-                                        @Html.LabelFor(model => model.Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                        @Html.ValidationMessageFor(model => model.Leviable, "", new { @class = "text-danger" })
+                                        @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
-                                @using (Html.BeginForm("Add", "Charges", new { Area = "Accounts" }, FormMethod.Post))
-                                {
-                                    <div class="col-lg-2">
-                                        <div class="form-group form-group-sm">
-                                            <input type="submit" value="Add" class="btn btn-primary" />
-                                        </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Split Charge" class="btn btn-primary" />
                                     </div>
-                                }
+                                </div>
                             </div>
-                        </fieldset>
-
-                        <br />
-                        <br />
+                            @*End chargeType Splitting*@
 
 
-                        <center>
-                            <h3><strong>Charge Splitting Details</strong></h3>
-                        </center>
-                        <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-                            <table id="Guarantors" class="display nowrap" style="width:100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Select</th>
-                                        <th>G/L Account Name</th>
-                                        <th>G/L Account Cost Center</th>
-                                        <th>Name</th>
-                                        <th>Percentage</th>
-                                        <th>Leviable?</th>
-                                    </tr>
-                                </thead>
-                                <tbody style="width:2100px;">
+                            <br />
 
-                                    @if (ViewBag.ChargeSplits != null)
-                                    {
-                                        foreach (var data in ViewBag.ChargeSplits)
+                            <row>
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 20%;">G/L Account Name</th>
+                                            <th style="width: 20%;">Charge Split Name</th>
+                                            <th style="width: 5%;">Percentage</th>
+                                            <th style="width: 2%;">Leviable</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.ChargeSplitDTOs != null)
                                         {
-
+                                            foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
+                                            {
+                                                <tr>
+                                                    <td>@commissionSplit.ChartOfAccountAccountName</td>
+                                                    <td>@commissionSplit.Description</td>
+                                                    <td style="text-align: right;">@commissionSplit.Percentage</td>
+                                                    <td>@commissionSplit.Leviable</td>
+                                                </tr>
+                                            }
                                         }
-                                    }
+                                    </tbody>
+                                </table>
 
-                                </tbody>
-                            </table>
-                        </div>
+                            </row>
 
+                            <hr />
+                        </fieldset>
+                    }
+                </div>
 
-
+                <div class="ibox-content m-b-sm border-bottom">
+                    @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
                         <div class="row">
-                            <div class="col-lg-8">
-                            </div>
-
-                            <div class="col-lg-2">
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-3"></div>
+                            <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                     @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
@@ -269,47 +300,22 @@
                                 </div>
                             </div>
 
-                            @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
-                            {
-                                <div class="col-lg-2">
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Create" class="btn btn-primary" />
-                                    </div>
+                            <div class="col-lg-3">
+                                <div class="form-group">
+                                    <input type="submit" style="width: 200px;" value="Create" class="btn btn-primary" />
                                 </div>
-                            }
+                            </div>
                         </div>
-                        <hr />
                     }
                 </div>
 
             </div>
-
         </div>
+
     </div>
 </div>
 
-<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">G/L Accounts Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -355,69 +361,276 @@
     @Scripts.Render("~/plugins/duallist")
 
     <script>
+$(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
 
-        $(document).ready(function () {
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#headerCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
             });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#headerCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('headerCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
+                $('#headerCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('headerCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
+    });
+
+    // Initialize the DataTable
+    var table = $('#LoanProductsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Levy", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="headerCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#headerCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+    $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#headerCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('headerCheckbox', false);
+        }
+    });
         });
 
 
-    $('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/Charges/create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
+   //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
                 },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "AccountName", "sTitle": "Name", "sWidth": "10%" },
-            { "mDataProp": "IsLockedDescription", "sTitle": "Is Locked?", "sWidth": "2%" },
-            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#Id').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
 
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
 
-        $('#CommissionSplit.ChartOfAccountId').val(data.Id);
-        $('input[name=CommissionSplit.ChartOfAccountId]').val(data.Id);
-        $('input[name=CommissionSplit.ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
+                    var form = $(this);
 
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].ChartOfAccountAccountName);
-    });
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
 
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+
+        });
     </script>
 
 
 
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get all the tab links
+            const tabLinks = document.querySelectorAll('.tab-link');
+
+            // Add click event listener to each tab link
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function (event) {
+                    event.preventDefault();
+
+                    // Remove 'active' class from all tab links
+                    tabLinks.forEach(link => link.classList.remove('active'));
+
+                    // Add 'active' class to the clicked tab link
+                    this.classList.add('active');
+
+                    // Get the target content id
+                    const targetId = this.getAttribute('data-target');
+
+                    // Get all tab content elements
+                    const tabContents = document.querySelectorAll('.tab-content');
+
+                    // Hide all tab content elements
+                    tabContents.forEach(content => content.classList.remove('active'));
+
+                    // Show the target tab content element
+                    document.getElementById(targetId).classList.add('active');
+                });
+            });
+
+            // Activate the first tab by default
+            if (tabLinks.length > 0) {
+                tabLinks[0].click();
+            }
+        });
+
+    </script>
 
 
 
@@ -469,18 +682,40 @@
             .section.open {
                 display: block;
             }
+
+
+
+
+
+        .custom-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            cursor: not-allowed;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+            .custom-button:disabled {
+                background: linear-gradient(45deg, #9E9E9E, #616161);
+            }
+
+            .custom-button .button-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 10px;
+            }
+
+            .custom-button:hover:enabled {
+                background: linear-gradient(45deg, #66BB6A, #388E3C);
+                transform: translateY(-2px);
+            }
     </style>
-
-
-    <script>
-        $(document).ready(function () {
-            $('#Guarantors').DataTable({
-                scrollX: true // Enable horizontal scrolling
-            });
-        });
-
-    </script>
-
-
 
 }

@@ -156,5 +156,47 @@
         });
     </script>
 
+
+
+
+    <style>
+        /* Basic styling for the tabs */
+        .nav-tabs {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            border-bottom: 2px solid #ccc;
+        }
+
+            .nav-tabs li {
+                margin-right: 10px;
+            }
+
+            .nav-tabs a {
+                text-decoration: none;
+                padding: 10px 15px;
+                display: block;
+                border: 1px solid #ccc;
+                border-bottom: none;
+                background: #f0f0f0;
+                color: #333;
+            }
+
+                .nav-tabs a.active {
+                    background: #fff;
+                    border-bottom: 2px solid #fff;
+                    font-weight: bold;
+                }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+    </style>
 }
 

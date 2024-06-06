@@ -27,7 +27,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
         [DataMember]
-        [Display(Name = "Charge Type")]
+        [Display(Name = "Charge")]
         public int ChargeType { get; set; }
 
         [DataMember]
@@ -185,6 +185,31 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public static implicit operator ObservableCollection<object>(CommissionDTO v)
         {
             throw new NotImplementedException();
+        }
+
+
+        public CommissionSplitDTO chargeSplits { get; set; }
+        public ChartOfAccountDTO chartOfAccount { get; set; }
+
+        public List<CommissionSplitDTO> chargeSplit { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Charge Split Total Percentage")]
+        [CustomValidation(typeof(CommissionDTO), "CheckChargeSplitsTotalPercentage", ErrorMessage = "The sum of commission split percentage entries must be equal to 100%!")]
+        public double ChargeSplitsTotalPercentage { get; set; }
+
+
+        public static ValidationResult CheckChargeSplitsTotalPercentage(object value, ValidationContext context)
+        {
+            var bindingModel = context.ObjectInstance as CommissionDTO;
+            if (bindingModel == null)
+                throw new NotSupportedException("ObjectInstance must be CommissionDTO");
+
+            if ((double)value != 100d)
+                return new ValidationResult(string.Format("The sum of charge split percentage entries ({0}) must be equal to 100%!", value));
+
+            return ValidationResult.Success;
         }
     }
 }

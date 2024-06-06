@@ -45,18 +45,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
 
-                    if (commissionDTO.CommissionSplits.Any())
-                    {
-                        foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
-                        {
-                            commissionSplitDTO.CommissionId = commissionDTO.Id;
-                            commissionDTO.CommissionSplitChartOfAccountId = commissionSplitDTO.ChartOfAccountId;
-                            commissionSplitDTO.ChartOfAccountCostCenterId = commissionDTO.CommissionSplit.ChartOfAccountId;
-                            commissionSplits.Add(commissionSplitDTO);
-                        }
-                        if (commissionSplits.Any())
-                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
-                    }
+                    //if (commissionDTO.CommissionSplits.Any())
+                    //{
+                    //    foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
+                    //    {
+                    //        commissionSplitDTO.CommissionId = commissionDTO.Id;
+                    //        commissionDTO.CommissionSplitChartOfAccountId = commissionSplitDTO.ChartOfAccountId;
+                    //        commissionSplitDTO.ChartOfAccountCostCenterId = commissionDTO.CommissionSplit.ChartOfAccountId;
+                    //        commissionSplits.Add(commissionSplitDTO);
+                    //    }
+                    //    if (commissionSplits.Any())
+                    //        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
+                    //}
 
                     //Update CommissionLevies
 

@@ -129,6 +129,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["Create"] = "Successfully Created Debit Type";
 
+                debitTypeDTO = null;
+                selectedRows = null;
+
                 return RedirectToAction("Index");
             }
             else
