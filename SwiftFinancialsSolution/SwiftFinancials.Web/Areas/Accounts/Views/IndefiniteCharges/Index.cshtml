@@ -23,6 +23,18 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Indefinite Charges", "Create", "IndefiniteCharges", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @if (TempData["Successfully"] != null)
+                    {
+                        <div class="alert alert-primary">
+                            <strong>Successfully !</strong> @TempData["Successfully"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -82,8 +94,8 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/Budget/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/Budget/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/accounts/IndefiniteCharges/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/IndefiniteCharges/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(5)', nRow).html(dt_Created);
                     $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
@@ -93,10 +105,10 @@
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "Description", "sTitle": " Name", "sWidth": "15%" },
-                    { "mDataProp": "Description", "sTitle": " Name", "sWidth": "10%" },
+                    { "mDataProp": "RecoveryMode", "sTitle": " Recoverymode", "sWidth": "10%" },
                     { "mDataProp": "Description", "sTitle": " Name", "sWidth": "15%" },
                     { "mDataProp": "InstallmentsBasisValueDescription", "sTitle": "Total Value", "sWidth": "15%" },
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "RecoverySource", "sTitle": "RecoverySource", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]

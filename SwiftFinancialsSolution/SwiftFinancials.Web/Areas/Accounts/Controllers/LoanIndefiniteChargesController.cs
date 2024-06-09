@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -78,8 +79,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
-            
-           
+
+
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
@@ -111,19 +112,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<LoanProductDTO> selectedRows)
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, ObservableCollection<LoanProductDTO> selectedRows)
         {
             recurringBatchDTO.ValidateAll();
             int Priority = recurringBatchDTO.Priority;
             if (!recurringBatchDTO.HasErrors)
             {
-                foreach (var selectedRow in selectedRows)
-                {
-                    var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
-                    savingsProductDTO.AutomateLedgerFeeCalculation = true;
-                    await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
-                }
+                //var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
+                //savingsProductDTO.AutomateLedgerFeeCalculation = true;
+                await _channelService.ChargeLoanDynamicFeesAsync(recurringBatchDTO, selectedRows, GetServiceHeader());
+
+
+
+
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(recurringBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Type.ToString());

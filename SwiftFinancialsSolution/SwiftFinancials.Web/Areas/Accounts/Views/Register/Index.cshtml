@@ -1,12 +1,11 @@
-﻿@{
-    ViewBag.Title = "Customer Accounts";
-
-    var loanAppraisalOption = ViewBag.LoanAppraisalOptionSelectList as List<SelectListItem>;
+﻿
+@{
+    ViewBag.Title = "Alternate Channel";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Accounts</h1>
+        <h2>Alternate Channel Registration</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -23,9 +22,19 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Customer Accounts</h2>
-                    <hr />
-                    @Html.ActionLink("Create Customer Account", "Create", "Register", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Register Alternate Channel", "Create", "Register", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -41,7 +50,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="CustomersGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="PostingPeriodsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -59,47 +68,15 @@
 
 @section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
-
 
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#CustomersGrid').DataTable({
+            $('#PostingPeriodsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
@@ -109,7 +86,7 @@
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -117,26 +94,40 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/Accounts/Register/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/Accounts/Register/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var receivedDate = new Date(parseInt(aData.ReceivedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + receivedDate.getHours()).slice(-2);
+                    var m = ("0" + receivedDate.getMinutes()).slice(-2);
+                    var s = ("0" + receivedDate.getSeconds()).slice(-2);
 
+                    var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate);
+                    aData.ReceivedDate = dt_ReceivedDate;
+
+                    var viewUrl = '<a  href="/loaning/LoanRegistration/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/loaning/LoanRegistration/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var appraiseUrl = '<a  href="/loaning/LoanRegistration/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
+                    var verifyUrl = '<a  href="/loaning/LoanRegistration/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+                    var approveUrl = '<a  href="/loaning/LoanRegistration/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+                    var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
+
+                    //$('td:eq(4)', nRow).html(dt_ReceivedDate);
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;&nbsp;&nbsp;' + editUrl + ''/* + attachGuarantorUrl*/);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "5%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
-                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "15%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "10%" },
-                    { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Primary Account Number", "sWidth": "2%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
+                    { "mDataProp": "Expires", "sTitle": "Expires", "sWidth": "5%" },
+                    { "mDataProp": "CardNumber", "sTitle": "PAN", "sWidth": "5%" },
+                    { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Acc number", "sWidth": "5%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "type", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {

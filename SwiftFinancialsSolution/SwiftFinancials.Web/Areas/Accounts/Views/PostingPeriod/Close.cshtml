@@ -41,41 +41,42 @@
 
                         <h2>Posting Period</h2>
                         <fieldset>
-                            <div class="col-md-4">
-                                @Html.LabelFor(model => model.Description, new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(model => model.Id)
-                                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#postingLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
-                                </div>
-                            </div>
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg" id="data_5">
-                                            @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                            <div class="input-daterange input-group" id="datepicker">
-                                                <span class="input-group-addon">Start Date</span>
-                                                @Html.TextBox("startDate", DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy"), new { @class = "form-control-lg form-control" })
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                  
+                                <div class="col-md-6">
 
 
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg" id="data_5">
-                                            @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                            <div class="input-daterange input-group" id="datepicker">
-                                                <span class="input-group-addon">End Date</span>
-                                                @Html.TextBox("endDate", DateTime.Today.ToString("dd/MM/yyyy"), new { @class = "form-control-lg form-control" })
-                                            </div>
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Id)
+                                        @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account Name" } })
                                     </div>
 
+
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="StartDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.ClosedDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="closeddate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="Enddate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
 
 
                                     <div class="form-group form-group-sm">
@@ -85,13 +86,14 @@
                                     </div>
                                 </div>
                             </div>
+
                         </fieldset>
 
                     }
 
-                    <div>
+                    @*<div>
                         @Html.ActionLink("Back to List", "Index", "PostingPeriod", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                    </div>
+                    </div>*@
                 </div>
             </div>
         </div>

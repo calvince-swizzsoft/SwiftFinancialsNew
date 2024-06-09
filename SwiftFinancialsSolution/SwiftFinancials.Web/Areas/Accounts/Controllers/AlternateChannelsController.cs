@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -54,6 +55,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(debitBatchDTO);
         }
+        public async Task<ActionResult> AlternateChannels(AlternateChannelTypeCommissionDTO systemTransactionTypeInCommissionDTO)
+        {
+            Session["AlternateChannelType"] = systemTransactionTypeInCommissionDTO.AlternateChannelType;
+            Session["KnownChargeType"] = systemTransactionTypeInCommissionDTO.KnownChargeType;
+            Session["ChargeBenefactor"] = systemTransactionTypeInCommissionDTO.ChargeBenefactor;
+
+            return View("Create", systemTransactionTypeInCommissionDTO);
+        }
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -61,28 +71,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
 
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+           // ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DynamicChargeDTO levyDTO)
+        public async Task<ActionResult> Create(AlternateChannelTypeCommissionDTO levyDTO, CustomerAccountDTO customerAccountDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             levyDTO.ValidateAll();
-
+            int alternateChannelType = levyDTO.AlternateChannelType, alternateChannelTypeKnownChargeType = levyDTO.KnownChargeType; decimal totalValue = 0;
             if (!levyDTO.HasErrors)
             {
-                await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
+                await _channelService.ComputeTariffsByAlternateChannelTypeAsync(alternateChannelType,alternateChannelTypeKnownChargeType,totalValue,customerAccountDTO, GetServiceHeader());
+                TempData["Successfully"] = "Successfully Alternate Channels Charges";
+                return RedirectToAction("Create");
             }
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoverySource.ToString());
-                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.RecoverySource.ToString());
-                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoverySource.ToString());
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
+                ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
+                ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(levyDTO.KnownChargeType.ToString());
+                ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.KnownChargeType.ToString());
+               // ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.ChargeBenefactor.ToString());
                 return View(levyDTO);
             }
         }

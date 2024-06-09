@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -14,7 +15,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class ClosePostingPeriodController : MasterController
     {
-        public async Task<ActionResult> Index(Guid id)
+        public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
 
@@ -38,7 +39,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, journalEntryFilter, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindPostingPeriodsByFilterInPageAsync( jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, journalEntryFilter, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -48,7 +49,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<GeneralLedgerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<PostingPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -60,32 +61,66 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(generalLedgerDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
+           
+            Guid parseId;
 
-            return View();
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
+
+            PostingPeriodDTO customerAccountDTO = new PostingPeriodDTO();
+
+            if (customer != null)
+            {
+
+                customerAccountDTO.Id = customer.Id;
+                customerAccountDTO.Description = customer.Description;
+                customerAccountDTO.CreatedDate = customer.CreatedDate;
+                customerAccountDTO.DurationStartDate = customer.DurationStartDate;
+                customerAccountDTO.DurationEndDate = customer.DurationEndDate;
+                customerAccountDTO.CreatedBy = customer.CreatedBy;
+                customerAccountDTO.ClosedBy = customer.ClosedBy;
+            }           
+            return View(customerAccountDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(GeneralLedgerDTO generalLedgerDTO)
+        public async Task<ActionResult> Create(PostingPeriodDTO postingPeriodDTO)
         {
+            //var closedDate = Request["closedDate"];
+            //var endDate = Request["endDate"];
+            //var startDate = Request["startDate"];
 
-            generalLedgerDTO.ValidateAll();
+            //postingPeriodDTO.DurationStartDate = DateTime.ParseExact((Request["startDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-            if (!generalLedgerDTO.HasErrors)
+            //postingPeriodDTO.DurationEndDate = DateTime.ParseExact((Request["endDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            //postingPeriodDTO.ClosedDate = DateTime.ParseExact((Request["closedDate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            postingPeriodDTO.ClosedDate = DateTime.Now;
+            int moduleNavigationItemCode = 0;
+            postingPeriodDTO.ValidateAll();
+
+            if (!postingPeriodDTO.HasErrors)
             {
-                await _channelService.AddGeneralLedgerAsync(generalLedgerDTO.MapTo<GeneralLedgerDTO>(), GetServiceHeader());
-                ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(generalLedgerDTO.Status.ToString());
-
-                return RedirectToAction("Index");
+              await _channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, GetServiceHeader());
+              //  var f =await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO, GetServiceHeader());
+                // ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(postingPeriodDTO.ToString());
+                TempData["SuccessMessage"] = "posting period closed successful.";
+                await ServeNavigationMenus();
+                return RedirectToAction("Create");
             }
             else
             {
-                var errorMessages = generalLedgerDTO.ErrorMessages;
+                var errorMessages = postingPeriodDTO.ErrorMessages;
 
-                return View(generalLedgerDTO);
+                return View(postingPeriodDTO);
             }
         }
 
