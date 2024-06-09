@@ -48,7 +48,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -61,7 +60,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -70,7 +68,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View();
         }
-
 
 
         public async Task<ActionResult> WireTransferType(WireTransferTypeDTO wireTransferTypeDTO)
@@ -83,7 +80,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View("Create", wireTransferTypeDTO);
         }
-
 
 
         [HttpPost]
@@ -116,104 +112,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 TempData["CreateError"] = "Failed to Create Wire Transfer Type";
 
                 return View(wireTransferTypeDTO);
-            }
-        }
-
-
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
-
-            var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
-
-            await GetApplicableCharges(id);
-
-            return View(debitTypeDTO);
-        }
-
-
-        public async Task<ActionResult> GetApplicableCharges(Guid id)
-        {
-            await _channelService.FindCommissionsByDebitTypeIdAsync(id, GetServiceHeader());
-
-            return View();
-        }
-
-
-        public async Task<ActionResult> SavingsProductEdit(Guid? id, DebitTypeDTO debitTypeDTO)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var savingsProduct = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
-
-            if (savingsProduct != null)
-            {
-                debitTypeDTO.CustomerAccountTypeTargetProductId = savingsProduct.Id;
-                debitTypeDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
-
-                Session["savingsProductid2"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
-                Session["SavingsProductDescription2"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
-            }
-
-            return View("Edit", debitTypeDTO);
-        }
-
-
-        public async Task<ActionResult> DebitTypeEdit(DebitTypeDTO debitTypeDTO)
-        {
-            Session["Description2"] = debitTypeDTO.Description;
-            Session["ProductCode2"] = debitTypeDTO.ProductCode;
-            Session["isLocked2"] = debitTypeDTO.IsLocked;
-
-            return View("Edit", debitTypeDTO);
-        }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
-        {
-            debitTypeDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductid2"];
-            debitTypeDTO.CustomerAccountTypeTargetProductDescription = Session["SavingsProductDescription2"].ToString();
-
-            debitTypeDTO.Description = Session["Description2"].ToString();
-            debitTypeDTO.ProductCode = Convert.ToInt32(Session["ProductCode2"].ToString());
-            debitTypeDTO.IsLocked = (bool)Session["isLocked2"];
-
-            debitTypeDTO.ValidateAll();
-
-            if (ModelState.IsValid)
-            {
-                var result = await _channelService.UpdateDebitTypeAsync(debitTypeDTO, GetServiceHeader());
-
-                var findDebitId = await _channelService.FindDebitTypeAsync(debitTypeDTO.Id, GetServiceHeader());
-
-                await _channelService.UpdateCommissionsByDebitTypeIdAsync(findDebitId.Id, selectedRows, GetServiceHeader());
-
-                TempData["Edit"] = "Successfully Edited Debit Type";
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = debitTypeDTO.ErrorMessages;
-
-                ViewBag.ProductCodeSelectList = GetProductCodeSelectList(debitTypeDTO.CustomerAccountTypeProductCode.ToString());
-
-                TempData["EditError"] = "Failed to Edit Debit Type";
-
-                return View(debitTypeDTO);
             }
         }
     }
