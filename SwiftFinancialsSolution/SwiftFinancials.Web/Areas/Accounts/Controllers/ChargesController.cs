@@ -119,11 +119,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ChargeSplitDTOs.Add(chargeSplitDTO);
 
-                Session["Description"] = chargeSplitDTO.Description;
-                Session["ChartOfAccountId"] = chargeSplitDTO.ChartOfAccountId;
-                Session["ChartOfAccountAccountName"] = chargeSplitDTO.ChartOfAccountAccountName;
-                Session["Percentage"] = chargeSplitDTO.Percentage;
-                Session["Leviable"] = chargeSplitDTO.Leviable;
+                //Session["Description"] = chargeSplitDTO.Description;
+                //Session["ChartOfAccountId"] = chargeSplitDTO.ChartOfAccountId;
+                //Session["ChartOfAccountAccountName"] = chargeSplitDTO.ChartOfAccountAccountName;
+                //Session["Percentage"] = chargeSplitDTO.Percentage;
+                //Session["Leviable"] = chargeSplitDTO.Leviable;
             };
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
@@ -142,11 +142,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
 
-            commissionDTO.chargeSplit[0].Description = Session["Description"].ToString();
-            commissionDTO.chargeSplit[0].ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
-            commissionDTO.chargeSplit[0].ChartOfAccountAccountName = Session["ChartOfAccountAccountName"].ToString();
-            commissionDTO.chargeSplit[0].Percentage = Convert.ToDouble(Session["Percentage"].ToString());
-            commissionDTO.chargeSplit[0].Leviable = (bool)Session["Leviable"];
+            commissionDTO.chargeSplit = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+
+            //commissionDTO.chargeSplit[0].Description = Session["Description"].ToString();
+            //commissionDTO.chargeSplit[0].ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
+            //commissionDTO.chargeSplit[0].ChartOfAccountAccountName = Session["ChartOfAccountAccountName"].ToString();
+            //commissionDTO.chargeSplit[0].Percentage = Convert.ToDouble(Session["Percentage"].ToString());
+            //commissionDTO.chargeSplit[0].Leviable = (bool)Session["Leviable"];
 
             //commissionDTO.ChargeSplitsTotalPercentage = 100;
 

@@ -53,7 +53,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var wireTransferTypeDTO = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
+            var wireTransferTypeDTO = await _channelService.FindCommissionsByWireTransferTypeIdAsync(id, GetServiceHeader());
+
+            ViewBag.wireTransferTypeCommission = wireTransferTypeDTO;
 
             return View(wireTransferTypeDTO);
         }
@@ -73,6 +75,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         public async Task<ActionResult> WireTransferType(WireTransferTypeDTO wireTransferTypeDTO)
         {
+            Session["Description"] = wireTransferTypeDTO.Description;
+            Session["ChartOfAccountId"] = wireTransferTypeDTO.ChartOfAccountId;
+            Session["ChartOfAccount"] = wireTransferTypeDTO.ChartOfAccountAccountName;
+            Session["isLocked"] = wireTransferTypeDTO.IsLocked;
+            Session["TransactionOwnership"] = wireTransferTypeDTO.TransactionOwnership;
 
             return View("Create", wireTransferTypeDTO);
         }
@@ -82,6 +89,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(WireTransferTypeDTO wireTransferTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
+            wireTransferTypeDTO.Description = Session["Description"].ToString();
+            wireTransferTypeDTO.ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
+            wireTransferTypeDTO.ChartOfAccountAccountName = Session["ChartOfAccount"].ToString();
+            wireTransferTypeDTO.IsLocked = (bool)Session["isLocked"];
+            wireTransferTypeDTO.TransactionOwnership = Convert.ToInt32(Session["TransactionOwnership"].ToString());
 
             wireTransferTypeDTO.ValidateAll();
 

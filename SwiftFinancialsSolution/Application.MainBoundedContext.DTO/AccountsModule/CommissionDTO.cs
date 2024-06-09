@@ -191,7 +191,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public CommissionSplitDTO chargeSplits { get; set; }
         public ChartOfAccountDTO chartOfAccount { get; set; }
 
-        public List<CommissionSplitDTO> chargeSplit { get; set; }
+        public ObservableCollection<CommissionSplitDTO> chargeSplit { get; set; }
 
 
         [DataMember]
