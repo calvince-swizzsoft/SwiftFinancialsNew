@@ -53,10 +53,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(id, GetServiceHeader());
 
-            List<CommissionDTO> charges = new List<CommissionDTO>(applicableCharges);
-            
-            TempData["ApplicableCharges"] = charges;
-
             return View(debitTypeDTO);
         }
 
@@ -87,6 +83,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View("Create", debitTypeDTO);
         }
+
+
+        [HttpPost]
+        public async Task<ActionResult> LoansView()
+        {
+            return View();
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> InvestmentsView()
+        {
+            return View();
+        }
+
 
 
         public async Task<ActionResult> Create()

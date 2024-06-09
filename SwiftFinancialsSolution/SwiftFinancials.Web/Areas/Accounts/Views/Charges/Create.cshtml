@@ -222,8 +222,9 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "00.00000%" } })
+                                        @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
                                         @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
+                                        <div class="invalid-feedback" style="display: none;">Percentage cannot be greater than 100!</div>
                                     </div>
                                 </div>
                             </div>
@@ -271,17 +272,17 @@
                                                 <tr>
                                                     <td>@commissionSplit.ChartOfAccountAccountName</td>
                                                     <td>@commissionSplit.Description</td>
-                                                    <td style="text-align: right;">@commissionSplit.Percentage</td>
+                                                    <td style="text-align: right;">
+                                                        <input type="number" class="percentage-input" min="0" max="100" step="0.01" value="@commissionSplit.Percentage">
+                                                    </td>
                                                     <td>@commissionSplit.Leviable</td>
                                                 </tr>
-                                            }
+}
                                         }
                                     </tbody>
                                 </table>
-
+                                <div class="invalid-feedback" style="display: none;"></div>
                             </row>
-
-                            <hr />
                         </fieldset>
                     }
                 </div>
@@ -630,6 +631,23 @@ $(document).ready(function () {
             }
         });
 
+
+
+
+
+        // Find textbox percentage
+        var percentageInput = document.querySelector('.percentage-input');
+        var feedbackMessage = document.querySelector('.invalid-feedback');
+
+        percentageInput.addEventListener('input', function () {
+            var inputValue = parseFloat(percentageInput.value);
+            if (inputValue > 100) {
+                percentageInput.value = 100;
+                feedbackMessage.style.display = 'block';
+            } else {
+                feedbackMessage.style.display = 'none';
+            }
+        });
     </script>
 
 
