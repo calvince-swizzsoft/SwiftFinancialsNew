@@ -11,7 +11,7 @@
 
 <style>
     #tabs-container {
-        background-color: none;
+        background-color: whitesmoke;
         border-bottom: 1px solid #ddd;
         box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
         margin-bottom: 20px;
@@ -192,8 +192,16 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
 
-                            <br />
                             <hr />
 
                             @*chargeType Splitting*@
@@ -207,7 +215,7 @@
                                         @Html.LabelFor(model => model.chargeSplits.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.Id)
                                         @Html.ValidationMessageFor(model => model.chargeSplits.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Link G/L Account..." } })
+                                        @Html.EditorFor(model => model.chargeSplits.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to link G/L Account..." } })
                                     </div>
                                 </div>
 
@@ -224,7 +232,7 @@
                                         @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
                                         @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
-                                        <div class="invalid-feedback" style="display: none;">Percentage cannot be greater than 100!</div>
+                                        <div class="invalid-feedback" style="display: none;">Percentage cannot be greater than 100 !</div>
                                     </div>
                                 </div>
                             </div>
@@ -251,12 +259,9 @@
                             </div>
                             @*End chargeType Splitting*@
 
-
-                            <br />
-
                             <row>
                                 <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                    <thead>
+                                    <thead style="font-style:italic; color: cadetblue; text-align: center; ">
                                         <tr>
                                             <th style="width: 20%;">G/L Account Name</th>
                                             <th style="width: 20%;">Charge Split Name</th>
@@ -272,44 +277,28 @@
                                                 <tr>
                                                     <td>@commissionSplit.ChartOfAccountAccountName</td>
                                                     <td>@commissionSplit.Description</td>
-                                                    <td style="text-align: right;">
-                                                        <input type="number" class="percentage-input" min="0" max="100" step="0.01" value="@commissionSplit.Percentage">
-                                                    </td>
+                                                    <td style="text-align: right;">@commissionSplit.Percentage</td>
                                                     <td>@commissionSplit.Leviable</td>
                                                 </tr>
-}
+                                            }
                                         }
                                     </tbody>
                                 </table>
+
                                 <div class="invalid-feedback" style="display: none;"></div>
                             </row>
                         </fieldset>
                     }
                 </div>
 
-                <div class="ibox-content m-b-sm border-bottom">
-                    @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "Charges", new { Area = "Accounts" }, FormMethod.Post))
                     {
-                        <div class="row">
-                            <div class="col-lg-3"></div>
-                            <div class="col-lg-3"></div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
-                                    @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
-                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <input type="submit" style="width: 200px;" value="Create" class="btn btn-primary" />
-                                </div>
-                            </div>
+                        <div class="col-lg-3">
+                            <input type="submit" style="width: 200px;" value="Create" class="btn btn-primary" />
                         </div>
                     }
                 </div>
-
             </div>
         </div>
 
@@ -520,6 +509,9 @@ $(document).ready(function () {
                     return item;
                 }
             });
+
+
+
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -642,7 +634,7 @@ $(document).ready(function () {
         percentageInput.addEventListener('input', function () {
             var inputValue = parseFloat(percentageInput.value);
             if (inputValue > 100) {
-                percentageInput.value = 100;
+                percentageInput.value = '';
                 feedbackMessage.style.display = 'block';
             } else {
                 feedbackMessage.style.display = 'none';
