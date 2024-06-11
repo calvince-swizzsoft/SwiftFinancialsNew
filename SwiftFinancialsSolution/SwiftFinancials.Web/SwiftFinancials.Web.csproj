@@ -1051,8 +1051,8 @@
     <Content Include="Areas\Accounts\Views\AlternatechannelManagement\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Linking.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\History.cshtml" />
-    <Content Include="Areas\Accounts\Views\debitTypeSavings\SavingsView.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
