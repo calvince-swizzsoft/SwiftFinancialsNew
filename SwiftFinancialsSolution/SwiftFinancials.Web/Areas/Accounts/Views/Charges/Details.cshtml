@@ -1,0 +1,133 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionDTO
+
+@{
+    ViewBag.Title = "Details";
+}
+
+
+<style>
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Charges", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Details</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Charges Details</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    <h2>Charge</h2>
+                    <fieldset>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaximumCharge, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-3">
+                                
+                            </div>
+                        </div>
+
+                        <br />
+
+                        <center><h2>Charge Splitting Details</h2></center>
+                        <div class="row">
+                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                <thead style="font-style:italic; color: cornflowerblue; text-align: center; ">
+                                    <tr>
+                                        <th style="width: 20%;">G/L Account Name</th>
+                                        <th style="width: 20%;">Charge Split Name</th>
+                                        <th style="width: 5%;">Percentage</th>
+                                        <th style="width: 2%;">Leviable</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.chargeSplits != null)
+                                    {
+                                        foreach (var chargeSplits in ViewBag.chargeSplits)
+                                        {
+                                            <tr>
+                                                <td>@chargeSplits.ChartOfAccountAccountName</td>
+                                                <td>@chargeSplits.Description</td>
+                                                <td style="text-align: right;">@chargeSplits.Percentage</td>
+                                                <td>@chargeSplits.Leviable</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </fieldset>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

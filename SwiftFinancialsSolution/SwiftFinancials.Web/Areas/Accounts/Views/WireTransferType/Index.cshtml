@@ -29,10 +29,10 @@
                     <br /><br />
 
 
-                    @if (TempData["AlertMessage"] != null)
+                    @if (TempData["Create"] != null)
                     {
                         <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
+                            <strong>Success !</strong> @TempData["Create"]
 
                             <button type="button" class="close" data-dismiss="alert">
                                 <span>
@@ -119,19 +119,18 @@
                     var viewUrl = '<a  href="/accounts/WireTransferType/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    //$('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "20%" },
                     { "mDataProp": "ChartOfAccountName", "sTitle": "G/L Account Name", "sWidth": "15%" },
                     { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "15%" },
                     { "mDataProp": "TransactionOwnershipDescription", "sTitle": "Transaction Ownership", "sWidth": "15%" },
                     { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%","bSortable": false }],
                 "aaSorting": [[0, "desc"]]
 
             });

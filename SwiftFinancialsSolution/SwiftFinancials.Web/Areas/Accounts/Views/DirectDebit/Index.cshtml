@@ -116,14 +116,14 @@
                     var editUrl = '<a  href="/accounts/DirectDebit/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/DirectDebit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CustomerAccountTypeProductCode", "sTitle": "Product Code", "sWidth": "5%" },
+                    /*{ "mDataProp": "CustomerAccountTypeProductCode", "sTitle": "Product Code", "sWidth": "5%" },*/
                     { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
                     { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "10%" },
                     { "mDataProp": "ChargeTypeDescription", "sTitle": "Charge Type", "sWidth": "5%" },

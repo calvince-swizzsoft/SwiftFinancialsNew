@@ -61,24 +61,22 @@
                         @Html.AntiForgeryToken()
                         <fieldset>
                             <div class="row">
-                                <div class="col-md-6 form-group">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "BranchId" })
-                                        @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Branch...", @id = "BranchDescription" })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#GLAccountLookupModal"><span class="fa fa-search"></span></a>
-                                        </span>
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+                                <div class="col-md-6 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Link G/L Account..." } })
                                     </div>
                                 </div>
 
@@ -108,7 +106,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-3">
-                                    <button type="button" class="btn btn-primary" id="openModalButton" @*onclick="sendFormData()"*@>Add Applicable Charges</button>
+                                    <button type="button" class="btn btn-primary" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
                                 </div>
                             </div>
 
@@ -222,9 +220,116 @@
     @Scripts.Render("~/plugins/duallist")
 
 
+<script>
+
+   //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
 
 
-    <script>
+        });
+
+
         // Open the modal
         $("#openModalButton").click(function () {
             $("#applicableChargesModal").css("display", "block");
@@ -240,15 +345,15 @@
         function sendFormData() {
             // Create an object to hold the form data
             let formData = {
-                CustomerAccountTypeTargetProductId: document.querySelector('[name="CustomerAccountTypeTargetProductId"]').value,
-                CustomerAccountTypeTargetProductDescription: document.querySelector('[name="CustomerAccountTypeTargetProductDescription"]').value,
                 Description: document.querySelector('[name="Description"]').value,
-                CustomerAccountTypeProductCode: document.querySelector('[name="CustomerAccountTypeProductCode"]').value,
+                TransactionOwnership: document.querySelector('[name="TransactionOwnership"]').value,
+                ChartOfAccountAccountName: document.querySelector('[name="ChartOfAccountAccountName"]').value,
+                ChartOfAccountId: document.querySelector('[name="ChartOfAccountId"]').value,
                 IsLocked: document.querySelector('[name="IsLocked"]').checked
             };
 
             // Send the data to the first controller using fetch
-            fetch('/DebitType/DebitType', {
+            fetch('/WireTransferType/WireTransferType', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -420,59 +525,6 @@
             });
         });
     </script>
-
-
-
-
-    <script>
-       $(document).ready(function () {
-           $('#GLAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ChartOfAccount", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/WireTransferType/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-            "aoColumns": [
-            { "mDataProp": "AccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
-            { "mDataProp": "CostCenterDescription", "sTitle": "Cost Center", "sWidth": "10%" },
-            { "mDataProp": "AccountCode", "sTitle": "Code", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
-            { "mDataProp": "CreatedDate", "sTitle": "Actions", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = companiesGrid.row(this).data();
-
-        $('#ChartOfAccountId').val(data.Id);
-        $('input[name=ChartOfAccountId]').val(data.Id);
-        $('input[name=ChartOfAccountAccountName]').val(data.ChartOfAccountAccountName);
-
-        $('#ChartOfAccountAccountName').val(CompaniesMap[item].ChartOfAccountAccountName);
-        $('#CompaniesLookup').modal('hide');
-    });
-    </script>
-
 
 
     <style>

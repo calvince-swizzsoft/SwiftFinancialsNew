@@ -51,6 +51,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
+            var chargesplits = await _channelService.FindCommissionSplitsByCommissionIdAsync(id, GetServiceHeader());
+
+            ViewBag.chargeSplits = chargesplits;
+
             return View(commissionDTO);
         }
 
@@ -118,12 +122,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
 
                 ChargeSplitDTOs.Add(chargeSplitDTO);
-
-                Session["Description"] = chargeSplitDTO.Description;
-                Session["ChartOfAccountId"] = chargeSplitDTO.ChartOfAccountId;
-                Session["ChartOfAccountAccountName"] = chargeSplitDTO.ChartOfAccountAccountName;
-                Session["Percentage"] = chargeSplitDTO.Percentage;
-                Session["Leviable"] = chargeSplitDTO.Leviable;
             };
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
@@ -142,13 +140,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
 
-            commissionDTO.chargeSplit[0].Description = Session["Description"].ToString();
-            commissionDTO.chargeSplit[0].ChartOfAccountId = (Guid)Session["ChartOfAccountId"];
-            commissionDTO.chargeSplit[0].ChartOfAccountAccountName = Session["ChartOfAccountAccountName"].ToString();
-            commissionDTO.chargeSplit[0].Percentage = Convert.ToDouble(Session["Percentage"].ToString());
-            commissionDTO.chargeSplit[0].Leviable = (bool)Session["Leviable"];
-
-            //commissionDTO.ChargeSplitsTotalPercentage = 100;
+            commissionDTO.chargeSplit = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
 
             commissionDTO.ValidateAll();
 
@@ -196,25 +188,100 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            Session["Id"] = id;
+
             var commissionDTO = await _channelService.FindCommissionAsync(id, GetServiceHeader());
+
+            var chargesplits = await _channelService.FindCommissionSplitsByCommissionIdAsync(id, GetServiceHeader());
+
+            ViewBag.chargeSplits = chargesplits;
 
             return View(commissionDTO);
         }
 
+
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CommissionDTO commissionDTO)
+        public async Task<ActionResult> AddEdit(Guid? id, CommissionDTO commissionDTO)
         {
-            if (ModelState.IsValid)
+            var chargeId = (Guid)Session["Id"];
+
+            var chargesplits = await _channelService.FindCommissionSplitsByCommissionIdAsync(chargeId, GetServiceHeader());
+            ViewBag.chargeSplits = chargesplits;
+
+            await ServeNavigationMenus();
+
+            ChargeSplitDTOs = TempData["ChargeSplitDTOs2"] as ObservableCollection<CommissionSplitDTO>;
+
+            var glAccount = commissionDTO.chargeSplits;
+
+            if (ChargeSplitDTOs == null)
+                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
+
+            foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+            {
+                chargeSplitDTO.Description = chargeSplitDTO.Description;
+                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+                chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
+                chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+                ChargeSplitDTOs.Add(chargeSplitDTO);
+            };
+
+            TempData["ChargeSplitDTOs2"] = ChargeSplitDTOs;
+
+            TempData["ChargeDTO2"] = commissionDTO;
+
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+
+            return View("Edit", commissionDTO);
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Edit(CommissionDTO commissionDTO)
+        {
+            commissionDTO = TempData["ChargeDTO2"] as CommissionDTO;
+
+            var chargeId = (Guid)Session["Id"];
+
+            commissionDTO.chargeSplit = TempData["ChargeSplitDTOs2"] as ObservableCollection<CommissionSplitDTO>;
+
+            commissionDTO.ValidateAll();
+
+            if (!commissionDTO.HasErrors)
             {
                 await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
-                TempData["Edit"] = "Successfully Edit Charge";
+                TempData["Edit"] = "Successfully Edited Charge";
+                TempData["ChargeDTO2"] = "";
+
+                var chargeSplits = new ObservableCollection<CommissionSplitDTO>();
+
+                foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+                {
+                    chargeSplitDTO.Description = chargeSplitDTO.Description;
+                    chargeSplitDTO.MaximumCharge = chargeSplitDTO.MaximumCharge;
+                    chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
+                    chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                    chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                    chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+                    chargeSplits.Add(chargeSplitDTO);
+                };
+
+                if (chargeSplits.Any())
+                    await _channelService.UpdateCommissionSplitsByCommissionIdAsync(chargeId, chargeSplits, GetServiceHeader());
+                TempData["ChargeSplitDTOs"] = "";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                var errorMessages = commissionDTO.ErrorMessages;
+
                 TempData["EditError"] = "Failed to Edit Charge";
 
                 return View(commissionDTO);

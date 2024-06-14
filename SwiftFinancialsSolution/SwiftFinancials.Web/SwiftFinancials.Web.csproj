@@ -333,6 +333,7 @@
     <Compile Include="Areas\Accounts\Controllers\CustomerAccountstandingorderController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\debitTypeSavingsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
@@ -1051,6 +1052,8 @@
     <Content Include="Areas\Accounts\Views\AlternatechannelManagement\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Linking.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\History.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
