@@ -22,7 +22,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -52,11 +51,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var wireTransferTypeDTO = await _channelService.FindCommissionsByWireTransferTypeIdAsync(id, GetServiceHeader());
+            var applicableCharges = await _channelService.FindCommissionsByWireTransferTypeIdAsync(id, GetServiceHeader());
 
-            ViewBag.wireTransferTypeCommission = wireTransferTypeDTO;
+            ViewBag.applicableCharges = applicableCharges;
 
-            return View(wireTransferTypeDTO);
+            return View();
         }
 
 
