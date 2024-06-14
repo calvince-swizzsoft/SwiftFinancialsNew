@@ -2,6 +2,7 @@
 
 @{
     ViewBag.Title = "Budgets";
+    var k = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
@@ -26,6 +27,18 @@
             <div class="ibox ">
                 <div class="ibox-title">
                     <div class="ibox-tools">
+                        @if (TempData["ErrorMsg"] != null)
+                        {
+                            <div class="alert alert-success">
+                                <strong>Error!</strong> @TempData["ErrorMsg"]
+
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                        }
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -51,16 +64,22 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.PostingPeriodId)
-                                        @Html.EditorFor(model => model.PostingPeriodId, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period" } })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period" } })
                                         @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
+                                    @*<div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BudgetEntries[0].LoanProductId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BudgetEntries[0].LoanProductId)
+                                            @Html.EditorFor(model => model.BudgetEntries[0].LoanProductId, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "LoanProduct Name" } })
+                                            @Html.ValidationMessageFor(model => model.BudgetEntries[0].LoanProductDescription, "", new { @class = "text-danger" })
+                                        </div>*@
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BudgetEntries[0].LoanProductId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BudgetEntries[0].LoanProductId)
-                                        @Html.EditorFor(model => model.BudgetEntries[0].LoanProductDescription, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "LoanProduct Name" } })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].LoanProductDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
@@ -75,35 +94,28 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BudgetEntries[0].Type, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BudgetEntries[0].Type, new { htmlAttributes = new { @class = "form-control", @placeholder = "Type" } })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Type, "", new { @class = "text-danger" })
-                                    </div>
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BudgetEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BudgetEntries[0].ChartOfAccountId)
                                         @Html.EditorFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
                                         @Html.ValidationMessageFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BudgetEntries[0].Amount, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BudgetEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Amount, "", new { @class = "text-danger" })
-                                    </div>
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BudgetEntries[0].Reference, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.BudgetEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
                                         @Html.ValidationMessageFor(model => model.BudgetEntries[0].Reference, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                                <div class="col-lg-6">
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BudgetEntries[0].Amount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.BudgetEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
+                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Amount, "", new { @class = "text-danger" })
+                                    </div>
+
                                 </div>
                             </div>
                         </fieldset>
@@ -126,7 +138,7 @@
     @Scripts.Render("~/plugins/typehead")
 
 
-<script>
+    <script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({

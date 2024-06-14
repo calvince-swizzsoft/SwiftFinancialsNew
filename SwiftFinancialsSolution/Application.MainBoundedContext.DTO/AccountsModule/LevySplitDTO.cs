@@ -70,13 +70,17 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Required]
         public string Description { get; set; }
 
-        [DataMember]
-        [Display(Name = "Percentage")]
-        [RegularExpression(@"^-?(([1-9]\d*)|0)(.0*[1-9](0*[1-9])*)?$", ErrorMessage = "Percentage value must be greater than zero!")]
-        public double Percentage { get; set; }
+    
 
-        [DataMember]
-        [Display(Name = "Created Date")]
-        public DateTime CreatedDate { get; set; }
-    }
+[DataMember]
+    [Display(Name = "Percentage")]
+    [Range(0, 100, ErrorMessage = "Percentage value must be between 0 and 100.")]
+    [RegularExpression(@"^-?(([1-9]\d*)|0)(\.0*[1-9](0*[1-9])*)?$", ErrorMessage = "Percentage value must be a valid number.")]
+    public double Percentage { get; set; }
+
+
+    [DataMember]
+    [Display(Name = "Created Date")]
+    public DateTime CreatedDate { get; set; }
+}
 }

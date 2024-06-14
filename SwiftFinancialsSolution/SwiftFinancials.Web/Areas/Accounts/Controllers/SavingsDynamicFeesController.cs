@@ -64,7 +64,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                     var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
                     savingsProductDTO.AutomateLedgerFeeCalculation = true;
-                    await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
+                    await _channelService.CapitalizeInterestAsync(1, GetServiceHeader());
 
                 }
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());

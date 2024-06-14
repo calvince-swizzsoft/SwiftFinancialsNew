@@ -40,56 +40,47 @@
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.PostingPeriodDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.PostingPeriodDescription)<br>
+                                @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
 
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.BranchDescription)<br></strong>
 
-                                @Html.DisplayFor(model => model.BranchDescription)<br>
+                                @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
 
-                                @Html.DisplayFor(model => model.Description)<br>
+                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.TotalValue)<br></strong>
 
-                                @Html.DisplayFor(model => model.TotalValue)<br>
+                                @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
-
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
+                            
                         </div>
                         <div class="col-lg-6">
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].Type)<br></strong>
 
-                                @Html.DisplayFor(model => model.BudgetEntries[0].Type)<br>
+                                @Html.TextBoxFor(model => model.BudgetEntries[0].Type, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].ChartOfAccountAccountName)<br></strong>
-
-                                @Html.DisplayFor(model => model.BudgetEntries[0].ChartOfAccountAccountName)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].LoanProductDescription)<br></strong>
-
-                                @Html.DisplayFor(model => model.BudgetEntries[0].LoanProductDescription)<br>
-                            </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].Amount)<br></strong>
 
-                                @Html.DisplayFor(model => model.BudgetEntries[0].Amount)<br>
+                                @Html.TextBoxFor(model => model.BudgetEntries[0].Amount, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
                             <p>
                                 <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].Reference)<br></strong>
 
-                                @Html.DisplayFor(model => model.BudgetEntries[0].Reference)<br>
+                                @Html.TextBoxFor(model => model.BudgetEntries[0].Reference, new { @class = "form-control", @readonly = "readonly" })<br>
+                            </p>
+                            <p>
+                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+
+                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })<br>
                             </p>
                         </div>
                     </div>
