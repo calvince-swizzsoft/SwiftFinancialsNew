@@ -2,6 +2,7 @@
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -29,7 +30,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Levy")]
-        [ValidGuid]
         public Guid LevyId { get; set; }
 
         [DataMember]
@@ -39,5 +39,14 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Commission")]
+        public string CommissionDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Maximum Charge")]
+        public decimal maximumCharge { get; set; }
     }
 }

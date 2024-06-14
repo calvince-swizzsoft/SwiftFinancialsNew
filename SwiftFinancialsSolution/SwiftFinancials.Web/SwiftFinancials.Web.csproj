@@ -1053,6 +1053,8 @@
     <Content Include="Areas\Accounts\Views\Register\History.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Levies.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

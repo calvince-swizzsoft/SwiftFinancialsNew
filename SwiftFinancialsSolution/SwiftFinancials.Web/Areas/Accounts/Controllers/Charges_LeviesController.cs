@@ -15,78 +15,109 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class Charges_LeviesController : MasterController
     {
-         public async Task<ActionResult> Create()
+        public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-
-            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
-
-            //TempData["Levies"] = await _channelService.FindLeviesAsync(GetServiceHeader());
-
-            var levies = await _channelService.FindLeviesAsync(GetServiceHeader());
-
-            TempData["Levies"] = JsonConvert.SerializeObject(levies); // Serialize the data to store it in TempData
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CommissionDTO commissionDTO)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            commissionDTO.ValidateAll();
+            int totalRecordCount = 0;
 
-            if (!commissionDTO.ErrorMessages.Any())
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                if (commissionDTO != null)
-                {
-                    //Update CommissionSplits
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                    var commissionSplits = new ObservableCollection<CommissionSplitDTO>();
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
 
-                    //if (commissionDTO.CommissionSplits.Any())
-                    //{
-                    //    foreach (var commissionSplitDTO in commissionDTO.CommissionSplits)
-                    //    {
-                    //        commissionSplitDTO.CommissionId = commissionDTO.Id;
-                    //        commissionDTO.CommissionSplitChartOfAccountId = commissionSplitDTO.ChartOfAccountId;
-                    //        commissionSplitDTO.ChartOfAccountCostCenterId = commissionDTO.CommissionSplit.ChartOfAccountId;
-                    //        commissionSplits.Add(commissionSplitDTO);
-                    //    }
-                    //    if (commissionSplits.Any())
-                    //        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(commissionDTO.Id, commissionSplits, GetServiceHeader());
-                    //}
 
-                    //Update CommissionLevies
+        public async Task<ActionResult> Levies(Guid id)
+        {
+            await ServeNavigationMenus();
 
-                    //var commissionLevies = new ObservableCollection<CommissionLevyDTO>();
+            var commission = await _channelService.FindCommissionAsync(id, GetServiceHeader());
 
-                    //if (commissionDTO.CommissionLevies.Any())
-                    //{
-                    //    foreach (var commissionLevyDTO in commissionDTO.CommissionLevies)
-                    //    {
-                    //        commissionLevyDTO.CommissionId = commissionDTO.Id;
-                    //        commissionDTO.CommissionSplitChartOfAccountId = commissionDTO.Id;
+            var chargeLevies = await _channelService.FindLeviesByCommissionIdAsync(id, GetServiceHeader());
 
-                    //        commissionLevies.Add(commissionLevyDTO);
-                    //    }
+            ViewBag.chargeLevies = chargeLevies;
 
-                    //    await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionDTO.Id, commissionLevies, GetServiceHeader());
-                    //}
-                }
+            return View(commission);
+        }
+
+
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
+
+            return View();
+        }
+
+
+        public async Task<ActionResult>search(Guid? id, CommissionLevyDTO commissionLevyDTO)
+        {
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var charges = await _channelService.FindCommissionAsync(parseId, GetServiceHeader());
+            if(charges != null)
+            {
+                commissionLevyDTO.CommissionId = charges.Id;
+                commissionLevyDTO.CommissionDescription = charges.Description;
+
+                commissionLevyDTO.maximumCharge = charges.MaximumCharge;
+
+                Session["chargeDescription"] = commissionLevyDTO.CommissionDescription;
+                Session["chargeId"] = commissionLevyDTO.CommissionId;
+                Session["maximumCharge"] = commissionLevyDTO.maximumCharge;
+            }
+
+            return View("Create", commissionLevyDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create(CommissionLevyDTO commissionLevyDTO, ObservableCollection<CommissionLevyDTO> selectedRows)
+        {
+            commissionLevyDTO.CommissionId = (Guid)Session["chargeId"];
+            commissionLevyDTO.CommissionDescription = Session["chargeDescription"].ToString();
+            commissionLevyDTO.maximumCharge = Convert.ToDecimal(Session["maximumCharge"].ToString());
+
+            commissionLevyDTO.ValidateAll();
+
+            if (!commissionLevyDTO.ErrorMessages.Any())
+            {
+                await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionLevyDTO.CommissionId, selectedRows);
 
                 return RedirectToAction("Index");
             }
             else
             {
-                IEnumerable<ModelError> allErrors = ModelState.Values.SelectMany(v => v.Errors);
+                ViewBag.chargeType = GetChargeTypeSelectList(commissionLevyDTO.ToString());
 
-                ViewBag.chargeType = GetChargeTypeSelectList(commissionDTO.ToString());
-
-                TempData["Error"] = string.Join(",", allErrors);
-
-                return View(commissionDTO);
+                return View(commissionLevyDTO);
             }
         }
     }

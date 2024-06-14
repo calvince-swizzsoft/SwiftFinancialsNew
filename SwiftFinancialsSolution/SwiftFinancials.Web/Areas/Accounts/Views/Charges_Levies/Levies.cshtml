@@ -1,38 +1,38 @@
-﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionLevyDTO
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Charge Levies Details";
 }
 
 
 <style>
-    #ChargeSplits {
+    #ChargeLevies {
         width: 100%;
         border-collapse: collapse;
         font-family: Arial, sans-serif;
     }
 
-        #ChargeSplits thead {
+        #ChargeLevies thead {
             background-color: white;
             color: #333;
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        #ChargeSplits th, #ChargeSplits td {
+        #ChargeLevies th, #ChargeLevies td {
             padding: 12px;
             text-align: left;
             border: 1px solid #ddd;
         }
 
-        #ChargeSplits th {
+        #ChargeLevies th {
             font-weight: bold;
         }
 
-        #ChargeSplits tbody tr:nth-child(even) {
+        #ChargeLevies tbody tr:nth-child(even) {
             background-color: #f9f9f9;
         }
 
-        #ChargeSplits tbody tr:hover {
+        #ChargeLevies tbody tr:hover {
             background-color: #f1f1f1;
         }
 </style>
@@ -60,7 +60,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Charges Details</h2>
+                    <h2>Charges Levy Details</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -100,25 +100,23 @@
 
                         <center><h2>Charge Splitting Details</h2></center>
                         <div class="row">
-                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                            <table id="ChargeLevies" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
                                 <thead style="font-style:italic; color: cornflowerblue; text-align: center; ">
                                     <tr>
-                                        <th style="width: 20%;">G/L Account Name</th>
-                                        <th style="width: 20%;">Charge Split Name</th>
-                                        <th style="width: 5%;">Percentage</th>
-                                        <th style="width: 2%;">Leviable</th>
+                                        <th style="width: 20%;">Applicable Levies</th>
+                                        <th style="width: 20%;">Percentage</th>
+                                        <th style="width: 5%;">Is Locked?</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if (ViewBag.chargeSplits != null)
+                                    @if (ViewBag.chargeLevies != null)
                                     {
-                                        foreach (var chargeSplits in ViewBag.chargeSplits)
+                                        foreach (var ChargeLevies in ViewBag.chargeLevies)
                                         {
                                             <tr>
-                                                <td>@chargeSplits.ChartOfAccountAccountName</td>
-                                                <td>@chargeSplits.Description</td>
-                                                <td style="text-align: right;">@chargeSplits.Percentage</td>
-                                                <td>@chargeSplits.Leviable</td>
+                                                <td>@ChargeLevies.Description</td>
+                                                <td style="text-align: right;">@ChargeLevies.ChargePercentage</td>
+                                                <td>@ChargeLevies.IsLocked</td>
                                             </tr>
                                         }
                                     }
@@ -127,10 +125,10 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-4">
-                                @Html.ActionLink("Back To List", "Index", "Charges", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Back To List", "Index", "Charges_Levies", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                             </div>
                             <div class="col-lg-4">
-                                @Html.ActionLink("Edit", "Edit", "Charges", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                                @Html.ActionLink("Edit", "Edit", "Charges_Levies", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                             </div>
                         </div>
                     </fieldset>
