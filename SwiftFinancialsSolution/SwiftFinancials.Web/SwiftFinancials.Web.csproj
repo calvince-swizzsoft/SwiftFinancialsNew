@@ -346,6 +346,7 @@
     <Compile Include="Areas\Accounts\Controllers\LoanInterestCapitalizationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\periodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsDynamicFeesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
@@ -1523,6 +1524,7 @@
     <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
     <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
+    <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />

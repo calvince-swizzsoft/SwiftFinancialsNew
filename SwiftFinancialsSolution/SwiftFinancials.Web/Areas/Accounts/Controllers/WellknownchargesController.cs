@@ -61,7 +61,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
           //  Session["ComplementFixedAmount"] = systemTransactionTypeInCommissionDTO.ComplementFixedAmount;
             Session["SystemTransactionType"] = systemTransactionTypeInCommissionDTO.SystemTransactionType;
             Session["ComplementType"] = systemTransactionTypeInCommissionDTO.ComplementType;
-
+            
             return View("Create",systemTransactionTypeInCommissionDTO);
         }
 
@@ -103,8 +103,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
                 TempData["Successfully"] = "Successfully Created Well known charges";
-                Session["ComplementFixedAmount"] = null;
- 
+                TempData["ComplementFixedAmount"] = "";
 
                 await ServeNavigationMenus();
                 return View("Create");

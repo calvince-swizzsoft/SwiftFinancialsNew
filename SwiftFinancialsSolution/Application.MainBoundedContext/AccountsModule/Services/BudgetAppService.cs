@@ -67,7 +67,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var budgets = _budgetRepository.AllMatching(spec, serviceHeader);
 
                     if (budgets != null && budgets.Any())
-                        throw new InvalidOperationException("Sorry, but a budget for the selected posting period already exists!");
+                    {
+                        budgetDTO.ErrorMessageResult = ("Sorry, but a budget for the selected posting period already exists!"+budgetDTO.PostingPeriodDescription);
+                        return budgetDTO;
+                    }
                     else
                     {
                         var budget = BudgetFactory.CreateBudget(budgetDTO.PostingPeriodId, budgetDTO.BranchId.Value, budgetDTO.Description, budgetDTO.TotalValue);
@@ -103,7 +106,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var budgets = _budgetRepository.AllMatching(spec, serviceHeader);
 
                     if (budgets != null && budgets.Except(new List<Budget> { persisted }).Any())
-                        throw new InvalidOperationException("Sorry, but a budget for the selected posting period already exists!");
+                    {
+                        budgetDTO.ErrorMessageResult = ("Sorry, but a budget for the selected posting period already exists!" + budgetDTO.PostingPeriodDescription);
+                        return false;
+                    }
                     else
                     {
                         var current = BudgetFactory.CreateBudget(budgetDTO.PostingPeriodId, budgetDTO.BranchId.Value, budgetDTO.Description, budgetDTO.TotalValue);

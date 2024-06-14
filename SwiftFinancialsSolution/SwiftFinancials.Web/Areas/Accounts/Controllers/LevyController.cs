@@ -83,7 +83,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 levySplitDTO.Description = levySplitDTO.Description;
                 levySplitDTO.ChartOfAccountId = levyDTO.Id;//Temporary 
                 levySplitDTO.ChartOfAccountAccountName = levyDTO.Description;
+               // levySplitDTO.ChartOfAccountName= levyDTO.Description;
                 levySplitDTO.Percentage = levySplitDTO.Percentage;
+                
+                if(levySplitDTO.Percentage==100.1|| levySplitDTO.Percentage == -0)
+                {
+                   try
+                    {
+                        return View(levySplitDTO);
+                        
+                    }
+                    catch
+                    {
+
+                    }
+                }
                 LevySplitDTOs.Add(levySplitDTO);
             };
 
@@ -140,6 +154,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         levySplitDTO.Description = levySplitDTO.Description;
                         levySplitDTO.ChartOfAccountId = levySplitChartOfAccountId;
                         levySplitDTO.Percentage = levySplitDTO.Percentage;
+                        
                         levySplits.Add(levySplitDTO);
                     };
 

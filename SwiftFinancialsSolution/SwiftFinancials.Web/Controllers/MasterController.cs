@@ -665,7 +665,7 @@ namespace SwiftFinancials.Web.Controllers
             return dynamicChargeRecoverySource;
         }
 
-        
+
         [NonAction]
         protected List<SelectListItem> GetTreasuryTransactionTypeSelectList(string selectedValue)
         {
@@ -1105,6 +1105,31 @@ namespace SwiftFinancials.Web.Controllers
 
             return batchAuthOptions;
         }
+
+        
+[NonAction]
+        protected List<SelectListItem> GetBudgetEntryTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> budgetEntryType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(BudgetEntryType)).Cast<BudgetEntryType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            budgetEntryType.AddRange(items);
+
+            return budgetEntryType;
+        }
+
+
+
+
+
+
+
 
         [NonAction]
         protected List<SelectListItem> GetSystemGeneralLedgerAccountCodeSelectList(string selectedValue)

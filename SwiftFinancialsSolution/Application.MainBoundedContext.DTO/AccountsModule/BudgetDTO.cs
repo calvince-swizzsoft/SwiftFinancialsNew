@@ -63,5 +63,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime CreatedDate { get; set; }
 
         public IList<BudgetEntryDTO> BudgetEntries { get; set; }
+
+        public string ErrorMessageResult { get; set; }
     }
 }
