@@ -106,6 +106,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
 
             var glAccount = commissionDTO.chargeSplits;
@@ -115,6 +122,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
             {
+                chargeSplitDTO.Id = parseId;
                 chargeSplitDTO.Description = chargeSplitDTO.Description;
                 chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
                 chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
@@ -122,6 +130,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
 
                 ChargeSplitDTOs.Add(chargeSplitDTO);
+
+                Session["chargeSplit"] = commissionDTO.chargeSplit;
             };
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
@@ -133,6 +143,48 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View("Create", commissionDTO);
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> removeChargeSplit(Guid? id, CommissionDTO commissionDTO)
+        {
+            commissionDTO.chargeSplit = Session["chargeSplit"] as ObservableCollection<CommissionSplitDTO>;
+
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+
+            var glAccount = commissionDTO.chargeSplits;
+
+            if (ChargeSplitDTOs == null)
+                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
+
+            foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+            {
+                chargeSplitDTO.Id = parseId;
+                chargeSplitDTO.Description = chargeSplitDTO.Description;
+                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+                chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+                ChargeSplitDTOs.Remove(chargeSplitDTO);
+            };
+
+            TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
+
+            TempData["ChargeDTO"] = commissionDTO;
+
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+
+            return View("Create", commissionDTO);
+        }
 
 
         [HttpPost]
