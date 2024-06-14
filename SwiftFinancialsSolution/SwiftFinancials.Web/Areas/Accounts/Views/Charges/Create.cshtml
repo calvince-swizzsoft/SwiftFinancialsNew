@@ -232,7 +232,7 @@
                                         @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
                                         @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
-                                        <div class="invalid-feedback" style="display: none;">Percentage cannot be greater than 100 !</div>
+                                        <div class="invalid-feedback" style="display: none; color:red; "></div>
                                     </div>
                                 </div>
                             </div>
@@ -287,7 +287,7 @@
                                     </tbody>
                                 </table>
 
-                                <div class="invalid-feedback" style="display: none;"></div>
+                                <div class="table-feedback" style="display: none;"></div>
                             </row>
                         </fieldset>
                     }
@@ -588,18 +588,27 @@ $(document).ready(function () {
 
 
         // Find textbox percentage
-        var percentageInput = document.querySelector('.percentage-input');
-        var feedbackMessage = document.querySelector('.invalid-feedback');
+    var percentageInput = document.querySelector('.percentage-input');
+    var feedbackMessage = document.querySelector('.invalid-feedback');
 
-        percentageInput.addEventListener('input', function () {
-            var inputValue = parseFloat(percentageInput.value);
-            if (inputValue > 100) {
-                percentageInput.value = '';
-                feedbackMessage.style.display = 'block';
-            } else {
-                feedbackMessage.style.display = 'none';
-            }
-        });
+    percentageInput.addEventListener('input', function () {
+        var inputValue = parseFloat(percentageInput.value);
+        if (inputValue > 100) {
+            percentageInput.value = '';
+            feedbackMessage.textContent = "Percentage cannot be greater than 100%";
+            feedbackMessage.style.display = 'block';
+        }
+        else if (inputValue < 1) {
+            percentageInput.value = '';
+            feedbackMessage.textContent = "Percentage must be at least 1%";
+            feedbackMessage.style.display = 'block';
+        }
+        else {
+            feedbackMessage.style.display = 'none';
+            feedbackMessage2.style.display = 'none';
+        }
+    });
+
 
 
         // Remove row data

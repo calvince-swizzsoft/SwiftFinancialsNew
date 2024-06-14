@@ -106,6 +106,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            if(ModelState.IsValid)
+            {
+
+            }
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
