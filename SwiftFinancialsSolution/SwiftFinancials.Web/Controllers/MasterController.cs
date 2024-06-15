@@ -51,6 +51,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
 
+        public ObservableCollection<BudgetEntryDTO> budgetEntryDTOs;
+
         public ObservableCollection<FixedDepositPayableDTO> FixedDepositPayableDTOs;
         private IChannelService channelService;
         public IChannelService _channelService
