@@ -106,10 +106,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            if(ModelState.IsValid)
-            {
-
-            }
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -118,6 +114,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+
+            double sumPercentages = 0;
 
             var glAccount = commissionDTO.chargeSplits;
 
@@ -132,11 +130,31 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
                 chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
                 chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+                
+
+                TempData["tPercentage"] = "";
 
                 ChargeSplitDTOs.Add(chargeSplitDTO);
 
+                sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
+
                 Session["chargeSplit"] = commissionDTO.chargeSplit;
+
+                if (sumPercentages > 100)
+                {
+                    TempData["tPercentage"] = "Total percentage cannot exceed 100%. The last added split has been removed. \nTotal added percentage was: " + sumPercentages + "%";
+
+                    ChargeSplitDTOs.Remove(chargeSplitDTO);
+                    
+                    Session["chargeSplit"] = ChargeSplitDTOs;
+                }
+                else if(sumPercentages < 1)
+                {
+                    TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
+                }       
             };
+
+            ViewBag.totalPercentage = sumPercentages;
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
 
