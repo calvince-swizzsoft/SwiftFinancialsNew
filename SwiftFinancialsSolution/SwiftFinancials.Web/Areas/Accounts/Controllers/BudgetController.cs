@@ -64,15 +64,95 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        [HttpPost]
-        public async Task<ActionResult> Create(BudgetDTO budgetDTO, ObservableCollection<BudgetEntryDTO> budgetEntries)
-        {
-            budgetDTO.ValidateAll();
 
+        [HttpPost]
+        public async Task<ActionResult> Add(BudgetDTO budgetDTO)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.BudgetEntries[0].Type.ToString());
+
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
+
+            if (budgetEntryDTOs == null)
+                budgetEntryDTOs = new ObservableCollection<BudgetEntryDTO>();
+
+            foreach (var chargeSplitDTO in budgetDTO.BudgetEntries)
+            {
+                chargeSplitDTO.Type = chargeSplitDTO.Type;
+                chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
+                chargeSplitDTO. Amount= chargeSplitDTO.Amount;
+
+                chargeSplitDTO.Reference = chargeSplitDTO.Reference;
+                chargeSplitDTO.CreatedBy = chargeSplitDTO.CreatedBy;
+
+                budgetEntryDTOs.Add(chargeSplitDTO);
+            };
+            
+
+            TempData["BudgetEntryDTO"] = budgetEntryDTOs;
+
+            TempData["BudgetDTO"] = budgetDTO;
+            
+            ViewBag.budgetEntryDTOs = budgetEntryDTOs;
+
+            return View("Create", budgetDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Remove(Guid? id, BudgetDTO budgetDTO)
+        {
+            await ServeNavigationMenus();
+     
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
+
+            if (budgetEntryDTOs == null)
+                budgetEntryDTOs = new ObservableCollection<BudgetEntryDTO>();
+
+            foreach (var chargeSplitDTO in budgetDTO.BudgetEntries)
+            {
+                chargeSplitDTO.ChartOfAccountId = parseId;
+                chargeSplitDTO.Type = chargeSplitDTO.Type;
+
+                chargeSplitDTO.Amount = chargeSplitDTO.Amount;
+
+                chargeSplitDTO.Reference = chargeSplitDTO.Reference;
+                chargeSplitDTO.CreatedBy = chargeSplitDTO.CreatedBy;
+
+                budgetEntryDTOs.Remove(chargeSplitDTO);
+            };
+
+
+            TempData["BudgetEntryDTO"] = budgetEntryDTOs;
+
+            TempData["BudgetDTO"] = budgetDTO;
+
+            ViewBag.budgetEntryDTOs = budgetEntryDTOs;
+
+            return View("Create", budgetDTO);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Create(BudgetDTO budgetDTO)
+        {
+           
+
+            budgetDTO = TempData["BudgetDTO"] as BudgetDTO;
+           
+            budgetDTO.ValidateAll();
             if (!budgetDTO.ErrorMessages.Any())
             {
+                ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.BudgetEntries[0].Type.ToString());
 
                 var budget = await _channelService.AddBudgetAsync(budgetDTO.MapTo<BudgetDTO>(), GetServiceHeader());
+
                 if (budget.ErrorMessageResult != null)
                 {
                     TempData["ErrorMsg"] = budget.ErrorMessageResult;
@@ -83,11 +163,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 if (budget != null)
                 {
                     //Update BudgetEntries
-
+                    var budgetEntries = new ObservableCollection<BudgetEntryDTO>();
 
                     foreach (var budgetEntryDTO in budgetDTO.BudgetEntries)
                     {
                         budgetEntryDTO.BudgetId = budget.Id;
+
                         //budgetEntryDTO.ChartOfAccountId = budget.BudgetEntries[0].ChartOfAccountId;
                         //budgetEntryDTO.LoanProductId = budget.BudgetEntries[4].LoanProductId;
 
@@ -95,9 +176,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     }
 
                     await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetEntries, GetServiceHeader());
-                } 
-                ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.BudgetEntries[0].Type.ToString());
-
+                }
+                TempData["BudgetDTO"] = "";
+                TempData["BudgetEntryDTO"] = "";
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
