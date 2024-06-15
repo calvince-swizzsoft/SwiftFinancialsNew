@@ -142,7 +142,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (sumPercentages > 100)
                 {
-                    TempData["tPercentage"] = "Total percentage cannot exceed 100%. The last added split has been removed.";
+                    TempData["tPercentage"] = "Total percentage cannot exceed 100%. attempt to add split failed. Total percentage was: " + sumPercentages + "%";
 
                     ChargeSplitDTOs.Remove(chargeSplitDTO);
                     
@@ -171,7 +171,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> removeChargeSplit(Guid? id, CommissionDTO commissionDTO)
         {
+            commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
+
             commissionDTO.chargeSplit = Session["chargeSplit"] as ObservableCollection<CommissionSplitDTO>;
+
+            var percentageOnRemove = commissionDTO.chargeSplit[0].Percentage;
+            var currentPercentage = Convert.ToDouble(Session["totalPercentage"].ToString());
+
+            var newpercentage = currentPercentage - percentageOnRemove;
+
+            ViewBag.totalPercentage = newpercentage;
 
             await ServeNavigationMenus();
 
