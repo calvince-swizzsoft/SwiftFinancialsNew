@@ -259,40 +259,42 @@
                             </div>
                             @*End chargeType Splitting*@
 
-                        <row>
-                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                    <tr>
-                                        <th style="width: 20%;">G/L Account Name</th>
-                                        <th style="width: 20%;">Charge Split Name</th>
-                                        <th style="width: 5%;">Percentage</th>
-                                        <th style="width: 2%;">Leviable</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (ViewBag.ChargeSplitDTOs != null)
-                                    {
-                                        foreach (var chargeSplits in ViewBag.ChargeSplitDTOs)
+                            <row>
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                    <thead style="font-style:italic; color: cadetblue; text-align: center; ">
+                                        <tr>
+                                            <th style="width: 15%;">G/L Account Name</th>
+                                            <th style="width: 10%;">Charge Split Name</th>
+                                            <th style="width: 5%;">Percentage</th>
+                                            <th style="width: 2%;">Leviable</th>
+                                            <th style="width: 5%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.ChargeSplitDTOs != null)
                                         {
-                                            <tr>
-                                                <td>@chargeSplits.ChartOfAccountAccountName</td>
-                                                <td>@chargeSplits.Description</td>
-                                                <td style="text-align: right;">@chargeSplits.Percentage</td>
-                                                <td>@chargeSplits.Leviable</td>
-                                            </tr>
+                                            foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
+                                            {
+                                                <tr data-id="@commissionSplit.Id">
+                                                    <td>@commissionSplit.ChartOfAccountAccountName</td>
+                                                    <td>@commissionSplit.Description</td>
+                                                    <td style="text-align: right;">@commissionSplit.Percentage</td>
+                                                    <td>@commissionSplit.Leviable</td>
+                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                </tr>
+                                            }
                                         }
-                                    }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </row>
 
                             @if (TempData["tPercentage"] != null)
                             {
-                                <p style="color: red; text-align: left; text-wrap:normal;"><strong>@TempData["tPercentage"]</strong></p>
+                                <p style="color: red; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
                             }
 
-                            <div style="text-align: right; font-size: medium">Total Percentage: @ViewBag.totalPercentage%</div>
+                            <p style="text-align: right; font-size: medium;">Total Percentage: @ViewBag.totalPercentage%</p>
 
-                        </row>
                         </fieldset>
                     }
                 </div>

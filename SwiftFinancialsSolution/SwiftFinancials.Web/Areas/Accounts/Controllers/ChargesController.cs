@@ -142,7 +142,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (sumPercentages > 100)
                 {
-                    TempData["tPercentage"] = "Total percentage cannot exceed 100%. The last added split has been removed. \nTotal added percentage was: " + sumPercentages + "%";
+                    TempData["tPercentage"] = "Total percentage cannot exceed 100%. The last added split has been removed.";
 
                     ChargeSplitDTOs.Remove(chargeSplitDTO);
                     
@@ -155,6 +155,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             };
 
             ViewBag.totalPercentage = sumPercentages;
+
+            Session["totalPercentage"] = sumPercentages;
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
 
