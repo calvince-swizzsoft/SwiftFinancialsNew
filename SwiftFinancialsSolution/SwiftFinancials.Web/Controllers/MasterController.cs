@@ -1108,8 +1108,8 @@ namespace SwiftFinancials.Web.Controllers
             return batchAuthOptions;
         }
 
-        
-[NonAction]
+
+        [NonAction]
         protected List<SelectListItem> GetBudgetEntryTypeSelectList(string selectedValue)
         {
             List<SelectListItem> budgetEntryType = new List<SelectListItem>();

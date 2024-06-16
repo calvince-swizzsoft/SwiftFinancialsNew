@@ -68,6 +68,53 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public async Task<ActionResult> Remove(LevyDTO levyDTO)
+        {
+            await ServeNavigationMenus();
+            levyDTO = TempData["LevyDTO"] as LevyDTO;
+            LevySplitDTOs = TempData["LevySplitDTO"] as ObservableCollection<LevySplitDTO>;
+
+            if (LevySplitDTOs == null)
+                LevySplitDTOs = new ObservableCollection<LevySplitDTO>();
+
+            foreach (var levySplitDTO in levyDTO.LevySplits)
+            {
+                levySplitDTO.Description = levySplitDTO.Description;
+                levySplitDTO.ChartOfAccountId = levyDTO.Id;//Temporary 
+                levySplitDTO.ChartOfAccountAccountName = levyDTO.Description;
+                // levySplitDTO.ChartOfAccountName= levyDTO.Description;
+                levySplitDTO.Percentage = levySplitDTO.Percentage;
+
+                if (levySplitDTO.Percentage == 100.1 || levySplitDTO.Percentage == -0)
+                {
+                    try
+                    {
+                        return View(levySplitDTO);
+
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                LevySplitDTOs.Remove(levySplitDTO);
+            };
+
+            TempData["LevySplitDTO"] = LevySplitDTOs;
+
+            TempData["LevyDTO"] = levyDTO;
+
+            ViewBag.LevySplitDTOs = LevySplitDTOs;
+
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
+
+
+            return View("Create", levyDTO);
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> Add(LevyDTO levyDTO)
         {

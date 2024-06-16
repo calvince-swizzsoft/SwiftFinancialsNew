@@ -48,11 +48,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<BudgetDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-        public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(Guid id, BudgetDTO budgetDTO)
         {
             await ServeNavigationMenus();
 
             var BudgetDTO = await _channelService.FindBudgetAsync(id, GetServiceHeader());
+            var k = await _channelService.FindBudgetEntriesByBudgetIdAsync(BudgetDTO.Id, true, GetServiceHeader());
+            ViewBag.budgetEntryDTOs = k;
+
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
+
+
 
             return View(BudgetDTO);
         }
@@ -80,36 +86,29 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 chargeSplitDTO.Type = chargeSplitDTO.Type;
                 chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
-                chargeSplitDTO. Amount= chargeSplitDTO.Amount;
+                chargeSplitDTO.Amount = chargeSplitDTO.Amount;
 
                 chargeSplitDTO.Reference = chargeSplitDTO.Reference;
                 chargeSplitDTO.CreatedBy = chargeSplitDTO.CreatedBy;
 
                 budgetEntryDTOs.Add(chargeSplitDTO);
             };
-            
+
 
             TempData["BudgetEntryDTO"] = budgetEntryDTOs;
 
             TempData["BudgetDTO"] = budgetDTO;
-            
+
             ViewBag.budgetEntryDTOs = budgetEntryDTOs;
 
             return View("Create", budgetDTO);
         }
 
-
         [HttpPost]
-        public async Task<ActionResult> Remove(Guid? id, BudgetDTO budgetDTO)
+        public async Task<ActionResult> Edit2(BudgetDTO budgetDTO)
         {
             await ServeNavigationMenus();
-     
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
+            ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.BudgetEntries[0].Type.ToString());
 
             budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
 
@@ -118,7 +117,38 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             foreach (var chargeSplitDTO in budgetDTO.BudgetEntries)
             {
-                chargeSplitDTO.ChartOfAccountId = parseId;
+                chargeSplitDTO.Type = chargeSplitDTO.Type;
+                chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
+                chargeSplitDTO.Amount = chargeSplitDTO.Amount;
+
+                chargeSplitDTO.Reference = chargeSplitDTO.Reference;
+                chargeSplitDTO.CreatedBy = chargeSplitDTO.CreatedBy;
+
+                budgetEntryDTOs.Add(chargeSplitDTO);
+            };
+
+
+            TempData["BudgetEntryDTO"] = budgetEntryDTOs;
+
+            TempData["BudgetDTO"] = budgetDTO;
+
+            ViewBag.budgetEntryDTOs = budgetEntryDTOs;
+
+            return View("Edit", budgetDTO);
+        }
+        [HttpPost]
+        public async Task<ActionResult> Remove(BudgetDTO budgetDTO)
+        {
+            await ServeNavigationMenus();
+            budgetDTO = TempData["BudgetDTO"] as BudgetDTO;
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
+
+            if (budgetEntryDTOs == null)
+                budgetEntryDTOs = new ObservableCollection<BudgetEntryDTO>();
+
+            foreach (var chargeSplitDTO in budgetDTO.BudgetEntries)
+            {
+                chargeSplitDTO.ChartOfAccountId = budgetDTO.Id;
                 chargeSplitDTO.Type = chargeSplitDTO.Type;
 
                 chargeSplitDTO.Amount = chargeSplitDTO.Amount;
@@ -140,17 +170,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(BudgetDTO budgetDTO)
+        public async Task<ActionResult> Create(BudgetDTO budgetDTO, ObservableCollection<BudgetEntryDTO> budgetEntries, BudgetEntryDTO budgetEntry)
         {
-           
 
+            ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.ToString());
+
+
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
             budgetDTO = TempData["BudgetDTO"] as BudgetDTO;
-           
             budgetDTO.ValidateAll();
             if (!budgetDTO.ErrorMessages.Any())
             {
-                ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.BudgetEntries[0].Type.ToString());
-
+               
                 var budget = await _channelService.AddBudgetAsync(budgetDTO.MapTo<BudgetDTO>(), GetServiceHeader());
 
                 if (budget.ErrorMessageResult != null)
@@ -160,10 +191,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     return View();
                 }
                 TempData["SuccessMessage"] = "Create successful.";
-                if (budget != null)
+                if (budgetEntryDTOs != null)
                 {
+
                     //Update BudgetEntries
-                    var budgetEntries = new ObservableCollection<BudgetEntryDTO>();
+                    budgetEntries = budgetEntryDTOs;
 
                     foreach (var budgetEntryDTO in budgetDTO.BudgetEntries)
                     {
@@ -175,7 +207,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         budgetEntries.Add(budgetEntryDTO);
                     }
 
-                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetEntries, GetServiceHeader());
+                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budget.Id, budgetEntryDTOs, GetServiceHeader());
                 }
                 TempData["BudgetDTO"] = "";
                 TempData["BudgetEntryDTO"] = "";
@@ -195,56 +227,68 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            bool includeBalances = false;
-            var BudgetDTO = await _channelService.FindBudgetAsync(id, GetServiceHeader());
-            await _channelService.FindBudgetEntriesByBudgetIdAsync(BudgetDTO.Id, includeBalances, GetServiceHeader());
             ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(string.Empty);
 
-            return View(BudgetDTO);
+            bool includeBalances = false;
+            var BudgetDTO = await _channelService.FindBudgetAsync(id, GetServiceHeader());
+            var k = await _channelService.FindBudgetEntriesByBudgetIdAsync(BudgetDTO.Id, includeBalances, GetServiceHeader());
+            ViewBag.budgetEntryDTOs = k;
+
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
+            TempData["BudgetDTO"] = BudgetDTO;
+            ViewBag.john = BudgetDTO;
+            return View(BudgetDTO.MapTo<BudgetDTO>());
         }
 
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, BudgetDTO BudgetBindingModel, ObservableCollection<BudgetEntryDTO> budgetEntries)
+        public async Task<ActionResult> Edit(Guid id, BudgetDTO budgetDTO)
         {
-            if (BudgetBindingModel != null)
-            {
-                await _channelService.UpdateBudgetAsync(BudgetBindingModel, GetServiceHeader());
-                ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(BudgetBindingModel.BudgetEntries[0].Type.ToString());
+            budgetEntryDTOs = TempData["BudgetEntryDTO"] as ObservableCollection<BudgetEntryDTO>;
+          
+            ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(budgetDTO.ToString());
+            
+            var BudgetDTO = await _channelService.FindBudgetAsync(id, GetServiceHeader());
+                   
 
-                if (BudgetBindingModel != null)
+            BudgetDTO.ValidateAll();
+            if (!BudgetDTO.ErrorMessages.Any())
+            {               
+
+                var budget = await _channelService.UpdateBudgetAsync(BudgetDTO, GetServiceHeader());
+
+                if (budgetEntryDTOs != null)
                 {
+
                     //Update BudgetEntries
+                    var entries = new ObservableCollection<BudgetEntryDTO>();
 
+                    entries = budgetEntryDTOs;
 
-                    foreach (var budgetEntryDTO in BudgetBindingModel.BudgetEntries)
-                    {
-                        budgetEntryDTO.BudgetId = BudgetBindingModel.Id;
-                        budgetEntryDTO.ChartOfAccountId = BudgetBindingModel.BudgetEntries[0].ChartOfAccountId;
-                        //budgetEntryDTO.LoanProductId = budget.BudgetEntries[4].LoanProductId;
-
-                        budgetEntries.Add(budgetEntryDTO);
-                    }
-                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(BudgetBindingModel.Id, budgetEntries, GetServiceHeader());
-                    TempData["SuccessMessage"] = "Edit successful.";
-                    return RedirectToAction("Index");
+                    await _channelService.UpdateBudgetEntriesByBudgetIdAsync(budgetDTO.Id, budgetEntryDTOs, GetServiceHeader());
                 }
-                else
-                {
-                    return View(BudgetBindingModel);
-                }
-
-               
+                TempData["BudgetDTO"] = "";
+                TempData["BudgetEntryDTO"] = "";
+                TempData["SuccessMessage"] = "Edit successful.";
+                return RedirectToAction("");
             }
-            return View(BudgetBindingModel);
+            else
+            {
+                return RedirectToAction("");
+                
+            }
+
+
         }
 
-            [HttpGet]
-            public async Task<JsonResult> GetBudgetsAsync()
-            {
-                var budgetsDTOs = await _channelService.FindBudgetsAsync(GetServiceHeader());
 
-                return Json(budgetsDTOs, JsonRequestBehavior.AllowGet);
-            }
+
+
+        [HttpGet]
+        public async Task<JsonResult> GetBudgetsAsync()
+        {
+            var budgetsDTOs = await _channelService.FindBudgetsAsync(GetServiceHeader());
+
+            return Json(budgetsDTOs, JsonRequestBehavior.AllowGet);
         }
     }
+}

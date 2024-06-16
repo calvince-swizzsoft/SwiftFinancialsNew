@@ -1,11 +1,12 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.BudgetDTO
 
 @{
-    ViewBag.Title = "Details";
+    ViewBag.Title = "Budgets Entry Details";
+    var k = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
 }
-<div class="row wrapper border-bottom white-bg page-heading">
+<div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
-        <h2>Budgets</h2>
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -17,15 +18,28 @@
                 <strong>View</strong>
             </li>
         </ol>
+
     </div>
 </div>
 
-<div class="wrapper wrapper-content">
+<div class="wrapper wrapper-content white-bg">
     <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
+        <div class="col-md-12">
+            <div class="ibox ">
                 <div class="ibox-title">
                     <div class="ibox-tools">
+                        @if (TempData["ErrorMsg"] != null)
+                        {
+                            <div class="alert alert-success">
+                                <strong>Error!</strong> @TempData["ErrorMsg"]
+
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                        }
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -34,67 +48,504 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content text-info">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.PostingPeriodDescription)<br></strong>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Add", "Budget", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        @Html.AntiForgeryToken()
 
-                                @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
+                        <h1>Budget Details</h1>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BranchDescription)<br></strong>
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <p>
+                                    <strong>@Html.DisplayNameFor(model => model.Description)</strong>
 
-                                @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Description)<br></strong>
+                                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(model => model.PostingPeriodDescription)</strong>
 
-                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TotalValue)<br></strong>
+                                    @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control", @readonly = "readonly" })
+                                </p>
+                            </div>
+                            <div class="col-lg-6">
+                                @*<div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BudgetEntries[0].LoanProductId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BudgetEntries[0].LoanProductId)
+                                        @Html.EditorFor(model => model.BudgetEntries[0].LoanProductId, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "LoanProduct Name" } })
+                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].LoanProductDescription, "", new { @class = "text-danger" })
+                                    </div>*@
+                                <p>
+                                    <strong>@Html.DisplayNameFor(model => model.BranchDescription)</strong>
 
-                                @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
-                            
+                                    @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control", @readonly = "readonly" })
+                                </p>
+                                <p>
+                                    <strong>@Html.DisplayNameFor(model => model.TotalValue)</strong>
+
+                                    @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control", @readonly = "readonly" })
+                                </p>
+                            </div>
                         </div>
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].Type)<br></strong>
 
-                                @Html.TextBoxFor(model => model.BudgetEntries[0].Type, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].Amount)<br></strong>
+                        @*<h1>Budget Entry Details</h1>*@
 
-                                @Html.TextBoxFor(model => model.BudgetEntries[0].Amount, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.BudgetEntries[0].Reference)<br></strong>
+                        @*<div class="row">
+                            <div class="col-lg-6">
 
-                                @Html.TextBoxFor(model => model.BudgetEntries[0].Reference, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CreatedDate)<br></strong>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BudgetEntries[0].TypeDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BudgetEntries[0].TypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Type", @required = "", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].TypeDescription, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BudgetEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BudgetEntries[0].ChartOfAccountId)
+                                    @Html.EditorFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                </div>
 
-                                @Html.TextBoxFor(model => model.CreatedDate, new { @class = "form-control", @readonly = "readonly" })<br>
-                            </p>
+
+                            </div>*@
+                        @*<div class="col-lg-6">
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BudgetEntries[0].Amount, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BudgetEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].Amount, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BudgetEntries[0].Reference, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BudgetEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].Reference, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>*@
+                        @*<div class="col-sm-1">
+                                <div class="form-group">
+                                    <input type="submit" value="Add Budget Entries" class="btn btn-success" />
+                                </div>
+                            </div>*@
+                        <!--</div>-->
+
+                        <div class="container">
+                            <row>
+                                <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                    <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                        <h>Budget Entries Details</h>
+                                        <thead>
+                                            <tr>
+
+                                                <th data-hide="phone">Type</th>
+                                                <th data-hide="phone">Amount</th>
+                                                <th data-hide="phone">Reference</th>
+
+                                                @*<th data-hide="phone">Select</th>*@
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.budgetEntryDTOs != null)
+                                            {
+                                                foreach (var levySplit in ViewBag.budgetEntryDTOs)
+                                                {
+                                                    <tr>
+                                                        <td>@levySplit.TypeDescription</td>
+                                                        <td class="amount-cell">@levySplit.Amount</td>
+                                                        <td>@levySplit.Reference</td>
+
+                                                        <td>
+                                                            <!-- moved form-group inside a td for proper alignment -->
+                                                            @*<td>
+                                                                    <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
+                                                                </td>*@
+
+
+                                                    </tr>
+
+                                                }
+                                            }
+                                        </tbody>
+
+
+                                    </table>
+
+                                </div>
+                            </row>
                         </div>
-                    </div>
+                        <style>
+                            .container1 {
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                padding: 20px;
+                                margin-bottom: 20px;
+                                background-color: mintcream
+                            }
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "Budget", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "Budget", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
-                    </div>
+                            .container {
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                padding: 20px;
+                                margin-bottom: 20px;
+                                background-color: darkgray
+                            }
+
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+
+                            td {
+                                padding: 10px;
+                                border: none; /* Remove border */
+                            }
+
+                            h {
+                                font-size: 20px; /* smaller font size */
+                                color: blue
+                            }
+
+                            h3 {
+                                font-size: medium;
+                                color: black
+                            }
+
+                            input[type="text"] {
+                                width: calc(100% - 20px); /* Adjust width to accommodate borders and padding */
+                                padding: 8px;
+                                box-sizing: border-box;
+                                border: 1px solid #ddd; /* Add border */
+                                background-color: #f7f7f7; /* Add shade */
+                            }
+
+                            label {
+                                font-weight: bold;
+                            }
+                                                      
+
+                        </style>
+
+                        @*<div class="container1">
+                                <h2>ACCOUNT SUMMARY</h2>
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <label for="Appropotioned">Appropotioned Amount:</label><br>
+                                            <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
+                                        </td>
+                                        <td>
+                                            <label for="Shortage">Shortage Amount:</label><br>
+                                            <input type="text" id="Shortage" placeholder="Shortage" readonly>
+                                        </td>
+                                    </tr>
+
+                                </table>
+                                <h3>   Appropotioned Amount should not exceed the total Amount</h3>
+                            </div>*@
+
+
+                    }
+
                 </div>
+                @*<div class="ibox-content m-b-sm border-bottom">
+                        @using (Html.BeginForm("Create", "Budget", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <input type="submit" value="Post" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>*@
+
             </div>
         </div>
     </div>
 </div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+
+    <script>
+$(document).ready(function () {
+    $('.remove-btn').click(function () {
+        var row = $(this).closest('tr');
+        var id = row.data('id');
+
+        $.ajax({
+            url: '@Url.Action("Remove", "Budget")',
+            type: 'POST',
+            data: { id: id },
+            success: function () {
+                row.remove();
+                updateAmounts(); // Update amounts after successful removal
+            },
+            error: function () {
+                alert('Error: Failed to remove row.');
+            }
+        });
+    });
+});
+    </script>
+
+    <script>
+        function updateAmounts() {
+            var totalAmount = 0;
+            var amountCells = document.getElementsByClassName('amount-cell');
+
+            for (var i = 0; i < amountCells.length; i++) {
+                var amount = parseFloat(amountCells[i].innerText);
+                if (!isNaN(amount)) {
+                    totalAmount += amount;
+                }
+            }
+
+            var totalValueElement = document.querySelector('[name="TotalValue"]');
+            var appropotionedElement = document.getElementById('Appropotioned');
+            var shortageElement = document.getElementById('Shortage');
+
+            // Get the current total value
+            var totalValue = parseFloat(totalValueElement.value);
+            if (isNaN(totalValue)) {
+                totalValue = 0;
+            }
+
+            // Check if the apportioned amount exceeds the total value and alert
+            if (totalAmount > totalValue) {
+                /* alert('Appropotioned amount exceeds the total value!');*/
+                return; // Stop further execution
+            }
+
+            // Update the Appropotioned textbox with the total amount
+            appropotionedElement.value = totalAmount.toFixed(2);
+
+            // Calculate the shortage if the total value is greater than the total amount
+            if (totalValue > totalAmount) {
+                var shortage = totalValue - totalAmount;
+                shortageElement.value = shortage.toFixed(2);
+            } else {
+                shortageElement.value = '0.00';
+            }
+        }
+
+        // Call the function on page load and when the Total Value changes
+        document.addEventListener('DOMContentLoaded', function () {
+            updateAmounts();
+
+            // Add event listener to Total Value input to update on change
+            var totalValueElement = document.querySelector('[name="TotalValue"]');
+            totalValueElement.addEventListener('input', updateAmounts);
+        });
+    </script>
+
+
+
+    @*function updateAmounts() {
+                var totalAmount = 0;
+                var amountCells = document.getElementsByClassName('amount-cell');
+
+                for (var i = 0; i < amountCells.length; i++) {
+                    var amount = parseFloat(amountCells[i].innerText.trim().replace(',', '')); // Trim spaces and remove commas if present
+                    if (!isNaN(amount)) {
+                        totalAmount += amount;
+                    }
+                }
+
+                var totalValueElement = document.querySelector('[name="TotalValue"]');
+                var appropriatedElement = document.getElementById('Appropriated');
+                var shortageElement = document.getElementById('Shortage');
+
+                var totalValue = parseFloat(totalValueElement.value) || 0;
+
+                if (totalAmount > totalValue) {
+                    alert('Appropriated amount exceeds the total value!');
+                    return;
+                }
+
+                appropriatedElement.value = totalAmount.toFixed(2); // Ensure 'Appropriated' is a <input> or <textarea> element
+
+                if (totalValue > totalAmount) {
+                    var shortage = totalValue - totalAmount;
+                    shortageElement.value = shortage.toFixed(2); // Ensure 'Shortage' is a <input> or <textarea> element
+                } else {
+                    shortageElement.value = '0.00'; // Ensure 'Shortage' is set to a default value when totalValue === totalAmount
+                }
+            }
+            // Call updateAmounts on page load and when TotalValue changes
+            document.addEventListener('DOMContentLoaded', function () {
+                updateAmounts();
+
+                var totalValueElement = document.querySelector('[name="TotalValue"]');
+                totalValueElement.addEventListener('input', updateAmounts);
+            });
+        });
+
+            </script>*@
+
+
+
+    <script>
+
+
+
+             //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+
+            //PostingPeriod typehead starts here
+            $('.PostingPeriodsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        { query: query },
+                        function (PostingPeriods) {
+                            var newPostingPeriodsData = [];
+                            PostingPeriodsMap = {};
+                            $.each(PostingPeriods, function (i, PostingPeriod) {
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                            });
+                            process(newPostingPeriodsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var postingPeriodId = "";
+                    PostingPeriodId = PostingPeriodsMap[item].Id;
+                    $('#PostingPeriodId').val(PostingPeriodId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+
+
+            //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+            //LoanProduct typehead starts here
+            $('.LoanProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLoanProductsAsync", "LoanProduct", new { Area = "Accounts" })',
+                        { query: query },
+                        function (LoanProducts) {
+                            var newLoanProductsData = [];
+                            LoanProductsMap = {};
+                            $.each(LoanProducts, function (i, LoanProduct) {
+                                newLoanProductsData.push(LoanProduct.Description);
+                                LoanProductsMap[LoanProduct.Description] = LoanProduct;
+                            });
+                            process(newLoanProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var LoanProductId = "";
+                    LoanProductId = LoanProductsMap[item].Id;
+                    $('#BudgetEntries[0].LoanProductId').val(LoanProductId);
+                    //console.log(LoanProductId)
+                    return item;
+                }
+            });
+    </script>
+}

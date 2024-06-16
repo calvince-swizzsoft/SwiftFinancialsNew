@@ -143,7 +143,7 @@
                                                 <th data-hide="phone">Type</th>
                                                 <th data-hide="phone">Amount</th>
                                                 <th data-hide="phone">Reference</th>
-                                                <th data-hide="phone">ChartOfAccountId</th>
+
                                                 <th data-hide="phone">Select</th>
 
                                             </tr>
@@ -154,17 +154,17 @@
                                                 foreach (var levySplit in ViewBag.budgetEntryDTOs)
                                                 {
                                                     <tr>
-                                                        <td>@levySplit.Type</td>
+                                                        <td>@levySplit.TypeDescription</td>
                                                         <td class="amount-cell">@levySplit.Amount</td>
                                                         <td>@levySplit.Reference</td>
-                                                        <td>@levySplit.ChartOfAccountId</td>
+
                                                         <td>
                                                             <!-- moved form-group inside a td for proper alignment -->
-                                                            <div class="form-group">
-                                                                <input type="submit" id="remove-btn" value="Remove Budget Entries" class="btn btn-danger" />
-                                                            </div>
-
+                                                        <td>
+                                                            <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
                                                         </td>
+
+
                                                     </tr>
 
                                                 }
@@ -279,28 +279,28 @@
 
 
     <script>
+$(document).ready(function () {
+    $('.remove-btn').click(function () {
+        var row = $(this).closest('tr');
+        var id = row.data('id');
 
-        $(document).ready(function () {
-            $('.remove-btn').click(function () {
-                var row = $(this).closest('tr');
-                var id = row.data('id');
+        $.ajax({
+            url: '@Url.Action("Remove", "Budget")',
+            type: 'POST',
+            data: { id: id },
+            success: function () {
+                row.remove();
+                updateAmounts(); // Update amounts after successful removal
+            },
+            error: function () {
+                alert('Error: Failed to remove row.');
+            }
+        });
+    });
+});
+    </script>
 
-
-                $.ajax({
-                    url: '@Url.Action("Remove", "Budget")',
-                    type: 'POST',
-                    data: { id: id },
-                    success: function () {
-                        row.remove();
-                    },
-                    error: function () {
-                        alert('Error removing row.');
-                    }
-                });
-            });
-        });
-
-
+    <script>
         function updateAmounts() {
             var totalAmount = 0;
             var amountCells = document.getElementsByClassName('amount-cell');
@@ -349,6 +349,50 @@
             totalValueElement.addEventListener('input', updateAmounts);
         });
     </script>
+
+
+
+    @*function updateAmounts() {
+                var totalAmount = 0;
+                var amountCells = document.getElementsByClassName('amount-cell');
+
+                for (var i = 0; i < amountCells.length; i++) {
+                    var amount = parseFloat(amountCells[i].innerText.trim().replace(',', '')); // Trim spaces and remove commas if present
+                    if (!isNaN(amount)) {
+                        totalAmount += amount;
+                    }
+                }
+
+                var totalValueElement = document.querySelector('[name="TotalValue"]');
+                var appropriatedElement = document.getElementById('Appropriated');
+                var shortageElement = document.getElementById('Shortage');
+
+                var totalValue = parseFloat(totalValueElement.value) || 0;
+
+                if (totalAmount > totalValue) {
+                    alert('Appropriated amount exceeds the total value!');
+                    return;
+                }
+
+                appropriatedElement.value = totalAmount.toFixed(2); // Ensure 'Appropriated' is a <input> or <textarea> element
+
+                if (totalValue > totalAmount) {
+                    var shortage = totalValue - totalAmount;
+                    shortageElement.value = shortage.toFixed(2); // Ensure 'Shortage' is a <input> or <textarea> element
+                } else {
+                    shortageElement.value = '0.00'; // Ensure 'Shortage' is set to a default value when totalValue === totalAmount
+                }
+            }
+            // Call updateAmounts on page load and when TotalValue changes
+            document.addEventListener('DOMContentLoaded', function () {
+                updateAmounts();
+
+                var totalValueElement = document.querySelector('[name="TotalValue"]');
+                totalValueElement.addEventListener('input', updateAmounts);
+            });
+        });
+
+            </script>*@
 
 
 

@@ -63,7 +63,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
-        public IList<BudgetEntryDTO> BudgetEntries { get; set; }
+        public ObservableCollection<BudgetEntryDTO> BudgetEntries { get; set; }
        
         public string ErrorMessageResult { get; set; }
     }
