@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CommissionDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.GraduatedScaleDTO
 
 @{
     /**/
@@ -194,16 +194,24 @@
                                 <h2>Link Charge</h2>
 
                                 <div class="row">
-                                    <div class="col-lg-12">
+                                    <div class="col-lg-6">
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.Description, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.CommissionId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.Id)
-                                                @Html.TextBoxFor(model => model.Description, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Charge..." })
+                                                @Html.HiddenFor(model => model.CommissionId)
+                                                @Html.TextBoxFor(model => model.CommissionDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Charge..." })
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#chargeLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.maximumCharge, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.maximumCharge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.maximumCharge, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                 </div>
@@ -213,31 +221,39 @@
                                 <h2>Tier Details</h2>
 
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.LowerLimit, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.LowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                                            @Html.ValidationMessageFor(model => model.LowerLimit, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.RangeLowerLimit, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
+                                            @Html.ValidationMessageFor(model => model.RangeLowerLimit, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChargeTypeDescription, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.ChargeTypeDescription, chargeType, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.ChargeTypeDescription)
+                                                @Html.DropDownListFor(model => model.ChargeType, chargeType, "Choose Charge Type...", new { @class = "form-control input-md", @id = "chargeTypeDropdown" })
+                                                @Html.ValidationMessageFor(model => model.ChargeType)
                                             </div>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChargeType, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
-                                            @Html.ValidationMessageFor(model => model.ChargeType, "", new { @class = "text-danger" })
-                                        </div>
+                                <div id="percentageSection" class="col-lg-12" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargePercentage, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "00.0000%" } })
+                                        @Html.ValidationMessageFor(model => model.ChargePercentage, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div id="fixedAmountSection" class="col-lg-12" style="display:none;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargeFixedAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.ChargeFixedAmount, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -434,6 +450,27 @@
         $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].ChartOfAccountAccountName);
     });
 
+
+
+            //Dropdown chage
+    document.addEventListener('DOMContentLoaded', function() {
+        var dropdown = document.getElementById('chargeTypeDropdown');
+        var percentageSection = document.getElementById('percentageSection');
+        var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+        dropdown.addEventListener('change', function() {
+            if (dropdown.value === '1') { 
+                percentageSection.style.display = 'block';
+                fixedAmountSection.style.display = 'none';
+            } else if (dropdown.value === '2') { 
+                percentageSection.style.display = 'none';
+                fixedAmountSection.style.display = 'block';
+            } else {
+                percentageSection.style.display = 'none';
+                fixedAmountSection.style.display = 'none';
+            }
+        });
+    });
     </script>
 
 

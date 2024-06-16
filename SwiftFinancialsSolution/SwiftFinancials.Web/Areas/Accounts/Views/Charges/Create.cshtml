@@ -170,7 +170,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Add", "Charges", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -205,7 +205,7 @@
                             <hr />
 
                             @*chargeType Splitting*@
-                            <h2>Charge Splitting</h2>
+                            <h2 style="color: cadetblue;">Charge Splitting</h2>
 
                             <br />
 

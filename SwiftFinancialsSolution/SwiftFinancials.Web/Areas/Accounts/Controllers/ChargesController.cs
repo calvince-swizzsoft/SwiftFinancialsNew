@@ -142,7 +142,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (sumPercentages > 100)
                 {
-                    TempData["tPercentage"] = "Total percentage cannot exceed 100%. attempt to add split failed. Total percentage was: " + sumPercentages + "%";
+                    TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
 
                     ChargeSplitDTOs.Remove(chargeSplitDTO);
                     
@@ -178,7 +178,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var percentageOnRemove = commissionDTO.chargeSplit[0].Percentage;
             var currentPercentage = Convert.ToDouble(Session["totalPercentage"].ToString());
 
-            var newpercentage = currentPercentage - percentageOnRemove;
+            double cPercentage = Convert.ToDouble(currentPercentage);
+            double rPercentage = Convert.ToDouble(percentageOnRemove);
+
+            double newpercentage = cPercentage - rPercentage;
 
             ViewBag.totalPercentage = newpercentage;
 

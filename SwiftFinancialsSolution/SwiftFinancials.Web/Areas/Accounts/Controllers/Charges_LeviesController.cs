@@ -109,7 +109,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!commissionLevyDTO.ErrorMessages.Any())
             {
-                await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionLevyDTO.CommissionId, selectedRows);
+                await _channelService.UpdateCommissionLeviesByCommissionIdAsync(commissionLevyDTO.CommissionId, selectedRows, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

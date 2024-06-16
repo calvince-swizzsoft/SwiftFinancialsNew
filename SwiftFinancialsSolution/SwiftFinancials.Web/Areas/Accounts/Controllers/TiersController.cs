@@ -20,7 +20,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.chargeType = GetChargeTypeSelectList(string.Empty);
 
-
             return View();
         }
 
@@ -31,9 +30,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!commissionDTO.ErrorMessages.Any())
             {
-                await _channelService.AddCommissionAsync(commissionDTO.MapTo<CommissionDTO>(), GetServiceHeader());
-
-               
+                //await _channelService.UpdateGraduatedScalesByCommissionIdAsync(,);
 
                 return RedirectToAction("Index");
             }
