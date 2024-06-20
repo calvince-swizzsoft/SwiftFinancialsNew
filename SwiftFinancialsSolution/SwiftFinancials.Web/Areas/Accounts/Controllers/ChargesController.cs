@@ -24,26 +24,42 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            int totalRecordCount = 0;
+            string sortColumn = jQueryDataTablesModel.GetSortedColumns().FirstOrDefault()?.PropertyName ?? "Description";
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.FirstOrDefault() == "asc";
 
-            int searchRecordCount = 0;
+            int start = jQueryDataTablesModel.iDisplayStart;
+            int length = jQueryDataTablesModel.iDisplayLength;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                start,
+                length,
+                GetServiceHeader()
+            );
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                int totalRecordCount = pageCollectionInfo.ItemsCount;
+                int searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(
+                    items: pageCollectionInfo.PageCollection,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<CommissionDTO> { },
+                    totalRecords: 0,
+                    totalDisplayRecords: 0,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -106,13 +122,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
 
             double sumPercentages = 0;
@@ -122,37 +131,59 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (ChargeSplitDTOs == null)
                 ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
 
-            foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+            if (commissionDTO.Description == null || commissionDTO.MaximumCharge == 0)
             {
-                chargeSplitDTO.Id = parseId;
-                chargeSplitDTO.Description = chargeSplitDTO.Description;
-                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
-                chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
-                chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
-                chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
-                
+                TempData["tPercentage"] = "Charge name and maximum charge required to proceed.";
+            }
+            else
+            {
+                Guid parseId;
 
-                TempData["tPercentage"] = "";
-
-                ChargeSplitDTOs.Add(chargeSplitDTO);
-
-                sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
-
-                Session["chargeSplit"] = commissionDTO.chargeSplit;
-
-                if (sumPercentages > 100)
+                if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
                 {
-                    TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
+                    TempData["tPercentage"] = "Could not add charge split. Choose G/L Account.";
 
-                    ChargeSplitDTOs.Remove(chargeSplitDTO);
-                    
-                    Session["chargeSplit"] = ChargeSplitDTOs;
+                    return View("Create", commissionDTO);
                 }
-                else if(sumPercentages < 1)
+
+                foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
                 {
-                    TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
-                }       
-            };
+                    chargeSplitDTO.Id = parseId;
+                    chargeSplitDTO.Description = chargeSplitDTO.Description;
+                    chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+                    chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
+                    chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                    chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+
+                    TempData["tPercentage"] = "";
+
+
+                    if (chargeSplitDTO.Description == null || chargeSplitDTO.ChartOfAccountAccountName == null || chargeSplitDTO.Percentage == 0)
+                    {
+                        TempData["tPercentage"] = "Could not add charge split. Make sure to provide all charge split details to proceed.";
+                    }
+                    else
+                    {
+                        ChargeSplitDTOs.Add(chargeSplitDTO);
+
+                        sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
+
+                        Session["chargeSplit"] = commissionDTO.chargeSplit;
+
+                        if (sumPercentages > 100)
+                        {
+                            TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
+
+                            ChargeSplitDTOs.Remove(chargeSplitDTO);
+                        }
+                        else if (sumPercentages < 1)
+                        {
+                            TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
+                        }
+                    }
+                };
+            }
 
             ViewBag.totalPercentage = sumPercentages;
 
@@ -272,6 +303,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -303,6 +336,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var glAccount = commissionDTO.chargeSplits;
 
+            double sumPercentages = 0;
+
             if (ChargeSplitDTOs == null)
                 ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
 
@@ -315,13 +350,72 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
 
                 ChargeSplitDTOs.Add(chargeSplitDTO);
+
+                sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
+
+
+                if (sumPercentages > 100)
+                {
+                    TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
+
+                    ChargeSplitDTOs.Remove(chargeSplitDTO);
+
+                    Session["chargeSplit"] = ChargeSplitDTOs;
+                }
+                else if (sumPercentages < 1)
+                {
+                    TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
+                }
             };
 
             TempData["ChargeSplitDTOs2"] = ChargeSplitDTOs;
 
             TempData["ChargeDTO2"] = commissionDTO;
 
-            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+            ViewBag.EditChargeSplitDTOs = ChargeSplitDTOs;
+
+            return View("Edit", commissionDTO);
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> removeChargeSplitEdit(Guid? id, CommissionDTO commissionDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            ChargeSplitDTOs = TempData["ChargeSplitDTOs3"] as ObservableCollection<CommissionSplitDTO>;
+
+            var glAccount = commissionDTO.chargeSplits;
+
+            if (ChargeSplitDTOs == null)
+                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
+
+            foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+            {
+                chargeSplitDTO.Id = parseId;
+                chargeSplitDTO.Description = chargeSplitDTO.Description;
+                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+                chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+                ChargeSplitDTOs.Remove(chargeSplitDTO);
+            };
+
+            TempData["ChargeSplitDTOs3"] = ChargeSplitDTOs;
+
+            TempData["ChargeDTO3"] = commissionDTO;
+
+            ViewBag.EditChargeSplitDTOs = ChargeSplitDTOs;
 
             return View("Edit", commissionDTO);
         }
@@ -331,11 +425,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Edit(CommissionDTO commissionDTO)
         {
-            commissionDTO = TempData["ChargeDTO2"] as CommissionDTO;
+            commissionDTO = TempData["ChargeDTO3"] as CommissionDTO;
 
             var chargeId = (Guid)Session["Id"];
 
-            commissionDTO.chargeSplit = TempData["ChargeSplitDTOs2"] as ObservableCollection<CommissionSplitDTO>;
+            commissionDTO.chargeSplit = TempData["ChargeSplitDTO3"] as ObservableCollection<CommissionSplitDTO>;
 
             commissionDTO.ValidateAll();
 
@@ -344,7 +438,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
                 TempData["Edit"] = "Successfully Edited Charge";
-                TempData["ChargeDTO2"] = "";
+                TempData["ChargeDTO3"] = "";
 
                 var chargeSplits = new ObservableCollection<CommissionSplitDTO>();
 
@@ -362,7 +456,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (chargeSplits.Any())
                     await _channelService.UpdateCommissionSplitsByCommissionIdAsync(chargeId, chargeSplits, GetServiceHeader());
-                TempData["ChargeSplitDTOs"] = "";
+                TempData["ChargeSplitDTOs3"] = "";
 
                 return RedirectToAction("Index");
             }

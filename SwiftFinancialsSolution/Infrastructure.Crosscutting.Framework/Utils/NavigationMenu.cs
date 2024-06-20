@@ -191,6 +191,16 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/LAccount", Icon="fa fa-tasks", ControllerName="GLAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 85},
 
+                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 86},
+               new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Periods", Icon="fa fa-money", ControllerName="BankReconciliation_Periods", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 87},
+               
+
+
+
+
+
+
+
                             //Loaning - area 24,000
                 new NavigationMenu{Description = "Loaning", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)

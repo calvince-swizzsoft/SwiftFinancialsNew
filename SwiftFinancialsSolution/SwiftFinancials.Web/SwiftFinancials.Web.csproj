@@ -311,6 +311,7 @@
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
@@ -1056,6 +1057,8 @@
     <Content Include="Areas\Accounts\Views\Charges\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges_Levies\Levies.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges_Levies\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

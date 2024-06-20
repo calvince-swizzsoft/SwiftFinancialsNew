@@ -109,16 +109,14 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#systemGeneralLedgerAccountMappingsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "Charges", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
-                // Callback settings
+                
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
@@ -144,7 +142,7 @@
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "6%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                "order": [[0, "asc"]]
         });
         });
 
@@ -160,7 +158,6 @@
 
 
     <style>
-        /* Basic styling for the tabs */
         .nav-tabs {
             list-style-type: none;
             padding: 0;
