@@ -53,6 +53,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(id, GetServiceHeader());
 
+            ViewBag.applicableCharges = applicableCharges;
+
             return View(debitTypeDTO);
         }
 
