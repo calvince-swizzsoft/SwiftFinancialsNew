@@ -116,6 +116,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public double ChargePercentage { get; set; }
 
         [DataMember]
+        [Range(0, double.MaxValue, ErrorMessage = "The fixed amount must be greater than or equal to 0.")]
         [Display(Name = "Fixed Amount")]
         public decimal ChargeFixedAmount { get; set; }
 

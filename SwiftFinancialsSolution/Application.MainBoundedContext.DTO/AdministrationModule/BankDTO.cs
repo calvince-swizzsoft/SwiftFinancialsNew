@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.Seedwork;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

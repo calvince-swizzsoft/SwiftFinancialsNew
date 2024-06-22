@@ -57,7 +57,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> Create(Guid? id, BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
+
+        public async Task<ActionResult> PostingPeriod(Guid? id, BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
         {
             await ServeNavigationMenus();
 
@@ -68,13 +69,79 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
-            return View(bankReconciliationPeriodDTO);
+
+            var postingPeriodDetails = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
+
+            if (postingPeriodDetails != null)
+            {
+                bankReconciliationPeriodDTO.PostingPeriodId = postingPeriodDetails.Id;
+                bankReconciliationPeriodDTO.PostingPeriodDescription = postingPeriodDetails.Description;
+
+                Session["postingPeriodId"] = bankReconciliationPeriodDTO.PostingPeriodId;
+                Session["postingPeriodDescription"] = bankReconciliationPeriodDTO.PostingPeriodDescription;
+            }
+
+            return View("Create", bankReconciliationPeriodDTO);
+        }
+
+
+
+
+        public async Task<ActionResult> Bank(Guid? id, BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            if(Session["postingPeriodId"] != null)
+            {
+                bankReconciliationPeriodDTO.PostingPeriodId = (Guid)Session["postingPeriodId"];
+            }
+
+            if(Session["postingPeriodDescription"] != null)
+            {
+                bankReconciliationPeriodDTO.PostingPeriodDescription = Session["postingPeriodDescription"].ToString();
+            }
+
+
+            var bankDetails = await _channelService.FindBankAsync(parseId, GetServiceHeader());
+
+            if (bankDetails != null)
+            {
+                bankReconciliationPeriodDTO.BankLinkageId = bankDetails.Id;
+                bankReconciliationPeriodDTO.BankLinkageBankName = bankDetails.Description;
+
+                Session["BankId"] = bankReconciliationPeriodDTO.BankLinkageId;
+                Session["BankName"] = bankReconciliationPeriodDTO.BankLinkageBankName;
+            }
+
+            return View("Create", bankReconciliationPeriodDTO);
+        }
+
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+
+            return View();
         }
 
 
         [HttpPost]
         public async Task<ActionResult> Create(BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
         {
+            bankReconciliationPeriodDTO.BankLinkageId = (Guid)Session["BankId"];
+            bankReconciliationPeriodDTO.BankLinkageBankName = Session["BankName"].ToString();
+
+            bankReconciliationPeriodDTO.PostingPeriodId = (Guid)Session["postingPeriodId"];
+            bankReconciliationPeriodDTO.PostingPeriodDescription = Session["postingPeriodDescription"].ToString();
+
             bankReconciliationPeriodDTO.ValidateAll();
 
             if (!bankReconciliationPeriodDTO.HasErrors)

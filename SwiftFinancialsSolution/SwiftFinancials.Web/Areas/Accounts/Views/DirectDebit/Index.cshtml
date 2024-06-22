@@ -117,7 +117,7 @@
                     var viewUrl = '<a  href="/accounts/DirectDebit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(7)', nRow).html(editUrl);
 
                     return nRow;
                 },
@@ -131,7 +131,7 @@
                     { "mDataProp": "ChargeFixedAmount", "sTitle": "Fixed Amount", "sWidth": "10%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

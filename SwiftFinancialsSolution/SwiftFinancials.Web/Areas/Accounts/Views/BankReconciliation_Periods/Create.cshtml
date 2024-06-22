@@ -59,7 +59,7 @@
                         @Html.AntiForgeryToken()
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                     @Html.LabelFor(model => model.PostingPeriodId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.PostingPeriodId)
@@ -70,7 +70,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4 form-group">
+                                <div class="col-lg-6 form-group">
                                     @Html.LabelFor(model => model.BankLinkageBankName, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.BankLinkageId)
@@ -81,34 +81,33 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Branch Name...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
+                                @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Branch Name...", @readonly = "readonly" } })
+                                        </div>
+                                    </div>*@
                             </div>
 
                             <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control required", placeholder = "G/L Account Name...", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
+                                @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountId)
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control required", placeholder = "G/L Account Name...", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>*@
 
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.GeneralLedgerAccountBalance, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.GeneralLedgerAccountBalance)
-                                        @Html.EditorFor(model => model.GeneralLedgerAccountBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Kshs.0.00", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.GeneralLedgerAccountBalance, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
+                                @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.GeneralLedgerAccountBalance, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.GeneralLedgerAccountBalance)
+                                            @Html.EditorFor(model => model.GeneralLedgerAccountBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.GeneralLedgerAccountBalance, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>*@
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
@@ -118,23 +117,13 @@
                                         @Html.ValidationMessageFor(model => model.BankAccountBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BankAccountNumber)
-                                        @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Bank Branch Account Number...", @readonly = "readonly" } })
-                                    </div>
-                                </div>
 
                                 <div class="col-lg-4">
                                     <div class="form-group" id="data_3">
                                         @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
                                         <div class="input-group date">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                            <input type="text" name="startDate" class="form-control" placeholder="mm/dd/yyyy">
                                         </div>
                                     </div>
                                 </div>
@@ -149,6 +138,36 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <!--<div class="row">-->
+                            @*<div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BankAccountNumber)
+                                        @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Bank Branch Account Number...", @readonly = "readonly" } })
+                                    </div>
+                                </div>*@
+
+                            <!--<div class="col-lg-4">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" placeholder="mm/dd/yyyy">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group" id="data_4">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
 
                             <div class="row">
                                 <div class="col-lg-12">
@@ -317,7 +336,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Loaning/BankReconciliation_Periods/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/BankReconciliation_Periods/Bank/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(2)', nRow).html(dt_Created);
                     $('td:eq(3)', nRow).html(selectUrl);
@@ -368,7 +387,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/BankReconciliation_Periods/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/BankReconciliation_Periods/PostingPeriod/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
