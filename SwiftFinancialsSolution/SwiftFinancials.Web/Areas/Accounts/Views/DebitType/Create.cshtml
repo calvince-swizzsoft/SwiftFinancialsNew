@@ -5,7 +5,7 @@
 
     ViewBag.Title = "Create Debit Type";
 
-    var productCode = ViewBag.ProductCodeSelectList as List<SelectListItem>;
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
 
 }
 
@@ -73,64 +73,51 @@
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
+                            @*DropDownlist alternation*@
                             <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Debit Type name..." } })
-                                    </div>
-                                </div>
-
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountTypeProductCode, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCode, "Choose Product Code", new { @class = "form-control input-md", @id = "productCodeDropdown" })
+                                            @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCode, new { @class = "form-control input-md", @id = "productDropdown" })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode)
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            @*DropDownlist alternation*@
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <div id="section1" class="section">
+                                <div id="savingsProductSection" class="col-lg-6" style="display:block; text-align: left;">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @id = "textbox1", @readonly = "readonly", @placeholder = "Link Savings Product...", disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Savings Product..." })
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#savingsProductLookupModal"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <div id="section2" class="section">
+                                <div id="loansProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @id = "textbox2", @readonly = "readonly", @placeholder = "Link Loans Product...", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Loan Product..." })
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#loanProductsLookupModal"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#loansProductLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
-                                <div class="col-md-12 form-group">
-                                    <div id="section3" class="section">
+                                <div id="investmentsProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @id = "textbox3", @readonly = "readonly", @placeholder = "Link Investments Product...", @disabled = "disabled" })
+                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Investment Product..." })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#investmentsProductLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
@@ -142,8 +129,16 @@
 
 
                             <div class="row">
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3"></div>
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Debit Type name..." } })
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
@@ -151,7 +146,7 @@
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-6">
                                     <button type="button" class="btn btn-primary" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
                                 </div>
                             </div>
@@ -199,13 +194,13 @@
     </div>
 </div>
 
-<div class="modal  fade" id="savingsProductLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
                 <h3 class="font-bold">Savings Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="savingsProductGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -223,7 +218,7 @@
 </div>
 
 
-<div class="modal  fade" id="loanProductsLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="loansProductLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
@@ -253,7 +248,7 @@
             <div class="modal-header  bg-primary">
                 <h3 class="font-bold">Investment Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="investmentsProductGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="investmentProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -315,6 +310,197 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    <script>
+        // Savings Product lookup
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/DebitType/SavingsProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "5%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "5%" },
+            { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "5%" },
+            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Withdrawal", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+
+        // Loans Product look up
+    $('#loanProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/DebitType/LoansProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term (Months)", "sWidth": "3%" },
+            { "mDataProp": "LoanRegistrationMinimumAmount", "sTitle": "Minimum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanRegistrationMaximumAmount", "sTitle": "Maximum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "3%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+        // Investment Products lookup
+        $('#investmentProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/DebitType/InvestmentProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "5%" },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "10%" },
+            { "mDataProp": "MaximumBalance", "sTitle": "Maximum Balance", "sWidth": "5%" },
+            { "mDataProp": "MaturityPeriod", "sTitle": "Maturity Period (Days)", "sWidth": "5%" },
+            { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+        //Dropdown chage Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('productDropdown');
+            var savingsProductSection = document.getElementById('savingsProductSection');
+            var loansProductSection = document.getElementById('loansProductSection');
+            var investmentProductSection = document.getElementById('investmentsProductSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    savingsProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    loansProductSection.style.display = 'block';
+                    savingsProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    investmentProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    savingsProductSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
 
 
@@ -513,207 +699,6 @@
                 }
             });
         });
-
-
-
-        //Savings Product Grid
-        $('#savingsProductGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/DebitType/SavingsProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "5%" },
-            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
-            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Withdrawal", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountTypeTargetProductId').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
-    });
-
-
-
-
-        //Loans Product Grid
-        $('#loanProductsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/DebitType/SavingsProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "3%" },
-            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-            { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "3%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountTypeTargetProductId').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
-    });
-
-
-
-
-
-         //Investments Product Grid
-        $('#investmentsProductGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/DebitType/SavingsProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "5%" },
-            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
-            { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountTypeTargetProductId').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
-        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
-    });
-
-
-
-
-
-
-
-        /*Drop down switch sections*/
-        $(document).ready(function() {
-    // Get the first value of the dropdown
-    var firstValue = $('#productCodeDropdown option:first').val();
-
-    // Set the first section to be active initially
-    if (firstValue) {
-        $('#section' + firstValue).addClass('active');
-    }
-
-    $('#productCodeDropdown').change(function() {
-        var selectedValue = $(this).val();
-        $('.section').removeClass('active');
-
-        if (selectedValue) {
-            $('#section' + selectedValue).addClass('active');
-        }
-    });
-        });
-
-
-
-
-
-        $(document).ready(function () {
-            // Define the URL mapping based on the selected value
-            var urlMap = {
-                "1": "/accounts/debittype/debittypesavings",
-                "2": "/Area2/Controller2/Action2",
-                "3": "/Area3/Controller3/Action3"
-                // Add more mappings as needed
-            };
-
-            $('#productCodeDropdown').change(function () {
-                var selectedValue = $(this).val();
-                if (selectedValue) {
-                    var url = urlMap[selectedValue];
-                    if (url) {
-                        window.location.href = url;
-                    }
-                }
-            });
-        });
-
     </script>
 
 
@@ -752,5 +737,49 @@
             padding: 6px 12px;
             border-top: none;
         }
+
+
+
+
+
+        .modal {
+            background-color: #fff;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+
+        .modal-content {
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .close {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .table {
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+            .table th,
+            .table td {
+                padding: 12px;
+                text-align: left;
+            }
+
+            .table thead {
+                background-color: #f8f9fa;
+            }
+
+            .table tbody tr:hover {
+                background-color: #f1f1f1;
+            }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+            }
     </style>
 }
