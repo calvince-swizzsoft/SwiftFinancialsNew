@@ -195,7 +195,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!debitTypeDTO.HasErrors)
             {
-                var result= await _channelService.AddDebitTypeAsync(debitTypeDTO, GetServiceHeader());
+                var result = await _channelService.AddDebitTypeAsync(debitTypeDTO, GetServiceHeader());
 
                 await _channelService.UpdateCommissionsByDebitTypeIdAsync(result.Id, selectedRows, GetServiceHeader());
 
@@ -254,9 +254,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 Session["savingsProductId2"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
                 Session["savingsProductDescription2"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
             }
-            var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
-            Session["Description2"] = debitTypeDTO.Description;
-            await GetApplicableCharges(id);
 
             return View("Edit", debitTypeDTO);
         }
@@ -353,7 +350,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-       
         public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             Guid findDebitId = (Guid)Session["DebitTypeId"];
@@ -378,7 +374,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             debitTypeDTO.Description = Session["Description2"].ToString();
 
-            if(Session["ProductCode"] != null)
+            if (Session["ProductCode"] != null)
             {
                 debitTypeDTO.CustomerAccountTypeProductCode = Convert.ToInt32(Session["ProductCode"].ToString());
             }

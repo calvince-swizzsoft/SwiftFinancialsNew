@@ -21,7 +21,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Cost Center</h2>
+                    <h2>Cost Centers</h2>
                     <hr />
                     @Html.ActionLink("Create Cost Center", "Create", "CostCenter", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
@@ -113,22 +113,28 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/CostCenter/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/CostCenter/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    //var verifyUrl = '<a  href="/accounts/CostCenter/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    //var authorizeUrl = '<a  href="/accounts/CostCenter/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/costcenter/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/costcenter/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
 
                     $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;');
+                    $('td:eq(3)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "30%" },
-                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
