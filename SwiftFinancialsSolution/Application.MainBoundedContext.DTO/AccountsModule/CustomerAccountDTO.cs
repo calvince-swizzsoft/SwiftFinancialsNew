@@ -4,6 +4,7 @@ using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -22,7 +23,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         // Getting and Setting values from the Registry Module
         [DataMember]
-        public CustomerDTO Customers { get; set; }
+        public  CustomerDTO Customers { get; set; }
 
         [DataMember]
         [Display(Name = "Customer")]
@@ -605,7 +606,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Created Date")]
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         [DataMember]
         [Display(Name = "Book Balance")]
@@ -683,6 +684,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Amount Applied")]
         [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount applied must be greater than zero!")]
         public decimal TotalValue { get; set; }
+
+
+        public List<CustomerDTO> customerList { get; set; }
 
     }
 }
