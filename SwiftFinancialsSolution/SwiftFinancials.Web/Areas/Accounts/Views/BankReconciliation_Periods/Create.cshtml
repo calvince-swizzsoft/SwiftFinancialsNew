@@ -1,0 +1,420 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.BankReconciliationPeriodDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Bank Reconciliation Period";
+
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "BankReconciliation_Periods", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Create Bank Reconciliation Periods</h2>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["Error"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "BankReconciliation_Periods", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    @Html.LabelFor(model => model.PostingPeriodId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.TextBoxFor(model => model.PostingPeriodDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Posting Period..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#postingPeriodLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6 form-group">
+                                    @Html.LabelFor(model => model.BankLinkageBankName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.BankLinkageId)
+                                        @Html.TextBoxFor(model => model.BankLinkageBankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Bank..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#bankLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", placeholder = "Branch Name...", @readonly = "readonly" } })
+                                        </div>
+                                    </div>*@
+                            </div>
+
+                            <div class="row">
+                                @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountId)
+                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control required", placeholder = "G/L Account Name...", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>*@
+
+                                @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.GeneralLedgerAccountBalance, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.GeneralLedgerAccountBalance)
+                                            @Html.EditorFor(model => model.GeneralLedgerAccountBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.GeneralLedgerAccountBalance, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>*@
+
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BankAccountBalance, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BankAccountBalance)
+                                        @Html.EditorFor(model => model.BankAccountBalance, new { htmlAttributes = new { @class = "form-control required", placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.BankAccountBalance, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" placeholder="mm/dd/yyyy">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group" id="data_4">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!--<div class="row">-->
+                            @*<div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BankAccountNumber)
+                                        @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control required", placeholder = "Bank Branch Account Number...", @readonly = "readonly" } })
+                                    </div>
+                                </div>*@
+
+                            <!--<div class="col-lg-4">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" placeholder="mm/dd/yyyy">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <div class="form-group" id="data_4">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>-->
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Remarks)
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control required", placeholder = "Type remarks e.g Co-operative Bank Reconciliation as at 30.06.2016" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="form-group form-group-sm">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <input type="submit" value="Create" style="width: 150px;" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="postingPeriodLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Posting Period Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="postingPeriodsGrid" class="table table-striped table-bordered table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="modal  fade" id="bankLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Bank Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="banksGrid" class="table table-striped table-bordered table-hover" style="width:100%">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <script>
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+        $(document).ready(function () {
+            $('#data_4 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+
+        $(document).ready(function () {
+            $('#banksGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Bank", new { Area = "Admin" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BankReconciliation_Periods/Bank/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Bank Name", "sWidth": "20%" },
+                    { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+            $("#s tbody").on("click", "tr", function () {
+                var data = banksGrid.row(this).data();
+
+                $('#BankLinkageId').val(data.Id);
+                $('input[name=BankLinkageId]').val(data.Id);
+                $('input[name=BankLinkageBankName]').val(data.BankLinkageBankName);
+
+                //$('#CustomerAccount.FullAccountNumber').val(LoanProductsMap[item].CustomerAccount.FullAccountNumber);
+                //$('#CustomerAccount.CustomerFullName').val(LoanProductsMap[item].CustomerAccount.CustomerFullName);
+                $('#CompaniesLookup').modal('hide');
+            });
+        });
+    </script>
+
+
+    <script>
+         $(document).ready(function () {
+             $('#postingPeriodsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "PostingPeriod", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BankReconciliation_Periods/PostingPeriod/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Posting Period Name", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "5%" },
+                    { "mDataProp": "IsActive", "sTitle": "Is Active", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+            $("#s tbody").on("click", "tr", function () {
+                var data = postingPeriodsGrid.row(this).data();
+
+                $('#PostingPeriodId').val(data.Id);
+                $('input[name=PostingPeriodId]').val(data.Id);
+                $('input[name=PostingPeriodDescription]').val(data.PostingPeriodDescription);
+
+                //$('#CustomerAccount.FullAccountNumber').val(LoanProductsMap[item].CustomerAccount.FullAccountNumber);
+                //$('#CustomerAccount.CustomerFullName').val(LoanProductsMap[item].CustomerAccount.CustomerFullName);
+                $('#CompaniesLookup').modal('hide');
+            });
+        });
+    </script>
+}

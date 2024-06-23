@@ -1,30 +1,50 @@
-﻿@model Application.MainBoundedContext.DTO.AccountsModule.DirectDebitDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.DirectDebitDTO
 
 @{
-    ViewBag.Title = "Edit Direct Debits";
+    /**/
+
+    ViewBag.Title = "Edit Direct Debit";
+
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    var chargeType = ViewBag.ChargeType as List<SelectListItem>;
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Direct Debits</h2>
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "DirectDebit", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "CostCenter", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Edit</strong>
+                <strong>Create</strong>
             </li>
         </ol>
     </div>
 </div>
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Edit Direct Debit</h2>
+
+                    @if (TempData["EditError"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["EditError"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -34,157 +54,501 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-secondary text-info">
-                    @using (Html.BeginForm("Edit", "DirectDebit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Edit", "DirectDebit", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <h1>Naming</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Direct Debit name.", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Other Details</h1>
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChargeType, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.ChargeType, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Type" } })
-                                        @Html.ValidationMessageFor(model => model.ChargeType, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChargePercentage, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.ChargePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Percentage" } })
-                                        @Html.ValidationMessageFor(model => model.ChargePercentage, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChargeFixedAmount, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Charge Fixed Amount", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ChargeFixedAmount, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
-
-                        <h1>Linkage</h1>
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-8">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductCode, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Customer Account Type Target Product Code" } })
-                                        @Html.EditorFor(model => model.CustomerAccountTypeProductCode, new { htmlAttributes = new { @class = "CompaniesLookup form-control required", placeholder = "Customer Account Type Product Code" } })
+                                        @Html.LabelFor(model => model.CustomerAccountTypeProductCode, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCode, new { @class = "form-control input-md", @id = "productDropdown" })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCode)
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4">
-                                    <div class="text-center">
-                                        <div style="margin-top: 20px">
-                                            <i class="fa fa-user-plus" style="font-size: 200px;color: #e5e5e5 "></i>
+                                <div id="savingsProductSection" class="col-lg-6" style="display:block; text-align: left;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Savings Product..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="loansProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Loan Product..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#loansProductLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="investmentsProductSection" class="col-lg-6" style="display:none; text-align: left;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                            @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Investment Product..." })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#investmentsProductLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargeType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.ChargeType, chargeType, new { @class = "form-control input-md", @id = "chargeTypeDropdown" })
+                                            @Html.ValidationMessageFor(model => model.ChargeType)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="percentageSection" class="col-lg-6" style="display:block; text-align: left;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargePercentage, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargePercentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00%" } })
+                                        @Html.ValidationMessageFor(model => model.ChargePercentage, "", new { @class = "text-danger" })
+                                        <div class="invalid-feedback" style="display: none; color:red; "></div>
+                                    </div>
+                                </div>
+
+                                <div id="fixedAmountSection" class="col-lg-6" style="display:none; text-align: left;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChargeFixedAmount, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.ChargeFixedAmount, new { htmlAttributes = new { @class = "form-control fixedAmount-input", @placeholder = "Kshs.0.00" } })
+                                        @Html.ValidationMessageFor(model => model.ChargeFixedAmount, "", new { @class = "text-danger" })
+                                        <div class="invalid-feedback2" style="display: none; color:red; "></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter name to describe Direct Debit" } })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-3"></div>
+                                <div class="col-lg-3"></div>
+
+                                <div class="col-lg-3">
+                                    @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                    @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <button type="submit" id="submitButton" class="btn btn-primary" style="width:200px;">Create</button>
+                                </div>
+                            </div>
                         </fieldset>
                     }
-
-                    <div>
-                        @Html.ActionLink("Back to List", "Index", "DirectDebit", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Savings Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="loansProductLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Loan Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="loanProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="investmentsProductLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Investment Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="investmentProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+        // Savings Product lookup
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var form = $(this);
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
 
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
+                    var selectUrl = '<a  href="/Accounts/DirectDebit/SavingsProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
 
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
+                    return nRow;
                 },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "5%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "5%" },
+            { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "5%" },
+            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Withdrawal", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+
+        // Loans Product look up
+    $('#loanProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/DirectDebit/LoansProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
                 },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term (Months)", "sWidth": "3%" },
+            { "mDataProp": "LoanRegistrationMinimumAmount", "sTitle": "Minimum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanRegistrationMaximumAmount", "sTitle": "Maximum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "3%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
 
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+        // Investment Products lookup
+        $('#investmentProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/DirectDebit/InvestmentProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
                 },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "5%" },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "10%" },
+            { "mDataProp": "MaximumBalance", "sTitle": "Maximum Balance", "sWidth": "5%" },
+            { "mDataProp": "MaturityPeriod", "sTitle": "Maturity Period (Days)", "sWidth": "5%" },
+            { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+        //Dropdown chage Charge Type
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('chargeTypeDropdown');
+            var percentageSection = document.getElementById('percentageSection');
+            var fixedAmountSection = document.getElementById('fixedAmountSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                } else if (dropdown.value === '1') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                } else if (dropdown.value === '2') {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'block';
+                } else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
                 }
             });
-        });</script>
+        });
+
+
+
+
+        //Dropdown chage Product
+        document.addEventListener('DOMContentLoaded', function () {
+            var dropdown = document.getElementById('productDropdown');
+            var savingsProductSection = document.getElementById('savingsProductSection');
+            var loansProductSection = document.getElementById('loansProductSection');
+            var investmentProductSection = document.getElementById('investmentsProductSection');
+
+            dropdown.addEventListener('change', function () {
+                if (dropdown.value === '0') {
+                    percentageSection.style.display = 'block';
+                    fixedAmountSection.style.display = 'none';
+                }
+                else if (dropdown.value === '1') {
+                    savingsProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '2') {
+                    loansProductSection.style.display = 'block';
+                    savingsProductSection.style.display = 'none';
+                    investmentProductSection.style.display = 'none';
+                }
+                else if (dropdown.value === '3') {
+                    investmentProductSection.style.display = 'block';
+                    loansProductSection.style.display = 'none';
+                    savingsProductSection.style.display = 'none';
+                }
+                else {
+                    percentageSection.style.display = 'none';
+                    fixedAmountSection.style.display = 'none';
+                }
+            });
+        });
+
+
+        // Find percentage textbox percentage
+        var percentageInput = document.querySelector('.percentage-input');
+        var feedbackMessage = document.querySelector('.invalid-feedback');
+
+        percentageInput.addEventListener('input', function () {
+            var inputValue = parseFloat(percentageInput.value);
+            if (inputValue > 100) {
+                percentageInput.value = '';
+                feedbackMessage.textContent = "Percentage cannot be greater than 100%";
+                feedbackMessage.style.display = 'block';
+            }
+            else if (inputValue < 1) {
+                percentageInput.value = '';
+                feedbackMessage.textContent = "Percentage must be at least 1%";
+                feedbackMessage.style.display = 'block';
+            }
+            else {
+                feedbackMessage.style.display = 'none';
+                feedbackMessage2.style.display = 'none';
+            }
+        });
+    </script>
+
+    <script>
+        // Find fixed amount textbox and feedback elements
+        var fixedAmountInput = document.querySelector('.fixedAmount-input');
+        var invalidFeedback2 = document.querySelector('.invalid-feedback2');
+
+        fixedAmountInput.addEventListener('input', function () {
+            var inputValue = parseFloat(fixedAmountInput.value);
+            if (inputValue < 1) {
+                fixedAmountInput.value = '';
+                invalidFeedback2.textContent = "The fixed amount must be at least 1.";
+                invalidFeedback2.style.display = 'block';
+            } else {
+                invalidFeedback2.style.display = 'none';
+            }
+        });
+
+    </script>
 }

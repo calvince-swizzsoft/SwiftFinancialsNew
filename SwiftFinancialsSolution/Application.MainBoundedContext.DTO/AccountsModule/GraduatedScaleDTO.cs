@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -64,5 +65,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Maximum Charge")]
+        public decimal maximumCharge { get; set; }
+
+
+        public ObservableCollection<GraduatedScaleDTO> tierSplits { get; set; }
     }
 }

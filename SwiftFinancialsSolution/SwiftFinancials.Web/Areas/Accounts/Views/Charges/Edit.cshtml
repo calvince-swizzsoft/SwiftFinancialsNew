@@ -262,7 +262,7 @@
                                         @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
                                         @Html.ValidationMessageFor(model => model.chargeSplit[0].Percentage, "", new { @class = "text-danger" })
-                                        <div class="invalid-feedback" style="display: none;">Percentage cannot be greater than 100 !</div>
+                                        <div class="invalid-feedback" style="display: none; color:red; "></div>
                                     </div>
                                 </div>
                             </div>
@@ -283,7 +283,7 @@
 
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-sm">
-                                        <input type="submit" value="Split Charge" class="btn btn-primary" />
+                                        <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" />
                                     </div>
                                 </div>
                             </div>
@@ -291,35 +291,39 @@
 
 
                             <center><h3>Charge Split Details After Edit</h3></center>
-                            <div class="row">
-                                <br />
+                            <row>
                                 <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                    <thead style="font-style:italic; color: cornflowerblue; text-align: center; ">
+                                    <thead style="font-style:italic; color: cadetblue; text-align: center; ">
                                         <tr>
-                                            <th style="width: 20%;">G/L Account Name</th>
-                                            <th style="width: 20%;">Charge Split Name</th>
+                                            <th style="width: 15%;">G/L Account Name</th>
+                                            <th style="width: 10%;">Charge Split Name</th>
                                             <th style="width: 5%;">Percentage</th>
                                             <th style="width: 2%;">Leviable</th>
+                                            <th style="width: 5%;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @if (ViewBag.ChargeSplitDTOs != null)
+                                        @if (ViewBag.EditChargeSplitDTOs != null)
                                         {
-                                            foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
+                                            foreach (var commissionSplit in ViewBag.EditChargeSplitDTOs)
                                             {
-                                                <tr>
+                                                <tr data-id="@commissionSplit.Id">
                                                     <td>@commissionSplit.ChartOfAccountAccountName</td>
                                                     <td>@commissionSplit.Description</td>
                                                     <td style="text-align: right;">@commissionSplit.Percentage</td>
                                                     <td>@commissionSplit.Leviable</td>
+                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
                                                 </tr>
                                             }
                                         }
                                     </tbody>
                                 </table>
+                            </row>
 
-                                <div class="invalid-feedback" style="display: none;"></div>
-                            </div>
+                            @if (TempData["tPercentage"] != null)
+                            {
+                                <p style="color: red; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                            }
                         </fieldset>
                     }
                 </div>
@@ -615,64 +619,54 @@ $(document).ready(function () {
 
 
         });
-    </script>
 
 
 
+         // Remove row data
+        $(document).ready(function () {
+            $('.remove-btn').click(function () {
+                var row = $(this).closest('tr');
+                var id = row.data('id');
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get all the tab links
-            const tabLinks = document.querySelectorAll('.tab-link');
 
-            // Add click event listener to each tab link
-            tabLinks.forEach(link => {
-                link.addEventListener('click', function (event) {
-                    event.preventDefault();
-
-                    // Remove 'active' class from all tab links
-                    tabLinks.forEach(link => link.classList.remove('active'));
-
-                    // Add 'active' class to the clicked tab link
-                    this.classList.add('active');
-
-                    // Get the target content id
-                    const targetId = this.getAttribute('data-target');
-
-                    // Get all tab content elements
-                    const tabContents = document.querySelectorAll('.tab-content');
-
-                    // Hide all tab content elements
-                    tabContents.forEach(content => content.classList.remove('active'));
-
-                    // Show the target tab content element
-                    document.getElementById(targetId).classList.add('active');
+                $.ajax({
+                    url: '@Url.Action("removeChargeSplitEdit", "Charges")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function () {
+                        row.remove();
+                    },
+                    error: function () {
+                        alert('Error removing row.');
+                    }
                 });
             });
-
-            // Activate the first tab by default
-            if (tabLinks.length > 0) {
-                tabLinks[0].click();
-            }
         });
 
 
 
 
+    // Find textbox percentage
+    var percentageInput = document.querySelector('.percentage-input');
+    var feedbackMessage = document.querySelector('.invalid-feedback');
 
-        // Find textbox percentage
-        var percentageInput = document.querySelector('.percentage-input');
-        var feedbackMessage = document.querySelector('.invalid-feedback');
-
-        percentageInput.addEventListener('input', function () {
-            var inputValue = parseFloat(percentageInput.value);
-            if (inputValue > 100) {
-                percentageInput.value = '';
-                feedbackMessage.style.display = 'block';
-            } else {
-                feedbackMessage.style.display = 'none';
-            }
-        });
+    percentageInput.addEventListener('input', function () {
+        var inputValue = parseFloat(percentageInput.value);
+        if (inputValue > 100) {
+            percentageInput.value = '';
+            feedbackMessage.textContent = "Percentage cannot be greater than 100%";
+            feedbackMessage.style.display = 'block';
+        }
+        else if (inputValue < 1) {
+            percentageInput.value = '';
+            feedbackMessage.textContent = "Percentage must be at least 1%";
+            feedbackMessage.style.display = 'block';
+        }
+        else {
+            feedbackMessage.style.display = 'none';
+            feedbackMessage2.style.display = 'none';
+        }
+    });
     </script>
 
 
