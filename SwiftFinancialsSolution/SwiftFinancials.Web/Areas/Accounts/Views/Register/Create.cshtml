@@ -5,6 +5,9 @@
     ViewBag.Title = "Register Alternate Channels";
 
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+    var record = ViewBag.RecordStatusSelectList as List<SelectListItem>;
+
+
 
     var customerTypes = ViewBag.alternateChannelType as List<SelectListItem>;
 }
@@ -62,31 +65,7 @@
 
                             <fieldset>
                                 <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.FullAccountNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Card number" } })
-                                            @Html.ValidationMessageFor(model => model.FullAccountNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pan  number" } })
-                                            @Html.ValidationMessageFor(model => model.CardNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.DailyLimit, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.DailyLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "DailyLimit" } })
-                                            @Html.ValidationMessageFor(model => model.DailyLimit, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.Type, customerTypes, new { @class = "form-control input-md" })
-                                                @Html.HiddenFor(model => model.CardNumber, new { htmlAttributes = new { @class = "form-control"} })
-                                                @Html.ValidationMessageFor(model => model.Type)
-                                            </div>
-                                        </div>
+                                    <div class="col-lg-4">
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.CustomerAccountId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
@@ -99,14 +78,83 @@
                                         </div>
 
                                         <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DailyLimit, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.DailyLimit, new { htmlAttributes = new { @class = "form-control", @placeholder = "DailyLimit" } })
+                                            @Html.ValidationMessageFor(model => model.DailyLimit, "", new { @class = "text-danger" })
+                                        </div>
+
+
+                                        <div class="col-lg-12">
+                                            <div class="form-group" id="data_3">
+                                                @Html.LabelFor(model => model.ValidFrom, htmlAttributes: new { @class = "" })
+                                                <div class="input-group date">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CardNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Pan  number" } })
+                                            @Html.ValidationMessageFor(model => model.CardNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-sm">
+                                            <div class="col-md-offset-2">
+                                                <input type="submit" value="Create" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.FullAccountNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Card number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.FullAccountNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "PayrollNumbers", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account  Number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Type, customerTypes, new { @class = "form-control input-md" })
+                                                @Html.HiddenFor(model => model.CardNumber, new { htmlAttributes = new { @class = "form-control" } })
+                                                @Html.ValidationMessageFor(model => model.Type)
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div class="form-group" id="data_3">
+                                                @Html.LabelFor(model => model.Expires, htmlAttributes: new { @class = "" })
+                                                <div class="input-group date">
+                                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                    <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                                </div>
+                                            </div>
+                                        </div>
+
                                     </div>
 
 
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
 
 
 
@@ -128,24 +176,33 @@
                                             @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
+                                        @*<div class="form-group form-group-lg">
+            @Html.LabelFor(model => model.RecordStatus, new { @class = "control-label" })
+            <div class="input-group">
+                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                @Html.DropDownListFor(model => model.RecordStatus, record, new { @class = "form-control input-md" })
+                @Html.HiddenFor(model => model.RecordStatus, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.RecordStatus)
+            </div>
+        </div>*@
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account  Number", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsThirdPartyNotified, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.IsThirdPartyNotified, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsThirdPartyNotified, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                         </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            <div class="col-md-offset-2">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
                                     </div>
-                                </div>
+                                    </div>
                             </fieldset>
                         </div>
                     }
@@ -225,6 +282,15 @@
 
     <script>
 
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
                 //Station typehead starts here
             $('.StationsLookup').typeahead({
                 source: function (query, process) {

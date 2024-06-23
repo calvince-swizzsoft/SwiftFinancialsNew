@@ -69,8 +69,8 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 var duplicateAlternateChannels = FindAlternateChannelsByCardNumberAndCardType(alternateChannelDTO.CardNumber, alternateChannelDTO.Type, serviceHeader);
 
                 if (duplicateAlternateChannels != null && duplicateAlternateChannels.Any())
-                    throw new InvalidOperationException(string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
-
+                    alternateChannelDTO.ErrorMessageResult = string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!"+ alternateChannelDTO.CardNumber);
+                
                 switch ((AlternateChannelType)alternateChannelDTO.Type)
                 {
                     case AlternateChannelType.SaccoLink:
@@ -81,7 +81,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                         var existingAlternateChannels = FindAlternateChannelsByCustomerAccountIdAndType(alternateChannelDTO.CustomerAccountId, alternateChannelDTO.Type, serviceHeader);
 
                         if (existingAlternateChannels != null && existingAlternateChannels.Any())
-                            throw new InvalidOperationException(string.Format("Sorry, but card type {0} has already been assigned to the selected account!", EnumHelper.GetDescription((AlternateChannelType)alternateChannelDTO.Type)));
+                            alternateChannelDTO.ErrorMessageResult = (string.Format("Sorry, but card type {0} has already been assigned to the selected account!"+ EnumHelper.GetDescription((AlternateChannelType)alternateChannelDTO.Type)));
 
                         break;
                     case AlternateChannelType.MCoopCash:
@@ -142,7 +142,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var alternateChannels = _alternateChannelRepository.AllMatching(spec, serviceHeader);
 
                     if (alternateChannels != null && alternateChannels.Except(new List<AlternateChannel> { persisted }).Any())
-                        throw new InvalidOperationException(string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
+                    {
+                        alternateChannelDTO.ErrorMessageResult = (string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
+                        return false;
+                    }
                     else
                     {
                         persisted.CardNumber = alternateChannelDTO.CardNumber;
@@ -186,7 +189,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var alternateChannels = _alternateChannelRepository.AllMatching(spec, serviceHeader);
 
                     if (alternateChannels != null && alternateChannels.Except(new List<AlternateChannel> { persisted }).Any())
-                        throw new InvalidOperationException(string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
+                    {
+                        alternateChannelDTO.ErrorMessageResult = (string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
+                        return false;
+                    }
                     else
                     {
                         persisted.CardNumber = alternateChannelDTO.CardNumber;
@@ -247,7 +253,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     var alternateChannels = _alternateChannelRepository.AllMatching(spec, serviceHeader);
 
                     if (alternateChannels != null && alternateChannels.Except(new List<AlternateChannel> { persisted }).Any())
-                        throw new InvalidOperationException(string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
+                    {
+                        alternateChannelDTO.ErrorMessageResult = (string.Format("Sorry, but Primary Account Number {0} has already been assigned to an account!", alternateChannelDTO.CardNumber));
+                        return false;
+                    }
                     else
                     {
                         persisted.CardNumber = alternateChannelDTO.CardNumber;

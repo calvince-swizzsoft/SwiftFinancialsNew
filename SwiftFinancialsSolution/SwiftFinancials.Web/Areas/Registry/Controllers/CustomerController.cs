@@ -81,7 +81,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             var birthdate = Request["birthdate"];
             var employmentdate = Request["employmentdate"];
 
-            customerBindingModel.IndividualBirthDate  = DateTime.ParseExact((Request["birthdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            customerBindingModel.IndividualBirthDate = DateTime.ParseExact((Request["birthdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             customerBindingModel.RegistrationDate = DateTime.ParseExact((Request["registrationdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
@@ -128,6 +128,126 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
+
+
+
+        public async Task<ActionResult> Directors()
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Directors(CustomerBindingModel customerBindingModel)
+        {
+            var registrationdate = Request["registrationdate"];
+            var birthdate = Request["birthdate"];
+            var employmentdate = Request["employmentdate"];
+
+            customerBindingModel.IndividualBirthDate = DateTime.ParseExact((Request["birthdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            customerBindingModel.RegistrationDate = DateTime.ParseExact((Request["registrationdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            customerBindingModel.IndividualEmploymentDate = DateTime.ParseExact((Request["employmentdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            customerBindingModel.ValidateAll();
+
+
+            //cheat
+            var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
+            var mandatorySavingsProducts = new List<SavingsProductDTO>();
+            var mandatoryDebitTypes = new List<DebitTypeDTO>();
+            var mandatoryProducts = new ProductCollectionInfo();
+
+
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(true, GetServiceHeader());
+
+            mandatoryProducts.InvestmentProductCollection = investmentProducts.ToList();
+            mandatoryProducts.SavingsProductCollection = savingsProducts.ToList();
+
+            if (!customerBindingModel.HasErrors)
+            {
+                await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts, 1, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = customerBindingModel.ErrorMessages;
+
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
+                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
+                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
+                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
+                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
+
+                return View(customerBindingModel);
+            }
+        }
+
+
+
+
+
+        public async Task<ActionResult> Delegates(Guid id)
+        {
+            await ServeNavigationMenus();
+            var customer= await _channelService.FindCustomerAsync(id, GetServiceHeader());
+
+            DelegateDTO withdrawalNotificationDTO = new DelegateDTO();
+
+            if (customer != null)
+            {
+
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.CustomerIndividualFirstName = customer.FullName;
+                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
+                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.CustomerStationZoneDescription = customer.StationZoneDescription;
+                withdrawalNotificationDTO.ZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+            }
+
+            return View(withdrawalNotificationDTO);
+      
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Delegates(DelegateDTO customerBindingModel)
+        {
+            if (!customerBindingModel.HasErrors)
+            {
+                await _channelService.AddDelegateAsync(customerBindingModel, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = customerBindingModel.ErrorMessages;
+                return View(customerBindingModel);
+            }
+        }
+
+
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -143,7 +263,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             customerBindingModel.ValidateAll();
 
-            if(!customerBindingModel.ErrorMessages.Any())
+            if (!customerBindingModel.ErrorMessages.Any())
             {
                 await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
                 ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
@@ -166,7 +286,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> GetCustomerByIdentityNumberAsync(string individualIdentityCardNumber,bool matchExtact)
+        public async Task<JsonResult> GetCustomerByIdentityNumberAsync(string individualIdentityCardNumber, bool matchExtact)
         {
             var customersDTOs = await _channelService.FindCustomersByIdentityCardNumberAsync(individualIdentityCardNumber, matchExtact, GetServiceHeader());
 

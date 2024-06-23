@@ -84,9 +84,10 @@
 
                     var editUrl = '<a  href="/registry/Customer/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/registry/Customer/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var DelegatesUrl = '<a  href="/registry/Customer/delegates/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Delegates</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + DelegatesUrl);
 
                     return nRow;
                 },
@@ -97,7 +98,7 @@
                     { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
                     { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

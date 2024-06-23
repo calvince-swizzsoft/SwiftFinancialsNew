@@ -310,6 +310,7 @@
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AlternatePeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
@@ -325,6 +326,7 @@
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
@@ -1056,6 +1058,14 @@
     <Content Include="Areas\Accounts\Views\Charges\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges_Levies\Levies.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges_Levies\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Directors.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Delegates.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatechannelManagement\History.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Closing\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

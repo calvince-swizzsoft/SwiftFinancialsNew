@@ -15,7 +15,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class RegisterController : MasterController
+    public class ClosingController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -35,7 +35,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindAlternateChannelsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindAlternateChannelReconciliationPeriodsByFilterInPageAsync(1, DateTime.Now, DateTime.Now, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -47,8 +47,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<AlternateChannelDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<AlternateChannelReconciliationPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -58,56 +59,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(debitBatchDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id,AlternateChannelDTO alternateChannelDTO1)
+        public async Task<ActionResult> Create(Guid? id, AlternateChannelReconciliationPeriodDTO alternateChannelDTO1)
         {
+
             await ServeNavigationMenus();
 
             Guid parseId;
-            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
+
+            ViewBag.SetDifferenceMode = GetSetDifferenceModeSelectList(string.Empty);
+
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
-          
-
-
-            TempData["DailyLimit"] = alternateChannelDTO1.DailyLimit;
-            TempData["CardNumber"] = alternateChannelDTO1.CardNumber;
-
-            if (TempData["DailyLimit"] != null && TempData["CardNumber"] != null)
-            {
-                Session["DailyLimit"] = alternateChannelDTO1.DailyLimit = Convert.ToDecimal(Session["DailyLimit"].ToString());
-                Session["CardNumber"] = alternateChannelDTO1.CardNumber = Session["CardNumber"].ToString();
-
-
-            }
             //var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
 
 
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            //var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var customer = await _channelService.FindAlternateChannelAsync(parseId, true, GetServiceHeader());
 
-            AlternateChannelDTO alternateChannelDTO = new AlternateChannelDTO();
+            AlternateChannelReconciliationPeriodDTO alternateChannelDTO = new AlternateChannelReconciliationPeriodDTO();
 
             if (customer != null)
             {
-                alternateChannelDTO.CustomerAccountCustomerId = customer.Id;
-                alternateChannelDTO.CustomerAccountId = customer.Id;
-                alternateChannelDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                alternateChannelDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                alternateChannelDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                alternateChannelDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                alternateChannelDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
+                alternateChannelDTO.DurationStartDate = customer.CreatedDate;
                 alternateChannelDTO.Remarks = customer.Remarks;
-                alternateChannelDTO.DailyLimit = alternateChannelDTO1.DailyLimit;
-                alternateChannelDTO.CardNumber = alternateChannelDTO1.CardNumber;
+                alternateChannelDTO.Remarks = customer.Remarks;
+                alternateChannelDTO.AlternateChannelType = customer.Type;
+
+
 
             }
 
@@ -135,84 +120,85 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             //var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
 
 
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-            AlternateChannelDTO alternateChannelDTO = new AlternateChannelDTO();
+            var customer = await _channelService.FindAlternateChannelAsync(parseId, true,GetServiceHeader());
+
+            AlternateChannelReconciliationPeriodDTO alternateChannelDTO = new AlternateChannelReconciliationPeriodDTO();
 
             if (customer != null)
             {
-                alternateChannelDTO.CustomerAccountCustomerId = customer.Id;
-                alternateChannelDTO.CustomerAccountId = customer.Id;
-                alternateChannelDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                alternateChannelDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                alternateChannelDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                alternateChannelDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                alternateChannelDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
+                alternateChannelDTO.DurationStartDate = customer.CreatedDate;
                 alternateChannelDTO.Remarks = customer.Remarks;
+                alternateChannelDTO.Remarks = customer.Remarks;
+                alternateChannelDTO.AlternateChannelType = customer.Type;
 
-                
-                
+
 
             }
             Session["DailyLimit"] = alternateChannelDTO1.DailyLimit;
             Session["CardNumber"] = alternateChannelDTO1.CardNumber;
-            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
+
+
 
             return View("Create", alternateChannelDTO);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(AlternateChannelDTO alternateChannelDTO)
+        public async Task<ActionResult> Create(AlternateChannelReconciliationPeriodDTO alternateChannelDTO)
         {
+            var startDate = Request["startDate"];
 
-            //var startDate = Request["startDate"];
+            var endDate = Request["endDate"];
 
-            //var endDate = Request["endDate"];
+            alternateChannelDTO.DurationStartDate = DateTime.Parse(startDate).Date;
 
-            //alternateChannelDTO.Expires = DateTime.Parse(startDate).Date;
+            alternateChannelDTO.DurationEndDate = DateTime.Parse(endDate).Date;
 
-            //alternateChannelDTO.ValidFrom = DateTime.Parse(endDate).Date;
 
             alternateChannelDTO.ValidateAll();
 
             if (!alternateChannelDTO.HasErrors)
             {
-                var result = await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Create successful.";
-                if (result.ErrorMessageResult != null)
-                {
-                    TempData["ErrorMsg"] = result.ErrorMessageResult;
-                    await ServeNavigationMenus();
-                    return View();
-                }
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(alternateChannelDTO.RecordStatus.ToString());
+                await _channelService.CloseAlternateChannelReconciliationPeriodAsync(alternateChannelDTO, 0,GetServiceHeader());
+                TempData["SuccessMessage"] = "Closing successful.";
+                //if (result.ErrorMessageResult != null)
+                //{
+                //    TempData["ErrorMsg"] = result.ErrorMessageResult;
+                //    await ServeNavigationMenus();
+                //    return View();
+                //}
+                //AlternateChannelReconciliationEntryDTO alternateChannelReconciliationEntryDTO = new AlternateChannelReconciliationEntryDTO();
+
+                ////if (customer != null)
+                ////{
+                //    alternateChannelReconciliationEntryDTO.Id = customer.Id;
+
+                //    alternateChannelReconciliationEntryDTO.Remarks = customer.Remarks;
+                //    alternateChannelReconciliationEntryDTO.Status = customer.Status;
+                //}
+
+                //await _channelService.AddAlternateChannelReconciliationEntryAsync(alternateChannelReconciliationEntryDTO, GetServiceHeader());
+
+                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.AlternateChannelType.ToString());
+                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(alternateChannelDTO.SetDifferenceMode.ToString());
+                ViewBag.SetDifferenceMode = GetSetDifferenceModeSelectList(alternateChannelDTO.SetDifferenceMode.ToString());
 
 
 
-         
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
 
-                return RedirectToAction("Index");
+                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.AlternateChannelType.ToString());
+
+                return RedirectToAction("Create");
             }
             else
             {
                 var errorMessages = alternateChannelDTO.ErrorMessages;
-                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(alternateChannelDTO.RecordStatus.ToString());
-
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
+                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.AlternateChannelType.ToString());
+                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(alternateChannelDTO.SetDifferenceMode.ToString());
+                ViewBag.SetDifferenceMode = GetSetDifferenceModeSelectList(alternateChannelDTO.SetDifferenceMode.ToString());
                 return View(alternateChannelDTO);
             }
         }
@@ -250,10 +236,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = alternateChannelDTO.ErrorMessages;
                 TempData["Error"] = "Failed to Edit .";
-                ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(alternateChannelDTO.RecordStatus.ToString());
-
-                ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(alternateChannelDTO.Type.ToString());
                 return View(alternateChannelDTO);
             }
         }

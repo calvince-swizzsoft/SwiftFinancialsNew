@@ -2,25 +2,22 @@
 @{
     /**/
 
-    ViewBag.Title = "Alternate channel Management";
+    ViewBag.Title = "Edit Alternate Channels";
 
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
     var record = ViewBag.RecordStatusSelectList as List<SelectListItem>;
-
-
-
     var customerTypes = ViewBag.alternateChannelType as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Alternate channel Management</h2>
+        <h2>Alternate Channels</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "create", "register", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Edit", "register", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>register</strong>
@@ -55,13 +52,12 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "AlternatechannelManagement", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Edit", "Register", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
 
                             <fieldset>
                                 <div class="row">
@@ -155,7 +151,7 @@
                                             @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
-                                        @*<div class="form-group form-group-lg">
+                                        <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.RecordStatus, new { @class = "control-label" })
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -163,7 +159,7 @@
                                                     @Html.HiddenFor(model => model.RecordStatus, new { htmlAttributes = new { @class = "form-control" } })
                                                     @Html.ValidationMessageFor(model => model.RecordStatus)
                                                 </div>
-                                            </div>*@
+                                            </div>
                                         <div class="form-group form-group-lg">
                                             @Html.CheckBoxFor(model => model.IsThirdPartyNotified, htmlAttributes: new { @class = "" })
                                             @Html.LabelFor(model => model.IsThirdPartyNotified, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })

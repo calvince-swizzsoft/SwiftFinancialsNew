@@ -215,6 +215,30 @@ namespace SwiftFinancials.Web.Controllers
 
             return recordStatusSelectList;
         }
+
+
+
+
+
+
+        [NonAction]
+        protected List<SelectListItem> GetSetDifferenceModeSelectList(string selectedValue)
+        {
+            List<SelectListItem> setDifferenceMode = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(SetDifferenceMode)).Cast<SetDifferenceMode>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            setDifferenceMode.AddRange(items);
+
+            return setDifferenceMode;
+        }
+
+
         [NonAction]
         protected List<SelectListItem> GetSystemTransactionTypeList(string selectedValue)
         {

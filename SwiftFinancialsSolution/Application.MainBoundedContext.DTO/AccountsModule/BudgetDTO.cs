@@ -64,7 +64,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime CreatedDate { get; set; }
 
         public ObservableCollection<BudgetEntryDTO> BudgetEntries { get; set; }
-       
+
+        public BudgetEntryDTO Budget { get; set; }
         public string ErrorMessageResult { get; set; }
     }
 }

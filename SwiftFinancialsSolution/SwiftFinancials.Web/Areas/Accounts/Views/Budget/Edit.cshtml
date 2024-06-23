@@ -1,12 +1,12 @@
 ﻿@model Application.MainBoundedContext.DTO.AccountsModule.BudgetDTO
 
 @{
-    ViewBag.Title = "Budgets";
-    var k = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
+    ViewBag.Title = "Edit Budgets";
+    var budgetEntryTypeSelectList = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
-        <h>Budgets Entries</h>
+        <h2>Budgets</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -24,18 +24,16 @@
 <div class="wrapper wrapper-content white-bg">
     <div class="row">
         <div class="col-md-12">
-            <div class="ibox ">
+            <div class="ibox">
                 <div class="ibox-title">
+                    <h5>Edit Budget</h5>
                     <div class="ibox-tools">
                         @if (TempData["ErrorMsg"] != null)
                         {
-                            <div class="alert alert-success">
+                            <div class="alert alert-danger">
                                 <strong>Error!</strong> @TempData["ErrorMsg"]
-
                                 <button type="button" class="close" data-dismiss="alert">
-                                    <span>
-                                        &times;
-                                    </span>
+                                    <span>&times;</span>
                                 </button>
                             </div>
                         }
@@ -48,16 +46,14 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit2", "Budget", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Edit", "Budget", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-
                         <h1>Edit Budget Details</h1>
-
                         <div class="row">
                             <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.Description)
                                     @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Budget Name" } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
@@ -69,12 +65,6 @@
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BudgetEntries[0].LoanProductId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BudgetEntries[0].LoanProductId)
-                                        @Html.EditorFor(model => model.BudgetEntries[0].LoanProductId, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "LoanProduct Name" } })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].LoanProductDescription, "", new { @class = "text-danger" })
-                                    </div>*@
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.BranchId)
@@ -82,7 +72,7 @@
                                     @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.TotalValue)
                                     @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
                                     @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                 </div>
@@ -90,178 +80,125 @@
                         </div>
 
 
-                        <h1>Edit Budget Entry Details</h1>
-
-                        <div class="row">
-                            <div class="col-lg-6">
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BudgetEntries[0].Type, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.BudgetEntries[0].Type, k, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Type)
+                        <div class="container1">
+                            <h1>Budget Entry Details</h1>
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BudgetEntries[0].Type, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.BudgetEntries[0].Type, budgetEntryTypeSelectList, new { @class = "form-control input-md", id = "BudgetEntries_Type" })
+                                            @Html.ValidationMessageFor(model => model.BudgetEntries[0].Type)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BudgetEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BudgetEntries[0].ChartOfAccountId, new { id = "BudgetEntries_ChartOfAccountId" })
+                                        @Html.EditorFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name", id = "BudgetEntries_ChartOfAccountAccountName" } })
+                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BudgetEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BudgetEntries[0].ChartOfAccountId)
-                                    @Html.EditorFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
-                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                </div>
-
-
-                            </div>
-                            <div class="col-lg-6">
-
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BudgetEntries[0].Amount, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.BudgetEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].Amount, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BudgetEntries[0].Reference, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.BudgetEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
-                                    @Html.ValidationMessageFor(model => model.BudgetEntries[0].Reference, "", new { @class = "text-danger" })
-                                </div>
-
-                            </div>
-                            <div class="col-sm-1">
-                                <div class="form-group">
-                                    <input type="submit" value="Edit Budget Entries" class="btn btn-success" />
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BudgetEntries[0].Amount)
+                                        @Html.EditorFor(model => model.BudgetEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "", id = "BudgetEntries_Amount" } })
+                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Amount, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BudgetEntries[0].Reference)
+                                        @Html.EditorFor(model => model.BudgetEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", id = "BudgetEntries_Reference" } })
+                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Reference, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="container">
-                            <row>
-                                <div class="ibox-content m-b-sm border-bottom  text-dark">
+                        <div class="container8">
+                            <div class="row">
+                                <div class="ibox-content m-b-sm border-bottom text-dark">
                                     <table class="footable table table-stripped toggle-arrow-tiny grey-table">
                                         <thead>
                                             <tr>
-
                                                 <th data-hide="phone">Type</th>
                                                 <th data-hide="phone">Amount</th>
                                                 <th data-hide="phone">Reference</th>
-
-                                                <th data-hide="phone">Select</th>
-
+                                                <th data-hide="phone">Actions</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.budgetEntryDTOs != null)
+                                            @if (ViewBag.chargesplits != null)
                                             {
-                                                foreach (var levySplit in ViewBag.budgetEntryDTOs)
+                                                foreach (var levySplit in ViewBag.chargesplits)
                                                 {
-                                                    <tr>
+                                                    <tr data-id="@levySplit.Id" data-type="@levySplit.Type" data-account-id="@levySplit.ChartOfAccountId" data-account-name="@levySplit.ChartOfAccountAccountName" data-amount="@levySplit.Amount" data-reference="@levySplit.Reference">
                                                         <td>@levySplit.TypeDescription</td>
                                                         <td class="amount-cell">@levySplit.Amount</td>
                                                         <td>@levySplit.Reference</td>
-
                                                         <td>
-                                                            <!-- moved form-group inside a td for proper alignment -->
-                                                        <td>
+                                                            <button type="button" class="btn btn-outline-primary edit-btn">Edit</button>
                                                             <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
                                                         </td>
-
-
                                                     </tr>
-
                                                 }
                                             }
                                         </tbody>
-
-
                                     </table>
-
-                                </div>
-                            </row>
-                        </div>
-                        <style>
-                            .container1 {
-                                border: 1px solid #ddd;
-                                border-radius: 5px;
-                                padding: 20px;
-                                margin-bottom: 20px;
-                                background-color: mintcream
-                            }
-
-                            .container {
-                                border: 1px solid #ddd;
-                                border-radius: 5px;
-                                padding: 20px;
-                                margin-bottom: 20px;
-                                background-color: darkgray
-                            }
-
-                            table {
-                                width: 100%;
-                                border-collapse: collapse;
-                            }
-
-                            td {
-                                padding: 10px;
-                                border: none; /* Remove border */
-                            }
-
-                            h2 {
-                                font-size: 20px; /* smaller font size */
-                                color: blue
-                            }
-
-                            h3 {
-                                font-size: medium;
-                                color: black
-                            }
-
-                            input[type="text"] {
-                                width: calc(100% - 20px); /* Adjust width to accommodate borders and padding */
-                                padding: 8px;
-                                box-sizing: border-box;
-                                border: 1px solid #ddd; /* Add border */
-                                background-color: #f7f7f7; /* Add shade */
-                            }
-
-                            label {
-                                font-weight: bold;
-                            }
-                        </style>
-
-                        <div class="container1">
-                            <h2>ACCOUNT SUMMARY</h2>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <label for="Appropotioned">Appropotioned Amount:</label><br>
-                                        <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
-                                    </td>
-                                    <td>
-                                        <label for="Shortage">Shortage Amount:</label><br>
-                                        <input type="text" id="Shortage" placeholder="Shortage" readonly>
-                                    </td>
-                                </tr>
-
-                            </table>
-                            <h3>   Appropotioned Amount should not exceed the total Amount</h3>
-                        </div>
-
-
-                    }
-
-                </div>
-                <div class="ibox-content m-b-sm border-bottom">
-                    @using (Html.BeginForm("Edit", "Budget", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        <div class="row">
-                            <div class="col-sm-2">
-                                <div class="form-group">
-                                    <input type="submit" value="Edit" class="btn btn-success" />
                                 </div>
                             </div>
                         </div>
+
+                        @*<div class="col-sm-1">
+                                <button type="button" class="btn btn-success Add-btn">Add Budget Entries</button>
+                            </div>*@
+
+                        <style>
+                            .container1 {
+                                border: 1px solid #ddd;
+                                border-radius: 4px;
+                                padding: 10px;
+                                margin-bottom: 10px;
+                            }
+                        </style>
+
+                        @*<div class="container1">
+                                <h2>Add Budget Entries</h2>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BudgetEntries[0].Type, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.BudgetEntries[0].Type, budgetEntryTypeSelectList, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.BudgetEntries[0].Type)
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BudgetEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BudgetEntries[0].ChartOfAccountId)
+                                            @Html.EditorFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
+                                            @Html.ValidationMessageFor(model => model.BudgetEntries[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BudgetEntries[0].Amount)
+                                            @Html.EditorFor(model => model.BudgetEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.BudgetEntries[0].Amount, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BudgetEntries[0].Reference)
+                                            @Html.EditorFor(model => model.BudgetEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
+                                            @Html.ValidationMessageFor(model => model.BudgetEntries[0].Reference, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>*@
+
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </div>
                     }
                 </div>
-
             </div>
         </div>
     </div>
@@ -277,122 +214,64 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('.edit-btn').click(function () {
+                var row = $(this).closest('tr');
+                var entryId = row.data('id'); // Assuming each row has a data-id attribute with the entry ID.
 
-    <script>
-$(document).ready(function () {
-    $('.remove-btn').click(function () {
-        var row = $(this).closest('tr');
-        var id = row.data('id');
-
-        $.ajax({
-            url: '@Url.Action("Remove", "Budget")',
-            type: 'POST',
-            data: { id: id },
-            success: function () {
-                row.remove();
-                updateAmounts(); // Update amounts after successful removal
-            },
-            error: function () {
-                alert('Error: Failed to remove row.');
-            }
-        });
-    });
-});
-    </script>
-
-    <script>
-        function updateAmounts() {
-            var totalAmount = 0;
-            var amountCells = document.getElementsByClassName('amount-cell');
-
-            for (var i = 0; i < amountCells.length; i++) {
-                var amount = parseFloat(amountCells[i].innerText);
-                if (!isNaN(amount)) {
-                    totalAmount += amount;
-                }
-            }
-
-            var totalValueElement = document.querySelector('[name="TotalValue"]');
-            var appropotionedElement = document.getElementById('Appropotioned');
-            var shortageElement = document.getElementById('Shortage');
-
-            // Get the current total value
-            var totalValue = parseFloat(totalValueElement.value);
-            if (isNaN(totalValue)) {
-                totalValue = 0;
-            }
-
-            // Check if the apportioned amount exceeds the total value and alert
-            if (totalAmount > totalValue) {
-                alert('Appropotioned amount exceeds the total value!');
-                return; // Stop further execution
-            }
-
-            // Update the Appropotioned textbox with the total amount
-            appropotionedElement.value = totalAmount.toFixed(2);
-
-            // Calculate the shortage if the total value is greater than the total amount
-            if (totalValue > totalAmount) {
-                var shortage = totalValue - totalAmount;
-                shortageElement.value = shortage.toFixed(2);
-            } else {
-                shortageElement.value = '0.00';
-            }
-        }
-
-        // Call the function on page load and when the Total Value changes
-        document.addEventListener('DOMContentLoaded', function () {
-            updateAmounts();
-
-            // Add event listener to Total Value input to update on change
-            var totalValueElement = document.querySelector('[name="TotalValue"]');
-            totalValueElement.addEventListener('input', updateAmounts);
-        });
-    </script>
-
-
-
-    @*function updateAmounts() {
-                var totalAmount = 0;
-                var amountCells = document.getElementsByClassName('amount-cell');
-
-                for (var i = 0; i < amountCells.length; i++) {
-                    var amount = parseFloat(amountCells[i].innerText.trim().replace(',', '')); // Trim spaces and remove commas if present
-                    if (!isNaN(amount)) {
-                        totalAmount += amount;
+                $.ajax({
+                    url: '@Url.Action("Edit3", "Budget")/' + entryId,
+                    type: 'GET',
+                    success: function (response) {
+                        // Populate the form fields with the response data
+                        $('#BudgetEntries_Type').val(response.Type);
+                        $('#BudgetEntries_ChartOfAccountId').val(response.ChartOfAccountId);
+                        $('#BudgetEntries_ChartOfAccountAccountName').val(response.ChartOfAccountAccountName);
+                        $('#BudgetEntries_Amount').val(response.Amount);
+                        $('#BudgetEntries_Reference').val(response.Reference);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error fetching budget entry:', error);
                     }
-                }
+                });
+            });
 
-                var totalValueElement = document.querySelector('[name="TotalValue"]');
-                var appropriatedElement = document.getElementById('Appropriated');
-                var shortageElement = document.getElementById('Shortage');
+            $('.remove-btn').click(function () {
+                $(this).closest('tr').remove();
+            });
 
-                var totalValue = parseFloat(totalValueElement.value) || 0;
+            $('.Add-btn').click(function () {
+                var type = $('#BudgetEntries').val();
+                var accountId = $('#BudgetEntries_ChartOfAccountId').val();
+                var accountName = $('#BudgetEntries_ChartOfAccountAccountName').val();
+                var amount = $('#BudgetEntries_Amount').val();
+                var reference = $('#BudgetEntries_Reference').val();
 
-                if (totalAmount > totalValue) {
-                    alert('Appropriated amount exceeds the total value!');
+                if (!type || !accountId || !amount) {
+                    alert('Please fill in all required fields');
                     return;
                 }
 
-                appropriatedElement.value = totalAmount.toFixed(2); // Ensure 'Appropriated' is a <input> or <textarea> element
+                var newRow = '<tr data-type="' + type + '" data-account-id="' + accountId + '" data-account-name="' + accountName + '" data-amount="' + amount + '" data-reference="' + reference + '">' +
+                    '<td>' + type + '</td>' +
+                    '<td class="amount-cell">' + amount + '</td>' +
+                    '<td>' + reference + '</td>' +
+                    '<td><button type="button" class="btn btn-outline-primary edit-btn">Edit</button> ' +
+                    '<button type="button" class="btn btn-outline-danger remove-btn">Remove</button></td>' +
+                    '</tr>';
 
-                if (totalValue > totalAmount) {
-                    var shortage = totalValue - totalAmount;
-                    shortageElement.value = shortage.toFixed(2); // Ensure 'Shortage' is a <input> or <textarea> element
-                } else {
-                    shortageElement.value = '0.00'; // Ensure 'Shortage' is set to a default value when totalValue === totalAmount
-                }
-            }
-            // Call updateAmounts on page load and when TotalValue changes
-            document.addEventListener('DOMContentLoaded', function () {
-                updateAmounts();
+                $('table tbody').append(newRow);
 
-                var totalValueElement = document.querySelector('[name="TotalValue"]');
-                totalValueElement.addEventListener('input', updateAmounts);
+                $('#BudgetEntries_Type').val('');
+                $('#BudgetEntries_ChartOfAccountId').val('');
+                $('#BudgetEntries_ChartOfAccountAccountName').val('');
+                $('#BudgetEntries_Amount').val('');
+                $('#BudgetEntries_Reference').val('');
             });
         });
+    </script>
 
-            </script>*@
 
 
 
@@ -549,4 +428,6 @@ $(document).ready(function () {
                 }
             });
     </script>
+
+
 }

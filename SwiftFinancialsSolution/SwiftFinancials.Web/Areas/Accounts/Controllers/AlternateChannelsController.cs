@@ -79,10 +79,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create(AlternateChannelTypeCommissionDTO levyDTO, CustomerAccountDTO customerAccountDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             levyDTO.ValidateAll();
-            int alternateChannelType = levyDTO.AlternateChannelType, alternateChannelTypeKnownChargeType = levyDTO.KnownChargeType; decimal totalValue = 0;
+            int alternateChannelType = levyDTO.AlternateChannelType, alternateChannelTypeKnownChargeType = levyDTO.KnownChargeType, chargeBenefactor=levyDTO.ChargeBenefactor; decimal totalValue = 0;
             if (!levyDTO.HasErrors)
             {
-                await _channelService.ComputeTariffsByAlternateChannelTypeAsync(alternateChannelType,alternateChannelTypeKnownChargeType,totalValue,customerAccountDTO, GetServiceHeader());
+                await _channelService.UpdateCommissionsByAlternateChannelTypeAsync(alternateChannelType,selectedRows,alternateChannelTypeKnownChargeType,chargeBenefactor ,GetServiceHeader());
                 TempData["Successfully"] = "Successfully Alternate Channels Charges";
                 return RedirectToAction("Create");
             }

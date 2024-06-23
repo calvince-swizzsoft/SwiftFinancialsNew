@@ -53,7 +53,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var levyDTO = await _channelService.FindLevyAsync(id, GetServiceHeader());
-
+           var k= await _channelService.FindLevySplitsByLevyIdAsync(levyDTO.Id,GetServiceHeader());
+            ViewBag.LevySplitDTOs = k;
             return View(levyDTO);
         }
 
@@ -193,20 +194,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (levy != null)
                 {
-                    var levySplits = new ObservableCollection<LevySplitDTO>();
+                    
+                    LevySplitDTOs = TempData["LevySplitDTO"]as ObservableCollection<LevySplitDTO>;
 
-                    foreach (var levySplitDTO in levyDTO.LevySplits)
+                    foreach (var levySplitDTO in LevySplitDTOs)
                     {
                         levySplitDTO.LevyId = levy.Id;
                         levySplitDTO.Description = levySplitDTO.Description;
                         levySplitDTO.ChartOfAccountId = levySplitChartOfAccountId;
                         levySplitDTO.Percentage = levySplitDTO.Percentage;
-                        
-                        levySplits.Add(levySplitDTO);
+
+                        LevySplitDTOs.ToArray();
                     };
 
-                    if (levySplits.Any())
-                        await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, levySplits, GetServiceHeader());
+                    if (LevySplitDTOs.Any())
+                        await _channelService.UpdateLevySplitsByLevyIdAsync(levy.Id, LevySplitDTOs, GetServiceHeader());
                     TempData["LevySplitDTO"] = "";
                 }
 

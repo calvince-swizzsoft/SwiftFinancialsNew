@@ -113,7 +113,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                 return new ValidationResult(string.Format("The sum of commission split percentage entries ({0}) must be equal to 100%!", value));
 
             return ValidationResult.Success;
-        }
+        } 
         public string ErrorMessageResult { get; set; }
 
         public List<LevySplitDTO> LevySplits { get; set; }

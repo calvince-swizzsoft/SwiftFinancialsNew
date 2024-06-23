@@ -33,7 +33,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync((int)TellerType.Employee, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync((int)TellerType.Employee, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -104,8 +104,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var errorMessages = tellerDTO.ErrorMessages;
                 ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
-
-                return View(tellerDTO);
+                TempData["Error"] = "Failed successful.";
+                return View("Create");
             }
         }
 

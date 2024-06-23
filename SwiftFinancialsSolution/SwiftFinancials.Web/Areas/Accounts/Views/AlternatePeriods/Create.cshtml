@@ -1,0 +1,189 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.AlternateChannelReconciliationPeriodDTO
+
+@{
+    ViewBag.Title = "Alternate Channel Reconciliation";
+    var customerTypes = ViewBag.alternateChannelType as List<SelectListItem>;
+    var y = ViewBag.SetDifferenceMode as List<SelectListItem>;
+
+
+}
+<div class="row wrapper border-bottom bg-white page-heading">
+    <div class="col-lg-10">
+        <h2>Alternate Channel Reconciliation</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "AlternatePeriods", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-primary">
+                        <strong>Successfully !</strong> @TempData["SuccessMessage"]
+
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>
+                                &times;
+                            </span>
+                        </button>
+                    </div>
+                }
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Create", "AlternatePeriods", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+                        <fieldset>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AlternateChannelType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.AlternateChannelType, customerTypes, new { @class = "form-control input-md" })
+                                            @Html.HiddenFor(model => model.AlternateChannelType, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.AlternateChannelType)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.SetDifferenceMode, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.SetDifferenceMode, y, new { @class = "form-control input-md" })
+                                            @Html.HiddenFor(model => model.SetDifferenceMode, new { htmlAttributes = new { @class = "form-control" } })
+                                            @Html.ValidationMessageFor(model => model.SetDifferenceMode)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <div class="form-group form-group-sm">
+                                <div class="col-md-offset-2">
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        </fieldset>
+
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+    </script>
+}
+

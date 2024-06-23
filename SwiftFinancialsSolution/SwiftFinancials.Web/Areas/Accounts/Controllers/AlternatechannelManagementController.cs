@@ -64,7 +64,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(debitBatchDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+        public async Task<ActionResult> Create(Guid id,AlternateChannelDTO alternateChannelDTO1)
         {
             await ServeNavigationMenus();
 
@@ -104,6 +104,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             }
 
+             alternateChannelDTO.Id = (Guid)Session["Id"];
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
@@ -114,13 +115,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         public async Task<ActionResult> Create(AlternateChannelDTO alternateChannelDTO)
+
+
         {
             alternateChannelDTO.ValidateAll();
 
 
             if (!alternateChannelDTO.HasErrors)
             {
+
+
                 await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+
                 TempData["SuccessMessage"] = "Create successful.";
                 ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
                 //ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.ChargeBenefactor.ToString());
@@ -167,6 +173,89 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(alternateChannelDTO);
             }
         }
+
+
+        public async Task<ActionResult> History(Guid? id)
+        {
+            await ServeNavigationMenus();
+
+            var chargeId = (Guid)Session["Id"];
+            Guid parseId;
+            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            //var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+
+            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+            await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAndManagementActionAsync(customer.Id, 1, GetServiceHeader());
+
+
+            AlternateChannelDTO alternateChannelDTO = new AlternateChannelDTO();
+
+            if (customer != null)
+            {
+                alternateChannelDTO.CustomerAccountCustomerId = customer.Id;
+                alternateChannelDTO.CustomerAccountId = customer.Id;
+                alternateChannelDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
+                alternateChannelDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                alternateChannelDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
+                alternateChannelDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
+                alternateChannelDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
+                alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
+                alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
+                alternateChannelDTO.Remarks = customer.Remarks;
+                alternateChannelDTO.CardNumber = customer.FullAccountNumber;
+
+
+            }
+
+            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
+            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
+
+
+            return View(alternateChannelDTO);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> History( AlternateChannelDTO alternateChannelDTO)
+        {
+            alternateChannelDTO.ValidateAll();   
+
+           
+
+            //var sortPropertyName = ""; // Define the property name for sorting
+
+            //if (sortColumnIndex >= 0 && sortColumnIndex < jQueryDataTablesModel.iColumns.Count)
+            //{
+            //    sortPropertyName = jQueryDataTablesModel.GetSortedColumns()[sortColumnIndex].PropertyName;
+            //}
+            if (alternateChannelDTO!=null)
+            {
+                var pageCollectionInfo = await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAsync(alternateChannelDTO.Id, GetServiceHeader());
+                return View("");
+            
+            }
+
+            else
+            {
+                return View(alternateChannelDTO);
+            }
+        }
+
+
+
 
         public async Task<ActionResult> Verify(Guid id)
         {

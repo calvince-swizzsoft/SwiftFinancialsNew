@@ -348,6 +348,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
         public static ValidationResult CheckAlternateChannelNumber(string value, ValidationContext context)
         {
             var bindingModel = context.ObjectInstance as AlternateChannelDTO;

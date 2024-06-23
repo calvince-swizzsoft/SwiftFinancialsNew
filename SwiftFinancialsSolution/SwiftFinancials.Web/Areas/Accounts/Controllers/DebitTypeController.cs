@@ -165,7 +165,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
 
             var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
-
+            Session["Description2"] = debitTypeDTO.Description;
             await GetApplicableCharges(id);
 
             return View(debitTypeDTO);
@@ -219,7 +219,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+       
         public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             debitTypeDTO.CustomerAccountTypeTargetProductId = (Guid)Session["savingsProductid2"];

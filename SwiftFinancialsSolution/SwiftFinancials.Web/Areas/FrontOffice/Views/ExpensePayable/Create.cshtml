@@ -195,21 +195,21 @@
                                         {
                                             foreach (var ExpensePayableEntries in ViewBag.ExpensePayableEntryDTOs)
                                             {
-                                        <tr>
-                                            <td>
-                                                @ExpensePayableEntries.Reference
-                                            </td>
-                                            <td>
-                                                @ExpensePayableEntries.TotalValue
-                                            </td>
-                                            <td>
-                                                @ExpensePayableEntries.SecondaryDescription
-                                            </td>
-                                            <td>
-                                                @ExpensePayableEntries.PrimaryDescription
-                                            </td>
+                                                <tr>
+                                                    <td>
+                                                        @ExpensePayableEntries.Reference
+                                                    </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.TotalValue
+                                                    </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.SecondaryDescription
+                                                    </td>
+                                                    <td>
+                                                        @ExpensePayableEntries.PrimaryDescription
+                                                    </td>
 
-                                        </tr>
+                                                </tr>
                                             }
                                         }
                                     </tbody>
@@ -218,22 +218,22 @@
                         </row>
                     }
                 </div>
-                                <div class="ibox-content m-b-sm border-bottom">
-                                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                                    {
-                                        <div class="row">
-                                            <div class="col-sm-2">
-                                                <div class="form-group">
-                                                    <input type="submit" value="Post" class="btn btn-success" />
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                    }
+                <div class="ibox-content m-b-sm border-bottom">
+                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        <div class="row">
+                            <div class="col-sm-2">
+                                <div class="form-group">
+                                    <input type="submit" value="Post" class="btn btn-success" />
                                 </div>
                             </div>
                         </div>
-                    </div>
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 
