@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -45,6 +46,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -53,23 +56,76 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(customerAccountDTO);
         }
-        public async Task<ActionResult> Create()
+
+
+        public async Task<ActionResult> Create(Guid? id, CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            if(customer!=null)
+            {
+                customerAccountDTO.Customers = customer;
+            }
 
             return View();
         }
 
+
+
+        public async Task<ActionResult>SavingsProduct(ObservableCollection<SavingsProductDTO> savingProductRowData)
+        {
+            Session["savingsProductIds"] = savingProductRowData;
+
+            return View("Create", savingProductRowData);
+        } 
+        
+        public async Task<ActionResult>LoansProduct(ObservableCollection<LoanProductDTO> loansProductRowData)
+        {
+            Session["loansProductIds"] = loansProductRowData;
+
+            return View("Create", loansProductRowData);
+        } 
+        
+        public async Task<ActionResult>InvestmentsProduct(ObservableCollection<InvestmentProductDTO> investmentProductRowData)
+        {
+            Session["investmentsProductIds"] = investmentProductRowData;
+
+            return View("Create", investmentProductRowData);
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
         {
-            customerAccountDTO.CreatedDate = DateTime.Today;
+            if(Session["savingsProductIds"] != null)
+            {
+                ObservableCollection<SavingsProductDTO> sRowData = Session["savingsProductIds"] as ObservableCollection<SavingsProductDTO>;
+            }
+            
+            if(Session["loansProductIds"] != null)
+            {
+                ObservableCollection<LoanProductDTO> sRowData = Session["loansProductIds"] as ObservableCollection<LoanProductDTO>;
+            }
+            
+            if(Session["investmentsProductIds"] != null)
+            {
+                ObservableCollection<InvestmentProductDTO> sRowData = Session["investmentsProductIds"] as ObservableCollection<InvestmentProductDTO>;
+            }
 
             customerAccountDTO.ValidateAll();
 
             if (!customerAccountDTO.HasErrors)
             {
-                await _channelService.AddCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
+                var result = await _channelService.AddCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
 
                 TempData["AlertMessage"] = "Customer Account created successfully";
 
@@ -85,6 +141,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -93,6 +151,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(customerAccountDTO);
         }
+
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

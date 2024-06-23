@@ -8,6 +8,47 @@
     var CustomerAccountManagementAction = ViewBag.CustomerAccountManagementActionSelectList as List<SelectListItem>;
 }
 
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .tab-header {
+        display: flex;
+        cursor: pointer;
+        background-color: #f1f1f1;
+    }
+
+        .tab-header div {
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-right: 5px;
+        }
+
+            .tab-header div.active {
+                background-color: #ddd;
+            }
+
+    .tab-content {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-top: none;
+        height: 350px; /* Adjust the height as needed */
+        overflow-y: auto;
+    }
+
+    .tab {
+        display: none;
+    }
+</style>
+
+
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -51,20 +92,20 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Create", "CoA_Register", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <fieldset>
+                        <fieldset style="color: black;">
                             <div class="row">
                                 <div class="col-lg-4">
                                     @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder="Link Customer..." })
+                                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
@@ -73,7 +114,7 @@
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Customers.StationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.Customers.StationZoneDivisionEmployerId, htmlAttributes: new { @class = "" })
                                         @Html.HiddenFor(model => model.Customers.StationZoneDivisionEmployerId)
                                         @Html.EditorFor(model => model.Customers.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.Customers.StationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
@@ -97,21 +138,21 @@
                                         @Html.EditorFor(model => model.Customers.SerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.Customers.SerialNumber, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Customers.IndividualIdentityCardNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.ValidationMessageFor(model => model.Customers.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.Customers.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Customers.IndividualIdentityCardNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.Customers.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Customers.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                     </div>
+                                </div>
 
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Customers.IndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                            @Html.ValidationMessageFor(model => model.Customers.IndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.Customers.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "SavingProductsLookup form-control required", placeholder = " Saving Products Description.." } })
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Customers.IndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.Customers.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Customers.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "SavingProductsLookup form-control required", placeholder = " Saving Products Description.." } })
                                     </div>
                                 </div>
                             </div>
@@ -119,36 +160,124 @@
                             <div class="row">
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.CustomerReference1)
-                                        @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CustomerReference1, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", placeholder = "Investment Product Description.." } })
+                                        @Html.LabelFor(model => model.Customers.Reference1, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.Customers.Reference1)
+                                        @Html.ValidationMessageFor(model => model.Customers.Reference1, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Customers.Reference1, new { htmlAttributes = new { @class = "InvestmentProductsLookup form-control required", placeholder = "Investment Product Description.." } })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Customers.Reference1, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Customers.Reference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Customers.Reference1, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Customers.Reference3, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Customers.Reference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Customers.Reference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3">
-                                    <input type="submit" value="Create" style="width: 200px;" class="btn btn-primary" />
+                            <br />
+
+                            <div class="tab-header">
+                                <div class="tab-button" onclick="openTab(event, 'section1')">Savings Products</div>
+                                <div class="tab-button" onclick="openTab(event, 'section2')">Loan Products</div>
+                                <div class="tab-button" onclick="openTab(event, 'section3')">Investments Products</div>
+                            </div>
+
+
+
+                            <div id="section1" class="tab">
+                                <div class="tab-content">
+                                    <div style="text-align: left;">
+                                        <input type="checkbox" id="sheaderCheckbox" style="transform: scale(1); color: blue;">
+                                        <label for="sheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="SavingsProductGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="7" class="dataTables_empty">
+                                                        Loading data from server
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <input type="submit" id="submit-btn" value="Create" style="width: 150px;" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="section2" class="tab">
+                                <div class="tab-content">
+                                    <div style="text-align: left;">
+                                        <input type="checkbox" id="lheaderCheckbox" style="transform: scale(1); color: blue;">
+                                        <label for="lheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="7" class="dataTables_empty">
+                                                        Loading data from server
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <input type="submit" id="submit-btn2" value="Create" style="width: 150px;" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div id="section3" class="tab">
+                                <div class="tab-content">
+                                    <div style="text-align: left;">
+                                        <input type="checkbox" id="iheaderCheckbox" style="transform: scale(1); color: blue;">
+                                        <label for="iheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="InvestmentProductGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                            <tbody>
+                                                <tr>
+                                                    <td colspan="7" class="dataTables_empty">
+                                                        Loading data from server
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <input type="submit" id="submit-btn3" value="Create" style="width: 150px;" class="btn btn-primary" />
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -234,9 +363,477 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
-        ////////customer lookup//////////
 
+    @*Savings Products*@
+    <script>
+        $(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#sheaderCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.srowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('sheaderCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#SavingsProductGrid').on('change', '.srowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#sheaderCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('sheaderCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length;
+                $('#sheaderCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('sheaderCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#sheaderCheckbox').prop('checked', loadCheckboxState('sheaderCheckbox'));
+    });
+
+    // Initialize the DataTable
+    var table = $('#SavingsProductGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.1%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#sheaderCheckbox').prop('checked', loadCheckboxState('sheaderCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+    $('#SavingsProductGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="sheaderCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#sheaderCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.srowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('sheaderCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+    $('#SavingsProductGrid').on('change', '.srowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#sheaderCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('sheaderCheckbox', false);
+        }
+    });
+        });
+    </script>
+
+
+
+
+
+    @*LoansProduct*@
+    <script>
+        $(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#lheaderCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.lrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('lheaderCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#LoanProductsGrid').on('change', '.lrowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#lheaderCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('lheaderCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.lrowCheckbox:checked').length === $('.lrowCheckbox').length;
+                $('#lheaderCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('lheaderCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
+    });
+
+    // Initialize the DataTable
+    var table = $('#LoanProductsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="lheaderCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#lheaderCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.lrowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('lheaderCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+    $('#LoanProductsGrid').on('change', '.lrowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#lheaderCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('lheaderCheckbox', false);
+        }
+    });
+        });
+    </script>
+
+
+
+
+
+    @*InvestmentsProduct*@
+    <script>
+        $(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#iheaderCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.irowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('iheaderCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#InvestmentProductGrid').on('change', '.irowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#iheaderCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('iheaderCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.irowCheckbox:checked').length === $('.irowCheckbox').length;
+                $('#iheaderCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('iheaderCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#iheaderCheckbox').prop('checked', loadCheckboxState('iheaderCheckbox'));
+    });
+
+    // Initialize the DataTable
+            var table = $('#InvestmentProductGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="irowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#iheaderCheckbox').prop('checked', loadCheckboxState('iheaderCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+            $('#InvestmentProductGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="iheaderCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#iheaderCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.irowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('iheaderCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+            $('#InvestmentProductGrid').on('change', '.irowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#iheaderCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('iheaderCheckbox', false);
+        }
+    });
+        });
+    </script>
+
+
+    @*Send Selected row data to controller*@
+    <script>
+        //savings product
+        $('#submit-btn').click(function () {
+            var selectedRowsData = [];
+            $('.srowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/CoA_Register/SavingsProduct',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+
+
+
+        //loans product
+        $('#submit-btn2').click(function () {
+            var selectedRowsData = [];
+            $('.lrowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/CoA_Register/LoansProduct',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+
+
+
+        //investments product
+        $('#submit-btn3').click(function () {
+            var selectedRowsData = [];
+            $('.irowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/CoA_Register/InvestmentsProduct',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+    </script>
+
+
+
+
+
+
+
+    <script>
     $('#customersGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
@@ -255,7 +852,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/Management/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/CoA_Register/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
@@ -282,164 +879,31 @@
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#customerLookupModal').modal('hide');
+        $('#Customers.Reference3').val(CustomersMap[item].Customers.Reference3);
+        $('#Customers.Reference1').val(CustomersMap[item].Customers.Reference1);
+        $('#Customers.IndividualPayrollNumbers').val(CustomersMap[item].Customers.IndividualPayrollNumbers);
+        $('#Customers.IndividualIdentityCardNumber').val(CustomersMap[item].Customers.IndividualIdentityCardNumber);
+        $('#Customers.SerialNumber').val(CustomersMap[item].Customers.SerialNumber);
+        $('#Customers.StationDescription').val(CustomersMap[item].Customers.StationDescription);
+        $('#Customers.StationZoneDivisionEmployerDescription').val(CustomersMap[item].Customers.StationZoneDivisionEmployerDescription);
+        $('#CompaniesLookup').modal('hide');
     });
 
 
-    //////////customer accounts lookup modol/////////
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Account/Management/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-             });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#CustomerAccountId').val(data.Id);
-        $('input[name=CustomerAccountId]').val(data.Id);
-        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-        $('#customerLookupModal').modal('hide');
-    });
-        ///// Investment products lookup /////
-$('.InvestmentProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (InvestmentProducts) {
-                var newInvestmentProductsData = [];
-                InvestmentProductsMap = {};
-                $.each(InvestmentProducts, function (i, InvestmentProduct) {
-                    newInvestmentProductsData.push(InvestmentProduct.Description);
-                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
-                });
-                process(newInvestmentProductsData);
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var investmentProductId = "";
-        investmentProductId = InvestmentProductsMap[item].Id;
-        $('#InvestmentProductId').val(investmentProductId);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
-        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
-
-        //console.log(investmentProductId)
-        return item;
-    }
-});
-        /////saving products lookup /////
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription);
-        $('#SavingProductId').val(CustomerAccountTypeTargetProductId);
-
-        //console.log(savingProductId)
-        return item;
-    }
-});
-             //Station typehead starts here
-
-            $('.StationsLookup').typeahead({
+        //Company typehead starts here
+            $('.CompaniesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        '@Url.Action("GetCompaniesAsync", "Customer", new { Area = "Registry" })',
                         { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
                             });
-                            process(newStationsData); return;
+                            process(newCompaniesData); return;
                         });
                 },
                 matcher: function (item) {
@@ -455,93 +919,42 @@ $('.InvestmentProductsLookup').typeahead({
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#CustomerId').val(CustomerId);
+                    $('#CustomerFullName').val(CustomerFullName);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
                     return item;
                 }
             });
 
+    </script>
 
 
-         //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
 
+    <script>
+        function openTab(event, sectionId) {
+            // Hide all tabs
+            var tabs = document.getElementsByClassName('tab');
+            for (var i = 0; i < tabs.length; i++) {
+                tabs[i].style.display = 'none';
+            }
 
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetSavingProductsAsync", "SavingProduct", new { Area = "Admin" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
+            // Remove the 'active' class from all tab buttons
+            var tabButtons = document.getElementsByClassName('tab-button');
+            for (var i = 0; i < tabButtons.length; i++) {
+                tabButtons[i].classList.remove('active');
+            }
+
+            // Show the selected tab
+            document.getElementById(sectionId).style.display = 'block';
+
+            // Add the 'active' class to the clicked tab button
+            event.currentTarget.classList.add('active');
         }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        //console.log(savingProductId)
-        return item;
-    }
-});
 
+        // Display the first tab by default
+        document.getElementsByClassName('tab-button')[0].click();
     </script>
 }
