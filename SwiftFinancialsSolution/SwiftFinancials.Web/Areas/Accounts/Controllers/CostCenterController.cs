@@ -112,8 +112,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCostCenterAsync(costCenterDTO, GetServiceHeader());
-
+                var result = await _channelService.UpdateCostCenterAsync(costCenterDTO, GetServiceHeader());
+                
                 TempData["Edit"] = "Edited Cost Center successfully";
 
                 return RedirectToAction("Index");

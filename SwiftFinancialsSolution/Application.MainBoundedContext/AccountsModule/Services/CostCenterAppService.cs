@@ -74,6 +74,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
             using (var dbContextScope = _dbContextScopeFactory.Create())
             {
+
                 var persisted = _costCenterRepository.Get(costCenterDTO.Id, serviceHeader);
 
                 if (persisted != null)
