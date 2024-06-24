@@ -127,7 +127,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Cheque Types", Icon="fa fa-book", ControllerName="ChequeType", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 37},
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Credit Batches", Icon="fa fa-calculator", ControllerName="CreditBatch", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 38},
-                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/L Account Determinations", Icon="fa fa-database", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 39},
+                //new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/L Account Determinations", Icon="fa fa-database", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 39},
 
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Customer Accounts", Icon="fa fa-users", Code = 0x000059D8 + 40},
@@ -198,16 +198,14 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
 
-
-
-
-
-
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Alternate channel Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 86},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Periods", Icon="fa fa-money", ControllerName="AlternatePeriods", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 87},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Processing", Icon="fa fa-money", ControllerName="Processing", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 88},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Closing", Icon="fa fa-money", ControllerName="Closing", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 89},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Catalogue ", Icon="fa fa-money", ControllerName="Catalogue ", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 90},
+
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/L Account Determination", Icon="fa fa-tasks", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
+
 
 
 

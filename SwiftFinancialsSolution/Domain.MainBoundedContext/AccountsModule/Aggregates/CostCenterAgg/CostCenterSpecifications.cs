@@ -29,5 +29,15 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.CostCenterAgg
 
             return specification;
         }
+
+
+        public static ISpecification<CostCenter> CostCenterWithCostCenter(string Description)
+        {
+            Specification<CostCenter> specification = new TrueSpecification<CostCenter>();
+
+            specification &= new DirectSpecification<CostCenter>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

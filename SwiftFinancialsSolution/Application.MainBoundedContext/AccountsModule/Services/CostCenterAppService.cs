@@ -37,17 +37,31 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var costCenter = CostCenterFactory.CreateCostCenter(costCenterDTO.Description);
 
-                    if (costCenterDTO.IsLocked)
-                        costCenter.Lock();
-                    else costCenter.UnLock();
+                    ISpecification<CostCenter> spec = CostCenterSpecifications.CostCenterWithCostCenter(costCenterDTO.Description);
 
-                    _costCenterRepository.Add(costCenter, serviceHeader);
+                    var matchedCostCenters = _costCenterRepository.AllMatching(spec, serviceHeader);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                    if (matchedCostCenters != null && matchedCostCenters.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        costCenterDTO.ErrorMessageResult = string.Format("Sorry, but Cost Center {0} already exists!", costCenterDTO.Description);
+                        return costCenterDTO;
+                    }
+                    else
+                    {
+                        var costCenter = CostCenterFactory.CreateCostCenter(costCenterDTO.Description);
 
-                    return costCenter.ProjectedAs<CostCenterDTO>();
+                        if (costCenterDTO.IsLocked)
+                            costCenter.Lock();
+                        else costCenter.UnLock();
+
+                        _costCenterRepository.Add(costCenter, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return costCenter.ProjectedAs<CostCenterDTO>();
+                    }
                 }
             }
             else return null;

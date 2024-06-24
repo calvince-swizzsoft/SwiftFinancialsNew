@@ -64,13 +64,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CostCenterDTO costCenterDTO)
         {
-            costCenterDTO.CreatedDate = DateTime.Today;
-
             costCenterDTO.ValidateAll();
 
             if (!costCenterDTO.HasErrors)
             {
-                await _channelService.AddCostCenterAsync(costCenterDTO, GetServiceHeader());
+                var result = await _channelService.AddCostCenterAsync(costCenterDTO, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    return View();
+                }
 
                 TempData["AlertMessage"] = "Cost Centre created successfully";
 
