@@ -53,12 +53,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(systemGeneralLedgerAccountMappingDTO);
         }
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
             ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
             return View();
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Create(SystemGeneralLedgerAccountMappingDTO systemGeneralLedgerAccountMappingDTO)
@@ -67,7 +70,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!systemGeneralLedgerAccountMappingDTO.HasErrors)
             {
-                await _channelService.AddSystemGeneralLedgerAccountMappingAsync(systemGeneralLedgerAccountMappingDTO, GetServiceHeader());
+                var result = await _channelService.AddSystemGeneralLedgerAccountMappingAsync(systemGeneralLedgerAccountMappingDTO, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
+
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    return View();
+                }
 
                 TempData["AlertMessage"] = "Successfully mapped G/L Account";
 

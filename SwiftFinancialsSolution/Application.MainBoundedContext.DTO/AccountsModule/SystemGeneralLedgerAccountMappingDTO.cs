@@ -81,5 +81,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Is Locked?")]
         public bool IsLocked { get; set; }
+
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }
