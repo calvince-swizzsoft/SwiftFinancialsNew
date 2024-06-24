@@ -45,7 +45,7 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                     if (matchedCostCenters != null && matchedCostCenters.Any())
                     {
                         //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
-                        costCenterDTO.ErrorMessageResult = string.Format("Sorry, but Cost Center {0} already exists!", costCenterDTO.Description);
+                        costCenterDTO.ErrorMessageResult = string.Format("Sorry, but Cost Center \"{0}\" already exists!", costCenterDTO.Description.ToUpper());
                         return costCenterDTO;
                     }
                     else

@@ -79,7 +79,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     return View();
                 }
 
-                TempData["AlertMessage"] = "Cost Centre created successfully";
+                TempData["AlertMessage"] = "Successfully created Cost Center";
+
+                TempData["cC"] = costCenterDTO.Description.ToUpper();
 
                 return RedirectToAction("Index");
             }
