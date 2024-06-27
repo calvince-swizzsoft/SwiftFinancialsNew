@@ -111,10 +111,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             postingPeriodDTO.DurationStartDate = DateTime.Parse(startDate).Date;
 
             postingPeriodDTO.DurationEndDate = DateTime.Parse(endDate).Date;
-            if (ModelState.IsValid)
+            if (!postingPeriodDTO.HasErrors)
             {
                 await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO.MapTo<PostingPeriodDTO>(), GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Edit successful.";
                 return RedirectToAction("Index");
             }
             else

@@ -92,9 +92,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CreditTypeDTO creditTypeDTOBindingModel)
+        public async Task<ActionResult> Edit( CreditTypeDTO creditTypeDTOBindingModel)
         {
-            if (ModelState.IsValid)
+
+            creditTypeDTOBindingModel.ValidateAll();
+
+            if (!creditTypeDTOBindingModel.HasErrors)
             {
                 await _channelService.UpdateCreditTypeAsync(creditTypeDTOBindingModel, GetServiceHeader());
 

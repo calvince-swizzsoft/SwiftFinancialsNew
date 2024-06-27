@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -52,23 +53,61 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(chequeTypeDTO);
         }
-        public async Task<ActionResult> Create()
+
+
+        public async Task<ActionResult> SavingsProduct(ObservableCollection<SavingsProductDTO> savingProductRowData)
+        {
+            Session["savingsProductIds"] = savingProductRowData;
+            
+
+            return View("Create", savingProductRowData);
+        }
+
+        public async Task<ActionResult> LoansProduct(ObservableCollection<LoanProductDTO> loansProductRowData)
+        {
+            Session["loansProductIds"] = loansProductRowData;
+
+            return View("Create", loansProductRowData);
+        }
+
+        public async Task<ActionResult> InvestmentsProduct(ObservableCollection<InvestmentProductDTO> investmentProductRowData)
+        {
+            Session["investmentsProductIds"] = investmentProductRowData;
+
+            return View("Create", investmentProductRowData);
+        }
+
+
+
+        public async Task<ActionResult> Create(ProductCollectionInfo productCollectionInfo)
         {
             await ServeNavigationMenus();
+
             ViewBag.ChequeTypeChargeRecoveryModeSelectList = GetChequeTypeChargeRecoveryModeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(ChequeTypeDTO chequeTypeDTO)
+        public async Task<ActionResult> Create(ChequeTypeDTO chequeTypeDTO,ProductCollectionInfo  productCollectionInfo)
         {
             chequeTypeDTO.ValidateAll();
 
             if (!chequeTypeDTO.HasErrors)
+
             {
                 await _channelService.AddChequeTypeAsync(chequeTypeDTO, GetServiceHeader());
+                if (Session["savingsProductIds"] != null)
+                {
+                    ObservableCollection<SavingsProductDTO> sRowData = Session["savingsProductIds"] as ObservableCollection<SavingsProductDTO>;
+                     
+                }
+
+
+                await _channelService.UpdateAttachedProductsByChequeTypeIdAsync(chequeTypeDTO.Id, productCollectionInfo,GetServiceHeader());
+              
                 TempData["SuccessMessage"] = "Create successful.";
+
                 return RedirectToAction("Index");
             }
             else

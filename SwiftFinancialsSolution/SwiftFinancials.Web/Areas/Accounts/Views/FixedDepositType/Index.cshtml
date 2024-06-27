@@ -16,6 +16,38 @@
     </div>
 </div>
 
+
+<style>
+    .dropdown-item {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .dropdown-item:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .dropdown-item:active {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+</style>
+
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -97,8 +129,20 @@
                     var viewUrl = '<a  href="/accounts/FixedDepositType/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/FixedDepositType/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/FixedDepositType/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+
+                    $('td:eq(4)', nRow).html(dropdownHtml);
                     return nRow;
                 },
                 // Display settings

@@ -53,8 +53,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var levyDTO = await _channelService.FindLevyAsync(id, GetServiceHeader());
-           var k= await _channelService.FindLevySplitsByLevyIdAsync(levyDTO.Id,GetServiceHeader());
+            var k = await _channelService.FindLevySplitsByLevyIdAsync(levyDTO.Id, GetServiceHeader());
             ViewBag.LevySplitDTOs = k;
+            TempData["LevySplitDTO"]=k;
             return View(levyDTO);
         }
 
@@ -121,6 +122,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            double sumPercentages = 0;
+
             LevySplitDTOs = TempData["LevySplitDTO"] as ObservableCollection<LevySplitDTO>;
 
             if (LevySplitDTOs == null)
@@ -131,22 +134,32 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 levySplitDTO.Description = levySplitDTO.Description;
                 levySplitDTO.ChartOfAccountId = levyDTO.Id;//Temporary 
                 levySplitDTO.ChartOfAccountAccountName = levyDTO.Description;
-               // levySplitDTO.ChartOfAccountName= levyDTO.Description;
+                // levySplitDTO.ChartOfAccountName= levyDTO.Description;
                 levySplitDTO.Percentage = levySplitDTO.Percentage;
-                
-                if(levySplitDTO.Percentage==100.1|| levySplitDTO.Percentage == -0)
-                {
-                   try
-                    {
-                        return View(levySplitDTO);
-                        
-                    }
-                    catch
-                    {
 
+                if (levySplitDTO.Description == null || levySplitDTO.Percentage == 0)
+                {
+                    TempData["tPercentage"] = "Could not add levy split. Make sure to provide all levy split details to proceed.";
+                }
+                else
+                {
+                    LevySplitDTOs.Add(levySplitDTO);
+
+                    sumPercentages = LevySplitDTOs.Sum(cs => cs.Percentage);
+
+                    Session["chargeSplit"] = levySplitDTO.levy;
+
+                    if (sumPercentages > 100)
+                    {
+                        TempData["tPercentage"] = "Failed to add \"" + levyDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
+
+                        LevySplitDTOs.Remove(levySplitDTO);
+                    }
+                    else if (sumPercentages < 1)
+                    {
+                        TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
                     }
                 }
-                LevySplitDTOs.Add(levySplitDTO);
             };
 
             TempData["LevySplitDTO"] = LevySplitDTOs;
@@ -194,8 +207,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (levy != null)
                 {
-                    
-                    LevySplitDTOs = TempData["LevySplitDTO"]as ObservableCollection<LevySplitDTO>;
+
+                    LevySplitDTOs = TempData["LevySplitDTO"] as ObservableCollection<LevySplitDTO>;
 
                     foreach (var levySplitDTO in LevySplitDTOs)
                     {
@@ -233,22 +246,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var levy = await _channelService.FindLevyAsync(id, GetServiceHeader());
-            var k = await _channelService.FindLevySplitsByLevyIdAsync(id, GetServiceHeader());
+            var levyDTO = await _channelService.FindLevyAsync(id, GetServiceHeader());
+            var k = await _channelService.FindLevySplitsByLevyIdAsync(levyDTO.Id, GetServiceHeader());
+            ViewBag.LevySplitDTOs = k;
+            TempData["levyDTO"] = levyDTO;
+
+            TempData["LevySplitDTOs"] = ViewBag.LevySplitDTOs;
+           
+
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
-            return View(levy);
+            return View(levyDTO);
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+    
         public async Task<ActionResult> Edit(LevyDTO levyDTO)
         {
             if (!levyDTO.HasErrors)
             {
 
 
-                var j = await _channelService.UpdateLevyAsync(levyDTO, GetServiceHeader());
+               await _channelService.UpdateLevyAsync(levyDTO, GetServiceHeader());
                 TempData["SuccessMessage"] = "Edit successful.";
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());
 

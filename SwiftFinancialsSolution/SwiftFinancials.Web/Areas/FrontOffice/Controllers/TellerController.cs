@@ -15,25 +15,40 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
     public class TellerController : MasterController
     {
 
-        public async Task<ActionResult> Index()
+        // TellerController.cs
+
+
+        public async Task<ActionResult> Index(TellerDTO tellerDTO)
         {
             await ServeNavigationMenus();
+            await _channelService.FindTellersByTypeAsync(tellerDTO.Type, tellerDTO.Reference, true, GetServiceHeader());
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
 
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, TellerDTO tellerDTO)
         {
+
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
+
+
+            await _channelService.FindTellersByTypeAsync(tellerDTO.Type, tellerDTO.Reference, true, GetServiceHeader());
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync((int)TellerType.Employee, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
+
+            // var teller = tellerDTO.Type;
+
+            int teller = tellerDTO.Type;
+
+            var pageCollectionInfo = await _channelService.FindTellersByFilterInPageAsync(teller, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -45,6 +60,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
+
             else return this.DataTablesJson(items: new List<TellerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
@@ -57,7 +73,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(tellerDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id, TellerDTO employeeBindingModel)
+        public async Task<ActionResult> Filter(JQueryDataTablesModel jQueryDataTablesModel, TellerDTO tellerDTO)
+        {
+            await ServeNavigationMenus();
+
+            await _channelService.FindTellersByTypeAsync(tellerDTO.Type, tellerDTO.Reference, false, GetServiceHeader());
+
+            return View("Index");
+        }
+
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             Guid parseId;
@@ -72,32 +97,35 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             //bool includeProductDescription = false;
             //bool includeInterestBalanceForLoanAccounts = false;
             //bool considerMaturityPeriodForInvestmentAccounts = false;
-            var customer = await _channelService.FindEmployeeAsync(employeeBindingModel.Id, GetServiceHeader());
+            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
 
-            
+            TellerDTO tellerDTO = new TellerDTO();
 
-            if (customer != null)
+            if (employee != null)
             {
-                employeeBindingModel.EmployeeCustomerId = customer.Id;
-                employeeBindingModel.EmployeeId = customer.Id;
-                employeeBindingModel.EmployeeCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
+                tellerDTO.EmployeeCustomerId = employee.CustomerId;
+                tellerDTO.EmployeeId = employee.Id;
+                tellerDTO.EmployeeCustomerIndividualFirstName = employee.CustomerIndividualFirstName;
+                tellerDTO.FloatCustomerAccountId = employee.CustomerId;
 
 
 
             }
-            return View(employeeBindingModel);
+            return View(tellerDTO);
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(TellerDTO tellerDTO)
         {
+
             tellerDTO.ValidateAll();
-            tellerDTO.EmployeeId = tellerDTO.EmployeeCustomerId;
+
             if (!tellerDTO.HasErrors)
             {
                 await _channelService.AddTellerAsync(tellerDTO, GetServiceHeader());
                 ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerDTO.Type.ToString());
                 TempData["SuccessMessage"] = "Create successful.";
+
                 return RedirectToAction("Index");
             }
             else
@@ -108,28 +136,92 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View("Create");
             }
         }
+        public async Task<ActionResult> Find(Guid id ,TellerDTO teller)
+        {
+            await ServeNavigationMenus();
+            Guid parseId;
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
 
-        public async Task<ActionResult> Edit(Guid id)
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+            //var employees = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+            //bool includeBalances = false;
+            //bool includeProductDescription = false;
+            //bool includeInterestBalanceForLoanAccounts = false;
+            //bool considerMaturityPeriodForInvestmentAccounts = false;
+            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+
+            TellerDTO tellerDTO = new TellerDTO();
+
+            if (employee != null)
+            {
+                tellerDTO.EmployeeCustomerId = employee.CustomerId;
+                tellerDTO.EmployeeId = employee.Id;
+                tellerDTO.EmployeeCustomerIndividualFirstName = employee.CustomerIndividualFirstName;
+                tellerDTO.FloatCustomerAccountId = employee.CustomerId;
+            }
+            Session["tell"] = teller;
+            return View("Edit");
+
+
+        }
+
+
+            public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var tellerDTO = await _channelService.FindTellerAsync(id, true);
+            var teller = await _channelService.FindTellerAsync(id, true);
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
 
-            return View(tellerDTO);
+            Session["tell"] = teller;
+            Guid parseId;
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(string.Empty);
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+            //var employees = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+            //bool includeBalances = false;
+            //bool includeProductDescription = false;
+            //bool includeInterestBalanceForLoanAccounts = false;
+            //bool considerMaturityPeriodForInvestmentAccounts = false;
+            var employee = await _channelService.FindEmployeeAsync(parseId, GetServiceHeader());
+
+            TellerDTO tellerDTO = new TellerDTO();
+
+            if (employee != null)
+            {
+                tellerDTO.EmployeeCustomerId = employee.CustomerId;
+                tellerDTO.EmployeeId = employee.Id;
+                tellerDTO.EmployeeCustomerIndividualFirstName = employee.CustomerIndividualFirstName;
+                tellerDTO.FloatCustomerAccountId = employee.CustomerId;
+
+
+
+            }
+            return View(teller);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, TellerDTO tellerBindingModel)
+        public async Task<ActionResult> Edit(TellerDTO tellerBindingModel)
         {
-            if (ModelState.IsValid)
+            ViewBag.TellerTypeSelectList = GetTellerTypeSelectList(tellerBindingModel.Type.ToString());
+            if (!tellerBindingModel.HasErrors)
             {
+
                 await _channelService.UpdateTellerAsync(tellerBindingModel, GetServiceHeader());
+                TempData["SuccessMessage"] = "Edit successful.";
 
                 return RedirectToAction("Index");
             }
             else
             {
+                var errorMessages = tellerBindingModel.ErrorMessages;
                 return View(tellerBindingModel);
             }
         }
