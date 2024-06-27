@@ -200,7 +200,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("AddEdit", "Charges", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -235,37 +235,40 @@
 
                             <h3>Charge Split Details Before Edit</h3>
                             <row>
-                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                    <thead style="font-style:italic; color: cadetblue; text-align: center; ">
-                                        <tr>
-                                            <th style="width: 20%;">G/L Account Name</th>
-                                            <th style="width: 20%;">Charge Split Name</th>
-                                            <th style="width: 5%;">Percentage</th>
-                                            <th style="width: 2%;">Leviable</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.chargeSplits != null)
-                                        {
-                                            foreach (var chargeSplits in ViewBag.chargeSplits)
+                                <div style="height: 150px; overflow-y: scroll;">
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                        <thead style="font-style:italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 20%;">G/L Account Name</th>
+                                                <th style="width: 20%;">Charge Split Name</th>
+                                                <th style="width: 5%;">Percentage</th>
+                                                <th style="width: 2%;">Leviable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.chargeSplits != null)
                                             {
-                                                <tr>
-                                                    <td>@chargeSplits.ChartOfAccountAccountName</td>
-                                                    <td>@chargeSplits.Description</td>
-                                                    <td style="text-align: right;">@chargeSplits.Percentage</td>
-                                                    <td>@chargeSplits.Leviable</td>
-                                                </tr>
+                                                foreach (var chargeSplits in ViewBag.chargeSplits)
+                                                {
+                                                    <tr>
+                                                        <td>@chargeSplits.ChartOfAccountAccountName</td>
+                                                        <td>@chargeSplits.Description</td>
+                                                        <td style="text-align: right;">@chargeSplits.Percentage</td>
+                                                        <td>@chargeSplits.Leviable</td>
+                                                    </tr>
+                                                }
                                             }
-                                        }
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </row>
+
 
                             <br />
                             <hr />
 
                             @*chargeType Splitting*@
-                            <h2>Charge Split Edit</h2>
+                            <h2>Edit Charge Splits</h2>
 
                             <br />
 
