@@ -53,31 +53,43 @@ namespace Application.MainBoundedContext.AccountsModule.Services
 
                     if (treasuries != null && treasuries.Any())
                     {
-
-                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
-                        treasuryDTO.ErrorMessageResult = string.Format("Sorry, but Treasury Code {0} already exists!", treasuryDTO.Code);
+                        treasuryDTO.ErrorMessageResult = string.Format("Sorry, but another treasury has already been linked to branch {0}", treasuryDTO.BranchDescription);
 
                         return treasuryDTO;
-
-                        //return null;
                     }
                     else
                     {
-                        var range = new Range(treasuryDTO.RangeLowerLimit, treasuryDTO.RangeUpperLimit);
 
-                        var treasury = TreasuryFactory.CreateTreasury(treasuryDTO.BranchId, treasuryDTO.ChartOfAccountId, treasuryDTO.Description, range);
+                        var filterDescription = TreasurySpecifications.DescriptionWithDescription(treasuryDTO.Description);
 
-                        treasury.Code = (short)_treasuryRepository.DatabaseSqlQuery<int>(string.Format("SELECT ISNULL(MAX(Code),0) + 1 AS Expr1 FROM {0}Treasuries", DefaultSettings.Instance.TablePrefix), serviceHeader).FirstOrDefault();
+                        ISpecification<Treasury> descSpec = filterDescription;
 
-                        if (treasuryDTO.IsLocked)
-                            treasury.Lock();
-                        else treasury.UnLock();
+                        var treasuryDesc = _treasuryRepository.AllMatching(descSpec, serviceHeader);
 
-                        _treasuryRepository.Add(treasury, serviceHeader);
+                        if (treasuryDesc != null && treasuryDesc.Any())
+                        {
+                            treasuryDTO.ErrorMessageResult = string.Format("Sorry, but Treasury \"{0}\" already exists!", treasuryDTO.Description.ToUpper());
 
-                        dbContextScope.SaveChanges(serviceHeader);
+                            return treasuryDTO;
+                        }
+                        else
+                        {
+                            var range = new Range(treasuryDTO.RangeLowerLimit, treasuryDTO.RangeUpperLimit);
 
-                        return treasury.ProjectedAs<TreasuryDTO>();
+                            var treasury = TreasuryFactory.CreateTreasury(treasuryDTO.BranchId, treasuryDTO.ChartOfAccountId, treasuryDTO.Description, range);
+
+                            treasury.Code = (short)_treasuryRepository.DatabaseSqlQuery<int>(string.Format("SELECT ISNULL(MAX(Code),0) + 1 AS Expr1 FROM {0}Treasuries", DefaultSettings.Instance.TablePrefix), serviceHeader).FirstOrDefault();
+
+                            if (treasuryDTO.IsLocked)
+                                treasury.Lock();
+                            else treasury.UnLock();
+
+                            _treasuryRepository.Add(treasury, serviceHeader);
+
+                            dbContextScope.SaveChanges(serviceHeader);
+
+                            return treasury.ProjectedAs<TreasuryDTO>();
+                        }
                     }
                 }
             }

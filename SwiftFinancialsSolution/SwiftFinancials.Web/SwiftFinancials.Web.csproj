@@ -1032,7 +1032,6 @@
     <Content Include="Areas\Accounts\Views\Charges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasuries\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Tiers\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Tiers\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Charges_Levies\Create.cshtml" />
@@ -1069,6 +1068,7 @@
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Closing\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
