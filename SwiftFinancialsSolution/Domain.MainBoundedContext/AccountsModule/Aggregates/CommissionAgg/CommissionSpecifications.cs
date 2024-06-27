@@ -29,5 +29,15 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.CommissionAgg
 
             return specification;
         }
+
+
+        public static ISpecification<Commission> CommissionWithCommission(string Description)
+        {
+            Specification<Commission> specification = new TrueSpecification<Commission>();
+
+            specification &= new DirectSpecification<Commission>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

@@ -170,17 +170,30 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var commission = CommissionFactory.CreateCommission(commissionDTO.Description, commissionDTO.MaximumCharge, commissionDTO.RoundingType);
+                    ISpecification<Commission> spec = CommissionSpecifications.CommissionWithCommission(commissionDTO.Description);
 
-                    if (commissionDTO.IsLocked)
-                        commission.Lock();
-                    else commission.UnLock();
+                    var matchedCommission = _commissionRepository.AllMatching(spec, serviceHeader);
 
-                    _commissionRepository.Add(commission, serviceHeader);
+                    if (matchedCommission != null && matchedCommission.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        commissionDTO.ErrorMessageResult = string.Format("Sorry, but Commission \"{0}\" already exists!", commissionDTO.Description.ToUpper());
+                        return commissionDTO;
+                    }
+                    else
+                    {
+                        var commission = CommissionFactory.CreateCommission(commissionDTO.Description, commissionDTO.MaximumCharge, commissionDTO.RoundingType);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (commissionDTO.IsLocked)
+                            commission.Lock();
+                        else commission.UnLock();
 
-                    return commission.ProjectedAs<CommissionDTO>();
+                        _commissionRepository.Add(commission, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return commission.ProjectedAs<CommissionDTO>();
+                    }
                 }
             }
             else return null;

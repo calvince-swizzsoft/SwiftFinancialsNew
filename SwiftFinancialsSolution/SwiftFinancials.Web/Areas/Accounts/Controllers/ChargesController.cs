@@ -24,40 +24,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            string sortColumn = jQueryDataTablesModel.GetSortedColumns().FirstOrDefault()?.PropertyName ?? "Description";
-            bool sortAscending = jQueryDataTablesModel.sSortDir_.FirstOrDefault() == "asc";
+            int totalRecordCount = 0;
 
-            int start = jQueryDataTablesModel.iDisplayStart;
-            int length = jQueryDataTablesModel.iDisplayLength;
+            int searchRecordCount = 0;
 
-            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(
-                jQueryDataTablesModel.sSearch,
-                start,
-                length,
-                GetServiceHeader()
-            );
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindCommissionsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                int totalRecordCount = pageCollectionInfo.ItemsCount;
-                int searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection,
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<CommissionDTO> { },
-                    totalRecords: 0,
-                    totalDisplayRecords: 0,
-                    sEcho: jQueryDataTablesModel.sEcho
-                );
-            }
+            else return this.DataTablesJson(items: new List<CommissionDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -259,38 +246,134 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
 
-            commissionDTO.chargeSplit = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+            if (TempData["ChargeSplitDTOs"] != null)
+            {
+                commissionDTO.chargeSplit = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+            }
+            else
+            {
+                await ServeNavigationMenus();
+
+                TempData["chargeSplit"] = "Each created charge must be allocated to at least one G/L account. If the charge is allocated to a single account, enter 100% as the percentage.";
+
+                return View(commissionDTO);
+            }
 
             commissionDTO.ValidateAll();
 
             if (!commissionDTO.HasErrors)
             {
-                var charge = await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+                var chargeSplits = new ObservableCollection<CommissionSplitDTO>();
 
-                TempData["SuccessMessage"] = "Successfully Created Charge";
-                TempData["ChargeDTO"] = "";
-
-                if (charge != null)
+                foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
                 {
-                    var chargeSplits = new ObservableCollection<CommissionSplitDTO>();
+                    chargeSplitDTO.Description = chargeSplitDTO.Description;
+                    chargeSplitDTO.MaximumCharge = chargeSplitDTO.MaximumCharge;
+                    chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
+                    chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                    chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                    chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
 
-                    foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+                    chargeSplits.Add(chargeSplitDTO);
+                };
+
+                var splitCount = chargeSplits.Count();
+
+                if (splitCount == 1)
+                {
+                    var sumPercentages = chargeSplits.Sum(cs => cs.Percentage);
+
+                    if (sumPercentages < 100)
                     {
-                        chargeSplitDTO.Description = chargeSplitDTO.Description;
-                        chargeSplitDTO.MaximumCharge = chargeSplitDTO.MaximumCharge;
-                        chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
-                        chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
-                        chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
-                        chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+                        TempData["splitPercentage"] = "For charges linked to only one G/L Account, enter 100 as percentage";
 
-                        chargeSplits.Add(chargeSplitDTO);
-                    };
+                        return View("create");
+                    }
+                    else
+                    {
+                        var chartOfAccountCounts = chargeSplits.GroupBy(cs => cs.ChartOfAccountId)
+                                                               .Select(g => new { ChartOfAccountId = g.Key, Count = g.Count() })
+                                                               .ToList();
 
-                    if (chargeSplits.Any())
-                        await _channelService.UpdateCommissionSplitsByCommissionIdAsync(charge.Id, chargeSplits, GetServiceHeader());
-                    TempData["ChargeSplitDTOs"] = "";
+
+                        var duplicateChartOfAccounts = chartOfAccountCounts.Where(x => x.Count > 1)
+                                                                           .Select(x => x.ChartOfAccountId)
+                                                                           .ToList();
+
+                        if (duplicateChartOfAccounts.Any())
+                        {
+                            TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
+
+                            return View("create", commissionDTO);
+                        }
+
+                        var charge = await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+
+                        if (charge.ErrorMessageResult != null)
+                        {
+                            await ServeNavigationMenus();
+
+                            TempData["ErrorMsg"] = charge.ErrorMessageResult;
+
+                            return View();
+                        }
+
+                        TempData["SuccessMessage"] = "Successfully Created Charge";
+                        TempData["ChargeDTO"] = "";
+
+                        if (chargeSplits.Any())
+                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(charge.Id, chargeSplits, GetServiceHeader());
+                        TempData["ChargeSplitDTOs"] = "";
+                    }
                 }
+                else if (splitCount > 1)
+                {
+                    var sumPercentages = chargeSplits.Sum(cs => cs.Percentage);
 
+                    if (sumPercentages < 100)
+                    {
+                        TempData["splitPercentage"] = "Total percentage must be equal to 100%";
+
+                        return View("create", commissionDTO);
+                    }
+                    else
+                    {
+                        var chartOfAccountCounts = chargeSplits.GroupBy(cs => cs.ChartOfAccountId)
+                                                               .Select(g => new { ChartOfAccountId = g.Key, Count = g.Count() })
+                                                               .ToList();
+
+
+                        var duplicateChartOfAccounts = chartOfAccountCounts.Where(x => x.Count > 1)
+                                                                           .Select(x => x.ChartOfAccountId)
+                                                                           .ToList();
+
+                        if (duplicateChartOfAccounts.Any())
+                        {
+                            TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
+
+                            return View("create", commissionDTO);
+                        }
+
+                        var charge = await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+
+                        if (charge.ErrorMessageResult != null)
+                        {
+                            await ServeNavigationMenus();
+
+                            TempData["ErrorMsg"] = charge.ErrorMessageResult;
+
+                            return View();
+                        }
+
+                        TempData["SuccessMessage"] = "Successfully Created Charge";
+                        TempData["ChargeDTO"] = "";
+
+                        if (chargeSplits.Any())
+                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(charge.Id, chargeSplits, GetServiceHeader());
+                        TempData["ChargeSplitDTOs"] = "";
+                    }
+                }
+               
                 return RedirectToAction("Index");
             }
             else
