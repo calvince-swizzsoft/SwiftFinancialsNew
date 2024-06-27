@@ -373,7 +373,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         TempData["ChargeSplitDTOs"] = "";
                     }
                 }
-               
+
                 return RedirectToAction("Index");
             }
             else
@@ -399,6 +399,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var chargesplits = await _channelService.FindCommissionSplitsByCommissionIdAsync(id, GetServiceHeader());
 
             ViewBag.chargeSplits = chargesplits;
+
+            TempData["chargeSplitsBeforeEdit"] = ViewBag.chargeSplits;
 
             return View(commissionDTO);
         }
@@ -432,22 +434,31 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
                 chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
 
-                ChargeSplitDTOs.Add(chargeSplitDTO);
 
-                sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
-
-
-                if (sumPercentages > 100)
+                if (chargeSplitDTO.Description == null || chargeSplitDTO.ChartOfAccountAccountName == null || chargeSplitDTO.Percentage == 0)
                 {
-                    TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
-
-                    ChargeSplitDTOs.Remove(chargeSplitDTO);
-
-                    Session["chargeSplit"] = ChargeSplitDTOs;
+                    TempData["tPercentage"] = "Could not add charge split. Make sure to provide all charge split details to proceed.";
                 }
-                else if (sumPercentages < 1)
+                else
                 {
-                    TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
+                    ChargeSplitDTOs.Add(chargeSplitDTO);
+
+                    sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
+
+                    Session["chargeSplit"] = commissionDTO.chargeSplit;
+
+                    if (sumPercentages > 100)
+                    {
+                        TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
+
+                        ChargeSplitDTOs.Remove(chargeSplitDTO);
+
+                        Session["chargeSplit"] = ChargeSplitDTOs;
+                    }
+                    else if (sumPercentages < 1)
+                    {
+                        TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
+                    }
                 }
             };
 
@@ -496,8 +507,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             TempData["ChargeSplitDTOs3"] = ChargeSplitDTOs;
 
-            TempData["ChargeDTO3"] = commissionDTO;
-
             ViewBag.EditChargeSplitDTOs = ChargeSplitDTOs;
 
             return View("Edit", commissionDTO);
@@ -505,41 +514,151 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
+        public async Task<ActionResult> ChargesEdit(CommissionDTO commissionDTO)
+        {
+            Session["Description"] = commissionDTO.Description;
+            Session["MaximumCharge"] = commissionDTO.MaximumCharge;
+            Session["IsLocked"] = commissionDTO.IsLocked;
+
+            return View("edit", commissionDTO);
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> Edit(CommissionDTO commissionDTO)
         {
-            commissionDTO = TempData["ChargeDTO3"] as CommissionDTO;
-
             var chargeId = (Guid)Session["Id"];
 
-            commissionDTO.chargeSplit = TempData["ChargeSplitDTO3"] as ObservableCollection<CommissionSplitDTO>;
+            commissionDTO.Description = Session["Description"].ToString();
+            commissionDTO.MaximumCharge = Convert.ToDecimal(Session["MaximumCharge"].ToString());
+            commissionDTO.IsLocked = (bool)Session["IsLocked"];
 
             commissionDTO.ValidateAll();
+
+            if (TempData["ChargeSplitDTOs2"] != null)
+            {
+                commissionDTO.chargeSplit = TempData["ChargeSplitDTOs2"] as ObservableCollection<CommissionSplitDTO>;
+
+                var chargeSplits = commissionDTO.chargeSplit;
+
+                var splitCount = chargeSplits.Count();
+
+                if (splitCount == 1)
+                {
+                    var sumPercentages = chargeSplits.Sum(cs => cs.Percentage);
+
+                    if (sumPercentages < 100)
+                    {
+                        TempData["splitPercentage"] = "For charges linked to only one G/L Account, enter 100 as percentage";
+
+                        ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
+
+                        return View("edit", commissionDTO);
+                    }
+                    else
+                    {
+                        var chartOfAccountCounts = chargeSplits.GroupBy(cs => cs.ChartOfAccountId)
+                                                               .Select(g => new { ChartOfAccountId = g.Key, Count = g.Count() })
+                                                               .ToList();
+
+
+                        var duplicateChartOfAccounts = chartOfAccountCounts.Where(x => x.Count > 1)
+                                                                           .Select(x => x.ChartOfAccountId)
+                                                                           .ToList();
+
+                        if (duplicateChartOfAccounts.Any())
+                        {
+                            TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
+
+                            ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
+
+                            return View("edit", commissionDTO);
+                        }
+
+                        var charge = await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
+
+
+                        TempData["Edit"] = "Successfully Edited Charge";
+                        TempData["ChargeDTO3"] = "";
+
+
+                        if (chargeSplits.Any())
+                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(chargeId, chargeSplits, GetServiceHeader());
+                        TempData["ChargeSplitDTOs"] = "";
+                    }
+                }
+                else if (splitCount > 1)
+                {
+                    var sumPercentages = chargeSplits.Sum(cs => cs.Percentage);
+
+                    if (sumPercentages < 100)
+                    {
+                        TempData["splitPercentage"] = "Total percentage must be equal to 100%";
+
+                        ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
+
+                        return View("edit", commissionDTO);
+                    }
+                    else
+                    {
+                        var chartOfAccountCounts = chargeSplits.GroupBy(cs => cs.ChartOfAccountId)
+                                                               .Select(g => new { ChartOfAccountId = g.Key, Count = g.Count() })
+                                                               .ToList();
+
+
+                        var duplicateChartOfAccounts = chartOfAccountCounts.Where(x => x.Count > 1)
+                                                                           .Select(x => x.ChartOfAccountId)
+                                                                           .ToList();
+
+                        if (duplicateChartOfAccounts.Any())
+                        {
+                            TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
+
+                            ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
+
+                            return View("edit", commissionDTO);
+                        }
+
+                        var charge = await _channelService.AddCommissionAsync(commissionDTO, GetServiceHeader());
+
+                        if (charge.ErrorMessageResult != null)
+                        {
+                            await ServeNavigationMenus();
+
+                            TempData["ErrorMsg"] = charge.ErrorMessageResult;
+
+                            ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
+
+                            return View();
+                        }
+
+                        TempData["Edit"] = "Successfully Edited Charge";
+                        TempData["ChargeDTO3"] = "";
+
+
+                        if (chargeSplits.Any())
+                            await _channelService.UpdateCommissionSplitsByCommissionIdAsync(chargeId, chargeSplits, GetServiceHeader());
+                        TempData["ChargeSplitDTOs"] = "";
+                    }
+
+                    return RedirectToAction("Index");
+                }
+            }
+
+
 
             if (!commissionDTO.HasErrors)
             {
                 await _channelService.UpdateCommissionAsync(commissionDTO, GetServiceHeader());
 
                 TempData["Edit"] = "Successfully Edited Charge";
-                TempData["ChargeDTO3"] = "";
 
-                var chargeSplits = new ObservableCollection<CommissionSplitDTO>();
+                var chargeSplits = TempData["chargeSplitsBeforeEdit"] as ObservableCollection<CommissionSplitDTO>;
 
-                foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
-                {
-                    chargeSplitDTO.Description = chargeSplitDTO.Description;
-                    chargeSplitDTO.MaximumCharge = chargeSplitDTO.MaximumCharge;
-                    chargeSplitDTO.ChartOfAccountId = chargeSplitDTO.ChartOfAccountId;
-                    chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
-                    chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
-                    chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+                await _channelService.UpdateCommissionSplitsByCommissionIdAsync(chargeId, chargeSplits, GetServiceHeader());
 
-                    chargeSplits.Add(chargeSplitDTO);
-                };
-
-                if (chargeSplits.Any())
-                    await _channelService.UpdateCommissionSplitsByCommissionIdAsync(chargeId, chargeSplits, GetServiceHeader());
-                TempData["ChargeSplitDTOs3"] = "";
+                TempData["chargeSplitsBeforeEdit"] = "";
 
                 return RedirectToAction("Index");
             }
@@ -547,9 +666,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = commissionDTO.ErrorMessages;
 
+                ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
+
                 TempData["EditError"] = "Failed to Edit Charge";
 
-                return View(commissionDTO);
+                return View("edit");
             }
         }
 
