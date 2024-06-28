@@ -64,15 +64,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CostCenterDTO costCenterDTO)
         {
-            costCenterDTO.CreatedDate = DateTime.Today;
-
             costCenterDTO.ValidateAll();
 
             if (!costCenterDTO.HasErrors)
             {
-                await _channelService.AddCostCenterAsync(costCenterDTO, GetServiceHeader());
+                var result = await _channelService.AddCostCenterAsync(costCenterDTO, GetServiceHeader());
 
-                TempData["AlertMessage"] = "Cost Centre created successfully";
+                if (result.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    return View();
+                }
+
+                TempData["AlertMessage"] = "Successfully created Cost Center";
+
+                TempData["cC"] = costCenterDTO.Description.ToUpper();
 
                 return RedirectToAction("Index");
             }
@@ -103,8 +112,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (ModelState.IsValid)
             {
-                await _channelService.UpdateCostCenterAsync(costCenterDTO, GetServiceHeader());
-
+                var result = await _channelService.UpdateCostCenterAsync(costCenterDTO, GetServiceHeader());
+                
                 TempData["Edit"] = "Edited Cost Center successfully";
 
                 return RedirectToAction("Index");

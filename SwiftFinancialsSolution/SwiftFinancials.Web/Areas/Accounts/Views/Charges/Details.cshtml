@@ -74,8 +74,11 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     <h2>Charge</h2>
+
+                    <br />
+
                     <fieldset>
                         <div class="row">
                             <div class="col-lg-6">
@@ -85,49 +88,50 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
                                     @Html.EditorFor(model => model.MaximumCharge, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                     @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-lg-3">
-
+                            <div class="col-lg-2" style="margin-top: 30px;">
+                                @Html.DisplayFor(model => model.IsLocked)
+                                @Html.DisplayNameFor(model => model.IsLocked)
                             </div>
                         </div>
 
                         <br />
 
-                        <center><h2>Charge Splitting Details</h2></center>
+                        <h2>View Charge Splits</h2>
                         <div class="row">
-                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                <thead style="font-style: italic; color: cornflowerblue; text-align: center; ">
-                                    <tr>
-                                        <th style="width: 20%;">G/L Account Name</th>
-                                        <th style="width: 20%;">Charge Split Name</th>
-                                        <th style="width: 5%;">Percentage</th>
-                                        <th style="width: 2%;">Leviable</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (ViewBag.chargeSplits != null)
-                                    {
-                                        foreach (var chargeSplits in ViewBag.chargeSplits)
+                            <div class="col-lg-12">
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center; ">
+                                        <tr>
+                                            <th style="width: 20%;">G/L Account Name</th>
+                                            <th style="width: 20%;">Charge Split Name</th>
+                                            <th style="width: 5%;">Percentage</th>
+                                            <th style="width: 2%;">Leviable</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.chargeSplits != null)
                                         {
-                                            <tr>
-                                                <td>@chargeSplits.ChartOfAccountAccountName</td>
-                                                <td>@chargeSplits.Description</td>
-                                                <td style="text-align: right;">@chargeSplits.Percentage</td>
-                                                <td>@chargeSplits.Leviable</td>
-                                            </tr>
+                                            foreach (var chargeSplits in ViewBag.chargeSplits)
+                                            {
+                                                <tr>
+                                                    <td>@chargeSplits.ChartOfAccountAccountName</td>
+                                                    <td>@chargeSplits.Description</td>
+                                                    <td style="text-align: right;">@chargeSplits.Percentage</td>
+                                                    <td>@chargeSplits.Leviable</td>
+                                                </tr>
+                                            }
                                         }
-                                    }
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </fieldset>
                 </div>

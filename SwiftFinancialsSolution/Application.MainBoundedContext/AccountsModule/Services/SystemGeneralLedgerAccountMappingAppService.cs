@@ -37,13 +37,29 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var systemGeneralLedgerAccountMapping = SystemGeneralLedgerAccountMappingFactory.CreateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode,systemGeneralLedgerAccountMappingDTO.ChartOfAccountId);
+                    //get the specification
+                    ISpecification<SystemGeneralLedgerAccountMapping> spec = SystemGeneralLedgerAccountMappingSpecifications.SystemGeneralLedgerAccountCode(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode);
 
-                    _systemGeneralLedgerAccountMappingRepository.Add(systemGeneralLedgerAccountMapping, serviceHeader);
+                    //Query this criteria
+                    var matchedsystemGeneralLedgerAccountMappings = _systemGeneralLedgerAccountMappingRepository.AllMatching(spec, serviceHeader);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                    if (matchedsystemGeneralLedgerAccountMappings != null && matchedsystemGeneralLedgerAccountMappings.Any())
+                    {
+                        systemGeneralLedgerAccountMappingDTO.ErrorMessageResult = string.Format("Sorry, but Account Code \"{0}\" already exists!", systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCodeDescription.ToUpper());
 
-                    return systemGeneralLedgerAccountMapping.ProjectedAs<SystemGeneralLedgerAccountMappingDTO>();
+                        return systemGeneralLedgerAccountMappingDTO;
+                    }
+                    else
+                    {
+
+                        var systemGeneralLedgerAccountMapping = SystemGeneralLedgerAccountMappingFactory.CreateSystemGeneralLedgerAccountMapping(systemGeneralLedgerAccountMappingDTO.SystemGeneralLedgerAccountCode, systemGeneralLedgerAccountMappingDTO.ChartOfAccountId);
+
+                        _systemGeneralLedgerAccountMappingRepository.Add(systemGeneralLedgerAccountMapping, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return systemGeneralLedgerAccountMapping.ProjectedAs<SystemGeneralLedgerAccountMappingDTO>();
+                    }
                 }
             }
             else return null;

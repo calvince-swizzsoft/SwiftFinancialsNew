@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "Create Treasury";
+
+    var error = TempData["ErrorMsg"] as List<string>;
 }
 
 <!-- _Layout.cshtml or individual views -->
@@ -32,7 +34,7 @@
         <div class="col-md-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h2>Edit Treasury</h2>
+                    <h2>Create Treasury</h2>
 
                     @if (TempData["Error"] != null)
                     {
@@ -44,6 +46,15 @@
                                     &times;
                                 </span>
                             </button>
+                        </div>
+                    }
+
+                    <br />
+
+                    @if (TempData["ErrorMsg"] != null)
+                    {
+                        <div class="alert alert-warning">
+                            <strong></strong> @TempData["ErrorMsg"]
                         </div>
                     }
 
@@ -64,7 +75,7 @@
 
                         <fieldset>
                             <div class="row">
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-4 form-group">
                                     @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.BranchId, new { @id = "BranchId" })
@@ -76,7 +87,7 @@
                                 </div>
 
 
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-4 form-group">
                                     @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "BranchId" })
@@ -87,17 +98,6 @@
                                     </div>
                                 </div>
 
-                                @*<div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ChartOfAccountId, new { @id = "ChartOfAccountId" })
-                                            @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill G/L Account...", @id = "ChartOfAccountName" } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>*@
-                            </div>
-
-                            <div class="row">
                                 <div class="col-md-4 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
@@ -105,8 +105,10 @@
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="col-md-4 form-group">
+                            <div class="row">
+                                <div class="col-md-5 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.RangeLowerLimit, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.RangeLowerLimit, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00", @id = "RangeLowerLimit" } })
@@ -114,7 +116,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4 form-group">
+                                <div class="col-md-5 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.RangeUpperLimit, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.RangeUpperLimit, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00", @id = "RangeUpperLimit" } })
@@ -122,13 +124,19 @@
                                     </div>
                                 </div>
 
-
+                                <div class="col-lg-2" style="margin-top: 30px;">
+                                    <div class="form-group form-group-lg">
+                                        @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
+                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "control-label" })
+                                        @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
 
                             <br />
                             <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <input type="button" id="submit-btn" style="width:200px;" class="btn btn-primary" value="Edit" />
+                                <div class="col-md-3 form-group">
+                                    <input type="button" onclick="sendFormData()" style="width:200px;" class="btn btn-primary" value="Create" />
                                 </div>
                             </div>
                         </fieldset>
@@ -245,6 +253,51 @@
 
     <script src="~/Scripts/js/handleTogglingTheSectionAndButtonText.js"></script>
 
+
+    <script>
+        function sendFormData() {
+            // Create an object to hold the form data
+            let formData = {
+                BranchDescription: document.querySelector('[name="BranchDescription"]').value,
+                BranchId: document.querySelector('[name="BranchId"]').value,
+                ChartOfAccountId: document.querySelector('[name="ChartOfAccountId"]').value,
+                ChartOfAccountAccountName: document.querySelector('[name="ChartOfAccountAccountName"]').value,
+                Description: document.querySelector('[name="Description"]').value,
+                RangeLowerLimit: document.querySelector('[name="RangeLowerLimit"]').value,
+                RangeUpperLimit: document.querySelector('[name="RangeUpperLimit"]').value,
+                IsLocked: document.querySelector('[name="IsLocked"]').checked
+            };
+
+            // Send the data to the first controller using fetch
+            fetch('/Treasuries/Edit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data here
+                    console.log('Form Data Submitted:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+
+
+
+
+
+
+
+
+
+
+
     <script>
         $(document).ready(function () {
             $('#companiesGrid').DataTable({
@@ -265,7 +318,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/Treasuries/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/Accounts/Treasuries/chartOfAccount/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
@@ -509,156 +562,4 @@
                 display: block;
             }
     </style>
-
-
-    <script>
-        $(document).ready(function () {
-            $('#Guarantors').DataTable({
-                scrollX: true // Enable horizontal scrolling
-            });
-        });
-
-    </script>
-
-
-
-    <script>
-
-
-         //ChartOfAccount typehead starts here
-            $('.ChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#Id').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-
-        });
-    </script>
-
-
-
-    @*Ajax code to send data to Database*@
-    <script>
-        $(document).ready(function () {
-            $('#submit-btn').click(function (e) {
-                e.preventDefault();
-
-                var form = $('#form')[0];
-                var formData = new FormData(form);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("Create", "Treasuries", new { Area = "Accounts" })',
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        alert('Form submitted successfully!');
-                    },
-                    error: function (xhr, status, error) {
-                        alert('An error occurred: ' + xhr.responseText);
-                    }
-                });
-            });
-        });
-    </script>
-
 }

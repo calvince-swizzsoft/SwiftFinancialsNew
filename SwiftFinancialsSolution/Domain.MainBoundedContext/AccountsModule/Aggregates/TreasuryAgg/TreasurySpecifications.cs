@@ -36,5 +36,15 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.TreasuryAgg
 
             return specification;
         }
+
+
+        public static ISpecification<Treasury> DescriptionWithDescription(string Description)
+        {
+            Specification<Treasury> specification = new TrueSpecification<Treasury>();
+
+            specification &= new DirectSpecification<Treasury>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

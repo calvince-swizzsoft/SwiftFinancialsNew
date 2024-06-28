@@ -150,7 +150,7 @@
                     @if (TempData["EditError"] != null)
                     {
                         <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["CreateError"]
+                            <strong>Failed !</strong> @TempData["EditError"]
 
                             <button type="button" class="close" data-dismiss="alert">
                                 <span>
@@ -159,6 +159,36 @@
                             </button>
                         </div>
                     }
+
+
+                    @if (TempData["chargeSplit"] != null)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Attempt failed !</strong> @TempData["chargeSplit"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
+
+
+                    @if (TempData["splitPercentage"] != null)
+                    {
+                        <div class="alert alert-info">
+                            <strong>Attempt failed !</strong> @TempData["splitPercentage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
 
 
                     <div class="ibox-tools">
@@ -170,7 +200,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("AddEdit", "Charges", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -184,16 +214,15 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-6">
+                                <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.MaximumCharge, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.MaximumCharge, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00" } })
                                         @Html.ValidationMessageFor(model => model.MaximumCharge, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-lg-3">
+
+                                <div class="col-lg-2" style="margin-top: 30px;">
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
@@ -204,38 +233,42 @@
 
                             <br />
 
-                            <center><h3>Charge Split Details Before Edit</h3></center>
+                            <h3>Charge Split Details Before Edit</h3>
                             <row>
-                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                    <thead style="font-style:italic; color: cornflowerblue; text-align: center; ">
-                                        <tr>
-                                            <th style="width: 20%;">G/L Account Name</th>
-                                            <th style="width: 20%;">Charge Split Name</th>
-                                            <th style="width: 5%;">Percentage</th>
-                                            <th style="width: 2%;">Leviable</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.chargeSplits != null)
-                                        {
-                                            foreach (var chargeSplits in ViewBag.chargeSplits)
+                                <div style="height: 150px; overflow-y: scroll;">
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                        <thead style="font-style:italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 20%;">G/L Account Name</th>
+                                                <th style="width: 20%;">Charge Split Name</th>
+                                                <th style="width: 5%;">Percentage</th>
+                                                <th style="width: 2%;">Leviable</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.chargeSplits != null)
                                             {
-                                                <tr>
-                                                    <td>@chargeSplits.ChartOfAccountAccountName</td>
-                                                    <td>@chargeSplits.Description</td>
-                                                    <td style="text-align: right;">@chargeSplits.Percentage</td>
-                                                    <td>@chargeSplits.Leviable</td>
-                                                </tr>
+                                                foreach (var chargeSplits in ViewBag.chargeSplits)
+                                                {
+                                                    <tr>
+                                                        <td>@chargeSplits.ChartOfAccountAccountName</td>
+                                                        <td>@chargeSplits.Description</td>
+                                                        <td style="text-align: right;">@chargeSplits.Percentage</td>
+                                                        <td>@chargeSplits.Leviable</td>
+                                                    </tr>
+                                                }
                                             }
-                                        }
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </row>
 
+
+                            <br />
                             <hr />
 
                             @*chargeType Splitting*@
-                            <h2>Edit Charge Splitting</h2>
+                            <h2>Edit Charge Splits</h2>
 
                             <br />
 
@@ -249,7 +282,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.chargeSplit[0].Description, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.chargeSplit[0].Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Charge Split Name" } })
@@ -257,7 +290,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.chargeSplit[0].Percentage, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.chargeSplit[0].Percentage, new { htmlAttributes = new { @class = "form-control percentage-input", @placeholder = "00.00000%" } })
@@ -265,22 +298,17 @@
                                         <div class="invalid-feedback" style="display: none; color:red; "></div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <br />
-
-                            <div class="row">
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3"></div>
-
-                                <div class="col-lg-3">
+                                <div class="col-lg-2" style="margin-top: 30px;">
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.chargeSplit[0].Leviable, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.chargeSplit[0].Leviable, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.chargeSplit[0].Leviable, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                            </div>
 
+                            <div class="row">
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-sm">
                                         <input type="submit" value="Add" style="width: 150px;" class="btn btn-primary" />
@@ -289,8 +317,9 @@
                             </div>
                             @*End chargeType Splitting*@
 
+                            <br />
 
-                            <center><h3>Charge Split Details After Edit</h3></center>
+
                             <row>
                                 <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
                                     <thead style="font-style:italic; color: cadetblue; text-align: center; ">
@@ -332,7 +361,7 @@
                     @using (Html.BeginForm("Edit", "Charges", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         <div class="col-lg-3">
-                            <input type="submit" style="width: 200px;" value="Edit" class="btn btn-primary" />
+                            <input type="submit" onclick="sendFormData()" style="width: 150px;" value="Edit" class="btn btn-primary" />
                         </div>
                     }
                 </div>
@@ -386,6 +415,39 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+
+
+    <script>
+        function sendFormData() {
+            // Create an object to hold the form data
+            let formData = {
+                Description: document.querySelector('[name="Description"]').value,
+                MaximumCharge: document.querySelector('[name="MaximumCharge"]').value,
+                IsLocked: document.querySelector('[name="IsLocked"]').checked
+            };
+
+            // Send the data to the first controller using fetch
+            fetch('/Charges/ChargesEdit', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // Handle the response data here
+                    console.log('Form Data Submitted:', data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+        }
+    </script>
+
+
 
     <script>
 $(document).ready(function () {

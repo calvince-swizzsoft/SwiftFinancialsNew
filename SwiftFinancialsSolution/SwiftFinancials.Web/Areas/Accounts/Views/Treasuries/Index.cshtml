@@ -115,23 +115,32 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/Treasuries/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/Treasuries/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/treasuries/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/treasuries/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "Code", "sTitle": "Code", "sWidth": "2%" },
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "5%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "RangeLowerLimit", "sTitle": "Lower Limit", "sWidth": "5%" },
                     { "mDataProp": "RangeUpperLimit", "sTitle": "Upper Limit", "sWidth": "5%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "5%" },
-                    //{ "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "5%" },
+                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "15%" },
+                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "15%" },
                     { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "1%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
