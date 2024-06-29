@@ -123,5 +123,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public List<DebitTypeDTO> ApplicableCharges { get; set; }
 
         public LevySplitDTO ApplicableCharge { get; set; }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

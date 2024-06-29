@@ -113,18 +113,26 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/DirectDebit/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/DirectDebit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/directDebit/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+
 
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(editUrl);
+                    $('td:eq(7)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
                     /*{ "mDataProp": "CustomerAccountTypeProductCode", "sTitle": "Product Code", "sWidth": "5%" },*/
-                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "10%" },
                     { "mDataProp": "ChargeTypeDescription", "sTitle": "Charge Type", "sWidth": "5%" },
                     { "mDataProp": "ChargePercentage", "sTitle": "Percentage", "sWidth": "5%" },

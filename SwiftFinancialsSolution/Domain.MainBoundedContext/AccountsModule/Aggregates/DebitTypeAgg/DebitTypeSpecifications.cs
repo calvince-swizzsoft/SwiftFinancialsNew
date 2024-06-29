@@ -36,5 +36,14 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.DebitTypeAgg
 
             return specification;
         }
+
+        public static ISpecification<DebitType> DebitTypeDescription(string Description)
+        {
+            Specification<DebitType> specification = new TrueSpecification<DebitType>();
+
+            specification &= new DirectSpecification<DebitType>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

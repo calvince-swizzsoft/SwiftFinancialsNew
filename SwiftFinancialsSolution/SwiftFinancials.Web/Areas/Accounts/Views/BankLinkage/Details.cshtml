@@ -1,5 +1,4 @@
 ﻿
-
 @model  Application.MainBoundedContext.DTO.AccountsModule.BankLinkageDTO
 
 @{
@@ -42,6 +41,8 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Bank Linkage Details</h2>
+                    <hr />
+                    @Html.ActionLink("Back to List", "index", "BankLinkage", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -51,76 +52,66 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     <fieldset>
-                        <div class="form-horizontal">
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.Id)
-                                        @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.Id, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    </div>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control required", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.BankBranchName, "", new { @class = "text-danger" })
-                                    </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ChartOfAccountAccountName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.BankAccountNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-6 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ChartOfAccountCostCenterDescription, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.ChartOfAccountCostCenterDescription, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    @Html.ActionLink("Back To List", "Index", "BankLinkage", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
-                                </div>
-
-                                <div class="col-md-6">
-                                    @Html.ActionLink("Edit Bank Linkage", "Edit", "BankLinkage", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                        <div class="row">
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BankName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BankName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
                                 </div>
                             </div>
+                            
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BankBranchName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BankBranchName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BankAccountNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.BankAccountNumber, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                            
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-lg-2" style="margin-top: 30px;">
+                                @Html.DisplayFor(model => model.IsLocked)
+                                @Html.DisplayNameFor(model => model.IsLocked)
+                            </div>
                         </div>
                     </fieldset>
                 </div>

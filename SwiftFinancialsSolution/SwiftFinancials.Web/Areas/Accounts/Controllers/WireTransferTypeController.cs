@@ -39,6 +39,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -97,6 +99,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 var result = await _channelService.AddWireTransferTypeAsync(wireTransferTypeDTO, GetServiceHeader());
 
                 await _channelService.UpdateCommissionsByWireTransferTypeIdAsync(result.Id, selectedRows, GetServiceHeader());
+
+                var myId = result.Id;
+
+                if (result.ErrorMessageResult != null)
+                {
+                    result.Id = myId;
+                }
 
                 TempData["Create"] = "Successfully Created Wire Transfer Type";
 

@@ -29,5 +29,14 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.UnPayReasonAgg
 
             return specification;
         }
+
+        public static ISpecification<UnPayReason> UnapayReasonDescription(string Description)
+        {
+            Specification<UnPayReason> specification = new TrueSpecification<UnPayReason>();
+
+            specification &= new DirectSpecification<UnPayReason>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

@@ -56,21 +56,34 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var customerAccountType = new CustomerAccountType(directDebitDTO.CustomerAccountTypeProductCode, directDebitDTO.CustomerAccountTypeTargetProductId, directDebitDTO.CustomerAccountTypeTargetProductCode);
+                    ISpecification<DirectDebit> spec = DirectDebitSpecifications.DirectDebitDescription(directDebitDTO.Description);
 
-                    var charge = new Charge(directDebitDTO.ChargeType, directDebitDTO.ChargePercentage, directDebitDTO.ChargeFixedAmount);
+                    var matchedDirectDebit = _directDebitRepository.AllMatching(spec, serviceHeader);
 
-                    var directDebit = DirectDebitFactory.CreateDirectDebit(directDebitDTO.Description, customerAccountType, charge);
+                    if (matchedDirectDebit != null && matchedDirectDebit.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        directDebitDTO.ErrorMessageResult = string.Format("Sorry, but Direct Debit \"{0}\" already exists!", directDebitDTO.Description.ToUpper());
+                        return directDebitDTO;
+                    }
+                    else
+                    {
+                        var customerAccountType = new CustomerAccountType(directDebitDTO.CustomerAccountTypeProductCode, directDebitDTO.CustomerAccountTypeTargetProductId, directDebitDTO.CustomerAccountTypeTargetProductCode);
 
-                    if (directDebitDTO.IsLocked)
-                        directDebit.Lock();
-                    else directDebit.UnLock();
+                        var charge = new Charge(directDebitDTO.ChargeType, directDebitDTO.ChargePercentage, directDebitDTO.ChargeFixedAmount);
 
-                    _directDebitRepository.Add(directDebit, serviceHeader);
+                        var directDebit = DirectDebitFactory.CreateDirectDebit(directDebitDTO.Description, customerAccountType, charge);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (directDebitDTO.IsLocked)
+                            directDebit.Lock();
+                        else directDebit.UnLock();
 
-                    return directDebit.ProjectedAs<DirectDebitDTO>();
+                        _directDebitRepository.Add(directDebit, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return directDebit.ProjectedAs<DirectDebitDTO>();
+                    }
                 }
             }
             else return null;

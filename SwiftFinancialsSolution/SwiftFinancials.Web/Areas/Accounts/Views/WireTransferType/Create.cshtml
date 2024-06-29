@@ -55,22 +55,20 @@
                     </div>
                 </div>
 
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Create", "WireTransferType", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-12">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
                                         @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
                                 <div class="col-md-6 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
@@ -79,9 +77,10 @@
                                         @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Link G/L Account..." } })
                                     </div>
                                 </div>
+                            </div>
 
-
-                                <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-lg-10">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TransactionOwnership, new { @class = "control-label" })
                                         <div class="input-group">
@@ -91,20 +90,19 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <br />
-
-                            <div class="row">
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3"></div>
-                                <div class="col-lg-3">
+                                <div class="col-lg-2" style="margin-top: 30px;">
                                     <div class="form-group form-group-lg">
                                         @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                         @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                         @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                            </div>
+
+                            <br />
+
+                            <div class="row">
                                 <div class="col-lg-3">
                                     <button type="button" class="btn btn-primary" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
                                 </div>

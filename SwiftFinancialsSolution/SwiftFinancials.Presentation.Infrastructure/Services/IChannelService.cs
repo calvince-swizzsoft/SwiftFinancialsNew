@@ -2193,6 +2193,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #endregion
 
+
         #region DirectDebitDTO
 
         Task<PageCollectionInfo<DirectDebitDTO>> FindDirectDebitsByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
