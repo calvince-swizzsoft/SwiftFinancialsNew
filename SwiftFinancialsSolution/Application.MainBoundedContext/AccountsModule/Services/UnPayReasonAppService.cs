@@ -51,17 +51,30 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var unPayReason = UnPayReasonFactory.CreateUnPayReason(unPayReasonDTO.Code, unPayReasonDTO.Description);
+                    ISpecification<UnPayReason> spec = UnPayReasonSpecifications.UnapayReasonDescription(unPayReasonDTO.Description);
 
-                    if (unPayReasonDTO.IsLocked)
-                        unPayReason.Lock();
-                    else unPayReason.UnLock();
+                    var matchedunPayReason = _unPayReasonRepository.AllMatching(spec, serviceHeader);
 
-                    _unPayReasonRepository.Add(unPayReason, serviceHeader);
+                    if (matchedunPayReason != null && matchedunPayReason.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        unPayReasonDTO.ErrorMessageResult = string.Format("Sorry, but Unpay Reason \"{0}\" already exists!", unPayReasonDTO.Description.ToUpper());
+                        return unPayReasonDTO;
+                    }
+                    else
+                    {
+                        var unPayReason = UnPayReasonFactory.CreateUnPayReason(unPayReasonDTO.Code, unPayReasonDTO.Description);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (unPayReasonDTO.IsLocked)
+                            unPayReason.Lock();
+                        else unPayReason.UnLock();
 
-                    return unPayReason.ProjectedAs<UnPayReasonDTO>();
+                        _unPayReasonRepository.Add(unPayReason, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return unPayReason.ProjectedAs<UnPayReasonDTO>();
+                    }
                 }
             }
             else return null;

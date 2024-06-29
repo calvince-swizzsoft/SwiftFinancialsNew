@@ -66,7 +66,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Create", "BankLinkage", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
@@ -78,7 +78,7 @@
                                         @Html.LabelFor(model => model.BankName, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.Id)
-                                            @Html.TextBoxFor(model => model.BankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder="Link Bank..." })
+                                            @Html.TextBoxFor(model => model.BankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Bank..." })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
@@ -89,7 +89,7 @@
                                         @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.HiddenFor(model => model.BranchId)
-                                            @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder="Link Branch..." })
+                                            @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Branch..." })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#branchLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
@@ -133,8 +133,16 @@
                                 </div>
 
                                 <div class="row">
+                                    <div class="col-md-6 form-group">
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
                                     <div class="form-group form-group-sm">
-                                        <div class="col-md-offset-2 col-md-10">
+                                        <div class="col-lg-4">
                                             <input type="submit" value="Create" style="width: 200px;" class="btn btn-primary" />
                                         </div>
                                     </div>
@@ -497,5 +505,3 @@
 
     </script>
 }
-
-    }

@@ -25,5 +25,14 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.WireTransferTypeAg
 
             return specification;
         }
+
+        public static ISpecification<WireTransferType> WireTransferTypeDescription(string Description)
+        {
+            Specification<WireTransferType> specification = new TrueSpecification<WireTransferType>();
+
+            specification &= new DirectSpecification<WireTransferType>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

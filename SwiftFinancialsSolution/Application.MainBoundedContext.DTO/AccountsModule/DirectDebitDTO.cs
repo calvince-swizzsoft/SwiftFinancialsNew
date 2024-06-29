@@ -127,5 +127,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

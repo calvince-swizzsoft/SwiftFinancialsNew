@@ -44,17 +44,30 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var wireTransferType = WireTransferTypeFactory.CreateWireTransferType(wireTransferTypeDTO.ChartOfAccountId, wireTransferTypeDTO.Description, wireTransferTypeDTO.TransactionOwnership);
+                    ISpecification<WireTransferType> spec = WireTransferTypeSpecifications.WireTransferTypeDescription(wireTransferTypeDTO.Description);
 
-                    if (wireTransferTypeDTO.IsLocked)
-                        wireTransferType.Lock();
-                    else wireTransferType.UnLock();
+                    var matchedunPayReason = _wireTransferTypeRepository.AllMatching(spec, serviceHeader);
 
-                    _wireTransferTypeRepository.Add(wireTransferType, serviceHeader);
+                    if (matchedunPayReason != null && matchedunPayReason.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        wireTransferTypeDTO.ErrorMessageResult = string.Format("Sorry, but Wire Transfer Type \"{0}\" already exists!", wireTransferTypeDTO.Description.ToUpper());
+                        return wireTransferTypeDTO;
+                    }
+                    else
+                    {
+                        var wireTransferType = WireTransferTypeFactory.CreateWireTransferType(wireTransferTypeDTO.ChartOfAccountId, wireTransferTypeDTO.Description, wireTransferTypeDTO.TransactionOwnership);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (wireTransferTypeDTO.IsLocked)
+                            wireTransferType.Lock();
+                        else wireTransferType.UnLock();
 
-                    return wireTransferType.ProjectedAs<WireTransferTypeDTO>();
+                        _wireTransferTypeRepository.Add(wireTransferType, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return wireTransferType.ProjectedAs<WireTransferTypeDTO>();
+                    }
                 }
             }
             else return null;

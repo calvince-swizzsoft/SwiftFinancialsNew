@@ -2,6 +2,7 @@
 
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -47,14 +48,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<BankLinkageDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
             var bankLinkageDTO = await _channelService.FindBankLinkageAsync(id, GetServiceHeader());
 
-            return View(bankLinkageDTO);
+            return View(bankLinkageDTO.MapTo<BankLinkageDTO>());
         }
+
+
+
         public async Task<ActionResult> Create(Guid? id, BankLinkageDTO bankLinkageDTO)
         {
             await ServeNavigationMenus();
@@ -73,8 +78,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 bankLinkageDTO.BankBranchName = Session["BankBranchName"].ToString();
             }
 
+            if (Session["chartOfAccountId"] != null)
+            {
+                bankLinkageDTO.ChartOfAccountId = (Guid)Session["chartOfAccountId"];
+                bankLinkageDTO.ChartOfAccountAccountName = Session["chartOfAccountAccountName"].ToString();
+            }
 
             var bank = await _channelService.FindBankAsync(parseId, GetServiceHeader());
+            var bankBranches = await _channelService.FindBankBranchesByBankIdAsync(parseId, GetServiceHeader());
+
 
             if (bank != null)
             {
@@ -86,6 +98,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(bankLinkageDTO);
         }
+
 
 
         public async Task<ActionResult> branch(Guid? id, BankLinkageDTO bankLinkageDTO)
@@ -118,6 +131,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 Session["BranchDescription"] = bankLinkageDTO.BranchDescription;
                 Session["BankBranchName"] = bankLinkageDTO.BankBranchName;
+
+                Session["chartOfAccountId"] = bankLinkageDTO.ChartOfAccountId;
+                Session["chartOfAccountAccountName"] = bankLinkageDTO.ChartOfAccountAccountName;
             }
 
             return View("Create", bankLinkageDTO);
@@ -191,7 +207,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var bankLinkagesDTO = await _channelService.FindBankLinkageAsync(id, GetServiceHeader());
 
-            return View(bankLinkagesDTO);
+            return View(bankLinkagesDTO.MapTo<BankLinkageDTO>());
         }
 
 

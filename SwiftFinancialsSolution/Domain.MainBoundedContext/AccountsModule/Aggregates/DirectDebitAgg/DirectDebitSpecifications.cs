@@ -29,5 +29,15 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.DirectDebitAgg
 
             return specification;
         }
+
+
+        public static ISpecification<DirectDebit> DirectDebitDescription(string Description)
+        {
+            Specification<DirectDebit> specification = new TrueSpecification<DirectDebit>();
+
+            specification &= new DirectSpecification<DirectDebit>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

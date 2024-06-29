@@ -39,6 +39,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -51,6 +53,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var unPayReasonDTO = await _channelService.FindUnPayReasonAsync(id, GetServiceHeader());
+
+            var applicableCharges = await _channelService.FindCommissionsByUnPayReasonIdAsync(id, GetServiceHeader());
+
+            ViewBag.applicableCharges = applicableCharges;
 
             return View(unPayReasonDTO);
         }
@@ -92,6 +98,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 await _channelService.UpdateCommissionsByUnPayReasonIdAsync(result.Id, selectedRows, GetServiceHeader());
 
+                var myId = result.Id;
+
+                if (result.ErrorMessageResult != null)
+                {
+                    result.Id = myId;
+                }
+
                 TempData["Create"] = "Unpay Reason Created Successfully";
 
                 return RedirectToAction("Index");
@@ -112,20 +125,36 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            Session["UnpayReasonId"] = id;
+
             var unPayReasonDTO = await _channelService.FindUnPayReasonAsync(id, GetServiceHeader());
 
             return View(unPayReasonDTO);
         }
 
+        public async Task<ActionResult> UnpayReasonEdit(UnPayReasonDTO unpayReasonDTO)
+        {
+            Session["Description"] = unpayReasonDTO.Description;
+            Session["Code"] = unpayReasonDTO.Code;
+            Session["isLocked"] = unpayReasonDTO.IsLocked;
 
+            return View("Edit", unpayReasonDTO);
+        }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, UnPayReasonDTO unPayReasonBindingModel)
+        public async Task<ActionResult> Edit(UnPayReasonDTO unpayReasonDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
-            if (ModelState.IsValid)
+            Guid findUnpayReasonId = (Guid)Session["UnpayReasonId"];
+
+            //unpayReasonDTO.Description = Session["Description"].ToString();
+            //unpayReasonDTO.Code = Convert.ToInt32(Session["Code"].ToString());
+            //unpayReasonDTO.IsLocked = (bool)Session["isLocked"];
+
+            if (!unpayReasonDTO.HasErrors)
             {
-                await _channelService.UpdateUnPayReasonAsync(unPayReasonBindingModel, GetServiceHeader());
+                await _channelService.UpdateUnPayReasonAsync(unpayReasonDTO, GetServiceHeader());
+
+                await _channelService.UpdateCommissionsByUnPayReasonIdAsync(findUnpayReasonId, selectedRows);
 
                 TempData["Edit"] = "Unpay Reason Edited Successfully";
 
@@ -135,7 +164,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 TempData["EditError"] = "Failed to Edit Unpay Reason";
 
-                return View(unPayReasonBindingModel);
+                return View(unpayReasonDTO);
             }
         }
 

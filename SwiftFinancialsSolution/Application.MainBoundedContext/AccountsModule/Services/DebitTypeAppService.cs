@@ -63,23 +63,36 @@ namespace Application.MainBoundedContext.AccountsModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var customerAccountType = new CustomerAccountType(debitTypeDTO.CustomerAccountTypeProductCode, debitTypeDTO.CustomerAccountTypeTargetProductId, debitTypeDTO.CustomerAccountTypeTargetProductCode);
+                    ISpecification<DebitType> spec = DebitTypeSpecifications.DebitTypeDescription(debitTypeDTO.Description);
 
-                    var debitType = DebitTypeFactory.CreateDebitType(debitTypeDTO.Description, customerAccountType);
+                    var matcheddebitType = _debitTypeRepository.AllMatching(spec, serviceHeader);
 
-                    if (debitTypeDTO.IsLocked)
-                        debitType.Lock();
-                    else debitType.UnLock();
+                    if (matcheddebitType != null && matcheddebitType.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        debitTypeDTO.ErrorMessageResult = string.Format("Sorry, but Commission \"{0}\" already exists!", debitTypeDTO.Description.ToUpper());
+                        return debitTypeDTO;
+                    }
+                    else
+                    {
+                        var customerAccountType = new CustomerAccountType(debitTypeDTO.CustomerAccountTypeProductCode, debitTypeDTO.CustomerAccountTypeTargetProductId, debitTypeDTO.CustomerAccountTypeTargetProductCode);
 
-                    if (debitTypeDTO.IsMandatory)
-                        debitType.SetAsMandatory();
-                    else debitType.ResetAsMandatory();
+                        var debitType = DebitTypeFactory.CreateDebitType(debitTypeDTO.Description, customerAccountType);
 
-                    _debitTypeRepository.Add(debitType, serviceHeader);
+                        if (debitTypeDTO.IsLocked)
+                            debitType.Lock();
+                        else debitType.UnLock();
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (debitTypeDTO.IsMandatory)
+                            debitType.SetAsMandatory();
+                        else debitType.ResetAsMandatory();
 
-                    return debitType.ProjectedAs<DebitTypeDTO>();
+                        _debitTypeRepository.Add(debitType, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return debitType.ProjectedAs<DebitTypeDTO>();
+                    }
                 }
             }
             else return null;

@@ -24,26 +24,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
          public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
          {
-             int totalRecordCount = 0;
+            int totalRecordCount = 0;
 
-             int searchRecordCount = 0;
+            int searchRecordCount = 0;
 
-             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-             var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindDirectDebitsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
-             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-             {
-                 totalRecordCount = pageCollectionInfo.ItemsCount;
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
 
-                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-             }
-             else return this.DataTablesJson(items: new List<DirectDebitDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-         }
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<DirectDebitDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
 
         //public async Task<ActionResult> Details()
         //{
@@ -179,7 +181,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!directDebitDTO.HasErrors)
             {
-                await _channelService.AddDirectDebitAsync(directDebitDTO, GetServiceHeader());
+                var result = await _channelService.AddDirectDebitAsync(directDebitDTO, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                    ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+
+                    return View();
+                }
 
                 Session.Clear();
                 TempData["Create"] = "Successfully Created Direct Debit";

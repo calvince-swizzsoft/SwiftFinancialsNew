@@ -8,7 +8,6 @@
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Accounts</h1>
-        <h2>Banks Linkages</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -107,65 +106,6 @@
 
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
-
-    @*<script type="text/javascript">
-
-        $(document).ready(function () {
-            $('#debitBatchesGrid').DataTable({
-
-        $(document).ready(function () {
-            $('#BankGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var editUrl = '<a  href="/accounts/BankLinkage/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/BankLinkage/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;');
-                    var editUrl = '<a  href="/Accounts/BankLinkage/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/Accounts/BankLinkage/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(viewUrl + '&nbsp;' + editUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "BankBranchName", "sTitle": "Branch Name", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
-                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
-                    { "mDataProp": "BankName", "sTitle": "Bank Name", "sWidth": "10%" },
-                    { "mDataProp": "BankAccountNumber", "sTitle": "Bank Account Number", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-            });
-        });
-
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-    </script>*@
-
     <script type="text/javascript">
         $(document).ready(function () {
             $('#BankGrid').DataTable({
@@ -186,11 +126,19 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/accounts/BankLinkage/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/BankLinkage/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/banklinkage/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/banklinkage/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
 
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
@@ -200,8 +148,9 @@
                     { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account", "sWidth": "20%" },
                     { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
                     { "mDataProp": "BankName", "sTitle": "Bank Name", "sWidth": "10%" },
+                    { "mDataProp": "BankBranchName", "sTitle": "Bank Branch", "sWidth": "10%" },
                     { "mDataProp": "BankAccountNumber", "sTitle": "Bank Account Number", "sWidth": "10%" },
-
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]

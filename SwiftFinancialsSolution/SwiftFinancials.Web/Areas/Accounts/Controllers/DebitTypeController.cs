@@ -38,6 +38,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(commission => commission.CreatedDate).ToList();
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
@@ -58,7 +60,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(debitTypeDTO);
         }
 
-        #region
+
         public async Task<ActionResult> SavingsProduct(Guid? id, DebitTypeDTO debitTypeDTO)
         {
             await ServeNavigationMenus();
@@ -140,10 +142,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 Session["investmentProductId"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
                 Session["investmentProductDescription"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
             }
-
             return View("Create", debitTypeDTO);
         }
-        #endregion
 
 
         public async Task<ActionResult> Create()
@@ -199,6 +199,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 await _channelService.UpdateCommissionsByDebitTypeIdAsync(result.Id, selectedRows, GetServiceHeader());
 
+                var myId = result.Id;
+
+                if (result.ErrorMessageResult != null)
+                {
+                    result.Id = myId;
+                }
+
                 TempData["Create"] = "Successfully Created Debit Type";
 
                 return RedirectToAction("Index");
@@ -226,14 +233,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        #region
+        
         public async Task<ActionResult> SavingsProductEdit(Guid? id, DebitTypeDTO debitTypeDTO)
         {
             await ServeNavigationMenus();
-
-            var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, GetServiceHeader());
-
-            ViewBag.applicableCharges = applicableCharges;
 
             Guid parseId;
 
@@ -251,9 +254,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 debitTypeDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
                 debitTypeDTO.CustomerAccountTypeProductCode = 1;
 
+                debitTypeDTO.Description = Session["Description"].ToString();
+
                 Session["savingsProductId2"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
                 Session["savingsProductDescription2"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
             }
+
+
+            ViewBag.applicableChargesedit = TempData["applicableCharges"] as ObservableCollection<CommissionDTO>;
 
             return View("Edit", debitTypeDTO);
         }
@@ -263,10 +271,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> LoansProductEdit(Guid? id, DebitTypeDTO debitTypeDTO)
         {
             await ServeNavigationMenus();
-
-            var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, GetServiceHeader());
-
-            ViewBag.applicableCharges = applicableCharges;
 
             Guid parseId;
 
@@ -284,9 +288,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 debitTypeDTO.CustomerAccountTypeTargetProductDescription = loanProductsdetails.Description;
                 debitTypeDTO.CustomerAccountTypeProductCode = 2;
 
+                debitTypeDTO.Description = Session["Description"].ToString();
+
                 Session["loanProductId2"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
                 Session["loanProductDescription2"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
             }
+
+
+            ViewBag.applicableChargesedit = TempData["applicableCharges"];
+
 
             return View("Edit", debitTypeDTO);
         }
@@ -296,10 +306,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> InvestmentProductEdit(Guid? id, DebitTypeDTO debitTypeDTO)
         {
             await ServeNavigationMenus();
-
-            var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(debitTypeDTO.Id, GetServiceHeader());
-
-            ViewBag.applicableCharges = applicableCharges;
 
             Guid parseId;
 
@@ -317,15 +323,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 debitTypeDTO.CustomerAccountTypeTargetProductDescription = investmentProductDetails.Description;
                 debitTypeDTO.CustomerAccountTypeProductCode = 3;
 
+                debitTypeDTO.Description = Session["Description"].ToString();
+
                 Session["investmentProductId2"] = debitTypeDTO.CustomerAccountTypeTargetProductId;
                 Session["investmentProductDescription2"] = debitTypeDTO.CustomerAccountTypeTargetProductDescription;
             }
 
+            ViewBag.applicableChargesedit = TempData["applicableCharges"];
+
+
             return View("Edit", debitTypeDTO);
         }
-        #endregion
-
-
 
 
         public async Task<ActionResult> Edit(Guid id)
@@ -338,12 +346,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var debitTypeDTO = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
 
+            Session["Description"] = debitTypeDTO.Description;
+
             var productCode = debitTypeDTO.CustomerAccountTypeProductCode;
             Session["productCode"] = productCode;
 
             var applicableCharges = await _channelService.FindCommissionsByDebitTypeIdAsync(id, GetServiceHeader());
 
-            ViewBag.applicableCharges = applicableCharges;
+            ViewBag.applicableChargesedit = applicableCharges;
 
             return View(debitTypeDTO);
         }
@@ -353,6 +363,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(DebitTypeDTO debitTypeDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
             Guid findDebitId = (Guid)Session["DebitTypeId"];
+
+            debitTypeDTO.Description = Session["Description2"].ToString();
+            debitTypeDTO.CustomerAccountTypeProductCode = Convert.ToInt32(Session["CustomerAccountTypeProductCode2"].ToString());
+            debitTypeDTO.IsLocked = (bool)Session["isLocked2"];
 
             if (Session["savingsProductId2"] != null)
             {
@@ -372,24 +386,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 debitTypeDTO.CustomerAccountTypeTargetProductDescription = Session["investmentProductDescription2"].ToString();
             }
 
-            debitTypeDTO.Description = Session["Description2"].ToString();
-
-            if (Session["ProductCode"] != null)
-            {
-                debitTypeDTO.CustomerAccountTypeProductCode = Convert.ToInt32(Session["ProductCode"].ToString());
-            }
-
-            debitTypeDTO.IsLocked = (bool)Session["isLocked2"];
-
             debitTypeDTO.ValidateAll();
 
-            if (ModelState.IsValid)
+            if (!debitTypeDTO.HasErrors)
             {
                 var result = await _channelService.UpdateDebitTypeAsync(debitTypeDTO, GetServiceHeader());
 
                 await _channelService.UpdateCommissionsByDebitTypeIdAsync(findDebitId, selectedRows, GetServiceHeader());
 
                 TempData["Edit"] = "Successfully Edited Debit Type";
+                Session["Description2"] = null;
+                Session["CustomerAccountTypeProductCode2"] = null;
+                Session["isLocked2"] = null;
+                Session["DebitTypeId"] = null;
+                Session["savingsProductId2"] = null;
 
                 return RedirectToAction("Index");
             }
