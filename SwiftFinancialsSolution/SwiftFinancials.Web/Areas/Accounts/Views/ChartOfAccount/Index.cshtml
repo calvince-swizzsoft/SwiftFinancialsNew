@@ -1,7 +1,4 @@
-﻿
-@{
-    ViewBag.Title = "Chart of Accounts";
-}
+﻿@{ ViewBag.Title = "Chart of Accounts"; }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -23,13 +20,12 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Chart Of Account", "Create", "ChartOfAccount", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
-                    
+
                     @if (TempData["SuccessMessage"] != null)
                     {
-                    <div class="alert alert-success">
-                        @TempData["SuccessMessage"]
-                    </div>
-                    }
+        <div class="alert alert-success">
+            @TempData["SuccessMessage"]
+        </div>}
 
                     <div class="ibox-tools">
                         <a class="collapse-link">

@@ -37,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                 pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(ChartOfAccountDTO => ChartOfAccountDTO.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(ChartOfAccountDTO => ChartOfAccountDTO.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -68,15 +68,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ChartOfAccountDTO chartOfAccountDTO)
         {
-           // await ServeNavigationMenus();
+            // await ServeNavigationMenus();
 
             chartOfAccountDTO.ValidateAll();
 
 
             if (!chartOfAccountDTO.HasErrors)
             {
-                var result =await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
-                if(result.ErrorMessageResult!=null )
+                var result = await _channelService.AddChartOfAccountAsync(chartOfAccountDTO, GetServiceHeader());
+                if (result.ErrorMessageResult != null)
                 {
                     TempData["ErrorMsg"] = result.ErrorMessageResult;
                     await ServeNavigationMenus();
@@ -91,9 +91,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
-                TempData["ErrorMessage"] = "Create Unsuccessful.";                
+                TempData["ErrorMessage"] = "Create Unsuccessful.";
                 var errorMessages = chartOfAccountDTO.ErrorMessages;
-              
+
                 ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
                 ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
 
@@ -134,12 +134,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-         [HttpGet]
-         public async Task<JsonResult> GetChartOfAccountsAsync()
-         {
-             var chartOfAccountsDTOs = await _channelService.FindChartOfAccountsAsync(GetServiceHeader());
+        [HttpGet]
+        public async Task<JsonResult> GetChartOfAccountsAsync()
+        {
+            var chartOfAccountsDTOs = await _channelService.FindChartOfAccountsAsync(GetServiceHeader());
 
-             return Json(chartOfAccountsDTOs, JsonRequestBehavior.AllowGet);
-         }
+            return Json(chartOfAccountsDTOs, JsonRequestBehavior.AllowGet);
+        }
     }
 }
