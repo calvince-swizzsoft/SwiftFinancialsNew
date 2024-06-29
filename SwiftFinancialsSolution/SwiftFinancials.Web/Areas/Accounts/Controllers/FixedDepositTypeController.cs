@@ -89,15 +89,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bool enforceFixedDepositBands = false;
             if (!fixedDepositTypeDTO.HasErrors)
             {
-                var result = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, enforceFixedDepositBands,GetServiceHeader());
+                var result = await _channelService.AddFixedDepositTypeAsync(fixedDepositTypeDTO, enforceFixedDepositBands, GetServiceHeader());
                 await _channelService.UpdateLeviesByFixedDepositTypeIdAsync(fixedDepositTypeDTO.Id, selectedRows, GetServiceHeader());
-               // if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
-                    if (result.ErrorMessageResult != null )
-                    {
-                        TempData["ErrorMsg"] = result.ErrorMessageResult;
-                        await ServeNavigationMenus();
-                        return View();
-                    }
+                // if (result.ErrorMessageResult != null || result.ErrorMessageResult != string.Empty)
+                if (result.ErrorMessageResult != null)
+                {
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+                    await ServeNavigationMenus();
+                    return View();
+                }
+                await _channelService.UpdateLeviesByFixedDepositTypeIdAsync(fixedDepositTypeDTO.Id, selectedRows, GetServiceHeader());
                 TempData["SuccessMessage"] = "Create successful.";
                 return RedirectToAction("Index");
             }
@@ -115,6 +116,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(id, GetServiceHeader());
 
+
             return View(fixedDepositTypeDTO);
         }
 
@@ -122,16 +124,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, FixedDepositTypeDTO fixedDepositTypeBindingModel)
         {
-            if (ModelState.IsValid)
+            if (!fixedDepositTypeBindingModel.HasErrors)
             {
-               
-              await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel, true);
+
+                await _channelService.UpdateFixedDepositTypeAsync(fixedDepositTypeBindingModel, true);
+
                 if (fixedDepositTypeBindingModel.ErrorMessageResult != null)
                 {
                     TempData["ErrorMsg"] = fixedDepositTypeBindingModel.ErrorMessageResult;
                     await ServeNavigationMenus();
                     return View();
                 }
+
                 TempData["SuccessMessage"] = "Edit successful.";
                 return RedirectToAction("Index");
             }

@@ -1,6 +1,8 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.TellerDTO
+
 @{
     ViewBag.Title = "Tellers";
+    var tellerTypes = ViewBag.TellerTypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -23,7 +25,7 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Teller", "Create", "Teller", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
-                    @if (TempData["SuccessMessage "] != null)
+                    @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">
                             <strong>Success !</strong> @TempData["SuccessMessage"]
@@ -59,19 +61,78 @@
                                 </tr>
                             </tbody>
                         </table>
+
+
+                        @*@using (Html.BeginForm("Index", "Teller", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="col-sm-6">
+                                @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.Type, tellerTypes, new { @class = "form-control input-md" })
+                                    @Html.ValidationMessageFor(model => model.Type)
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-2">
+                                    <div class="form-group">
+                                        <input type="submit" style="width:270px; background-color:darkgreen; border-color:darkgreen" value="Filter" class="btn btn-success" />
+                                    </div>
+                                </div>
+                            </div>
+                        }*@
                     </div>
+
+
+
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Styles {
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section scripts {
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script type="text/javascript">
 
@@ -104,8 +165,8 @@
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                    { "mDataProp": "EmployeeCustomerFullName", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Description", "sWidth": "10%" },
                     { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
                     { "mDataProp": "ChartOfAccountAccountName", "sTitle": "ChartOfAccountAccountName", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
