@@ -135,17 +135,15 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Charges</h2>
+                    <h2>Edit Charge</h2>
 
-                    <br />
-
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
-                            <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
-                            <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
-                        </ul>
-                    </div>
+                    @*<div id="tabs-container">
+                            <ul class="nav-tabs">
+                                <li>@Html.ActionLink("Charges", "Create", "Charges")</li>
+                                <li>@Html.ActionLink("Tiers", "Create", "Tiers")</li>
+                                <li>@Html.ActionLink("Levies", "Create", "Charges_Levies")</li>
+                            </ul>
+                        </div>*@
 
                     @if (TempData["EditError"] != null)
                     {
@@ -232,42 +230,8 @@
                             </div>
 
                             <br />
-
-                            <h3>Charge Split Details Before Edit</h3>
-                            <row>
-                                <div style="height: 150px; overflow-y: scroll;">
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                        <thead style="font-style:italic; color: cadetblue; text-align: center;">
-                                            <tr>
-                                                <th style="width: 20%;">G/L Account Name</th>
-                                                <th style="width: 20%;">Charge Split Name</th>
-                                                <th style="width: 5%;">Percentage</th>
-                                                <th style="width: 2%;">Leviable</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.chargeSplits != null)
-                                            {
-                                                foreach (var chargeSplits in ViewBag.chargeSplits)
-                                                {
-                                                    <tr>
-                                                        <td>@chargeSplits.ChartOfAccountAccountName</td>
-                                                        <td>@chargeSplits.Description</td>
-                                                        <td style="text-align: right;">@chargeSplits.Percentage</td>
-                                                        <td>@chargeSplits.Leviable</td>
-                                                    </tr>
-                                                }
-                                            }
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </row>
-
-
-                            <br />
                             <hr />
 
-                            @*chargeType Splitting*@
                             <h2>Edit Charge Splits</h2>
 
                             <br />
@@ -319,8 +283,44 @@
 
                             <br />
 
-
                             <row>
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                    <thead style="font-style:italic; color: cadetblue; text-align: center;">
+                                        <tr>
+                                            <th style="width: 20%;">G/L Account Name</th>
+                                            <th style="width: 20%;">Charge Split Name</th>
+                                            <th style="width: 5%;">Percentage</th>
+                                            <th style="width: 2%;">Leviable</th>
+                                            <th style="width: 5%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.chargeSplits != null)
+                                        {
+                                            foreach (var commissionSplit in ViewBag.chargeSplits)
+                                            {
+                                                <tr data-id="@commissionSplit.Id">
+                                                    <td>@commissionSplit.ChartOfAccountAccountName</td>
+                                                    <td>@commissionSplit.Description</td>
+                                                    <td style="text-align: right;">@commissionSplit.Percentage</td>
+                                                    <td>@commissionSplit.Leviable</td>
+                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+
+                                @if (TempData["tPercentage"] != null)
+                                {
+                                    <p style="color: red; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                }
+                            </row>
+
+                            <br />
+
+
+                            @*<row>
                                 <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
                                     <thead style="font-style:italic; color: cadetblue; text-align: center; ">
                                         <tr>
@@ -347,12 +347,7 @@
                                         }
                                     </tbody>
                                 </table>
-                            </row>
-
-                            @if (TempData["tPercentage"] != null)
-                            {
-                                <p style="color: red; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                            }
+                            </row>*@
                         </fieldset>
                     }
                 </div>

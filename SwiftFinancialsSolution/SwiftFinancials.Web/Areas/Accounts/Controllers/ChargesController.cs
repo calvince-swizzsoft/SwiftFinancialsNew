@@ -130,8 +130,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                     TempData["tPercentage"] = "Could not add charge split. Choose G/L Account.";
 
+                    await ServeNavigationMenus();
+
                     return View("Create", commissionDTO);
                 }
+
 
                 foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
                 {
@@ -172,17 +175,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 };
             }
 
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+
             ViewBag.totalPercentage = sumPercentages;
 
             Session["totalPercentage"] = sumPercentages;
 
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
 
+
             TempData["ChargeDTO"] = commissionDTO;
 
-            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
-
-            return View("Create", commissionDTO);
+            return View("Create");
         }
 
 
@@ -209,7 +213,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                return View();
+                await ServeNavigationMenus();
+
+                return View("Create");
             }
 
             ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
@@ -234,6 +240,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
 
             TempData["ChargeDTO"] = commissionDTO;
+
+            TempData["tPercentage"] = "";
 
             ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
 
@@ -287,6 +295,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         TempData["splitPercentage"] = "For charges linked to only one G/L Account, enter 100 as percentage";
 
+                        await ServeNavigationMenus();
+
                         return View("create");
                     }
                     else
@@ -303,6 +313,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         if (duplicateChartOfAccounts.Any())
                         {
                             TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
+
+                            await ServeNavigationMenus();
 
                             return View("create", commissionDTO);
                         }
@@ -334,6 +346,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     {
                         TempData["splitPercentage"] = "Total percentage must be equal to 100%";
 
+                        await ServeNavigationMenus();
+
                         return View("create", commissionDTO);
                     }
                     else
@@ -350,6 +364,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         if (duplicateChartOfAccounts.Any())
                         {
                             TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
+
+                            await ServeNavigationMenus();
 
                             return View("create", commissionDTO);
                         }
@@ -378,6 +394,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+                await ServeNavigationMenus();
+
                 var errorMessages = commissionDTO.ErrorMessages;
 
                 TempData["CreateError"] = "Failed to Create Charge";
@@ -410,14 +428,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> AddEdit(Guid? id, CommissionDTO commissionDTO)
         {
-            var chargeId = (Guid)Session["Id"];
+            await ServeNavigationMenus();
 
+            var chargeId = (Guid)Session["Id"];
             var chargesplits = await _channelService.FindCommissionSplitsByCommissionIdAsync(chargeId, GetServiceHeader());
             ViewBag.chargeSplits = chargesplits;
 
-            await ServeNavigationMenus();
-
-            ChargeSplitDTOs = TempData["ChargeSplitDTOs2"] as ObservableCollection<CommissionSplitDTO>;
+            //ChargeSplitDTOs = TempData["ChargeSplitDTOs2"] as ObservableCollection<CommissionSplitDTO>;
 
             var glAccount = commissionDTO.chargeSplits;
 
@@ -437,6 +454,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (chargeSplitDTO.Description == null || chargeSplitDTO.ChartOfAccountAccountName == null || chargeSplitDTO.Percentage == 0)
                 {
+                    ViewBag.chargeSplits = chargesplits;
+
                     TempData["tPercentage"] = "Could not add charge split. Make sure to provide all charge split details to proceed.";
                 }
                 else
@@ -466,12 +485,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             TempData["ChargeDTO2"] = commissionDTO;
 
-            ViewBag.EditChargeSplitDTOs = ChargeSplitDTOs;
+            ViewBag.chargeSplits = ChargeSplitDTOs;
 
             return View("Edit", commissionDTO);
         }
-
-
 
 
         [HttpPost]
@@ -479,35 +496,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            if (id == null || id == Guid.Empty)
             {
-                return View();
+                return View("Edit", commissionDTO);
             }
 
-            ChargeSplitDTOs = TempData["ChargeSplitDTOs3"] as ObservableCollection<CommissionSplitDTO>;
-
-            var glAccount = commissionDTO.chargeSplits;
+            ChargeSplitDTOs = TempData["chargeSplitsBeforeEdit"] as ObservableCollection<CommissionSplitDTO>;
 
             if (ChargeSplitDTOs == null)
-                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
-
-            foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
             {
-                chargeSplitDTO.Id = parseId;
-                chargeSplitDTO.Description = chargeSplitDTO.Description;
-                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
-                chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
-                chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
-                chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
+            }
 
-                ChargeSplitDTOs.Remove(chargeSplitDTO);
-            };
+            var chargeSplitToRemove = ChargeSplitDTOs.FirstOrDefault(cs => cs.Id == id);
+            if (chargeSplitToRemove != null)
+            {
+                ChargeSplitDTOs.Remove(chargeSplitToRemove);
+            }
 
             TempData["ChargeSplitDTOs3"] = ChargeSplitDTOs;
-
-            ViewBag.EditChargeSplitDTOs = ChargeSplitDTOs;
+            ViewBag.chargeSplits = ChargeSplitDTOs;
 
             return View("Edit", commissionDTO);
         }
@@ -550,6 +558,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     if (sumPercentages < 100)
                     {
+                        await ServeNavigationMenus();
+
                         TempData["splitPercentage"] = "For charges linked to only one G/L Account, enter 100 as percentage";
 
                         ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
@@ -569,6 +579,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                         if (duplicateChartOfAccounts.Any())
                         {
+                            await ServeNavigationMenus();
+
                             TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
 
                             ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
@@ -594,6 +606,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                     if (sumPercentages < 100)
                     {
+                        await ServeNavigationMenus();
+
                         TempData["splitPercentage"] = "Total percentage must be equal to 100%";
 
                         ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
@@ -613,6 +627,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                         if (duplicateChartOfAccounts.Any())
                         {
+                            await ServeNavigationMenus();
+
                             TempData["tPercentage"] = "Sorry, you cannot split charge into the same G/L Account more than once";
 
                             ViewBag.chargeSplits = TempData["chargeSplitsBeforeEdit"];
