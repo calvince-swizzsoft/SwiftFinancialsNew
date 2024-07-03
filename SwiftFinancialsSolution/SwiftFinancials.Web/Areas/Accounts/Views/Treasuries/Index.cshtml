@@ -1,5 +1,14 @@
 ﻿@{
-    ViewBag.Title = "Savings Product";
+    ViewBag.Title = "Treasuries";
+
+    var refreshPage = TempData["RefreshPage"] as bool?;
+}
+
+@if (refreshPage.HasValue && refreshPage.Value)
+{
+    <script>
+        window.location.reload();
+    </script>
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -79,7 +88,7 @@
                                 </tr>
                             </tbody>
                         </table>
-                       
+
                     </div>
                 </div>
             </div>
@@ -126,7 +135,7 @@
                             </div>
                         </div>`;
 
-                    
+
                     $('td:eq(8)', nRow).html(dt_Created);
                     $('td:eq(9)', nRow).html(dropdownHtml);
 

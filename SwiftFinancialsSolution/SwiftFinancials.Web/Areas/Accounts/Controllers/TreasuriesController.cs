@@ -171,23 +171,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!treasuryDTO.HasErrors)
             {
-                var result = await _channelService.AddTreasuryAsync(treasuryDTO, GetServiceHeader());
-
-                if (result.ErrorMessageResult != null)
-                {
-                    TempData["ErrorMsg"] = result.ErrorMessageResult;
-
-                    return View("Create");
-                }
-
+                await _channelService.AddTreasuryAsync(treasuryDTO, GetServiceHeader());
 
                 TempData["AlertMessage"] = "Treasury created successfully";
+
+                TempData["RefreshPage"] = true;
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = treasuryDTO.ErrorMessages;
+
+                TempData["RefreshPage"] = true;
 
                 return View(treasuryDTO);
             }

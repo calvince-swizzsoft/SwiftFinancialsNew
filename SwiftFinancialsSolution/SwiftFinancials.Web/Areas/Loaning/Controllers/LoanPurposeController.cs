@@ -27,7 +27,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "desc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
@@ -35,13 +35,21 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.Where(item => !item.IsLocked).ToList();
+
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(costCenter => costCenter.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanPurposeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(items: new List<LoanPurposeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -67,14 +75,25 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanPurposeDTO.HasErrors)
             {
-                await _channelService.AddLoanPurposeAsync(loanPurposeDTO, GetServiceHeader());
+                var result = await _channelService.AddLoanPurposeAsync(loanPurposeDTO, GetServiceHeader());
+
+                if (result.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+
+                    return View();
+                }
+
+                TempData["create"] = "Successfully created Loan Purpose";
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = loanPurposeDTO.ErrorMessages;
-
+                TempData["createError"] = "Failed to create Loan Purpose";
                 return View(loanPurposeDTO);
             }
         }
@@ -96,10 +115,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await _channelService.UpdateLoanPurposeAsync(loanPurposeBindingModel, GetServiceHeader());
 
+                TempData["edit"] = "Successfully edited Loan Purpose";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["editError"] = "Failed to edit Loan Purpose";
+
                 return View(loanPurposeBindingModel);
             }
         }
