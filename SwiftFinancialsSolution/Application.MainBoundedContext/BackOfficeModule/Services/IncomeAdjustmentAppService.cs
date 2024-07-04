@@ -37,17 +37,30 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var incomeAdjustment = IncomeAdjustmentFactory.CreateIncomeAdjustment(incomeAdjustmentDTO.Description, incomeAdjustmentDTO.Type);
+                    ISpecification<IncomeAdjustment> spec = IncomeAdjustmentSpecifications.IncomeAdjustmentDescription(incomeAdjustmentDTO.Description);
 
-                    if (incomeAdjustmentDTO.IsLocked)
-                        incomeAdjustment.Lock();
-                    else incomeAdjustment.UnLock();
+                    var matchedIncomeAdjustment = _incomeAdjustmentRepository.AllMatching(spec, serviceHeader);
 
-                    _incomeAdjustmentRepository.Add(incomeAdjustment, serviceHeader);
+                    if (matchedIncomeAdjustment != null && matchedIncomeAdjustment.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        incomeAdjustmentDTO.ErrorMessageResult = string.Format("Income Adjustment \"{0}\" already exists!", incomeAdjustmentDTO.Description.ToUpper());
+                        return incomeAdjustmentDTO;
+                    }
+                    else
+                    {
+                        var incomeAdjustment = IncomeAdjustmentFactory.CreateIncomeAdjustment(incomeAdjustmentDTO.Description, incomeAdjustmentDTO.Type);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (incomeAdjustmentDTO.IsLocked)
+                            incomeAdjustment.Lock();
+                        else incomeAdjustment.UnLock();
 
-                    return incomeAdjustment.ProjectedAs<IncomeAdjustmentDTO>();
+                        _incomeAdjustmentRepository.Add(incomeAdjustment, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return incomeAdjustment.ProjectedAs<IncomeAdjustmentDTO>();
+                    }
                 }
             }
             else return null;

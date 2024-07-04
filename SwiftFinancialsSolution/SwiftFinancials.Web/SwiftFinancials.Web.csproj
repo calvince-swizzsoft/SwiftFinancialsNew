@@ -1069,6 +1069,8 @@
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Closing\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\IncomeAdjustments\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\IncomeAdjustments\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

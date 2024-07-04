@@ -29,5 +29,14 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.IncomeAdjustment
 
             return specification;
         }
+
+        public static ISpecification<IncomeAdjustment> IncomeAdjustmentDescription(string Description)
+        {
+            Specification<IncomeAdjustment> specification = new TrueSpecification<IncomeAdjustment>();
+
+            specification &= new DirectSpecification<IncomeAdjustment>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }
