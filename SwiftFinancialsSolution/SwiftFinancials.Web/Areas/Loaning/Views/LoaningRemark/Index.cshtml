@@ -22,6 +22,20 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Loaning Remarks</h2>
+
+                    @if (TempData["create"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["create"]
+                        </div>
+                    } 
+                    
+                    @if (TempData["edit"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["edit"]
+                        </div>
+                    }
                     <hr />
                     @Html.ActionLink("Create Loaning Remark", "Create", "LoaningRemark", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">

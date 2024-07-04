@@ -30,7 +30,7 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoanPurposeAgg
             return specification;
         }
 
-        public static ISpecification<LoanPurpose> LoanPurposeDescrition(string Description)
+        public static ISpecification<LoanPurpose> LoanPurposeDescription(string Description)
         {
             Specification<LoanPurpose> specification = new TrueSpecification<LoanPurpose>();
 

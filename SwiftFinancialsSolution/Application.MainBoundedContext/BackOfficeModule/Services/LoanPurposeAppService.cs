@@ -37,7 +37,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    ISpecification<LoanPurpose> spec = LoanPurposeSpecifications.LoanPurposeDescrition(loanPurposeDTO.Description);
+                    ISpecification<LoanPurpose> spec = LoanPurposeSpecifications.LoanPurposeDescription(loanPurposeDTO.Description);
 
                     var matchedLoanPurpose = _loanPurposeRepository.AllMatching(spec, serviceHeader);
 

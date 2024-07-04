@@ -40,6 +40,14 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Edit Loaning Remarks</h2>
+
+                    @if (TempData["editError"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["editError"]
+                        </div>
+                    }
+
                     <hr />
                     @Html.ActionLink("Back to List", "Index", "LoaningRemark", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -61,7 +69,7 @@
                             <div class="col-lg-10">
                                 <div class="form-group form-group-sm">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Purpose Name...", @required = "" } })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Remark Name..." } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
                             </div>

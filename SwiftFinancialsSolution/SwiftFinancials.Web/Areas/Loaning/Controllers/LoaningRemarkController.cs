@@ -74,13 +74,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loaningRemarkDTO.HasErrors)
             {
-                await _channelService.AddLoaningRemarkAsync(loaningRemarkDTO, GetServiceHeader());
+                var remarks = await _channelService.AddLoaningRemarkAsync(loaningRemarkDTO, GetServiceHeader());
+
+                if(remarks.ErrorMessageResult!=null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = remarks.ErrorMessageResult;
+
+                    return View();
+                }
+
+                TempData["create"] = "Successfully created Loaning Remark";
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = loaningRemarkDTO.ErrorMessages;
+
+                TempData["createError"] = "Could not create Loaning Remark";
 
                 return View(loaningRemarkDTO);
             }
@@ -103,10 +116,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await _channelService.UpdateLoaningRemarkAsync(loaningRemarkBindingModel, GetServiceHeader());
 
+                TempData["edit"] = "Successfully edited Loaning Remark";
+
                 return RedirectToAction("Index");
             }
             else
             {
+                TempData["editError"] = "Failed to edit Loaning Remark";
+
                 return View(loaningRemarkBindingModel);
             }
         }
