@@ -6,7 +6,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>LoanRequests</h2>
+        <h1>Loan Origination</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -35,6 +35,14 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Create Loan Request</h2>
+
+                    @if (TempData["createError"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["createError"]
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -44,62 +52,506 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Create", "LoanRequest", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
                             <div class="row">
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.CustomerId)
+                                        @Html.TextBoxFor(model => model.CustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.LoanProductId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.LoanProductId)
+                                        @Html.TextBoxFor(model => model.LoanProductDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#loanProductsLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div> 
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.LoanPurposeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.LoanPurposeId)
+                                        @Html.TextBoxFor(model => model.LoanPurposeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#loanPurposesLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.LoanCaseNumber, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.LoanCaseId)
+                                        @Html.TextBoxFor(model => model.LoanCaseNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#loanCaseNumberLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "AmountApplied", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                     </div>
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.ReceivedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ReceivedDate", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.LoanCaseNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.LoanCaseNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "LoanCaseNumber", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.LoanCaseNumber, "", new { @class = "text-danger" })
-                                    </div>
+                                </div>
+
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.RegisteredBy, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.RegisteredBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredBy", @required = "" } })
+                                        @Html.EditorFor(model => model.RegisteredBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Recipient Name...", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.RegisteredBy, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                                </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ReceivedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "" } })
+                                        @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.RegisteredDate, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.RegisteredDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "RegisteredDate", @required = "" } })
+                                        @Html.EditorFor(model => model.RegisteredDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.RegisteredDate, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.CancelledBy, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CancelledBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "CancelledBy", @required = "" } })
+                                        @Html.EditorFor(model => model.CancelledBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Link canceller Name...", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CancelledBy, "", new { @class = "text-danger" })
                                     </div>
+                                </div>
+
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-sm">
                                         @Html.LabelFor(model => model.CancelledDate, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CancelledDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "CancelledDate", @required = "" } })
+                                        @Html.EditorFor(model => model.CancelledDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "dd/mm/yyyy", @readonly = "" } })
                                         @Html.ValidationMessageFor(model => model.CancelledDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
 
-                        <div class="form-group form-group-sm">
-                            <div class="col-md-offset-2 col-md-10">
-                                <input type="submit" value="Create" class="btn btn-primary" />
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <input type="submit" value="Create" style="width: 150px;" class="btn btn-primary" />
+                                </div>
                             </div>
-                        </div>
+                        </fieldset>
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="loanProductsLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Loan Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="loanProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="loanPurposesLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Loan Purposes Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="loanPurposesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="loanCaseNumberLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Loan Case Number Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="loanCasesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+
+<script>
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+            $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/loaning/LoanRequest/Customers/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "15%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "4%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+            });
+
+            $("#s tbody").on("click", "tr", function () {
+                var data = companiesGrid.row(this).data();
+
+                $('#CustomerId').val(data.Id);
+                $('input[name=CustomerId]').val(data.Id);
+                $('input[name=CustomerFullName]').val(data.FullName);
+                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+
+
+                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+                $('#CompaniesLookup').modal('hide');
+            });
+        });
+
+
+        // Loans Product look up
+    $('#loanProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/loaning/LoanRequest/LoanProducts/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term (Months)", "sWidth": "3%" },
+            { "mDataProp": "LoanRegistrationMinimumAmount", "sTitle": "Minimum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanRegistrationMaximumAmount", "sTitle": "Maximum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "3%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+     // Loans Purposes look up
+    $('#loanPurposesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanPurpose", new { Area = "Loaning" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/loaning/LoanRequest/LoansPurpose/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "3%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+    // Loans Cases look up
+    $('#loanCasesGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/loaning/LoanRequest/LoanCases/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "CaseNumber", "sTitle": "Loan Case Number", "sWidth": "3%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Loanee", "sWidth": "15%" },
+            { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "15%" },
+            { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%" },
+            { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+</script>
+}
