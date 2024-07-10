@@ -8,7 +8,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Loaning Remarks</h2>
+        <h1>Loaning</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -39,6 +39,22 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Create Loaning Remarks</h2>
+
+                    @if (TempData["ErrorMsg"] != null)
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Warning !</strong> @TempData["ErrorMsg"]
+                        </div>
+                    }
+                    
+                    @if (TempData["createError"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["createError"]
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -52,26 +68,29 @@
                     @using (Html.BeginForm("Create", "LoaningRemark", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-                            <div class="col-lg-8">
+                        <div class="row">
+                            <div class="col-lg-10">
                                 <div class="form-group form-group-sm">
                                     @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Loan Remark Name..." } })
                                     @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                 </div>
+                            </div>
+
+                            <div class="col-lg-2" style="margin-top: 35px;">
                                 <div class="form-group form-group-lg">
                                     @Html.CheckBoxFor(model => model.IsLocked, htmlAttributes: new { @class = "" })
                                     @Html.LabelFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
                                     @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
-                                </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
                             </div>
                         </div>
                     }

@@ -14,8 +14,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
     public class IncomeAdjustmentsController : MasterController
     {
         // GET: Loaning/LoanRequest
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+            await ServeNavigationMenus();
+
             return View();
         }
 
@@ -24,9 +26,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             int totalRecordCount = 0;
 
-            int searchRecordCount = 0;          
+            int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "desc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
@@ -34,13 +36,20 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.Where(item => !item.IsLocked).ToList();
+
                 totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(r => r.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<IncomeAdjustmentDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(items: new List<IncomeAdjustmentDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -66,16 +75,28 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!incomeAdjustment.HasErrors)
             {
-                await _channelService.AddIncomeAdjustmentAsync(incomeAdjustment, GetServiceHeader());
+                var adjustments= await _channelService.AddIncomeAdjustmentAsync(incomeAdjustment, GetServiceHeader());
 
                 ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(incomeAdjustment.Type.ToString());
 
+                if (adjustments.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = adjustments.ErrorMessageResult;
+
+                    return View();
+                }
+
+                TempData["create"] = "Successfully created Income Adjustment";
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = incomeAdjustment.ErrorMessages;
+
+                TempData["createError"] = "Failed to create Income Adjustment";
 
                 return View("index");
             }
@@ -84,19 +105,34 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(string.Empty);
             var loanRequestDTO = await _channelService.FindIncomeAdjustmentAsync(id, GetServiceHeader());
 
             return View(loanRequestDTO);
         }
 
-         //[HttpGet]
-         //public async Task<JsonResult> GetLoanRequestsAsync()
-         //{
-         //    var LoanRequestsDTO = await _channelService.FindIncomeAdjustmentAsync(GetServiceHeader());
 
-         //    return Json(LoanRequestsDTO, JsonRequestBehavior.AllowGet);
-         //}
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(Guid id, IncomeAdjustmentDTO incomeAdjustmentDTO)
+        {
+            if (ModelState.IsValid)
+            {
+                ViewBag.IncomeAdjustmentTypeSelectList = GetIncomeAdjustmentTypeSelectList(incomeAdjustmentDTO.Type.ToString());
+
+                await _channelService.UpdateIncomeAdjustmentAsync(incomeAdjustmentDTO, GetServiceHeader());
+
+                TempData["edit"] = "Successfully edited Income Adjustment";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["editError"] = "Failed to edit Income Adjustment";
+
+                return View(incomeAdjustmentDTO);
+            }
+        }
     }
 }
 

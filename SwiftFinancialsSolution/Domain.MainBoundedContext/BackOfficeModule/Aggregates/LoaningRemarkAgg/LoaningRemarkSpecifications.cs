@@ -29,5 +29,14 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoaningRemarkAgg
 
             return specification;
         }
+
+        public static ISpecification<LoaningRemark> LoaningRemarkDescription(string Description)
+        {
+            Specification<LoaningRemark> specification = new TrueSpecification<LoaningRemark>();
+
+            specification &= new DirectSpecification<LoaningRemark>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

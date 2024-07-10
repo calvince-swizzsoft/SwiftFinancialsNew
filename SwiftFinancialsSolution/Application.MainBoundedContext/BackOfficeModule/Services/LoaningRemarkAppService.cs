@@ -37,17 +37,30 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var loaningRemark = LoaningRemarkFactory.CreateLoaningRemark(loaningRemarkDTO.Description);
+                    ISpecification<LoaningRemark> spec = LoaningRemarkSpecifications.LoaningRemarkDescription(loaningRemarkDTO.Description);
 
-                    if (loaningRemarkDTO.IsLocked)
-                        loaningRemark.Lock();
-                    else loaningRemark.UnLock();
+                    var matchedLoaningRemark = _loaningRemarkRepository.AllMatching(spec, serviceHeader);
 
-                    _loaningRemarkRepository.Add(loaningRemark, serviceHeader);
+                    if (matchedLoaningRemark != null && matchedLoaningRemark.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        loaningRemarkDTO.ErrorMessageResult = string.Format("Loaning Remark \"{0}\" already exists!", loaningRemarkDTO.Description.ToUpper());
+                        return loaningRemarkDTO;
+                    }
+                    else
+                    {
+                        var loaningRemark = LoaningRemarkFactory.CreateLoaningRemark(loaningRemarkDTO.Description);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (loaningRemarkDTO.IsLocked)
+                            loaningRemark.Lock();
+                        else loaningRemark.UnLock();
 
-                    return loaningRemark.ProjectedAs<LoaningRemarkDTO>();
+                        _loaningRemarkRepository.Add(loaningRemark, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return loaningRemark.ProjectedAs<LoaningRemarkDTO>();
+                    }
                 }
             }
             else return null;

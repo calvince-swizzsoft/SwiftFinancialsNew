@@ -26,7 +26,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "desc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 

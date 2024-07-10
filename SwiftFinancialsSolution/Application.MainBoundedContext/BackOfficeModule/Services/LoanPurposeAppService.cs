@@ -37,17 +37,30 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
             {
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
-                    var loanPurpose = LoanPurposeFactory.CreateLoanPurpose(loanPurposeDTO.Description);
+                    ISpecification<LoanPurpose> spec = LoanPurposeSpecifications.LoanPurposeDescription(loanPurposeDTO.Description);
 
-                    if (loanPurposeDTO.IsLocked)
-                        loanPurpose.Lock();
-                    else loanPurpose.UnLock();
+                    var matchedLoanPurpose = _loanPurposeRepository.AllMatching(spec, serviceHeader);
 
-                    _loanPurposeRepository.Add(loanPurpose, serviceHeader);
+                    if (matchedLoanPurpose != null && matchedLoanPurpose.Any())
+                    {
+                        //throw new InvalidOperationException(string.Format("Sorry, but Account Code {0} already exists!", chartOfAccountDTO.AccountCode));
+                        loanPurposeDTO.ErrorMessageResult = string.Format("Loan Purpose \"{0}\" already exists!", loanPurposeDTO.Description.ToUpper());
+                        return loanPurposeDTO;
+                    }
+                    else
+                    {
+                        var loanPurpose = LoanPurposeFactory.CreateLoanPurpose(loanPurposeDTO.Description);
 
-                    dbContextScope.SaveChanges(serviceHeader);
+                        if (loanPurposeDTO.IsLocked)
+                            loanPurpose.Lock();
+                        else loanPurpose.UnLock();
 
-                    return loanPurpose.ProjectedAs<LoanPurposeDTO>();
+                        _loanPurposeRepository.Add(loanPurpose, serviceHeader);
+
+                        dbContextScope.SaveChanges(serviceHeader);
+
+                        return loanPurpose.ProjectedAs<LoanPurposeDTO>();
+                    }
                 }
             }
             else return null;

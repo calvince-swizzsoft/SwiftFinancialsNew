@@ -4,6 +4,15 @@
     ViewBag.Title = "Create Treasury";
 
     var error = TempData["ErrorMsg"] as List<string>;
+
+    var refreshPage = TempData["RefreshPage"] as bool?;
+}
+
+@if (refreshPage.HasValue && refreshPage.Value)
+{
+    <script>
+        window.location.reload();
+    </script>
 }
 
 <!-- _Layout.cshtml or individual views -->

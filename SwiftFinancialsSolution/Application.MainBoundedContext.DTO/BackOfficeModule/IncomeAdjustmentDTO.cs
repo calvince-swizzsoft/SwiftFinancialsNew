@@ -48,5 +48,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

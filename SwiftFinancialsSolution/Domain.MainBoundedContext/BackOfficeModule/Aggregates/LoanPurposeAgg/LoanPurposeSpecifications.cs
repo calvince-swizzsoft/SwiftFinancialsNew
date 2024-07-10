@@ -29,5 +29,14 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoanPurposeAgg
 
             return specification;
         }
+
+        public static ISpecification<LoanPurpose> LoanPurposeDescription(string Description)
+        {
+            Specification<LoanPurpose> specification = new TrueSpecification<LoanPurpose>();
+
+            specification &= new DirectSpecification<LoanPurpose>(c => c.Description == Description);
+
+            return specification;
+        }
     }
 }

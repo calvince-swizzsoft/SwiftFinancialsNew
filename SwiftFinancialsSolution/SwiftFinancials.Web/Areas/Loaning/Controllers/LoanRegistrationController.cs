@@ -92,6 +92,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 loanCaseDTO.CustomerIndividualFirstName = customer.IndividualFirstName;
                 loanCaseDTO.CustomerIndividualLastName = customer.IndividualLastName;
+
+                loanCaseDTO.CustomerName = loanCaseDTO.CustomerIndividualFirstName + " " + loanCaseDTO.CustomerIndividualLastName;
+
                 loanCaseDTO.CustomerReference2 = customer.Reference2;
                 loanCaseDTO.CustomerReference1 = customer.Reference1;
                 loanCaseDTO.CustomerIndividualIdentityCardNumber = customer.IdentificationNumber;
