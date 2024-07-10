@@ -165,7 +165,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["LevySplitDTO"] = LevySplitDTOs;
 
             TempData["LevyDTO"] = levyDTO;
-
+            TempData["tPercentage"] = "";
             ViewBag.LevySplitDTOs = LevySplitDTOs;
 
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(levyDTO.ChargeType.ToString());

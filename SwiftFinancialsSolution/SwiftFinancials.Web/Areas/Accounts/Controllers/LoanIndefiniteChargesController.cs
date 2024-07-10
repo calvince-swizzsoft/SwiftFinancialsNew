@@ -76,6 +76,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(loanProductDTO);
         }
 
+        [HttpPost]
+        public async Task<ActionResult> select(ObservableCollection<LoanProductDTO> selectedRows)
+        {
+            await ServeNavigationMenus();
+
+            Session["LoansProductIds"] = selectedRows;
+
+            return View("Create", selectedRows);
+
+        }
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -112,16 +123,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, ObservableCollection<LoanProductDTO> selectedRows)
+        public async Task<ActionResult> Create(ObservableCollection<LoanProductDTO> selectedRow, RecurringBatchDTO recurringBatchDTO)
         {
+            var selectedRow1= new ObservableCollection<LoanProductDTO>();
             recurringBatchDTO.ValidateAll();
             int Priority = recurringBatchDTO.Priority;
+
+            var selected = Session["LoansProductIds"] as ObservableCollection<LoanProductDTO>;
             if (!recurringBatchDTO.HasErrors)
             {
 
                 //var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
                 //savingsProductDTO.AutomateLedgerFeeCalculation = true;
-                await _channelService.ChargeLoanDynamicFeesAsync(recurringBatchDTO, selectedRows, GetServiceHeader());
+                await _channelService.ChargeLoanDynamicFeesAsync(recurringBatchDTO, selectedRow, GetServiceHeader());
 
 
 

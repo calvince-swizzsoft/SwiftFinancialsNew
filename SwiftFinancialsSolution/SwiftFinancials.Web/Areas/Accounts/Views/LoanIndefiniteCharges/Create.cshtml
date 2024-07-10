@@ -39,7 +39,7 @@
                 </div>
 
                 <div class="ibox-content bg-whit">
-                    @using (Html.BeginForm("Create", "Loanindefinatecharge", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "LoanIndefiniteCharges", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -47,76 +47,73 @@
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 
-                            <div class="ibox-content">
-                                <div class="sk-spinner sk-spinner-double-bounce">
-                                    <div class="sk-double-bounce1"></div>
-                                    <div class="sk-double-bounce2"></div>
-                                </div>
 
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.Month, Months, new { @class = "form-control input-md" })
-                                                    @Html.ValidationMessageFor(model => model.Month)
-                                                </div>
-                                            </div>
-
-
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.PostingPeriodId)
-                                                @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period" } })
+                            <fieldset>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Month, Months, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Month)
                                             </div>
                                         </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
-                                                    @Html.ValidationMessageFor(model => model.Priority)
-                                                </div>
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.EnforceMonthValueDate, htmlAttributes: new { @class = "" })
-                                                @Html.LabelFor(model => model.EnforceMonthValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnforceMonthValueDate?" } })
-                                                @Html.ValidationMessageFor(model => model.EnforceMonthValueDate, "", new { @class = "text-danger" })
-                                            </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.PostingPeriodId)
+                                            @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period" } })
                                         </div>
                                     </div>
-                                </fieldset>
-
-
-                                <div class="table-responsive">
-                                    <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
-                                        <tbody>
-                                            <tr>
-                                                <td colspan="7" class="dataTables_empty">
-                                                    Loading data from server
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.CheckBoxFor(model => model.EnforceMonthValueDate, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.EnforceMonthValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnforceMonthValueDate?" } })
+                                            @Html.ValidationMessageFor(model => model.EnforceMonthValueDate, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
                                 </div>
-                                <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
-                                <label for="headerCheckbox" style="font-weight: bold; color: blue;">Select All</label>
 
+
+                            </fieldset>
+                        </div>
+
+
+
+                        <div class="ibox-content">
+                            <div class="sk-spinner sk-spinner-double-bounce">
+                                <div class="sk-double-bounce1"></div>
+                                <div class="sk-double-bounce2"></div>
                             </div>
-
-
-
-                            <div class="form-group form-group-sm">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <input type="button" value="Create" class="btn btn-primary" id="createButton" />
-                                </div>
+                            <div class="table-responsive">
+                                <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                    <tbody>
+                                        <tr>
+                                            <td colspan="7" class="dataTables_empty">
+                                                Loading data from server
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
+                            <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
+                            <label for="headerCheckbox" style="font-weight: bold; color: blue;">Select All</label>
+                        </div>
 
-
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Create" class="btn btn-primary" id="createButton" />
+                            </div>
                         </div>
                     }
                 </div>
@@ -124,7 +121,6 @@
         </div>
     </div>
 </div>
-
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -167,6 +163,127 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script>
+        // PostingPeriod typehead starts here
+        $('.PostingPeriodsLookup').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                    { query: query },
+                    function (PostingPeriods) {
+                        var newPostingPeriodsData = [];
+                        PostingPeriodsMap = {};
+                        $.each(PostingPeriods, function (i, PostingPeriod) {
+                            newPostingPeriodsData.push(PostingPeriod.Description);
+                            PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                        });
+                        process(newPostingPeriodsData);
+                        return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var postingPeriodId = "";
+                PostingPeriodId = PostingPeriodsMap[item].Id;
+                $('#PostingPeriodId').val(PostingPeriodId);
+                return item;
+            }
+        });
+
+
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+
+        });
+    </script>
+
+
+
+
+
+
+
+
+
 
 
     <script type="text/javascript">
@@ -195,7 +312,7 @@ $(document).ready(function () {
         });
 
         // Event listener for individual row checkboxes
-        $('#savingsProductsGrid').on('change', '.rowCheckbox', function () {
+        $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
             // Save the state of the checkbox to local storage
             var checkboxKey = $(this).attr('id');
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
@@ -236,8 +353,6 @@ $(document).ready(function () {
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
-            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
-            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
             var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '"';
             if (aData.AutomateLedgerFeeCalculation === true) {
                 checkboxHTML += ' checked';
@@ -291,72 +406,49 @@ $(document).ready(function () {
             saveCheckboxState('headerCheckbox', false);
         }
     });
-});
 
-
-
-
-         //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
-                        { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
-                    return item;
-                }
-            });
-
-
-     $('#createButton').click(function () {
-            var selectedRowsData = [];
-            $('.rowCheckbox:checked').each(function () {
-                var rowData = {
-                    Id: $(this).data('id'),
-                    // Add other properties you want to include
-                };
-                selectedRowsData.push(rowData);
-            });
-
-            // Send the selected rows data to the backend using AJAX
-            $.ajax({
-                url: '/Accounts/LoanIndefiniteCharges/Create',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(selectedRowsData),
-                success: function (response) {
-                    // Handle success response
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response
-                }
-            });
+    // Function to gather form data and convert it to JSON
+    function getFormData() {
+        var formData = {};
+        $('#LoanIndefiniteChargeForm').find('input, select').each(function () {
+            formData[$(this).attr('name')] = $(this).val();
         });
+        return formData;
+    }
+
+    $('#createButton').click(function () {
+        var selectedRowsData = [];
+        $('.rowCheckbox:checked').each(function () {
+            var rowData = {
+                Id: $(this).data('id'),
+                // Add other properties you want to include
+            };
+            selectedRowsData.push(rowData);
+        });
+
+        var formData = getFormData(); // Get form data
+
+        var dataToSend = {
+            FormData: formData,
+            SelectedRows: selectedRowsData
+        };
+
+        // Send the selected rows data and form data to the backend using AJAX
+        $.ajax({
+            url: '/Accounts/LoanIndefiniteCharges/Create',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(dataToSend),
+            success: function (response) {
+                // Handle success response
+            },
+            error: function (xhr, status, error) {
+                // Handle error response
+            }
+        });
+    });
+
+});
     </script>
+
 }

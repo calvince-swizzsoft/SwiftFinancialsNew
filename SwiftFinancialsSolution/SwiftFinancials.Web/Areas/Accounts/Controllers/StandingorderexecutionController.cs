@@ -17,7 +17,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
     {
         public async Task<ActionResult> Create(Guid? Id)
         {
-            
+            await ServeNavigationMenus();
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
@@ -48,7 +48,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, ObservableCollection<LoanProductDTO> selectedRows/*, List<SavingsProductDTO> selectedRows1, List<InvestmentProductDTO> selectedRows2, List<EmployeeDTO> selectedRows3*/)
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, ObservableCollection<LoanProductDTO> selectedRows, List<SavingsProductDTO> selectedRows1, List<InvestmentProductDTO> selectedRows2, List<EmployeeDTO> selectedRows3)
         {
 
 

@@ -685,7 +685,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount applied must be greater than zero!")]
         public decimal TotalValue { get; set; }
 
-
+        public List<SavingsProductDTO> savingsProduct { get; set; }
         public List<CustomerDTO> customerList { get; set; }
 
     }
