@@ -52,16 +52,16 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -306,8 +306,13 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Areas\Accounts\AccountsAreaRegistration.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AddGeneralLedgerController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AlternatechannelController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\AlternatePeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_DisbursementController.cs" />
@@ -317,8 +322,13 @@
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_WireTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BudgetEntryController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\Charges_LeviesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChartOfAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
@@ -326,8 +336,10 @@
     <Compile Include="Areas\Accounts\Controllers\CustomerAccountstandingorderController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\debitTypeSavingsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DirectDebitController.cs" />
     <Compile Include="Areas\Accounts\Controllers\FixedDepositTypeController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IndefiniteChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
@@ -337,10 +349,14 @@
     <Compile Include="Areas\Accounts\Controllers\LoanInterestCapitalizationController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LoanProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ManagementController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\periodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SavingsDynamicFeesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\StandingorderexecutionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TiersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
@@ -600,6 +616,7 @@
     <Content Include="Images\bank.jpg" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
+    <Content Include="Images\table.png" />
     <Content Include="Reports\Report.aspx" />
     <Content Include="Reports\ReportViewer.aspx" />
     <Content Include="Scripts\app\inspinia.js" />
@@ -842,7 +859,6 @@
     <Content Include="Areas\Accounts\Views\InsuranceCompany\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InvestmentProduct\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\Holiday\Details.cshtml" />
     <Content Include="Areas\Registry\Views\WithdrawalNotification\Index.cshtml" />
@@ -1011,8 +1027,48 @@
     <Content Include="Areas\Accounts\Views\Wellknowncharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\TextAlertCharges\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InvestmentProduct\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Tiers\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Tiers\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\PostingPeriod\Close.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Register\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Register\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\GLAccount\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\ClosePostingPeriod\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatechannelManagement\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Linking.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\History.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Levies.cshtml" />
+    <Content Include="Areas\Accounts\Views\Charges_Levies\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\Register\Details.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Directors.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\Delegates.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatechannelManagement\History.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Closing\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Treasuries\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1477,8 +1533,11 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Accounts\Data\" />
+    <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
     <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
+    <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
+    <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />

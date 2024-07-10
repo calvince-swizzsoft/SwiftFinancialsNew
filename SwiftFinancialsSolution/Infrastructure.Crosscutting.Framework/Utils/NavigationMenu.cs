@@ -131,7 +131,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Customer Accounts", Icon="fa fa-users", Code = 0x000059D8 + 40},
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Register", Icon="fa fa-database", ControllerName="CoA_Register", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 41},
+                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Register", Icon="fa fa-database", ControllerName="CustomerAccounts", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 41},
                 new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Management", Icon="fa fa-tasks", ControllerName="CoA_Management", ActionName="CustomerManagement", AreaName = "Accounts", Code = 0x000059D8 + 42},
                 new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Signatories", Icon="fa fa-bars", ControllerName="CoA_Signatories", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 43},
                 new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Cheque Books", Icon="fa fa-bars", ControllerName="CoA_ChequeBooks", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 44},
