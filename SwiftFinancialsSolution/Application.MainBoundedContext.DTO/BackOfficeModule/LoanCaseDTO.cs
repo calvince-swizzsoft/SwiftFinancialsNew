@@ -839,7 +839,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public bool LoanRegistrationCreateStandingOrderOnLoanAudit { get; set; }
 
         [DataMember]
-        [Display(Name = "Maximum Amount Percentage?")]
+        [Display(Name = "Maximum Amount Percentage")]
         public double MaximumAmountPercentage { get; set; }
 
         [DataMember]
@@ -1025,8 +1025,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         public IList<LoanGuarantorDTO> LoanGuarantors { get; set; }
 
-        public LoanGuarantorDTO LoanGuarantor { get; set; }
-
         public List<EmployerDTO> Employers { get; set; }
 
         public EmployerDTO Employer { get; set; }
@@ -1040,5 +1038,13 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         public List<CustomerAccountDTO> CustomerAccountsDTO { get; set; }
         public CustomerAccountDTO SalaryGroupEntry { get; set; }
+
+
+
+        [DataMember]
+        public LoanGuarantorDTO LoanGuarantor { get; set; }
+
+        [DataMember]
+        public CustomerDTO Customer { get; set; }
     }
 }

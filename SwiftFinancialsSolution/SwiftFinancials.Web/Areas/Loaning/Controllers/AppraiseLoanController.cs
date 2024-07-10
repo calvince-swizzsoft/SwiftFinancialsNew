@@ -126,7 +126,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else
             {
-                var errorMessages = loanDTO.ErrorMessages;
+                var errorMessages = loanDTO.ErrorMessages.ToString();
+
+                TempData["BugdetBalance"] = errorMessages;
+                
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
                 return View(loanCaseDTO);
             }

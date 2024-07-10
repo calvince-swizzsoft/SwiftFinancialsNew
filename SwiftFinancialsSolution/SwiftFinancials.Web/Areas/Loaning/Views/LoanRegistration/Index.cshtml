@@ -168,9 +168,21 @@
                     var cancellationUrl = '<a  href="/loaning/LoanRegistration/cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
                     var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
 
-                    //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;&nbsp;&nbsp;' + editUrl + ''/* + attachGuarantorUrl*/);
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
+                            </div>
+                        </div>`;
+
+
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
@@ -178,9 +190,11 @@
                 "aoColumns": [
                     { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
-                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%"},
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%"},
                     { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%"},
+                    { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "20%", "bSortable": false }],
