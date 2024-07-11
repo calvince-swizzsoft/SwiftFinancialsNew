@@ -184,7 +184,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductId = (Guid)Session["loanProductId"];
                 loanCaseDTO.LoanProductDescription = Session["loanProductDescription"].ToString();
 
-                loanCaseDTO.LoanInterestCalculationMode=Convert.ToInt32(Session["interestCalculationMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["interestCalculationMode"].ToString());
                 loanCaseDTO.LoanInterestAnnualPercentageRate = Convert.ToDouble(Session["annualPercentageRate"].ToString());
             }
 
@@ -480,6 +480,42 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
         public async Task<ActionResult> GuarantorLookUp(Guid? id, LoanCaseDTO loanCaseDTO)
         {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var guarantor = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            if (guarantor != null)
+            {
+                loanCaseDTO.GuarantorId = guarantor.Id;
+                loanCaseDTO.GuarantorName = guarantor.IndividualFirstName + " " + guarantor.IndividualLastName;
+                loanCaseDTO.GuarantorEmployerId = (Guid)guarantor.StationZoneDivisionEmployerId;
+                loanCaseDTO.GuarantorEmployerDescription = guarantor.StationZoneDivisionEmployerDescription;
+                loanCaseDTO.GuarantorStationId = (Guid)guarantor.StationId;
+                loanCaseDTO.GuarantorStationDescription = guarantor.StationDescription;
+                loanCaseDTO.GuarantorIdentificationNumber = guarantor.IdentificationNumber;
+                loanCaseDTO.GuarantorReference1 = guarantor.Reference1;
+                loanCaseDTO.GuarantorReference2 = guarantor.Reference2;
+                loanCaseDTO.GuarantorReference3 = guarantor.Reference3;
+
+                Session["GuarantorId"] = loanCaseDTO.GuarantorId;
+                Session["GuarantorName"] = loanCaseDTO.GuarantorName;
+                Session["GuarantorEmployerId"] = loanCaseDTO.GuarantorEmployerId;
+                Session["GuarantorEmployerDescription"] = loanCaseDTO.GuarantorEmployerDescription;
+                Session["GuarantorStationId"] = loanCaseDTO.GuarantorStationId;
+                Session["GuarantorStationDescription"] = loanCaseDTO.GuarantorStationDescription;
+                Session["GuarantorIdentificationNumber"] = loanCaseDTO.GuarantorIdentificationNumber;
+                Session["GuarantorReference1"] = loanCaseDTO.GuarantorReference1;
+                Session["GuarantorReference2"] = loanCaseDTO.GuarantorReference2;
+                Session["GuarantorReference3"] = loanCaseDTO.GuarantorReference3;
+
+            }
+
             return View("create", loanCaseDTO);
         }
     }

@@ -164,7 +164,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
         [DataMember]
-        [Display(Name ="Customer")]
+        [Display(Name = "Customer")]
         public string CustomerName { get; set; }
 
 
@@ -1066,15 +1066,57 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Customer")]
-        public string GuarantorName { get; set; } 
-        
+        public string GuarantorName { get; set; }
+
         [DataMember]
         [Display(Name = "Station")]
         [ValidGuid]
         public Guid GuarantorStationId { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Station")]
         public string GuarantorStationDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        [ValidGuid]
+        public Guid GuarantorEmployerId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string GuarantorEmployerDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Identification Number")]
+        public string GuarantorIdentificationNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Account Number")]
+        public string GuarantorReference1 { get; set; }
+
+        [DataMember]
+        [Display(Name = "Membership Number")]
+        public string GuarantorReference2 { get; set; }
+
+        [DataMember]
+        [Display(Name = "Personal File Number")]
+        public string GuarantorReference3 { get; set; }
+
+        [DataMember]
+        [Display(Name = "Appraisal Factor")]
+        public int AppraisalFactor { get; set; }
+
+        [DataMember]
+        [Display(Name = "Total Shares")]
+        public decimal GuarantorTotalshares { get; set; }
+
+        [DataMember]
+        [Display(Name = "Committed Shares")]
+        public decimal GuarantorCommittedShares { get; set; }
+
+        [DataMember]
+        [Display(Name = "Amount Guaranteed")]
+        public decimal GuarantorAmountGuaranteed { get; set; }
     }
 }
