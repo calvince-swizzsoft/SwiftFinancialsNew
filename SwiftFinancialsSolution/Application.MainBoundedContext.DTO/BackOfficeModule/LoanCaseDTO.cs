@@ -1046,5 +1046,23 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public CustomerDTO Customer { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        [ValidGuid]
+        public Guid GuarantorId { get; set; }
+
+        [DataMember]
+        [Display(Name = "First Name")]
+        public string GuarantorIndividualFirstName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Other Names")]
+        public string GuarantorIndividualLastName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        public string GuarantorName { get; set; }
     }
 }

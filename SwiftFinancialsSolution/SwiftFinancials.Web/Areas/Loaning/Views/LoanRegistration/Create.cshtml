@@ -46,7 +46,7 @@
         }
 
     .tab-content, .sub-tab-content {
-        max-height: 500px; /* Adjust the height as needed */
+        max-height: 800px; /* Adjust the height as needed */
         overflow-y: auto;
         padding: 10px;
         border: 1px solid #ccc; /* Borderline around tab content */
@@ -147,18 +147,18 @@
                         <fieldset>
                             @*Row 1*@
                             <div class="row">
-                                <div class="col-md-6 form-group">
+                                <div class="col-md-4 form-group">
                                     @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer as Loanee..." })
+                                        @Html.TextBoxFor(model => model.CustomerName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Loanee..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-5 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerStationZoneDivisionEmployerDescription)
@@ -168,7 +168,7 @@
                                        {
                                            @class = "form-control required",
                                            @readonly = "readonly",
-                                           @placeholder = "Employer"
+                                           @placeholder = "Employer..."
                                        }
                                    })
                                         @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
@@ -186,7 +186,7 @@
                                        {
                                            @class = "form-control required",
                                            @readonly = "readonly",
-                                           @placeholder = "Station"
+                                           @placeholder = "Station..."
                                        }
                                    })
                                     </div>
@@ -205,7 +205,7 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control required",
-                                                @placeholder = "Account number",
+                                                @placeholder = "Account number...",
                                                 @readonly = "readonly"
     }
     })
@@ -222,7 +222,7 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control required",
-                                                @placeholder = "Membership number",
+                                                @placeholder = "Membership number...",
                                                 @readonly = "readonly"
     }
     })
@@ -238,7 +238,7 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control",
-                                                @placeholder = "Personal File Number",
+                                                @placeholder = "Personal File Number...",
                                                 @readonly = "readonly"
     }
     })
@@ -269,7 +269,7 @@
                                             htmlAttributes = new
                                             {
                                                 @class = "form-control required",
-                                                @placeholder = "Section",
+                                                @placeholder = "Section...",
                                                 @readonly = "readonly"
                                             }
                                         })
@@ -280,7 +280,7 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanInterestCalculationMode, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.LoanInterestCalculationMode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -374,8 +374,8 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.AmountApplied)
                                         @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs.0.00" } })
-                                        @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -390,7 +390,6 @@
                                                 @placeholder = "Enter Number of Days..."
                                             }
                                         })
-                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
@@ -420,7 +419,7 @@
                             </div>
 
 
-
+                            @*Tabs*@
                             <div class="tab-header">
                                 <div class="tab-button active" onclick="openTab(event, 'section1')">
                                     <i class="fa fa-table" aria-hidden="true"></i> Standing Orders
@@ -440,45 +439,42 @@
                             </div>
 
                             <div id="section1" class="tab active">
-                                <!--Standing Orders-->
+                                <!-- Standing Orders -->
                                 <div class="tab-content">
                                     <h3 style="color: cadetblue;">Standing Orders</h3>
                                 </div>
                             </div>
 
                             <div id="section2" class="tab">
-                                <!--Income History-->
+                                <!-- Income History -->
                                 <div class="sub-tab-header">
                                     <div class="sub-tab-button" onclick="openSubTab(event, 'payouts')">Payouts</div>
                                     <div class="sub-tab-button" onclick="openSubTab(event, 'salary')">Salary</div>
                                 </div>
                                 <div id="payouts" class="sub-tab-content">
                                     <h3 style="color: cadetblue;">Payouts Section</h3>
-
                                 </div>
                                 <div id="salary" class="sub-tab-content">
                                     <h3 style="color: cadetblue;">Salary Section</h3>
-
                                 </div>
                             </div>
 
                             <div id="section3" class="tab">
-                                <!--Loan Applications-->
+                                <!-- Loan Applications -->
                                 <div class="tab-content">
                                     <h3 style="color: cadetblue;">Loan Applications</h3>
                                 </div>
                             </div>
 
                             <div id="section4" class="tab">
-                                <!--Collaterals-->
+                                <!-- Collaterals -->
                                 <div class="tab-content">
                                     <h3 style="color: cadetblue;">Collaterals</h3>
                                 </div>
                             </div>
 
-
                             <div id="section5" class="tab">
-                                <!--Loan Guarantors Section-->
+                                <!-- Loan Guarantors Section -->
                                 <div class="tab-content">
                                     <h3 style="color: cadetblue;">Attach Loan Guarantors</h3>
                                     <br />
@@ -511,7 +507,6 @@
                                                 </div>
                                             </div>
                                         </div>
-
 
                                         <div class="row">
                                             <div class="col-md-3 form-group">
@@ -551,7 +546,7 @@
                                             <div class="col-md-3 form-group">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.LoanGuarantor.AppraisalFactor, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanGuarantor.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "" } })
+                                                    @Html.EditorFor(model => model.LoanGuarantor.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "eg. 1,2..." } })
                                                     @Html.ValidationMessageFor(model => model.LoanGuarantor.AppraisalFactor, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -591,7 +586,6 @@
                                         </div>
 
                                         <br />
-
 
                                         <row>
                                             <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
@@ -635,6 +629,7 @@
                                 </div>
                             </div>
 
+                            @*Tabs End*@
 
                             <br />
 
@@ -644,10 +639,19 @@
                                     @Html.LabelFor(model => model.RegistrationRemarkId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.RegistrationRemarkId)
-                                        @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer as Loanee..." })
+                                        @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Loaning Remarks..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#remarkLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Enter text..." } })
                                     </div>
                                 </div>
                             </div>
@@ -813,6 +817,34 @@
 
 
 
+
+
+<div class="modal  fade" id="GuarantorLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Guarantor Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="guarantorsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -824,7 +856,13 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
+
     <script>
+        // Initialize variables to track the active tab and modal status
+        var activeTab = localStorage.getItem('activeTab') || 'section1';
+        var isModalOpened = localStorage.getItem('isModalOpened') === 'true';
+
+        // Function to open a tab and set it as active
         function openTab(evt, tabName) {
             var i, tabcontent, tabbuttons;
 
@@ -845,8 +883,13 @@
             document.getElementById(tabName).style.display = "block";
             document.getElementById(tabName).classList.add("active");
             evt.currentTarget.classList.add("active");
+
+            // Update the active tab
+            activeTab = tabName;
+            localStorage.setItem('activeTab', tabName);
         }
 
+        // Function to open a sub-tab and set it as active
         function openSubTab(evt, subTabName) {
             var i, subTabContent, subTabButtons;
 
@@ -869,14 +912,49 @@
             evt.currentTarget.classList.add("active");
         }
 
-        // Initial setup to show the first tab and make it active
-        document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("section1").style.display = "block";
-            document.getElementById("section1").classList.add("active");
-            document.querySelector(".tab-header .tab-button").classList.add("active");
+        // Ensure active tab is maintained when opening the modal
+        document.getElementById("GuarantorLookupModal").addEventListener("show.bs.modal", function () {
+            isModalOpened = true;
+            activeTab = 'section5'; // Ensure section5 is set as the active tab
+            localStorage.setItem('activeTab', 'section5');
+            localStorage.setItem('isModalOpened', 'true');
         });
 
+        // Initial setup to show the active tab on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            var tab = document.getElementById(activeTab);
+            if (tab) {
+                tab.style.display = "block";
+                tab.classList.add("active");
+
+                var tabButton = document.querySelector(`.tab-header .tab-button[onclick="openTab(event, '${activeTab}')"]`);
+                if (tabButton) {
+                    tabButton.classList.add("active");
+                }
+            }
+
+            // Ensure section1 is inactive if section5 is active after modal open
+            if (activeTab === 'section5') {
+                var section1 = document.getElementById('section1');
+                if (section1) {
+                    section1.style.display = "none";
+                    section1.classList.remove("active");
+
+                    var section1Button = document.querySelector('.tab-header .tab-button[onclick="openTab(event, \'section1\')"]');
+                    if (section1Button) {
+                        section1Button.classList.remove("active");
+                    }
+                }
+
+                localStorage.removeItem('isModalOpened'); // Clear the modal flag after it has been handled
+            }
+        });
     </script>
+
+
+
+
+
 
 
     <script>
@@ -969,7 +1047,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRequest/Customers/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/loaning/LoanRegistration/LoaneeLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
@@ -1026,7 +1104,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRequest/LoanProducts/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/loaning/LoanRegistration/LoanProductLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(5)', nRow).html(dt_Created);
                     $('td:eq(6)', nRow).html(selectUrl);
@@ -1131,7 +1209,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRequest/LoanCases/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/loaning/LoanRegistration/LoanPurposeLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(2)', nRow).html(dt_Created);
                     $('td:eq(3)', nRow).html(selectUrl);
@@ -1181,7 +1259,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRequest/LoanCases/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/loaning/LoanRegistration/SavingsProductLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(6)', nRow).html(dt_Created);
                     $('td:eq(7)', nRow).html(selectUrl);
@@ -1234,7 +1312,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRequest/LoanCases/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/loaning/LoanRegistration/LoaningRemarksLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(2)', nRow).html(dt_Created);
                     $('td:eq(3)', nRow).html(selectUrl);
@@ -1261,5 +1339,101 @@
         $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
         $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
     });
+
+
+
+
+        // Loan Guarantors Look up
+         $('#guarantorsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Loaning/loanregistration/GuarantorLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+                "aoColumns": [
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "15%" },
+                    { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "4%" },
+                    //{ "mDataProp": "CustomerAddressMobileLine", "sTitle": "Mobile Line Number", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
+                "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = companiesGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('#CustomerFullName').val(LoanProductsMap[item].CustomerFullName);
+        //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CompaniesLookup').modal('hide');
+    });
+
+
+            //guarantor typehead starts here
+            $('.CompaniesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetCompaniesAsync", "Customer", new { Area = "Registry" })',
+                        { query: query },
+                        function (Companies) {
+                            var newCompaniesData = [];
+                            CompaniesMap = {};
+                            $.each(Companies, function (i, Company) {
+                                newCompaniesData.push(Company.Description);
+                                CompaniesMap[Company.Description] = Company;
+                            });
+                            process(newCompaniesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var CompanyId = "";
+                    CompanyId = CompaniesMap[item].Id;
+                    $('#CompanyId').val(CompanyId);
+                    $('#GuarantorByCustomerId').val(CompanyId);
+
+                    //$('#Employers[0].Description').val(CompaniesMap[item].Employers[0].Description);
+                    return item;
+                }
+            });
+
     </script>
 }
