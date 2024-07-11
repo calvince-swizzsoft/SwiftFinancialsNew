@@ -420,63 +420,68 @@
 
 
                             @*Tabs*@
-                            <div class="tab-header">
-                                <div class="tab-button active" onclick="openTab(event, 'section1')">
-                                    <i class="fa fa-table" aria-hidden="true"></i> Standing Orders
-                                </div>
-                                <div class="tab-button" onclick="openTab(event, 'section2')">
-                                    <i class="fa fa-table" aria-hidden="true"></i> Income History
-                                </div>
-                                <div class="tab-button" onclick="openTab(event, 'section3')">
-                                    <i class="fa fa-table" aria-hidden="true"></i> Loan Applications
-                                </div>
-                                <div class="tab-button" onclick="openTab(event, 'section4')">
-                                    <i class="fa fa-table" aria-hidden="true"></i> Collaterals
-                                </div>
-                                <div class="tab-button" onclick="openTab(event, 'section5')">
-                                    <i class="fa fa-table" aria-hidden="true"></i> Guarantors
-                                </div>
+                        <div class="tab-header" style="color: black;">
+                            <div class="tab-button" onclick="openTab(event, 'section5')">
+                                <i class="fa fa-table" aria-hidden="true"></i> Guarantors
                             </div>
+
+                            <div class="tab-button active" onclick="openTab(event, 'section1')">
+                                <i class="fa fa-table" aria-hidden="true"></i> Standing Orders
+                            </div>
+                            <div class="tab-button" onclick="openTab(event, 'section2')">
+                                <i class="fa fa-table" aria-hidden="true"></i> Income History
+                            </div>
+                            <div class="tab-button" onclick="openTab(event, 'section3')">
+                                <i class="fa fa-table" aria-hidden="true"></i> Loan Applications
+                            </div>
+                            <div class="tab-button" onclick="openTab(event, 'section4')">
+                                <i class="fa fa-table" aria-hidden="true"></i> Collaterals
+                            </div>
+                        </div>
 
                             <div id="section1" class="tab active">
                                 <!-- Standing Orders -->
                                 <div class="tab-content">
-                                    <h3 style="color: cadetblue;">Standing Orders</h3>
+                                    <h2 style="color: cadetblue;">Standing Orders</h2>
                                 </div>
                             </div>
 
                             <div id="section2" class="tab">
                                 <!-- Income History -->
-                                <div class="sub-tab-header">
+                                <div class="sub-tab-header" style="color: black;">
                                     <div class="sub-tab-button" onclick="openSubTab(event, 'payouts')">Payouts</div>
                                     <div class="sub-tab-button" onclick="openSubTab(event, 'salary')">Salary</div>
                                 </div>
                                 <div id="payouts" class="sub-tab-content">
-                                    <h3 style="color: cadetblue;">Payouts Section</h3>
+                                    <h2 style="color: cadetblue;">Payouts Section</h2>
                                 </div>
                                 <div id="salary" class="sub-tab-content">
-                                    <h3 style="color: cadetblue;">Salary Section</h3>
+                                    <h2 style="color: cadetblue;">Salary Section</h2>
                                 </div>
                             </div>
 
                             <div id="section3" class="tab">
                                 <!-- Loan Applications -->
                                 <div class="tab-content">
-                                    <h3 style="color: cadetblue;">Loan Applications</h3>
+                                    <h2 style="color: cadetblue;">Loan Applications</h2>
                                 </div>
                             </div>
 
                             <div id="section4" class="tab">
                                 <!-- Collaterals -->
                                 <div class="tab-content">
-                                    <h3 style="color: cadetblue;">Collaterals</h3>
+                                    <h2 style="color: cadetblue;">Collaterals</h2>
                                 </div>
                             </div>
 
                             <div id="section5" class="tab">
                                 <!-- Loan Guarantors Section -->
                                 <div class="tab-content">
-                                    <h3 style="color: cadetblue;">Attach Loan Guarantors</h3>
+                                    <h2 style="color: cadetblue;">
+                                        Attach Loan Guarantors @*<a href="#" data-toggle="popover" title="Guarantors Tab" data-content="For loans needing guarantors, use this section to add them.">
+                                            <i class="fa fa-question" aria-hidden="true"></i>
+                                        </a>*@
+                                    </h2>
                                     <br />
                                     <fieldset>
                                         <div class="row">
@@ -817,8 +822,6 @@
 
 
 
-
-
 <div class="modal  fade" id="GuarantorLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -950,9 +953,6 @@
             }
         });
     </script>
-
-
-
 
 
 
