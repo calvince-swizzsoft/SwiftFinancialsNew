@@ -75,10 +75,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            journalVoucherDTO.ValidateAll();
-
-            if (!journalVoucherDTO.HasErrors)
-
                 JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
 
             if (JournalVoucherEntryDTOs == null)
@@ -87,6 +83,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
             {
                 journalVoucherEntryDTO.JournalVoucherId = journalVoucherDTO.Id;
+                journalVoucherEntryDTO.BranchId = journalVoucherDTO.BranchId;
                 journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
                 journalVoucherEntryDTO.ChartOfAccountId = journalVoucherDTO.Id;//Temporary
                 journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
@@ -117,16 +114,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             Guid journalVoucherEntryChartOfAccountId = journalVoucherDTO.ChartOfAccountId;
 
-            var valuedate = Request["valuedate"];
-            if (!string.IsNullOrEmpty(valuedate))
-            {
-                journalVoucherDTO.ValueDate = DateTime.ParseExact(valuedate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-            }
-            else
-            {
-                // Handle the case  where "valuedate" is null or empty.
-            }
-
+           
             journalVoucherDTO.ValidateAll();
 
             if (!journalVoucherDTO.HasErrors)

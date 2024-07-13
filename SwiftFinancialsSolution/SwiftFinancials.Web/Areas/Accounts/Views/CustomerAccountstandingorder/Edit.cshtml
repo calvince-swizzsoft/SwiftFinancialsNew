@@ -2,7 +2,7 @@
 @{
     /**/
 
-    ViewBag.Title = "Create Standing order execution";
+    ViewBag.Title = "Edit Standing order execution";
 
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
     var Months = ViewBag.MonthsSelectList as List<SelectListItem>;
@@ -19,7 +19,7 @@
 
 }
 
-@using (Html.BeginForm("Create", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Get))
+@using (Html.BeginForm("Edit", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Get))
 {
 
 
@@ -41,10 +41,10 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Create", "CustomerAccountstandingorder", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Edit", "CustomerAccountstandingorder", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -83,7 +83,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Edit", "CustomerAccountstandingorder", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,7 +14,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class CoA_RegisterController : MasterController
+    public class CoA_SignatoriesController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -53,14 +54,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
-            return View(customerAccountDTO);
+           var p= await _channelService.FindCustomerAccountSignatoriesByCustomerAccountIdAsync(customerAccountDTO.Id, GetServiceHeader());
+            ViewBag.customerAccountSignatoryDTOs = p;
+            TempData["customerAccountSignatoryDTOs"] = p;
+            return View("Details");
         }
 
-        public async Task<ActionResult> Create(Guid? id)
+
+        public async Task<ActionResult> Create(Guid? id, CustomerAccountSignatoryDTO customerAccountSignatoryDTO)
         {
             await ServeNavigationMenus();
 
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+            ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
 
             Guid parseId;
 
@@ -69,73 +78,67 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
-            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+            var benefactorAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
 
-            if (customer != null)
+            if (customerAccountSignatoryDTO != null)
             {
-
-                customerAccountDTO.CustomerId = customer.Id;
-                customerAccountDTO.CustomerIndividualFirstName = customer.FullName;
-                customerAccountDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                customerAccountDTO.CustomerSerialNumber = customer.SerialNumber;
-                customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationDescription;
-                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                customerAccountDTO.CustomerReference1 = customer.Reference1;
-                customerAccountDTO.CustomerReference2 = customer.Reference2;
-                customerAccountDTO.CustomerReference3 = customer.Reference3;
-                customerAccountDTO.BranchId = customer.BranchId;
-                customerAccountDTO.BranchDescription = customer.BranchDescription;
-
+                customerAccountSignatoryDTO.CustomerAccountId = benefactorAccounts.Id;
+                customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
+                customerAccountSignatoryDTO.Salutation = benefactorAccounts.CustomerIndividualSalutation ;
+                customerAccountSignatoryDTO.AddressEmail = benefactorAccounts.CustomerAddressEmail;
+               
 
             }
 
-            return View(customerAccountDTO);
-        }
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
-        public async Task<ActionResult> SavingsProduct(SavingsProductDTO savingsProductDTO, ObservableCollection<SavingsProductDTO> savingProductRowData)
-        {
-            Session["savingsProductIds"] = savingProductRowData;
-            return View("Create", savingProductRowData);
-        }
-
-        public async Task<ActionResult> LoansProduct(ObservableCollection<LoanProductDTO> loansProductRowData)
-        {
-            Session["loansProductIds"] = loansProductRowData;
-            return View("Create", loansProductRowData);
-        }
-
-        public async Task<ActionResult> InvestmentsProduct(ObservableCollection<InvestmentProductDTO> investmentProductRowData)
-        {
-            Session["investmentsProductIds"] = investmentProductRowData;
-            return View("Create", investmentProductRowData);
+            return View(customerAccountSignatoryDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
+        public async Task<ActionResult> Create(CustomerAccountSignatoryDTO customerBindingModel)
         {
 
+            customerBindingModel.ValidateAll();
 
-            customerAccountDTO.ValidateAll();
-
-            if (!customerAccountDTO.HasErrors)
+            if (!customerBindingModel.HasErrors)
             {
-                var result = await _channelService.AddCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
-                if (result.ErrorMessageResult != null)
-                {
-                    TempData["ErrorMsg"] = result.ErrorMessageResult;
-                    await ServeNavigationMenus();
-                    return View();
-                }
-                TempData["AlertMessage"] = "Customer Account created successfully";
+                await _channelService.AddCustomerAccountSignatoryAsync(customerBindingModel, GetServiceHeader());
+                TempData["AlertMessage"] = "Customer Account signatory created successfully";
                 return RedirectToAction("Index");
             }
+            else
+            {
+                var errorMessages = customerBindingModel.ErrorMessages;
 
-            TempData["Error"] = "Failed to create Customer Account";
-            return View("Create");
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.CustomerAccountCustomerType.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IdentityCardType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.Salutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.Gender.ToString());
+
+
+                return View(customerBindingModel);
+            }
         }
+
+
+
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {

@@ -54,10 +54,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(debitBatchDTO);
         }
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
-            await ServeNavigationMenus();
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+            await ServeNavigationMenus();
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindDebitBatchAsync(parseId, GetServiceHeader());
+
+            DebitBatchDTO customerAccountDTO = new DebitBatchDTO();
+
+            if (customer != null)
+            {
+
+                customerAccountDTO.DebitTypeDescription = customer.DebitTypeDescription;
+                customerAccountDTO.DebitTypeId = customer.DebitTypeId;
+            }
+
             return View();
         }
 
