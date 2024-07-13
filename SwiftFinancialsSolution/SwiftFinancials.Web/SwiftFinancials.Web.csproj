@@ -967,7 +967,6 @@
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashManagement\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Approval.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
@@ -1075,6 +1074,7 @@
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Edit.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Register\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />

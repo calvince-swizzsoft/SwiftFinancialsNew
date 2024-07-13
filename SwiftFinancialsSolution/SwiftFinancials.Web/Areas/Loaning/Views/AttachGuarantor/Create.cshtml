@@ -32,10 +32,7 @@
         <div class="col-md-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h2>Guarantor Management</h2>
-
-                    @Html.ActionLink("Back", "Create", "AttachGuarantor", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
-
+                    <h2>Attach Guarantor</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -80,17 +77,23 @@
                             <legend>Customer Account Linkage</legend>
                             <div class="row">
                                 <div class="col-md-3 form-group">
-                                    @Html.LabelFor(model => model.LoanCase.CaseNumber, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCase.CaseNumber, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.LoanCase.Id)
-                                        @Html.TextBoxFor(model => model.LoanCase.CaseNumber, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Account..." })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#companyLookupModal" @*onclick="captureDetails();"*@><span class="fa fa-search"></span></a>
-                                        </span>
+                                        @Html.EditorFor(model => model.LoanCase.CaseNumber, new
+                                   {
+                                       htmlAttributes = new
+                                       {
+                                           @id = "CustomerFullName",
+                                           @class = "form-control required",
+                                           @placeholder = "Account Status",
+                                           @readonly = "readonly"
+                                       }
+    })
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-4 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanCase.CustomerFullName, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.LoanCase.CustomerId)
@@ -117,7 +120,7 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-2 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanCase.AmountApplied, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.LoanCase.AmountApplied)
@@ -135,85 +138,6 @@
                                     </div>
                                 </div>
                             </div>
-
-                            @*<div class="row">*@
-                            @*<div class="col-md-4 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CommittedShares, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CommittedShares, new
-                                   {
-                                       htmlAttributes = new
-                                       {
-                                           @id = "CustomerReference2",
-                                           @class = "form-control",
-                                           @placeholder = "Customer Full Name",
-                                           disabled = "disabled"
-                                       }
-                                   })
-                                        @Html.ValidationMessageFor(model => model.CommittedShares, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-2 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerAccount.TypeDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAccount.TypeDescription, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Type", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAccount.TypeDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerAccount.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAccount.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @id = "GuarantorIndividualPayrollNumbers", @class = "form-control required", @placeholder = "Payroll Number", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAccount.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 form-group">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerAccount.CustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccount.CustomerReference3, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Personal File Number", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAccount.CustomerReference3, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>*@
-                            @*</div>*@
-
-                            @*<div class="row">
-                                    <div class="col-md-4 form-group">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccount.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-
-                                            @Html.EditorFor(model => model.CustomerAccount.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @id = "CommittedShares", @class = "form-control required", @placeholder = "Customer PIN", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccount.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4 form-group">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccount.CustomerReference1, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccount.CustomerReference1, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Account Number", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccount.CustomerReference1, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-4 form-group">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccount.CustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerAccount.CustomerReference2, new
-                                       {
-                                           htmlAttributes = new
-                                           {
-                                               @id = "CustomerPersonalIdentificationNumber",
-                                               @class = "form-control required",
-                                               @placeholder = "Membership Number",
-                                               @readonly = "readonly"
-                                           }
-                                       })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccount.CustomerReference2, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>*@
                         </fieldset>
 
                         <hr title="Guarantor linkage" />
@@ -289,7 +213,7 @@
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AppraisalFactor, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Personal File Number", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "" } })
                                         @Html.ValidationMessageFor(model => model.AppraisalFactor, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -323,56 +247,26 @@
                                 <div class="col-md-6 form-group">
                                     @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
                                     {
-                                        <input type="submit" style="width:100px;" class="btn btn-primary" value="Add" />
+                                        <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
                                     }
                                 </div>
                             </div>
                         </fieldset>
                         @*</section>*@
-                        <hr />
-                        @*<div class="row">
-                                <div class="col-md-3 form-group">
-                                    <button id="toggleButton" class="toggle-button">Open Guarantors Details</button>
-                                </div>
-                                <div class="col-md-3 form-group">
-                                    <button id="toggleButton2" class="toggle-button">Open Guarantor Section</button>
-                                </div>
-                            </div>*@
+                      
 
-                        @*<section id="section" class="section">*@
-                        <center>
-                            <h3><strong>Guarantor Details</strong></h3>
-                        </center>
-                        <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
-                            <table id="Guarantors" class="display nowrap" style="width:2100px;">
-                                <thead>
-                                    <tr>
-                                        <th>Select?</th>
-                                        <th>Status</th>
-                                        <th>Customer Name</th>
-                                        <th>Total Shares</th>
-                                        <th>Committed Shares</th>
-                                        <th>Amount Guaranteed</th>
-                                        <th>Amount Pledged</th>
-                                    </tr>
-                                </thead>
-                                <tbody style="width:2100px;">
+                        <h3>Loan Guarantors</h3>
 
-                                    @*List all Guarantors from DB*@
-
-                                </tbody>
-                            </table>
-                        </div>
-                        <hr />
                         @*</section>*@
+
                         <hr />
 
 
-                        <div>
-                            <div>
+                        <div class="row">
+                            <div class="col-lg-4">
                                 @using (Html.BeginForm("Create", "LoanRestructuring", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
                                 {
-                                    <input type="submit" class="btn btn-primary" value="Update" />
+                                    <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;"/>
                                 }
                             </div>
                         </div>
