@@ -142,7 +142,10 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 var matchedCustomerAccounts = FindCustomerAccountDTOsByCustomerIdAndCustomerAccountTypeTargetProductId(customerAccountDTO.CustomerId, customerAccountDTO.CustomerAccountTypeTargetProductId, serviceHeader);
 
                 if (matchedCustomerAccounts != null && matchedCustomerAccounts.Any())
-                    throw new InvalidOperationException("Sorry, but customer already has an account for the selected product!");
+                {
+                    customerAccountDTO.ErrorMessageResult = string.Format("Sorry, but customer already has an account for the selected product please choose another product!"+"  "+customerAccountDTO.CustomerAccountTypeTargetProductDescription);
+                    return customerAccountDTO;
+                }
                 else
                 {
                     using (var dbContextScope = _dbContextScopeFactory.Create())

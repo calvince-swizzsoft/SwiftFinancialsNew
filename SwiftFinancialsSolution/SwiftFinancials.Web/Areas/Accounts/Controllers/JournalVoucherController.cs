@@ -231,7 +231,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.AuditJournalVoucherAsync(journalVoucherDTO, 1, GetServiceHeader());
+                await _channelService.AuditJournalVoucherAsync(journalVoucherDTO, (int)journalVoucherDTO.AuthOption, GetServiceHeader());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
 
                 ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
@@ -266,14 +266,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Authorize(Guid id, JournalVoucherDTO journalVoucherDTO)
         {
 
-            var journalVoucherAuthOption = journalVoucherDTO.AuthOption;
+        
 
 
             journalVoucherDTO.ValidateAll();
 
             if (!journalVoucherDTO.HasErrors)
             {
-                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, journalVoucherAuthOption, 1, GetServiceHeader());
+                await _channelService.AuthorizeJournalVoucherAsync(journalVoucherDTO, (int)journalVoucherDTO.AuthOption, 1, GetServiceHeader());
                 return RedirectToAction("Index");
             }
             else

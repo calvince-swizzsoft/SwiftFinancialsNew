@@ -83,13 +83,25 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
+
+
+
+                    var verifiedDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + verifiedDate.getHours()).slice(-2);
+                    var m = ("0" + verifiedDate.getMinutes()).slice(-2);
+                    var s = ("0" + verifiedDate.getSeconds()).slice(-2);
+
+                    var dt_Verified = $.datepicker.formatDate('dd/mm/yy', verifiedDate) + " " + h + ":" + m + ":" + s;
+                    aData.verifiedDate = dt_Verified;
+
                     var editUrl = '<a  href="/accounts/BatchOrigination_Debit/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/accounts/BatchOrigination_Debit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var verifyUrl = '<a  href="/accounts/BatchOrigination_Debit/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
                     var authorizeUrl = '<a  href="/accounts/BatchOrigination_Debit/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
 
-                    $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + authorizeUrl);
+                    $('td:eq(7)', nRow).html(dt_Verified);
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + authorizeUrl);
 
                     return nRow;
                 },

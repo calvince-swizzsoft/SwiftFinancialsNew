@@ -58,11 +58,15 @@
                         <h1>Debit Batch</h1>
                         <div class="row">
                             <div class="col-lg-6">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.DebitTypeId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.DebitTypeId)
-                                    @Html.ValidationMessageFor(model => model.DebitTypeId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "DebitTypesLookup form-control required", placeholder = "Description.." } })
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.DebitTypeId)
+                                        @Html.TextBoxFor(model => model.DebitTypeId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
@@ -70,6 +74,13 @@
                                     @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                 </div>
+                                <div class="form-group form-group-sm">
+                                    <div class="col-md-offset-2">
+                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                     <div class="input-group">
@@ -83,15 +94,35 @@
                                     @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                 </div>
-                                <div class="form-group form-group-sm">
-                                    <div class="col-md-offset-2">
-                                        <input type="submit" value="Create" class="btn btn-primary" />
-                                    </div>
-                                </div>
                             </div>
+
+
                         </div>
                     }
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="BenefactorcustomerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Benefactor Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="BenefactorCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -109,11 +140,60 @@
 
     <script>
 
+     $('#BenefactorCustomerAccountsGrid').DataTable({
+       // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "DebitType", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
+            var selectButton = '<a href="/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
+
+            // Assuming you are using jQuery
+            $(document).ready(function () {
+                // Attach click event handler to the link
+                $('.select-link').click(function (event) {
+                    // Prevent default action (page reload)
+                    event.preventDefault();
+                    // You can add additional logic here if needed
+
+                    // Optionally, if you want to navigate programmatically after preventing default action:
+                    window.location.href = $(this).attr('href');
+                });
+            });
+
+            $('td:eq(4)', nRow).html(dt_Created);
+            $('td:eq(5)', nRow).html(selectButton);
+
+            return nRow;
+        },
+         // Display settings
+         "aoColumns": [
+             { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+             { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
+             { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
+             { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "5%" },
+             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+             { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "6%", "bSortable": false }],
+         "aaSorting": [[0, "desc"]]
+    });
+
      //DebitType typehead starts here
             $('.DebitTypesLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
-                        '@Url.Action("GetDebitTypesAsync", "DebitType", new { Area = "Accounts" })',
+                        '@Url.Action("GetDebitTypesAsync", "BatchOrigination_Debit", new { Area = "Accounts" })',
                         { query: query },
                         function (DebitTypes) {
                             var newDebitTypesData = [];

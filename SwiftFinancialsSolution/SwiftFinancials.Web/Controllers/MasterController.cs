@@ -32,6 +32,7 @@ namespace SwiftFinancials.Web.Controllers
     public class MasterController : Controller
     {
         public ObservableCollection<LevySplitDTO> LevySplitDTOs;
+        public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs;
 
         public ObservableCollection<CommissionDTO> CommissionDTOs;
 

@@ -688,5 +688,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public List<SavingsProductDTO> savingsProduct { get; set; }
         public List<CustomerDTO> customerList { get; set; }
 
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

@@ -329,6 +329,7 @@
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_SignatoriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
@@ -1074,6 +1075,11 @@
     <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Index.cshtml" />
     <Content Include="Areas\HumanResource\Views\EmployeeDocuments\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Register\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Signatories\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_Signatories\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
