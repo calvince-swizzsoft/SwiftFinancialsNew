@@ -11,6 +11,7 @@ using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
+
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class CoA_RegisterController : MasterController
@@ -56,7 +57,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(customerAccountDTO);
         }
 
+
         public async Task<ActionResult> Create(Guid? id)
+        
         {
             await ServeNavigationMenus();
 
@@ -75,7 +78,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (customer != null)
             {
-
+                customerAccountDTO.Customers = customer;
+                Session["customerAccountDTO"] = customerAccountDTO.Customers;
                 customerAccountDTO.CustomerId = customer.Id;
                 customerAccountDTO.CustomerIndividualFirstName = customer.FullName;
                 customerAccountDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
@@ -88,53 +92,258 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 customerAccountDTO.CustomerReference3 = customer.Reference3;
                 customerAccountDTO.BranchId = customer.BranchId;
                 customerAccountDTO.BranchDescription = customer.BranchDescription;
-
+                Session["CustomerIndividualFirstName"] = customer.IndividualFirstName;
+                Session["CustomerId"] = customer.Id;
+                Session["CustomerIndividualPayrollNumbers"] = customer.IndividualPayrollNumbers;
+                Session["CustomerSerialNumber"] = customer.SerialNumber;
+                Session["CustomerIndividualIdentityCardNumber"] = customer.IndividualIdentityCardNumber;
+                Session["CustomerStationZoneDivisionEmployerDescription"] = customer.StationDescription;
+                Session["CustomerReference1"] = customer.Reference1;
+                Session["CustomerReference3"] = customer.Reference3;
+                Session["CustomerReference2"] = customer.Reference2;
+                Session["BranchId"] = customer.BranchId;
+                Session["BranchDescription"] = customer.BranchDescription;
 
             }
+            if (Session["beneficiaryAccounts"] != null)
+            {
+                customerAccountDTO.Savings = Session["beneficiaryAccounts"] as SavingsProductDTO;
+            }
 
+            if (Session["benefactorAccounts"] != null)
+            {
+                customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
+            }
             return View(customerAccountDTO);
         }
 
-        public async Task<ActionResult> SavingsProduct(SavingsProductDTO savingsProductDTO, ObservableCollection<SavingsProductDTO> savingProductRowData)
+        //public async Task<ActionResult> SavingsProduct(SavingsProductDTO savingsProductDTO, ObservableCollection<SavingsProductDTO> savingProductRowData)
+        //{
+        //    Session["savingsProductIds"] = savingProductRowData;
+        //    return View("Create", savingProductRowData);
+        //}
+
+        //public async Task<ActionResult> LoansProduct(ObservableCollection<LoanProductDTO> loansProductRowData)
+        //{
+        //    Session["loansProductIds"] = loansProductRowData;
+        //    return View("Create", loansProductRowData);
+        //}
+
+        //public async Task<ActionResult> InvestmentsProduct(ObservableCollection<InvestmentProductDTO> investmentProductRowData)
+        //{
+        //    Session["investmentsProductIds"] = investmentProductRowData;
+        //    return View("Create", investmentProductRowData);
+        //}
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid ?id,CustomerAccountDTO customerAccountDTO)
         {
-            Session["savingsProductIds"] = savingProductRowData;
-            return View("Create", savingProductRowData);
+            await ServeNavigationMenus();
+
+            savingsProductDTOs = TempData["savingsProductDTOs"] as ObservableCollection<SavingsProductDTO>;
+
+            if (savingsProductDTOs == null)
+                savingsProductDTOs = new ObservableCollection<SavingsProductDTO>();
+            
+            foreach (var expensePayableEntryDTO in customerAccountDTO.savingsProducts)
+            {
+                expensePayableEntryDTO.Id = customerAccountDTO.Savings.Id;
+                expensePayableEntryDTO.ChartOfAccountId = customerAccountDTO.CustomerAccountTypeTargetProductId;
+                expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
+                expensePayableEntryDTO.Description = expensePayableEntryDTO.Description;
+                //expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountName;
+                //expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
+                //expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
+                //expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
+                //expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
+                savingsProductDTOs.Add(expensePayableEntryDTO);
+            };
+
+            TempData["savingsProductDTOs"] = savingsProductDTOs;
+
+            TempData["customerAccountDTO"] = customerAccountDTO;
+
+            ViewBag.savingsProductDTOs = savingsProductDTOs;
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(customerAccountDTO.Type.ToString());
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(customerAccountDTO.Type.ToString());
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(customerAccountDTO.Type.ToString());
+            return View("Create", customerAccountDTO);
         }
 
-        public async Task<ActionResult> LoansProduct(ObservableCollection<LoanProductDTO> loansProductRowData)
+        public async Task<ActionResult> SavingsProduct(Guid? id, CustomerAccountDTO customerAccountDTO)
         {
-            Session["loansProductIds"] = loansProductRowData;
-            return View("Create", loansProductRowData);
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("Create");
+            }
+
+
+
+            if (Session["customerAccountDTO"] != null)
+            {
+                customerAccountDTO.Customers = Session["customerAccountDTO"] as CustomerDTO;
+            }
+
+            if (Session["benefactorAccounts"] != null)
+            {
+                customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
+            }
+
+            var savingsProduct = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
+            if (savingsProduct != null)
+            {
+                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+                customerAccountDTO.Savings = savingsProduct;
+                Session["beneficiaryAccounts"] = customerAccountDTO.Savings;
+                customerAccountDTO.CustomerAccountTypeTargetProductId = savingsProduct.Id;
+                customerAccountDTO.CustomerAccountTypeTargetProductDescription = savingsProduct.Description;
+                customerAccountDTO.CustomerAccountTypeTargetProductChartOfAccountName = savingsProduct.ChartOfAccountAccountName;
+                customerAccountDTO.CustomerAccountTypeProductCode = 1;
+
+                Session["savingsProductId"] = customerAccountDTO.CustomerAccountTypeTargetProductId;
+                Session["savingsProductDescription"] = customerAccountDTO.CustomerAccountTypeTargetProductDescription;
+            }
+            // Ensure savingsProductDTOs is properly initialized
+            if (savingsProductDTOs == null)
+            {
+                savingsProductDTOs = new ObservableCollection<SavingsProductDTO>();
+                savingsProductDTOs.Add(savingsProduct);
+            }
+            
+
+
+
+            return View("Create", customerAccountDTO);
         }
 
-        public async Task<ActionResult> InvestmentsProduct(ObservableCollection<InvestmentProductDTO> investmentProductRowData)
+
+
+        public async Task<ActionResult> LoansProduct(Guid? id, CustomerAccountDTO directDebitDTO)
         {
-            Session["investmentsProductIds"] = investmentProductRowData;
-            return View("Create", investmentProductRowData);
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("Create");
+            }
+
+            var loanProductsdetails = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
+            if (loanProductsdetails != null)
+            {
+                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+
+                directDebitDTO.CustomerAccountTypeTargetProductId = loanProductsdetails.Id;
+                directDebitDTO.CustomerAccountTypeTargetProductDescription = loanProductsdetails.Description;
+                directDebitDTO.CustomerAccountTypeTargetProductChartOfAccountName = loanProductsdetails.ChartOfAccountAccountName;
+
+
+                directDebitDTO.CustomerAccountTypeProductCode = 2;
+
+                Session["loanProductId"] = directDebitDTO.CustomerAccountTypeTargetProductId;
+                Session["loanProductDescription"] = directDebitDTO.CustomerAccountTypeTargetProductDescription;
+            }
+
+
+            return View("Create", directDebitDTO);
+        }
+
+
+
+        public async Task<ActionResult> InvestmentProduct(Guid? id, CustomerAccountDTO directDebitDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("Create");
+            }
+
+            if (Session["beneficiaryAccounts"] != null)
+            {
+                directDebitDTO.Savings = Session["beneficiaryAccounts"] as SavingsProductDTO;
+            }
+            if (Session["customerAccountDTO"] != null)
+            {
+                directDebitDTO.Customers = Session["customerAccountDTO"] as CustomerDTO;
+            }
+
+            var investmentProductDetails = await _channelService.FindInvestmentProductAsync(parseId, GetServiceHeader());
+            if (investmentProductDetails != null)
+            {
+                ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+                ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
+
+                directDebitDTO.Investments = investmentProductDetails;
+                Session["benefactorAccounts"] = directDebitDTO.Investments;
+                directDebitDTO.CustomerAccountTypeTargetProductId = investmentProductDetails.Id;
+                directDebitDTO.CustomerAccountTypeTargetProductDescription = investmentProductDetails.Description;
+                directDebitDTO.CustomerAccountTypeTargetProductChartOfAccountName = investmentProductDetails.ChartOfAccountAccountName;
+                directDebitDTO.CustomerAccountTypeTargetProductParentId = investmentProductDetails.ChartOfAccountId;
+                directDebitDTO.CustomerAccountTypeProductCode = 3;
+
+                Session["investmentProductId"] = directDebitDTO.CustomerAccountTypeTargetProductId;
+                Session["investmentProductDescription"] = directDebitDTO.CustomerAccountTypeTargetProductDescription;
+            }
+
+            ViewBag.k = directDebitDTO.Investments;
+
+            return View("Create", directDebitDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
+        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO, ObservableCollection<SavingsProductDTO> selectedRows)
         {
 
+            customerAccountDTO.Savings = Session["beneficiaryAccounts"] as SavingsProductDTO;
 
-            customerAccountDTO.ValidateAll();
+            customerAccountDTO.Customers = Session["customerAccountDTO"] as CustomerDTO;
+
+
+            customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
+
+            customerAccountDTO.TotalValue = 1;
+            customerAccountDTO.CustomerId = customerAccountDTO.Customers.Id;
+            customerAccountDTO.BranchId = customerAccountDTO.BranchId;
+            
+            customerAccountDTO.CustomerAccountTypeTargetProductId = customerAccountDTO.Savings.ChartOfAccountId;
+            customerAccountDTO.CustomerAccountTypeProductCode = customerAccountDTO.Savings.Code;
 
             if (!customerAccountDTO.HasErrors)
             {
-                var result = await _channelService.AddCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
-                if (result.ErrorMessageResult != null)
-                {
-                    TempData["ErrorMsg"] = result.ErrorMessageResult;
-                    await ServeNavigationMenus();
-                    return View();
-                }
+                await _channelService.AddCustomerAccountAsync(customerAccountDTO,  GetServiceHeader());
+
                 TempData["AlertMessage"] = "Customer Account created successfully";
                 return RedirectToAction("Index");
             }
+            else
+            {
+                var errorMessages = customerAccountDTO.ErrorMessages;
 
-            TempData["Error"] = "Failed to create Customer Account";
-            return View("Create");
+                TempData["EditError"] = "Failed to Create Customer Account for " + customerAccountDTO.Customers.FullName;
+                return View(customerAccountDTO);
+            }
+
+        }
+
+
+        public async Task<ActionResult> Holddata(Guid? CustomerAccountTypeTargetProductId, string CustomerAccountTypeTargetProductDescription, CustomerAccountDTO customerAccountDTO)
+        {
+            await ServeNavigationMenus();
+            string targetProductDescription = customerAccountDTO.CustomerAccountTypeTargetProductDescription;
+            ViewBag.CustomerAccountTypeTargetProductDescription = targetProductDescription;
+
+            return View("create");
         }
 
         public async Task<ActionResult> Edit(Guid id)
@@ -159,9 +368,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return RedirectToAction("Index");
             }
+            else
+            {
+                var errorMessages = customerAccountDTO.ErrorMessages;
 
-            TempData["EditError"] = "Failed to Edit Customer Account";
-            return View(customerAccountDTO);
+                TempData["EditError"] = "Failed to Edit Customer Account";
+                return View(customerAccountDTO);
+            }
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetSavingsProductsAsync()
+        {
+            var savingsProductDTOs = await _channelService.FindSavingsProductsAsync(GetServiceHeader());           
+            return Json(savingsProductDTOs, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetInvestmentProductsAsync()
+        {
+            var investmentProductDTOs = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());          
+            return Json(investmentProductDTOs, JsonRequestBehavior.AllowGet);
         }
     }
 }

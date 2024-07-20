@@ -131,5 +131,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "ThrottleOver-The-CounterWithdrawals?")]
         public bool ThrottleOverTheCounterWithdrawals { get; set; }
+
+        public CustomerAccountDTO Accounts { get; set; }
     }
 }
