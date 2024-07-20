@@ -26,46 +26,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
+
             int searchRecordCount = 0;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-            var sortColumnIndex = jQueryDataTablesModel.iSortCol_.FirstOrDefault();
-            var sortColumnDirection = jQueryDataTablesModel.sSortDir_.FirstOrDefault();
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            //var sortPropertyName = ""; // Define the property name for sorting
-
-            //if (sortColumnIndex >= 0 && sortColumnIndex < jQueryDataTablesModel.iColumns.Count)
-            //{
-            //    sortPropertyName = jQueryDataTablesModel.GetSortedColumns()[sortColumnIndex].PropertyName;
-            //}
-
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, jQueryDataTablesModel.iColumns, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, true, true, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                searchRecordCount = totalRecordCount;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
-                return this.DataTablesJson(
-                    items: pageCollectionInfo.PageCollection,
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho);
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else
-            {
-                return this.DataTablesJson(
-                    items: new List<CustomerAccountDTO>(),
-                    totalRecords: totalRecordCount,
-                    totalDisplayRecords: searchRecordCount,
-                    sEcho: jQueryDataTablesModel.sEcho);
-            }
+            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -134,7 +114,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-           
+
             bool includeInterestBalanceForLoanAccounts = false;
             bool includeBalances = false;
             bool includeProductDescription = false;

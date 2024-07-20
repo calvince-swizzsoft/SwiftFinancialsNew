@@ -5,6 +5,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -1036,10 +1037,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
 
-        public List<CustomerAccountDTO> CustomerAccountsDTO { get; set; }
-        public CustomerAccountDTO SalaryGroupEntry { get; set; }
-
-
+        public ObservableCollection<CustomerAccountDTO> CustomerAccountsModel { get; set; }
 
         [DataMember]
         public LoanGuarantorDTO LoanGuarantor { get; set; }
@@ -1118,5 +1116,38 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Amount Guaranteed")]
         public decimal GuarantorAmountGuaranteed { get; set; }
+
+
+
+
+
+        [DataMember]
+        [Display(Name = "Interest Calculation Mode")]
+        public string InterestCalculationModeDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Section")]
+        public string LoanProductSectionDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string CustomerAccountFullAccountNumber { get; set; }
+
+
+        [DataMember]
+        public CustomerAccountDTO CustomerAccountDTOModel { get; set; }
+
+
+        // Additional Customer Accounts DTOs
+        [DataMember]
+        [Display(Name = "Customer Account")]
+        [ValidGuid]
+        public Guid CustomerAccountId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string CustomerAccountFullNumber { get; set; }
     }
 }
