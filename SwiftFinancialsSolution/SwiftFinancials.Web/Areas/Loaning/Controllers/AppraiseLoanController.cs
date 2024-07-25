@@ -116,6 +116,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
+            loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
+            loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
+            loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
+
             loanDTO.ValidateAll();
 
             if (!loanDTO.HasErrors)
