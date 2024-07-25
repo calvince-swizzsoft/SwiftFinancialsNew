@@ -28,10 +28,10 @@
                 <div class="ibox-title">
                     <h2>Appraise Loan</h2>
 
-                    @if (TempData["BugdetBalance"] != null)
+                    @if (TempData["approveError"] != null)
                     {
                         <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["BugdetBalance"]
+                            <strong>Failed !</strong> @TempData["approveError"]
                         </div>
                     }
 

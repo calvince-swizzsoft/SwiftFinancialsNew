@@ -55,7 +55,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
-
             return View(loanCaseDTO);
         }
 
