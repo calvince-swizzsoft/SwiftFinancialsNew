@@ -6,7 +6,7 @@
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loaning</h1>
+        <h1>Loan Origination</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Appraise", "Home", new { Area = "" }, null)
@@ -26,12 +26,12 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Appraisal</h2>
+                    <h2>Appraise Loan</h2>
 
-                    @if (TempData["BugdetBalance"] != null)
+                    @if (TempData["approveError"] != null)
                     {
                         <div class="alert alert-danger">
-                            <strong>Failed !</strong> @TempData["BugdetBalance"]
+                            <strong>Failed !</strong> @TempData["approveError"]
                         </div>
                     }
 
@@ -44,14 +44,14 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
 
                             <div class="row">
-                                <div class="col-md-3 form-group">
+                                <div class="col-md-2 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CaseNumber, htmlAttributes: new { @class = "control-label" })
                                         @Html.ValidationMessageFor(model => model.CaseNumber, "", new { @class = "text-danger" })
@@ -59,11 +59,11 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-9 form-group">
+                                <div class="col-md-4 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.EditorFor(model => model.CustomerIndividualFirstName, new
+                                        @Html.EditorFor(model => model.CustomerFullName, new
                                         {
                                             htmlAttributes = new
                                             {
@@ -73,12 +73,9 @@
                                                 @readonly = "readonly"
     }
     })
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="row">
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
@@ -104,7 +101,9 @@
                                         @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                            </div>
 
+                            <div class="row">
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
@@ -124,8 +123,8 @@
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new
+                                        @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CustomerReference2, new
                                    {
                                        htmlAttributes = new
                                        {
@@ -135,23 +134,9 @@
                                            @readonly = "readonly"
                                        }
                                    })
-                                        @Html.ValidationMessageFor(model => model.CustomerPersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanAppraisalOption, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.LoanAppraisalOption, loanAppraisalOption, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.LoanAppraisalOption)
-                                        </div>
-                                    </div>
-                                </div>
-
 
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
@@ -169,7 +154,9 @@
                                         @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                            </div>
 
+                            <div class="row">
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "" })
@@ -177,59 +164,43 @@
                                         @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanProductDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanProductDescription, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.LoanProductDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanPurposeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.LoanPurposeDescription, new { htmlAttributes = new { @id = "GuarantorCustomerSerialNumber", @class = "form-control", @placeholder = "Serial Number", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.LoanPurposeDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanAppraisalOption, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.LoanAppraisalOption, loanAppraisalOption, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.LoanAppraisalOption)
+                                        </div>
+                                    </div>
+                                </div>
+
+
                             </div>
+
 
                             <div class="row">
                                 <div class="col-lg-6">
                                     @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
                                     {
-                                        <input type="submit" name="name" value="Appraise" />
-                                    }
-                                </div>
-                                @*Guarantors Modal Popup*@
-
-                                <div class="col-lg-6">
-                                    @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post))
-                                    {
-                                        <button type="button" class="btn btn-primary" id="toggleModalBtn">
-                                            View Guarantors
-                                        </button>
-
-                                        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                            <div class="modal-dialog modal-lg" role="document">
-                                                <div class="modal-content">
-                                                    <div class="modal-header">
-                                                        <h3 class="modal-title" id="exampleModalLabel">Guarantors</h3>
-                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                        </button>
-                                                    </div>
-                                                    <div class="modal-body">
-                                                        <table id="example" class="table table-striped table-bordered" style="width:100%">
-                                                            <thead>
-                                                                <tr>
-                                                                    <th>Loan Number</th>
-                                                                    <th>Guarantor</th>
-                                                                    <th>Amount Applied</th>
-                                                                    <th>Amount Guaranteed</th>
-                                                                </tr>
-                                                            </thead>
-                                                            <tbody>
-                                                                <tr>
-                                                                    <td>Data 1</td>
-                                                                    <td>Data 2</td>
-                                                                    <td>Data 3</td>
-                                                                    <td>Data 4</td>
-                                                                </tr>
-                                                            </tbody>
-                                                        </table>
-                                                    </div>
-                                                    <div class="modal-footer">
-                                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
+                                        <input type="submit" class="btn btn-primary" style="width: 150px;" name="name" value="Appraise" />
                                     }
                                 </div>
                             </div>

@@ -122,6 +122,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await _channelService.AppraiseLoanCaseAsync(loanDTO, loanCaseDTO.LoanAppraisalOption, 1, GetServiceHeader());
 
+                TempData["approve"] = "Loan Appraisal Successful";
+
                 return RedirectToAction("Index");
             }
             else
@@ -131,6 +133,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 TempData["BugdetBalance"] = errorMessages;
                 
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
+
+                TempData["approveError"] = "Loan Appraisal Unsuccessful";
+
                 return View(loanCaseDTO);
             }
         }
