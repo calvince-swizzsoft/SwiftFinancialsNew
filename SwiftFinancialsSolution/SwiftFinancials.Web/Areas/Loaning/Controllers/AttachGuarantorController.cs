@@ -18,15 +18,6 @@ using System.Data;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
-    public class TabContentModel
-    {
-        public string Tab1Content { get; set; }
-        public string Tab2Content { get; set; }
-        public string Tab3Content { get; set; }
-    }
-
-
-
     public class AttachGuarantorController : MasterController
     {
         public async Task<ActionResult> Index()

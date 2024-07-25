@@ -102,9 +102,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.Chargetype = GetChargeTypeSelectList(systemTransactionTypeInCommissionDTO.ComplementType.ToString());
 
                 //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(systemTransactionTypeInCommissionDTO.RecoverySource.ToString());
-                TempData["Successfully"] = "Successfully Created Well known charges";
-                TempData["ComplementFixedAmount"] = "";
-
+                TempData["Successfully"] = "Successfully Created Well known charges ";
+                
                 await ServeNavigationMenus();
                 return View("Create");
 

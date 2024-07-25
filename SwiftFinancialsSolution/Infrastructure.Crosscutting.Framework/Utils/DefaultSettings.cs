@@ -30,7 +30,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                     instance.PasswordQuestion = "Where were you when you first heard about 14/13?";
                     instance.PasswordAnswer = "bmt";
                     instance.RootEmail = "info@stamlinetechnologies.com";
-                    instance.TablePrefix = "swiftfin_";
+                    instance.TablePrefix = "vfin_";
 
                     instance.PageSizes = new List<int> { 15, 25, 50, 100, 200, 300, 400 };
                     

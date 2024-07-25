@@ -15,6 +15,8 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
+    // Next is Loan Authorization
+
     public class LoanCancellationController : MasterController
     {
         public async Task<ActionResult> Index()

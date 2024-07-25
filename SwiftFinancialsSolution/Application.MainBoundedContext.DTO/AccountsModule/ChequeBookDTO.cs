@@ -139,6 +139,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Personal File Number")]
         public string CustomerAccountCustomerReference3 { get; set; }
+        [DataMember]
+        [Display(Name = "Identity Card Number")]
+        public string CustomerIndividualIdentityCardNumber { get; set; }
 
         [DataMember]
         [Display(Name = "Type")]
@@ -201,5 +204,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Payroll Numbers")]
+        public string CustomerIndividualPayrollNumbers { get; set; }
+        public string ErrorMessageResult { get; set; }
     }
 }

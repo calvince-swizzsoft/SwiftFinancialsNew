@@ -5,6 +5,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -684,10 +685,15 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Amount Applied")]
         [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount applied must be greater than zero!")]
         public decimal TotalValue { get; set; }
-
+        public CustomerAccountDTO CustomerAccount { get; set; }
         public List<SavingsProductDTO> savingsProduct { get; set; }
+        public SavingsProductDTO Savings { get; set; }
+        public List<SavingsProductDTO> ProductDTOs { get; set; }
+        public InvestmentProductDTO Investments { get; set; }
+        public List<InvestmentProductDTO> invest { get; set; }
         public List<CustomerDTO> customerList { get; set; }
 
+        public ObservableCollection<SavingsProductDTO> savingsProducts { get; set; }
 
         [DataMember]
         public string ErrorMessageResult { get; set; }

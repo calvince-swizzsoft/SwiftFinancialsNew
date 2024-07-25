@@ -1,10 +1,99 @@
 ﻿@model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
 @{
-    ViewBag.Title = "Loan Registration Details";
+    ViewBag.Title = "Loan Case Details";
 }
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .tab-header, .sub-tab-header {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .tab-button, .sub-tab-button {
+        background-color: #f1f1f1;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .tab-button:hover, .sub-tab-button:hover {
+            background-color: #ddd;
+        }
+
+        .tab-button.active, .sub-tab-button.active {
+            background-color: #ddd; /* Same as hover background color */
+        }
+
+        .tab-button:focus, .sub-tab-button:focus {
+            outline: none;
+        }
+
+    .tab, .sub-tab-content {
+        display: none;
+    }
+
+        .tab-content, .sub-tab-content.active {
+            display: block;
+        }
+
+    .tab-content, .sub-tab-content {
+        max-height: 1000px; /* Adjust the height as needed */
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ccc; /* Borderline around tab content */
+        background-color: #fff;
+        margin-top: 10px;
+    }
+
+
+
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+
+
+
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loaning</h1>
+        <h1>Loan Origination</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -24,7 +113,9 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Registration Details</h2>
+                    <h2>View Loan Case</h2>
+                    <hr />
+                    @Html.ActionLink("Back To List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -34,229 +125,475 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-7">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.CustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.CustomerFullName)
-                                @Html.EditorFor(model => model.CustomerFullName, new
-                                {
-                                    htmlAttributes = new
+                <div class="ibox-content bg-white">
+                    <fieldset>
+                        @*Row 1*@
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CaseNumber, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.CaseNumber)
+                                    @Html.EditorFor(model => model.CaseNumber, new
                                     {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.CustomerFullName, "", new { @class = "text-danger" })
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control required",
+                                            @placeholder = "Station...",
+                                            @readonly = "readonly"
+                                        }
+                               })
+                                </div>
+                            </div>
+
+                            <div class="col-md-4 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerFullName, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.CustomerFullName)
+                                    @Html.EditorFor(model => model.CustomerFullName, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
+                            </div>
+
+                            <div class="col-md-5 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.CustomerStationZoneDivisionEmployerDescription)
+                                    @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-5">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.BranchDescription)
-                                @Html.EditorFor(model => model.BranchDescription, new
-                                {
-                                    htmlAttributes = new
+
+                        @*Row 2*@
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.CustomerReference1)
+                                    @Html.EditorFor(model => model.CustomerReference1, new
                                     {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-    }
-    })
-                                @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanRegistrationLoanProductSection)
-                                @Html.EditorFor(model => model.LoanRegistrationLoanProductSection, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control required",
+                                            @placeholder = "Account number...",
+                                            @readonly = "readonly"
 }
 })
-                                @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
+                                </div>
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanProductInvestmentsBalance)
-                                @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new
-                                {
-                                    htmlAttributes = new
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.CustomerReference2)
+                                    @Html.EditorFor(model => model.CustomerReference2, new
                                     {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control required",
+                                            @placeholder = "Membership number...",
+                                            @readonly = "readonly"
 }
 })
-                                @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                </div>
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanProductLoanBalance, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanProductLoanBalance)
-                                @Html.EditorFor(model => model.LoanProductLoanBalance, new
-                                {
-                                    htmlAttributes = new
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CustomerReference3, new
                                     {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control",
+                                            @placeholder = "Personal File Number...",
+                                            @readonly = "readonly"
 }
 })
-                                @Html.ValidationMessageFor(model => model.LoanProductLoanBalance, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanProductDescription, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanProductDescription)
-                                @Html.EditorFor(model => model.LoanProductDescription, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.LoanProductDescription, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                </div>
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanRegistrationMaximumAmount)
-                                @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanRegistrationTermInMonths)
-                                @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchDescription)
+                                    @Html.EditorFor(model => model.BranchDescription, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanInterestAnnualPercentageRate)
-                                @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
+                        @*Row 3*@
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanProductDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.LoanProductDescription)
+                                    @Html.EditorFor(model => model.LoanProductDescription, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.MaximumAmountPercentage)
-                                @Html.EditorFor(model => model.MaximumAmountPercentage, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.MaximumAmountPercentage, "", new { @class = "text-danger" })
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.InterestCalculationModeDescription, htmlAttributes: new { @class = "" })
+                                    @Html.HiddenFor(model => model.LoanInterestCalculationMode)
+                                    @Html.EditorFor(model => model.InterestCalculationModeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
+                                </div>
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.AmountApplied)
-                                @Html.EditorFor(model => model.AmountApplied, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.AmountApplied, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        <div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.LoanPurposeDescription, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.LoanPurposeDescription)
-                                @Html.EditorFor(model => model.LoanPurposeDescription, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.LoanPurposeDescription, "", new { @class = "text-danger" })
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control required", @placeholder = "00.0000%", @readonly = "readonly" } })
+                                </div>
                             </div>
 
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.SavingsProductDescription, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.SavingsProductDescription)
-                                @Html.EditorFor(model => model.SavingsProductDescription, new
-                                {
-                                    htmlAttributes = new
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanRegistrationLoanProductSectionDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.LoanRegistrationLoanProductSectionDescription)
+                                    @Html.EditorFor(model => model.LoanRegistrationLoanProductSectionDescription, new
                                     {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.SavingsProductDescription, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.ReceivedDate, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.ReceivedDate)
-                                @Html.EditorFor(model => model.ReceivedDate, new
-                                {
-                                    htmlAttributes = new
-                                    {
-                                        @class = "form-control required",
-                                        @readonly = "readonly"
-}
-})
-                                @Html.ValidationMessageFor(model => model.ReceivedDate, "", new { @class = "text-danger" })
+                                        htmlAttributes = new
+                                        {
+                                            @class = "form-control required",
+                                            @placeholder = "Section...",
+                                            @readonly = "readonly"
+                                        }
+                                    })
+                                </div>
                             </div>
                         </div>
 
-                        <div class="col-lg-4">
-                            @Html.ActionLink("Edit", "Edit", "LoanRegistration", new { id = Model.Id, Area = "Loaning" }, new { @class = "btn btn-success" })
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @id = "LoanRegistrationTermInMonths",
+                                       @class = "form-control required",
+                                       @placeholder = "Enter Number of Days...",
+                                       @readonly = "readonly"
+                                   }
+                               })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanProductInvestmentsBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @* Loan Balance *@
+                                    @Html.LabelFor(model => model.LoanProductLoanBalance, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanProductLoanBalance, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control",
+                                       @placeholder = "Kshs. 0.00",
+                                       @readonly = "readonly"
+                                   }
+                               })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-lg-4">
-                            @Html.ActionLink("Back to List", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-success" })
+
+
+                        @*Row 4*@
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.MaximumAmountPercentage, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.MaximumAmountPercentage, new { htmlAttributes = new { @class = "form-control required", @placeholder = "00.0000%", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanProductLatestIncome, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LoanProductLatestIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.SavingsProductDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.SavingsProductDescription)
+                                    @Html.EditorFor(model => model.SavingsProductDescription, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.Remarks)
+                                    @Html.EditorFor(model => model.Remarks, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
+                            </div>
                         </div>
-                    </div>
+
+                        <div class="row">
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LoanPurposeDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.LoanPurposeDescription)
+                                    @Html.EditorFor(model => model.LoanPurposeDescription, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AmountApplied, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.AmountApplied, new { htmlAttributes = new { @id = "AmountApplied", @class = "form-control required", @readonly = "readonly", @placeholder = "Kshs.0.00" } })
+                                </div>
+                            </div>
+
+                            <div class="col-md-3 form-group">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter text...", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.StatusDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.StatusDescription)
+                                    @Html.EditorFor(model => model.StatusDescription, new
+                               {
+                                   htmlAttributes = new
+                                   {
+                                       @class = "form-control required",
+                                       @readonly = "readonly",
+                                       @placeholder = "Employer..."
+                                   }
+                               })
+                                </div>
+                            </div>
+                        </div>
+
+
+                        @*Tabs*@
+                        <div class="tab-header" style="color: black;">
+                            <div class="tab-button active" onclick="openTab(event, 'section1')">
+                                <i class="fa fa-table" aria-hidden="true"></i> Loan Guarantors
+                            </div>
+                        </div>
+
+                        <div id="section1" class="tab active">
+                            <!-- Loan Guarantors -->
+                            <div class="tab-content">
+                                <h2 style="color: cadetblue;">Loan Guarantors</h2>
+
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center; ">
+                                                <tr>
+                                                    <th>Guarantor Name</th>
+                                                    <th>Employer</th>
+                                                    <th>Account Number</th>
+                                                    <th>Appraisal Factor</th>
+                                                    <th>Total Shares</th>
+                                                    <th>Committed Shares</th>
+                                                    <th>Amount Guaranteed</th>
+                                                    <th>Date Guarenteed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.LoanGuarantors != null)
+                                                {
+                                                    foreach (var guarantors in ViewBag.LoanGuarantors)
+                                                    {
+                                                        <tr>
+                                                            <td>@guarantors.FullName</td>
+                                                            <td>@guarantors.StationZoneDivisionEmployerDescription</td>
+                                                            <td>@guarantors.Reference1</td>
+                                                            <td>@guarantors.AppraisalFactor</td>
+                                                            <td style="text-align: right;">@guarantors.TotalShares</td>
+                                                            <td style="text-align: right;">@guarantors.CommittedShares</td>
+                                                            <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
+                                                            <td>@guarantors.CreatedDate</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </fieldset>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<script>
+    // Initialize variables to track the active tab and modal status
+    var activeTab = localStorage.getItem('activeTab') || 'section1';
+    var isModalOpened = localStorage.getItem('isModalOpened') === 'true';
+
+    // Function to open a tab and set it as active
+    function openTab(evt, tabName) {
+        var i, tabcontent, tabbuttons;
+
+        // Hide all tab contents
+        tabcontent = document.getElementsByClassName("tab");
+        for (i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+            tabcontent[i].classList.remove("active");
+        }
+
+        // Remove the active class from all tab buttons
+        tabbuttons = document.getElementsByClassName("tab-button");
+        for (i = 0; i < tabbuttons.length; i++) {
+            tabbuttons[i].classList.remove("active");
+        }
+
+        // Show the current tab and add active class to the button and tab content
+        document.getElementById(tabName).style.display = "block";
+        document.getElementById(tabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+
+        // Update the active tab
+        activeTab = tabName;
+        localStorage.setItem('activeTab', tabName);
+    }
+
+    // Function to open a sub-tab and set it as active
+    function openSubTab(evt, subTabName) {
+        var i, subTabContent, subTabButtons;
+
+        // Hide all sub-tab contents
+        subTabContent = document.getElementsByClassName("sub-tab-content");
+        for (i = 0; i < subTabContent.length; i++) {
+            subTabContent[i].style.display = "none";
+            subTabContent[i].classList.remove("active");
+        }
+
+        // Remove the active class from all sub-tab buttons
+        subTabButtons = document.getElementsByClassName("sub-tab-button");
+        for (i = 0; i < subTabButtons.length; i++) {
+            subTabButtons[i].classList.remove("active");
+        }
+
+        // Show the current sub-tab and add active class to the button and sub-tab content
+        document.getElementById(subTabName).style.display = "block";
+        document.getElementById(subTabName).classList.add("active");
+        evt.currentTarget.classList.add("active");
+    }
+
+    // Ensure active tab is maintained when opening the modal
+    document.getElementById("GuarantorLookupModal").addEventListener("show.bs.modal", function () {
+        isModalOpened = true;
+        activeTab = 'section5'; // Ensure section5 is set as the active tab
+        localStorage.setItem('activeTab', 'section5');
+        localStorage.setItem('isModalOpened', 'true');
+    });
+
+    // Initial setup to show the active tab on page load
+    document.addEventListener("DOMContentLoaded", function () {
+        var tab = document.getElementById(activeTab);
+        if (tab) {
+            tab.style.display = "block";
+            tab.classList.add("active");
+
+            var tabButton = document.querySelector(`.tab-header .tab-button[onclick="openTab(event, '${activeTab}')"]`);
+            if (tabButton) {
+                tabButton.classList.add("active");
+            }
+        }
+
+        // Ensure section1 is inactive if section5 is active after modal open
+        if (activeTab === 'section5') {
+            var section1 = document.getElementById('section1');
+            if (section1) {
+                section1.style.display = "none";
+                section1.classList.remove("active");
+
+                var section1Button = document.querySelector('.tab-header .tab-button[onclick="openTab(event, \'section1\')"]');
+                if (section1Button) {
+                    section1Button.classList.remove("active");
+                }
+            }
+
+            localStorage.removeItem('isModalOpened'); // Clear the modal flag after it has been handled
+        }
+    });
+</script>

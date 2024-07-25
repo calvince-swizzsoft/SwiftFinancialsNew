@@ -91,12 +91,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await _channelService.ApproveLoanCaseAsync(loanDTO, loanApprovalOption, GetServiceHeader());
 
+                TempData["approve"] = "Loan Approval Successful";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = loanDTO.ErrorMessages;
                 ViewBag.LoanApprovalOptionSelectList = GetLoanApprovalOptionSelectList(loanCaseDTO.LoanApprovalOption.ToString());
+
+                TempData["approveError"] = "Loan Approval Unsuccessful";
+
                 return View(loanCaseDTO);
             }
         }
