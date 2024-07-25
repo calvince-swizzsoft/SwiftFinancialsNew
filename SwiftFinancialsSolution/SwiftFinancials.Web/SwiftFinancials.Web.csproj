@@ -1080,12 +1080,6 @@
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\CoA_Management\Index.cshtml" />
-    <Content Include="Areas\Accounts\Views\CoA_Management\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\CoA_ChequeBooks\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Edit.cshtml" />
-    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
