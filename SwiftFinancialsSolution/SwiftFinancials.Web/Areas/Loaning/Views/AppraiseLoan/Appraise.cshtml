@@ -34,6 +34,13 @@
                             <strong>Failed !</strong> @TempData["approveError"]
                         </div>
                     }
+                    
+                    @if (TempData["AppraisedAmount"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["AppraisedAmount"]
+                        </div>
+                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
