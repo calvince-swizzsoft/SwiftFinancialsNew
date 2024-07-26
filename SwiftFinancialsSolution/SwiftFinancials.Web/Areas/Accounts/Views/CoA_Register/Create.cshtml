@@ -53,7 +53,7 @@
         }
 
     .tab-content {
-        max-height: 950px; /* Adjust the height as needed */
+        max-height: 600px; /* Adjust the height as needed */
         overflow-y: auto;
         padding: 10px;
         border: 1px solid #ccc; /* Borderline around tab content */
@@ -209,19 +209,81 @@
                                     </div>
                                 </div>
 
+                                @*Savings Products*@
                                 <div id="section1" class="tab-content">
-                                    <h2>Section 1</h2>
-                                    <p>This is the content of Section 1.</p>
+                                    <div class="form-group">
+                                        <div style="text-align: left;">
+                                            <input type="checkbox" id="sheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="sheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table id="SavingsProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="7" class="dataTables_empty">
+                                                            Loading data from server
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
 
+
+                                @*Loans Products*@
                                 <div id="section2" class="tab-content">
-                                    <h2>Section 2</h2>
-                                    <p>This is the content of Section 2.</p>
+                                    <div class="form-group">
+                                        <div style="text-align: left;">
+                                            <input type="checkbox" id="lheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="lheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="7" class="dataTables_empty">
+                                                            Loading data from server
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
                                 </div>
 
+
+
+                                @*Investments Products*@
                                 <div id="section3" class="tab-content">
-                                    <h2>Section 3</h2>
-                                    <p>This is the content of Section 3.</p>
+                                    <div class="form-group">
+                                        <div style="text-align: left;">
+                                            <input type="checkbox" id="iheaderCheckbox" style="transform: scale(1); color: blue;">
+                                            <label for="iheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                        </div>
+
+                                        <div class="table-responsive">
+                                            <table id="InvestmentsProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                <tbody>
+                                                    <tr>
+                                                        <td colspan="7" class="dataTables_empty">
+                                                            Loading data from server
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <br />
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <button id="submit-btn" class="btn btn-primary" style="margin-top: 20px; margin-bottom: 20px; width: 150px;">Create</button>
+                                    </div>
                                 </div>
 
                             </fieldset>
@@ -383,4 +445,478 @@
 
     </script>
 
+
+
+
+
+
+    @*Savings Products*@
+    <script>
+        $(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#sheaderCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.srowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('sheaderCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#SavingsProductsGrid').on('change', '.srowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#sheaderCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('sheaderCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length;
+                $('#sheaderCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('sheaderCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#sheaderCheckbox').prop('checked', loadCheckboxState('sheaderCheckbox'));
+    });
+
+    // Initialize the DataTable
+            var table = $('#SavingsProductsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "7%", "bSortable": false },
+            { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "5%", "bSortable": false },
+            { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "5%", "bSortable": false },
+            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Allowed Withdrawal", "sWidth": "7%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#sheaderCheckbox').prop('checked', loadCheckboxState('sheaderCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+            $('#SavingsProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="sheaderCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+            $('#sheaderCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.srowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+                saveCheckboxState('sheaderCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+            $('#SavingsProductsGrid').on('change', '.srowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#sheaderCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('sheaderCheckbox', false);
+        }
+    });
+        });
+
+
+
+
+        $('#submit-btn').click(function () {
+            var selectedRowsData = [];
+            $('.srowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/DebitType/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+    </script>
+
+
+
+    @*Loans Products*@
+    <script>
+        $(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#lheaderCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.lrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('lheaderCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#LoanProductsGrid').on('change', '.lrowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#lheaderCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('lheaderCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.lrowCheckbox:checked').length === $('.lrowCheckbox').length;
+                $('#lheaderCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('lheaderCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
+    });
+
+    // Initialize the DataTable
+    var table = $('#LoanProductsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.01%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false },
+            { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term (Months)", "sWidth": "5%", "bSortable": false },
+            { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "5%", "bSortable": false },
+            { "mDataProp": "LoanRegistrationPaymentDueDateDescription", "sTitle": "Payment Due Date", "sWidth": "7%", "bSortable": false },
+            { "mDataProp": "LoanRegistrationPaymentFrequencyPerYearDescription", "sTitle": "Payment Frequency Per Year", "sWidth": "7%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="lheaderCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#lheaderCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.lrowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('lheaderCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+    $('#LoanProductsGrid').on('change', '.lrowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#lheaderCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('lheaderCheckbox', false);
+        }
+    });
+        });
+
+
+
+
+        $('#submit-btn').click(function () {
+            var selectedRowsData = [];
+            $('.lrowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/DebitType/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+    </script>
+
+
+
+
+    @*Investments Products*@
+    <script>
+        $(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#iheaderCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.irowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('iheaderCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#InvestmentsProductsGrid').on('change', '.irowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#iheaderCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('iheaderCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.irowCheckbox:checked').length === $('.irowCheckbox').length;
+                $('#iheaderCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('iheaderCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#iheaderCheckbox').prop('checked', loadCheckboxState('iheaderCheckbox'));
+    });
+
+    // Initialize the DataTable
+            var table = $('#InvestmentsProductsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="irowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "7%", "bSortable": false },
+            { "mDataProp": "MaximumBalance", "sTitle": "Maximum Balance", "sWidth": "7%", "bSortable": false },
+            { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "5%", "bSortable": false },
+            { "mDataProp": "ChartOfAccountName", "sTitle": "G/L Account Name", "sWidth": "15%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#iheaderCheckbox').prop('checked', loadCheckboxState('iheaderCheckbox'));
+        }
+    });
+
+    // Place the header checkbox anywhere on the grid
+            $('#InvestmentsProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="iheaderCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#iheaderCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.irowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('iheaderCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+            $('#InvestmentsProductsGrid').on('change', '.irowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#iheaderCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('iheaderCheckbox', false);
+        }
+    });
+        });
+
+
+
+
+        $('#submit-btn').click(function () {
+            var selectedRowsData = [];
+            $('.rowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/DebitType/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });
+    </script>
 }
