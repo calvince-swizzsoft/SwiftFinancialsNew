@@ -16,11 +16,44 @@
         </ol>
     </div>
 </div>
+<style>
+    .dropdown-item {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
 
+        .dropdown-item:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .dropdown-item:active {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+</style>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        @TempData["SuccessMessage"]
+                    </div>
+                }
                 <div class="ibox-title">
                     @Html.ActionLink("Create WithdrawalNotification", "Create", "WithdrawalNotification", new { Area = "Registry" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -81,17 +114,26 @@
 
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/Registry/WithdrawalNotification/details/${aData.Id}">View</a>
+                                
+                                    <a class="dropdown-item" href="/Registry/WithdrawalNotification/Verify/${aData.Id}">Verify</a>
+                                    <a class="dropdown-item" href="/Registry/WithdrawalNotification/Approval/${aData.Id}">Approval</a>
+                                    <a class="dropdown-item" href="/Registry/WithdrawalNotification/Settlement/${aData.Id}">Settlement</a>
+                                    <a class="dropdown-item" href="/Registry/WithdrawalNotification/DeathClaim/${aData.Id}">DeathClaim</a>
 
-                    var editUrl = '<a  href="/Registry/WithdrawalNotification/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/Registry/WithdrawalNotification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyUrl = '<a  href="/Registry/WithdrawalNotification/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var ApproveUrl = '<a  href="/Registry/WithdrawalNotification/Approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approval</a>';
-                    var SettlementUrl = '<a  href="/Registry/WithdrawalNotification/Settlement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Settlement</a>';
-                    var DeathClaimUrl = '<a  href="/Registry/WithdrawalNotification/DeathClaim/' + aData.Id + '" class = "btn btn-outline-info"">' + 'DeathClaim</a>';
+                            </div>
+                        </div>`;
 
+                    $('td:eq(7)', nRow).html(dropdownHtml);
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + ApproveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + SettlementUrl + '&nbsp;' + DeathClaimUrl);
+                   // $('td:eq(3)', nRow).html(dt_Created);
+                   // $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + ApproveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + SettlementUrl + '&nbsp;' + DeathClaimUrl);
 
                     return nRow;
                 },
@@ -100,8 +142,11 @@
                     { "mDataProp": "Customer.FullName", "sTitle": "Customer", "sWidth": "4%" },
                     { "mDataProp": "StatusDescription", "sTitle": "StatusDescription", "sWidth": "4%" },
                     { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "4%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "4%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "60%", "bSortable": false }],
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "4%" },
+                    { "mDataProp": "CategoryDescription", "sTitle": "Category", "sWidth": "4%" },
+                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "4%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Ac/No", "sWidth": "4%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "6%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

@@ -285,6 +285,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.ChargeType = GetChargeTypeSelectList(string.Empty);
 
                 directDebitDTO.Investments = investmentProductDetails;
+                directDebitDTO.invest[0].Id = investmentProductDetails.Id;
+                directDebitDTO.invest[1].Description = investmentProductDetails.Description;
                 Session["benefactorAccounts"] = directDebitDTO.Investments;
                 directDebitDTO.CustomerAccountTypeTargetProductId = investmentProductDetails.Id;
                 directDebitDTO.CustomerAccountTypeTargetProductDescription = investmentProductDetails.Description;

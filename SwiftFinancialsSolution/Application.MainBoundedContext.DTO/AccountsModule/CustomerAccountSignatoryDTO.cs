@@ -28,6 +28,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [ValidGuid]
         public Guid CustomerAccountId { get; set; }
 
+        public CustomerAccountDTO Customers { get; set; }
+
         [DataMember]
         [Display(Name = "Customer Type")]
         public int CustomerAccountCustomerType { get; set; }
