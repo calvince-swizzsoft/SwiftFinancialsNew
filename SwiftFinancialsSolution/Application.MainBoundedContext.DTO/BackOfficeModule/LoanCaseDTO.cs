@@ -28,7 +28,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
         public Guid BranchId { get; set; }
 
         [DataMember]
@@ -67,7 +66,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Customer")]
-        [ValidGuid]
         public Guid CustomerId { get; set; }
 
 
@@ -1051,7 +1049,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         // Additional Guarantor DTOs
         [DataMember]
         [Display(Name = "Customer")]
-        [ValidGuid]
         public Guid GuarantorId { get; set; }
 
         [DataMember]
@@ -1068,7 +1065,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Station")]
-        [ValidGuid]
         public Guid GuarantorStationId { get; set; }
 
         [DataMember]
@@ -1077,7 +1073,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Employer")]
-        [ValidGuid]
         public Guid GuarantorEmployerId { get; set; }
 
         [DataMember]
@@ -1143,7 +1138,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         // Additional Customer Accounts DTOs
         [DataMember]
         [Display(Name = "Customer Account")]
-        [ValidGuid]
         public Guid CustomerAccountId { get; set; }
 
         [DataMember]

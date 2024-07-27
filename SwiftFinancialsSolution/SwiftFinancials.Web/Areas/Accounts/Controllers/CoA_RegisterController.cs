@@ -46,7 +46,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<ChartOfAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
@@ -63,8 +63,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -74,47 +72,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
-            CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
-
-            if (customer != null)
-            {
-                customerAccountDTO.Customers = customer;
-                Session["customerAccountDTO"] = customerAccountDTO.Customers;
-                customerAccountDTO.CustomerId = customer.Id;
-                customerAccountDTO.CustomerIndividualFirstName = customer.FullName;
-                customerAccountDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                customerAccountDTO.CustomerSerialNumber = customer.SerialNumber;
-                customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationDescription;
-                customerAccountDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-                customerAccountDTO.CustomerReference1 = customer.Reference1;
-                customerAccountDTO.CustomerReference2 = customer.Reference2;
-                customerAccountDTO.CustomerReference3 = customer.Reference3;
-                customerAccountDTO.BranchId = customer.BranchId;
-                customerAccountDTO.BranchDescription = customer.BranchDescription;
-                Session["CustomerIndividualFirstName"] = customer.IndividualFirstName;
-                Session["CustomerId"] = customer.Id;
-                Session["CustomerIndividualPayrollNumbers"] = customer.IndividualPayrollNumbers;
-                Session["CustomerSerialNumber"] = customer.SerialNumber;
-                Session["CustomerIndividualIdentityCardNumber"] = customer.IndividualIdentityCardNumber;
-                Session["CustomerStationZoneDivisionEmployerDescription"] = customer.StationDescription;
-                Session["CustomerReference1"] = customer.Reference1;
-                Session["CustomerReference3"] = customer.Reference3;
-                Session["CustomerReference2"] = customer.Reference2;
-                Session["BranchId"] = customer.BranchId;
-                Session["BranchDescription"] = customer.BranchDescription;
-
-            }
-            if (Session["beneficiaryAccounts"] != null)
-            {
-                customerAccountDTO.Savings = Session["beneficiaryAccounts"] as SavingsProductDTO;
-            }
-
-            if (Session["benefactorAccounts"] != null)
-            {
-                customerAccountDTO.Investments = Session["benefactorAccounts"] as InvestmentProductDTO;
-            }
-            return View(customerAccountDTO);
+            return View();
         }
 
         //public async Task<ActionResult> SavingsProduct(SavingsProductDTO savingsProductDTO, ObservableCollection<SavingsProductDTO> savingProductRowData)

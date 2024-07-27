@@ -52,16 +52,16 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -328,10 +328,13 @@
     <Compile Include="Areas\Accounts\Controllers\ChequeTypeController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_ChequeBooksController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_SignatoriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CostCenterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CreditBatchController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_ManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CustomerAccountsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CustomerAccountstandingorderController.cs" />
     <Compile Include="Areas\Accounts\Controllers\DebitBatchController.cs" />
@@ -366,6 +369,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\CashWithdrawalController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ChequesController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PeriodClosingController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\SalaryCardsController.cs" />
@@ -965,7 +969,6 @@
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
-    <Content Include="Areas\Loaning\Views\LoanRegistration\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashManagement\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Approval.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
@@ -1047,8 +1050,6 @@
     <Content Include="Areas\Accounts\Views\CoA_Register\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Register\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternateChannels\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Create.cshtml" />
-    <Content Include="Areas\Accounts\Views\IndefiniteCharges\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\GLAccount\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\ClosePostingPeriod\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatechannelManagement\Create.cshtml" />

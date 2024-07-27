@@ -91,6 +91,14 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Loan Cases</h2>
+
+                    @if (TempData["AlertMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AlertMessage"]
+                        </div>
+                    }
+
                     <hr />
                     @Html.ActionLink("Register Loan", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">

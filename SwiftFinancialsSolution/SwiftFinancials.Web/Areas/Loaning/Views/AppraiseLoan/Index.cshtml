@@ -40,7 +40,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loaning</h1>
+        <h1>Loan Origination</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -58,9 +58,13 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Loan Appraisal</h2>
-                    <hr />
 
-                    @Html.ActionLink("Back", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+                    @if (TempData["approve"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["approve"]
+                        </div>
+                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -129,25 +133,38 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/AppraiseLoan/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/loaning/AppraiseLoan/index/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/loaning/AppraiseLoan/appraise/${aData.Id}">Appraise Loan</a>
+                            </div>
+                        </div>`;
+
                     var appraiseUrl = '<a  href="/loaning/AppraiseLoan/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
-                    
+
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp; &nbsp;' + appraiseUrl);
+                    $('td:eq(9)', nRow).html(dt_Created);
+                    $('td:eq(10)', nRow).html(appraiseUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "5%" },
+                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "5%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number","sWidth": "5%" },
+                    { "mDataProp": "CustomerReference2", "sTitle": "Membership Number","sWidth": "5%" },
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product","sWidth": "5%" },
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%"},
                     { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "AppraisedDate", "sTitle": "Appraised Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "40%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Registered Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });

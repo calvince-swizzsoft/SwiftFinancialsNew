@@ -88,12 +88,17 @@ namespace SwiftFinancials.Web.Areas.Loaning
             {
                 await _channelService.AuditLoanCaseAsync(loanDTO, loanCaseDTO.LoanAuditOption, GetServiceHeader());
 
+                TempData["verify"] = "Loan Verification Successful";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = loanDTO.ErrorMessages;
                 ViewBag.LoanAuditOptionSelectList = GetLoanAuditOptionSelectList(loanCaseDTO.LoanAuditOption.ToString());
+
+                TempData["verifyError"] = "Loan Verification Unsuccessful";
+
                 return View(loanCaseDTO);
             }
         }
