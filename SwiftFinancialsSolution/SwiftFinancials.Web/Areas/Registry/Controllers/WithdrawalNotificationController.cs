@@ -70,7 +70,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 return View();
             }
-
+            // await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(parseId,int[], false, false, false, false, GetServiceHeader());
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
@@ -98,8 +98,16 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.AddWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
+                var result = await _channelService.AddWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
+                if (result.ErrorMessageResult != null)
+                {
+                    TempData["ErrorMsg"] = result.ErrorMessageResult;
+                    await ServeNavigationMenus();
+                    ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
 
+                    return View();
+                }
+                TempData["SuccessMessage"] = "Member " + withdrawalNotificationDTO.CustomerFullName + " has an Awaiting Approval withdrawal Notification";
                 return RedirectToAction("Index");
             }
             else
@@ -118,13 +126,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
 
             Guid parseId;
-            
+
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
                 return View();
             }
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
 
             WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
 
@@ -142,6 +151,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
                 //Session["Test"] =Request.Form["h"] + "";
                 //string mimi = Session["Test"].ToString();
+                Session["withdrawalNotificationDTO"] = withdrawalNotificationDTO;
                 if (Session["Remarks"] != null)
                 {
                     withdrawalNotificationDTO.Remarks = Session["Remarks"].ToString();
@@ -168,10 +178,51 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
         public async Task<ActionResult> Edit(Guid id)
         {
+
+            //string Remarks = "";
             await ServeNavigationMenus();
 
-            var withdrawalNotificationDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+
+            WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
+
+            //WithdrawalNotificationDTOs = TempData["WithdrawalNotificationDTOs"] as ObservableCollection<WithdrawalNotificationDTO>;
+
+            if (customer != null)
+            {
+
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.CustomerFullName = customer.FullName;
+                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
+                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.CustomerStationDescription = customer.StationDescription;
+                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                //Session["Test"] =Request.Form["h"] + "";
+                //string mimi = Session["Test"].ToString();
+                Session["withdrawalNotificationDTO"] = withdrawalNotificationDTO;
+                if (Session["Remarks"] != null)
+                {
+                    withdrawalNotificationDTO.Remarks = Session["Remarks"].ToString();
+                }
+                if (Session["BranchDescription"] != null)
+                {
+                    withdrawalNotificationDTO.BranchDescription = Session["BranchDescription"].ToString();
+                }
+                //
+            }
+
+            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
             return View(withdrawalNotificationDTO);
         }
 
@@ -179,7 +230,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, WithdrawalNotificationDTO withdrawalNotificationDTO)
         {
-            if (ModelState.IsValid)
+            if (!withdrawalNotificationDTO.HasErrors)
             {
                 await _channelService.UpdateWithdrawalNotificationAsync(withdrawalNotificationDTO, GetServiceHeader());
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
@@ -201,11 +252,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             await ServeNavigationMenus();
 
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
+            ViewBag.AuditOption = GetmembershipWithdrawalAuditOptionSelectList(string.Empty);
 
             var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+            ViewBag.WithdrawalNotificationstatusSelectList = GetwithdrawalNotificationStatusSelectList(string.Empty);
+
             return View(creditBatchDTO);
         }
 
@@ -214,16 +267,23 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Verify(WithdrawalNotificationDTO withdrawalNotificationDTO)
         {
             withdrawalNotificationDTO.ValidateAll();
+            int membershipWithdrawalApprovalOption = withdrawalNotificationDTO.Verify;
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.AuditWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, GetServiceHeader());
+
+                await _channelService.AuditWithdrawalNotificationAsync(withdrawalNotificationDTO, membershipWithdrawalApprovalOption, GetServiceHeader());
+
+                TempData["SuccessMessage"] = "Member " + withdrawalNotificationDTO.CustomerFullName + "   withdrawal Notification has an been Verified";
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+
+                ViewBag.AuditOption = GetmembershipWithdrawalAuditOptionSelectList(withdrawalNotificationDTO.Status.ToString());
+                ViewBag.WithdrawalNotificationstatusSelectList = GetwithdrawalNotificationStatusSelectList(withdrawalNotificationDTO.Status.ToString());
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
                 return View(withdrawalNotificationDTO);
             }
@@ -232,12 +292,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         public async Task<ActionResult> Approval(Guid id)
         {
             await ServeNavigationMenus();
-
+            ViewBag.AuditOption = GetmembershipWithdrawalApprovalOptionSelectList(string.Empty);
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-
             var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
-
+            ViewBag.WithdrawalNotificationstatusSelectList = GetwithdrawalNotificationStatusSelectList(string.Empty);
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             return View(creditBatchDTO);
         }
@@ -246,17 +304,21 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approval(WithdrawalNotificationDTO withdrawalNotificationDTO)
         {
-            withdrawalNotificationDTO.ValidateAll();
 
+            withdrawalNotificationDTO.ValidateAll();
+            int membershipWithdrawalApprovalOption = withdrawalNotificationDTO.Verify;
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.ApproveWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, GetServiceHeader());
+                await _channelService.ApproveWithdrawalNotificationAsync(withdrawalNotificationDTO, membershipWithdrawalApprovalOption, GetServiceHeader());
+                TempData["SuccessMessage"] = "Member " + withdrawalNotificationDTO.CustomerFullName + "   withdrawal Notification has an been Approved";
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+                ViewBag.WithdrawalNotificationstatusSelectList = GetwithdrawalNotificationStatusSelectList(withdrawalNotificationDTO.Status.ToString());
+                ViewBag.AuditOption = GetmembershipWithdrawalApprovalOptionSelectList(withdrawalNotificationDTO.Status.ToString());
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
                 return View(withdrawalNotificationDTO);
             }
@@ -283,7 +345,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO,1, 1, GetServiceHeader());
+                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
@@ -311,13 +373,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeathClaim(WithdrawalNotificationDTO withdrawalNotificationDTO,WithdrawalSettlementDTO withdrawalSettlementDTOs)
+        public async Task<ActionResult> DeathClaim(WithdrawalNotificationDTO withdrawalNotificationDTO, WithdrawalSettlementDTO withdrawalSettlementDTOs)
         {
             withdrawalNotificationDTO.ValidateAll();
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, 1,1, GetServiceHeader());
+                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

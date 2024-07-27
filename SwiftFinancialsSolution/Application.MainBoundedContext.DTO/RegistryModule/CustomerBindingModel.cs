@@ -445,7 +445,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "Administrative Division")]
         public string AdministrativeDivisionDescription { get; set; }
-
+        public string ErrorMessageResult { get; set; }
         [DataMember]
         [Display(Name = "Name")]
         public string FullName

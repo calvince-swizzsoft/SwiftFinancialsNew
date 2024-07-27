@@ -160,7 +160,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
             var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
+           var k= await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAsync(parseId, GetServiceHeader());
             CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
 
             if (customer != null)
@@ -184,8 +184,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 customerAccountDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
                 Session["CustomerAccountTypeTargetProductId"] = customerAccountDTO.CustomerAccountTypeTargetProductId;
                 Session["BranchId"] = customerAccountDTO.BranchId;
+                Session["customerAccountDTO2"] = customer;
+                Session["CustomerFullName"] = customer.CustomerFullName;
             }
-
+            ViewBag.history = k;
             return View(customerAccountDTO);
         }
 
@@ -252,9 +254,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (Session["BranchId"] != null)
             {
-                customerAccountDTO.BranchId =(Guid)Session["BranchId"];
+                customerAccountDTO.BranchId = (Guid)Session["BranchId"];
             }
-
+            if (Session["CustomerFullName"] != null)
+            {
+                customerAccountDTO.CustomerIndividualFirstName = Session["CustomerFullName"].ToString();
+                
+            }
             if (Session["CustomerAccountTypeTargetProductId"] != null)
             {
                 customerAccountDTO.CustomerAccountTypeTargetProductId = (Guid)Session["CustomerAccountTypeTargetProductId"];
@@ -264,20 +270,34 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!customerAccountDTO.HasErrors)
             {
-                
-                await _channelService.ManageCustomerAccountAsync(customerAccountDTO.Id,(int)customerAccountDTO.CustomerAccountManagementAction,(string)customerAccountDTO.Remarks,(int)customerAccountDTO.Type, GetServiceHeader());
+
+                await _channelService.ManageCustomerAccountAsync(customerAccountDTO.Id, (int)customerAccountDTO.CustomerAccountManagementAction, (string)customerAccountDTO.Remarks, (int)customerAccountDTO.Type, GetServiceHeader());
                 //if (ErrorMessageResult != null)
                 //{
                 //    TempData["ErrorMsg"] = result.ErrorMessageResult;
                 //    await ServeNavigationMenus();
                 //    return View();
                 //}
-                TempData["AlertMessage"] = "Customer Account Closed successfully";
+                TempData["SuccessMessage"] = $"Successfully {customerAccountDTO.CustomerAccountManagementActionDescription} For Customer {customerAccountDTO.CustomerIndividualFirstName}";
+                if (Session["customerAccountDTO2"] != null)
+                {
+                    Session.Remove("customerAccountDTO2");
+                    Session.Clear();
+                }
+                customerAccountDTO.Customers = null;
+                Session["CustomerFullName"] = "";
+                Session["savingsProductDTOs"] = "";
+                Session["customerAccountDTO"] = "";
+                Session["customerAccountDTO"] = "";
                 return RedirectToAction("Create");
             }
-
-            TempData["Error"] = "Failed to create Customer Account";
-            return View("Create");
+            else
+            {
+                var errormassage = customerAccountDTO.ErrorMessages;
+                TempData["Error"] = "Failed to create Customer Account";
+                await ServeNavigationMenus();
+                return View("Create");
+            }
         }
 
         public async Task<ActionResult> Edit(Guid id)

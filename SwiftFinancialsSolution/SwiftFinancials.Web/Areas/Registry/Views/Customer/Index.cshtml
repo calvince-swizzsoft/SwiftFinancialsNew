@@ -17,10 +17,50 @@
     </div>
 </div>
 
+<style>
+    .dropdown-item {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .dropdown-item:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .dropdown-item:active {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+</style>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+                @if (TempData["SuccessMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success !</strong> @TempData["SuccessMessage"]
+
+                        <button type="button" class="close" data-dismiss="alert">
+                            <span>
+                                &times;
+                            </span>
+                        </button>
+                    </div>
+                }
                 <div class="ibox-title">
                     @Html.ActionLink("Create Customer", "Create", "Customer", new { Area = "Registry" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -82,19 +122,33 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/registry/Customer/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var editUrl = '<a  href="/registry/Customer/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit/Approve/Verify/Reject</a>';
                     var viewUrl = '<a  href="/registry/Customer/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var DelegatesUrl = '<a  href="/registry/Customer/delegates/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Delegates</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/registry/Customer/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/registry/Customer/edit/${aData.Id}">Edit/Approve/Verify/Reject</a>
+                                <a class="dropdown-item" href="/registry/Customer/Directors/${aData.Id}">Directors</a>
+                                <a class="dropdown-item" href="/registry/Customer/Delegates/${aData.Id}">Delegates</a>
+                            </div>
+                        </div>`;
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + DelegatesUrl);
+                    $('td:eq(6)', nRow).html(dropdownHtml);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    //$('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + DelegatesUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "RecordStatus", "sWidth": "10%" },
                     { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
                     { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},

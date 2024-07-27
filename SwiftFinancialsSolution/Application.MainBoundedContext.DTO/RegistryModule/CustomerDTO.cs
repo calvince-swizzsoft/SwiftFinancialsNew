@@ -447,7 +447,9 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
             return string.Format("{0}", stringBuilder);
         }
-
+        
+        public string ErrorMessageResult;
+        public string ErrorMessages;
         public int CompareTo(CustomerDTO other)
         {
             return this.CompareTo(other);
