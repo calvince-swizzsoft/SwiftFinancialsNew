@@ -386,6 +386,7 @@
     <Compile Include="Areas\Loaning\Controllers\AppraiseLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\AuthorizeLoanBatchController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -966,7 +967,6 @@
     <Content Include="Areas\Loaning\Views\IncomeAdjustments\Create.cshtml" />
     <Content Include="Areas\Registry\Views\MultiDestination\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashTransfer\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\AttachGuarantor\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\CashManagement\Create.cshtml" />
@@ -1020,7 +1020,6 @@
     <Content Include="Areas\Loaning\Views\LoanRestructuring\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRestructuring\Details.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanRestructuring\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\AttachGuarantor\Add.cshtml" />
     <Content Include="Areas\Accounts\Views\Standingorderexecution\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\Standingorderexecution\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccountstandingorder\Index.cshtml" />
@@ -1080,6 +1079,8 @@
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\AuthorizeLoanBatch\Authorize.cshtml" />
+    <Content Include="Areas\Loaning\Views\AuthorizeLoanBatch\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />

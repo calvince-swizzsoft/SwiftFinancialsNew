@@ -80,6 +80,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.LoanCase = loanCases;
 
                 Session["loanCases"] = loanGuarantorDTO.LoanCase;
+
+                Session["status"] = loanGuarantorDTO.LoanCase.Status;
             }
 
             return View(loanGuarantorDTO);
@@ -151,6 +153,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanGuarantorDTO.HasErrors)
             {
+                var status = Convert.ToInt32(Session["status"].ToString());
+                if(status!= 48826)
+                {
+                    TempData["status"] = "You can only attach guarantor for loans that are registered !";
+                    return View();
+                }
+
                 var AddLoanGuarantor = await _channelService.AddLoanGuarantorAsync(loanGuarantorDTO, GetServiceHeader());
 
                 TempData["AlertMessage"] = "Loan guarantor added successfully.";

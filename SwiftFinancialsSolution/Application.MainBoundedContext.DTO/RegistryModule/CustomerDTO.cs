@@ -454,5 +454,10 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         {
             return this.CompareTo(other);
         }
+
+
+
+        [Display(Name = "Guarantor")]
+        public string GuarantorDesc { get; set; }
     }
 }

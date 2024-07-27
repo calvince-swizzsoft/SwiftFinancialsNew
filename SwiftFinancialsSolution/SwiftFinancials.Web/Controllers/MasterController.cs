@@ -44,8 +44,6 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTOs;
 
-        //public ObservableCollection<LoanGuarantorDTO> StandingOrdersDTOs;
-
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> RecouringBatchDTOs;
@@ -1557,6 +1555,24 @@ namespace SwiftFinancials.Web.Controllers
             disbursementType.AddRange(items);
 
             return disbursementType;
+        }  
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetBatchStatusTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> BatchStatus = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(BatchStatus)).Cast<BatchStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            BatchStatus.AddRange(items);
+
+            return BatchStatus;
         }
     }
 }
