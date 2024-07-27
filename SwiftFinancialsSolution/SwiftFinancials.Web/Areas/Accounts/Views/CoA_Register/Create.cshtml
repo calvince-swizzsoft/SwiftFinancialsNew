@@ -138,13 +138,13 @@
                                 </div>
 
 
-
-                                    </div>
-                                </div>
-
-
                             </fieldset>
                         </div>
+
+
+
+
+
 
                     }
 
@@ -197,50 +197,42 @@
                                         </div>
                                     </div>
 
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.invest[0].Id, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.invest[0].Id)
-                                                @Html.TextBoxFor(model => model.invest[0].Description, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#investmentsProductLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Customers.IndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.HiddenFor(model => model.Customers.IndividualIdentityCardNumber)
-                                            @Html.EditorFor(model => model.Customers.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @placeholder = "Identity Card Number..." } })
-                                            @Html.ValidationMessageFor(model => model.Customers.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                            @Html.LabelFor(model => model.invest[0].ChartOfAccountAccountName, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.invest[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.invest[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Customers.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                            @Html.HiddenFor(model => model.Customers.IndividualPayrollNumbers)
-                                            @Html.EditorFor(model => model.Customers.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @placeholder = "Payroll Number..." } })
-                                            @Html.ValidationMessageFor(model => model.Customers.IndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                            @Html.LabelFor(model => model.invest[0].Code, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.invest[0].Code, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                            @Html.ValidationMessageFor(model => model.invest[0].Code, "", new { @class = "text-danger" })
-                                            <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.invest[0].Id, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.invest[0].Id)
+                                            @Html.TextBoxFor(model => model.invest[0].Description, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#investmentsProductLookupModal"><span class="fa fa-search"></span></a>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.invest[0].ChartOfAccountAccountName, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.invest[0].ChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.invest[0].ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
 
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Customers.Reference1, htmlAttributes: new { @class = "" })
-                                            @Html.HiddenFor(model => model.Customers.Reference1)
-                                            @Html.EditorFor(model => model.Customers.Reference1, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @placeholder = "Account Number..." } })
-                                            @Html.ValidationMessageFor(model => model.Customers.Reference1, "", new { @class = "text-danger" })
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Customers.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                        @Html.HiddenFor(model => model.Customers.IndividualPayrollNumbers)
+                                        @Html.EditorFor(model => model.Customers.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", disabled = "disabled", @placeholder = "Payroll Number..." } })
+                                        @Html.ValidationMessageFor(model => model.Customers.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.invest[0].Code, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.invest[0].Code, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                        @Html.ValidationMessageFor(model => model.invest[0].Code, "", new { @class = "text-danger" })
+                                        <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.Savings.Id, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
@@ -364,15 +356,17 @@
                                     </div>
                                 </div>
 
-                            </fieldset>
+
+                            </div>
+
                         </div>
+
                     }
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">

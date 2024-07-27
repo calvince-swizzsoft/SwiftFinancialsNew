@@ -1080,6 +1080,7 @@
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_Signatories\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
