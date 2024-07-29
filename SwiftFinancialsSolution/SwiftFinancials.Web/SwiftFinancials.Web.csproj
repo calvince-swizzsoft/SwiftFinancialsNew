@@ -345,6 +345,7 @@
     <Compile Include="Areas\Accounts\Controllers\GLAccountController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IndefiniteChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
@@ -1086,6 +1087,10 @@
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\IndefiniteCharges\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Insurers\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\Insurers\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1552,6 +1557,7 @@
     <Folder Include="Areas\Accounts\Data\" />
     <Folder Include="Areas\Accounts\Views\Alternatechannel\" />
     <Folder Include="Areas\Accounts\Views\BatchOrigination_Refund\" />
+    <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />

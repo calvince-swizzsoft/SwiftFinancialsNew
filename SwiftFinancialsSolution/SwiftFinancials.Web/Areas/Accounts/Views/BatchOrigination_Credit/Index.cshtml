@@ -122,7 +122,20 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/Accounts/BatchOrigination_Credit/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/edit/${aData.Id}">Edit</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/Verify/${aData.Id}">Verify</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/Authorize/${aData.Id}">Authorize</a>
+                            </div>
+                        </div>`;
+
+                    var editUrl = '<a  href="/Accounts/Accounts/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/Accounts/BatchOrigination_Credit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var verifyUrl = '<a  href="/Accounts/BatchOrigination_Credit/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
                     var AuthorizeUrl = '<a  href="/Accounts/BatchOrigination_Credit/Authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
@@ -130,7 +143,7 @@
 
 
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + AuthorizeUrl);
+                    $('td:eq(7)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
@@ -143,7 +156,7 @@
                     { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
                     { "mDataProp": "CreditTypeChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "30%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "8%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });
