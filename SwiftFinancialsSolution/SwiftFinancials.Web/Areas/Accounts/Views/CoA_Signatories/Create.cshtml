@@ -160,8 +160,8 @@
                                                 @Html.HiddenFor(model => model.CustomerAccountId)
                                                 @Html.TextBoxFor(model => model.Customers.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 @*<span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>*@
+                                                        <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>*@
                                             </div>
                                         </div>
 
@@ -235,85 +235,86 @@
 
                         <h2 style="color: cadetblue;">Signatory Details</h2>
 
+                    }
 
-
-
+                    @using (Html.BeginForm("Add", "CoA_Signatories", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
                         <div class="row">
 
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
-                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].FirstName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].FirstName, "", new { @class = "text-danger" })
                                 </div>
 
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].AddressAddressLine1, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].AddressAddressLine1, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].AddressStreet, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].AddressStreet, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].AddressStreet, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].Gender, htmlAttributes: new { @class = "" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Gender, genders, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Gender)
+                                        @Html.DropDownListFor(model => model.customerAccountSignatoryDTOs[0].Gender, genders, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].Gender)
                                     </div>
                                 </div>
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].customerAccountSignatoryDTOs[0].LastName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].LastName, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].LastName, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].AddressAddressLine2, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].AddressAddressLine2, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].AddressMobileLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].AddressMobileLine, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].AddressMobileLine, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Relationship, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].Relationship, htmlAttributes: new { @class = "" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Relationship, nationalities, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Relationship)
+                                        @Html.DropDownListFor(model => model.customerAccountSignatoryDTOs[0].Relationship, nationalities, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].Relationship)
                                     </div>
                                 </div>
                             </div>
 
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.IdentityCardNumber, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.IdentityCardNumber, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.IdentityCardNumber, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].IdentityCardNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].IdentityCardNumber, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].IdentityCardNumber, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].AddressCity, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].AddressCity, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].AddressCity, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                    @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.customerAccountSignatoryDTOs[0].AddressEmail, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.customerAccountSignatoryDTOs[0].AddressEmail, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.customerAccountSignatoryDTOs[0].AddressEmail, "", new { @class = "text-danger" })
                                     <div class="invalid-feedback" style="display: none; color:red;"></div>
                                 </div>
                             </div>
