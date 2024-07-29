@@ -105,6 +105,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
             loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
             loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
+            loanDTO.AppraisedAmountRemarks = loanCaseDTO.AppraisedAmountRemarks;
 
             loanDTO.ValidateAll();
 

@@ -244,7 +244,10 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                 }
 
                 if (!proceed)
-                    throw new InvalidOperationException("Sorry, but a customer with a similar identity and/or payroll numbers already exists!");
+                {
+                    customerDTO.ErrorMessageResult = ("Sorry, but a customer with a similar identity and/or payroll numbers already exists!");
+                    return customerDTO;
+                }
                 else
                 {
                     _customerRepository.Add(customer, serviceHeader);
@@ -469,7 +472,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                     }
 
                     if (!proceed)
-                        throw new InvalidOperationException("Sorry, but a customer with a similar identity and/or payroll numbers already exists!");
+                        customerDTO.ErrorMessageResult = ("Sorry, but a customer with a similar identity and/or payroll numbers already exists!");
                     else
                         _customerRepository.Merge(persisted, current, serviceHeader);
                 }

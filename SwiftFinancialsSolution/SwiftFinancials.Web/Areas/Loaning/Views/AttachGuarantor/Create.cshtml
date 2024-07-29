@@ -43,30 +43,12 @@
                     </div>
                 </div>
 
-                @if (TempData["AlertMessage"] != null)
+                @if (TempData["status"] != null)
                 {
-                    <div class="alert alert-success">
-                        <strong>Failed !</strong> @TempData["AlertMessage"]
-
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>
-                                &times;
-                            </span>
-                        </button>
+                    <div class="alert alert-danger">
+                        <strong>Attempt Failed !</strong> @TempData["status"]
                     </div>
                 }
-
-                <!--<div id="tabs-container">
-                    <ul class="nav-tabs">
-                        <li>@Html.ActionLink("Register Loan", "Create", "LoanRegistration")</li>
-                        <li>@Html.ActionLink("Attach Guarantor", "Create", "AttachGuarantor")</li>
-                        <li>@Html.ActionLink("Appraise Loan", "Index", "AppraiseLoan")</li>
-                        <li>@Html.ActionLink("Approve Loan", "Index", "ApproveLoan")</li>
-                        <li>@Html.ActionLink("Verify Loan", "Index", "LoanVerification")</li>-->
-                @*<li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>*@
-
-                <!--</ul>
-                </div>-->
 
                 <div class="ibox-content">
                     @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
@@ -252,24 +234,6 @@
                                 </div>
                             </div>
                         </fieldset>
-                        @*</section>*@
-                      
-
-                        <h3>Loan Guarantors</h3>
-
-                        @*</section>*@
-
-                        <hr />
-
-
-                        <div class="row">
-                            <div class="col-lg-4">
-                                @using (Html.BeginForm("Create", "LoanRestructuring", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
-                                {
-                                    <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;"/>
-                                }
-                            </div>
-                        </div>
                     }
 
                 </div>
