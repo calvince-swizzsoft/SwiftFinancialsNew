@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
@@ -26,8 +27,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             int totalRecordCount = 0;
 
-            int status = 2;
-            DateTime startDate = DateTime.Now;
+            int status=1 ;
+            DateTime startDate = DateTime.Now.AddDays(-7);
             DateTime endDate = DateTime.Now;
             int searchRecordCount = 0;
 
@@ -66,20 +67,35 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
             ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
-            
-             
+
+
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(LoanDisbursementBatchDTO loanDisbursementBatchDTO)
+        public async Task<ActionResult> Create(LoanDisbursementBatchDTO loanDisbursementBatchDTO, LoanDisbursementBatchEntryDTO loanDisbursementBatchEntryDTO)
         {
             loanDisbursementBatchDTO.ValidateAll();
 
             if (!loanDisbursementBatchDTO.HasErrors)
             {
-                await _channelService.AddLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Create successfull";
+                var loanDisbursement = await _channelService.AddLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
+
+                if (loanDisbursement != null)
+                {
+                    var verifiedLoanCasesList = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited, string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
+
+                    var verifiedLoanCases = verifiedLoanCasesList.PageCollection.Where(x => x.IsBatched == false);
+
+                    foreach (var loanCase in verifiedLoanCases)
+                    {
+                        loanDisbursementBatchEntryDTO.LoanCaseId = loanCase.Id;
+                        loanDisbursementBatchEntryDTO.LoanDisbursementBatchId = loanDisbursement.Id;
+
+                        await _channelService.AddLoanDisbursementBatchEntryAsync(loanDisbursementBatchEntryDTO, GetServiceHeader());
+                    }
+                }
+
                 return RedirectToAction("Index");
             }
             else
@@ -200,7 +216,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Authorize(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
             /*var batchAuthOption = wireTransferBatchDTO.batch*/
-            
+
             loanDisbursementBatchDTO.ValidateAll();
 
 

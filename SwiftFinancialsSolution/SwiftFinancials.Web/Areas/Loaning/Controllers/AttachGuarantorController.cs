@@ -12,7 +12,7 @@ using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
-using System.Data.SqlClient; 
+using System.Data.SqlClient;
 using System.Data;
 
 
@@ -62,7 +62,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<ActionResult> Create(Guid? id,LoanGuarantorDTO loanGuarantorDTO, CustomerAccountDTO customerAccountDTO)
+        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
 
@@ -73,11 +73,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var loanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
+            var myloanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
 
-            if(loanCases != null)
+            if (myloanCases != null)
             {
-                loanGuarantorDTO.LoanCase = loanCases;
+                loanGuarantorDTO.LoanCase = myloanCases;
 
                 Session["loanCases"] = loanGuarantorDTO.LoanCase;
 
@@ -87,15 +87,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(loanGuarantorDTO);
         }
 
-
-        public async Task<ActionResult> Add(LoanGuarantorDTO loanGuarantorDTO)
-        {
-            await ServeNavigationMenus();
-
-
-
-            return View();
-        }
 
 
         public async Task<ActionResult> Search(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
@@ -109,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            
+
             if (Session["loanCases"] != null)
             {
                 loanGuarantorDTO.LoanCase = Session["loanCases"] as LoanCaseDTO;
@@ -154,7 +145,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             if (!loanGuarantorDTO.HasErrors)
             {
                 var status = Convert.ToInt32(Session["status"].ToString());
-                if(status!= 48826)
+                if (status != 48826)
                 {
                     TempData["status"] = "You can only attach guarantor for loans that are registered !";
                     return View();
