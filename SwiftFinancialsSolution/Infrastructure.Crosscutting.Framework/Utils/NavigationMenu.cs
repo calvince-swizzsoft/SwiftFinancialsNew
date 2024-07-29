@@ -50,7 +50,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 new NavigationMenu{AreaCode = 0x00005208 + 6, IsArea = false, Description = "Multi-Destination", Icon="fa fa-cog", ControllerName="MultiDestination", ActionName="Create", AreaName = "Registry", Code = 0x00005208 + 7},
                 new NavigationMenu{AreaCode = 0x00005208 + 6, IsArea = false, Description = "Single-Destination ", Icon="fa fa-cog", ControllerName="SingleDestination ", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 8},
-               
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Register education venue", Icon="fa fa-cog", ControllerName="Registereducationvenue", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 9},
+
                 //Human Resource - area 22,000
                 new NavigationMenu{Description = "Human Resource", IsArea = true, Code = 0x000055F0},
                 // menu-items (children)
