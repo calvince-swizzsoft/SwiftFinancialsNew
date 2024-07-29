@@ -214,7 +214,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
 
                             //...... Loaning - area 24,000
-                new NavigationMenu{Description = "Loan Origination", IsArea = true, Code = 0x00005DC0},
+                new NavigationMenu{Description = "Back Office", IsArea = true, Code = 0x00005DC0},
                 // menu-items (children)
                 new NavigationMenu{AreaCode = 0x00005DC0, IsArea = false, Description = "Setup", Icon="fa fa-bars", Code = 0x00005DC0 + 1},
                 new NavigationMenu{AreaCode = 0x00005DC0, IsArea = false, Description = "Operations", Icon="fa fa-bars", Code = 0x00005DC0 + 2},
