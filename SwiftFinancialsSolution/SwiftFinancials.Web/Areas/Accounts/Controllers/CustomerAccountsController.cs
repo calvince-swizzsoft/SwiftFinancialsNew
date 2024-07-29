@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -60,7 +61,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View();
         }
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid? id, CustomerAccountDTO customerAccountDTO)
+        {
+            await ServeNavigationMenus();
 
+            savingsProductDTOs = TempData["savingsProductDTOs"] as ObservableCollection<SavingsProductDTO>;
+
+            if (savingsProductDTOs == null)
+                savingsProductDTOs = new ObservableCollection<SavingsProductDTO>();
+
+            foreach (var expensePayableEntryDTO in customerAccountDTO.savingsProducts)
+            {
+                
+                expensePayableEntryDTO.ChartOfAccountId = customerAccountDTO.CustomerAccountTypeTargetProductId;
+                expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
+                expensePayableEntryDTO.Description = expensePayableEntryDTO.Description;
+                //expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountName;
+                //expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
+                //expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
+                //expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
+                //expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
+                savingsProductDTOs.Add(expensePayableEntryDTO);
+            };
+
+            TempData["savingsProductDTOs"] = savingsProductDTOs;
+
+            TempData["customerAccountDTO"] = customerAccountDTO;
+
+            ViewBag.savingsProductDTOs = savingsProductDTOs;
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(customerAccountDTO.Type.ToString());
+            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(customerAccountDTO.Type.ToString());
+            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(customerAccountDTO.Type.ToString());
+            return View("Create", customerAccountDTO);
+        }
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -81,6 +115,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
 
                 customerAccountDTO.CustomerId = customer.Id;
+                customerAccountDTO.Customers = customer;
                 customerAccountDTO.CustomerIndividualFirstName = customer.FullName;
                 customerAccountDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
                 customerAccountDTO.CustomerSerialNumber = customer.SerialNumber;

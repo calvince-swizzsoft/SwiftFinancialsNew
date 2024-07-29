@@ -2,16 +2,8 @@
   "ExpandedNodes": [
     "",
     "\\SwiftFinancialsSolution",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InsuranceCompany",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning\\Views",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning\\Views\\IncomeAdjustments",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning\\Views\\LoanPurpose"
+    "\\SwiftFinancialsSolution\\SwiftFinancials.WindowsService"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning\\Views\\IncomeAdjustments\\Index.cshtml",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.WindowsService\\App.config",
   "PreviewInSolutionExplorer": false
 }

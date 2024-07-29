@@ -10,7 +10,7 @@
     var maritalStatuses = ViewBag.MaritalStatusSelectList as List<SelectListItem>;
     var nationalities = ViewBag.IndividualNationalitySelectList as List<SelectListItem>;
     var termsOfServices = ViewBag.IndividualEmploymentTermsOfServiceSelectList as List<SelectListItem>;
-    var individualClassifications = ViewBag.IndividualClassificationSelectList as List<SelectListItem>;
+    var individualClassifications = ViewBag.recordstatus as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -117,6 +117,14 @@
                                         @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN" } })
                                         @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                     </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecordStatus, htmlAttributes: new { @class = "" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.RecordStatus, individualClassifications, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.RecordStatus)
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </fieldset>
@@ -218,14 +226,7 @@
                                         @Html.EditorFor(model => model.IndividualEmploymentDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Employment Date" } })
                                         @Html.ValidationMessageFor(model => model.IndividualEmploymentDate, "", new { @class = "text-danger" })
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IndividualClassification, htmlAttributes: new { @class = "" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.IndividualClassification, individualClassifications, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.IndividualClassification)
-                                        </div>
-                                    </div>
+                                   
                                 </div>
                             </div>
                         </fieldset>

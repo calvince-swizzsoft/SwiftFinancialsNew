@@ -19,7 +19,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         public Guid Id { get; set; }
 
         [DataMember]
-        [Display(Name = "Customer")]
+        [Display(Name = "Member Name")]
         [ValidGuid]
         public Guid CustomerId { get; set; }
 
@@ -39,6 +39,21 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             get
             {
                 return Enum.IsDefined(typeof(Salutation), CustomerIndividualSalutation) ? EnumHelper.GetDescription((Salutation)CustomerIndividualSalutation) : string.Empty;
+            }
+        }
+
+
+        [DataMember]
+        [Display(Name = "verify")]
+        public int Verify { get; set; }
+
+        [DataMember]
+        [Display(Name = "verify")]
+        public string verifyDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(MembershipWithdrawalAuditOption), Verify) ? EnumHelper.GetDescription((MembershipWithdrawalAuditOption)Verify) : string.Empty;
             }
         }
 
@@ -243,7 +258,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "Approved Date")]
         public DateTime? ApprovedDate { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Verified By")]
         public string AuditedBy { get; set; }
@@ -289,7 +304,8 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "Created By")]
         public string CreatedBy { get; set; }
-
+        [DataMember]
+        public string ErrorMessageResult;
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }

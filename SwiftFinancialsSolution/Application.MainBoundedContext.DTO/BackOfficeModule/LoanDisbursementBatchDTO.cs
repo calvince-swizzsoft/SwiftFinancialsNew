@@ -25,7 +25,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
         public Guid BranchId { get; set; }
 
         [Display(Name = "Branch")]

@@ -16,9 +16,10 @@ namespace Domain.MainBoundedContext.AccountsModule.Aggregates.CustomerAccountHis
         public string Remarks { get; set; }
 
         public string Reference { get; set; }
+        public string ErrorMessageResult;
 
-        
 
-        
+
+
     }
 }

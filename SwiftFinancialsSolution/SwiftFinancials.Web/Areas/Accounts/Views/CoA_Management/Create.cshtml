@@ -3,7 +3,7 @@
 @{
     /**/
 
-    ViewBag.Title = "Manage Customer Accounts";
+    ViewBag.Title = "Account Management ";
     var Action = ViewBag.ManagementActionSelectList as List<SelectListItem>;
 }
 
@@ -28,16 +28,6 @@
 
 
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -45,6 +35,31 @@
             <div class="ibox">
                 <div class="ibox-title">
 
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Operation was UnSuccessful !</strong> @TempData["Error"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -81,18 +96,18 @@
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "total" } })
+                                            @Html.EditorFor(model => model.CustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
                                         </div>
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "total" } })
+                                            @Html.EditorFor(model => model.CustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
                                         </div>
 
 
-                                       
+
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountManagementAction, htmlAttributes: new { @class = "" })
@@ -103,7 +118,6 @@
                                             </div>
                                         </div>
 
-                                        <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
 
 
                                     </div>
@@ -161,7 +175,7 @@
                                             @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
 
-                                       
+
 
                                     </div>
 
@@ -170,303 +184,51 @@
 
 
                                 </div>
-                                @*
-                                    <style>
-                                        /* Modal styles */
-                                        .modal {
-                                            display: none;
-                                            position: fixed;
-                                            z-index: 1;
-                                            left: 0;
-                                            top: 0;
-                                            width: 100%;
-                                            height: 100%;
-                                            overflow: auto;
-                                            background-color: rgb(0,0,0);
-                                            background-color: rgba(0,0,0,0.4);
-                                        }
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">fullname</th>
+                                                    <th data-hide="phone">ManagementActionDescription</th>
+                                                    <th data-hide="phone">CustomerAccountType</th>
+                                                    <th data-hide="phone">Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.history != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.history)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.CustomerAccountCustomerFullName
+                                                            </td>
 
-                                        .modal-content {
-                                            background-color: #fefefe;
-                                            margin: auto;
-                                            padding: 20px;
-                                            border: 1px solid #888;
-                                            width: 80%;
-                                            max-width: 700px;
-                                            box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
-                                            animation-name: animatetop;
-                                            animation-duration: 0.4s;
-                                        }
-
-                                        .close {
-                                            color: #aaa;
-                                            float: right;
-                                            font-size: 28px;
-                                            font-weight: bold;
-                                        }
-
-                                            .close:hover,
-                                            .close:focus {
-                                                color: black;
-                                                text-decoration: none;
-                                                cursor: pointer;
-                                            }
-                                    </style>
-
-
-                                    <button id="openModalButton">Add Savings Product</button>
-
-                                    <!-- The modal -->
-                                    <div id="journalModal" class="modal">
-                                        <div class="modal-content">
-                                            <span class="close">&times;</span>
-                                            @Html.AntiForgeryToken()
-                                            <h>Add Savings  Product</h>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <!-- Your form inputs go here -->
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
-                                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "SavingProductsLookup form-control required", placeholder = " Saving Products Description.." } })
-                                                    </div>
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
-                                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, "", new { @class = "text-danger" })
-                                                    </div>
-
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
-                                                        @Html.ValidationMessageFor(model => model.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                         <!-- Center the Submit button -->
-                                                                                        <button id="submitEntry" style="margin-top: 20px;">Submit</button>
-                                                                                    </div>
-                                                                                </div>
-
-
-
-                                                                                <button id="openModalButton1">Add Investment Product</button>
-
-                                                                                <!-- The modal -->
-                                                                                <div id="journalModal1" class="modal">
-                                                                                    <div class="modal-content">
-                                                                                        <span class="close">&times;</span>
-                                                                                        @Html.AntiForgeryToken()
-                                                                                        <h2>Add Investment Product</h2>
-                                                                                        <div class="row">
-                                                                                            <div class="col-lg-6">
-                                                                                                <!-- Your form inputs go here -->
-                                                                                                <div class="form-group form-group-lg">
-                                                                                                    @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
-                                                                                                    @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
-                                                                                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductId, "", new { @class = "text-danger" })
-                                                                                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "SavingProductsLookup form-control required", placeholder = " Saving Products Description.." } })
-                                                                                                </div>
-
-                                                                                                <div class="form-group form-group-lg">
-                                                                                                    @Html.LabelFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, htmlAttributes: new { @class = "" })
-                                                                                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
-                                                                                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, "", new { @class = "text-danger" })
-                                                                                                </div>
-
-                                                                                                <div class="form-group form-group-lg">
-                                                                                                    @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "" })
-                                                                                                    @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
-                                                                                                    @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </div>
-                                                                                        <!-- Center the Submit button -->
-                                                                                        <button id="submitEntry" style="margin-top: 20px;">Submit</button>
-                                                                                    </div>
-                                                                                </div>
-
-
-                                                                            <row>
-                                                                                    <div class="ibox-content m-b-sm border-bottom bg-white text-dark">
-                                                                                        <table class="footable table table-stripped toggle-arrow-tiny bg-white">
-                                                                                            <thead>
-                                                                                                <tr>
-                                                                                                    <th data-toggle="true">COA Name</th>
-                                                                                                    <th data-hide="phone">Total Value</th>
-                                                                                                    <th data-hide="phone">Primary Description</th>
-                                                                                                    <th data-hide="phone">Remarks</th>
-                                                                                                    <th data-hide="phone"></th>
-                                                                                                </tr>
-                                                                                            </thead>
-                                                                                            <tbody>
-                                                                                                @if (ViewBag.ProductsDTO != null)
-                                                                                                {
-                                                                                                    foreach (var products in ViewBag.ProductsDTO)
-                                                                                                    {
-                                                                                                        <tr>
-                                                                                                            <td>@products.ChartOfAccountAccountName</td>
-                                                                                                            <td>@products.PrimaryDescription</td>
-                                                                                                            <td>@products.TotalValue</td>
-                                                                                                            <td>@products.Remarks</td>
-                                                                                                        </tr>
-                                                                                                    }
-                                                                                                }
-                                                                                            </tbody>
-                                                                                        </table>
-                                                                                    </div>
-                                                                                </row>
-
-                                                                                <script>
-                                                                                    // Get the modal
-                                                                                    var modal = document.getElementById("journalModal");
-
-                                                                                    // Get the button that opens the modal
-                                                                                    var btn = document.getElementById("openModalButton");
-
-                                                                                    // Get the <span> element that closes the modal
-                                                                                    var span = document.getElementsByClassName("close")[0];
-
-                                                                                    // When the user clicks the button, open the modal
-                                                                                    btn.onclick = function () {
-                                                                                        modal.style.display = "block";
-                                                                                    }
-
-                                                                                    // When the user clicks on <span> (x), close the modal
-                                                                                    span.onclick = function () {
-                                                                                        modal.style.display = "none";
-                                                                                    }
-
-                                                                                    // When the user clicks anywhere outside of the modal, close it
-                                                                                    window.onclick = function (event) {
-                                                                                        if (event.target == modal) {
-                                                                                            modal.style.display = "none";
-                                                                                        }
-                                                                                    }
-                                                                                </script>
-                                                                                <script>
-                                                                                    // Get the modal
-                                                                                    var modal = document.getElementById("journalModal1");
-
-                                                                                    // Get the button that opens the modal
-                                                                                    var btn = document.getElementById("openModalButton1");
-
-                                                                                    // Get the <span> element that closes the modal
-                                                                                    var span = document.getElementsByClassName("close")[0];
-
-                                                                                    // When the user clicks the button, open the modal
-                                                                                    btn.onclick = function () {
-                                                                                        modal.style.display = "block";
-                                                                                    }
-
-                                                                                    // When the user clicks on <span> (x), close the modal
-                                                                                    span.onclick = function () {
-                                                                                        modal.style.display = "none";
-                                                                                    }
-
-                                                                                    // When the user clicks anywhere outside of the modal, close it
-                                                                                    window.onclick = function (event) {
-                                                                                        if (event.target == modal) {
-                                                                                            modal.style.display = "none";
-                                                                                        }
-                                                                                    }
-                                                                                </script>
-                                                                                <script>
-                                                                                     /////InvestmentProduct products lookup /////
-                                                        $('.InvestmentProductsLookup').typeahead({
-                                                    source: function (query, process) {
-                                                        return $.getJSON(
-                                                            '@Url.Action("GetInvestmentProductsAsync", "CoA_Register", new { Area = "Accounts" })',
-                                                            { query: query },
-                                                            function (InvestmentProducts) {
-                                                                var newInvestmentProductsData = [];
-                                                                InvestmentProductsMap = {};
-                                                                $.each(InvestmentProducts, function (i, InvestmentProduct) {
-                                                                    newInvestmentProductsData.push(InvestmentProduct.Description);
-                                                                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
-                                                                });
-                                                                process(newInvestmentProductsData);
-                                                                return;
-                                                            });
-                                                    },
-                                                    matcher: function (item) {
-                                                        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                                                            return true;
-                                                        }
-                                                    },
-                                                    sorter: function (items) {
-                                                        return items.sort();
-                                                    },
-                                                    highlighter: function (item) {
-                                                        var regex = new RegExp('(' + this.query + ')', 'gi');
-                                                        return item.replace(regex, "<strong>$1</strong>");
-                                                    },
-                                                    updater: function (item) {
-                                                        var InvestmentProductId = "";
-                                                        InvestmentProductId = InvestmentProductsMap[item].Id;
-                                                        $('#InvestmentProductId').val(InvestmentProductId);
-
-                                                        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
-                                                        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
-
-                                                        $('#Code').val(CustomerAccountTypeTargetProductCode);
-                                                        $('#ChartOfAccountName').val(CustomerAccountTypeTargetProductChartOfAccountName);
-                                                        $('#ChartOfAccountAccountName').val(CustomerAccountTypeTargetProductChartOfAccountName);
-
-
-
-
-                                                        //console.log(InvestmentProductId)
-                                                        return item;
+                                                            <td>
+                                                                @levySplit.ManagementActionDescription
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.CustomerAccountCustomerTypeDescription
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.Remarks
+                                                            </td>
+                                                        </tr>
                                                     }
-                                                });
+                                                }
+                                            </tbody>
+                                        </table>
+                                        @if (TempData["tPercentage"] != null)
+                                        {
+                                            <p style="color: red; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                        }
 
+                                    </div>
+                                </row>
 
+                                <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
 
-
-
-                                                        /////saving products lookup /////
-                                                        $('.SavingProductsLookup').typeahead({
-                                                    source: function (query, process) {
-                                                        return $.getJSON(
-                                                         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-                                                            { query: query },
-                                                            function (SavingProducts) {
-                                                                var newSavingProductsData = [];
-                                                                SavingProductsMap = {};
-                                                                $.each(SavingProducts, function (i, SavingProduct) {
-                                                                    newSavingProductsData.push(SavingProduct.Description);
-                                                                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                                                                });
-                                                                process(newSavingProductsData);
-                                                                return;
-                                                            });
-                                                    },
-                                                    matcher: function (item) {
-                                                        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                                                            return true;
-                                                        }
-                                                    },
-                                                    sorter: function (items) {
-                                                        return items.sort();
-                                                    },
-                                                    highlighter: function (item) {
-                                                        var regex = new RegExp('(' + this.query + ')', 'gi');
-                                                        return item.replace(regex, "<strong>$1</strong>");
-                                                    },
-                                                    updater: function (item) {
-                                                        var savingProductId = "";
-                                                        savingProductId = SavingProductsMap[item].Id;
-                                                        $('#SavingProductId').val(savingProductId);
-                                                        $('#ChartOfAccountName').val(CustomerAccountTypeTargetProductChartOfAccountName);
-                                                        //console.log(savingProductId)
-                                                        return item;
-                                                    }
-                                                });
-                                                                                </script>*@
                             </fieldset>
                         </div>
                     }

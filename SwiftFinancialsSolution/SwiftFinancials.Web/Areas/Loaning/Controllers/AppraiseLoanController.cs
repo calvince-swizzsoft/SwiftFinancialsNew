@@ -36,7 +36,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Registered,jQueryDataTablesModel.sSearch,(int) LoanCaseFilter.CaseNumber, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Registered, jQueryDataTablesModel.sSearch, (int)LoanCaseFilter.CaseNumber, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -47,20 +47,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-
-        public async Task<ActionResult> Details(Guid id, JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            await ServeNavigationMenus();
-
-            int status = 1, loanCaseFilter = 0;
-
-            string text = "";
-
-            var loanCaseDTO = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(status, text, loanCaseFilter, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
-
-            return View(loanCaseDTO);
         }
 
 
@@ -83,10 +69,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var loanBalance = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
 
             var loaneeCustomer = await _channelService.FindLoanCaseAsync(Id, GetServiceHeader());
-            
+
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
-            
+
 
             if (loaneeCustomer != null)
             {
@@ -116,7 +102,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
+            loanDTO.AppraisedAmount = loanCaseDTO.AppraisedAmount;
+            loanDTO.SystemAppraisalRemarks = loanCaseDTO.SystemAppraisalRemarks;
+            loanDTO.AppraisalRemarks = loanCaseDTO.AppraisalRemarks;
+            loanDTO.AppraisedAmountRemarks = loanCaseDTO.AppraisedAmountRemarks;
+
             loanDTO.ValidateAll();
+
+            if (loanDTO.AppraisedAmount == 0 || loanDTO.SystemAppraisalRemarks == string.Empty || loanDTO.AppraisalRemarks == string.Empty)
+            {
+                TempData["AppraisedAmount"] = "Appraised amount, System Appraisal Remarks and Appraisal Remarks required to appraise loan.";
+
+                return View();
+            }
 
             if (!loanDTO.HasErrors)
             {
@@ -131,7 +129,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 var errorMessages = loanDTO.ErrorMessages.ToString();
 
                 TempData["BugdetBalance"] = errorMessages;
-                
+
                 ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
 
                 TempData["approveError"] = "Loan Appraisal Unsuccessful";

@@ -204,19 +204,54 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        public async Task<ActionResult> Edit(Guid id,StandingOrderDTO standingOrderDTO)
+        public async Task<ActionResult> Edit(Guid? id, StandingOrderDTO standingOrderDTO)
         {
-           standingOrderDTO.BenefactorCustomerAccountId=id;
             await ServeNavigationMenus();
 
-            var expensePayableDTO = await _channelService.FindStandingOrdersByBenefactorCustomerAccountIdAsync(standingOrderDTO.BenefactorCustomerAccountId,true, GetServiceHeader());
+
 
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
-            return View(expensePayableDTO);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+            var benefactorAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var benefactorAccounts1 = await _channelService.FindStandingOrdersByBenefactorCustomerIdAsync(parseId,1, includeProductDescription, GetServiceHeader());
 
 
+            if (benefactorAccounts != null)
+            {
+                standingOrderDTO.benefactor = benefactorAccounts;
+                Session["benefactorAccounts"] = standingOrderDTO.benefactor;
+                standingOrderDTO.BenefactorCustomerAccountId = benefactorAccounts.CustomerId;
+                standingOrderDTO.BenefactorCustomerAccountCustomerIndividualFirstName = benefactorAccounts.CustomerIndividualFirstName;
+                standingOrderDTO.BenefactorCustomerAccountCustomerIndividualLastName = benefactorAccounts.CustomerFullName;
+                standingOrderDTO.BenefactorCustomerAccountCustomerSerialNumber = benefactorAccounts.CustomerSerialNumber;
+                standingOrderDTO.BenefactorProductDescription = benefactorAccounts.CustomerAccountTypeProductCodeDescription;
+                standingOrderDTO.BenefactorCustomerAccountCustomerId = standingOrderDTO.benefactor.Id;
+
+
+            }
+
+            if (Session["beneficiaryAccounts"] != null)
+            {
+                standingOrderDTO.Beneficiary = Session["beneficiaryAccounts"] as CustomerAccountDTO;
+                Session["beneficiaryAccounts"] = standingOrderDTO.Beneficiary;
+
+            }
+
+
+            return View(standingOrderDTO);
         }
 
         [HttpPost]
