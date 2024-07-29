@@ -80,6 +80,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Leave Recall", Icon="fa fa-bars", ControllerName="LeaveRecall", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 17},
                 new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Employee Documents", Icon="fa fa-bars", ControllerName="EmployeeDocuments", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 18},
 
+                new NavigationMenu{AreaCode = 0x000055F0 , IsArea = false, Description = "Documents", Icon="fa fa-bars", ControllerName="Documents", ActionName="Index", AreaName = "HumanResource", Code = 0x000055F0 + 19},
+
 
 
                         // Accounts //
@@ -192,7 +194,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/LAccount", Icon="fa fa-tasks", ControllerName="GLAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 85},
 
-                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 86},
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 86},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Periods", Icon="fa fa-money", ControllerName="BankReconciliation_Periods", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 87},
 
 
@@ -207,8 +209,11 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/L Account Determination", Icon="fa fa-tasks", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
 
-                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = " CustomerAccountstandingorder", Icon="fa fa-bars", ControllerName="CustomerAccountstandingorder", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 92},
+               new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = " CustomerAccountstandingorder", Icon="fa fa-bars", ControllerName="CustomerAccountstandingorder", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 92},
 
+                              new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Insurance", Icon="fa fa-bars", ControllerName="Insurers", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
+
+             
 
 
                             //...... Loaning - area 24,000
