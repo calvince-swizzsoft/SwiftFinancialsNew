@@ -93,7 +93,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h1>Loan Origination</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -144,7 +144,7 @@
                             <strong>Attempt Failed !</strong> @TempData["emptyValuesSubmit"]
                         </div>
                     }
-                     
+
                     @if (TempData["EmptyData"] != null)
                     {
                         <div class="alert alert-danger">
@@ -217,68 +217,68 @@
 
 
                             @*Row 2*@
-                        <div class="row">
-                            <div class="col-md-3 form-group">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.CustomerReference1)
-                                    @Html.EditorFor(model => model.CustomerReference1, new
-                                    {
-                                        htmlAttributes = new
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference1, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerReference1)
+                                        @Html.EditorFor(model => model.CustomerReference1, new
                                         {
-                                            @class = "form-control required",
-                                            @placeholder = "Account number...",
-                                            @readonly = "readonly"
-}
-})
-                                    @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control required",
+                                                @placeholder = "Account number...",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference1, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-3 form-group">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.CustomerReference2)
-                                    @Html.EditorFor(model => model.CustomerReference2, new
-                                    {
-                                        htmlAttributes = new
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerReference2)
+                                        @Html.EditorFor(model => model.CustomerReference2, new
                                         {
-                                            @class = "form-control required",
-                                            @placeholder = "Membership number...",
-                                            @readonly = "readonly"
-}
-})
-                                    @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control required",
+                                                @placeholder = "Membership number...",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference2, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-3 form-group">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.CustomerReference3, new
-                                    {
-                                        htmlAttributes = new
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerReference3, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CustomerReference3, new
                                         {
-                                            @class = "form-control",
-                                            @placeholder = "Personal File Number...",
-                                            @readonly = "readonly"
-}
-})
-                                    @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                            htmlAttributes = new
+                                            {
+                                                @class = "form-control",
+                                                @placeholder = "Personal File Number...",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.CustomerReference3, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-md-3 form-group">
-                                @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Branch..." })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#branchesLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
+                                <div class="col-md-3 form-group">
+                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Branch..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#branchesLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
                             @*Row 3*@
                             <div class="row">
@@ -691,19 +691,19 @@
                                                     foreach (var loanApplications in ViewBag.LoanApplications)
                                                     {
                                                         @*<tr>
-                                                            <td>@loanApplications.BeneficiaryProductDescription</td>
-                                                            <td style="text-align: right;">@loanApplications.LoanAmount</td>
-                                                            <td style="text-align: right;">@loanApplications.PaymentPerPeriod</td>
-                                                            <td style="text-align: right;">@loanApplications.Principal</td>
-                                                            <td style="text-align: right;">@loanApplications.Interest</td>
-                                                            <td style="text-align: right;">@loanApplications.Interest</td>
-                                                            <td style="text-align: right;">
-                                                                @loanApplications.PrincipalArrears
-                                                            </td>
-                                                            <td style="text-align: right;">
-                                                                @loanApplications.InterestArrears
-                                                            </td>
-                                                        </tr>*@
+                                                                <td>@loanApplications.BeneficiaryProductDescription</td>
+                                                                <td style="text-align: right;">@loanApplications.LoanAmount</td>
+                                                                <td style="text-align: right;">@loanApplications.PaymentPerPeriod</td>
+                                                                <td style="text-align: right;">@loanApplications.Principal</td>
+                                                                <td style="text-align: right;">@loanApplications.Interest</td>
+                                                                <td style="text-align: right;">@loanApplications.Interest</td>
+                                                                <td style="text-align: right;">
+                                                                    @loanApplications.PrincipalArrears
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                    @loanApplications.InterestArrears
+                                                                </td>
+                                                            </tr>*@
                                                     }
                                                 }
                                             </tbody>
@@ -723,7 +723,50 @@
                             <div id="section4" class="tab">
                                 <!-- Collaterals -->
                                 <div class="tab-content">
-                                    <h2 style="color: cadetblue;">Collaterals</h2>
+
+                                    <row>
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                <tr>
+                                                    <th>Select ?</th>
+                                                    <th>Type</th>
+                                                    <th>Title</th>
+                                                    <th>MIME Type</th>
+                                                    <th>Collateral Value</th>
+                                                    <th>Collateral Advance Rate</th>
+                                                    <th>Collateral Status</th>
+                                                    <th>Record Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.LoanApplications != null)
+                                                {
+                                                    foreach (var loanApplications in ViewBag.LoanApplications)
+                                                    {
+                                                        @*<tr>
+                                                                <td>@loanApplications.BeneficiaryProductDescription</td>
+                                                                <td style="text-align: right;">@loanApplications.LoanAmount</td>
+                                                                <td style="text-align: right;">@loanApplications.PaymentPerPeriod</td>
+                                                                <td style="text-align: right;">@loanApplications.Principal</td>
+                                                                <td style="text-align: right;">@loanApplications.Interest</td>
+                                                                <td style="text-align: right;">@loanApplications.Interest</td>
+                                                                <td style="text-align: right;">
+                                                                    @loanApplications.PrincipalArrears
+                                                                </td>
+                                                                <td style="text-align: right;">
+                                                                    @loanApplications.InterestArrears
+                                                                </td>
+                                                            </tr>*@
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+                                        @if (TempData["standingOrder"] != null)
+                                        {
+                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                        }
+                                    </row>
                                 </div>
                             </div>
 
@@ -1737,71 +1780,165 @@
 
 
 
-        // Send Form Data
-        function sendFormData() {
-            // Create an object to hold the form data
-            let formData = {
-                AmountApplied: document.querySelector('[name="AmountApplied"]').value,
-                LoanRegistrationTermInMonths: document.querySelector('[name="LoanRegistrationTermInMonths"]').value
-            };
 
-            // Send the data to the first controller using fetch
-            fetch('/loanregistration/AmountTermInMonths', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response data here
-                    console.log('Form Data Submitted:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+
+
+        @*$(document).ready(function () {
+    // Function to save the state of the header checkbox to local storage
+    function saveCheckboxState(key, state) {
+        // Implementation for saving checkbox state goes here
+    }
+
+    // Function to load the state of the header checkbox from local storage
+    function loadCheckboxState(key) {
+        // Implementation for loading checkbox state goes here
+    }
+
+    $(document).ready(function () {
+        // Event listener for header checkbox
+        $('#headerCheckbox').on('change', function () {
+            // Check or uncheck all row checkboxes based on the header checkbox state
+            $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+                var checkboxKey = $(this).attr('id');
+                // Save the state of the checkbox to local storage
+                saveCheckboxState(checkboxKey, $(this).prop('checked'));
+            });
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+        });
+
+        // Event listener for individual row checkboxes
+        $('#CollateralsGrid').on('change', '.rowCheckbox', function () {
+            // Save the state of the checkbox to local storage
+            var checkboxKey = $(this).attr('id');
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+            // Uncheck header checkbox if any row checkbox is unchecked
+            if (!$(this).prop('checked')) {
+                $('#headerCheckbox').prop('checked', false);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('headerCheckbox', false);
+            } else {
+                // Check if all row checkboxes are checked and check the header checkbox accordingly
+                var allChecked = $('.rowCheckbox:checked').length === $('.rowCheckbox').length;
+                $('#headerCheckbox').prop('checked', allChecked);
+                // Save the state of the header checkbox to local storage
+                saveCheckboxState('headerCheckbox', allChecked);
+            }
+        });
+
+        // Load the state of the header checkbox from local storage after the page is loaded
+        $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
+    });
+
+    // Initialize the DataTable
+            var table = $('#CollateralsGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Collaterals", new { Area = "Accounts"}))",
+
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
+            //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
+            var checkboxHTML = '<input type="checkbox" class="rowCheckbox" data-id="' + aData.Id + '"';
+            if (aData.AutomateLedgerFeeCalculation === true) {
+                checkboxHTML += ' checked';
+            }
+            checkboxHTML += '>';
+
+            $('td:eq(0)', nRow).html(checkboxHTML);
+
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
+            { "mDataProp": "Description", "sTitle": "Type", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Title", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "MIME Types", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Collateral Value", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Collateral Advance Rate", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Collateral Status", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Record Status", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Modified By", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Modified Date", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Created By", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]],
+        "initComplete": function(settings, json) {
+            // Load the state of the header checkbox from local storage after DataTable initialization is complete
+            $('#headerCheckbox').prop('checked', loadCheckboxState('headerCheckbox'));
         }
+    });
+
+    // Place the header checkbox anywhere on the grid
+    $('#LoanProductsGrid_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="headerCheckbox"> Select $ Deselect All</div>');
+
+    // Event listener for header checkbox
+    $('#headerCheckbox').on('change', function () {
+        // Check or uncheck all row checkboxes based on the header checkbox state
+        $('.rowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+            var checkboxKey = $(this).attr('id');
+            // Save the state of the checkbox to local storage
+            saveCheckboxState(checkboxKey, $(this).prop('checked'));
+        });
+        // Save the state of the header checkbox to local storage
+        saveCheckboxState('headerCheckbox', $(this).prop('checked'));
+    });
+
+    // Event listener for individual row checkboxes
+    $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
+        // Save the state of the checkbox to local storage
+        var checkboxKey = $(this).attr('id');
+        saveCheckboxState(checkboxKey, $(this).prop('checked'));
+
+        // Uncheck header checkbox if any row checkbox is unchecked
+        if (!$(this).prop('checked')) {
+            $('#headerCheckbox').prop('checked', false);
+            // Save the state of the header checkbox to local storage
+            saveCheckboxState('headerCheckbox', false);
+        }
+    });
+        });
+
+
+
+
+        $('#submit-btn').click(function () {
+            var selectedRowsData = [];
+            $('.rowCheckbox:checked').each(function () {
+                var rowData = {
+                    Id: $(this).data('id'),
+                    // Add other properties you want to include
+                };
+                selectedRowsData.push(rowData);
+            });
+
+            // Send the selected rows data to the backend using AJAX
+            $.ajax({
+                url: '/Accounts/DebitType/Create',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedRowsData),
+                success: function (response) {
+                    // Handle success response
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+        });*@
     </script>
-
-
-    @*<script>
-        //Branch typehead starts here
-                $('.ChartOfAccountsLookup').typeahead({
-                    source: function (query, process) {
-                        return $.getJSON(
-                            '@Url.Action("GetChartOfAccountsAsync", "Branch", new { Area = "Admin" })',
-                            { query: query },
-                            function (ChartOfAccounts) {
-                                var newChartOfAccountsData = [];
-                                ChartOfAccountsMap = {};
-                                $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                    newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                    ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                                });
-                                process(newChartOfAccountsData); return;
-                            });
-                    },
-                    matcher: function (item) {
-                        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                            return true;
-                        }
-                    },
-                    sorter: function (items) {
-                        return items.sort();
-                    },
-                    highlighter: function (item) {
-                        var regex = new RegExp('(' + this.query + ')', 'gi');
-                        return item.replace(regex, "<strong>$1</strong>");
-                    },
-                    updater: function (item) {
-                        var chartOfAccountId = "";
-                        ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                        $('#BranchId').val(ChartOfAccountId);
-                        //console.log(ChartOfAccountId)
-                        return item;
-                    }
-                });
-        </script>*@
 }

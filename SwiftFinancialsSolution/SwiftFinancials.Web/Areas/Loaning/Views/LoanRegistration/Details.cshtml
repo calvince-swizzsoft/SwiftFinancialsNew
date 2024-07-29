@@ -93,7 +93,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loan Origination</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -479,9 +479,9 @@
                                                     foreach (var guarantors in ViewBag.LoanGuarantors)
                                                     {
                                                         <tr>
-                                                            <td>@guarantors.FullName</td>
-                                                            <td>@guarantors.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Reference1</td>
+                                                            <td>@guarantors.Customer.FullName</td>
+                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
+                                                            <td>@guarantors.Customer.Reference1</td>
                                                             <td>@guarantors.AppraisalFactor</td>
                                                             <td style="text-align: right;">@guarantors.TotalShares</td>
                                                             <td style="text-align: right;">@guarantors.CommittedShares</td>
