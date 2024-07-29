@@ -686,7 +686,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public SavingsProductDTO Savings { get; set; }
         public List<SavingsProductDTO> ProductDTOs { get; set; }
         public InvestmentProductDTO Investments { get; set; }
-        public List<InvestmentProductDTO> invest { get; set; }
+        public ObservableCollection<InvestmentProductDTO> investmentProducts { get; set; }
         public List<CustomerDTO> customerList { get; set; }
 
         public ObservableCollection<SavingsProductDTO> savingsProducts { get; set; }
