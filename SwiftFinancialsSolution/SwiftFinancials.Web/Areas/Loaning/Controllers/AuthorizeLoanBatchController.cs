@@ -152,6 +152,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Authorize(LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
+            var postingPeriodDTO = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+            loanDisbursementBatchDTO.DataAttachmentPeriodId = postingPeriodDTO.Id;
+            loanDisbursementBatchDTO.DataAttachmentPeriodPostingPeriodDescription = postingPeriodDTO.Description;
+
             loanDisbursementBatchDTO.ValidateAll();
 
             if (!loanDisbursementBatchDTO.HasErrors)
