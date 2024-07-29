@@ -27,8 +27,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             int totalRecordCount = 0;
 
-            int status = 2;
-            DateTime startDate = DateTime.Now;
+            int status=1 ;
+            DateTime startDate = DateTime.Now.AddDays(-7);
             DateTime endDate = DateTime.Now;
             int searchRecordCount = 0;
 
@@ -83,9 +83,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 if (loanDisbursement != null)
                 {
-                    var verifiedLoanCases = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited, string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
+                    var verifiedLoanCasesList = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync((int)LoanCaseStatus.Audited, string.Empty, (int)LoanCaseFilter.CaseNumber, 0, 200, false, GetServiceHeader());
 
-                    foreach (var loanCase in verifiedLoanCases.PageCollection)
+                    var verifiedLoanCases = verifiedLoanCasesList.PageCollection.Where(x => x.IsBatched == false);
+
+                    foreach (var loanCase in verifiedLoanCases)
                     {
                         loanDisbursementBatchEntryDTO.LoanCaseId = loanCase.Id;
                         loanDisbursementBatchEntryDTO.LoanDisbursementBatchId = loanDisbursement.Id;

@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace SwiftFinancials.SavingsProductLedgerFeeProcessing.Configuration
+namespace SwiftFinancials.SavingsProductLedgerFeeProcessor.Configuration
 {
     public class SavingsProductLedgerFeeProcessingConfigSection : ConfigurationSection
     {

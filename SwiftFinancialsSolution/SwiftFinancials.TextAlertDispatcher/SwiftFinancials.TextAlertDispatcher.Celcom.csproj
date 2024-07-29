@@ -7,8 +7,8 @@
     <ProjectGuid>{660BAE5C-4432-4B7C-8CB0-E860B8B3465D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SwiftFinancials.TextDispatcher.Celcom</RootNamespace>
-    <AssemblyName>SwiftFinancials.TextDispatcher.Celcom</AssemblyName>
+    <RootNamespace>SwiftFinancials.TextAlertDispatcher.Celcom</RootNamespace>
+    <AssemblyName>SwiftFinancials.TextAlertDispatcher.Celcom</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

@@ -6,7 +6,7 @@ using System.Configuration;
 using System.Threading.Tasks;
 using SwiftFinancials.Presentation.Infrastructure.Services;
 
-namespace SwiftFinancials.SavingsProductLedgerFeeProcessing.Configuration
+namespace SwiftFinancials.SavingsProductLedgerFeeProcessor.Configuration
 {
     public class SavingsProductLedgerFeeProcessingJob : IJob
     {
