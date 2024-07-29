@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.WindowsService"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution.sln",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.WindowsService\\App.config",
   "PreviewInSolutionExplorer": false
 }

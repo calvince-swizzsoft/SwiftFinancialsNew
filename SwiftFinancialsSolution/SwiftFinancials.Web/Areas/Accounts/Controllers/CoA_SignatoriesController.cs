@@ -55,9 +55,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
            var p= await _channelService.FindCustomerAccountSignatoriesByCustomerAccountIdAsync(customerAccountDTO.Id, GetServiceHeader());
+            
             ViewBag.customerAccountSignatoryDTOs = p;
             TempData["customerAccountSignatoryDTOs"] = p;
-            return View("Details");
+            return View(customerAccountDTO);
         }
 
 
@@ -66,6 +67,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
 
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
@@ -88,25 +98,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (customerAccountSignatoryDTO != null)
             {
                 customerAccountSignatoryDTO.CustomerAccountId = benefactorAccounts.Id;
-                customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
+                customerAccountSignatoryDTO.Customers = benefactorAccounts;
+                //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
                 customerAccountSignatoryDTO.Salutation = benefactorAccounts.CustomerIndividualSalutation ;
-                customerAccountSignatoryDTO.AddressEmail = benefactorAccounts.CustomerAddressEmail;
+                //customerAccountSignatoryDTO.AddressEmail = benefactorAccounts.CustomerAddressEmail;
                
 
             }
 
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
-            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
-            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
-            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
-            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
-            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
-            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
-            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
-            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
-
+            
             return View(customerAccountSignatoryDTO);
         }
+
 
         [HttpPost]
         public async Task<ActionResult> Create(CustomerAccountSignatoryDTO customerBindingModel)
@@ -129,7 +132,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IdentityCardType.ToString());
                 ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.Salutation.ToString());
                 ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.Gender.ToString());
-
+                ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerBindingModel.Relationship.ToString());
 
                 return View(customerBindingModel);
             }

@@ -58,40 +58,40 @@
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-lg-4">
-                            <div class="form-group" id="data_3">
-                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="CreatedDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                    @*<div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group" id="data_3">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="CreatedDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="col-lg-4">
-                            <div class="form-group" id="data_3">
-                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
-                                <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="EndDAte" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                            <div class="col-lg-4">
+                                <div class="form-group" id="data_3">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "" })
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="EndDAte" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <select>
-                                <option value="option1">Reference</option>
-                                <option value="option2">Account Number</option>
-                                <option value="option3">Street</option>                                
-                            </select>
-                        </div>
+                            <div class="col-lg-4">
+                                <select>
+                                    <option value="option1">Reference</option>
+                                    <option value="option2">Account Number</option>
+                                    <option value="option3">Street</option>
+                                </select>
+                            </div>
 
-                    </div>
-                    <div class="form-group form-group-sm">
-                        <div class="col-md-offset-2">
-                            <input type="submit" value="Refresh" class="btn btn-primary" id="submitBtn" />
                         </div>
-                    </div>
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2">
+                                <input type="submit" value="Refresh" class="btn btn-primary" id="submitBtn" />
+                            </div>
+                        </div>*@
 
                     <div class="table-responsive">
                         <table id="GeneralLedgerAccountMappingsGrid" class="table table-striped table-bordered table-hover" width="100%">
