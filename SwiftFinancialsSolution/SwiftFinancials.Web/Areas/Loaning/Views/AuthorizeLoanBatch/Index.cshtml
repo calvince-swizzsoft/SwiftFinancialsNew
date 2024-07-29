@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Loan Appraisal";
+    ViewBag.Title = "Loan Authorization";
 }
 
 
@@ -57,7 +57,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Loan Approval</h2>
+                    <h2>Loan Authorization</h2>
 
                     @if (TempData["approve"] != null)
                     {
@@ -112,7 +112,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ApproveLoan", new { Area = "Loaning"}))",
+                "sAjaxSource": "@(Url.Action("Index", "AuthorizeLoanBatch", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -143,7 +143,7 @@
                             </div>
                         </div>`;
 
-                    var approveUrl = '<a  href="/loaning/approveloan/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
+                    var approveUrl = '<a  href="/loaning/authorizeloanbatch/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
 
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
@@ -162,7 +162,7 @@
                     { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "AppraisedDate", "sTitle": "Appraised Date", "sWidth": "5%" },
+                    { "mDataProp": "AuditedDate", "sTitle": "Verified Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });

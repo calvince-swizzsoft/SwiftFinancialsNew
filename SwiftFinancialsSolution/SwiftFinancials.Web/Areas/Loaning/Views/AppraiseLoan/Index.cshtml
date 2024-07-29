@@ -139,13 +139,16 @@
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/loaning/AppraiseLoan/index/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/loaning/AppraiseLoan/appraise/${aData.Id}">Appraise Loan</a>
                             </div>
                         </div>`;
 
+                    var appraiseUrl = '<a  href="/loaning/AppraiseLoan/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Appraise</a>';
+
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
                     $('td:eq(9)', nRow).html(dt_Created);
-                    $('td:eq(10)', nRow).html(dropdownHtml);
+                    $('td:eq(10)', nRow).html(appraiseUrl);
 
                     return nRow;
                 },
@@ -161,7 +164,7 @@
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Registered Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "15%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });

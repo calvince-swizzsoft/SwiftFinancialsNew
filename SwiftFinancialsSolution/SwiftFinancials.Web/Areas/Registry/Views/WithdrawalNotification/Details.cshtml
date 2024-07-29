@@ -34,65 +34,99 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content text-info">
+                <fieldset>
                     <div class="row">
-                        <div class="col-lg-4">
+                        <div class="col-lg-3">
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerId)<br></strong>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.Customer.FullName, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.Customer.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Customer.FullName, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.CustomerId)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerStationZoneDivisionEmployerDescription)<br></strong>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CustomerStationDescription, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                @Html.HiddenFor(model => model.BranchId)
+                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name", disabled = "disabled" } })
+                            </div>
 
-                                @Html.DisplayFor(model => model.CustomerStationZoneDivisionEmployerDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerStationDescription)<br></strong>
+                            @*<div class="form-group form-group-sm">
+                                    <div class="col-md-offset-2">
+                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                    </div>
+                                </div>*@
+                        </div>
 
-                                @Html.DisplayFor(model => model.CustomerStationDescription)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Category)<br></strong>
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.Category)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerSerialNumber)<br></strong>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
+                            </div>
 
-                                @Html.DisplayFor(model => model.CustomerSerialNumber)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerIndividualIdentityCardNumber)<br></strong>
 
-                                @Html.DisplayFor(model => model.CustomerIndividualIdentityCardNumber)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.CustomerIndividualPayrollNumbers)<br></strong>
-
-                                @Html.DisplayFor(model => model.CustomerIndividualPayrollNumbers)<br>
-                            </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.Remarks)<br></strong>
-
-                                @Html.DisplayFor(model => model.Remarks)<br>
-                            </p>
 
                         </div>
-                           
+
+
+
+                        <div class="col-lg-3">
+
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CustomerSerialNumber, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+
+
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="form-group form-group-sm">
+                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Remarks", disabled = "disabled" } })
+                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                            </div>
+
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "WithdrawalNotification", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "WithdrawalNotification", new { Area = "Registry" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+
+
+
+                </fieldset>
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <p>
+                            @*@Html.ActionLink("Edit", "Edit", "WithdrawalNotification", new { id = Model.Id, Area = "Registry" }, new { @class = "btn btn-success" })*@
+                            @Html.ActionLink("Back to List", "Index", "WithdrawalNotification", new { Area = "Registry" }, new { @class = "btn btn-success" })
+                        </p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+</div>

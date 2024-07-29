@@ -50,7 +50,7 @@
                 <div class="ibox-title">
                     <h2>Customer Account signatory</h2>
                     <hr />
-                    @Html.ActionLink("Register signatory", "Create", "CoA_Signatories", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @*@Html.ActionLink("Register signatory", "Create", "CoA_Signatories", new { Area = "Accounts" }, new { @class = "btn btn-primary" })*@
 
                     <br />
                     <br />
@@ -161,7 +161,7 @@
                     var viewUrl = '<a  href="/accounts/CoA_Signatories/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var selectUrl = '<a  href="/accounts/CoA_Signatories/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Add signatory</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
+                  //  $('td:eq(3)', nRow).html(dt_Created);
 
                     $('td:eq(6)', nRow).html(dt_Created);
                     //$('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + selectUrl);

@@ -2,6 +2,7 @@
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -111,5 +112,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Can Suppress Maker/Checker Validation?")]
         public bool CanSuppressMakerCheckerValidation { get; set; }
+        public List<GeneralLedgerDTO> generalLedgerDTOs;
+        public GeneralLedgerDTO LedgerDTO { get; set; }
     }
 }

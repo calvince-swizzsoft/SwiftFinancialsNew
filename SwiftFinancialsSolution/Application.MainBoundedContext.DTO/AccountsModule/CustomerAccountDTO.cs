@@ -22,10 +22,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Id")]
         public Guid Id { get; set; }
 
-        // Getting and Setting values from the Registry Module
-        [DataMember]
-        public  CustomerDTO Customers { get; set; }
-
         [DataMember]
         [Display(Name = "Customer")]
         [ValidGuid]
@@ -697,5 +693,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         public string ErrorMessageResult { get; set; }
+
+
+        // Getting and Setting values from the Registry Module
+        [DataMember]
+        public CustomerDTO Customers { get; set; }
     }
 }

@@ -26,7 +26,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             int totalRecordCount = 0;
 
-            int status = 0;
+            int status = 2;
             DateTime startDate = DateTime.Now;
             DateTime endDate = DateTime.Now;
             int searchRecordCount = 0;
@@ -79,7 +79,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!loanDisbursementBatchDTO.HasErrors)
             {
                 await _channelService.AddLoanDisbursementBatchAsync(loanDisbursementBatchDTO, GetServiceHeader());
-
+                TempData["SuccessMessage"] = "Create successfull";
                 return RedirectToAction("Index");
             }
             else
@@ -214,7 +214,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
 
                 ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
-
+                TempData["SuccessMessage"] = "Authorize successfull";
                 return RedirectToAction("Index");
             }
             else

@@ -123,7 +123,8 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                             case WithdrawalNotificationStatus.Audited:
                             case WithdrawalNotificationStatus.WithdrawalSettled:
                             case WithdrawalNotificationStatus.DeathClaimSettled:
-                                throw new InvalidOperationException("Sorry, but a membership termination notification for the selected customer is currently undergoing processing!");
+                                withdrawalNotificationDTO.ErrorMessageResult = ("Sorry, but a membership termination notification for the selected customer is currently undergoing processing!");
+                                return withdrawalNotificationDTO;
                             case WithdrawalNotificationStatus.Deferred:
                             default:
                                 break;
@@ -143,7 +144,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                         case WithdrawalNotificationCategory.Voluntary:
                         case WithdrawalNotificationCategory.Retiree:
                             var branchDTO = _branchAppService.FindBranch(withdrawalNotificationDTO.BranchId, serviceHeader);
-                            withdrawalNotification.MaturityDate = _holidayAppService.FindBusinessDay(branchDTO.CompanyMembershipTerminationNoticePeriod, true, serviceHeader) ?? DateTime.Today;
+                            withdrawalNotification.MaturityDate = _holidayAppService.FindBusinessDay(branchDTO.CompanyMembershipTerminationNoticePeriod, true, serviceHeader) ?? DateTime.Today; 
                             break;
                         default:
                             break;
@@ -1206,7 +1207,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                                             break;
                                     }
                                 }
-                                else  throw new InvalidOperationException("Sorry, but requisite minimums have not been setup viz. default savings product / control accounts / posting period!");
+                                else withdrawalNotificationDTO.ErrorMessageResult = ("Sorry, but requisite minimums have not been setup viz. default savings product / control accounts / posting period!");
 
                                 break;
                             case MembershipWithdrawalSettlementOption.Defer:
@@ -1286,7 +1287,7 @@ namespace Application.MainBoundedContext.RegistryModule.Services
                                                 _journalEntryPostingService.PerformDoubleEntry(savingsSettlementJournal, defaultSavingsProduct.ChartOfAccountId, insuranceCompanyDTO.ChartOfAccountId, defaultCustomerSavingsAccountDTO, defaultCustomerSavingsAccountDTO, serviceHeader);
                                                 journals.Add(savingsSettlementJournal);
                                             }
-                                            else throw new InvalidOperationException("Sorry, but a savings account for the customer could not be identified!");
+                                            else withdrawalNotificationDTO.ErrorMessageResult = ("Sorry, but a savings account for the customer could not be identified!");
                                         }
                                         else
                                         {

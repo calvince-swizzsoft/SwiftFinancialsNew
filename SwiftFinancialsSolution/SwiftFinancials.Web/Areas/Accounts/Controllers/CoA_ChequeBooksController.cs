@@ -250,8 +250,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var result = await _channelService.AddChequeBookAsync(customerAccountDTO,1,GetServiceHeader());
                
-                TempData["AlertMessage"] = "Cheque Book created successfully";
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Cheque Book created successfully";
+                return RedirectToAction("Create");
             }
 
             TempData["Error"] = "Failed to create Customer Account";
