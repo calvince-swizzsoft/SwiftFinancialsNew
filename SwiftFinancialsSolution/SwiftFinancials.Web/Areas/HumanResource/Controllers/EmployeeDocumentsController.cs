@@ -53,6 +53,7 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             return View(departmentDTO);
         }
 
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();

@@ -21,7 +21,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "BatchOrigination_Credit", new { Area = "Accounts" }, null)
+                @Html.ActionLink("Home", "Index", "BatchOrigination_Disbursement", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Verify</strong>
@@ -57,10 +57,10 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Authorize", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Authorize", "BatchOrigination_Disbursement", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        <h1>Authorize Credit Batch</h1>
+                        <h1>Authorize Disbursement Batch</h1>
 
                         <fieldset>
                             <div class="row">
@@ -150,7 +150,7 @@
                                         @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.TypeDescription, batchAuthOptions, new { @class = "form-control input-md"})
+                                            @Html.DropDownListFor(model => model.TypeDescription, batchAuthOptions, new { @class = "form-control input-md", disabled = "disabled" })
                                             @Html.ValidationMessageFor(model => model.TypeDescription)
                                         </div>
                                     </div>
