@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -39,7 +40,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate,endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength,  GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -60,7 +61,55 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(generalLedgerDTO);
         }
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid? id, GeneralLedgerDTO generalLedgerDTO)
+        {
+            await ServeNavigationMenus();
 
+            ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(generalLedgerDTO.Status.ToString());
+
+            GeneralLedgerDTOs = TempData["GeneralLedgerDTOs"] as ObservableCollection<GeneralLedgerDTO>;
+
+            if (GeneralLedgerDTOs == null)
+                GeneralLedgerDTOs = new ObservableCollection<GeneralLedgerDTO>();
+
+            foreach (var ledger in generalLedgerDTO.generalLedgerDTOs)
+            {
+                ledger.LedgerNumber = ledger.LedgerNumber;
+                ledger.PostingPeriodId = ledger.PostingPeriodId;
+                ledger.TotalValue = ledger.TotalValue;
+
+                ledger.Remarks = ledger.Remarks;
+                ledger.CreatedBy = ledger.CreatedBy;
+
+                Session["chargeSplit"] = generalLedgerDTO.generalLedgerDTOs;
+
+
+                if (ledger.TotalValue > generalLedgerDTO.TotalValue)
+                {
+                    TempData["tPercentage"] = "Amount cannot exceed the total value. The last added Entry has been removed.";
+
+                    GeneralLedgerDTOs.Remove(ledger);
+
+                    Session["chargeSplit"] = GeneralLedgerDTOs;
+                }
+                else if (ledger.TotalValue <= generalLedgerDTO.TotalValue)
+                {
+                    TempData["tPercentage"] = "Amount must be Equal to Total Amount.";
+                    GeneralLedgerDTOs.Add(ledger);
+                }
+
+            };
+
+
+            TempData["GeneralLedgerDTOs"] = GeneralLedgerDTOs;
+
+            TempData["generalLedgerDTO"] = generalLedgerDTO;
+
+            ViewBag.budgetEntryDTOs = budgetEntryDTOs;
+
+            return View("Create", generalLedgerDTO);
+        }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -72,7 +121,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(GeneralLedgerDTO generalLedgerDTO)
         {
-            
+
             generalLedgerDTO.ValidateAll();
 
             if (!generalLedgerDTO.HasErrors)

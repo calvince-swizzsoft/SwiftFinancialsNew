@@ -62,7 +62,7 @@
                                     @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.DebitTypeId)
-                                        @Html.TextBoxFor(model => model.DebitTypeId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        @Html.TextBoxFor(model => model.DebitTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
@@ -110,7 +110,7 @@
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
-                <h3 class="font-bold">Benefactor Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">Debit Type Lookup Modal<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
             <table id="BenefactorCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
@@ -128,15 +128,49 @@
     </div>
 </div>
 
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script>
 
@@ -158,7 +192,7 @@
             aData.CreatedDate = dt_Created;
 
             // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
-            var selectButton = '<a href="/Accounts/CustomerAccountstandingorder/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
+            var selectButton = '<a href="/Accounts/BatchOrigination_Debit/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
 
             // Assuming you are using jQuery
             $(document).ready(function () {

@@ -1,23 +1,30 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountSignatoryDTO
+
 @{
     /**/
 
-    ViewBag.Title = "Create Customer Account Signatories";
-
+    ViewBag.Title = "Create Customer Account Signatory";
+    var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
+    var individualTypes = ViewBag.IndividualTypeSelectList as List<SelectListItem>;
+    var identityCardTypes = ViewBag.IdentityCardSelectList as List<SelectListItem>;
+    var salutations = ViewBag.SalutationSelectList as List<SelectListItem>;
+    var genders = ViewBag.GenderSelectList as List<SelectListItem>;
+    var maritalStatuses = ViewBag.MaritalStatusSelectList as List<SelectListItem>;
+    var nationalities = ViewBag.signatoryRelationshipSelectList as List<SelectListItem>;
+    var termsOfServices = ViewBag.IndividualEmploymentTermsOfServiceSelectList as List<SelectListItem>;
+    var individualClassifications = ViewBag.IndividualClassificationSelectList as List<SelectListItem>;
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
-
-    var transactionTypes = ViewBag.TellerTypeSelectList as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Signatories</h2>
+        <h2>Customer Account signatory</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "CoA_Signatories", new { Area = "FrontOffice" }, null)
+                @Html.ActionLink("Home", "Index", "CoA_Signatories", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Create</strong>
@@ -25,6 +32,88 @@
         </ol>
     </div>
 </div>
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+
+    .tab-header, .sub-tab-header {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .tab-button, .sub-tab-button {
+        background-color: #f1f1f1;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .tab-button:hover, .sub-tab-button:hover {
+            background-color: #ddd;
+        }
+
+        .tab-button.active, .sub-tab-button.active {
+            background-color: #ddd; /* Same as hover background color */
+        }
+
+        .tab-button:focus, .sub-tab-button:focus {
+            outline: none;
+        }
+
+    .tab, .sub-tab-content {
+        display: none;
+    }
+
+        .tab-content, .sub-tab-content.active {
+            display: block;
+        }
+
+    .tab-content, .sub-tab-content {
+        max-height: 800px; /* Adjust the height as needed */
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ccc; /* Borderline around tab content */
+        background-color: #fff;
+        margin-top: 10px;
+    }
+
+
+
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
 
 @if (TempData["Error"] != null)
 {
@@ -42,6 +131,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -52,7 +142,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "CoA_Signatories", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "CoA_Signatories", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
@@ -62,97 +152,190 @@
 
                             <fieldset>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
 
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.CustomerAccountId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.HiddenFor(model => model.CustomerAccountId)
-                                                @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
+                                                @Html.TextBoxFor(model => model.Customers.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @*<span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>*@
                                             </div>
                                         </div>
 
 
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Customers.CustomerReference2, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.CustomerReference2, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.CustomerReference2, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Customers.RecordStatusDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.RecordStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Status", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.RecordStatusDescription, "", new { @class = "text-danger" })
                                         </div>
 
 
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.IdentityCardNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.IdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "id number", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.IdentityCardNumber, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "id number", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
-                                        </div>
 
 
-                                        <div class="form-group form-group-sm">
-                                            <div class="col-md-offset-2">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
 
                                     </div>
 
 
-                                    <div class="col-lg-6">
 
-
+                                    <div class="col-lg-4">
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Salutation, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Salutation, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.SalutationDescription, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Customers.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Customers.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Customers.CustomerReference1, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.CustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.CustomerReference1, "", new { @class = "text-danger" })
                                         </div>
 
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.FullName, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer File Number" } })
-                                            @Html.ValidationMessageFor(model => model.FullName, "", new { @class = "text-danger" })
-                                        </div>
+                                    </div>
 
-                                        
 
+                                    <div class="col-lg-4">
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.Customers.CustomerSerialNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.CustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.CustomerSerialNumber, "", new { @class = "text-danger" })
                                         </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Customers.CustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Customers.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.Customers.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        </div>
+
 
 
 
                                     </div>
                                 </div>
+
+
                             </fieldset>
                         </div>
+
+                        <h2 style="color: cadetblue;">Signatory Details</h2>
+
+
+
+
+                        <div class="row">
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.FirstName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.FirstName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.FirstName, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Gender, htmlAttributes: new { @class = "" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Gender, genders, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.Gender)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.LastName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.LastName, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.LastName, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Relationship, htmlAttributes: new { @class = "" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Relationship, nationalities, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.Relationship)
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.IdentityCardNumber, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.IdentityCardNumber, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.IdentityCardNumber, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                    @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                    <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                </div>
+                            </div>
+
+
+                        </div>
+                        <input type="submit" style="width: 150px;" value="Create" class="btn btn-primary" />
+
+
                     }
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>
-
 <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -168,6 +351,81 @@
         </div>
     </div>
 </div>
+
+
+
+
+<div class="modal  fade" id="savingsLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Savings Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="SavingsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="loansProductLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Loan Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="loanProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="investmentsProductLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Investment Products Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="investmentProductsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -211,105 +469,176 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    <script type="text/javascript">
+    ///// Investment products lookup /////
+    $('.InvestmentProductsLookup').typeahead({
+        source: function (query, process) {
+            return $.getJSON(
+                '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
+                { query: query },
+                function (InvestmentProducts) {
+                    var newInvestmentProductsData = [];
+                    var InvestmentProductsMap = {};
+                    $.each(InvestmentProducts, function (i, InvestmentProduct) {
+                        newInvestmentProductsData.push(InvestmentProduct.Description);
+                        InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
+                    });
+                    process(newInvestmentProductsData);
+                });
+        },
+        matcher: function (item) {
+            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                return true;
+            }
+        },
+        sorter: function (items) {
+            return items.sort();
+        },
+        highlighter: function (item) {
+            var regex = new RegExp('(' + this.query + ')', 'gi');
+            return item.replace(regex, "<strong>$1</strong>");
+        },
+        updater: function (item) {
+            var investmentProductId = InvestmentProductsMap[item].Id;
+            $('#InvestmentProductId').val(investmentProductId);
+            $('#CustomerAccountTypeTargetProductDescription').val(InvestmentProductsMap[item].Description);
+            $('#CustomerAccountTypeTargetProductId').val(investmentProductId);
+            return item;
+        }
+    });
+
+    ///// Saving products lookup /////
+    $('.SavingProductsLookup').typeahead({
+        source: function (query, process) {
+            return $.getJSON(
+                '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+                { query: query },
+                function (SavingProducts) {
+                    var newSavingProductsData = [];
+                    var SavingProductsMap = {};
+                    $.each(SavingProducts, function (i, SavingProduct) {
+                        newSavingProductsData.push(SavingProduct.Description);
+                        SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                    });
+                    process(newSavingProductsData);
+                });
+        },
+        matcher: function (item) {
+            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                return true;
+            }
+        },
+        sorter: function (items) {
+            return items.sort();
+        },
+        highlighter: function (item) {
+            var regex = new RegExp('(' + this.query + ')', 'gi');
+            return item.replace(regex, "<strong>$1</strong>");
+        },
+        updater: function (item) {
+            var savingProductId = SavingProductsMap[item].Id;
+            $('#SavingProductId').val(savingProductId);
+            $('#CustomerAccountTypeTargetProductDescription').val(SavingProductsMap[item].Description);
+            $('#CustomerAccountTypeTargetProductId').val(savingProductId);
+            return item;
+        }
+    });
+    </script>
 
     <script>
+        // Initialize variables to track the active tab and modal status
+        var activeTab = localStorage.getItem('activeTab') || 'section1';
+        var isModalOpened = localStorage.getItem('isModalOpened') === 'true';
 
-                //Station typehead starts here
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
-                    return item;
+        // Function to open a tab and set it as active
+        function openTab(evt, tabName) {
+            var i, tabcontent, tabbuttons;
+
+            // Hide all tab contents
+            tabcontent = document.getElementsByClassName("tab");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+
+            // Remove the active class from all tab buttons
+            tabbuttons = document.getElementsByClassName("tab-button");
+            for (i = 0; i < tabbuttons.length; i++) {
+                tabbuttons[i].classList.remove("active");
+            }
+
+            // Show the current tab and add active class to the button and tab content
+            document.getElementById(tabName).style.display = "block";
+            document.getElementById(tabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+
+            // Update the active tab
+            activeTab = tabName;
+            localStorage.setItem('activeTab', tabName);
+        }
+
+        // Function to open a sub-tab and set it as active
+        function openSubTab(evt, subTabName) {
+            var i, subTabContent, subTabButtons;
+
+            // Hide all sub-tab contents
+            subTabContent = document.getElementsByClassName("sub-tab-content");
+            for (i = 0; i < subTabContent.length; i++) {
+                subTabContent[i].style.display = "none";
+                subTabContent[i].classList.remove("active");
+            }
+
+            // Remove the active class from all sub-tab buttons
+            subTabButtons = document.getElementsByClassName("sub-tab-button");
+            for (i = 0; i < subTabButtons.length; i++) {
+                subTabButtons[i].classList.remove("active");
+            }
+
+            // Show the current sub-tab and add active class to the button and sub-tab content
+            document.getElementById(subTabName).style.display = "block";
+            document.getElementById(subTabName).classList.add("active");
+            evt.currentTarget.classList.add("active");
+        }
+
+        // Ensure active tab is maintained when opening the modal
+        document.getElementById("GuarantorLookupModal").addEventListener("show.bs.modal", function () {
+            isModalOpened = true;
+            activeTab = 'section5'; // Ensure section5 is set as the active tab
+            localStorage.setItem('activeTab', 'section5');
+            localStorage.setItem('isModalOpened', 'true');
+        });
+
+        // Initial setup to show the active tab on page load
+        document.addEventListener("DOMContentLoaded", function () {
+            var tab = document.getElementById(activeTab);
+            if (tab) {
+                tab.style.display = "block";
+                tab.classList.add("active");
+
+                var tabButton = document.querySelector(`.tab-header .tab-button[onclick="openTab(event, '${activeTab}')"]`);
+                if (tabButton) {
+                    tabButton.classList.add("active");
                 }
-            });
+            }
 
+            // Ensure section1 is inactive if section5 is active after modal open
+            if (activeTab === 'section5') {
+                var section1 = document.getElementById('section1');
+                if (section1) {
+                    section1.style.display = "none";
+                    section1.classList.remove("active");
 
+                    var section1Button = document.querySelector('.tab-header .tab-button[onclick="openTab(event, \'section1\')"]');
+                    if (section1Button) {
+                        section1Button.classList.remove("active");
+                    }
+                }
 
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CoA_Register", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/CoA_Register/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-             });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#CustomerAccountId').val(data.Id);
-        $('input[name=CustomerAccountId]').val(data.Id);
-        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountCustomerAccountTypeProductCode').val(CustomersMap[item].ProductDescription);
-        $('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-        $('#customerLookupModal').modal('hide');
-    });
+                localStorage.removeItem('isModalOpened'); // Clear the modal flag after it has been handled
+            }
+        });
+    </script>
+    <script>
 
          //Branch typehead starts here
             $('.BranchesLookup').typeahead({
@@ -347,8 +676,287 @@
                     return item;
                 }
             });
+         @*/////saving products lookup /////
+        $('.SavingProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (SavingProducts) {
+                var newSavingProductsData = [];
+                SavingProductsMap = {};
+                $.each(SavingProducts, function (i, SavingProduct) {
+                    newSavingProductsData.push(SavingProduct.Description);
+                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                });
+                process(newSavingProductsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var savingProductId = "";
+        savingProductId = SavingProductsMap[item].Id;
+        $('#SavingProductId').val(savingProductId);
+
+        $('#CustomerAccountTypeProductCodeDescription').val(CustomerAccountTypeProductCodeDescription);
+
+
+        //console.log(savingProductId)
+        return item;
+    }
+});*@
 
 
 
+
+         // Savings Product lookup
+    $('#SavingsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "SavingsProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/CoA_Signatories/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "2%" },
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "4%" },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "3%" },
+            { "mDataProp": "OperatingBalance", "sTitle": "Operating Balance", "sWidth": "3%" },
+            { "mDataProp": "MaximumAllowedWithdrawal", "sTitle": "Maximum Withdrawal", "sWidth": "3%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+
+        // Loans Product look up
+    $('#loanProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "LoanProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/CoA_Signatories/LoansProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%" },
+            { "mDataProp": "LoanRegistrationTermInMonths", "sTitle": "Term (Months)", "sWidth": "3%" },
+            { "mDataProp": "LoanRegistrationMinimumAmount", "sTitle": "Minimum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanRegistrationMaximumAmount", "sTitle": "Maximum Principal Amount", "sWidth": "5%" },
+            { "mDataProp": "LoanInterestAnnualPercentageRate", "sTitle": "Annual Percentage Rate", "sWidth": "3%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CommissionSplit.ChartOfAccountAccountName').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+        // Investment Products lookup
+        $('#investmentProductsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/CoA_Signatories/InvestmentProduct/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "5%" },
+            { "mDataProp": "MinimumBalance", "sTitle": "Minimum Balance", "sWidth": "3%" },
+            { "mDataProp": "MaximumBalance", "sTitle": "Maximum Balance", "sWidth": "2%" },
+            { "mDataProp": "MaturityPeriod", "sTitle": "Maturity Period (Days)", "sWidth": "2%" },
+            { "mDataProp": "AnnualPercentageYield", "sTitle": "Annual Percentage Yield", "sWidth": "2%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+        $('#CustomerAccountTypeTargetProductId').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductId]').val(data.Id);
+        $('input[name=CustomerAccountTypeTargetProductDescription]').val(data.CustomerAccountTypeTargetProductDescription);
+    });
+
+
+
+
+
+
+
+$('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "CoA_Register", new { Area = "Accounts" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/CoA_signatories/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CustomerReference1", "sTitle": "customer number", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+
+
+        /////investment products lookup /////
+    $('.InvestmentsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+         '@Url.Action("GetInvestmentProductsAsync", "CoA_Signatories", new { Area = "Accounts" })',
+            { query: query },
+            function (SavingProducts) {
+                var newSavingProductsData = [];
+                SavingProductsMap = {};
+                $.each(SavingProducts, function (i, SavingProduct) {
+                    newSavingProductsData.push(SavingProduct.Description);
+                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                });
+                process(newSavingProductsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var savingProductId = "";
+        savingProductId = SavingProductsMap[item].Id;
+        $('#SavingProductId').val(savingProductId);
+        $('#ChartOfAccountName').val(CustomerAccountTypeTargetProductChartOfAccountName);
+        //console.log(savingProductId)
+        return item;
+    }
+});
     </script>
+
 }

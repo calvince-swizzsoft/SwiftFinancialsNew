@@ -23,6 +23,18 @@
                 <div class="ibox-title">
                     @Html.ActionLink("Create Customer Accounts", "Create", "CustomerAccounts", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
+                        @if (TempData["SuccessMessage"] != null)
+                        {
+                            <div class="alert alert-success">
+                                <strong>Success !</strong> @TempData["SuccessMessage"]
+
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                        }
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
                         </a>
@@ -118,19 +130,33 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/Accounts/CustomerAccounts/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/Accounts/CustomerAccounts/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var CustomerManagementUrl = '<a  href="/Accounts/CustomerAccounts/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'CustomerManagement</a>';
+                    //var editUrl = '<a  href="/Accounts/CustomerAccounts/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    //var viewUrl = '<a  href="/Accounts/CustomerAccounts/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    //var CustomerManagementUrl = '<a  href="/Accounts/CustomerAccounts/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'CustomerManagement</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/Accounts/CoA_Register/details/${aData.Id}">View</a>
+                                    <a class="dropdown-item" href="/Accounts/CoA_Register/Edit/${aData.Id}">Verify</a>
+                                    <a class="dropdown-item" href="/Accounts/CoA_Register/CustomerManagement/${aData.Id}">Approval/edit/verify</a>
+
+                            </div>
+                        </div>`;
+
+                    $('td:eq(4)', nRow).html(dropdownHtml);
 
 
                     $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
+                    //$('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
 
                     return nRow;
                 },
         // Display settings
-        "aoColumns": [        
-           
+        "aoColumns": [
+
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "10%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "10%" },
             { "mDataProp": "BranchDescription", "sTitle": "BranchDescription", "sWidth": "15%" },

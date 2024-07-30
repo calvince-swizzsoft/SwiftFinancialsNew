@@ -114,8 +114,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         
         {
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+
+            var customer = await _channelService.FindCustomerAccountAsync(customerAccountDTO.Id, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            customerAccountDTO.CustomerId = customer.CustomerId;
+            customerAccountDTO.BranchId = customer.BranchId;
+            customerAccountDTO.CustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId;
+
             customerAccountDTO.ValidateAll();
-            customerAccountDTO.Id = customerAccountDTO.CustomerId;
+           
             if (!customerAccountDTO.HasErrors)
             {
                 decimal totalValue = customerAccountDTO.TotalValue;

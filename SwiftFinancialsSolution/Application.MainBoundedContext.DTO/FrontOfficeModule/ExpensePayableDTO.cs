@@ -182,7 +182,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "module")]
         public int ModuleNavigationItemCode { get; set; }
 
-
+        public string ErrorMessageResult;
         public List<ExpensePayableEntryDTO> ExpensePayableEntries { get; set; }
         public ExpensePayableEntryDTO ExpensePayableEntry { get; set; }
 

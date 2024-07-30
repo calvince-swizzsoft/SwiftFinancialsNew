@@ -38,13 +38,13 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
+        public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
+
         public ObservableCollection<GraduatedScaleDTO> TiersDTOs;
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorsDTO;
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorDTOs;
-
-        //public ObservableCollection<LoanGuarantorDTO> StandingOrdersDTOs;
 
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
@@ -55,7 +55,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
 
         public ObservableCollection<BudgetEntryDTO> budgetEntryDTOs;
-
+        public ObservableCollection<GeneralLedgerDTO> GeneralLedgerDTOs;
         public ObservableCollection<FixedDepositPayableDTO> FixedDepositPayableDTOs;
 
         public ObservableCollection<InvestmentProductDTO> investmentProductDTOs;
@@ -495,7 +495,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return individualClassifications;
         }
+        [NonAction]
+        protected List<SelectListItem> GetsignatoryRelationshipSelectList(string selectedValue)
+        {
+            List<SelectListItem> signatoryRelationship = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SignatoryRelationship)).Cast<SignatoryRelationship>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            signatoryRelationship.AddRange(items);
+
+            return signatoryRelationship;
+        }
         [NonAction]
         protected List<SelectListItem> GetTermsOfServiceSelectList(string selectedValue)
         {
@@ -1090,6 +1105,61 @@ namespace SwiftFinancials.Web.Controllers
 
             return withdrawalNotificationCategories;
         }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetwithdrawalNotificationStatusSelectList(string selectedValue)
+        {
+            List<SelectListItem> withdrawalNotificationStatus = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(WithdrawalNotificationStatus)).Cast<WithdrawalNotificationStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            withdrawalNotificationStatus.AddRange(items);
+
+            return withdrawalNotificationStatus;
+        }
+
+        
+
+        [NonAction]
+        protected List<SelectListItem> GetmembershipWithdrawalAuditOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> membershipWithdrawalAuditOption = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MembershipWithdrawalAuditOption)).Cast<MembershipWithdrawalAuditOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            membershipWithdrawalAuditOption.AddRange(items);
+
+            return membershipWithdrawalAuditOption;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetmembershipWithdrawalApprovalOptionSelectList(string selectedValue)
+        {
+            List<SelectListItem> membershipWithdrawalApprovalOption = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(MembershipWithdrawalApprovalOption)).Cast<MembershipWithdrawalApprovalOption>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            membershipWithdrawalApprovalOption.AddRange(items);
+
+            return membershipWithdrawalApprovalOption;
+        }
+
         [NonAction]
         protected List<SelectListItem> GetCustomerAccountManagementActionSelectList(string selectedValue)
         {
@@ -1487,6 +1557,24 @@ namespace SwiftFinancials.Web.Controllers
             disbursementType.AddRange(items);
 
             return disbursementType;
+        }
+       
+
+        [NonAction]
+        protected List<SelectListItem> GetBatchStatusTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> BatchStatus = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(BatchStatus)).Cast<BatchStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            BatchStatus.AddRange(items);
+
+            return BatchStatus;
         }
     }
 }

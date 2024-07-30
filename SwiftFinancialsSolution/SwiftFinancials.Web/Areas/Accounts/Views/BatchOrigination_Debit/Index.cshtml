@@ -20,7 +20,33 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+                
                 <h2>Debit Batch</h2>
+
+                @if (TempData["create"] != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success !</strong> @TempData["create"]
+                    </div>
+                }
+                @if (TempData["verify"] != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success !</strong> @TempData["verify"]
+                    </div>
+                }
+
+                @if (TempData["edit"] != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success !</strong> @TempData["edit"]
+                    </div>
+                } @if (TempData["authorize"] != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success !</strong> @TempData["authorize"]
+                    </div>
+                }
                 <hr />
                 <div class="ibox-title">
                     @Html.ActionLink("Create Debit Batch", "Create", "BatchOrigination_Debit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
@@ -94,14 +120,24 @@
                     var dt_Verified = $.datepicker.formatDate('dd/mm/yy', verifiedDate) + " " + h + ":" + m + ":" + s;
                     aData.verifiedDate = dt_Verified;
 
-                    var editUrl = '<a  href="/accounts/BatchOrigination_Debit/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/BatchOrigination_Debit/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyUrl = '<a  href="/accounts/BatchOrigination_Debit/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var authorizeUrl = '<a  href="/accounts/BatchOrigination_Debit/authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Debit/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Debit/edit/${aData.Id}">Edit</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Debit/Verify/${aData.Id}">Verify</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Debit/Authorize/${aData.Id}">Authorize</a>
+                            </div>
+                        </div>`;
+
+                    
 
                     $('td:eq(7)', nRow).html(dt_Verified);
                     $('td:eq(8)', nRow).html(dt_Created);
-                    $('td:eq(9)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + authorizeUrl);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
@@ -115,8 +151,8 @@
                     { "mDataProp": "AuditRemarks", "sTitle": "Verification/Rejection Remarks", "sWidth": "2%" },
                     { "mDataProp": "AuditedBy", "sTitle": "Verified/Rejected by", "sWidth": "2%" },
                     { "mDataProp": "AuditedDate", "sTitle": "Verification/Rejection Date", "sWidth": "2%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "4%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

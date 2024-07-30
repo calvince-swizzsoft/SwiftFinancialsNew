@@ -1,0 +1,144 @@
+﻿
+@{
+    ViewBag.Title = "Insurance Companies";
+    var refreshPage = TempData["RefreshPage"] as bool?;
+}
+
+
+@if (refreshPage.HasValue && refreshPage.Value)
+{
+    <script>
+        window.location.reload();
+    </script>
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Insurance Companies</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @if (TempData["create"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["create"]
+                        </div>
+                    }
+
+                    @if (TempData["edit"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["edit"]
+                        </div>
+                    }
+
+                    <hr/>
+                    @Html.ActionLink("Create Insurance Company", "Create", "Insurers", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="InsurersGrid" class="table table-striped table-bordered table-hover" width="100%">
+                            <tbody>
+                                <tr>
+                                    <td colspan="7" class="dataTables_empty">
+                                        Loading data from server
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#InsurersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Insurers", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var editUrl = '<a  href="/Accounts/Insurers/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/Accounts/Insurers/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+
+                    $('td:eq(11)', nRow).html(dt_Created);
+                    $('td:eq(12)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;');
+
+                    return nRow;
+                },
+                // Display settings
+                "aoColumns": [
+                    { "mDataProp": "Description", "sTitle": "Name", "sWidth": "5%" },
+                    { "mDataProp": "ChartOfAccountName", "sTitle": "G/L Account Name", "sWidth": "8%" },
+                    { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
+                    { "mDataProp": "AddressAddressLine1", "sTitle": "Address Line 1", "sWidth": "8%" },
+                    { "mDataProp": "AddressAddressLine2", "sTitle": "Address Line 2", "sWidth": "8%" },
+                    { "mDataProp": "AddressStreet", "sTitle": "Street", "sWidth": "5%" },
+                    { "mDataProp": "AddressPostalCode", "sTitle": "Postal Code", "sWidth": "5%" },
+                    { "mDataProp": "AddressCity", "sTitle": "City", "sWidth": "7%" },
+                    { "mDataProp": "AddressEmail", "sTitle": "E-mail", "sWidth": "5%" },
+                    { "mDataProp": "AddressLandLine", "sTitle": "Land Line", "sWidth": "5%" },
+                    { "mDataProp": "AddressMobileLine", "sTitle": "Mobile Line", "sWidth": "8%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }],
+
+                "aaSorting": [[0, "desc"]]
+        });
+        });
+
+        $(document).ajaxStart(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+        $(document).ajaxStop(function () {
+            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+        });
+    </script>
+
+}

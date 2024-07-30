@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -496,6 +497,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
             return ValidationResult.Success;
         }
-        public List<LoanGuarantorDTO> LoanGuarantors { get; set; }
+        public ObservableCollection<LoanGuarantorDTO> LoanGuarantors { get; set; }
     }
 }

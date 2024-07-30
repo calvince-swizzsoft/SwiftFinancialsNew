@@ -8,11 +8,90 @@
 
 }
 
-@using(Html.BeginForm("Search", "WithdrawalNotification", new { Area = "Registry" }, FormMethod.Get))
- { 
-   TempData["Remarks"] = "HAM";
+@using (Html.BeginForm("Search", "WithdrawalNotification", new { Area = "Registry" }, FormMethod.Get))
+{
+    TempData["Remarks"] = "HAM";
 }
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
 
+    .tab-header, .sub-tab-header {
+        display: flex;
+        border-bottom: 1px solid #ccc;
+        margin-bottom: 10px;
+    }
+
+    .tab-button, .sub-tab-button {
+        background-color: #f1f1f1;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+        .tab-button:hover, .sub-tab-button:hover {
+            background-color: #ddd;
+        }
+
+        .tab-button.active, .sub-tab-button.active {
+            background-color: #ddd; /* Same as hover background color */
+        }
+
+        .tab-button:focus, .sub-tab-button:focus {
+            outline: none;
+        }
+
+    .tab, .sub-tab-content {
+        display: none;
+    }
+
+        .tab-content, .sub-tab-content.active {
+            display: block;
+        }
+
+    .tab-content, .sub-tab-content {
+        max-height: 800px; /* Adjust the height as needed */
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ccc; /* Borderline around tab content */
+        background-color: #fff;
+        margin-top: 10px;
+    }
+
+
+
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h2>Withdrawal Notification</h2>
@@ -30,22 +109,19 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
 
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+
                 <div class="ibox-title">
+                    @if (TempData["ErrorMsg"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["ErrorMsg"]
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -66,7 +142,7 @@
 
                             <fieldset>
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
 
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.CustomerId, new { @class = "control-label" })
@@ -75,7 +151,7 @@
                                                 @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
-                                                   
+
                                                 </span>
                                             </div>
                                         </div>
@@ -85,7 +161,21 @@
                                             @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerStationDescription, "", new { @class = "text-danger" })
                                         </div>
-                                        
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                        </div>
+
+                                        <div class="form-group form-group-sm">
+                                            <div class="col-md-offset-2">
+                                                <input type="submit" value="Create" class="btn btn-primary" />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerStationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerStationZoneDivisionEmployerDescription", disabled = "disabled" } })
@@ -101,16 +191,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group form-group-sm">
-                                            <div class="col-md-offset-2">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
+
 
                                     </div>
 
 
-                                    <div class="col-lg-6">
+
+
+                                    <div class="col-lg-3">
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerSerialNumber, htmlAttributes: new { @class = "" })
@@ -122,6 +210,11 @@
                                             @Html.EditorFor(model => model.CustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                         </div>
+
+                                    </div>
+
+
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Payroll Numbers", disabled = "disabled" } })
@@ -132,15 +225,153 @@
                                             @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Remarks", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                        </div>
-                                      
+
                                     </div>
                                 </div>
+
+
+                                @*  Tabs
+                                    <div class="tab-header" style="color: black;">
+                                        <div class="tab-button active" onclick="openTab(event, 'section1')">
+                                            <i class="fa fa-table" aria-hidden="true"></i> Saving Products
+                                        </div>
+                                        <div class="tab-button" onclick="openTab(event, 'section2')">
+                                            <i class="fa fa-table" aria-hidden="true"></i> Loan Accounts
+                                        </div>
+                                        <div class="tab-button" onclick="openTab(event, 'section3')">
+                                            <i class="fa fa-table" aria-hidden="true"></i> Investments Accounts
+                                        </div>
+                                        <div class="tab-button" onclick="openTab(event, 'section4')">
+                                            <i class="fa fa-table" aria-hidden="true"></i> Loans Guaranteed
+                                        </div>
+
+                                       <div class="tab-button" onclick="openTab(event, 'section5')">
+                                                        <i class="fa fa-table" aria-hidden="true"></i> Guarantors
+                                                    </div>
+                                            </div>
+
+                                            <div id="section1" class="tab active">
+                                                <!-- Standing Orders -->
+                                                <div class="tab-content">
+                                                    <h2 style="color: cadetblue;">Standing Orders</h2>
+
+                                                    <br />
+
+                                                    <row>
+                                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                                <tr>
+                                                                    <th>Full Account Number</th>
+                                                                    <th>Status</th>
+                                                                    <th>Remarks</th>
+                                                                    <th>Product Code</th>
+                                                                    <th>Is defaulter</th>
+                                                                    <th>Branch</th>
+                                                                    <th>Book Balance</th>
+                                                                    <th>Available Balance</th>
+                                                                    <th>Record Status</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (ViewBag.StandingOrders != null)
+                                                                {
+                                                                    foreach (var standingOrder in ViewBag.StandingOrders)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@standingOrder.TriggerDescription</td>
+                                                                            <td>@standingOrder.BeneficiaryProductDescription</td>
+                                                                            <td style="text-align: right;">@standingOrder.LoanAmount</td>
+                                                                            <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
+                                                                            <td style="text-align: right;">@standingOrder.Principal</td>
+                                                                            <td style="text-align: right;">@standingOrder.Interest</td>
+                                                                            <td style="text-align: right;">@standingOrder.PrincipalArrears</td>
+                                                                            <td style="text-align: right;">@standingOrder.InterestArrears</td>
+                                                                            <td>@standingOrder.ChargeTypeDescription</td>
+                                                                            <td>@standingOrder.ChargeFixedAmount</td>
+                                                                            <td>@standingOrder.ChargePercentage</td>
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+                                                        @if (TempData["standingOrder"] != null)
+                                                        {
+                                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                                        }
+                                                    </row>
+                                                </div>
+                                            </div>
+
+
+
+                                            <div id="section2" class="tab">
+                                                <!-- Income History -->
+                                                <div class="sub-tab-header" style="color: black;">
+                                                    <div class="sub-tab-button" onclick="openSubTab(event, 'payouts')">Payouts</div>
+                                                    <div class="sub-tab-button" onclick="openSubTab(event, 'salary')">Salary</div>
+                                                </div>
+
+                                                <!--Payouts-->
+                                                <div id="payouts" class="sub-tab-content">
+                                                    <h2 style="color: cadetblue;">Payouts</h2>
+
+                                                    <br />
+
+                                                    <row>
+                                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                                <tr>
+                                                                    <th>Batch Number</th>
+                                                                    <th>Batch Reference</th>
+                                                                    <th>Status</th>
+                                                                    <th>Principal</th>
+                                                                    <th>Interest</th>
+                                                                    <th>Beneficiary</th>
+                                                                    <th>Reference</th>
+                                                                    <th>Full Account Number</th>
+                                                                    <th>Product Name</th>
+                                                                    <th>Balance</th>
+                                                                    <th>Customer Name</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @if (ViewBag.StandingOrders != null)
+                                                                {
+                                                                    foreach (var standingOrder in ViewBag.StandingOrders)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@standingOrder.TriggerDescription</td>
+                                                                            <td>@standingOrder.BeneficiaryProductDescription</td>
+                                                                            <td style="text-align: right;">@standingOrder.LoanAmount</td>
+                                                                            <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
+                                                                            <td style="text-align: right;">@standingOrder.Principal</td>
+                                                                            <td style="text-align: right;">@standingOrder.Interest</td>
+                                                                            <td style="text-align: right;">
+                                                                            @standingOrder.PrincipalArrears
+                                                                            </td>
+                                                                            <td style="text-align: right;">
+                                                                            @standingOrder.InterestArrears
+                                                                            <!--</td>
+                                                                            <td>@standingOrder.ChargeTypeDescription</td>
+                                                                            <td>@standingOrder.ChargeFixedAmount</td>
+                                                                            <td>@standingOrder.ChargePercentage</td>-->
+                                                                        </tr>
+                                                                    }
+                                                                }
+                                                            </tbody>
+                                                        </table>
+
+                                                        @if (TempData["standingOrder"] != null)
+                                                        {
+                                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                                        }
+                                                    </row>
+                                                </div>
+                                            </div>
+
+                                *@
+
                             </fieldset>
                         </div>
                     }
@@ -219,7 +450,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
+    <script>
 
              //Station typehead starts here
 
@@ -283,7 +514,7 @@
                     aData.CreatedDate = dt_Created;
 
                     var selectUrl = '<a  href="/Registry/WithdrawalNotification/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-                    
+
                     $('td:eq(4)', nRow).html(dt_Created);
                     $('td:eq(5)', nRow).html(selectUrl);
 
@@ -306,7 +537,7 @@
         $('#CustomerId').val(data.Id);
         $('input[name=CustomerId]').val(data.Id);
         $('input[name=CustomerFullName]').val(data.FullName);
-        
+
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
@@ -409,9 +640,9 @@
                 //    alert(error);
                 //}
             });
-            
+
         }
 
 
-</script>
+    </script>
 }

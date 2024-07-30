@@ -9,7 +9,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loaning</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -43,30 +43,12 @@
                     </div>
                 </div>
 
-                @if (TempData["AlertMessage"] != null)
+                @if (TempData["status"] != null)
                 {
-                    <div class="alert alert-success">
-                        <strong>Failed !</strong> @TempData["AlertMessage"]
-
-                        <button type="button" class="close" data-dismiss="alert">
-                            <span>
-                                &times;
-                            </span>
-                        </button>
+                    <div class="alert alert-danger">
+                        <strong>Attempt Failed !</strong> @TempData["status"]
                     </div>
                 }
-
-                <!--<div id="tabs-container">
-                    <ul class="nav-tabs">
-                        <li>@Html.ActionLink("Register Loan", "Create", "LoanRegistration")</li>
-                        <li>@Html.ActionLink("Attach Guarantor", "Create", "AttachGuarantor")</li>
-                        <li>@Html.ActionLink("Appraise Loan", "Index", "AppraiseLoan")</li>
-                        <li>@Html.ActionLink("Approve Loan", "Index", "ApproveLoan")</li>
-                        <li>@Html.ActionLink("Verify Loan", "Index", "LoanVerification")</li>-->
-                @*<li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>*@
-
-                <!--</ul>
-                </div>-->
 
                 <div class="ibox-content">
                     @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
@@ -74,7 +56,9 @@
                         @Html.AntiForgeryToken()
                         @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
                         <fieldset>
-                            <legend>Customer Account Linkage</legend>
+                            <h3>Loanee Details</h3>
+
+                            <br />
                             <div class="row">
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
@@ -144,8 +128,20 @@
 
                         @*<section id="section2" class="section">*@
                         <fieldset>
-                            <legend>Guarantor Details</legend>
+                            <h3>Link Guarantor</h3>
+                            <br />
                             <div class="row">
+                                <div class="col-md-4 form-group">
+                                    @Html.LabelFor(model => model.Customer.FullName, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.Customer.Id)
+                                        @Html.TextBoxFor(model => model.Customer.FullName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#GuarantorLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+                                        </span>
+                                    </div>
+                                </div>
+
                                 <div class="col-md-4 form-group">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Customer.StationZoneDivisionEmployerId, htmlAttributes: new { @class = "control-label" })
@@ -159,17 +155,6 @@
                                         @Html.LabelFor(model => model.Customer.StationId, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Customer.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Personal File Number", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.Customer.StationId, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4 form-group">
-                                    @Html.LabelFor(model => model.Customer.FullName, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.Customer.Id)
-                                        @Html.TextBoxFor(model => model.Customer.FullName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#GuarantorLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
-                                        </span>
                                     </div>
                                 </div>
                             </div>
@@ -252,24 +237,6 @@
                                 </div>
                             </div>
                         </fieldset>
-                        @*</section>*@
-                      
-
-                        <h3>Loan Guarantors</h3>
-
-                        @*</section>*@
-
-                        <hr />
-
-
-                        <div class="row">
-                            <div class="col-lg-4">
-                                @using (Html.BeginForm("Create", "LoanRestructuring", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
-                                {
-                                    <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;"/>
-                                }
-                            </div>
-                        </div>
                     }
 
                 </div>
@@ -499,18 +466,16 @@
 
                     var selectUrl = '<a  href="/Loaning/AttachGuarantor/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
+                    $('td:eq(2)', nRow).html(dt_Created);
+                    $('td:eq(3)', nRow).html(selectUrl);
 
                     return nRow;
                 },
         // Display settings
                 "aoColumns": [
-                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "20%" },
-                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "15%" },
-                    { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "4%" },
-                    //{ "mDataProp": "CustomerAddressMobileLine", "sTitle": "Mobile Line Number", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "10%" },
+                    { "mDataProp": "Reference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
     });

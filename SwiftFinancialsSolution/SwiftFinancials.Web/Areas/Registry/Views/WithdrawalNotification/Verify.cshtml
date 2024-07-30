@@ -3,7 +3,8 @@
 @{
     /**/
     ViewBag.Title = "Veriy Withdrawal Notification  ";
-    var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+
+    var AuthOptions = ViewBag.AuditOption as List<SelectListItem>;
     var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
     var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
     var Monthtype = ViewBag.MonthsSelectList as List<SelectListItem>;
@@ -65,17 +66,17 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "CustomeresLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.Customer.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Id", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Customer.FullName, "", new { @class = "text-danger" })
                                     </div>
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Id", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                    </div>
+                                    @*<div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Id", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                                        </div>*@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerStationDescription, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
@@ -89,14 +90,18 @@
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CategoryDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Verify, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Category, withdrawalNotificationCategories, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Category)
+                                            @Html.DropDownListFor(model => model.Verify, AuthOptions, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Verify)
                                         </div>
                                     </div>
-
                                     <div class="form-group form-group-sm">
                                         <div class="col-md-offset-2">
                                             <input type="submit" value="Verify" class="btn btn-primary" />
@@ -134,6 +139,7 @@
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                     </div>
+
                                 </div>
                             </div>
                         </fieldset>
@@ -212,7 +218,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-<script>
+    <script>
 
                 //Station typehead starts here
             $('.StationsLookup').typeahead({
@@ -383,5 +389,5 @@
             });
 
 
-</script>
+    </script>
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -27,6 +28,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Customer Account")]
         [ValidGuid]
         public Guid CustomerAccountId { get; set; }
+
+        public CustomerAccountDTO Customers { get; set; }
 
         [DataMember]
         [Display(Name = "Customer Type")]
@@ -220,5 +223,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public ObservableCollection<CustomerAccountSignatoryDTO> customerAccountSignatoryDTOs { get; set; }
     }
 }

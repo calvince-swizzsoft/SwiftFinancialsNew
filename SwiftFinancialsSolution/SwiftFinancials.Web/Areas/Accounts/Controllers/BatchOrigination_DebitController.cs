@@ -65,18 +65,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View();
             }
 
-            var customer = await _channelService.FindDebitBatchAsync(parseId, GetServiceHeader());
+            var customer = await _channelService.FindDebitTypeAsync(parseId, GetServiceHeader());
 
             DebitBatchDTO customerAccountDTO = new DebitBatchDTO();
 
             if (customer != null)
             {
 
-                customerAccountDTO.DebitTypeDescription = customer.DebitTypeDescription;
-                customerAccountDTO.DebitTypeId = customer.DebitTypeId;
+                customerAccountDTO.DebitTypeDescription = customer.Description;
+                customerAccountDTO.DebitTypeId = customer.Id;
             }
 
-            return View();
+            return View(customerAccountDTO);
         }
 
         [HttpPost]
@@ -84,7 +84,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             debitBatchDTO.ValidateAll();
 
+
+
             if (!debitBatchDTO.HasErrors)
+            {
+                var result = await _channelService.AddDebitBatchAsync(debitBatchDTO, GetServiceHeader());
+
+
+                TempData["create"] = "Successfully created Debit Batch";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = debitBatchDTO.ErrorMessages;
+                
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+                return View(debitBatchDTO);
+            }
+
+            /*if (!debitBatchDTO.HasErrors)
             {
                 await _channelService.AddDebitBatchAsync(debitBatchDTO, GetServiceHeader());
 
@@ -94,8 +113,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 var errorMessages = debitBatchDTO.ErrorMessages;
                 ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+
+
+
                 return View(debitBatchDTO);
-            }
+            }*/
         }
 
         public async Task<ActionResult> Edit(Guid id)
@@ -117,6 +139,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateDebitBatchAsync(debitBatchDTO, GetServiceHeader());
 
+                TempData["edit"] = "Successfully edited Loan Purpose";
+
                 return RedirectToAction("Index");
             }
             else
@@ -135,6 +159,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
 
+            
+
             return View(debitBatchDTO);
         }
 
@@ -148,6 +174,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AuditDebitBatchAsync(debitBatchDTO, 1, GetServiceHeader());
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+
+                TempData["verify"] = "Successfully verified Loan Purpose";
                 return RedirectToAction("Index");
             }
             else
