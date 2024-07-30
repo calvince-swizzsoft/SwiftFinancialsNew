@@ -268,9 +268,9 @@
 
                             <div class="col-md-3 form-group">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.InterestCalculationModeDescription, htmlAttributes: new { @class = "" })
-                                    @Html.HiddenFor(model => model.LoanInterestCalculationMode)
-                                    @Html.EditorFor(model => model.InterestCalculationModeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
+                                    @Html.LabelFor(model => model.LoanInterestCalculationModeDescription, htmlAttributes: new { @class = "" })
+                                    @Html.HiddenFor(model => model.LoanInterestCalculationModeDescription)
+                                    @Html.EditorFor(model => model.LoanInterestCalculationModeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Calculation Mode...", @readonly = "readonly" } })
                                 </div>
                             </div>
 
@@ -448,20 +448,18 @@
 
                         @*Tabs*@
                         <div class="tab-header" style="color: black;">
-                            <div class="tab-button active" onclick="openTab(event, 'section1')">
-                                <i class="fa fa-table" aria-hidden="true"></i> Loan Guarantors
+                            <div class="tab-button active" style="pointer-events: none; cursor: default;">
+                                <i class="fa fa-table" aria-hidden="true"></i> Attached Loan Guarantors
                             </div>
                         </div>
 
-                        <div id="section1" class="tab active">
+                        <div id="section1" class="tab active" style="display: block;">
                             <!-- Loan Guarantors -->
                             <div class="tab-content">
-                                <h2 style="color: cadetblue;">Loan Guarantors</h2>
-
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap:normal; color: black; width: 100%;">
-                                            <thead style="font-style: italic; color: cadetblue; text-align: center; ">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
                                                     <th>Guarantor Name</th>
                                                     <th>Employer</th>
@@ -470,7 +468,7 @@
                                                     <th>Total Shares</th>
                                                     <th>Committed Shares</th>
                                                     <th>Amount Guaranteed</th>
-                                                    <th>Date Guarenteed</th>
+                                                    <th>Date Guaranteed</th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -496,6 +494,7 @@
                                 </div>
                             </div>
                         </div>
+
                     </fieldset>
                 </div>
             </div>
@@ -504,96 +503,4 @@
 </div>
 
 
-<script>
-    // Initialize variables to track the active tab and modal status
-    var activeTab = localStorage.getItem('activeTab') || 'section1';
-    var isModalOpened = localStorage.getItem('isModalOpened') === 'true';
 
-    // Function to open a tab and set it as active
-    function openTab(evt, tabName) {
-        var i, tabcontent, tabbuttons;
-
-        // Hide all tab contents
-        tabcontent = document.getElementsByClassName("tab");
-        for (i = 0; i < tabcontent.length; i++) {
-            tabcontent[i].style.display = "none";
-            tabcontent[i].classList.remove("active");
-        }
-
-        // Remove the active class from all tab buttons
-        tabbuttons = document.getElementsByClassName("tab-button");
-        for (i = 0; i < tabbuttons.length; i++) {
-            tabbuttons[i].classList.remove("active");
-        }
-
-        // Show the current tab and add active class to the button and tab content
-        document.getElementById(tabName).style.display = "block";
-        document.getElementById(tabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-
-        // Update the active tab
-        activeTab = tabName;
-        localStorage.setItem('activeTab', tabName);
-    }
-
-    // Function to open a sub-tab and set it as active
-    function openSubTab(evt, subTabName) {
-        var i, subTabContent, subTabButtons;
-
-        // Hide all sub-tab contents
-        subTabContent = document.getElementsByClassName("sub-tab-content");
-        for (i = 0; i < subTabContent.length; i++) {
-            subTabContent[i].style.display = "none";
-            subTabContent[i].classList.remove("active");
-        }
-
-        // Remove the active class from all sub-tab buttons
-        subTabButtons = document.getElementsByClassName("sub-tab-button");
-        for (i = 0; i < subTabButtons.length; i++) {
-            subTabButtons[i].classList.remove("active");
-        }
-
-        // Show the current sub-tab and add active class to the button and sub-tab content
-        document.getElementById(subTabName).style.display = "block";
-        document.getElementById(subTabName).classList.add("active");
-        evt.currentTarget.classList.add("active");
-    }
-
-    // Ensure active tab is maintained when opening the modal
-    document.getElementById("GuarantorLookupModal").addEventListener("show.bs.modal", function () {
-        isModalOpened = true;
-        activeTab = 'section5'; // Ensure section5 is set as the active tab
-        localStorage.setItem('activeTab', 'section5');
-        localStorage.setItem('isModalOpened', 'true');
-    });
-
-    // Initial setup to show the active tab on page load
-    document.addEventListener("DOMContentLoaded", function () {
-        var tab = document.getElementById(activeTab);
-        if (tab) {
-            tab.style.display = "block";
-            tab.classList.add("active");
-
-            var tabButton = document.querySelector(`.tab-header .tab-button[onclick="openTab(event, '${activeTab}')"]`);
-            if (tabButton) {
-                tabButton.classList.add("active");
-            }
-        }
-
-        // Ensure section1 is inactive if section5 is active after modal open
-        if (activeTab === 'section5') {
-            var section1 = document.getElementById('section1');
-            if (section1) {
-                section1.style.display = "none";
-                section1.classList.remove("active");
-
-                var section1Button = document.querySelector('.tab-header .tab-button[onclick="openTab(event, \'section1\')"]');
-                if (section1Button) {
-                    section1Button.classList.remove("active");
-                }
-            }
-
-            localStorage.removeItem('isModalOpened'); // Clear the modal flag after it has been handled
-        }
-    });
-</script>
