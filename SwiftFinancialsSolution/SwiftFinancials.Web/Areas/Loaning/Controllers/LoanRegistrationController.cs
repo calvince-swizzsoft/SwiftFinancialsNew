@@ -26,7 +26,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-         [HttpPost]
+        [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
@@ -60,12 +60,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
-            var loanGuarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(id, GetServiceHeader());
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
 
             ViewBag.LoanGuarantors = loanGuarantors;
 
             return View(loanCaseDTO);
         }
+
 
         public async Task<ActionResult> Create()
         {
@@ -203,11 +204,23 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Session["CustomerReference2"] = loanCaseDTO.CustomerReference2;
                 Session["CustomerReference3"] = loanCaseDTO.CustomerReference3;
 
-                //var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(parseId, true, GetServiceHeader());
-                //if (standingOrders != null)
-                //    ViewBag.StandingOrders = standingOrders;
+                var customerAccountList = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, false, false, false,
+                    false, GetServiceHeader());
 
-                var loanapplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(customer.Id, GetServiceHeader());
+                ObservableCollection<StandingOrderDTO> items = new ObservableCollection<StandingOrderDTO>();
+
+                foreach (var item in customerAccountList)
+                {
+                    var customerAccounts = item.Id;
+
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(customerAccounts, false, GetServiceHeader());
+                    if (standingOrders != null)
+                    {
+                        ViewBag.StandingOrders = standingOrders;
+                    }
+                }
+
+                var loanapplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
                 if (loanapplications != null)
                     ViewBag.LoanApplications = loanapplications;
             }

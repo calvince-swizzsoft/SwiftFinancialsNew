@@ -38,6 +38,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
+        public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
+
         public ObservableCollection<GraduatedScaleDTO> TiersDTOs;
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorsDTO;
