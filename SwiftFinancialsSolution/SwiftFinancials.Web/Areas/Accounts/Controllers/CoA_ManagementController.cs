@@ -160,7 +160,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
             var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-           var k= await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAsync(parseId, GetServiceHeader());
+            var k = await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAsync(parseId, GetServiceHeader());
             CustomerAccountDTO customerAccountDTO = new CustomerAccountDTO();
 
             if (customer != null)
@@ -259,7 +259,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (Session["CustomerFullName"] != null)
             {
                 customerAccountDTO.CustomerIndividualFirstName = Session["CustomerFullName"].ToString();
-                
             }
             if (Session["CustomerAccountTypeTargetProductId"] != null)
             {
@@ -270,25 +269,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!customerAccountDTO.HasErrors)
             {
-
-                await _channelService.ManageCustomerAccountAsync(customerAccountDTO.Id, (int)customerAccountDTO.CustomerAccountManagementAction, (string)customerAccountDTO.Remarks, (int)customerAccountDTO.Type, GetServiceHeader());
-                //if (ErrorMessageResult != null)
-                //{
-                //    TempData["ErrorMsg"] = result.ErrorMessageResult;
-                //    await ServeNavigationMenus();
-                //    return View();
-                //}
+                var k = await _channelService.ManageCustomerAccountAsync(customerAccountDTO.Id, (int)customerAccountDTO.CustomerAccountManagementAction, (string)customerAccountDTO.Remarks, (int)customerAccountDTO.Type, GetServiceHeader());
+                if (customerAccountDTO.ErrorMessageResult != null)
+                {
+                    TempData["SuccessMessage"] = customerAccountDTO.ErrorMessageResult;
+                }
                 TempData["SuccessMessage"] = $"Successfully {customerAccountDTO.CustomerAccountManagementActionDescription} For Customer {customerAccountDTO.CustomerIndividualFirstName}";
+
+                // Clear the session variables
                 if (Session["customerAccountDTO2"] != null)
                 {
                     Session.Remove("customerAccountDTO2");
-                    Session.Clear();
                 }
-                customerAccountDTO.Customers = null;
-                Session["CustomerFullName"] = "";
-                Session["savingsProductDTOs"] = "";
-                Session["customerAccountDTO"] = "";
-                Session["customerAccountDTO"] = "";
+                Session.Remove("BranchId");
+                Session.Remove("CustomerFullName");
+                Session.Remove("CustomerAccountTypeTargetProductId");
+                Session.Remove("savingsProductDTOs");
+                Session.Remove("customerAccountDTO");
+
                 return RedirectToAction("Create");
             }
             else

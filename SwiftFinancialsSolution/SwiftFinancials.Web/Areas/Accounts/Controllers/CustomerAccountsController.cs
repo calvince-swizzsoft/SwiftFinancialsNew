@@ -121,7 +121,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             foreach (var expensePayableEntryDTO in customerAccountDTO.investmentProducts)
             {
                 expensePayableEntryDTO.Id = customerAccountDTO.investmentProducts[0].Id;
-                //var k = await _channelService.FindSavingsProductAsync(expensePayableEntryDTO.Id,GetServiceHeader()); 
+                var k = await _channelService.FindInvestmentProductAsync(expensePayableEntryDTO.Id,GetServiceHeader()); 
                 expensePayableEntryDTO.ChartOfAccountId = customerAccountDTO.CustomerAccountTypeTargetProductId;
                 expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
                 expensePayableEntryDTO.Description = expensePayableEntryDTO.Description;
@@ -230,7 +230,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!customerAccountDTO.HasErrors)
             {
                 await _channelService.AddCustomerAccountsAsync(customerDTO, savingsProductDTOs, investmentProductDTOs, null, GetServiceHeader());
-                Session["customerDTO"] = null;
+                TempData["SuccessMessage"] = "Successfully Created Customer Account for  " + customerDTO.FullName;
+
+                Session.Clear();
                 Session["customerAccountDTO"] = null;
                 Session["savingsProductDTOs"] = null;
                 Session["investmentProductDTOs"] = null;
