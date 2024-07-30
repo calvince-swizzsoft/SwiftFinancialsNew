@@ -2,11 +2,11 @@
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanDisbursementBatchDTO
 
 @{
-    ViewBag.Title = "Authorize Loan Disbursement Batch";
+    ViewBag.Title = "Loan Disbursement Batch Authorizeation";
 
     var priority = ViewBag.Priority as List<SelectListItem>;
     //var batchType = ViewBag.BatchType as List<SelectListItem>;
-
+    var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
     var disbursementType = ViewBag.DisbursementType as List<SelectListItem>;
     var category = ViewBag.Category as List<SelectListItem>;
 
@@ -45,7 +45,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>verify Loan Disbursement Batch</h2>
+                    <h2>Loan Disbursement Batch Authorizeation</h2>
                     <hr />
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -67,8 +67,8 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
                                         <div class="input-group">
-                                            @*<span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>*@
-                                            @Html.DropDownListFor(model => model.TypeDescription, disbursementType, new { @class = "form-control" ,@disabled= "disabled" })
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.TypeDescription, disbursementType, new { @class = "form-control input-md" })
                                             @Html.ValidationMessageFor(model => model.TypeDescription)
                                         </div>
                                     </div>
@@ -76,27 +76,36 @@
 
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PriorityDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "TypeDescription" } })
-                                        @Html.ValidationMessageFor(model => model.PriorityDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.PriorityDescription, priority, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.PriorityDescription)
+                                        </div>
                                     </div>
 
-
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Authorize" class="btn btn-primary" />
+                                    </div>
 
                                 </div>
 
                                 <div class="col-lg-4">
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.LoanProductCategoryDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.LoanProductCategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "LoanProductCategoryDescription" } })
-                                        @Html.ValidationMessageFor(model => model.LoanProductCategoryDescription, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.LoanProductCategoryDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.LoanProductCategoryDescription, category, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.LoanProductCategoryDescription)
+                                        </div>
+
                                     </div>
 
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "COA Name" } })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                         @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -106,18 +115,18 @@
                                         @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
+
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label col-md-2" })
-                                        @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "AuthorizationRemarks" } })
-                                        @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Type, new { @class = "control-label col-md-4" })
+                                        <div class="col-md-8">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Type, batchAuthOptions, new { @class = "form-control input-md" })
+                                            </div>
+                                            @Html.ValidationMessageFor(model => model.Type, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
-                                    <div class="form-group form-group-sm">
-
-
-                                    </div>
-                                    <div class="form-group form-group-sm">
-                                        <input type="submit" value="Authorize" class="btn btn-primary" />
-                                    </div>
+                                   
 
 
                                 </div>

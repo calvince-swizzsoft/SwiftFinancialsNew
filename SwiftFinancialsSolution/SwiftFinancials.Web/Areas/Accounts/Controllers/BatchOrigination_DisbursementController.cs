@@ -176,10 +176,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Verify(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
             loanDisbursementBatchDTO.ValidateAll();
-
+            int batchAuthOption = loanDisbursementBatchDTO.Type;
             if (!loanDisbursementBatchDTO.HasErrors)
             {
-                await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO,(int)BatchAuthOption.Post, GetServiceHeader());
+                await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());
 
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
@@ -212,6 +212,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(string.Empty);
             ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
+            ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(string.Empty);
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
 
@@ -225,18 +227,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Authorize(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
             /*var batchAuthOption = wireTransferBatchDTO.batch*/
-
+            int batchAuthOption = loanDisbursementBatchDTO.Type;
             loanDisbursementBatchDTO.ValidateAll();
 
 
 
             if (!loanDisbursementBatchDTO.HasErrors)
             {
-                await _channelService.AuthorizeLoanDisbursementBatchAsync(loanDisbursementBatchDTO,(int)BatchAuthOption.Post, 1, GetServiceHeader());
+                await _channelService.AuthorizeLoanDisbursementBatchAsync(loanDisbursementBatchDTO,batchAuthOption, 1, GetServiceHeader());
 
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
+                ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(loanDisbursementBatchDTO.Status.ToString());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.Type.ToString());
 
                 ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
                 TempData["SuccessMessage"] = "Authorize successfull";
