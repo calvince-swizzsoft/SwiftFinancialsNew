@@ -146,10 +146,10 @@
                             </div>
                         </div>`;
 
-                    $('td:eq(4)', nRow).html(dropdownHtml);
+                    $('td:eq(5)', nRow).html(dropdownHtml);
 
 
-                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(dt_Created);
                     //$('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
 
                     return nRow;
@@ -158,6 +158,7 @@
         "aoColumns": [
 
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "10%" },
+            { "mDataProp": "FullAccountNumber", "sTitle": "FullAccountNumber", "sWidth": "10%" },            
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "10%" },
             { "mDataProp": "BranchDescription", "sTitle": "BranchDescription", "sWidth": "15%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
