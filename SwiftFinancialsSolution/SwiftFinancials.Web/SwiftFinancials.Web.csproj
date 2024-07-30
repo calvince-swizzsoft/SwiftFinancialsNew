@@ -1095,6 +1095,8 @@
     <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

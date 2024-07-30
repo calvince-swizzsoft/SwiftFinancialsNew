@@ -125,6 +125,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
 
                 var expensePayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                if (expensePayable.ErrorMessageResult!=null)
+                {
+                    TempData["Error"] = expensePayable.ErrorMessageResult;
+                }
 
                 if (expensePayable != null)
                 {
@@ -158,7 +162,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
 
                 ViewBag.ExpensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, GetServiceHeader());
-
+                TempData["ExpensePayableEntryDTO"] = "";
+                TempData["ExpensePayableDTO"]= "";
+                ViewBag.ExpensePayableEntryDTOs = "";
 
                 return RedirectToAction("Index");
             }
@@ -253,7 +259,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             expensePayableDTO.ValidateAll();
 
-            var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
+            var expensePayableAuthOption = expensePayableDTO.Type;
 
             if (!expensePayableDTO.HasErrors)
             {
@@ -307,9 +313,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 var moduleNavigationItemCode = expensePayableDTO.ModuleNavigationItemCode;
 
-                await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, moduleNavigationItemCode, GetServiceHeader());
+                await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableDTO.Type, moduleNavigationItemCode, GetServiceHeader());
 
-                await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                //await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());

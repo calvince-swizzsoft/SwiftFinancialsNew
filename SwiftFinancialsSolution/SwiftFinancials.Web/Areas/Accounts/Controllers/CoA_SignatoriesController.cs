@@ -110,7 +110,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(customerAccountSignatoryDTO);
         }
         [HttpPost]
-        public async Task<ActionResult> Add(Guid? id, CustomerAccountSignatoryDTO customerAccountSignatoryDTO)
+        public async Task<ActionResult> Add(Guid? id, CustomerAccountSignatoryDTO customerAccountSignatoryDTO,CustomerAccountDTO customerAccountDTO)
         {
             await ServeNavigationMenus();
 
@@ -137,6 +137,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
             Session["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
+            if (Session["benefactorAccounts"] !=null)
+            {
+                customerAccountDTO= Session["benefactorAccounts"] as CustomerAccountDTO;
+            }
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerAccountSignatoryDTO.CustomerAccountCustomerType.ToString());
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
             ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
