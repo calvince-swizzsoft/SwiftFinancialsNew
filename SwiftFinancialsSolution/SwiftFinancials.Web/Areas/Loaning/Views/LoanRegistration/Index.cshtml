@@ -92,6 +92,11 @@
                 <div class="ibox-title">
                     <h2>Loan Cases</h2>
 
+
+                   
+
+
+
                     @if (TempData["AlertMessage"] != null)
                     {
                         <div class="alert alert-success">
@@ -206,7 +211,42 @@
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "20%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
+                "aaSorting": [[0, "desc"]],
+
+
+                // Code to print table data to CSV, pdf and Excel
+                "dom": "Bfrtip",
+                "buttons": [
+                    {
+                        extend: 'copy',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-clipboard"></i> Copy'
+                    },
+
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-table"></i> Excel'
+                    },
+
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF'
+                    },
+
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-file"></i> CSV'
+                    },
+
+                    {
+                        extend: 'print',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-print"></i> Print'
+                    },
+                ]
             });
         });
 
