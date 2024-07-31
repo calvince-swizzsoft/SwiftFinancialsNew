@@ -4,6 +4,8 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Collections.ObjectModel;
+
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
     public class StandingOrderDTO : BindingModelBase<StandingOrderDTO>
@@ -433,5 +435,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public DateTime CreatedDate { get; set; }
 
         public string ErrorMessageResult { get; set; }
+
+
+
+        public ObservableCollection<StandingOrderDTO> StandingOrders { get; set; }
     }
 }

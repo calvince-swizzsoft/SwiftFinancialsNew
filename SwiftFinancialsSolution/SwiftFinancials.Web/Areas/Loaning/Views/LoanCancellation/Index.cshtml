@@ -40,7 +40,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loaning</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -59,19 +59,13 @@
                 <div class="ibox-title">
                     <h2>Loan Cancellation</h2>
 
+                    @if (TempData["Cancel"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["Cancel"]
+                        </div>
+                    }
 
-                    <div id="tabs-container">
-                        <ul class="nav-tabs">
-                            <li>@Html.ActionLink("Appraise Loan", "Index", "AppraiseLoan")</li>
-                            <li>@Html.ActionLink("Approve Loan", "Index", "ApproveLoan")</li>
-                            <li>@Html.ActionLink("Verify Loan", "Index", "LoanVerification")</li>
-                            <li>@Html.ActionLink("Cancel Loan", "Index", "LoanCancellation")</li>
-                        </ul>
-                    </div>
-
-
-                    @*<hr />
-                        @Html.ActionLink("Register Loan", "Appraise", "AppraiseLoan", new { Area = "Loaning" }, new { @class = "btn btn-primary" })*@
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -139,26 +133,38 @@
                     var dt_ReceivedDate = $.datepicker.formatDate('dd/mm/yy', receivedDate) ;
                     aData.ReceivedDate = dt_ReceivedDate;
 
-                    var viewUrl = '<a  href="/loaning/LoanCancellation/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var cancelUrl = '<a  href="/loaning/LoanCancellation/appraise/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+                    var viewUrl = '<a  href="/loaning/LoanVerification/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var cancelUrl = '<a  href="/loaning/LoanCancellation/Cancel/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Cancel</a>';
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/loaning/LoanVerification/verify/${aData.Id}">Approve Loan</a>
+                            </div>
+                        </div>`;
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp; &nbsp;' + cancelUrl);
+                    $('td:eq(9)', nRow).html(dt_Created);
+                    $('td:eq(10)', nRow).html(cancelUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "5%" },
-                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%"},
-                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
-                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "5%"},
+                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "5%" },
+                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
+                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "5%" },
+                    { "mDataProp": "CustomerReference2", "sTitle": "Membership Number", "sWidth": "5%" },
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
+                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%" },
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%" },
+                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "40%", "bSortable": false }],
+                    { "mDataProp": "ApprovedDate", "sTitle": "Approved Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "15%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
         });

@@ -18,7 +18,7 @@ namespace Domain.MainBoundedContext.BackOfficeModule.Aggregates.LoanDisbursement
         {
             endDate = UberUtil.AdjustTimeSpan(endDate);
 
-            Specification<LoanDisbursementBatch> specification = new DirectSpecification<LoanDisbursementBatch>(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate && x.Status == status);
+            Specification<LoanDisbursementBatch> specification = new DirectSpecification<LoanDisbursementBatch>(x => x.CreatedDate >= startDate && x.CreatedDate <= endDate );
 
             if (!String.IsNullOrWhiteSpace(text))
             {

@@ -99,7 +99,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.InvestmentB
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.StandingOrderInvoker", "SwiftFinancials.StandingOrderInvoker\SwiftFinancials.StandingOrderInvoker.csproj", "{A156A23E-091A-4735-BE60-5BB9F38E7559}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.JournalReversalPosting", "SwiftFinancials.JournalReversalPosting\SwiftFinancials.JournalReversalPosting.csproj", "{BF6CED7D-633D-457E-B580-038CB6F3EDE4}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.JournalReversalBatchPosting", "SwiftFinancials.JournalReversalPosting\SwiftFinancials.JournalReversalBatchPosting.csproj", "{BF6CED7D-633D-457E-B580-038CB6F3EDE4}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SwiftFinancials.eStatementInvoker", "SwiftFinancials.eStatementInvoker\SwiftFinancials.eStatementInvoker.csproj", "{95E10A27-C4AB-49A6-8666-DDA898DE70F8}"
 EndProject

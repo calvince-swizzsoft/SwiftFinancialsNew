@@ -19,7 +19,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Authorize BatchOrigination_Disbursement", "Authorize", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create BatchOrigination_Disbursement", "Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
                     @if (TempData["SuccessMessage"] != null)
                     {
@@ -121,19 +121,65 @@
 
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
-
-                    var editUrl = '<a  href="/accounts/BatchOrigination_Disbursement/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/BatchOrigination_Disbursement/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var ApproveUrl = '<a  href="/accounts/BatchOrigination_Disbursement/Authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
-
                     $('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl+ '&nbsp;' + ApproveUrl);
+
+
+                    var status = aData.Status;  // Assuming aData.Status holds the status information
+
+                    var viewDisabled = status === '0' ? 'disabled' : '';
+                    var verifyDisabled = status === '2' ? 'disabled' : '';
+                    var authorizeDisabled = status === '2' ? 'disabled' : '';
+
+                    var dropdownHtml = `
+    <div class="dropdown">
+        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Actions
+        </button>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+            <a class="dropdown-item ${viewDisabled}" href="/Accounts/BatchOrigination_Disbursement/details/${aData.Id}">View</a>
+            <a class="dropdown-item ${verifyDisabled}" href="/Accounts/BatchOrigination_Disbursement/Verify/${aData.Id}">Verify</a>
+            <a class="dropdown-item ${authorizeDisabled}" href="/Accounts/BatchOrigination_Disbursement/Authorize/${aData.Id}">Authorize</a>
+        </div>
+    </div>`;
+
+                    $('td:eq(6)', nRow).html(dropdownHtml);
+
+                    // Prevent default action for disabled links
+                    $('.dropdown-item.disabled').on('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
+
+
+
+
+                    //var editUrl = '<a  href="/accounts/BatchOrigination_Disbursement/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    //var viewUrl = '<a  href="/accounts/BatchOrigination_Disbursement/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    //var ApproveUrl = '<a  href="/accounts/BatchOrigination_Disbursement/Authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
+                    //var VerifyUrl = '<a  href="/accounts/BatchOrigination_Disbursement/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
+
+
+                    //if (aData.Status == 0 || aData.Status == 1) {
+                    //    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;|&nbsp;' + editUrl + '|&nbsp;'+VerifyUrl);
+                    //}
+                    //else if (aData.Status == 8) {
+                    //    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;|&nbsp;Edit&nbsp;|&nbsp;VerifyUrl' + '&nbsp;|&nbsp;' + ApproveUrl);
+                    //}
+                    //else if (aData.RecordStatus == 3) {
+                    //    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;|&nbsp;Approve&nbsp;|&nbsp;Reject' + '&nbsp;|&nbsp;Disburse');
+                    //}
+                    //else if (aData.RecordStatus == 4) {
+                    //    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;|&nbsp;Approve&nbsp;|&nbsp;Reject&nbsp;|&nbsp;Disburse');
+                    //}
+                /* return*/
+
+                    //$('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + ApproveUrl + '&nbsp;' + VerifyUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "DebitTypeDescription", "sTitle": "Debit Type", "sWidth": "15%" },
+                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "15%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
                     { "mDataProp": "PriorityDescription", "sTitle": "Priority", "sWidth": "2%" },

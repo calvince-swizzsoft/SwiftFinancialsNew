@@ -16,7 +16,33 @@
         </ol>
     </div>
 </div>
+<style>
+    .dropdown-item {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
 
+        .dropdown-item:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .dropdown-item:active {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+</style>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -87,37 +113,48 @@
                     var valueDate = new Date(parseInt(aData.ValueDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + valueDate.getHours()).slice(-2);
                     var m = ("0" + valueDate.getMinutes()).slice(-2);
-                    var s = ("0" + valueDate.getSeconds()).slice(-2);                  
+                    var s = ("0" + valueDate.getSeconds()).slice(-2);
                     var dt_ValuedateCreated = $.datepicker.formatDate('dd/mm/yy', valueDate) + " " + h + ":" + m + ":" + s;
                     aData.ValueDate = dt_ValuedateCreated;
 
 
 
-                  
-                    var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+
+                    /*var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';*/
                     var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var approveUrl = '<a  href="/frontOffice/ExpensePayable/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
                     var verifyUrl = '<a  href="/frontOffice/ExpensePayable/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                  
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/frontOffice/ExpensePayable/verify/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/frontOffice/ExpensePayable/approve/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+
+                    $('td:eq(6)', nRow).html(dropdownHtml);
 
 
                     $('td:eq(2)', nRow).html(dt_ValuedateCreated);
-                    $('td:eq(5)', nRow).html(dt_Created);                   
-                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + verifyUrl + '&nbsp;' + approveUrl);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                  //  $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' /*+ editUrl + '&nbsp;'*/ + verifyUrl + '&nbsp;' + approveUrl);
                  //   $('td:eq(9)', nRow).html(verifyUrl + '&nbsp;' + verifyUrl);
 
-                    
+
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "8%"},
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
-                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "8%"},
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "4%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "4%"},
+                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "10%"},
+                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "40%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10 %", "bSortable": false }],
 
                 "aaSorting": [[0, "desc"]]
         });

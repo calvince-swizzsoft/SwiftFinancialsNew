@@ -38,6 +38,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
+        public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
+
         public ObservableCollection<GraduatedScaleDTO> TiersDTOs;
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorsDTO;
@@ -1555,9 +1557,9 @@ namespace SwiftFinancials.Web.Controllers
             disbursementType.AddRange(items);
 
             return disbursementType;
-        }  
-        
-        
+        }
+       
+
         [NonAction]
         protected List<SelectListItem> GetBatchStatusTypeSelectList(string selectedValue)
         {

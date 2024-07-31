@@ -40,7 +40,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loan Origination</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -148,7 +148,7 @@
 
                     //$('td:eq(4)', nRow).html(dt_ReceivedDate);
                     $('td:eq(9)', nRow).html(dt_Created);
-                    $('td:eq(10)', nRow).html(dropdownHtml);
+                    $('td:eq(10)', nRow).html(verifyUrl);
 
                     return nRow;
                 },

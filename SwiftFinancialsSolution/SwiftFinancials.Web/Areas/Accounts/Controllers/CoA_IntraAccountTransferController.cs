@@ -14,7 +14,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class CoA_SignatoriesController : MasterController
+    public class CoA_IntraAccountTransferController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -62,7 +62,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> Create(Guid? id, CustomerAccountSignatoryDTO customerAccountSignatoryDTO)
+        public async Task<ActionResult> Create(Guid? id, InterAccountTransferBatchDTO customerAccountSignatoryDTO)
         {
             await ServeNavigationMenus();
 
@@ -100,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 customerAccountSignatoryDTO.CustomerAccountId = benefactorAccounts.Id;
                 customerAccountSignatoryDTO.Customers = benefactorAccounts;
                 //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
-                customerAccountSignatoryDTO.Salutation = benefactorAccounts.CustomerIndividualSalutation;
+                customerAccountSignatoryDTO.CustomerAccountCustomerIndividualFirstName = benefactorAccounts.CustomerFullName;
                 //customerAccountSignatoryDTO.AddressEmail = benefactorAccounts.CustomerAddressEmail;
 
 
@@ -109,47 +109,47 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             Session["benefactorAccounts"] = benefactorAccounts;
             return View(customerAccountSignatoryDTO);
         }
-        [HttpPost]
-        public async Task<ActionResult> Add(Guid? id, CustomerAccountSignatoryDTO customerAccountSignatoryDTO,CustomerAccountDTO customerAccountDTO)
-        {
-            await ServeNavigationMenus();
+        //[HttpPost]
+        //public async Task<ActionResult> Add(Guid? id, InterAccountTransferBatchDTO customerAccountSignatoryDTO, CustomerAccountDTO customerAccountDTO)
+        //{
+        //    await ServeNavigationMenus();
 
-            customerAccountSignatoryDTOs = TempData["customerAccountSignatoryDTO"] as ObservableCollection<CustomerAccountSignatoryDTO>;
+        //    customerAccountSignatoryDTOs = TempData["customerAccountSignatoryDTO"] as ObservableCollection<CustomerAccountSignatoryDTO>;
 
-            if (customerAccountSignatoryDTOs == null)
-                customerAccountSignatoryDTOs = new ObservableCollection<CustomerAccountSignatoryDTO>();
+        //    if (customerAccountSignatoryDTOs == null)
+        //        customerAccountSignatoryDTOs = new ObservableCollection<CustomerAccountSignatoryDTO>();
 
-            foreach (var Signatory in customerAccountSignatoryDTO.customerAccountSignatoryDTOs)
-            {
-                Signatory.Id = customerAccountSignatoryDTO.Id;
-                Signatory.FirstName = customerAccountSignatoryDTO.FirstName;
-                Signatory.LastName = Signatory.LastName;
-                Signatory.AddressAddressLine1 = Signatory.AddressAddressLine1;
-                Signatory.AddressAddressLine2 = Signatory.AddressAddressLine2;
-                Signatory.AddressCity = Signatory.AddressCity;
-                Signatory.AddressEmail = Signatory.AddressEmail;
-                Signatory.AddressMobileLine = Signatory.AddressMobileLine;
-                Signatory.Relationship = Signatory.Relationship;
-                customerAccountSignatoryDTOs.Add(Signatory);
-            };
+        //    foreach (var Signatory in customerAccountSignatoryDTO.customerAccountSignatoryDTOs)
+        //    {
+        //        Signatory.Id = customerAccountSignatoryDTO.Id;
+        //        Signatory.FirstName = customerAccountSignatoryDTO.CustomerAccountCustomerFullName;
+        //        Signatory.LastName = Signatory.LastName;
+        //        Signatory.AddressAddressLine1 = Signatory.AddressAddressLine1;
+        //        Signatory.AddressAddressLine2 = Signatory.AddressAddressLine2;
+        //        Signatory.AddressCity = Signatory.AddressCity;
+        //        Signatory.AddressEmail = Signatory.AddressEmail;
+        //        Signatory.AddressMobileLine = Signatory.AddressMobileLine;
+        //        Signatory.Relationship = Signatory.Relationship;
+        //        customerAccountSignatoryDTOs.Add(Signatory);
+        //    };
 
-            TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
+        //    TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
 
-            TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
-            Session["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
-            if (Session["benefactorAccounts"] !=null)
-            {
-                customerAccountDTO= Session["benefactorAccounts"] as CustomerAccountDTO;
-            }
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerAccountSignatoryDTO.CustomerAccountCustomerType.ToString());
-            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
-            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
-            ViewBag.SalutationSelectList = GetSalutationSelectList(customerAccountSignatoryDTO.Salutation.ToString());
-            ViewBag.GenderSelectList = GetGenderSelectList(customerAccountSignatoryDTO.Gender.ToString());
-            ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerAccountSignatoryDTO.Relationship.ToString());
-            
-            return View("Create");
-        }
+        //    TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
+        //    Session["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
+        //    if (Session["benefactorAccounts"] != null)
+        //    {
+        //        customerAccountDTO = Session["benefactorAccounts"] as CustomerAccountDTO;
+        //    }
+        //    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerAccountSignatoryDTO.CustomerAccountCustomerType.ToString());
+        //    ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
+        //    ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
+        //    ViewBag.SalutationSelectList = GetSalutationSelectList(customerAccountSignatoryDTO.Salutation.ToString());
+        //    ViewBag.GenderSelectList = GetGenderSelectList(customerAccountSignatoryDTO.Gender.ToString());
+        //    ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerAccountSignatoryDTO.Relationship.ToString());
+
+        //    return View("Create");
+        //}
 
         [HttpPost]
         public async Task<ActionResult> Create(CustomerAccountSignatoryDTO customerBindingModel)
