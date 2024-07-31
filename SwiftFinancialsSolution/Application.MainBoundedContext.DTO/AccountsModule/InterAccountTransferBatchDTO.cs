@@ -192,5 +192,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public CustomerAccountDTO Customers { get; set; }
+        public InterAccountTransferBatchEntryDTO interAccountTransferBatch { get; set; }
     }
 }

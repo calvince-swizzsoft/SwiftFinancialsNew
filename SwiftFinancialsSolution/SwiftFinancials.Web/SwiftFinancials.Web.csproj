@@ -329,6 +329,7 @@
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_ChequeBooksController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_SignatoriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -1095,8 +1096,8 @@
     <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Verify.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_IntraAccountTransfer\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
