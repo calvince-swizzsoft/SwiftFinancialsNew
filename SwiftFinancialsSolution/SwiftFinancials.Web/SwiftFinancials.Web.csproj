@@ -430,6 +430,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanRequestController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanRestructuringController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\RepaymentScheduleController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
@@ -1578,6 +1579,7 @@
     <Folder Include="Areas\HumanResource\Views\PeriodClosing\" />
     <Folder Include="Areas\Loaning\Data\" />
     <Folder Include="Areas\Loaning\Views\AddCollateral\" />
+    <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
     <Folder Include="Areas\Reports\Controllers\" />
