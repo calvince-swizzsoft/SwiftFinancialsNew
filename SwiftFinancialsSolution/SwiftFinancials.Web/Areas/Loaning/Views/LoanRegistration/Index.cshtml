@@ -1,6 +1,9 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
+
 @{
     ViewBag.Title = "Loan Cases";
+
+    var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
 }
 
 
@@ -93,10 +96,6 @@
                     <h2>Loan Cases</h2>
 
 
-                   
-
-
-
                     @if (TempData["AlertMessage"] != null)
                     {
                         <div class="alert alert-success">
@@ -116,6 +115,32 @@
                     </div>
                 </div>
                 <div class="ibox-content">
+                    @*<div class="row">
+                        <div class="col-lg-3">
+                            <div class="form-group form-group-lg">
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.filterText, LoanCaseFilter, new { @class = "form-control input-md" })
+                                    @Html.ValidationMessageFor(model => model.filterText)
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 form-group">
+                            <div class="form-group form-group-lg" style="border-radius:10px;">
+                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Enter filter text..." } })
+                                @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3">
+                            @using (Html.BeginForm("index", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post))
+                            {
+                                <input type="submit" class="btn btn-primary" value="Refresh" style="width: 70px; border-radius: 10px;" />
+                            }
+                        </div>
+                    </div>*@
+
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
@@ -190,6 +215,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
+                                <a class="dropdown-item" href="/loaning/attachguarantor/repaymentSchedule/${aData.Id}">Repayment Schedule</a>
                             </div>
                         </div>`;
 
@@ -199,6 +225,7 @@
 
                     return nRow;
                 },
+
                 // Display settings
                 "aoColumns": [
                     { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
@@ -214,39 +241,40 @@
                 "aaSorting": [[0, "desc"]],
 
 
+
                 // Code to print table data to CSV, pdf and Excel
-                "dom": "Bfrtip",
-                "buttons": [
-                    {
-                        extend: 'copy',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-clipboard"></i> Copy'
-                    },
+                //"dom": "Bfrtip",
+                //"buttons": [
+                //    {
+                //        extend: 'copy',
+                //        className: 'btn btn-light rounded-0',
+                //        text: '<i class="fa fa-clipboard"></i> Copy'
+                //    },
 
-                    {
-                        extend: 'excel',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-table"></i> Excel'
-                    },
+                //    {
+                //        extend: 'excel',
+                //        className: 'btn btn-light rounded-0',
+                //        text: '<i class="fa fa-table"></i> Excel'
+                //    },
 
-                    {
-                        extend: 'pdf',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-file-pdf-o"></i> PDF'
-                    },
+                //    {
+                //        extend: 'pdf',
+                //        className: 'btn btn-light rounded-0',
+                //        text: '<i class="fa fa-file-pdf-o"></i> PDF'
+                //    },
 
-                    {
-                        extend: 'csv',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-file"></i> CSV'
-                    },
+                //    {
+                //        extend: 'csv',
+                //        className: 'btn btn-light rounded-0',
+                //        text: '<i class="fa fa-file"></i> CSV'
+                //    },
 
-                    {
-                        extend: 'print',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-print"></i> Print'
-                    },
-                ]
+                //    {
+                //        extend: 'print',
+                //        className: 'btn btn-light rounded-0',
+                //        text: '<i class="fa fa-print"></i> Print'
+                //    },
+                //],
             });
         });
 
