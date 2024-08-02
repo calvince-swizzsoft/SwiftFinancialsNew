@@ -9,7 +9,7 @@ namespace SwiftFinancials.Web.Identity
     {
         public static Guid GetCompanyId(this IIdentity identity)
         {
-            var claim = ((ClaimsIdentity)identity).FindFirst(ApplicationUserProperties.CompanyId);
+            var claim = ((ClaimsIdentity)identity).FindFirst(ApplicationUserProperties.BranchId);
 
             if (claim != null)
             {
