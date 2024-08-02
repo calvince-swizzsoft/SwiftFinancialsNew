@@ -103,7 +103,7 @@
                                     @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
                                 </div>
 
-                                
+
                             </div>
 
                             <div class="col-3">
@@ -120,7 +120,7 @@
                                     @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
                                     @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
                                 </div>
-                                
+
                             </div>
 
                             <div class="col-3">
@@ -146,27 +146,26 @@
                             </div>
                         </div>
 
+                        <br />
 
-                        <ul class="nav nav-tabs" style="margin-bottom: 20px;" id="myTab">
-
+                        <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
                             <li class="nav-item">
                                 <a class="nav-link" href="#IndividualParticulars" data-toggle="tab"> Individual Particulars </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="#address" data-toggle="tab">Address</a>
-                            </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link " href="#Referees" data-toggle="tab">Referees</a>
+                                <a class="nav-link" href="#address" data-toggle="tab">Address</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="#CreditTypes" data-toggle="tab">Credit Types</a>
+                                <a class="nav-link" href="#Referees" data-toggle="tab">Referees</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="#DebitTypes" data-toggle="tab">Debit Types</a>
+                                <a class="nav-link" href="#CreditTypes" data-toggle="tab">Credit Types</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link " href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
+                                <a class="nav-link" href="#DebitTypes" data-toggle="tab">Debit Types</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link" href="#SavingsProducts" data-toggle="tab"> Savings Products</a>
@@ -179,10 +178,9 @@
                             </li>
                         </ul>
 
+
                         <div class="tab-content">
                             <div id="address" class="tab-pane fade" role="tabpanel">
-
-
                                 <div class="tab-content">
                                     <div id="address" class="tab-pane fade show active" role="tabpanel">
                                         <h1>Address</h1>
@@ -289,7 +287,7 @@
                                             @Html.ValidationMessageFor(model => model.IndividualEmploymentDesignation, "", new { @class = "text-danger" })
                                         </div>
 
-                                        
+
                                     </div>
 
                                     <div class="col-4">
@@ -343,7 +341,7 @@
                                             </div>
                                         </div>
 
-                                        
+
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.IndividualLastName, htmlAttributes: new { @class = "" })
@@ -409,7 +407,7 @@
                             </div>
                         </div>
 
-                       
+
 
 
 
@@ -484,7 +482,7 @@
     <script>
         $(document).ready(function () {
 
-            
+
 
             $('#data_3 .input-group.date').datepicker({
                 startView: 2,
