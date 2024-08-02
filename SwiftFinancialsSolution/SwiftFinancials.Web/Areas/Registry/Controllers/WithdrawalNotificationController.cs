@@ -86,7 +86,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 withdrawalNotificationDTO.CustomerStationDescription = customer.StationDescription;
                 withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
             }
-
+            //var k = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync();
             return View(withdrawalNotificationDTO);
         }
 
