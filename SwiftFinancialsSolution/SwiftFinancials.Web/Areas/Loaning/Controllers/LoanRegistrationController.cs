@@ -703,6 +703,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
+            loanCaseDTO.ReceivedDate = DateTime.Today;
 
             // Loanee
             loanCaseDTO.CustomerId = (Guid)Session["CustomerId"];

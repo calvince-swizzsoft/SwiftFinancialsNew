@@ -211,7 +211,7 @@ namespace SwiftFinancials.Web.Controllers
                         OtherNames = user.OtherNames,
                         Email = user.Email,
                         PhoneNumber = user.PhoneNumber,
-                        CompanyId = user.CompanyId,
+                        BranchId = user.BranchId,
                         CustomerId = user.CustomerId,
                     };
 
@@ -352,7 +352,7 @@ namespace SwiftFinancials.Web.Controllers
                         OtherNames = applicationUser.OtherNames,
                         Email = applicationUser.Email,
                         PhoneNumber = applicationUser.PhoneNumber,
-                        CompanyId = applicationUser.CompanyId,
+                        BranchId = applicationUser.BranchId,
                         CustomerId = applicationUser.CustomerId,
                         Provider = sendCodeViewModel.SelectedProvider
                     };

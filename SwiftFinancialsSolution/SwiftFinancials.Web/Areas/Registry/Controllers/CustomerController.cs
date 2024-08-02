@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
@@ -86,6 +87,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             customerBindingModel.RegistrationDate = DateTime.ParseExact((Request["registrationdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             customerBindingModel.IndividualEmploymentDate = DateTime.ParseExact((Request["employmentdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            customerBindingModel.BranchId =(Guid) userDTO.BranchId;
 
             customerBindingModel.ValidateAll();
 

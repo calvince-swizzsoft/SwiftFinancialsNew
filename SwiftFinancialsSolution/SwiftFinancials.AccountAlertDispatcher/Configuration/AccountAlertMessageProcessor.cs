@@ -79,7 +79,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                     if (userDTO != null)
                                     {
-                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.CompanyId, serviceHeader);
+                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.BranchId, serviceHeader);
 
                                         #region Email Alert
 
@@ -103,7 +103,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                             EmailAlertDTO emailAlertDTO = new EmailAlertDTO
                                             {
-                                                CompanyId = userDTO.CompanyId.Value,
+                                                CompanyId = userDTO.BranchId.Value,
                                                 MailMessageFrom = companyDTO.AddressEmail,
                                                 MailMessageTo = userDTO.Email,
                                                 MailMessageSubject = "Account Registration",
@@ -132,7 +132,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                     if (userDTO != null)
                                     {
-                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.CompanyId, serviceHeader);
+                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.BranchId, serviceHeader);
 
                                         switch ((TwoFactorProviders)queueDTO.Provider)
                                         {
@@ -158,7 +158,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                                     TextAlertDTO textAlertDTO = new TextAlertDTO
                                                     {
-                                                        CompanyId = userDTO.CompanyId.Value,
+                                                        CompanyId = userDTO.BranchId.Value,
                                                         TextMessageBody = textResult,
                                                         TextMessageRecipient = userDTO.PhoneNumber,
                                                         TextMessageDLRStatus = (int)DLRStatus.Pending,
@@ -196,7 +196,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                                     EmailAlertDTO emailAlertDTO = new EmailAlertDTO
                                                     {
-                                                        CompanyId = userDTO.CompanyId.Value,
+                                                        CompanyId = userDTO.BranchId.Value,
                                                         MailMessageFrom = companyDTO.AddressEmail,
                                                         MailMessageTo = userDTO.Email,
                                                         MailMessageSubject = "Account Verification",
@@ -228,7 +228,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                     if (userDTO != null)
                                     {
-                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.CompanyId, serviceHeader);
+                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.BranchId, serviceHeader);
 
                                         #region Email Alert
 
@@ -250,7 +250,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                             EmailAlertDTO emailAlertDTO = new EmailAlertDTO
                                             {
-                                                CompanyId = userDTO.CompanyId.Value,
+                                                CompanyId = userDTO.BranchId.Value,
                                                 MailMessageFrom = companyDTO.AddressEmail,
                                                 MailMessageTo = userDTO.Email,
                                                 MailMessageSubject = "Reset Password",

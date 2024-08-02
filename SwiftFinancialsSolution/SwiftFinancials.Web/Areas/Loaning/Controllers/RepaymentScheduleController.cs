@@ -15,23 +15,23 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
-    public class RepaymentScheduleController : Controller
+    public class RepaymentScheduleController : MasterController
     {
-        //public async Task<ActionResult> Index()
-        //{
-        //    await ServeNavigationMenus();
+        public async Task<ActionResult> Index()
+        {
+            await ServeNavigationMenus();
 
-        //    return View();
-        //}
+            return View();
+        }
 
 
-        //[HttpPost]
-        //public async Task<ActionResult> Index()
-        //{
-        //    await ServeNavigationMenus();
+        [HttpPost]
+        public async Task<ActionResult> Schedule()
+        {
+            await ServeNavigationMenus();
 
-        //    return View();
-        //}
+            return View();
+        }
 
 
     }
