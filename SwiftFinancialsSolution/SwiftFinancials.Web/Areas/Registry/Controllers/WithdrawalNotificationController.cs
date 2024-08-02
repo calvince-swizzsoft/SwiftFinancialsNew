@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using System.Web.Services;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -345,13 +346,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, 1, GetServiceHeader());
+                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, (int)MembershipWithdrawalSettlementOption.Settle, 1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = withdrawalNotificationDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(withdrawalNotificationDTO.SettlementType.ToString());
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(withdrawalNotificationDTO.Category.ToString());
                 return View(withdrawalNotificationDTO);
             }
