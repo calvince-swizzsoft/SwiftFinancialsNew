@@ -20,11 +20,11 @@ namespace Application.MainBoundedContext.DTO.MessagingModule
 
         [DataMember]
         [Display(Name = "Company")]
-        public Guid? CompanyId { get; set; }
+        public Guid? BranchCompanyId { get; set; }
 
         [DataMember]
         [Display(Name = "Company")]
-        public string CompanyDescription { get; set; }
+        public string BranchCompanyDescription { get; set; }
 
         [DataMember]
         [Display(Name = "Branch")]

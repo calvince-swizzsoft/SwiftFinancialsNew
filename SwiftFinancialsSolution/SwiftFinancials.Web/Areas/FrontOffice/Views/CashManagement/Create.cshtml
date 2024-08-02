@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.FiscalCountDTO 
+﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.FiscalCountDTO
 
 @{
     /**/
@@ -12,10 +12,11 @@
 
 }
 
-@using (Html.BeginForm("Search", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Get))
-{
-    TempData["Remarks"] = "HAM";
-}
+@*@using (Html.BeginForm("Search", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Get))
+    {
+        TempData["Remarks"] = "HAM";
+    }*@
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -45,190 +46,164 @@
     </div>
 }
 <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
                     @using (Html.BeginForm("Create", "CashManagement", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+                            <!-- Main Tabs -->
+                            <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#cashManagement">Cash Management</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#cashWithdrawalRequest">Cash Withdrawal Request</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#fiscalCatalog">Fiscal Catalog</a>
+                                </li>
+                            </ul>
 
-                            <fieldset>
+                            <div class="tab-content">
+                                <!-- Cash Management Tab -->
+                                <div id="cashManagement" class="tab-pane active">
+                                    <!-- Inner Tabs for Cash Management -->
+                                    <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" data-toggle="tab" href="#transaction">Transaction</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" data-toggle="tab" href="#treasuryGLAccountStatement">Treasury G/L Account Statement</a>
+                                        </li>
+                                    </ul>
 
-                                <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="tab-content">
+                                        <div id="transaction" class="tab-pane active">
+                                            <div class="form-group row">
+                                                @Html.LabelFor(model => model.TransactionType, htmlAttributes: new { @class = "col-sm-2 col-form-label" })
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i class="fa fa-bars fa-fw"></i></span>
+                                                        </div>
+                                                        @Html.DropDownListFor(model => model.TransactionType, treasuryTransactionTypes, new { @id = "TransactionType", @class = "form-control input-md" })
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.TransactionType)
+                                                </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TransactionType, htmlAttributes: new { @class = "" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.TransactionType, treasuryTransactionTypes, new { @id = "TransactionType", @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.TransactionType)
+                                                <label class="col-sm-2 col-form-label">Total Amount:</label>
+                                                <div class="col-sm-4">
+                                                    @Html.TextBoxFor(model => model.TotalAmount, new { @class = "form-control", @readonly = "readonly", Value = "£1,536,260.00" })
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Reference:</label>
+                                                <div class="col-sm-4">
+                                                    @Html.TextBoxFor(model => model.Reference, new { @class = "form-control", placeholder = "Chq-000001" })
+                                                </div>
+
+                                                <label class="col-sm-2 col-form-label">Teller:</label>
+                                                <div class="col-sm-4">
+                                                    <div class="input-group">
+                                                        @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter teller..." })
+                                                        <div class="input-group-append">
+                                                            <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#tellerLookupModal">
+                                                                <i class="fa fa-search"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.TotalAmount, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.TotalAmount, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Amount", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.TotalAmount, "", new { @class = "text-danger" })
+                                        <div id="treasuryGLAccountStatement" class="tab-pane">
+                                            <!-- Content for Treasury G/L Account Statement tab -->
                                         </div>
-
-                                    </div>
-
-
-                                    <div class="col-lg-4">
-
-                                        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-                                        <script>
-                                            $(document).ready(function () {
-                                                $('#Description').blur(function () {
-                                                    var description = $(this).val();
-                                                    if (description.trim() === "") {
-                                                        $(this).addClass('is-invalid');
-                                                        $('#description-error').text('Description cannot be empty');
-                                                    } else {
-                                                        $(this).removeClass('is-invalid');
-                                                        $('#description-error').text('');
-                                                    }
-                                                });
-                                            });
-                                        </script>
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @id = "Description", @class = "form-control", @placeholder = "Description", disabled = "disabled" } })
-                                            @Html.HiddenFor(model => model.Description)
-                                            @Html.HiddenFor(model => model.PostingPeriodId)
-                                            @Html.HiddenFor(model => model.BranchDescription)
-                                            @Html.HiddenFor(model => model.TellerDescription)
-                                            @Html.HiddenFor(model => model.TreasuryDescription)
-                                            @Html.HiddenFor(model => model.TellerId)
-                                            @Html.HiddenFor(model => model.TreasuryId)
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            <div id="description-error" class="text-danger"></div>
-                                        </div>
-
-
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "Remark", @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                        </div>
-
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <!-- Denominations form starts from here -->
-                                    <meta charset="UTF-8">
-                                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                                    <style>
-                                        label {
-                                            display: block;
-                                            margin-bottom: 8px;
-                                        }
-
-                                        #denominationForm {
-                                            display: list-item; /* Hide the form by default */
-                                        }
-                                    </style>
-
-                                    <script>
-                                        // Define denominations and their values
-                                        const denominations = {
-                                            "Thousands": 1000,
-                                            "Five Hundreds": 500,
-                                            "Two Hundreds": 200,
-                                            "Hundreds": 100,
-                                            "20 Shillings": 20,
-                                            "10 Shillings": 10,
-                                            "5 Shillings": 5,
-                                            "1 Shilling": 1,
-                                            "50 Cents": 0.50
-                                        };
-
-                                        function toggleForm() {
-                                            var form = document.getElementById('denominationForm');
-                                            form.style.display = form.style.display === 'none' ? 'block' : 'none';
-                                        }
-
-                                        function calculateTotal() {
-                                            var total = 0;
-
-                                            // Calculate total based on denominations
-                                            for (const denomination in denominations) {
-                                                const value = denominations[denomination];
-                                                const input = document.getElementById(denomination.replace(/\s+/g, '_').toLowerCase());
-                                                const amount = parseInt(input.value) || 0;
-                                                total += amount * value;
-                                            }
-
-                                            // Update breakdown
-                                            document.getElementById('totalBreakdown').innerHTML = "Total: " + total + " KES";
-                                        }
-                                    </script>
-
-                                    <button onclick="toggleForm()">Denominations Form</button>
-                                    <div class="col-lg-6" id="denominationForm">
-                                        <h2>Enter Amount in Kenyan Shillings</h2>
-
-                                        <form action="#" method="post">
-                                            <!-- Your form content here, dynamically generated based on denominations -->
-                                            <script>
-                                                // Generate input fields dynamically based on denominations
-                                                for (const denomination in denominations) {
-                                                    document.write('<label for="' + denomination.replace(/\s+/g, '_').toLowerCase() + '">' + denomination + ':</label>');
-                                                    document.write('<input type="number" id="' + denomination.replace(/\s+/g, '_').toLowerCase() + '" name="' + denomination.replace(/\s+/g, '_').toLowerCase() + '" min="0" step="1" oninput="calculateTotal()">');
-                                                }
-                                            </script>
-
-                                            <h3>Total Currency</h3>
-                                            <p id="totalBreakdown">Total: 0 KES</p>
-                                        </form>
-                                    </div>
-                                    <!-- The lookup ends here -->
-                                </div>
-
-
-
-
-                                <div class="row">
-
-                                    <div class="form-group form-group-sm">
-                                        <div class="col-md-offset-2">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                <!-- Cash Withdrawal Request Tab -->
+                                <div id="cashWithdrawalRequest" class="tab-pane">
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Savings Account #:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.SavingsProduct.ChartOfAccountName, new { @class = "form-control", placeholder = "Enter Text..." })
                                         </div>
-
-
+                                        <label class="col-sm-2 col-form-label">Customer:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
                                     </div>
 
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Account Product:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.SavingsProduct.Description, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                        <label class="col-sm-2 col-form-label">Payroll Numbers:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.Teller.FloatCustomerAccountCustomerSerialNumber, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Account Remarks:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                        <label class="col-sm-2 col-form-label">Reference 1:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Amount:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.SavingsProduct.WithdrawalNoticeAmount, new { @class = "form-control", @Value = "$0.00" })
+                                        </div>
+                                        <label class="col-sm-2 col-form-label">Remarks:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.TellerDescription, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Identity Card #:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference1, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                        <label class="col-sm-2 col-form-label">Reference 2:</label>
+                                        <div class="col-sm-4">
+                                            @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference2, new { @class = "form-control", placeholder = "Enter Text..." })
+                                        </div>
+                                    </div>
                                 </div>
 
+                                <!-- Fiscal Catalog Tab -->
+                                <div id="fiscalCatalog" class="tab-pane">
+                                    <!-- Content for Fiscal Catalog tab -->
+                                </div>
+                            </div>
 
-                            </fieldset>
-
+                            <div class="form-group row" style="margin-top: 20px;">
+                                <div class="col-sm-12 text-right">
+                                    <button type="submit" class="btn btn-primary">Create</button>
+                                </div>
+                            </div>
                         </div>
                     }
                 </div>
-
             </div>
-
         </div>
     </div>
 </div>
@@ -402,7 +377,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
+    <script>
         $(document).ready(function () {
             var selectedValue = localStorage.getItem('selectedTransactionType'); // Get selected value from local storage
             var modalShown = false; // Flag to track if modal has been shown for the selected value
@@ -871,7 +846,7 @@ $(".lookup-btn").click(function() {
 
 
 
-</script>
+    </script>
 }
 
 

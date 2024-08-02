@@ -2,6 +2,41 @@
     ViewBag.Title = "Credit Batch";
 }
 
+<style>
+    .links {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .nav a {
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+
+            .nav a:hover {
+                background-color: #0056b2;
+            }
+
+    .row-center {
+        display: flex;
+        align-items: center;
+    }
+
+    .ibox-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Accounts</h1>
@@ -16,13 +51,30 @@
     </div>
 </div>
 
+<div class="row row-center">
+    <div class="col-lg-2">
+        <h1>Credit Batch</h1>
+    </div>
+    <div class="col-lg-10">
+        <div class="nav">
+            <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="btn btn-info">Voucher</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="btn btn-info">Credit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="btn btn-info">Debit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="btn btn-info">Refund Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="btn btn-info">Disbursement Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="btn btn-info">Wire Transfer Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">General Ledger Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">Inter Account Transfer Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="btn btn-info">Reversal Batch</a>
+        </div>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Credit Batch</h2>
-                    <hr />
                     @Html.ActionLink("Create Credit Batch", "Create", "BatchOrigination_Credit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -42,20 +94,16 @@
                         <table id="creditBatchesGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
-                                    <td colspan="7" class="dataTables_empty">
-                                        Loading data from server
-                                    </td>
+                                    <td colspan="7" class="dataTables_empty">Loading data from server</td>
                                 </tr>
                             </tbody>
                         </table>
-
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -100,55 +148,44 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
-
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#creditBatchesGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    // Generate dropdown HTML with conditional logic based on status
                     var dropdownHtml = `
-        <div class="dropdown">
-            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Action
-            </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    // Buttons to be included
                     var viewButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/details/${aData.Id}">View</a>`;
                     var editButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/edit/${aData.Id}">Edit</a>`;
                     var verifyButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/Verify/${aData.Id}">Verify</a>`;
                     var authorizeButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Credit/Authorize/${aData.Id}">Authorize</a>`;
 
-                    // Conditional logic for button enabling/disabling based on status
                     switch (aData.Status) {
-                        case 1: // Pending
+                        case 1:
                             dropdownHtml += viewButton + editButton + verifyButton + authorizeButton;
                             break;
-                        case 8: // Audited
+                        case 8:
                             dropdownHtml += viewButton + authorizeButton;
                             break;
-                        case 2: // Posted
+                        case 2:
                             dropdownHtml += viewButton;
                             break;
-                        // If the status is 4 (Rejected) or any other status, only "View" button will be enabled
                         default:
                             dropdownHtml += viewButton;
                             break;
@@ -156,13 +193,11 @@
 
                     dropdownHtml += `</div></div>`;
 
-                    $('td:eq(9)', nRow).html(dt_Created);
-                    $('td:eq(10)', nRow).html(dropdownHtml);
+                    $('td:eq(8)', nRow).html(dt_Created);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
                     return nRow;
                 },
-
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "8%" },
                     { "mDataProp": "PaddedBatchNumber", "sTitle": "Batch Number", "sWidth": "8%" },
@@ -172,11 +207,11 @@
                     { "mDataProp": "MonthDescription", "sTitle": "Month ", "sWidth": "8%" },
                     { "mDataProp": "Reference", "sTitle": "Reference ", "sWidth": "8%" },
                     { "mDataProp": "TotalValue", "sTitle": "Total Value ", "sWidth": "8%" },
-                    { "mDataProp": "CreditTypeDescription", "sTitle": "Credit Type", "sWidth": "8%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "8%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "5%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
@@ -186,6 +221,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
-

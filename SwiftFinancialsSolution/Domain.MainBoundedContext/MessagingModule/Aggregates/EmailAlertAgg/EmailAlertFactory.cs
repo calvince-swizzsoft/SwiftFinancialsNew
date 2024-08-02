@@ -11,7 +11,7 @@ namespace Domain.MainBoundedContext.MessagingModule.Aggregates.EmailAlertAgg
 
             emailAlert.GenerateNewIdentity();
 
-            emailAlert.CompanyId = (companyId != null && companyId != Guid.Empty) ? companyId : null;
+            emailAlert.BranchId = (companyId != null && companyId != Guid.Empty) ? companyId : null;
 
             emailAlert.MailMessage = mailMessage;
 

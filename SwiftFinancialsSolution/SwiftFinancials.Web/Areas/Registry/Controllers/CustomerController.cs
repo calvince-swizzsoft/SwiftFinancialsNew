@@ -32,6 +32,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             int searchRecordCount = 0;
 
+
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
@@ -126,7 +128,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                     ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
                     ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
 
-                    return View("Create", customerBindingModel);
+               
+
+                    return View("index", customerBindingModel);
                 }
                 TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
                 return RedirectToAction("Index");

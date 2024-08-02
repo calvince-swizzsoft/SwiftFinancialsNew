@@ -2,6 +2,41 @@
     ViewBag.Title = "Reversal Journal";
 }
 
+<style>
+    .links {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .nav a {
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+
+            .nav a:hover {
+                background-color: #0056b2;
+            }
+
+    .row-center {
+        display: flex;
+        align-items: center;
+    }
+
+    .ibox-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Accounts</h1>
@@ -15,7 +50,24 @@
         </ol>
     </div>
 </div>
-
+<div class="row row-center">
+    <div class="col-lg-2">
+        <h1>Reversal Batch</h1>
+    </div>
+    <div class="col-lg-10">
+        <div class="nav">
+            <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="btn btn-info">Voucher</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="btn btn-info">Credit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="btn btn-info">Debit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="btn btn-info">Refund Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="btn btn-info">Disbursement Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="btn btn-info">Wire Transfer Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">General Ledger Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">Inter Account Transfer Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="btn btn-info">Reversal Batch</a>
+        </div>
+    </div>
+</div>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -102,7 +154,7 @@
                     { "mDataProp": "AuditRemarks", "sTitle": "Verification/Rejection Remarks", "sWidth": "3%" },
                     { "mDataProp": "AuthorizedBy", "sTitle": "Verified/Rejected By", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
 
             });
