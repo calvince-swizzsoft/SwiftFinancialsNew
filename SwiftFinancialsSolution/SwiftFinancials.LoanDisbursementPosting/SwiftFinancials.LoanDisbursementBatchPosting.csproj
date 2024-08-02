@@ -7,8 +7,8 @@
     <ProjectGuid>{841ADBCB-2D7E-4F39-B670-D790D16C2D3D}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SwiftFinancials.LoanDisbursementPosting</RootNamespace>
-    <AssemblyName>SwiftFinancials.LoanDisbursementPosting</AssemblyName>
+    <RootNamespace>SwiftFinancials.LoanDisbursementBatchPosting</RootNamespace>
+    <AssemblyName>SwiftFinancials.LoanDisbursementBatchPosting</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>

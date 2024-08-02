@@ -5,9 +5,9 @@ using System;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using System.Threading.Tasks;
-using SwiftFinancials.SavingsProductLedgerFeeProcessing.Configuration;
+using SwiftFinancials.SavingsProductLedgerFeeProcessor.Configuration;
 
-namespace SwiftFinancials.SavingsProductLedgerFeeProcessing.Services
+namespace SwiftFinancials.SavingsProductLedgerFeeProcessor.Services
 {
     [Export(typeof(IPlugin))]
     public class Dispatcher : IPlugin

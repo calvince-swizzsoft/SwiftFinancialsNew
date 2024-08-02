@@ -38,6 +38,8 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
+        public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
+
         public ObservableCollection<GraduatedScaleDTO> TiersDTOs;
 
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantorsDTO;
@@ -1555,9 +1557,9 @@ namespace SwiftFinancials.Web.Controllers
             disbursementType.AddRange(items);
 
             return disbursementType;
-        }  
-        
-        
+        }
+       
+
         [NonAction]
         protected List<SelectListItem> GetBatchStatusTypeSelectList(string selectedValue)
         {
@@ -1573,6 +1575,24 @@ namespace SwiftFinancials.Web.Controllers
             BatchStatus.AddRange(items);
 
             return BatchStatus;
+        } 
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetLoanCaseFilterTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> LoanCaseFilter = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(LoanCaseFilter)).Cast<LoanCaseFilter>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            LoanCaseFilter.AddRange(items);
+
+            return LoanCaseFilter;
         }
     }
 }

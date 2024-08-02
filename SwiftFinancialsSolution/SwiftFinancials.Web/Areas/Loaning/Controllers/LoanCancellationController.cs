@@ -29,7 +29,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            int totalRecordCount = 0;
+           int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
@@ -37,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -65,6 +65,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
             ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(string.Empty);
             ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(string.Empty);
             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
@@ -77,12 +78,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Cancel(LoanCaseDTO loanCaseDTO)
         {
-            var loanCancellationOption = loanCaseDTO.LoanCancellationOption;
-            loanCaseDTO.ValidateAll();
+            var loanDTO = await _channelService.FindLoanCaseAsync(loanCaseDTO.Id, GetServiceHeader());
 
-            if (!loanCaseDTO.HasErrors)
+            loanDTO.ValidateAll();
+
+            if (!loanDTO.HasErrors)
             {
-                await _channelService.AuditLoanCaseAsync(loanCaseDTO, loanCancellationOption, GetServiceHeader());
+                await _channelService.CancelLoanCaseAsync(loanDTO, loanCaseDTO.LoanCancellationOption, GetServiceHeader());
+
+                TempData["Cancel"] = "Loan Cancellation Successful";
 
                 return RedirectToAction("Index");
             }
@@ -93,6 +97,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
                 ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
                 ViewBag.LoanCancellationOptionSelectList = GetLoanCancellationOptionSelectList(loanCaseDTO.LoanCancellationOption.ToString());
+
+                TempData["CancelError"] = "Loan Cancellation Unsuccessful";
+
                 return View(loanCaseDTO);
             }
         }

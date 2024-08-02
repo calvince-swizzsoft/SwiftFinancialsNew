@@ -22,13 +22,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+
             return View();
         }
 
 
-         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, LoanCaseDTO loanCaseDTO)
         {
+            //ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription);
+
+
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -37,7 +42,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 10, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -60,12 +65,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
-            var loanGuarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(id, GetServiceHeader());
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
 
             ViewBag.LoanGuarantors = loanGuarantors;
 
             return View(loanCaseDTO);
         }
+
 
         public async Task<ActionResult> Create()
         {
@@ -163,6 +169,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
                 loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
                 loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
+
+                loanCaseDTO.LoanInterestRecoveryMode = Convert.ToInt32(Session["LoanInterestRecoveryMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
             }
 
             if (Session["SavingsProductId"] != null)
@@ -203,11 +213,23 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Session["CustomerReference2"] = loanCaseDTO.CustomerReference2;
                 Session["CustomerReference3"] = loanCaseDTO.CustomerReference3;
 
-                //var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(parseId, true, GetServiceHeader());
-                //if (standingOrders != null)
-                //    ViewBag.StandingOrders = standingOrders;
+                var customerAccountList = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, false, false, false,
+                    false, GetServiceHeader());
 
-                var loanapplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(customer.Id, GetServiceHeader());
+                ObservableCollection<StandingOrderDTO> items = new ObservableCollection<StandingOrderDTO>();
+
+                foreach (var item in customerAccountList)
+                {
+                    var customerAccounts = item.Id;
+
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(customerAccounts, false, GetServiceHeader());
+                    if (standingOrders != null)
+                    {
+                        ViewBag.StandingOrders = standingOrders;
+                    }
+                }
+
+                var loanapplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
                 if (loanapplications != null)
                     ViewBag.LoanApplications = loanapplications;
             }
@@ -250,6 +272,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
                 loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
                 loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
+
+                loanCaseDTO.LoanInterestRecoveryMode = Convert.ToInt32(Session["LoanInterestRecoveryMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
             }
 
             if (Session["SavingsProductId"] != null)
@@ -346,6 +372,46 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductSectionDescription = loanProduct.LoanRegistrationLoanProductSectionDescription;
                 loanCaseDTO.LoanRegistrationTermInMonths = loanProduct.LoanRegistrationTermInMonths;
                 loanCaseDTO.LoanRegistrationMaximumAmount = loanProduct.LoanRegistrationMaximumAmount;
+                loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
+                loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
+                loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
+
+                loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear = loanProduct.LoanRegistrationPaymentFrequencyPerYear;
+                loanCaseDTO.LoanRegistrationMinimumAmount = loanProduct.LoanRegistrationMinimumAmount;
+                loanCaseDTO.LoanRegistrationMinimumInterestAmount = loanProduct.LoanRegistrationMinimumInterestAmount;
+                loanCaseDTO.LoanRegistrationMinimumGuarantors = loanProduct.LoanRegistrationMinimumGuarantors;
+                loanCaseDTO.LoanRegistrationMinimumMembershipPeriod = loanProduct.LoanRegistrationMinimumMembershipPeriod;
+                loanCaseDTO.LoanRegistrationMaximumGuarantees = loanProduct.LoanRegistrationMaximumGuarantees;
+                loanCaseDTO.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement = loanProduct.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement;
+                loanCaseDTO.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage = loanProduct.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage;
+                loanCaseDTO.LoanRegistrationLoanProductSection = loanProduct.LoanRegistrationLoanProductSection;
+                loanCaseDTO.LoanRegistrationLoanProductCategory = loanProduct.LoanRegistrationLoanProductCategory;
+                loanCaseDTO.LoanRegistrationConsecutiveIncome = loanProduct.LoanRegistrationConsecutiveIncome;
+                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProduct.LoanRegistrationInvestmentsMultiplier;
+                loanCaseDTO.LoanRegistrationRejectIfMemberHasBalance = loanProduct.LoanRegistrationRejectIfMemberHasBalance;
+                loanCaseDTO.LoanRegistrationSecurityRequired = loanProduct.LoanRegistrationSecurityRequired;
+                loanCaseDTO.LoanRegistrationAllowSelfGuarantee = loanProduct.LoanRegistrationAllowSelfGuarantee;
+                loanCaseDTO.LoanRegistrationGracePeriod = loanProduct.LoanRegistrationGracePeriod;
+                loanCaseDTO.LoanRegistrationPaymentDueDate = loanProduct.LoanRegistrationPaymentDueDate;
+                loanCaseDTO.LoanRegistrationPayoutRecoveryMode = loanProduct.LoanRegistrationPayoutRecoveryMode;
+                loanCaseDTO.LoanRegistrationPayoutRecoveryPercentage = loanProduct.LoanRegistrationPayoutRecoveryPercentage;
+                loanCaseDTO.LoanRegistrationAggregateCheckOffRecoveryMode = loanProduct.LoanRegistrationAggregateCheckOffRecoveryMode;
+                loanCaseDTO.LoanRegistrationChargeClearanceFee = loanProduct.LoanRegistrationChargeClearanceFee;
+                loanCaseDTO.LoanRegistrationMicrocredit = loanProduct.LoanRegistrationMicrocredit;
+                loanCaseDTO.LoanRegistrationStandingOrderTrigger = loanProduct.LoanRegistrationStandingOrderTrigger;
+                loanCaseDTO.LoanRegistrationTrackArrears = loanProduct.LoanRegistrationTrackArrears;
+                loanCaseDTO.LoanRegistrationChargeArrearsFee = loanProduct.LoanRegistrationChargeArrearsFee;
+                loanCaseDTO.LoanRegistrationEnforceSystemAppraisalRecommendation = loanProduct.LoanRegistrationEnforceSystemAppraisalRecommendation;
+                loanCaseDTO.LoanRegistrationBypassAudit = loanProduct.LoanRegistrationBypassAudit;
+                loanCaseDTO.LoanRegistrationGuarantorSecurityMode = loanProduct.LoanRegistrationGuarantorSecurityMode;
+                loanCaseDTO.LoanRegistrationRoundingType = loanProduct.LoanRegistrationRoundingType;
+                loanCaseDTO.LoanRegistrationDisburseMicroLoanLessDeductions = loanProduct.LoanRegistrationDisburseMicroLoanLessDeductions;
+                loanCaseDTO.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal = loanProduct.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal;
+                loanCaseDTO.LoanRegistrationThrottleScheduledArrearsRecovery = loanProduct.LoanRegistrationThrottleScheduledArrearsRecovery;
+                loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit = loanProduct.LoanRegistrationCreateStandingOrderOnLoanAudit;
+                loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
+                loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
+                loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
 
                 // Calculate Loan Balance
                 // Calculate Investments Balace
@@ -358,6 +424,46 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Session["LoanProductSectionDescription"] = loanCaseDTO.LoanProductSectionDescription;
                 Session["LoanRegistrationTermInMonths"] = loanCaseDTO.LoanRegistrationTermInMonths;
                 Session["LoanRegistrationMaximumAmount"] = loanCaseDTO.LoanRegistrationMaximumAmount;
+
+                Session["LoanInterestRecoveryMode"] = loanCaseDTO.LoanInterestRecoveryMode;
+                Session["LoanInterestCalculationMode"] = loanCaseDTO.LoanInterestCalculationMode;
+
+
+                Session["LoanRegistrationPaymentFrequencyPerYear"] = loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear;
+                Session["LoanRegistrationMinimumAmount"] = loanCaseDTO.LoanRegistrationMinimumAmount;
+                Session["LoanRegistrationMinimumInterestAmount"] = loanCaseDTO.LoanRegistrationMinimumInterestAmount;
+                Session["LoanRegistrationMinimumGuarantors"] = loanCaseDTO.LoanRegistrationMinimumGuarantors;
+                Session["LoanRegistrationMinimumMembershipPeriod"] = loanCaseDTO.LoanRegistrationMinimumMembershipPeriod;
+                Session["LoanRegistrationMaximumGuarantees"] = loanCaseDTO.LoanRegistrationMaximumGuarantees;
+                Session["LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement"] = loanCaseDTO.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement;
+                Session["LoanRegistrationMaximumSelfGuaranteeEligiblePercentage"] = loanCaseDTO.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage;
+                Session["LoanRegistrationLoanProductSection"] = loanCaseDTO.LoanRegistrationLoanProductSection;
+                Session["LoanRegistrationLoanProductCategory"] = loanCaseDTO.LoanRegistrationLoanProductCategory;
+                Session["LoanRegistrationConsecutiveIncome"] = loanCaseDTO.LoanRegistrationConsecutiveIncome;
+                Session["LoanRegistrationInvestmentsMultiplier"] = loanCaseDTO.LoanRegistrationInvestmentsMultiplier;
+                Session["LoanRegistrationRejectIfMemberHasBalance"] = loanCaseDTO.LoanRegistrationRejectIfMemberHasBalance;
+                Session["LoanRegistrationSecurityRequired"] = loanCaseDTO.LoanRegistrationSecurityRequired;
+                Session["LoanRegistrationAllowSelfGuarantee"] = loanCaseDTO.LoanRegistrationAllowSelfGuarantee;
+                Session["LoanRegistrationGracePeriod"] = loanCaseDTO.LoanRegistrationGracePeriod;
+                Session["LoanRegistrationPaymentDueDate"] = loanCaseDTO.LoanRegistrationPaymentDueDate;
+                Session["LoanRegistrationPayoutRecoveryMode"] = loanCaseDTO.LoanRegistrationPayoutRecoveryMode;
+                Session["LoanRegistrationPayoutRecoveryPercentage"] = loanCaseDTO.LoanRegistrationPayoutRecoveryPercentage;
+                Session["LoanRegistrationAggregateCheckOffRecoveryMode"] = loanCaseDTO.LoanRegistrationAggregateCheckOffRecoveryMode;
+                Session["LoanRegistrationChargeClearanceFee"] = loanCaseDTO.LoanRegistrationChargeClearanceFee;
+                Session["LoanRegistrationMicrocredit"] = loanCaseDTO.LoanRegistrationMicrocredit;
+                Session["LoanRegistrationStandingOrderTrigger"] = loanCaseDTO.LoanRegistrationStandingOrderTrigger;
+                Session["LoanRegistrationTrackArrears"] = loanCaseDTO.LoanRegistrationTrackArrears;
+                Session["LoanRegistrationChargeArrearsFee"] = loanCaseDTO.LoanRegistrationChargeArrearsFee;
+                Session["LoanRegistrationEnforceSystemAppraisalRecommendation"] = loanCaseDTO.LoanRegistrationEnforceSystemAppraisalRecommendation;
+                Session["LoanRegistrationBypassAudit"] = loanCaseDTO.LoanRegistrationBypassAudit;
+                Session["LoanRegistrationGuarantorSecurityMode"] = loanCaseDTO.LoanRegistrationGuarantorSecurityMode;
+                Session["LoanRegistrationRoundingType"] = loanCaseDTO.LoanRegistrationRoundingType;
+                Session["LoanRegistrationDisburseMicroLoanLessDeductions"] = loanCaseDTO.LoanRegistrationDisburseMicroLoanLessDeductions;
+                Session["LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal"] = loanCaseDTO.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal;
+                Session["LoanRegistrationThrottleScheduledArrearsRecovery"] = loanCaseDTO.LoanRegistrationThrottleScheduledArrearsRecovery;
+                Session["LoanRegistrationCreateStandingOrderOnLoanAudit"] = loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit;
+                Session["LoanRegistrationCreateStandingOrderOnLoanAudit"] = loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit;
+
             }
 
             return View("create", loanCaseDTO);
@@ -403,6 +509,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
                 loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
                 loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
+
+                loanCaseDTO.LoanInterestRecoveryMode = Convert.ToInt32(Session["LoanInterestRecoveryMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
             }
 
             if (Session["RegistrationRemarkId"] != null)
@@ -472,6 +582,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
                 loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
                 loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
+
+                loanCaseDTO.LoanInterestRecoveryMode = Convert.ToInt32(Session["LoanInterestRecoveryMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
             }
 
             if (Session["SavingsProductId"] != null)
@@ -540,6 +654,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
                 loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
                 loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
+
+                loanCaseDTO.LoanInterestRecoveryMode = Convert.ToInt32(Session["LoanInterestRecoveryMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
+                loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
             }
 
             if (Session["SavingsProductId"] != null)
@@ -585,6 +703,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
+            loanCaseDTO.ReceivedDate = DateTime.Today;
+
             // Loanee
             loanCaseDTO.CustomerId = (Guid)Session["CustomerId"];
             loanCaseDTO.CustomerIndividualFirstName = Session["CustomerIndividualFirstName"].ToString();
@@ -598,6 +718,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.LoanPurposeId = (Guid)Session["LoanPurposeId"];
             loanCaseDTO.LoanPurposeDescription = Session["LoanPurposeDescription"].ToString();
 
+
             // Loan Product
             loanCaseDTO.LoanProductId = (Guid)Session["LoanProductId"];
             loanCaseDTO.LoanProductDescription = Session["LoanProductDescription"].ToString();
@@ -606,6 +727,57 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
             loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
             loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
+
+
+            var loanProduct = await _channelService.FindLoanProductAsync(loanCaseDTO.LoanProductId, GetServiceHeader());
+
+            if (loanProduct != null)
+            {
+                loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear = loanProduct.LoanRegistrationPaymentFrequencyPerYear;
+                loanCaseDTO.LoanRegistrationMinimumAmount = loanProduct.LoanRegistrationMinimumAmount;
+                loanCaseDTO.LoanRegistrationMinimumInterestAmount = loanProduct.LoanRegistrationMinimumInterestAmount;
+                loanCaseDTO.LoanRegistrationMinimumGuarantors = loanProduct.LoanRegistrationMinimumGuarantors;
+                loanCaseDTO.LoanRegistrationMinimumMembershipPeriod = loanProduct.LoanRegistrationMinimumMembershipPeriod;
+                loanCaseDTO.LoanRegistrationMaximumGuarantees = loanProduct.LoanRegistrationMaximumGuarantees;
+                loanCaseDTO.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement = loanProduct.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement;
+                loanCaseDTO.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage = loanProduct.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage;
+                loanCaseDTO.LoanRegistrationLoanProductSection = loanProduct.LoanRegistrationLoanProductSection;
+                loanCaseDTO.LoanRegistrationLoanProductCategory = loanProduct.LoanRegistrationLoanProductCategory;
+                loanCaseDTO.LoanRegistrationConsecutiveIncome = loanProduct.LoanRegistrationConsecutiveIncome;
+                loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProduct.LoanRegistrationInvestmentsMultiplier;
+                loanCaseDTO.LoanRegistrationRejectIfMemberHasBalance = loanProduct.LoanRegistrationRejectIfMemberHasBalance;
+                loanCaseDTO.LoanRegistrationSecurityRequired = loanProduct.LoanRegistrationSecurityRequired;
+                loanCaseDTO.LoanRegistrationAllowSelfGuarantee = loanProduct.LoanRegistrationAllowSelfGuarantee;
+                loanCaseDTO.LoanRegistrationGracePeriod = loanProduct.LoanRegistrationGracePeriod;
+                loanCaseDTO.LoanRegistrationPaymentDueDate = loanProduct.LoanRegistrationPaymentDueDate;
+                loanCaseDTO.LoanRegistrationPayoutRecoveryMode = loanProduct.LoanRegistrationPayoutRecoveryMode;
+                loanCaseDTO.LoanRegistrationPayoutRecoveryPercentage = loanProduct.LoanRegistrationPayoutRecoveryPercentage;
+                loanCaseDTO.LoanRegistrationAggregateCheckOffRecoveryMode = loanProduct.LoanRegistrationAggregateCheckOffRecoveryMode;
+                loanCaseDTO.LoanRegistrationChargeClearanceFee = loanProduct.LoanRegistrationChargeClearanceFee;
+                loanCaseDTO.LoanRegistrationMicrocredit = loanProduct.LoanRegistrationMicrocredit;
+                loanCaseDTO.LoanRegistrationStandingOrderTrigger = loanProduct.LoanRegistrationStandingOrderTrigger;
+                loanCaseDTO.LoanRegistrationTrackArrears = loanProduct.LoanRegistrationTrackArrears;
+                loanCaseDTO.LoanRegistrationChargeArrearsFee = loanProduct.LoanRegistrationChargeArrearsFee;
+                loanCaseDTO.LoanRegistrationEnforceSystemAppraisalRecommendation = loanProduct.LoanRegistrationEnforceSystemAppraisalRecommendation;
+                loanCaseDTO.LoanRegistrationBypassAudit = loanProduct.LoanRegistrationBypassAudit;
+                loanCaseDTO.LoanRegistrationGuarantorSecurityMode = loanProduct.LoanRegistrationGuarantorSecurityMode;
+                loanCaseDTO.LoanRegistrationRoundingType = loanProduct.LoanRegistrationRoundingType;
+                loanCaseDTO.LoanRegistrationDisburseMicroLoanLessDeductions = loanProduct.LoanRegistrationDisburseMicroLoanLessDeductions;
+                loanCaseDTO.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal = loanProduct.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal;
+                loanCaseDTO.LoanRegistrationThrottleScheduledArrearsRecovery = loanProduct.LoanRegistrationThrottleScheduledArrearsRecovery;
+                loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit = loanProduct.LoanRegistrationCreateStandingOrderOnLoanAudit;
+                loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
+                loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
+                loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
+
+
+                loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
+                loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
+                loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
+
+
+            }
+
 
             // Savings Product
             loanCaseDTO.SavingsProductId = (Guid)Session["SavingsProductId"];

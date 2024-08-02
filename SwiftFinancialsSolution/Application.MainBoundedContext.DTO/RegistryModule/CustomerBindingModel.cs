@@ -549,37 +549,37 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
             return string.Format("{0}", stringBuilder);
         }
 
-        HashSet<NextOfKinDTO> _nextOfKin;
-        [DataMember]
-        [Display(Name = "Next-of-Kin Collection")]
-        [CustomValidation(typeof(CustomerBindingModel), "CheckNominatedPercentage", ErrorMessage = "Total nominated percentage must not exceed 100%!")]
-        public virtual ICollection<NextOfKinDTO> NextOfKin
-        {
-            get
-            {
-                if (_nextOfKin == null)
-                {
-                    _nextOfKin = new HashSet<NextOfKinDTO>();
-                }
-                return _nextOfKin;
-            }
-            private set
-            {
-                _nextOfKin = new HashSet<NextOfKinDTO>(value);
-            }
-        }
+        //HashSet<NextOfKinDTO> _nextOfKin;
+        //[DataMember]
+        //[Display(Name = "Next-of-Kin Collection")]
+        //[CustomValidation(typeof(CustomerBindingModel), "CheckNominatedPercentage", ErrorMessage = "Total nominated percentage must not exceed 100%!")]
+        //public virtual ICollection<NextOfKinDTO> NextOfKin
+        //{
+        //    get
+        //    {
+        //        if (_nextOfKin == null)
+        //        {
+        //            _nextOfKin = new HashSet<NextOfKinDTO>();
+        //        }
+        //        return _nextOfKin;
+        //    }
+        //    private set
+        //    {
+        //        _nextOfKin = new HashSet<NextOfKinDTO>(value);
+        //    }
+        //}
 
-        public static ValidationResult CheckNominatedPercentage(object value, ValidationContext context)
-        {
-            var bindingModel = context.ObjectInstance as CustomerBindingModel;
-            if (bindingModel == null)
-                throw new NotSupportedException("ObjectInstance must be CustomerBindingModel");
+        //public static ValidationResult CheckNominatedPercentage(object value, ValidationContext context)
+        //{
+        //    var bindingModel = context.ObjectInstance as CustomerBindingModel;
+        //    if (bindingModel == null)
+        //        throw new NotSupportedException("ObjectInstance must be CustomerBindingModel");
 
-            if (bindingModel.NextOfKin.Sum(x => x.NominatedPercentage) > 100d)
-                return new ValidationResult("Total nominated percentage must not exceed 100%!");
+        //    if (bindingModel.NextOfKin.Sum(x => x.NominatedPercentage) > 100d)
+        //        return new ValidationResult("Total nominated percentage must not exceed 100%!");
 
-            return ValidationResult.Success;
-        }
+        //    return ValidationResult.Success;
+        //}
 
         public static ValidationResult CheckIndividualAge(object value, ValidationContext context)
         {

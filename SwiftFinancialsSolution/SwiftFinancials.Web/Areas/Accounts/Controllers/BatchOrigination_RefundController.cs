@@ -26,12 +26,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-
+            DateTime startDate = DateTime.Now.AddDays(-30);
+            DateTime endDate = DateTime.Now.AddDays(+30);
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindDebitBatchesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindOverDeductionBatchesByStatusAndFilterInPageAsync(1,startDate,endDate,jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -43,69 +44,99 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<DebitBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<OverDeductionBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+            var OverDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
 
-            return View(debitBatchDTO);
+            return View(OverDeductionBatchDTO);
         }
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(DebitBatchDTO debitBatchDTO)
+        public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
         {
-            debitBatchDTO.ValidateAll();
+            overDeductionBatchDTO.ValidateAll();
 
-            if (!debitBatchDTO.HasErrors)
+            if (!overDeductionBatchDTO.HasErrors)
             {
-                await _channelService.AddDebitBatchAsync(debitBatchDTO, GetServiceHeader());
+                await _channelService.AddOverDeductionBatchAsync(overDeductionBatchDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
-                return View(debitBatchDTO);
+                var errorMessages = overDeductionBatchDTO.ErrorMessages;
+                
+                return View(overDeductionBatchDTO);
             }
         }
+
+
+        public async Task<ActionResult> RefundEntries(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var k = await _channelService.FindOverDeductionBatchAsync(id ,GetServiceHeader());
+            return View(k);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> RefundEntries(OverDeductionBatchEntryDTO overDeductionBatchEntryDTO)
+        {
+            overDeductionBatchEntryDTO.ValidateAll();
+
+            if (!overDeductionBatchEntryDTO.HasErrors)
+            {
+                await _channelService.AddOverDeductionBatchEntryAsync(overDeductionBatchEntryDTO, GetServiceHeader());
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = overDeductionBatchEntryDTO.ErrorMessages;
+
+                return View(overDeductionBatchEntryDTO);
+            }
+        }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+          
+            var overDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
 
-            return View(debitBatchDTO);
+            return View(overDeductionBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, DebitBatchDTO debitBatchDTO)
+        public async Task<ActionResult> Edit(Guid id, OverDeductionBatchDTO overDeductionBatchDTO)
         {
-            debitBatchDTO.ValidateAll();
+            overDeductionBatchDTO.ValidateAll();
 
-            if (!debitBatchDTO.HasErrors)
+            if (!overDeductionBatchDTO.HasErrors)
             {
-                await _channelService.UpdateDebitBatchAsync(debitBatchDTO, GetServiceHeader());
+                await _channelService.UpdateOverDeductionBatchAsync(overDeductionBatchDTO, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
-                return View(debitBatchDTO);
+                var errorMessages = overDeductionBatchDTO.ErrorMessages;
+                //ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+                return View(overDeductionBatchDTO);
             }
         }
 
@@ -115,27 +146,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+            var debitBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
 
             return View(debitBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, DebitBatchDTO debitBatchDTO)
+        public async Task<ActionResult> Verify(Guid id, OverDeductionBatchDTO debitBatchDTO)
         {
             debitBatchDTO.ValidateAll();
 
             if (!debitBatchDTO.HasErrors)
             {
-                await _channelService.AuditDebitBatchAsync(debitBatchDTO, 1, GetServiceHeader());
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                await _channelService.AuditOverDeductionBatchAsync(debitBatchDTO, 1, GetServiceHeader());
+                
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                
                 return View(debitBatchDTO);
             }
         }
@@ -146,31 +177,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
-            var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+            var debitBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
 
             return View(debitBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Authorize(Guid id, DebitBatchDTO debitBatchDTO)
+        public async Task<ActionResult> Authorize(Guid id, OverDeductionBatchDTO debitBatchDTO)
         {
-            var batchAuthOption = debitBatchDTO.BatchAuthOption;
+            //var batchAuthOption = debitBatchDTO.BatchAuthOption;
             debitBatchDTO.ValidateAll();
 
             if (!debitBatchDTO.HasErrors)
             {
-                await _channelService.AuthorizeDebitBatchAsync(debitBatchDTO, 1, batchAuthOption, GetServiceHeader());
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                await _channelService.AuthorizeOverDeductionBatchAsync(debitBatchDTO, 1, 1, GetServiceHeader());
+                //ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = debitBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                //ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
                 return View(debitBatchDTO);
             }
         }
+
+        
 
 
 

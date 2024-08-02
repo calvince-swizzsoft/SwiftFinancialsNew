@@ -118,7 +118,7 @@ namespace SwiftFinancials.Web.Controllers
 
             ApplicationUser applicationUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             
-            var CompanyDTO = await _channelService.FindCompanyAsync((Guid)applicationUser.CompanyId, GetServiceHeader());
+            var CompanyDTO = await _channelService.FindCompanyAsync((Guid)applicationUser.BranchId, GetServiceHeader());
 
             var textAlertTemplatePath = Path.Combine(GetDashboardAppConfiguration().DashboardAppSettingsItems.TemplatesPath, string.Format("{0}_TextTemplate.cshtml", "PhoneNumberVerification"));
 

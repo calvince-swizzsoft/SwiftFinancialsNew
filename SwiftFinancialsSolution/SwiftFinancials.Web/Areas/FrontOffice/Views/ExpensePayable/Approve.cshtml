@@ -71,7 +71,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
-                                        @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
                                         @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                     </div>
 
@@ -84,7 +84,7 @@
                                         @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
                                         <div class="input-group date">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="AuditedDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                            <input type="text" name="AuditedDate" class="form-control" readonly="readonly" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
                                         </div>
                                     </div>
 
@@ -96,8 +96,8 @@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.ChartOfAccountId)
-                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.ChartOfAccountId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name", disabled = "disabled" } })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
