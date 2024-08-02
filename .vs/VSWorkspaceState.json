@@ -1,0 +1,12 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers"
+  ],
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers\\BatchOrigination_DebitController.cs",
+  "PreviewInSolutionExplorer": false
+}

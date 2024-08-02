@@ -282,6 +282,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Expense Payables", Icon="fa fa-bars", ControllerName="ExpensePayable", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 13},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Account Closure", Icon="fa fa-calculator", ControllerName="AccountClosure", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 14},
 
+
                 //messaging - area 26,000
                 new NavigationMenu{Description = "Messaging", IsArea = true, Code = 0x00006590},
                 new NavigationMenu{AreaCode = 0x00006590, IsArea = false, Description = "Text Alerts", Icon="fa fa-comments", ControllerName="TextAlert", ActionName="Index", AreaName = "Messaging", Code = 0x00006590 + 1},
@@ -312,6 +313,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode =  0xF230 + 5, IsArea = false, Description = "Child_Child2_F2", Icon="fa fa-users", ControllerName="Home", ActionName="IndexFour", AreaName = "", Code = 0xF230 + 8},
 
                 new NavigationMenu{AreaCode =  0xF230 + 7, IsArea = false, Description = "Child_Child1_F2_2", Icon="fa fa-users", ControllerName="Home", ActionName="IndexFive", AreaName = "", Code = 0xF230 + 9},
+
             */
             };
 
