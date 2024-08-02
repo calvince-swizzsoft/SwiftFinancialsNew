@@ -77,7 +77,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                 {
                     var mailMessage = new MailMessage(emailAlertDTO.MailMessageFrom, emailAlertDTO.MailMessageTo, emailAlertDTO.MailMessageCC, emailAlertDTO.MailMessageSubject, emailAlertDTO.MailMessageBody, emailAlertDTO.MailMessageIsBodyHtml, (int)dlrStatus, emailAlertDTO.MailMessageOrigin, emailAlertDTO.MailMessagePriority, 0, emailAlertDTO.MailMessageSecurityCritical, emailAlertDTO.MailMessageAttachments);
 
-                    var emailAlert = EmailAlertFactory.CreateEmailAlert(emailAlertDTO.CompanyId,mailMessage);
+                    var emailAlert = EmailAlertFactory.CreateEmailAlert(emailAlertDTO.BranchId,mailMessage);
 
                     emailAlert.CreatedBy = serviceHeader.ApplicationUserName;
 
@@ -129,7 +129,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                 {
                     var mailMessage = new MailMessage(persisted.MailMessage.From, persisted.MailMessage.To, persisted.MailMessage.CC, persisted.MailMessage.Subject, persisted.MailMessage.Body, persisted.MailMessage.IsBodyHtml, emailAlertDTO.MailMessageDLRStatus, persisted.MailMessage.Origin, persisted.MailMessage.Priority, emailAlertDTO.MailMessageSendRetry, persisted.MailMessage.SecurityCritical, persisted.MailMessage.Attachments);
 
-                    var current = EmailAlertFactory.CreateEmailAlert(emailAlertDTO.CompanyId, mailMessage);
+                    var current = EmailAlertFactory.CreateEmailAlert(emailAlertDTO.BranchId, mailMessage);
 
                     current.CreatedBy = persisted.CreatedBy;
 

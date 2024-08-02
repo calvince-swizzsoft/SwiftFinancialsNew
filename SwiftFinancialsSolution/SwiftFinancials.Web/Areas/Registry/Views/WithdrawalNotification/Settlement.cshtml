@@ -2,7 +2,8 @@
 
 @{
     /**/
-    ViewBag.Title = "settle Withdrawal Notification  ";
+    ViewBag.Title = "Settlement Withdrawal Notification  ";
+    var AuthOptions = ViewBag.AuditOption as List<SelectListItem>;
     var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
     var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
     var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
@@ -15,7 +16,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2> settle Withdrawal Notification</h2>
+        <h2> Settle Withdrawal Notification</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -24,7 +25,7 @@
                 @Html.ActionLink("Home", "Index", "WithdrawalNotification", new { Area = "Registry" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>settlement</strong>
+                <strong>Settlement</strong>
             </li>
         </ol>
     </div>
@@ -59,23 +60,23 @@
                     @using (Html.BeginForm("Settlement", "WithdrawalNotification", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                    <h1> Settle Withdrawal Notification</h1>
+                        <h1> Settlement Withdrawal Notification</h1>
 
                         <fieldset>
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
                                         @Html.HiddenFor(model => model.CustomerId)
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "CustomeresLookup form-control required", placeholder = "Description.." } })
+                                        @Html.EditorFor(model => model.Customer.FullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Id", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.Customer.FullName, "", new { @class = "text-danger" })
                                     </div>
 
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Id", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
-                                    </div>
+                                    @*<div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.CustomerId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Id", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.CustomerId, "", new { @class = "text-danger" })
+                                        </div>*@
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerStationDescription, htmlAttributes: new { @class = "" })
                                         @Html.EditorFor(model => model.CustomerStationDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Station", disabled = "disabled" } })
@@ -89,14 +90,18 @@
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.CategoryDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "CategoryDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.SettlementType, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Category, withdrawalNotificationCategories, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Category)
+                                            @Html.DropDownListFor(model => model.SettlementType, batchAuthOptions, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.SettlementType)
                                         </div>
                                     </div>
-
                                     <div class="form-group form-group-sm">
                                         <div class="col-md-offset-2">
                                             <input type="submit" value="Settlement" class="btn btn-primary" />
@@ -124,9 +129,9 @@
                                         @Html.ValidationMessageFor(model => model.CustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.SettlementRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.SettlementRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "SettlementRemarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.SettlementRemarks, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
@@ -134,11 +139,7 @@
                                         @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                         @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                     </div>
-                                    <div class="form-group form-group-sm">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "SettlementRemarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>
+
                                 </div>
                             </div>
                         </fieldset>
