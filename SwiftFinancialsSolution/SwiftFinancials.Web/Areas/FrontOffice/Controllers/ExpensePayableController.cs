@@ -110,29 +110,60 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
+
         [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
+            expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO;
+
+            Guid expensePayableEntryChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+            Guid expensePayableEntryBranchId = expensePayableDTO.BranchId;
+
+
             expensePayableDTO.ValidateAll();
 
             if (!expensePayableDTO.HasErrors)
             {
+
                 var expensePayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                
 
                 if (expensePayable != null)
                 {
                     var expensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
+
+
                     foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
                     {
                         expensePayableEntryDTO.ExpensePayableId = expensePayable.Id;
+                        expensePayableEntryDTO.ChartOfAccountId = expensePayable.ChartOfAccountId;
+                        expensePayableEntryDTO.BranchId = expensePayable.BranchId;
+                        expensePayableEntryDTO.ChartOfAccountAccountName = expensePayable.ChartOfAccountAccountName;
+                        expensePayableEntryDTO.BranchDescription = expensePayable.BranchDescription;
+                        expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
+                        expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
+                        expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
+                        expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
+
                         expensePayableEntries.Add(expensePayableEntryDTO);
-                    }
+                    };
 
                     if (expensePayableEntries.Any())
-                    {
+
                         await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, expensePayableEntries, GetServiceHeader());
-                    }
                 }
+
+                ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
+                ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
+
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
+
+                ViewBag.ExpensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, GetServiceHeader());
+                TempData["ExpensePayableEntryDTO"] = "";
+                TempData["ExpensePayableDTO"] = "";
+                ViewBag.ExpensePayableEntryDTOs = "";
 
                 return RedirectToAction("Index");
             }
@@ -227,7 +258,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             expensePayableDTO.ValidateAll();
 
-            var expensePayableAuthOption = expensePayableDTO.ExpensePayableAuthOption;
+            var expensePayableAuthOption = expensePayableDTO.Type;
 
             if (!expensePayableDTO.HasErrors)
             {
@@ -281,9 +312,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 var moduleNavigationItemCode = expensePayableDTO.ModuleNavigationItemCode;
 
-                await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, moduleNavigationItemCode, GetServiceHeader());
+                await _channelService.AuthorizeExpensePayableAsync(expensePayableDTO, expensePayableDTO.Type, moduleNavigationItemCode, GetServiceHeader());
 
-                await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                //await _channelService.UpdateExpensePayableAsync(expensePayableDTO, GetServiceHeader());
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
@@ -308,6 +339,29 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> RemoveEntry(Guid id, ExpensePayableDTO expensePayableDTO)
+        {
+            await ServeNavigationMenus();
+            // Retrieve the TempData
+            var ExpensePayableEntryDTOs = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
+
+            if (ExpensePayableEntryDTOs != null)
+            {
+                // Find the entry to remove
+                var entryToRemove = ExpensePayableEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    ExpensePayableEntryDTOs.Remove(entryToRemove);
+                    // Update TempData
+                    TempData["ExpensePayableEntryDTO"] = ExpensePayableEntryDTOs;
+                    return Json(new { success = true });
+                }
+            }
+            return Json(new { success = false });
+        }
+
+
         //[HttpPost]
         //[ValidateAntiForgeryToken]
 
@@ -321,6 +375,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         //}
     }
 }
+
+
+
+
+
+
+
+
 
 
 

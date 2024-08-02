@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
+﻿﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
 @{
     /**/
@@ -57,7 +57,7 @@
                         <h1>Expense Payable</h1>
 
                         <div class="row">
-                            <div class="col-lg-5">
+                            <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Type, new { @class = "control-label" })
                                     <div class="input-group">
@@ -72,6 +72,8 @@
                                     @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableBranchesLookup form-control required", placeholder = "Branch Name" } })
                                 </div>
+                            </div>
+                            <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.ChartOfAccountId)
@@ -86,7 +88,8 @@
                                 </div>
 
                             </div>
-                            <div class="col-lg-5">
+
+                            <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
@@ -99,6 +102,8 @@
                                         <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
                                     </div>
                                 </div>
+                            </div>
+                            <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
@@ -113,79 +118,68 @@
 
 
 
-                        <!-- Button to trigger the modal -->
-                        <button id="openModalButton">Add Expense Payable Entry</button>
-                        <!-- The modal -->
-
-                        <div class="form-group">
-                            <div id="expenseModal" class="modal" style="width: 700px; height: 500px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-                                <div class="modal-content" style="text-align: center; display: flex; flex-direction: column; justify-content: center; align-items: center;">
-                                    <span class="close" style="position: absolute; top: 10px; right: 10px;">&times;</span>
-
-                                    @Html.AntiForgeryToken()
-                                    <h2>Add Expense payable Entry</h2>
-
-
-                                    <div class="row">
-                                        <div class="col-lg-5">
-                                            <div class="form-group form-group-lg" style="text-align: center;">
-                                                @Html.LabelFor(model => model.ExpensePayableEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.ExpensePayableEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].Reference, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg" style="text-align: center;">
-                                                @Html.LabelFor(model => model.ExpensePayableEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.ExpensePayableEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary description", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
-                                            </div>
-
-                                            <div class="form-group form-group-lg" style="text-align: center;">
-                                                @Html.LabelFor(model => model.ExpensePayableEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.ExpensePayableEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "primary description", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-5">
-
-                                            <div class="form-group form-group-lg" style="text-align: center;">
-                                                @Html.LabelFor(model => model.ExpensePayableEntries[0].TotalValue, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.ExpensePayableEntries[0].TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].TotalValue, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg" style="text-align: center;">
-                                                @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId)
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountId, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
-                                            </div>
-
-                                            <div class="form-group form-group-lg" style="text-align: center;">
-                                                @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
-                                                @Html.HiddenFor(model => model.ExpensePayableEntry.BranchId)
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableEntry.BranchId, "", new { @class = "text-danger" })
-                                                @Html.EditorFor(model => model.ExpensePayableEntry.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "posting period Name" } })
-                                            </div>
-
-                                        </div>
-                                    </div>
-
-
-                                    <!-- Center the Submit button -->
-                                    <button id="submitEntry" style="margin-top: 20px;">Submit</button>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].Reference, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary description", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "primary description", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].TotalValue, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].TotalValue, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId)
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
+                                </div>
+
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ExpensePayableEntry.BranchId)
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.BranchId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntry.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "posting period Name" } })
+                                </div>
+
+                            </div>
                         </div>
+
+
+                        <div class="form-group form-group-lg" style="text-align: center;">
+                            <label></label>
+                            <div class="input-group-btn">
+                                <button id="add_button" class="btn btn-success" type="submit" style="margin-top: 25px;" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#expense-payable-entry">Add Expense Payable Entry</button>
+                            </div>
+                        </div>
+
                         <row>
 
 
-
                             <div class="ibox-content m-b-sm border-bottom bg-white text-dark">
-                                <table class="footable table table-stripped toggle-arrow-tiny bg-white  ">
+                                <table class="footable table table-striped table-hover table-bordered bg-white">
                                     <thead>
                                         <tr>
                                             <th data-hide="phone">Reference</th>
                                             <th data-hide="phone">TotalValue</th>
-                                            <th data-hide="phone">secondary Description</th>
+                                            <th data-hide="phone">Secondary Description</th>
                                             <th data-hide="phone">Primary Description</th>
                                             <th data-hide="phone"></th>
                                         </tr>
@@ -195,27 +189,91 @@
                                         {
                                             foreach (var ExpensePayableEntries in ViewBag.ExpensePayableEntryDTOs)
                                             {
-                                                <tr>
+                                                <tr data-id="@ExpensePayableEntries.Id">
+                                                    <td>@ExpensePayableEntries.Reference</td>
+                                                    <td class="amount-cell">@ExpensePayableEntries.TotalValue</td>
+                                                    <td>@ExpensePayableEntries.SecondaryDescription</td>
+                                                    <td>@ExpensePayableEntries.PrimaryDescription</td>
                                                     <td>
-                                                        @ExpensePayableEntries.Reference
+                                                        <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
                                                     </td>
-                                                    <td>
-                                                        @ExpensePayableEntries.TotalValue
-                                                    </td>
-                                                    <td>
-                                                        @ExpensePayableEntries.SecondaryDescription
-                                                    </td>
-                                                    <td>
-                                                        @ExpensePayableEntries.PrimaryDescription
-                                                    </td>
-
                                                 </tr>
                                             }
                                         }
                                     </tbody>
                                 </table>
                             </div>
+                            }
+
                         </row>
+
+                        <style>
+                            .container1 {
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                padding: 20px;
+                                margin-bottom: 20px;
+                                background-color: mintcream
+                            }
+
+                            .container {
+                                border: 1px solid #ddd;
+                                border-radius: 5px;
+                                padding: 20px;
+                                margin-bottom: 20px;
+                                background-color: darkgray
+                            }
+
+                            table {
+                                width: 100%;
+                                border-collapse: collapse;
+                            }
+
+                            td {
+                                padding: 10px;
+                                border: none; /* Remove border */
+                            }
+
+                            h2 {
+                                font-size: 20px; /* smaller font size */
+                                color: blue
+                            }
+
+                            h3 {
+                                font-size: medium;
+                                color: black
+                            }
+
+                            input[type="text"] {
+                                width: calc(100% - 20px); /* Adjust width to accommodate borders and padding */
+                                padding: 8px;
+                                box-sizing: border-box;
+                                border: 1px solid #ddd; /* Add border */
+                                background-color: #f7f7f7; /* Add shade */
+                            }
+
+                            label {
+                                font-weight: bold;
+                            }
+                        </style>
+
+
+                        <div class="container1">
+                            <h2>ACCOUNT SUMMARY</h2>
+                            <table class="summary-table">
+                                <tr>
+                                    <td>
+                                        <label for="Appropotioned">Appropotioned Amount:</label>
+                                        <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
+                                    </td>
+                                    <td>
+                                        <label for="Shortage">Shortage Amount:</label>
+                                        <input type="text" id="Shortage" placeholder="Shortage" readonly>
+                                    </td>
+                                </tr>
+                            </table>
+                            <h3>Appropotioned Amount should not exceed the total Amount</h3>
+                        </div>
                     }
                 </div>
                 <div class="ibox-content m-b-sm border-bottom">
@@ -224,7 +282,7 @@
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <input type="submit" value="Post" class="btn btn-success" />
+                                    <input type="submit" value="Create" class="btn btn-success" />
                                 </div>
                             </div>
                         </div>
@@ -621,5 +679,143 @@
         });
 
 
-        });</script>
+    });
+    </script>
+
+    <script>
+        function updateAmounts() {
+            var totalAmount = 0;
+            var amountCells = document.getElementsByClassName('amount-cell');
+
+            console.log('Amount Cells Count:', amountCells.length);
+
+            for (var i = 0; i < amountCells.length; i++) {
+                var text = amountCells[i].innerText;
+                console.log('Amount Cell Text:', text);
+                var amount = parseFloat(text.replace(/[^0-9.-]/g, '')); // Clean the text
+                console.log('Parsed Amount:', amount);
+                if (!isNaN(amount)) {
+                    totalAmount += amount;
+                }
+            }
+
+            var totalValueElement = document.querySelector('[name="TotalValue"]');
+            var appropotionedElement = document.getElementById('Appropotioned');
+            var shortageElement = document.getElementById('Shortage');
+
+            var totalValue = parseFloat(totalValueElement.value);
+            console.log('Total Value:', totalValue);
+
+            if (isNaN(totalValue)) {
+                totalValue = 0;
+            }
+
+            if (totalAmount > totalValue) {
+                alert('Appropotioned amount exceeds the total value!');
+                return;
+            }
+
+            console.log('Total Amount:', totalAmount);
+            appropotionedElement.value = totalAmount.toFixed(2);
+
+            if (totalValue > totalAmount) {
+                var shortage = totalValue - totalAmount;
+                shortageElement.value = shortage.toFixed(2);
+            } else {
+                shortageElement.value = '0.00';
+            }
+        }
+
+        // Call the function on page load and when the Total Value changes
+        document.addEventListener('DOMContentLoaded', function () {
+            updateAmounts();
+
+            // Add event listener to Total Value input to update on change
+            var totalValueElement = document.querySelector('[name="TotalValue"]');
+            totalValueElement.addEventListener('input', updateAmounts);
+        });
+    </script>
+
+
+
+    @*function updateAmounts() {
+                   var totalAmount = 0;
+                   var amountCells = document.getElementsByClassName('amount-cell');
+
+                   for (var i = 0; i < amountCells.length; i++) {
+                       var amount = parseFloat(amountCells[i].innerText.trim().replace(',', '')); // Trim spaces and remove commas if present
+                       if (!isNaN(amount)) {
+                           totalAmount += amount;
+                       }
+                   }
+
+                   var totalValueElement = document.querySelector('[name="TotalValue"]');
+                   var appropriatedElement = document.getElementById('Appropriated');
+                   var shortageElement = document.getElementById('Shortage');
+
+                   var totalValue = parseFloat(totalValueElement.value) || 0;
+
+                   if (totalAmount > totalValue) {
+                       alert('Appropriated amount exceeds the total value!');
+                       return;
+                   }
+
+                   appropriatedElement.value = totalAmount.toFixed(2); // Ensure 'Appropriated' is a <input> or <textarea> element
+
+                   if (totalValue > totalAmount) {
+                       var shortage = totalValue - totalAmount;
+                       shortageElement.value = shortage.toFixed(2); // Ensure 'Shortage' is a <input> or <textarea> element
+                   } else {
+                       shortageElement.value = '0.00'; // Ensure 'Shortage' is set to a default value when totalValue === totalAmount
+                   }
+               }
+               // Call updateAmounts on page load and when TotalValue changes
+               document.addEventListener('DOMContentLoaded', function () {
+                   updateAmounts();
+
+                   var totalValueElement = document.querySelector('[name="TotalValue"]');
+                   totalValueElement.addEventListener('input', updateAmounts);
+               });
+           });
+
+        </script>*@
+
+
+    //remove
+
 }
+
+
+
+
+@section scripts {
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $(document).on('click', '.remove-btn', function () {
+                var row = $(this).closest('tr');
+                var id = row.data('id');
+
+                $.ajax({
+                    url: '@Url.Action("RemoveEntry", "ExpensePayable", new { area = "FrontOffice" })',
+                    type: 'POST',
+                    data: JSON.stringify({ id: id, expensePayableDTO: @Html.Raw(Json.Encode(ViewBag.ExpensePayableDTO)) }),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            row.remove();
+                        } else {
+                            alert('Failed to remove entry.');
+                        }
+                    },
+                    error: function () {
+                        alert('Error occurred while removing entry.');
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+
