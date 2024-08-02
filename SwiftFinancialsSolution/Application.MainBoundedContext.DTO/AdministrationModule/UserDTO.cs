@@ -23,11 +23,11 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [Display(Name = "Phone Number")]
         public string PhoneNumber { get; set; }
 
-        [Display(Name = "Company")]
-        public Guid? CompanyId { get; set; }
+        [Display(Name = "Branch")]
+        public Guid? BranchId { get; set; }
 
-        [Display(Name = "Company Name")]
-        public string CompanyDescription { get; set; }
+        [Display(Name = "Branch Name")]
+        public string BranchDescription { get; set; }
 
         [Display(Name = "2FA Enabled")]
         public bool TwoFactorEnabled { get; set; }

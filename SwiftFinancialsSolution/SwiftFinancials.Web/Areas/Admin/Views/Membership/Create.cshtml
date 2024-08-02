@@ -47,9 +47,9 @@
                         <fieldset>
                             <div class="row">
                                 <div class="col-md-6 form-group">
-                                    @Html.LabelFor(model => model.CompanyId, new { @class = "control-label" })
+                                    @Html.LabelFor(model => model.BranchId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
-                                        @Html.TextBoxFor(model => model.CompanyId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        @Html.TextBoxFor(model => model.BranchId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#companyLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
@@ -235,7 +235,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Company", new { Area = "Admin"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Branch", new { Area = "Admin"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -269,8 +269,8 @@
             $("#s tbody").on("click", "tr", function () {
                 var data = companiesGrid.row(this).data();
 
-                $('#CompanyId').val(data.Id);
-                $('input[name=CompanyId]').val(data.Id);
+                $('#BranchId').val(data.Id);
+                $('input[name=BranchId]').val(data.Id);
                 $('input[name=CompanyDescription]').val(data.Description);
                 //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
 

@@ -83,7 +83,7 @@ namespace DistributedServices.MainBoundedContext
                         Email = item.Email,
                         PhoneNumber = item.PhoneNumber,
                         LockoutEnabled = item.LockoutEnabled,
-                        CompanyId = item.CompanyId,
+                        BranchId = item.BranchId,
                         CustomerId = item.CustomerId
                     };
 
@@ -171,13 +171,13 @@ namespace DistributedServices.MainBoundedContext
                 Email = userDTO.Email,
                 UserName = userDTO.Email,
                 PhoneNumber = userDTO.PhoneNumber,
-                CompanyId = userDTO.CompanyId,
+                BranchId = userDTO.BranchId,
                 LockoutEnabled = userDTO.LockoutEnabled,
                 CreatedDate = DateTime.Now,
                 CustomerId = userDTO.CustomerId
             };
 
-            var companyDTO = _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
+            var companyDTO = _companyAppService.FindCompany((Guid)userDTO.BranchId, serviceHeader);
 
             if (companyDTO != null)
                 applicationUser.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
@@ -246,14 +246,14 @@ namespace DistributedServices.MainBoundedContext
                 user.Email = userDTO.Email;
                 user.UserName = userDTO.Email;
                 user.PhoneNumber = userDTO.PhoneNumber;
-                user.CompanyId = userDTO.CompanyId;
+                user.BranchId = userDTO.BranchId;
                 user.CustomerId = userDTO.CustomerId;
                 user.LockoutEnabled = userDTO.LockoutEnabled;
             }
 
-            if (userDTO.CompanyId != Guid.Empty && userDTO.CompanyId != null)
+            if (userDTO.BranchId != Guid.Empty && userDTO.BranchId != null)
             {
-                var companyDTO = _companyAppService.FindCompany((Guid)userDTO.CompanyId, serviceHeader);
+                var companyDTO = _companyAppService.FindCompany((Guid)userDTO.BranchId, serviceHeader);
 
                 if (companyDTO != null)
                     user.TwoFactorEnabled = companyDTO.EnforceTwoFactorAuthentication;
@@ -297,7 +297,7 @@ namespace DistributedServices.MainBoundedContext
                 OtherNames = applicationUser.OtherNames,
                 Email = applicationUser.Email,
                 PhoneNumber = applicationUser.PhoneNumber,
-                CompanyId = applicationUser.CompanyId,
+                BranchId = applicationUser.BranchId,
                 LockoutEnabled = applicationUser.LockoutEnabled,
                 CreatedDate = applicationUser.CreatedDate,
                 CustomerId = applicationUser.CustomerId
@@ -321,7 +321,7 @@ namespace DistributedServices.MainBoundedContext
                     Email = applicationUser.Email,
                     UserName= applicationUser.UserName,
                     PhoneNumber = applicationUser.PhoneNumber,
-                    CompanyId = applicationUser.CompanyId,
+                    BranchId = applicationUser.BranchId,
                     LockoutEnabled = applicationUser.LockoutEnabled,
                     CreatedDate = applicationUser.CreatedDate,
                     CustomerId = applicationUser.CustomerId
@@ -408,7 +408,7 @@ namespace DistributedServices.MainBoundedContext
 
         public static Specification<ApplicationUser> ApplicationUsersWithCompanyId(Guid companyId)
         {
-            Specification<ApplicationUser> specification = new DirectSpecification<ApplicationUser>(x => x.CompanyId == companyId);
+            Specification<ApplicationUser> specification = new DirectSpecification<ApplicationUser>(x => x.BranchId == companyId);
 
             return specification;
         }

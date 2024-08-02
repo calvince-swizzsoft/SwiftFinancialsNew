@@ -8,7 +8,7 @@ namespace DistributedServices.MainBoundedContext.Identity
 {
     public class ApplicationUser : IdentityUser
     {
-        public Guid? CompanyId { get; set; }
+        public Guid? BranchId { get; set; }
 
         public string FirstName { get; set; }
 
@@ -28,7 +28,7 @@ namespace DistributedServices.MainBoundedContext.Identity
             var userIdentity = await manager.CreateIdentityAsync(this, DefaultAuthenticationTypes.ApplicationCookie);
 
             // Add custom user claims here
-            userIdentity.AddClaim(new Claim(ApplicationUserProperties.CompanyId, CompanyId.ToString()));
+            userIdentity.AddClaim(new Claim(ApplicationUserProperties.BranchId, BranchId.ToString()));
 
             userIdentity.AddClaim(new Claim(ApplicationUserProperties.CustomerId, CustomerId.ToString()));
 
@@ -40,7 +40,7 @@ namespace DistributedServices.MainBoundedContext.Identity
 
     public class ApplicationUserProperties
     {
-        public const string CompanyId = "CompanyId";
+        public const string BranchId = "BranchId";
 
         public const string CustomerId = "CustomerId";
 

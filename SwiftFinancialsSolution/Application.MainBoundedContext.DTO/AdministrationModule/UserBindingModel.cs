@@ -40,12 +40,12 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public string PhoneNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "Company")]
-        public Guid? CompanyId { get; set; }
+        [Display(Name = "Branch")]
+        public Guid? BranchId { get; set; }
 
         [DataMember]
-        [Display(Name = "Company Name")]
-        public string CompanyDescription { get; set; }
+        [Display(Name = "Branch Name")]
+        public string BranchDescription { get; set; }
 
         [DataMember]
         [Display(Name = "2FA Enabled")]

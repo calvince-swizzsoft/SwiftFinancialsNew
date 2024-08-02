@@ -1143,5 +1143,22 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Full Account Number")]
         public string CustomerAccountFullNumber { get; set; }
+
+
+        // Loan Case Filter
+        [DataMember]
+        [Display(Name = "Loan Case Filter")]
+        public int filterText { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Loan Case Filter")]
+        public string filterTextDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(LoanCaseFilter), filterText) ? EnumHelper.GetDescription((LoanCaseFilter)filterText) : string.Empty;
+            }
+        }
     }
 }

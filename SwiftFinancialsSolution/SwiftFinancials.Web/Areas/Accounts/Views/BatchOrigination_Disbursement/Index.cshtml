@@ -1,5 +1,40 @@
 ﻿@{ ViewBag.Title = "BatchOrigination_Disbursement Authorize"; }
 
+<style>
+    .links {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .nav a {
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+
+            .nav a:hover {
+                background-color: #0056b2;
+            }
+
+    .row-center {
+        display: flex;
+        align-items: center;
+    }
+
+    .ibox-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Authorize Disbursments Batch</h2>
@@ -13,7 +48,24 @@
         </ol>
     </div>
 </div>
-
+<div class="row row-center">
+    <div class="col-lg-2">
+        <h1>Disbursement Batch</h1>
+    </div>
+    <div class="col-lg-10">
+        <div class="nav">
+            <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="btn btn-info">Voucher</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="btn btn-info">Credit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="btn btn-info">Debit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="btn btn-info">Refund Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="btn btn-info">Disbursement Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="btn btn-info">Wire Transfer Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">General Ledger Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">Inter Account Transfer Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="btn btn-info">Reversal Batch</a>
+        </div>
+    </div>
+</div>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -114,35 +166,48 @@
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
 
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
-                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(dt_Created);
 
-
-                    var status = aData.Status;  // Assuming aData.Status holds the status information
-
-                    var viewDisabled = status === '0' ? 'disabled' : '';
-                    var verifyDisabled = status === '2' ? 'disabled' : '';
-                    var authorizeDisabled = status === '2' ? 'disabled' : '';
-
+                    // Generate dropdown HTML with conditional logic based on status
                     var dropdownHtml = `
-    <div class="dropdown">
-        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Actions
-        </button>
-        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <a class="dropdown-item ${viewDisabled}" href="/Accounts/BatchOrigination_Disbursement/details/${aData.Id}">View</a>
-            <a class="dropdown-item ${verifyDisabled}" href="/Accounts/BatchOrigination_Disbursement/Verify/${aData.Id}">Verify</a>
-            <a class="dropdown-item ${authorizeDisabled}" href="/Accounts/BatchOrigination_Disbursement/Authorize/${aData.Id}">Authorize</a>
-        </div>
-    </div>`;
+        <div class="dropdown">
+            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Actions
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    $('td:eq(6)', nRow).html(dropdownHtml);
+                    // Buttons to be included
+                    var viewButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Disbursement/details/${aData.Id}">View</a>`;
+                    var verifyButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Disbursement/Verify/${aData.Id}">Verify</a>`;
+                    var authorizeButton = `<a class="dropdown-item" href="/Accounts/BatchOrigination_Disbursement/Authorize/${aData.Id}">Authorize</a>`;
+
+                    // Conditional logic for button enabling/disabling based on status
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += viewButton + verifyButton + authorizeButton;
+                            break;
+                        case 8: // Audited
+                            dropdownHtml += viewButton + authorizeButton;
+                            break;
+                        case 2: // Posted
+                            dropdownHtml += viewButton;
+                            break;
+                        // If the status is 4 (Rejected) or any other status, only "View" button will be enabled
+                        default:
+                            dropdownHtml += viewButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
+
+                    $('td:eq(8)', nRow).html(dropdownHtml);
 
                     // Prevent default action for disabled links
                     $('.dropdown-item.disabled').on('click', function (e) {
@@ -150,42 +215,20 @@
                         e.stopPropagation();
                     });
 
-
-
-
-                    //var editUrl = '<a  href="/accounts/BatchOrigination_Disbursement/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    //var viewUrl = '<a  href="/accounts/BatchOrigination_Disbursement/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    //var ApproveUrl = '<a  href="/accounts/BatchOrigination_Disbursement/Authorize/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Authorize</a>';
-                    //var VerifyUrl = '<a  href="/accounts/BatchOrigination_Disbursement/Verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-
-
-                    //if (aData.Status == 0 || aData.Status == 1) {
-                    //    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;|&nbsp;' + editUrl + '|&nbsp;'+VerifyUrl);
-                    //}
-                    //else if (aData.Status == 8) {
-                    //    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;|&nbsp;Edit&nbsp;|&nbsp;VerifyUrl' + '&nbsp;|&nbsp;' + ApproveUrl);
-                    //}
-                    //else if (aData.RecordStatus == 3) {
-                    //    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;|&nbsp;Approve&nbsp;|&nbsp;Reject' + '&nbsp;|&nbsp;Disburse');
-                    //}
-                    //else if (aData.RecordStatus == 4) {
-                    //    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;|&nbsp;Approve&nbsp;|&nbsp;Reject&nbsp;|&nbsp;Disburse');
-                    //}
-                /* return*/
-
-                    //$('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + ApproveUrl + '&nbsp;' + VerifyUrl);
-
                     return nRow;
                 },
+
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "15%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "3%" },
-                    { "mDataProp": "PriorityDescription", "sTitle": "Priority", "sWidth": "2%" },
-                    { "mDataProp": "BatchNumber", "sTitle": "Batch Number", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "30%", "bSortable": false }],
+                    { "mDataProp": "BatchNumber", "sTitle": "Batch Number", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "PriorityDescription", "sTitle": "Priority", "sWidth": "10%" },
+                    { "mDataProp": "BatchTotal", "sTitle": "Batch Total", "sWidth": "10%" },
+                    { "mDataProp": "LoanProductCategoryDescription", "sTitle": "Category", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
         });

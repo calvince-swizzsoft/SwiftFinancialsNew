@@ -74,9 +74,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             string roleName = string.Empty;
 
-            if (applicationUser.CompanyId != Guid.Empty && applicationUser.CompanyId != null)
+            if (applicationUser.BranchId != Guid.Empty && applicationUser.BranchId != null)
             {
-                CompanyDTO = await _channelService.FindCompanyAsync((Guid)applicationUser.CompanyId, GetServiceHeader());
+                CompanyDTO = await _channelService.FindCompanyAsync((Guid)applicationUser.BranchId, GetServiceHeader());
 
                 if (CompanyDTO != null)
                     CompanyDescription = CompanyDTO.Description;
@@ -93,8 +93,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 OtherNames = applicationUser.OtherNames,
                 Email = applicationUser.Email,
                 PhoneNumber = applicationUser.PhoneNumber,
-                CompanyId = applicationUser.CompanyId,
-                CompanyDescription = CompanyDescription,
+                BranchId = applicationUser.BranchId,
+                BranchDescription = CompanyDescription,
                 RoleName = roleName,
                 TwoFactorEnabled = applicationUser.TwoFactorEnabled,
                 LockoutEnabled = applicationUser.LockoutEnabled,
@@ -116,14 +116,14 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return View();
             }
 
-            var company = await _channelService.FindCompanyAsync(parseId, GetServiceHeader());
+            var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
 
             UserBindingModel userBindingModel = new UserBindingModel();
 
-            if (company != null)
+            if (branch != null)
             {
-                userBindingModel.CompanyId = company.Id;
-                userBindingModel.CompanyDescription = company.Description;
+                userBindingModel.BranchId = branch.Id;
+                userBindingModel.BranchDescription = branch.Description;
             }
 
             return View(userBindingModel);
@@ -171,12 +171,12 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             if (user != null)
             {
-                if (user.CompanyId != Guid.Empty && user.CompanyId != null)
+                if (user.BranchId != Guid.Empty && user.BranchId != null)
                 {
-                    var companyDTO = await _channelService.FindCompanyAsync((Guid)user.CompanyId, GetServiceHeader());
+                    var branchDTO = await _channelService.FindBranchAsync((Guid)user.BranchId, GetServiceHeader());
 
-                    if (companyDTO != null)
-                        CompanyDescription = companyDTO.Description;
+                    if (branchDTO != null)
+                        CompanyDescription = branchDTO.Description;
                 }
 
                 var roles = await _applicationUserManager.GetRolesAsync(user.Id);
@@ -186,7 +186,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
                 var userBindingModel = user.MapTo<UserBindingModel>();
 
-                userBindingModel.CompanyDescription = CompanyDescription;
+                userBindingModel.BranchDescription = CompanyDescription;
 
                 userBindingModel.RoleName = roleName;
 

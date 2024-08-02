@@ -22,13 +22,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+
             return View();
         }
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, LoanCaseDTO loanCaseDTO)
         {
+            //ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription);
+
+
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -698,6 +703,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
+            loanCaseDTO.ReceivedDate = DateTime.Today;
 
             // Loanee
             loanCaseDTO.CustomerId = (Guid)Session["CustomerId"];
@@ -764,7 +770,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
                 loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
 
-                
+
                 loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
                 loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
                 loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
