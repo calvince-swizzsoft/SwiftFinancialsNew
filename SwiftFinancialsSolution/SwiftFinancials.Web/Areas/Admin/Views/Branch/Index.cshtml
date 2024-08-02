@@ -85,14 +85,15 @@
                     var editUrl = '<a  href="/admin/Branch/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/admin/Branch/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    $('td:eq(5)', nRow).html(dt_Created);
+                    $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "CompanyDescription", "sTitle": "Company", "sWidth": "15%" },
+                 { "mDataProp": "Description", "sTitle": "Branch", "sWidth": "15%" },
                     { "mDataProp": "AddressAddressLine1", "sTitle": "Address 1", "sWidth": "10%" },
                     { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No.", "sWidth": "10%" },
                     { "mDataProp": "AddressEmail", "sTitle": "Email", "sWidth": "15%" },

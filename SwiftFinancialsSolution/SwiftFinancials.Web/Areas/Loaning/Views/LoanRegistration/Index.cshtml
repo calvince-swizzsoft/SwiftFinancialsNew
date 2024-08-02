@@ -214,6 +214,7 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/loaning/loanregistration/edit/${aData.Id}">Edit</a>
                                 <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
                                 <a class="dropdown-item" href="/loaning/attachguarantor/repaymentSchedule/${aData.Id}">Repayment Schedule</a>
                             </div>
@@ -243,38 +244,38 @@
 
 
                 // Code to print table data to CSV, pdf and Excel
-                //"dom": "Bfrtip",
-                //"buttons": [
-                //    {
-                //        extend: 'copy',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-clipboard"></i> Copy'
-                //    },
+                "dom": "Bfrtip",
+                "buttons": [
+                    {
+                        extend: 'copy',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-clipboard"></i> Copy'
+                    },
 
-                //    {
-                //        extend: 'excel',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-table"></i> Excel'
-                //    },
+                    {
+                        extend: 'excel',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-table"></i> Excel'
+                    },
 
-                //    {
-                //        extend: 'pdf',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-file-pdf-o"></i> PDF'
-                //    },
+                    {
+                        extend: 'pdf',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-file-pdf-o"></i> PDF'
+                    },
 
-                //    {
-                //        extend: 'csv',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-file"></i> CSV'
-                //    },
+                    {
+                        extend: 'csv',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-file"></i> CSV'
+                    },
 
-                //    {
-                //        extend: 'print',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-print"></i> Print'
-                //    },
-                //],
+                    {
+                        extend: 'print',
+                        className: 'btn btn-light rounded-0',
+                        text: '<i class="fa fa-print"></i> Print'
+                    },
+                ],
             });
         });
 

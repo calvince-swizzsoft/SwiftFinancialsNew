@@ -12,7 +12,7 @@ namespace Domain.MainBoundedContext.MessagingModule.Aggregates.TextAlertAgg
 
             textAlert.GenerateNewIdentity();
 
-            textAlert.CompanyId = (companyId != null && companyId != Guid.Empty) ? companyId : null;
+            textAlert.BranchId = (companyId != null && companyId != Guid.Empty) ? companyId : null;
 
             textAlert.TextMessage = textMessage;
 

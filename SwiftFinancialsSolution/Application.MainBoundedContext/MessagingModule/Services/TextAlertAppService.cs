@@ -79,7 +79,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
 
                 var buffer = bulkMessageDTO.Recipients.Trim().Split(new char[] { ',' });
 
-                Array.ForEach(buffer, recipientNumber =>
+                Array.ForEach(buffer, (Action<string>)(recipientNumber =>
                 {
                     if (!textAlertDTOs.Any(x => x.TextMessageRecipient.Equals(recipientNumber, StringComparison.OrdinalIgnoreCase)))
                     {
@@ -90,7 +90,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                             textAlertDTOs.Add(textAlertDTO);
                         }
                     }
-                });
+                }));
 
                 result = AddNewTextAlerts(textAlertDTOs, serviceHeader);
             }
@@ -148,7 +148,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                 {
                     var textMessage = new TextMessage(textAlertDTO.TextMessageRecipient, textMessageBody, (int)dlrStatus, null, textAlertDTO.TextMessageOrigin, textAlertDTO.TextMessagePriority, 0, textAlertDTO.TextMessageSecurityCritical);
 
-                    var textAlert = TextAlertFactory.CreateTextAlert(textAlertDTO.CompanyId, textMessage, serviceHeader);
+                    var textAlert = TextAlertFactory.CreateTextAlert(textAlertDTO.BranchId, textMessage, serviceHeader);
 
                     _textAlertRepository.Add(textAlert, serviceHeader);
 
@@ -198,7 +198,7 @@ namespace Application.MainBoundedContext.MessagingModule.Services
                 {
                     var text = new TextMessage(persisted.TextMessage.Recipient, persisted.TextMessage.Body, textAlertDTO.TextMessageDLRStatus, textAlertDTO.TextMessageReference, persisted.TextMessage.Origin, textAlertDTO.TextMessagePriority, textAlertDTO.TextMessageSendRetry, persisted.TextMessage.SecurityCritical);
 
-                    var current = TextAlertFactory.CreateTextAlert(textAlertDTO.CompanyId, text, serviceHeader);
+                    var current = TextAlertFactory.CreateTextAlert(textAlertDTO.BranchId, text, serviceHeader);
 
                     current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
 
