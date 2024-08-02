@@ -2,6 +2,41 @@
     ViewBag.Title = "Refund Batch";
 }
 
+<style>
+    .links {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .nav {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 10px;
+    }
+
+        .nav a {
+            text-decoration: none;
+            padding: 10px 15px;
+        }
+
+            .nav a:hover {
+                background-color: #0056b2;
+            }
+
+    .row-center {
+        display: flex;
+        align-items: center;
+    }
+
+    .ibox-title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Accounts</h1>
@@ -16,13 +51,29 @@
     </div>
 </div>
 
+<div class="row row-center">
+    <div class="col-lg-2">
+        <h1>Refund Batch</h1>
+    </div>
+    <div class="col-lg-10">
+        <div class="nav">
+            <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="btn btn-info">Voucher</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })" class="btn btn-info">Credit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="btn btn-info">Debit Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="btn btn-info">Refund Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="btn btn-info">Disbursement Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="btn btn-info">Wire Transfer Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">General Ledger Batch</a>
+            <a href="#" class="btn btn-info" style="pointer-events: none; opacity: 0.6; cursor: not-allowed;">Inter Account Transfer Batch</a>
+            <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="btn btn-info">Reversal Batch</a>
+        </div>
+    </div>
+</div>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-
-                <h2>Refund Batch</h2>
-
                 @if (TempData["create"] != null)
                 {
                     <div class="alert alert-success">
@@ -41,13 +92,16 @@
                     <div class="alert alert-success">
                         <strong>Success !</strong> @TempData["edit"]
                     </div>
-                } @if (TempData["authorize"] != null)
+                }
+                @if (TempData["authorize"] != null)
                 {
                     <div class="alert alert-success">
                         <strong>Success !</strong> @TempData["authorize"]
                     </div>
                 }
+
                 <hr />
+
                 <div class="ibox-title">
                     @Html.ActionLink("Create Refund Batch", "Create", "BatchOrigination_Refund", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -59,6 +113,7 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="ibox-content">
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
@@ -89,34 +144,22 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#refundBatchesGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-
-
-
                     var verifiedDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + verifiedDate.getHours()).slice(-2);
-                    var m = ("0" + verifiedDate.getMinutes()).slice(-2);
-                    var s = ("0" + verifiedDate.getSeconds()).slice(-2);
-
                     var dt_Verified = $.datepicker.formatDate('dd/mm/yy', verifiedDate) + " " + h + ":" + m + ":" + s;
                     aData.verifiedDate = dt_Verified;
 
@@ -129,12 +172,10 @@
                                 <a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/edit/${aData.Id}">Edit</a>
                                 <a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/Verify/${aData.Id}">Verify</a>
-                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/authorize/${aData.Id}">Authorize</a>
+                                <a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/Authorize/${aData.Id}">Authorize</a>
                                 <a class="dropdown-item" href="/Accounts/BatchOrigination_Refund/RefundEntries/${aData.Id}">RefundEntries</a>
                             </div>
                         </div>`;
-
-
 
                     $('td:eq(7)', nRow).html(dt_Verified);
                     $('td:eq(8)', nRow).html(dt_Created);
@@ -142,7 +183,6 @@
 
                     return nRow;
                 },
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
                     { "mDataProp": "BatchNumber", "sTitle": "Batch Number", "sWidth": "5%" },
@@ -152,19 +192,19 @@
                     { "mDataProp": "AuditRemarks", "sTitle": "Verification/Rejection Remarks", "sWidth": "2%" },
                     { "mDataProp": "AuditedBy", "sTitle": "Verified/Rejected by", "sWidth": "2%" },
                     { "mDataProp": "AuditedDate", "sTitle": "Verification/Rejection Date", "sWidth": "2%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "4%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "4%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
-
