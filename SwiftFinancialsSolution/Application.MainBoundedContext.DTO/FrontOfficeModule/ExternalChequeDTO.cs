@@ -2,6 +2,7 @@
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Application.Seedwork;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -14,6 +15,23 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public ExternalChequeDTO()
         {
             AddAllAttributeValidators();
+        }
+
+        public ExternalChequeDTO(CustomerAccountDTO customerAccountDTO)
+        {
+
+            CustomerAccountId = customerAccountDTO.Id;
+            Amount = customerAccountDTO.TotalValue;
+            Remarks = customerAccountDTO.Remarks;
+            Drawer = customerAccountDTO.ChequeDeposit.Drawer;
+            DrawerBank = customerAccountDTO.ChequeDeposit.DrawerBank;
+            DrawerBankBranch = customerAccountDTO.ChequeDeposit.DrawerBankBranch;
+            WriteDate = customerAccountDTO.ChequeDeposit.WriteDate;
+            ChequeTypeDescription = customerAccountDTO.ChequeDeposit.ChequeTypeDescription;
+            ChequeTypeId = customerAccountDTO.ChequeDeposit.ChequeTypeId;
+            MaturityDate = customerAccountDTO.ChequeDeposit.MaturityDate;
+            Number = customerAccountDTO.ChequeDeposit.Number;
+
         }
 
         [DataMember]

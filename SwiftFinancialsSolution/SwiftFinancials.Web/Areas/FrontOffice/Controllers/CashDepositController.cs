@@ -66,6 +66,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
+            //ViewBag.ChequeDepositTypeSelectList = GetChequeDepositTypeSelectList(string.Empty);
+
             Guid parseId;
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
@@ -98,6 +100,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 customerAccountDTO.CustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
                 customerAccountDTO.Remarks = customer.Remarks;
                 customerAccountDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
+                customerAccountDTO.BranchId = customer.BranchId;
+                customerAccountDTO.BranchDescription = customer.BranchDescription;
+                customerAccountDTO.CustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId;
+                customerAccountDTO.CustomerAccountTypeTargetProductCode = customer.CustomerAccountTypeTargetProductCode;
+                customerAccountDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
+                customerAccountDTO.CustomerAccountTypeTargetProductParentId = customer.CustomerAccountTypeTargetProductParentId;
+                customerAccountDTO.AvailableBalance = customer.AvailableBalance;
+                customerAccountDTO.BookBalance = customer.BookBalance;
                
 
             }
@@ -114,25 +124,50 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         
         {
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
 
-
-            var customer = await _channelService.FindCustomerAccountAsync(customerAccountDTO.Id, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-            customerAccountDTO.CustomerId = customer.CustomerId;
-            customerAccountDTO.BranchId = customer.BranchId;
-            customerAccountDTO.CustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId;
 
             customerAccountDTO.ValidateAll();
-           
+
+
             if (!customerAccountDTO.HasErrors)
             {
                 decimal totalValue = customerAccountDTO.TotalValue;
                 int frontOfficeTransactionType = customerAccountDTO.Type;
 
                 await _channelService.ComputeTellerCashTariffsAsync(customerAccountDTO, totalValue, frontOfficeTransactionType, GetServiceHeader());
+
+                if (customerAccountDTO.TypeDescription.Equals("Cash Withdrawal"))
+                {
+
+                    CashWithdrawalRequestDTO cashWithdrawalRequestDTO = new CashWithdrawalRequestDTO(customerAccountDTO);
+
+                    cashWithdrawalRequestDTO.ValidateAll();
+
+                    await _channelService.AddCashWithdrawalRequestAsync(cashWithdrawalRequestDTO, GetServiceHeader());
+                
+                }
+
+                else if (customerAccountDTO.TypeDescription.Equals("Cash Deposit")) {
+
+           
+                    CashDepositRequestDTO cashDepositRequestDTO = new CashDepositRequestDTO(customerAccountDTO);
+
+                    cashDepositRequestDTO.ValidateAll();
+
+                    await _channelService.AddCashDepositRequestAsync(cashDepositRequestDTO, GetServiceHeader());
+
+                }
+
+                else if (customerAccountDTO.TypeDescription.Equals("Cheque Deposit"))
+                {
+
+
+                    ExternalChequeDTO chequeDepositDTO = new ExternalChequeDTO(customerAccountDTO);
+                    chequeDepositDTO.ValidateAll();
+
+                    await _channelService.AddExternalChequeAsync(chequeDepositDTO, GetServiceHeader());
+
+                }
 
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(customerAccountDTO.CustomerAccountManagementActionDescription.ToString());
 
@@ -147,6 +182,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View(customerAccountDTO);
             }
         }
+
+
 
 
 
