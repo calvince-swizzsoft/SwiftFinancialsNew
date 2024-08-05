@@ -181,7 +181,11 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 var existingLoanCases = FindLoanCasesByCustomerIdAndLoanProductId(loanCaseDTO.CustomerId, loanCaseDTO.LoanProductId, serviceHeader);
 
                 if (existingLoanCases != null && existingLoanCases.Any(x => x.Status.In((int)LoanCaseStatus.Registered, (int)LoanCaseStatus.Appraised, (int)LoanCaseStatus.Deferred, (int)LoanCaseStatus.Approved, (int)LoanCaseStatus.Audited)))
-                    throw new InvalidOperationException("Sorry, but selected customer has a loan application for the selected loan product currently undergoing processing!");
+                {
+                    loanCaseDTO.ErrorMessageResult = string.Format("Sorry, but selected customer has a loan application for the selected loan product currently undergoing processing!");
+
+                    return loanCaseDTO;
+                }
 
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {

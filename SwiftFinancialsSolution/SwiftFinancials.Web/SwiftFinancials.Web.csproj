@@ -1099,6 +1099,7 @@
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Scripts\css\ActionDropDown.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\home-index.js" />

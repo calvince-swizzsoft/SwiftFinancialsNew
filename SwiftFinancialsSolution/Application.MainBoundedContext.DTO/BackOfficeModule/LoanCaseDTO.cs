@@ -1160,5 +1160,8 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return Enum.IsDefined(typeof(LoanCaseFilter), filterText) ? EnumHelper.GetDescription((LoanCaseFilter)filterText) : string.Empty;
             }
         }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

@@ -150,6 +150,20 @@
                         <div class="alert alert-danger">
                             <strong>Attempt Failed !</strong> @TempData["EmptyData"]
                         </div>
+                    } 
+                    
+                    @if (TempData["existngApplicationError"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Attempt Failed !</strong> @TempData["existngApplicationError"]
+                        </div>
+                    } 
+                    
+                    @if (TempData["lessAmountApplied"] != null)
+                    {
+                        <div class="alert alert-warning">
+                            <strong>Attempt Failed !</strong> @TempData["lessAmountApplied"]
+                        </div>
                     }
 
                     <div class="ibox-tools">
