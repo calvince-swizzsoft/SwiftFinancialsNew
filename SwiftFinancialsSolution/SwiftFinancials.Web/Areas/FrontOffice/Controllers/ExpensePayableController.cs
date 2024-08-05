@@ -339,6 +339,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
         [HttpPost]
         public async Task<ActionResult> RemoveEntry(Guid id, ExpensePayableDTO expensePayableDTO)
         {
@@ -360,6 +361,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             return Json(new { success = false });
         }
+
+
 
 
         //[HttpPost]

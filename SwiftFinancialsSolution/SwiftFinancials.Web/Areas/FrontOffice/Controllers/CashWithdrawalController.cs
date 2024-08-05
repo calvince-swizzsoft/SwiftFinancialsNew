@@ -100,6 +100,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 cashWithdrawalRequestDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.CustomerPersonalIdentificationNumber;
                 cashWithdrawalRequestDTO.CustomerAccountRemarks = customer.Remarks;
                 cashWithdrawalRequestDTO.BranchDescription = customer.BranchDescription;
+                cashWithdrawalRequestDTO.BranchId = customer.BranchId;
+                //cashWithdrawalRequestDTO.CustomerAccountRemarks = customer.Remarks;
             }
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
