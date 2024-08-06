@@ -5,6 +5,26 @@
     var generalTransactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
 }
 
+<head>
+    <style>
+        .nav-tabs .nav-link {
+            background-color: transparent;
+        }
+
+            .nav-tabs .nav-link.active {
+                background-color: #f8f9fa; /* light grey */
+            }
+
+        .tab-pane {
+            display: none;
+        }
+
+            .tab-pane.show {
+                display: block;
+            }
+    </style>
+</head>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h2>Cash Transactions</h2>
@@ -19,7 +39,7 @@
                 <strong>Create</strong>
             </li>
         </ol>
-    </div> 
+    </div>
 </div>
 
 @if (TempData["Error"] != null)
@@ -31,328 +51,433 @@
     </div>
 }
 
-<div id="sundryPayments" class="wrapper wrapper-content">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="ibox">
-                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
-                    @using (Html.BeginForm("Create", "SundryPayments", new { Area = "FrontOffice" }, FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
-                        <div class="form-horizontal">
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" data-toggle="tab" href="#transactionTab">Transaction</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#tellerGLAccountStatementTab">Teller G/L Account Statement</a>
-                                </li>
-                            </ul>
+<div id="sundryPayments" class="container-fluid mt-3">
+    <div class="card">
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "SundryPayments", new { Area = "FrontOffice" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#transactionTab">Transaction</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#tellerGLAccountStatementTab">Teller G/L Account Statement</a>
+                    </li>
+                </ul>
 
-                            <div class="tab-content">
-                                <div id="transactionTab" class="tab-pane active">
-                                    <div class="form-group">
-                                        <label for="transactionType">Transaction Type:</label>
+                <div class="tab-content" id="mainTabContent">
+                    <div id="transactionTab" class="tab-pane fade show active">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="form-group row">
+                                    <label for="transactionType" class="col-sm-3 col-form-label text-success">Transaction Type:</label>
+                                    <div class="col-sm-9">
                                         <select class="form-control" id="transactionType">
                                             <option>Cash Payment</option>
-                                            <option>Cash Payment (Account Closure)</option>
+                                            <option selected>Cash Payment (Account Closure)</option>
                                             <option>Cash Pickup</option>
                                             <option>Cash Receipt</option>
                                             <option>Cheque Receipt</option>
                                             <option>Sundry Payment</option>
                                         </select>
                                     </div>
+                                </div>
 
-                                    <div class="nested-tabs">
-                                        <ul class="nav nav-tabs" role="tablist">
-                                            <li class="nav-item">
-                                                <a class="nav-link active" data-toggle="tab" href="#cashPaymentTab">Cash Payment</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#cashPaymentClosureTab">Cash Payment (Account Closure)</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#cashPickupTab">Cash Pickup</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#cashReceiptTab">Cash Receipt</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#chequeReceiptTab">Cheque Receipt</a>
-                                            </li>
-                                            <li class="nav-item">
-                                                <a class="nav-link" data-toggle="tab" href="#sundryPaymentTab">Sundry Payment</a>
-                                            </li>
-                                        </ul>
+                                <ul class="nav nav-tabs mt-3" id="transactionSubTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#cashPaymentTab">Cash Payment</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#cashPaymentClosureTab">Cash Payment (Account Closure)</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#cashPickupTab">Cash Pickup</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#cashReceiptTab">Cash Receipt</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#chequeReceiptTab">Cheque Receipt</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#sundryPaymentTab">Sundry Payment</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#chargesLeviesTab">Charges & Levies</a>
+                                    </li>
 
-                                        <div class="tab-content">
-                                            <div id="cashPaymentTab" class="tab-pane active">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="glAccount">G/L Account:</label>
-                                                            <input type="text" class="form-control" id="glAccount">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="amount">Amount:</label>
-                                                            <input type="number" class="form-control" id="amount">
-                                                        </div>
+                                </ul>
+
+                                <div class="tab-content mt-3" id="transactionSubTabContent">
+                                    <div id="cashPaymentTab" class="tab-pane fade show active" role="tabpanel">
+                                        <div class="form-group row">
+                                            <label for="glAccount" class="col-sm-3 col-form-label">G/L Account:</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="glAccount">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="amount" class="col-sm-3 col-form-label">Amount:</label>
+                                            <div class="col-sm-9">
+                                                <input type="number" class="form-control" id="amount">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label for="reference" class="col-sm-3 col-form-label">Reference:</label>
+                                            <div class="col-sm-9">
+                                                <input type="text" class="form-control" id="reference">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="cashPaymentClosureTab" class="tab-pane fade" role="tabpanel">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-3">
+                                                <label for="fullAccountNumber" class="text-success">Full Account Number:</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="fullAccountNumber">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" type="button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="reference">Reference:</label>
-                                                            <input type="text" class="form-control" id="reference">
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="accountStatus" class="text-success">Account Status:</label>
+                                                <input type="text" class="form-control" id="accountStatus">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="accountRemarks" class="text-success">Account Remarks:</label>
+                                                <input type="text" class="form-control" id="accountRemarks">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="productName" class="text-success">Product Name:</label>
+                                                <input type="text" class="form-control" id="productName">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label for="customer" class="text-success">Customer:</label>
+                                                <input type="text" class="form-control" id="customer">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="type" class="text-success">Type:</label>
+                                                <input type="text" class="form-control" id="type">
+                                            </div>
+                                            <div class="form-group col-md-4">
+                                                <label for="payrollNumbers" class="text-success">Payroll Numbers:</label>
+                                                <input type="text" class="form-control" id="payrollNumbers">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-3">
+                                                <label for="identificationNumber" class="text-success">Identification Number:</label>
+                                                <input type="text" class="form-control" id="identificationNumber">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="accountNumber" class="text-success">Account Number:</label>
+                                                <input type="text" class="form-control" id="accountNumber">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="membershipNumber" class="text-success">Membership Number:</label>
+                                                <input type="text" class="form-control" id="membershipNumber">
+                                            </div>
+                                            <div class="form-group col-md-3">
+                                                <label for="personalFileNumber" class="text-success">Personal File Number:</label>
+                                                <input type="text" class="form-control" id="personalFileNumber">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="reason" class="text-success">Reason:</label>
+                                            <textarea class="form-control" id="reason" rows="3"></textarea>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="bookBalance" class="text-success">Book Balance:</label>
+                                                <input type="number" class="form-control" id="bookBalance">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="netPayable" class="text-success">Net Payable:</label>
+                                                <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="cashPickupTab" class="tab-pane fade" role="tabpanel">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="entryBeneficiary" class="text-success">Entry Beneficiary:</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="entryBeneficiary">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" type="button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="entryReference" class="text-success">Entry Reference:</label>
+                                                <input type="text" class="form-control" id="entryReference">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="batchNumber" class="text-success">Batch Number:</label>
+                                                <input type="text" class="form-control" id="batchNumber">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="batchReference" class="text-success">Batch Reference:</label>
+                                                <input type="text" class="form-control" id="batchReference">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="batchMonth" class="text-success">Batch Month:</label>
+                                                <input type="text" class="form-control" id="batchMonth">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="entryAmount" class="text-success">Entry Amount:</label>
+                                                <input type="number" class="form-control" id="entryAmount">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="netPayable" class="text-success">Net Payable:</label>
+                                            <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cash Receipt Section -->
+                                    <div id="cashReceiptTab" class="tab-pane fade" role="tabpanel">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="tallyType" id="tallyByCount" checked>
+                                                            <label class="form-check-label" for="tallyByCount">Tally-by-Count</label>
+                                                        </div>
+                                                        <div class="form-check">
+                                                            <input class="form-check-input" type="radio" name="tallyType" id="tallyByTotal">
+                                                            <label class="form-check-label" for="tallyByTotal">Tally-by-Total</label>
+                                                        </div>
+                                                        <div class="mt-3">
+                                                            <div class="form-row mb-2">
+                                                                <div class="col-6">
+                                                                    <input type="number" class="form-control" placeholder="1000x">
+                                                                </div>
+                                                                <div class="col-6">
+                                                                    <input type="text" class="form-control" value="£1,000.00" readonly>
+                                                                </div>
+                                                            </div>
+                                                            <!-- Repeat for other denominations -->
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <div id="cashPaymentClosureTab" class="tab-pane">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="fullAccountNumber">Full Account Number:</label>
-                                                            <input type="text" class="form-control" id="fullAccountNumber">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="accountStatus">Account Status:</label>
-                                                            <input type="text" class="form-control" id="accountStatus">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="accountRemarks">Account Remarks:</label>
-                                                            <input type="text" class="form-control" id="accountRemarks">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="productName">Product Name:</label>
-                                                            <input type="text" class="form-control" id="productName">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="customer">Customer:</label>
-                                                            <input type="text" class="form-control" id="customer">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="type">Type:</label>
-                                                            <input type="text" class="form-control" id="type">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="payrollNumbers">Payroll Numbers:</label>
-                                                            <input type="text" class="form-control" id="payrollNumbers">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="identificationNumber">Identification Number:</label>
-                                                            <input type="text" class="form-control" id="identificationNumber">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="accountNumber">Account Number:</label>
-                                                            <input type="text" class="form-control" id="accountNumber">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="membershipNumber">Membership Number:</label>
-                                                            <input type="text" class="form-control" id="membershipNumber">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="personalFileNumber">Personal File Number:</label>
-                                                            <input type="text" class="form-control" id="personalFileNumber">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="reason">Reason:</label>
-                                                            <textarea class="form-control" id="reason"></textarea>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="bookBalance">Book Balance:</label>
-                                                            <input type="number" class="form-control" id="bookBalance">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="netPayable">Net Payable:</label>
-                                                            <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="cashPickupTab" class="tab-pane">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="entryBeneficiary">Entry Beneficiary:</label>
-                                                            <input type="text" class="form-control" id="entryBeneficiary">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="entryReference">Entry Reference:</label>
-                                                            <input type="text" class="form-control" id="entryReference">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="batchNumber">Batch Number:</label>
-                                                            <input type="text" class="form-control" id="batchNumber">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="batchReference">Batch Reference:</label>
-                                                            <input type="text" class="form-control" id="batchReference">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="batchMonth">Batch Month:</label>
-                                                            <input type="text" class="form-control" id="batchMonth">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="entryAmount">Entry Amount:</label>
-                                                            <input type="number" class="form-control" id="entryAmount">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="netPayable">Net Payable:</label>
-                                                            <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div id="cashReceiptTab" class="tab-pane">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="glAccount">G/L Account:</label>
+                                            <div class="col-md-8">
+                                                <div class="form-group row">
+                                                    <label for="glAccount" class="col-sm-3 col-form-label text-success">G/L Account:</label>
+                                                    <div class="col-sm-9">
+                                                        <div class="input-group">
                                                             <input type="text" class="form-control" id="glAccount" value="4-4210018 FOSA - SALE OF FORMS">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="accountType">Account Type:</label>
-                                                            <input type="text" class="form-control" id="accountType" value="Income/Revenue" readonly>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="amount">Amount:</label>
-                                                            <input type="number" class="form-control" id="amount" value="1000.00">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="reference">Reference:</label>
-                                                            <input type="text" class="form-control" id="reference">
-                                                        </div>
-                                                        <div class="tally-section">
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="tallyType" id="tallyByCount" checked>
-                                                                <label class="form-check-label" for="tallyByCount">Tally-by-Count</label>
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-outline-secondary" type="button">
+                                                                    <i class="fa fa-search"></i>
+                                                                </button>
                                                             </div>
-                                                            <div class="form-check">
-                                                                <input class="form-check-input" type="radio" name="tallyType" id="tallyByTotal">
-                                                                <label class="form-check-label" for="tallyByTotal">Tally-by-Total</label>
-                                                            </div>
-                                                            <!-- Add tally input fields here -->
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div id="chequeReceiptTab" class="tab-pane">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="glAccount">G/L Account:</label>
-                                                            <input type="text" class="form-control" id="glAccount" value="2-2240004 BOSA - STAFF PAYROLL ACCOUNT PAYABLES">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="accountType">Account Type:</label>
-                                                            <input type="text" class="form-control" id="accountType" value="Liability" readonly>
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="drawer">Drawer:</label>
-                                                            <input type="text" class="form-control" id="drawer">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="bank">Bank:</label>
-                                                            <input type="text" class="form-control" id="bank" value="Fyance Bank Ltd">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="chequeType">Cheque Type:</label>
-                                                            <input type="text" class="form-control" id="chequeType" value="Local Cheques">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="amount">Amount:</label>
-                                                            <input type="number" class="form-control" id="amount" value="125000.00">
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="reference">Reference:</label>
-                                                            <input type="text" class="form-control" id="reference" value="t-salaries">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="date">Date:</label>
-                                                            <input type="date" class="form-control" id="date" value="2015-10-26">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="bankBranch">Bank Branch:</label>
-                                                            <input type="text" class="form-control" id="bankBranch" value="Biashara Street">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="maturityDate">Maturity Date:</label>
-                                                            <input type="date" class="form-control" id="maturityDate" value="2015-11-02">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="chequeNumber">Cheque Number:</label>
-                                                            <input type="text" class="form-control" id="chequeNumber" value="056855">
-                                                        </div>
+                                                <div class="form-group row">
+                                                    <label for="accountType" class="col-sm-3 col-form-label text-success">Account Type:</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" id="accountType" value="Income/Revenue" readonly>
                                                     </div>
                                                 </div>
-                                            </div>
-
-                                            <div id="sundryPaymentTab" class="tab-pane">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="glAccount">G/L Account:</label>
-                                                            <input type="text" class="form-control" id="glAccount">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="batchNumber">Batch Number:</label>
-                                                            <input type="text" class="form-control" id="batchNumber">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="batchMonth">Batch Month:</label>
-                                                            <input type="text" class="form-control" id="batchMonth">
-                                                        </div>
+                                                <div class="form-group row">
+                                                    <label for="amount" class="col-sm-3 col-form-label text-success">Amount:</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="number" class="form-control" id="amount" value="1000.00">
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label for="entryReference">Entry Reference:</label>
-                                                            <input type="text" class="form-control" id="entryReference">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="batchReference">Batch Reference:</label>
-                                                            <input type="text" class="form-control" id="batchReference">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="entryAmount">Entry Amount:</label>
-                                                            <input type="number" class="form-control" id="entryAmount">
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label for="netPayable">Net Payable:</label>
-                                                            <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
-                                                        </div>
+                                                </div>
+                                                <div class="form-group row">
+                                                    <label for="reference" class="col-sm-3 col-form-label text-success">Reference:</label>
+                                                    <div class="col-sm-9">
+                                                        <input type="text" class="form-control" id="reference" value="ok">
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div id="tellerGLAccountStatementTab" class="tab-pane">
-                                    <!-- Content for Teller G/L Account Statement -->
+                                    <div id="chequeReceiptTab" class="tab-pane fade" role="tabpanel">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="glAccount" class="text-success">G/L Account:</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="glAccount" value="2-2240004 BOSA - STAFF PAYROLL ACCOUNT PAYABLES">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" type="button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="accountType" class="text-success">Account Type:</label>
+                                                <input type="text" class="form-control" id="accountType" value="Liability" readonly>
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="drawer" class="text-success">Drawer:</label>
+                                                <input type="text" class="form-control" id="drawer">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="date" class="text-success">Date:</label>
+                                                <input type="date" class="form-control" id="date" value="2015-10-26">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="bank" class="text-success">Bank:</label>
+                                                <input type="text" class="form-control" id="bank" value="Equity Bank Ltd">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="bankBranch" class="text-success">Bank Branch:</label>
+                                                <input type="text" class="form-control" id="bankBranch" value="Biashara Street">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="chequeType" class="text-success">Cheque Type:</label>
+                                                <input type="text" class="form-control" id="chequeType" value="Local Cheques">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="maturityDate" class="text-success">Maturity Date:</label>
+                                                <input type="date" class="form-control" id="maturityDate" value="2015-11-02">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="amount" class="text-success">Amount:</label>
+                                                <input type="number" class="form-control" id="amount" value="125000.00">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="chequeNumber" class="text-success">Cheque Number:</label>
+                                                <input type="text" class="form-control" id="chequeNumber" value="056855">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="reference" class="text-success">Reference:</label>
+                                            <input type="text" class="form-control" id="reference" value="t - salaries">
+                                        </div>
+                                    </div>
+
+
+                                    <div id="sundryPaymentTab" class="tab-pane fade" role="tabpanel">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="glAccount" class="text-success">G/L Account:</label>
+                                                <div class="input-group">
+                                                    <input type="text" class="form-control" id="glAccount">
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" type="button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="entryReference" class="text-success">Entry Reference:</label>
+                                                <input type="text" class="form-control" id="entryReference">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="batchNumber" class="text-success">Batch Number:</label>
+                                                <input type="text" class="form-control" id="batchNumber">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="batchReference" class="text-success">Batch Reference:</label>
+                                                <input type="text" class="form-control" id="batchReference">
+                                            </div>
+                                        </div>
+                                        <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                <label for="batchMonth" class="text-success">Batch Month:</label>
+                                                <input type="text" class="form-control" id="batchMonth">
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                <label for="entryAmount" class="text-success">Entry Amount:</label>
+                                                <input type="number" class="form-control" id="entryAmount">
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="netPayable" class="text-success">Net Payable:</label>
+                                            <input type="number" class="form-control" id="netPayable" value="0.00" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div id="chargesLeviesTab" class="tab-pane fade" role="tabpanel">
+                                        <!-- Content for Charges & Levies tab -->
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Submit Button -->
-                        <div class="form-group" style="margin-top: 20px; text-align: right;">
-                            
-                                <button type="submit" class="btn btn-primary">Update</button>
-                           
-                        </div>
-                    }
+                    <div id="tellerGLAccountStatementTab" class="tab-pane fade">
+                        <!-- Content for Teller G/L Account Statement -->
+                    </div>
                 </div>
-            </div>
+
+                <div class="form-group">
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button type="submit" class="btn btn-primary">Update</button>
+                    </div>
+                </div>
+            }
         </div>
     </div>
 </div>
+
+<script>
+$(document).ready(function() {
+    // Function to update tab styles
+    function updateTabStyles() {
+        $('.nav-tabs a').removeClass('active bg-light');
+        $('.nav-tabs a.active').addClass('bg-light');
+    }
+
+    // Function to show/hide tab content
+    function updateTabContent() {
+        $('.tab-pane').removeClass('show active');
+        $('.tab-pane.active').addClass('show');
+    }
+
+    // Main tabs
+    $('#mainTabContent a').on('click', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        updateTabStyles();
+        updateTabContent();
+    });
+
+    // Transaction sub-tabs
+    $('#transactionSubTabs').on('click', 'a', function (e) {
+        e.preventDefault();
+        $(this).tab('show');
+        updateTabStyles();
+        updateTabContent();
+    });
+
+
+    // Initial update
+    updateTabStyles();
+    updateTabContent();
+});
+</script>
