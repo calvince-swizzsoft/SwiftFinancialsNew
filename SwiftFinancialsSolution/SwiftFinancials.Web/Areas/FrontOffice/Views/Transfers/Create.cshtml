@@ -1,0 +1,157 @@
+﻿
+@{
+    ViewBag.Title = "Create Transfers";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Cash Transactions</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Transfers", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
+                    <form>
+                        <div class="form-horizontal">
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#cashTransfer">Cash Transfer</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#checkTransfer">Check Transfer</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="cashTransfer" class="tab-pane active">
+                                    <div style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="openingBalance">Opening Balance:</label>
+                                                    <input type="text" id="openingBalance" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="totalReceipts">Total Receipts:</label>
+                                                    <input type="text" id="totalReceipts" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="totalPayments">Total Payments:</label>
+                                                    <input type="text" id="totalPayments" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="expectedCash">Expected Cash:</label>
+                                                    <input type="text" id="expectedCash" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="closingBalance">Closing Balance:</label>
+                                                    <input type="text" id="closingBalance" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="balanced">Balanced:</label>
+                                                    <input type="text" id="balanced" class="form-control" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="transactionType">Transaction Type:</label>
+                                                    <select id="transactionType" class="form-control">
+                                                        <option>Teller To Treasury</option>
+                                                        <option>Teller To Teller</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="treasury">Treasury:</label>
+                                                    <input type="text" id="treasury" class="form-control" value="HeadOffice" readonly>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="checkTransfer" class="tab-pane">
+                                    <div style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Select?</th>
+                                                    <th>Cheque Number</th>
+                                                    <th>Amount</th>
+                                                    <th>Drawer</th>
+                                                    <th>Drawer Bank</th>
+                                                    <th>Drawer Bank Branch</th>
+                                                    <th>Write Date</th>
+                                                    <th>Cheque Type</th>
+                                                    <th>Maturity Date</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Account Number</th>
+                                                    <th>Membership</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Table rows would go here -->
+                                            </tbody>
+                                        </table>
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label for="itemsPerPage">Items per page:</label>
+                                                    <select id="itemsPerPage" class="form-control">
+                                                        <option>15</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <input type="checkbox" id="toggleSelection">
+                                                    <label for="toggleSelection">Toggle Selection</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 20px; text-align: right;">
+                                <button type="submit" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
