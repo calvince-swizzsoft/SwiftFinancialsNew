@@ -1096,8 +1096,6 @@
     <Content Include="Areas\Accounts\Views\Insurers\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
-    <Content Include="Areas\Registry\Views\Customer\NexOfKin.cshtml" />
-    <Content Include="Areas\Registry\Views\Customer\AccountsAlerts.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

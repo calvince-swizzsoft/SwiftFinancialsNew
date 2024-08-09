@@ -156,6 +156,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
 
+
         public async Task<ActionResult> Directors()
         {
             await ServeNavigationMenus();
@@ -230,6 +231,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
 
+
+
         public async Task<ActionResult> Delegates(Guid id)
         {
             await ServeNavigationMenus();
@@ -269,85 +272,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
-
-
-        public async Task<ActionResult> NexOfKin(Guid id)
-        {
-            await ServeNavigationMenus();
-            var customer = await _channelService.FindCustomerAsync(id, GetServiceHeader());
-
-            DelegateDTO withdrawalNotificationDTO = new DelegateDTO();
-
-            if (customer != null)
-            {
-
-                withdrawalNotificationDTO.CustomerId = customer.Id;
-                withdrawalNotificationDTO.CustomerIndividualFirstName = customer.FullName;
-                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
-                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                withdrawalNotificationDTO.CustomerStationZoneDescription = customer.StationZoneDescription;
-                withdrawalNotificationDTO.ZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-            }
-
-            return View(withdrawalNotificationDTO);
-
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> NexOfKin(DelegateDTO customerBindingModel)
-        {
-            if (!customerBindingModel.HasErrors)
-            {
-                await _channelService.AddDelegateAsync(customerBindingModel, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = customerBindingModel.ErrorMessages;
-                return View(customerBindingModel);
-            }
-        }
-
-        public async Task<ActionResult> AccountsAlerts(Guid id)
-        {
-            await ServeNavigationMenus();
-            var customer = await _channelService.FindCustomerAsync(id, GetServiceHeader());
-
-            DelegateDTO withdrawalNotificationDTO = new DelegateDTO();
-
-            if (customer != null)
-            {
-
-                withdrawalNotificationDTO.CustomerId = customer.Id;
-                withdrawalNotificationDTO.CustomerIndividualFirstName = customer.FullName;
-                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
-                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
-                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
-                withdrawalNotificationDTO.CustomerStationZoneDescription = customer.StationZoneDescription;
-                withdrawalNotificationDTO.ZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
-            }
-
-            return View(withdrawalNotificationDTO);
-
-        }
-
-        [HttpPost]
-        public async Task<ActionResult> AccountsAlerts(DelegateDTO customerBindingModel)
-        {
-            if (!customerBindingModel.HasErrors)
-            {
-                await _channelService.AddDelegateAsync(customerBindingModel, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = customerBindingModel.ErrorMessages;
-                return View(customerBindingModel);
-            }
-        }
 
 
 
@@ -423,13 +347,5 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             return Json(customersDTOs, JsonRequestBehavior.AllowGet);
         }
-
-
-
-
-
     }
 }
-
-
-
