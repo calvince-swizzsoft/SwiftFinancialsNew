@@ -1,8 +1,11 @@
-﻿@{ ViewBag.Title = "Expense payable"; }
+﻿﻿
+@{
+    ViewBag.Title = "Expense Payable";
+}
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Expense payable</h2>
+        <h2>Account Closure</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -13,33 +16,7 @@
         </ol>
     </div>
 </div>
-<style>
-    .dropdown-item {
-        display: block;
-        padding: 10px 15px;
-        color: #333;
-        text-decoration: none;
-        background-color: #f8f9fa;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        transition: background-color 0.3s, color 0.3s;
-    }
 
-        .dropdown-item:hover {
-            background-color: #007bff;
-            color: #fff;
-        }
-
-        .dropdown-item:active {
-            background-color: #0056b3;
-            color: #fff;
-        }
-
-        .dropdown-item:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
-        }
-</style>
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -77,93 +54,137 @@
     </div>
 </div>
 
-@section Styles {
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section scripts {
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
 
     <script type="text/javascript">
+$(document).ready(function () {
+    $('#ExpensePayablesGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "ExpensePayable", new { Area = "FrontOffice"}))",
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-        $(document).ready(function () {
-            $('#ExpensePayablesGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "ExpensePayable", new { Area = "FrontOffice" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var dropdownHtml = `
+                <div class="dropdown">
+                    <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Action
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            var viewButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/details/${aData.Id}">View</a>`;
+            var editButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/edit/${aData.Id}">Edit</a>`;
+            var verifyButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/Verify/${aData.Id}">Verify</a>`;
+            var authorizeButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/Authorize/${aData.Id}">Authorize</a>`;
 
+            switch (aData.Status) {
+                case 1: // Pending
+                    dropdownHtml += viewButton + editButton + verifyButton + authorizeButton;
+                    break;
+                case 8: // Audited
+                    dropdownHtml += viewButton + authorizeButton;
+                    break;
+                case 2: // Posted
+                    dropdownHtml += viewButton;
+                    break;
+                default:
+                    dropdownHtml += viewButton;
+                    break;
+            }
 
+            dropdownHtml += `</div></div>`;
 
+            $('td:eq(7)', nRow).html(dt_Created);
+            $('td:eq(8)', nRow).html(dropdownHtml);
 
-                    var valueDate = new Date(parseInt(aData.ValueDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + valueDate.getHours()).slice(-2);
-                    var m = ("0" + valueDate.getMinutes()).slice(-2);
-                    var s = ("0" + valueDate.getSeconds()).slice(-2);
-                    var dt_ValuedateCreated = $.datepicker.formatDate('dd/mm/yy', valueDate) + " " + h + ":" + m + ":" + s;
-                    aData.ValueDate = dt_ValuedateCreated;
-
-
-
-
-                /*    /var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';*/
-                   // var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var approveUrl = '<a  href="/frontOffice/ExpensePayable/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    var verifyUrl = '<a  href="/frontOffice/ExpensePayable/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Actions
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/frontOffice/ExpensePayable/verify/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/frontOffice/ExpensePayable/approve/${aData.Id}">Edit</a>
-                            </div>
-                        </div>`;
-
-                    $('td:eq(6)', nRow).html(dropdownHtml);
-
-
-                    $('td:eq(2)', nRow).html(dt_ValuedateCreated);
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' / + editUrl + '&nbsp;' / + verifyUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl);
-               
-
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
-                    { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
-                    { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "10%"},
-                    { "mDataProp": "VoucherNumber", "sTitle": "VoucherNumber", "sWidth": "10%" },
-                    { "mDataProp": "TypeDescription", "sTitle": "TypeDescription", "sWidth": "10%" },
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%", "bSortable": false },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10 %", "bSortable": false }],
-
-                "aaSorting": [[0, "desc"]]
-        });
-        });
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+            { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
+            { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "10%" },
+            { "mDataProp": "VoucherNumber", "sTitle": "VoucherNumber", "sWidth": "10%" },
+            { "mDataProp": "TypeDescription", "sTitle": "TypeDescription", "sWidth": "10%" },
+            { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
+            { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%", "bSortable": false },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
+});
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
