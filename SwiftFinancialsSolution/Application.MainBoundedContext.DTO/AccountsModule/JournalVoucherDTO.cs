@@ -4,6 +4,7 @@ using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -342,7 +343,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
 
-        public List<JournalVoucherEntryDTO> JournalVoucherEntries { get; set; }
+        public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntries { get; set; }
 
         public JournalVoucherEntryDTO JournalVoucherEntry { get; set; }
     }
