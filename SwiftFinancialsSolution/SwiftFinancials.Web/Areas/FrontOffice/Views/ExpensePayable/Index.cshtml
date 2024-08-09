@@ -1,7 +1,4 @@
-﻿
-@{
-    ViewBag.Title = "Expense payable";
-}
+﻿@{ ViewBag.Title = "Expense payable"; }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -120,8 +117,8 @@
 
 
 
-                    /*var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';*/
-                    var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                /*    /var editUrl = '<a  href="/frontOffice/ExpensePayable/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';*/
+                   // var viewUrl = '<a  href="/frontOffice/ExpensePayable/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var approveUrl = '<a  href="/frontOffice/ExpensePayable/approve/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
                     var verifyUrl = '<a  href="/frontOffice/ExpensePayable/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
                     var dropdownHtml = `
@@ -139,10 +136,9 @@
 
 
                     $('td:eq(2)', nRow).html(dt_ValuedateCreated);
-                    $('td:eq(5)', nRow).html(dt_Created);
-                  //  $('td:eq(6)', nRow).html(viewUrl + '&nbsp;' /*+ editUrl + '&nbsp;'*/ + verifyUrl + '&nbsp;' + approveUrl);
-                 //   $('td:eq(9)', nRow).html(verifyUrl + '&nbsp;' + verifyUrl);
-
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(viewUrl + '&nbsp;' / + editUrl + '&nbsp;' / + verifyUrl + '&nbsp;' + approveUrl + '&nbsp;' + verifyUrl);
+               
 
                     return nRow;
                 },
@@ -151,6 +147,8 @@
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
                     { "mDataProp": "ValueDate", "sTitle": "Value Date", "sWidth": "10%"},
+                    { "mDataProp": "VoucherNumber", "sTitle": "VoucherNumber", "sWidth": "10%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "TypeDescription", "sWidth": "10%" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "8%", "bSortable": false },

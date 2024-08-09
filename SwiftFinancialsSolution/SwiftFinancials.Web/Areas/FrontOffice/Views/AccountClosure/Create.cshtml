@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.AccountClosureRequestDTO
+﻿﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.AccountClosureRequestDTO
 @{
     /**/
 
@@ -14,7 +14,7 @@
         <h2>Account Closure</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "FrontOfffice" }, null)
             </li>
             <li class="breadcrumb-item">
                 @Html.ActionLink("Home", "Index", "AccountClosure", new { Area = "FrontOffice" }, null)
@@ -60,6 +60,8 @@
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
 
+                            
+
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -69,6 +71,7 @@
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.HiddenFor(model => model.CustomerAccountId)
                                                 @Html.TextBoxFor(model => model.CustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.Status)
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
@@ -80,18 +83,19 @@
                                             @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "PayrollNumbers", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
+
+
                                         <div class="form-group form-group-sm">
                                             @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reason", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
                                         </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-lg-6">
 
                                         <div class="form-group form-group-sm">
                                             <div class="col-md-offset-2">
@@ -99,41 +103,99 @@
                                             </div>
                                         </div>
 
-                                    </div>
-
-
-                                    <div class="col-lg-6">
-
 
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
                                         </div>
 
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer File Number" } })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer File Number", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                         </div>
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number" } })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account  Number" } })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Account  Number", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                         </div>
 
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <ul class="nav nav-tabs">
+                                                    <li class="active"><a data-toggle="tab" href="#loanAccounts">Loan Accounts</a></li>
+                                                    <li><a data-toggle="tab" href="#investmentAccounts">Investment Accounts</a></li>
+                                                    <li><a data-toggle="tab" href="#loansGuaranteed">Loans Guaranteed</a></li>
+                                                </ul>
+
+                                                <div class="tab-content">
+                                                    <div id="loanAccounts" class="tab-pane fade in active">
+                                                        <table class="table table-bordered table-striped">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Full Account Number</th>
+                                                                    <th>Status</th>
+                                                                    <th>Remarks</th>
+                                                                    <th>Product Code</th>
+                                                                    <th>Product Name</th>
+                                                                    <th>Section</th>
+                                                                    <th>Branch</th>
+                                                                    <th>Book Balance</th>
+                                                                    <th>Principal Balance</th>
+                                                                    <th>Interest Balance</th>
+                                                                    <th>Record Status</th>
+                                                                    <th>Modified By</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <!-- Add rows dynamically here -->
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                    <div id="investmentAccounts" class="tab-pane fade">
+                                                        <!-- Add table for Investment Accounts -->
+                                                    </div>
+                                                    <div id="loansGuaranteed" class="tab-pane fade">
+                                                        <!-- Add table for Loans Guaranteed -->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    @Html.Label("Investments Balance (R)", htmlAttributes: new { @class = "control-label" })
+                                                    <input type="text" class="form-control" readonly value="Ksh0.00" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    @Html.Label("Loans Balance", htmlAttributes: new { @class = "control-label" })
+                                                    <input type="text" class="form-control" readonly value="Ksh0.00" />
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group">
+                                                    @Html.Label("Net Refundable", htmlAttributes: new { @class = "control-label" })
+                                                    <input type="text" class="form-control" readonly value="Ksh0.00" />
+                                                </div>
+                                            </div>
                                         </div>
 
                                     </div>
@@ -277,82 +339,48 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/FrontOffice/AccountClosure/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(selectUrl);
 
                     return nRow;
-                },
-        // Display settings
-        "aoColumns": [
+            },
 
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CustomerReference1", "sTitle": "customer number", "sWidth": "6%" },
+        // lookup Display settings
+            "aoColumns": [
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "3%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "3%" },
+            { "mDataProp": "Status", "sTitle": "Status", "sWidth": "3" },
+            { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "3%" },
+            { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "3%" },
+            { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "3%" },
+            { "mDataProp": "CustomerTypeDescription", "sTitle": "customer number", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+
         "aaSorting": [[0, "desc"]]
              });
 
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#CustomerAccountId').val(data.Id);
-        $('input[name=CustomerAccountId]').val(data.Id);
-        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
+        $("#s tbody").on("click", "tr", function () {
+            var data = CustomerAccountsGrid.row(this).data();
+            $('#CustomerAccountId').val(data.Id);
+            $('input[name=CustomerAccountId]').val(data.Id);
+            $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
 
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
 
-        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-        $('#customerLookupModal').modal('hide');
+            var CustomerId = "";
+            CustomerId = CustomersMap[item].Id;
+
+            $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
+            $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
+            $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+            $('#CustomerReference3').val(CustomersMap[item].CustomerReference3);
+            $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+            $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
+            $('#customerLookupModal').modal('hide');
+
     });
-
-         //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-
-
     </script>
 }

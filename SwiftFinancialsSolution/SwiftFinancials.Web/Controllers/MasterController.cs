@@ -65,6 +65,9 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<SavingsProductDTO> savingsProductDTOs;
         public ObservableCollection<LoanProductDTO> loanProductDTOs;
 
+
+        public ObservableCollection<Guid> customerAccountsIds;
+
         private IChannelService channelService;
         public IChannelService _channelService
         {

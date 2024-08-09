@@ -497,6 +497,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
             return ValidationResult.Success;
         }
+
+
+
         public ObservableCollection<LoanGuarantorDTO> LoanGuarantors { get; set; }
     }
 }

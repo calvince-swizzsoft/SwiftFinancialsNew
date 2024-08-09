@@ -135,6 +135,7 @@
                                 <a class="dropdown-item" href="/registry/Customer/edit/${aData.Id}">Edit/Approve/Verify/Reject</a>
                                 <a class="dropdown-item" href="/registry/Customer/Directors/${aData.Id}">Directors</a>
                                 <a class="dropdown-item" href="/registry/Customer/Delegates/${aData.Id}">Delegates</a>
+
                             </div>
                         </div>`;
 
@@ -146,12 +147,12 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+                    { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "25%" },
+                    { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "RecordStatusDescription", "sTitle": "RecordStatus", "sWidth": "10%" },
                     { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
                     { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });

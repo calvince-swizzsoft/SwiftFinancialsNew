@@ -6,6 +6,8 @@
     ViewBag.Title = "Create Cash Transactions";
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
     var frontOfficeTransactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
+    var chequeDepositType = ViewBag.chequeDepositTypeSelectList as List<SelectListItem>;
+    
 
 }
 
@@ -61,32 +63,24 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
                     @using (Html.BeginForm("Create", "CashDeposit", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
+                            <!-- First Row -->
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.FullAccountNumber, "Full Account Number:", new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.TextBoxFor(model => model.FullAccountNumber, new { @class = "form-control", @readonly = "readonly", @Value = "001-002705-001-001" })
+                                            @Html.TextBoxFor(model => model.FullAccountNumber, new { @class = "form-control", @readonly = "readonly" })
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
+                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
+                                                    <span class="fa fa-search"></span>
+                                                </a>
                                             </span>
                                         </div>
                                     </div>
@@ -95,67 +89,86 @@
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.StatusDescription, "Account Status:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.StatusDescription, new { @class = "form-control", @Value = "Normal" })
+                                        @Html.TextBoxFor(model => model.StatusDescription, new { @class = "form-control" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Remarks, "Account Remarks:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control", placeholder = "Enter text..." })
+                                        @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control" })
                                     </div>
                                 </div>
 
+                               
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, "Product Name:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductDescription, new { @class = "form-control", @Value = "ORDINARY SAVINGS" })
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+                                   
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductParentId)
+                                   
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, "Product Name:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "form-control" })
                                     </div>
                                 </div>
                             </div>
 
+
+                            <!-- Second Row -->
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
+                                        @Html.HiddenFor(model => model.CustomerId)
                                         @Html.LabelFor(model => model.CustomerFullName, "Customer:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control", placeholder = "Mr" })
+                                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.Type, "Type:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.Type, new { @class = "form-control", @Value = "Individual" })
+                                        @Html.LabelFor(model => model.CustomerTypeDescription, "Type:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerTypeDescription, new { @class = "form-control" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, "Payroll Numbers:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerIndividualPayrollNumbers, new { @class = "form-control", @Value = "0000131769|0101-001-00024" })
+                                        @Html.TextBoxFor(model => model.CustomerIndividualPayrollNumbers, new { @class = "form-control" })
                                     </div>
                                 </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
                             </div>
 
+
+                            <!-- Third Row -->
                             <div class="row">
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.CustomerSerialNumber, "Serial Number:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerSerialNumber, new { @class = "form-control", @Value = "002705" })
+                                        @Html.TextBoxFor(model => model.CustomerSerialNumber, new { @class = "form-control" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.CustomerReference1, "Account Number:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerReference1, new { @class = "form-control", @Value = "0101-001-00024" })
+                                        @Html.TextBoxFor(model => model.CustomerReference1, new { @class = "form-control" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-3">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.CustomerReference2, "Membership Number:", new { @class = "control-label" })
-                                        @Html.TextBoxFor(model => model.CustomerReference2, new { @class = "form-control", @Value = "04192" })
+                                        @Html.TextBoxFor(model => model.CustomerReference2, new { @class = "form-control"})
                                     </div>
                                 </div>
 
@@ -167,9 +180,11 @@
                                 </div>
                             </div>
 
+                          
+                            <!-- Tabs -->
                             <ul class="nav nav-tabs" style="margin-bottom: 20px;">
-                                <li class="nav-item active">
-                                    <a class="nav-link" data-toggle="tab" href="#transaction">Transaction</a>
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#transaction">Transaction</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#tellerGlAccountStatement">Teller G/L Account Statement</a>
@@ -185,102 +200,68 @@
                             <div class="tab-content">
                                 <div id="transaction" class="tab-pane active">
                                     <div class="form-group">
-                                        <label for="TransactionType">Transaction Type:</label>
-                                        <select class="form-control" id="TransactionType">
-                                            <option>Cash Deposit</option>
-                                        </select>
+                                        @Html.LabelFor(model => model.Type, htmlAttributes: new { @class = "control-label" })
+                                        @Html.DropDownListFor(model => model.Type, frontOfficeTransactionType, new { @class = "form-control input.md" })
+                                        @Html.ValidationMessageFor(model => model.Type)  
                                     </div>
 
-                                    <ul class="nav secondary-nav-tabs" style="margin-bottom: 20px;">
-                                        <li class="secondary-nav-item active">
-                                            <a class="secondary-nav-link" data-toggle="tab" href="#cashDeposit">Cash Deposit</a>
-                                        </li>
-                                        <li class="secondary-nav-item">
-                                            <a class="secondary-nav-link" data-toggle="tab" href="#cashWithdrawal">Cash Withdrawal</a>
-                                        </li>
-                                        <li class="secondary-nav-item">
-                                            <a class="secondary-nav-link" data-toggle="tab" href="#chequeDeposit">Cheque Deposit</a>
-                                        </li>
-                                        <li class="secondary-nav-item">
-                                            <a class="secondary-nav-link" data-toggle="tab" href="#paymentVoucher">Payment Voucher</a>
-                                        </li>
-                                        <li class="secondary-nav-item ">
-                                            <a class="secondary-nav-link" data-toggle="tab" href="#chargesLevies">Charges & Levies</a>
-                                        </li>
-                                    </ul>
+                                    <!-- Secondary Tabs (indented) -->
+                                    <div style="margin-left: 20px;">
+                                        <ul class="nav secondary-nav-tabs" style="margin-bottom: 20px;">
+                                            <li class="secondary-nav-item">
+                                                <a class="secondary-nav-link active" data-toggle="tab" href="#cashDeposit">Cash Deposit</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="secondary-nav-link" data-toggle="tab" href="#cashWithdrawal">Cash Withdrawal</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="secondary-nav-link" data-toggle="tab" href="#chequeDeposit">Cheque Deposit</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="secondary-nav-link" data-toggle="tab" href="#paymentVoucher">Payment Voucher</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="secondary-nav-link" data-toggle="tab" href="#chargesLevies">Charges & Levies</a>
+                                            </li>
+                                        </ul>
 
-                                    <div class="secondary-tab-content">
-                                        <div id="cashDeposit" class="secondary-tab-pane active">
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div style="height: 200px; overflow-y: scroll; border: 1px solid #ccc; padding: 10px;">
-                                                        <h5>Currency Breakdown</h5>
-                                                        <div class="form-group">
-                                                            <label>20X:</label>
-                                                            <input type="text" class="form-control" readonly value="£0.00" />
+                                        <div class="secondary-tab-content" style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
+                                            <!-- Cash Deposit Tab -->
+                                            <div id="cashDeposit" class="secondary-tab-pane active">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>10X:</label>
-                                                            <input type="text" class="form-control" readonly value="£0.00" />
+
+
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.CashDeposit.Remarks, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.CashDeposit.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.CashDeposit.Remarks, "", new { @class = "text-danger" })
                                                         </div>
-                                                        <div class="form-group">
-                                                            <label>5X:</label>
-                                                            <input type="text" class="form-control" readonly value="£0.00" />
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>1X:</label>
-                                                            <input type="text" class="form-control" readonly value="£0.00" />
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>.50X:</label>
-                                                            <input type="text" class="form-control" readonly value="£0.00" />
-                                                        </div>
-                                                        <div class="form-group">
-                                                            <label>Total Currency Breakdown:</label>
-                                                            <input type="text" class="form-control" readonly value="£10,000.00" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="form-group">
-            <label>Amount:</label>
-            <input type="text" class="form-control" value="£10,000.00" />
-        </div>
-                                                    @*<div class="form-group">
-                                                        @Html.LabelFor(model => model.CustomerReference1, "Account Number:", new { @class = "control-label" })
-                                                        @Html.TextBoxFor(model => model.CustomerReference1, new { @class = "form-control", @Value = "0101-001-00024" })
-                                                    </div>*@
-                                                    <div class="form-group">
-                                                        <label>Reference:</label>
-                                                        <div class="input-group">
-                                                            <input type="text" class="form-control" value="ok" />
-                                                            <span class="input-group-addon">
-                                                                <i class="fa fa-times text-danger"></i>
-                                                            </span>
-                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        @*<div>*@
 
+                                            <!-- Cash Withdrawal Tab -->
                                             <div id="cashWithdrawal" class="secondary-tab-pane">
-                                                <div class="form-group">
-                                                    <label for="Amount">Amount:</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" id="Amount" placeholder="Enter amount">
-                                                        <span class="input-group-addon">Ksh0.00</span>
-                                                    </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CashWithdrawal.Amount, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.CashWithdrawal.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
+                                                    @Html.ValidationMessageFor(model => model.CashWithdrawal.Amount, "", new { @class = "text-danger" })
                                                 </div>
-                                                <div class="form-group">
-                                                    <label for="Reference">Reference:</label>
-                                                    <div class="input-group">
-                                                        <input type="text" class="form-control" id="Reference" placeholder="Enter Text...">
-                                                        <span class="input-group-addon">
-                                                            <i class="fa fa-times text-danger"></i>
-                                                        </span>
-                                                    </div>
+
+
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CashWithdrawal.Remarks, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.CashWithdrawal.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                                    @Html.ValidationMessageFor(model => model.CashWithdrawal.Remarks, "", new { @class = "text-danger" })
                                                 </div>
+
                                                 <div class="row">
                                                     <div class="col-md-3">
                                                         <div class="form-group">
@@ -308,106 +289,179 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div id="chequeDeposit" class="secondary-tab-pane">
-                                                <!-- Content for Cheque Deposit-->
-                                                <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="drawerDetails">Cheque Drawer Details:</label>
-                <input type="text" class="form-control" id="drawerDetails" placeholder="Enter drawer details">
-            </div>
-            <div class="form-group">
-                <label for="writeDate">Write Date:</label>
-                <input type="date" class="form-control" id="writeDate">
-            </div>
-            <div class="form-group">
-                <label for="bankName">Bank Name:</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="bankName" placeholder="Select bank">
-                    <span class="input-group-addon">
-                        <i class="fa fa-search"></i>
-                    </span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="branchName">Branch Name:</label>
-                <input type="text" class="form-control" id="branchName" placeholder="Select branch">
-            </div>
-        </div>
-        <div class="col-md-6">
-            <div class="form-group">
-                <label for="chequeType">Cheque Type:</label>
-                <div class="input-group">
-                    <input type="text" class="form-control" id="chequeType" placeholder="Select cheque type">
-                    <span class="input-group-addon">
-                        <i class="fa fa-search"></i>
-                    </span>
-                </div>
-            </div>
-            <div class="form-group">
-                <label for="maturityDate">Maturity Date:</label>
-                <input type="text" class="form-control" id="maturityDate" readonly>
-            </div>
-            <div class="form-group">
-                <label for="chequeAmount">Cheque Amount:</label>
-                <input type="text" class="form-control" id="chequeAmount" placeholder="Enter amount">
-            </div>
-            <div class="form-group">
-                <label for="chequeNumber">Cheque Number:</label>
-                <input type="text" class="form-control" id="chequeNumber" placeholder="Enter 6-digit number" maxlength="6">
-            </div>
-            <div class="form-group">
-                <label for="chequeReference">Reference:</label>
-                <input type="text" class="form-control" id="chequeReference" placeholder="Enter reference">
-            </div>
-        </div>
-    </div>
 
+                                            <!-- Cheque Deposit Tab -->
+                                            <div id="chequeDeposit" class="secondary-tab-pane">
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Cheque Deposit Details</h5>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                              
+                                                                <div class="form-group">
+                                                                    @Html.LabelFor(model => model.ChequeDeposit.Drawer, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.ChequeDeposit.Drawer, new { htmlAttributes = new { @class = "form-control" } })
+                                                                    @Html.ValidationMessageFor(model => model.ChequeDeposit.Drawer, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    @Html.LabelFor(model => model.ChequeDeposit.WriteDate, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.ChequeDeposit.WriteDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Write Date" } })
+                                                                    @Html.ValidationMessageFor(model => model.ChequeDeposit.WriteDate, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    @Html.LabelFor(model => model.ChequeDeposit.DrawerBank, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.ChequeDeposit.DrawerBank, new { htmlAttributes = new { @class = "form-control", @placeholder = "HEAD BRANCH" } })
+                                                                    @Html.ValidationMessageFor(model => model.ChequeDeposit.DrawerBank, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+   
+                                                                <div class="form-group">
+                                                                    @Html.LabelFor(model => model.ChequeDeposit.MaturityDate, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.ChequeDeposit.MaturityDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Write Date" } })
+                                                                    @Html.ValidationMessageFor(model => model.ChequeDeposit.MaturityDate, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                                    @Html.HiddenFor(model => model.ChequeDeposit.ChequeTypeId)
+                                                                    @Html.LabelFor(model => model.ChequeDeposit.ChequeTypeDescription, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.ChequeDeposit.ChequeTypeDescription, new { htmlAttributes = new { @class = "form-control" } })
+                                                                    @Html.ValidationMessageFor(model => model.ChequeDeposit.ChequeTypeDescription, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="maturityDate">Maturity Date:</label>
+                                                                    <input type="text" id="maturityDate" class="form-control" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group form-group-lg">
+                                                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control"} })
+                                                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group form-group-lg">
+                                                                    @Html.LabelFor(model => model.ChequeDeposit.Number, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.ChequeDeposit.Number, new { htmlAttributes = new { @class = "form-control"} })
+                                                                    @Html.ValidationMessageFor(model => model.ChequeDeposit.Number, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
                                             </div>
+
+
+                                            <!-- Payment Voucher Tab -->
+
                                             <div id="paymentVoucher" class="secondary-tab-pane">
-                                                <!-- Content for Payment Voucher-->
-                                            </div>
-                                            <div id="chargesLevies" class="secondary-tab-pane">
-                                                <div class="table-responsive">
-                                                    <table class="table table-bordered">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Name</th>
-                                                                <th>Amount</th>
-                                                                <th>Borne By</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <!-- Add rows here if needed -->
-                                                            <tr>
-                                                                <td>exampleName</td>
-                                                                <td>example Amount</td>
-                                                                <td>example cheque issuer?</td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                <div class="card">
+                                                    <div class="card-body">
+                                                        <h5 class="card-title">Payment Voucher Details</h5>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="chequeBookNumber">Cheque Book Number:</label>
+                                                                    <div class="input-group">
+                                                                        <input type="text" id="chequeBookNumber" class="form-control" readonly>
+                                                                        <span class="input-group-addon">
+                                                                            <a data-toggle="modal" data-target="#paymentVoucherLookupModal">
+                                                                                <span class="fa fa-search"></span>
+                                                                            </a>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label for="paymentVoucherNumber">Payment Voucher Number:</label>
+                                                                    <input type="text" id="paymentVoucherNumber" class="form-control" readonly>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mt-4">
+                                                    <h5>Payment Details</h5>
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="form-group">
+                                                                <label for="paymentVoucherPayee">Payee:</label>
+                                                                <input type="text" id="paymentVoucherPayee" class="form-control">
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="form-group">
+                                                            @Html.LabelFor(model => model.PaymentVoucher.WriteDate, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.PaymentVoucher.WriteDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Write Date" } })
+                                                            @Html.ValidationMessageFor(model => model.PaymentVoucher.WriteDate, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="row">
+
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.PaymentVoucher.Amount, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.PaymentVoucher.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
+                                                            @Html.ValidationMessageFor(model => model.PaymentVoucher.Amount, "", new { @class = "text-danger" })
+                                                        </div>
+
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.PaymentVoucher.Reference, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.PaymentVoucher.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
+                                                            @Html.ValidationMessageFor(model => model.PaymentVoucher.Reference, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                             </div>
-                                        @*</div>*@
 
-                                        <div class="row" style="margin-top: 20px;">
+                                            <!-- Charges & Levies Tab -->
+                                            <div id="chargesLevies" class="secondary-tab-pane">
+                                                <!-- Content for Charges & Levies -->
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Balance Information -->
+                                    <div style="margin-top: 20px; border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
+                                        <div class="row">
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label>Current Available Balance:</label>
-                                                    <input type="text" class="form-control" value="£320,396.80" readonly />
+                                                    <input type="text" class="form-control" value="£320,396.80" readonly style="text-align: right;" />
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
+                      
+
                                                 <div class="form-group">
-                                                    <label>New Book Balance:</label>
-                                                    <input type="text" class="form-control" value="£331,396.80" readonly />
+                                                    @Html.LabelFor(model => model.BookBalance, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.BookBalance, new { htmlAttributes = new { @class = "form-control"} })
+                                                    @Html.ValidationMessageFor(model => model.BookBalance, "", new { @class = "text-danger" })
                                                 </div>
+
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label>New Available Balance:</label>
-                                                    <input type="text" class="form-control" value="£330,396.80" readonly />
+                                     <div class="form-group">
+                                                    @Html.LabelFor(model => model.AvailableBalance, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @class = "form-control"} })
+                                                    @Html.ValidationMessageFor(model => model.AvailableBalance, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                         </div>
@@ -416,31 +470,36 @@
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>Current Teller Balance:</label>
-                                                    <input type="text" class="form-control" value="£0.00" readonly />
+                                                    <input type="text" class="form-control" readonly style="text-align: right;" />
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label>New Teller Balance:</label>
-                                                    <input type="text" class="form-control" value="(£10,000.00)" readonly />
+                                                    <input type="text" class="form-control" readonly style="text-align: right;" />
                                                 </div>
                                             </div>
                                         </div>
+                                    </div>
 
-                                        <div class="form-group">
-                                            <button type="submit" class="btn btn-primary">Update</button>
-                                        </div>
+                                    <div class="form-group" style="margin-top: 20px; text-align: right;">
+                                        <button type="submit" class="btn btn-primary">Update</button>
                                     </div>
                                 </div>
 
+                                <!-- Teller G/L Account Statement Tab -->
                                 <div id="tellerGlAccountStatement" class="tab-pane">
-                                    <!-- Content for Teller G/L Account Statement tab -->
+                                    <!-- Add content here for the 'Teller G/L Account Statement' tab -->
                                 </div>
+
+                                <!-- Customer Account Preview Tab -->
                                 <div id="customerAccountPreview" class="tab-pane">
-                                    <!-- Content for Customer Account Preview tab -->
+                                    <!-- Add content here for the 'Customer Account Preview' tab -->
                                 </div>
+
+                                <!-- Customer Preview Tab -->
                                 <div id="customerPreview" class="tab-pane">
-                                    <!-- Content for Customer Preview tab -->
+                                    <!-- Add content here for the 'Customer Preview' tab -->
                                 </div>
                             </div>
                         </div>
@@ -450,6 +509,91 @@
         </div>
     </div>
 </div>
+
+
+<!-- Payment Voucher Lookup Modal -->
+<div class="modal fade" id="paymentVoucherLookupModal" tabindex="-1" role="dialog" aria-labelledby="paymentVoucherLookupModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="paymentVoucherLookupModalLabel">Payment Voucher Lookup</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Upper pane -->
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Serial Number</th>
+                                        <th>Is Active?</th>
+                                        <th>Initial Voucher Number</th>
+                                        <th>Number Of Vouchers</th>
+                                        <th>Account Number</th>
+                                        <th>Customer Name</th>
+                                        <th>Customer Reference 1</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sample data, replace with dynamic data in real implementation -->
+                                    <tr>
+                                        <td>000001</td>
+                                        <td>False</td>
+                                        <td>1</td>
+                                        <td>5</td>
+                                        <td>001-000520-001-001</td>
+                                        <td>JUSTUS AMOS</td>
+                                        <td>0101-001-07529</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Lower pane -->
+                        <h5>Payment Vouchers</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>Voucher Number</th>
+                                        <th>Status</th>
+                                        <th>Payee</th>
+                                        <th>Amount</th>
+                                        <th>Write Date</th>
+                                        <th>Reference</th>
+                                        <th>Paid/Flagged Date</th>
+                                        <th>Created Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sample data, replace with dynamic data in real implementation -->
+                                    <tr>
+                                        <td>000001</td>
+                                        <td>Flagged</td>
+                                        <td></td>
+                                        <td>KES:0.00</td>
+                                        <td></td>
+                                        <td>Active</td>
+                                        <td>12-03-2015 14:47:15 PM</td>
+                                        <td>04-03-2015 10:51:09 AM</td>
+                                    </tr>
+                                    <!-- Add more rows as needed -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Select</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 
 <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
@@ -547,6 +691,7 @@
                     var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(5)', nRow).html(dt_Created);
+
                     $('td:eq(6)', nRow).html(selectUrl);
 
                     return nRow;

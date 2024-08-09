@@ -8,6 +8,7 @@ using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -15,120 +16,99 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class AccountClosureController : MasterController
     {
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
-
             return View();
         }
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            int totalRecordCount = 0;
+            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart,
+                jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader()
+            );
 
-            int searchRecordCount = 0;
-            bool includeProductDescription = false;
+            var sortedPageCollection = pageCollectionInfo.PageCollection
+                .OrderByDescending(acct => acct.CreatedDate)
+                .ToList();
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var totalRecordCount = pageCollectionInfo.ItemsCount;
+            var searchRecordCount = string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
+                ? totalRecordCount
+                : sortedPageCollection.Count;
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, jQueryDataTablesModel.iColumns, includeProductDescription, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            return this.DataTablesJson(
+                items: sortedPageCollection,
+                totalRecords: totalRecordCount,
+                totalDisplayRecords: searchRecordCount,
+                sEcho: jQueryDataTablesModel.sEcho
+            );
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
-
-            var accountClosureDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
-            return View(accountClosureDTO);
+            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+            return View(accountClosureRequestDTO);
         }
-
 
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
+            var accountClosureRequestDTO = new AccountClosureRequestDTO();
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            if (id.HasValue && id != Guid.Empty)
             {
-                return View();
+                var customerAccount = await _channelService.FindCustomerAccountAsync(id.Value, false, false, false, false, GetServiceHeader());
+                if (customerAccount != null)
+                {
+                    accountClosureRequestDTO = PopulateAccountClosureDTO(accountClosureRequestDTO, customerAccount);
+                }
             }
 
-
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            AccountClosureRequestDTO accountClosureRequestDTO = new AccountClosureRequestDTO();
-
-            if (customer != null)
-            {
-                accountClosureRequestDTO.CustomerAccountCustomerId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountId = customer.Id;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                accountClosureRequestDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
-
-
-            }
-
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
-
+            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
-
 
         [HttpPost]
         public async Task<ActionResult> Create(AccountClosureRequestDTO accountClosureRequestDTO)
         {
             accountClosureRequestDTO.ValidateAll();
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            if (!accountClosureRequestDTO.HasErrors)
+            if (userDTO.BranchId.HasValue)
             {
-                await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
-
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
-
-                return RedirectToAction("Index");
+                accountClosureRequestDTO.BranchId = userDTO.BranchId.Value;
             }
             else
             {
-                var errorMessages = accountClosureRequestDTO.ErrorMessages;
-
-                return View(accountClosureRequestDTO);
+                ModelState.AddModelError("BranchId", "Branch Id is required.");
             }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError(string.Empty, $"An error occurred while saving the data: {ex.Message}");
+                }
+            }
+
+            PopulateViewBags(accountClosureRequestDTO);
+            return View(accountClosureRequestDTO);
         }
 
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
+            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
 
@@ -139,23 +119,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (ModelState.IsValid)
             {
                 await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
-
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
+            PopulateViewBags(accountClosureRequestDTO);
+            return View(accountClosureRequestDTO);
         }
-
-
 
         public async Task<ActionResult> Approval(Guid id)
         {
             await ServeNavigationMenus();
-
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
+            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
 
@@ -163,56 +137,55 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Approval(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-           int accountClosureApprovalOption =0;
+            int accountClosureApprovalOption = 0;
 
             if (ModelState.IsValid)
-
             {
                 await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureApprovalOption, GetServiceHeader());
-
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
+            PopulateViewBags(accountClosureRequestDTO);
+            return View(accountClosureRequestDTO);
         }
 
-
-
-
-
-        public async Task<ActionResult> verify(Guid id)
+        public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
-
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
+            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> verify(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
+        public async Task<ActionResult> Verify(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            int AuditAccountClosureRequestAsync = 0;
+            int auditAccountClosureRequestAsync = 0;
 
             if (ModelState.IsValid)
-
             {
-                await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, AuditAccountClosureRequestAsync, GetServiceHeader());
-
+                await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestAsync, GetServiceHeader());
                 return RedirectToAction("Index");
             }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
+            PopulateViewBags(accountClosureRequestDTO);
+            return View(accountClosureRequestDTO);
         }
 
+        private void PopulateViewBags(AccountClosureRequestDTO accountClosureRequestDTO)
+        {
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
+        }
 
-
-
-
+        private AccountClosureRequestDTO PopulateAccountClosureDTO(AccountClosureRequestDTO dto, CustomerAccountDTO customerAccount)
+        {
+            dto.CustomerAccountCustomerId = customerAccount.Id;
+            dto.CustomerAccountId = customerAccount.Id;
+            dto.CustomerAccountCustomerIndividualFirstName = customerAccount.FullAccountNumber;
+            dto.CustomerAccountCustomerIndividualPayrollNumbers = customerAccount.CustomerIndividualPayrollNumbers;
+            dto.CustomerAccountCustomerSerialNumber = customerAccount.CustomerSerialNumber;
+            dto.CustomerAccountCustomerIndividualIdentityCardNumber = customerAccount.CustomerIndividualIdentityCardNumber;
+            dto.CustomerAccountCustomerIndividualLastName = customerAccount.CustomerIndividualFirstName + " " + customerAccount.CustomerIndividualLastName;
+            return dto;
+        }
     }
 }

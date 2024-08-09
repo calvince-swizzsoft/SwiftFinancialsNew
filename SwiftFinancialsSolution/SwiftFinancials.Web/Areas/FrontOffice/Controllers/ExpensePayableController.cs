@@ -110,6 +110,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
+
         [HttpPost]
         public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
         {
@@ -125,10 +127,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
 
                 var expensePayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
-                if (expensePayable.ErrorMessageResult!=null)
-                {
-                    TempData["Error"] = expensePayable.ErrorMessageResult;
-                }
+                
 
                 if (expensePayable != null)
                 {
@@ -163,7 +162,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 ViewBag.ExpensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, GetServiceHeader());
                 TempData["ExpensePayableEntryDTO"] = "";
-                TempData["ExpensePayableDTO"]= "";
+                TempData["ExpensePayableDTO"] = "";
                 ViewBag.ExpensePayableEntryDTOs = "";
 
                 return RedirectToAction("Index");
@@ -340,6 +339,32 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
+        [HttpPost]
+        public async Task<ActionResult> RemoveEntry(Guid id, ExpensePayableDTO expensePayableDTO)
+        {
+            await ServeNavigationMenus();
+            // Retrieve the TempData
+            var ExpensePayableEntryDTOs = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
+
+            if (ExpensePayableEntryDTOs != null)
+            {
+                // Find the entry to remove
+                var entryToRemove = ExpensePayableEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    ExpensePayableEntryDTOs.Remove(entryToRemove);
+                    // Update TempData
+                    TempData["ExpensePayableEntryDTO"] = ExpensePayableEntryDTOs;
+                    return Json(new { success = true });
+                }
+            }
+            return Json(new { success = false });
+        }
+
+
+
+
         //[HttpPost]
         //[ValidateAntiForgeryToken]
 
@@ -353,6 +378,14 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         //}
     }
 }
+
+
+
+
+
+
+
+
 
 
 

@@ -173,6 +173,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(LoanCaseDTO loanCaseDTO)
@@ -180,5 +181,109 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
             return View();
         }
+
+
+
+
+        // Add 
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            LoanGuarantorDTOs = TempData["LoanGuarantorDTOs"] as ObservableCollection<LoanGuarantorDTO>;
+
+
+            if (LoanGuarantorDTOs == null)
+                LoanGuarantorDTOs = new ObservableCollection<LoanGuarantorDTO>();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                TempData["LoanGuarantorsError"] = "Could not add charge split. Choose G/L Account.";
+
+                await ServeNavigationMenus();
+
+                return View("Create", loanGuarantorDTO);
+            }
+
+
+            foreach (var loanGuarantorsGuarantors in loanGuarantorDTO.LoanGuarantors)
+            {
+
+                TempData["tPercentage"] = "";
+
+                LoanGuarantorDTOs.Add(loanGuarantorsGuarantors);
+            };
+
+            ViewBag.Guarantors = ChargeSplitDTOs;
+
+            TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
+
+            return View("Create");
+        }
+
+
+
+        // Remove
+        [HttpPost]
+        public async Task<ActionResult> removeChargeSplit(Guid? id, CommissionDTO commissionDTO)
+        {
+            commissionDTO = TempData["ChargeDTO"] as CommissionDTO;
+
+            commissionDTO.chargeSplit = Session["chargeSplit"] as ObservableCollection<CommissionSplitDTO>;
+
+            var percentageOnRemove = commissionDTO.chargeSplit[0].Percentage;
+            var currentPercentage = Convert.ToDouble(Session["totalPercentage"].ToString());
+
+            double cPercentage = Convert.ToDouble(currentPercentage);
+            double rPercentage = Convert.ToDouble(percentageOnRemove);
+
+            double newpercentage = cPercentage - rPercentage;
+
+            ViewBag.totalPercentage = newpercentage;
+
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                await ServeNavigationMenus();
+
+                return View("Create");
+            }
+
+            ChargeSplitDTOs = TempData["ChargeSplitDTOs"] as ObservableCollection<CommissionSplitDTO>;
+
+            var glAccount = commissionDTO.chargeSplits;
+
+            if (ChargeSplitDTOs == null)
+                ChargeSplitDTOs = new ObservableCollection<CommissionSplitDTO>();
+
+            foreach (var chargeSplitDTO in commissionDTO.chargeSplit)
+            {
+                chargeSplitDTO.Id = parseId;
+                chargeSplitDTO.Description = chargeSplitDTO.Description;
+                chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+                chargeSplitDTO.ChartOfAccountAccountName = chargeSplitDTO.ChartOfAccountAccountName;
+                chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+                chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+                ChargeSplitDTOs.Remove(chargeSplitDTO);
+            };
+
+            TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
+
+            TempData["ChargeDTO"] = commissionDTO;
+
+            TempData["tPercentage"] = "";
+
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+
+            return View("Create", commissionDTO);
+        }
+
     }
 }

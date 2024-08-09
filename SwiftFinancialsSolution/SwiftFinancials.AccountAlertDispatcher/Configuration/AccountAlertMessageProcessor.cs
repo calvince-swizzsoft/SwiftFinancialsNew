@@ -79,7 +79,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                     if (userDTO != null)
                                     {
-                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.BranchId, serviceHeader);
+                                        var branchDTO = await _channelService.FindBranchAsync((Guid)userDTO.BranchId, serviceHeader);
 
                                         #region Email Alert
 
@@ -97,14 +97,14 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
                                             model.Add("Username", userDTO.Email);
                                             model.Add("UserPassword", queueDTO.UserPassword);
                                             model.Add("CallbackUrl", queueDTO.CallbackUrl);
-                                            model.Add("CompanyDescription", companyDTO.Description);
+                                            model.Add("CompanyDescription", branchDTO.Description);
 
                                             var emailResult = Engine.Razor.RunCompile(template, string.Format("{0}_EmailTemplate", "AccountRegistration"), null, model);
 
                                             EmailAlertDTO emailAlertDTO = new EmailAlertDTO
                                             {
-                                                CompanyId = userDTO.BranchId.Value,
-                                                MailMessageFrom = companyDTO.AddressEmail,
+                                                BranchId = userDTO.BranchId.Value,
+                                                MailMessageFrom = branchDTO.CompanyAddressEmail,
                                                 MailMessageTo = userDTO.Email,
                                                 MailMessageSubject = "Account Registration",
                                                 MailMessageBody = emailResult,
@@ -132,7 +132,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                     if (userDTO != null)
                                     {
-                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.BranchId, serviceHeader);
+                                        var branchDTO = await _channelService.FindBranchAsync((Guid)userDTO.BranchId, serviceHeader);
 
                                         switch ((TwoFactorProviders)queueDTO.Provider)
                                         {
@@ -152,13 +152,13 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                                     model.Add("FirstName", userDTO.FirstName);
                                                     model.Add("Token", queueDTO.Token);
-                                                    model.Add("CompanyDescription", companyDTO.Description);
+                                                    model.Add("CompanyDescription", branchDTO.CompanyDescription);
 
                                                     var textResult = Engine.Razor.RunCompile(template, string.Format("{0}_TextTemplate", SystemTransactionCode.MembershipAccountVerification), null, model);
 
                                                     TextAlertDTO textAlertDTO = new TextAlertDTO
                                                     {
-                                                        CompanyId = userDTO.BranchId.Value,
+                                                        BranchId = userDTO.BranchId.Value,
                                                         TextMessageBody = textResult,
                                                         TextMessageRecipient = userDTO.PhoneNumber,
                                                         TextMessageDLRStatus = (int)DLRStatus.Pending,
@@ -190,14 +190,14 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                                     model.Add("FirstName", userDTO.FirstName);
                                                     model.Add("Token", queueDTO.Token);
-                                                    model.Add("CompanyDescription", companyDTO.Description);
+                                                    model.Add("CompanyDescription", branchDTO.CompanyDescription);
 
                                                     var emailResult = Engine.Razor.RunCompile(template, string.Format("{0}_EmailTemplate", SystemTransactionCode.MembershipAccountVerification), null, model);
 
                                                     EmailAlertDTO emailAlertDTO = new EmailAlertDTO
                                                     {
-                                                        CompanyId = userDTO.BranchId.Value,
-                                                        MailMessageFrom = companyDTO.AddressEmail,
+                                                        BranchId = userDTO.BranchId.Value,
+                                                        MailMessageFrom = branchDTO.CompanyAddressEmail,
                                                         MailMessageTo = userDTO.Email,
                                                         MailMessageSubject = "Account Verification",
                                                         MailMessageBody = emailResult,
@@ -228,7 +228,7 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                     if (userDTO != null)
                                     {
-                                        var companyDTO = await _channelService.FindCompanyAsync((Guid)userDTO.BranchId, serviceHeader);
+                                        var branchDTO = await _channelService.FindBranchAsync((Guid)userDTO.BranchId, serviceHeader);
 
                                         #region Email Alert
 
@@ -244,14 +244,14 @@ namespace SwiftFinancials.AccountAlertDispatcher.Configuration
 
                                             model.Add("FirstName", userDTO.FirstName);
                                             model.Add("CallbackUrl", queueDTO.CallbackUrl);
-                                            model.Add("CompanyDescription", companyDTO.Description);
+                                            model.Add("CompanyDescription", branchDTO.CompanyDescription);
 
                                             var emailResult = Engine.Razor.RunCompile(template, string.Format("{0}_EmailTemplate", SystemTransactionCode.MembershipResetPassword), null, model);
 
                                             EmailAlertDTO emailAlertDTO = new EmailAlertDTO
                                             {
-                                                CompanyId = userDTO.BranchId.Value,
-                                                MailMessageFrom = companyDTO.AddressEmail,
+                                                BranchId = userDTO.BranchId.Value,
+                                                MailMessageFrom = branchDTO.CompanyAddressEmail,
                                                 MailMessageTo = userDTO.Email,
                                                 MailMessageSubject = "Reset Password",
                                                 MailMessageBody = emailResult,
