@@ -51,7 +51,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         public async Task<ActionResult> Appraise(Guid Id, Guid? id)
-
         {
             await ServeNavigationMenus();
             int caseNumber = 0;
