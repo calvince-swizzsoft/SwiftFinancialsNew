@@ -13,6 +13,7 @@ namespace Application.MainBoundedContext.DTO.HumanResourcesModule
         public DesignationDTO()
         {
             AddAllAttributeValidators();
+            
         }
 
         [DataMember]
