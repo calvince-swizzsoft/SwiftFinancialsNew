@@ -38,7 +38,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -73,6 +73,12 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader());
+            ViewBag.debit = debitTypes;
+            ViewBag.invesment = investmentProducts;
+            ViewBag.savings = savingsProducts;
 
             return View();
         }
