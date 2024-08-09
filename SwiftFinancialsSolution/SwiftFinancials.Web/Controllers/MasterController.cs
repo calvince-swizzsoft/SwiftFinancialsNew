@@ -38,6 +38,9 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
+        // Maxon Included this
+        public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
+
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
         public ObservableCollection<GraduatedScaleDTO> TiersDTOs;
@@ -61,6 +64,9 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<InvestmentProductDTO> investmentProductDTOs;
         public ObservableCollection<SavingsProductDTO> savingsProductDTOs;
         public ObservableCollection<LoanProductDTO> loanProductDTOs;
+
+
+        public ObservableCollection<Guid> customerAccountsIds;
 
         private IChannelService channelService;
         public IChannelService _channelService

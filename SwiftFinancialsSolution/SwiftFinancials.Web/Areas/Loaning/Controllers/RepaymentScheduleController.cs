@@ -21,6 +21,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+            
+
             return View();
         }
 

@@ -174,6 +174,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AuditDebitBatchAsync(debitBatchDTO, 1, GetServiceHeader());
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
+                ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
 
                 TempData["verify"] = "Successfully verified Loan Purpose";
                 return RedirectToAction("Index");

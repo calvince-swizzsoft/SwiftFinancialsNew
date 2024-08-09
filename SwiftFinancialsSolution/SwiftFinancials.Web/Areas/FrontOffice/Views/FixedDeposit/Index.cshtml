@@ -1,11 +1,10 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "FixedDeposit";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Fixed Deposit</h2>
+        <h2>Fixed Deposit Fixing</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -55,14 +54,49 @@
 </div>
 
 @section Styles {
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section scripts {
+@section Scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#FixedDepositsGrid').DataTable({
                 // Ajax settings
@@ -73,8 +107,7 @@
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -82,34 +115,51 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/frontOffice/FixedDeposite/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/frontOffice/FixedDeposite/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-                    var verifyurl = '<a  href="/frontOffice/FixedDeposite/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'verify</a>';
-                    var Approvalurl = '<a  href="/frontOffice/FixedDeposite/Approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl +'&nbsp;' + verifyurl + '&nbsp;' + Approvalurl);
+                    var editUrl = '<a  href="/frontoffice/fixedDeposit/verify/' + aData.Id + '" class="btn btn-outline-info">Verify</a>';
+                    var viewUrl = '<a  href="/frontoffice/fixedDeposit/approval/' + aData.Id + '" class="btn btn-outline-info">Approve</a>';
 
+                    $('td:eq(5)', nRow).html(dt_Created);
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/frontoffice/fixedDeposit/verify/${aData.Id}">Verify</a>
+                                <a class="dropdown-item" href="/frontoffice/fixedDeposit/approval/${aData.Id}">Approve</a>
+                            </div>
+                        </div>`;
+
+                    $('td:eq(8)', nRow).html(dropdownHtml);
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "BranchDescription", "sTitle": "BranchDescription", "sWidth": "15%" },
-                    { "mDataProp": "CustomerAccountCustomerTypeDescription", "sTitle": "Customer Type Description", "sWidth": "10%" },
-                    { "mDataProp": "CustomerAccountStatusDescription", "sTitle": "CustomerAccountStatus", "sWidth": "10%" },
-                    { "mDataProp": "CustomerAccountRemarks", "sTitle": "CustomerAccountRemarks", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+                    { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Account Number", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountCustomerReference2", "sTitle": "Membership Number", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountCustomerReference3", "sTitle": "Personal File", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "3%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
 
-
-        $(document).ajaxStart(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+            $(document).ajaxStart(function () {
+                $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+            });
+            $(document).ajaxStop(function () {
+                $('.ibox').children('.ibox-content').toggleClass('sk-loading');
+            });
         });
-        $(document).ajaxStop(function () {
-            $('.ibox').children('.ibox-content').toggleClass('sk-loading');
-        });
-         });
     </script>
-
 }
+
+
+
+
+

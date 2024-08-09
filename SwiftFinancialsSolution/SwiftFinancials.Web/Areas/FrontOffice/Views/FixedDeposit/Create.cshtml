@@ -1,223 +1,242 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.FixedDepositDTO
-@{
-    /**/
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.FixedDepositDTO
 
-    ViewBag.Title = "Create FixedDeposit";
-
-    var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
-
-    var customerTypes = ViewBag.CustomerTypeSelectList as List<SelectListItem>;
-}
-
-@using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Get))
-{
-    TempData["Description"] = "HAM";
-    TempData["CustomerAccountCustomerIndividualFirstName"] = "HAM";
-}
-
+@{ ViewBag.Title = "Create"; }
 
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-12">
-        <h2>FixedDeposit</h2>
+    <div class="col-lg-10">
+        <h2>Create Fixed Deposit</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
-            </li>
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "FixedDeposit", new { Area = "FrontOffice" }, null)
-            </li>
-            <li class="breadcrumb-item active">
-                <strong>Create</strong>
-            </li>
+            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home")</li>
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "Create", new { Area = "FrontOffice" })</li>
+            <li class="breadcrumb-item active"><strong>Create</strong></li>
         </ol>
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
-
-<div class="wrapper wrapper-content">
+<div class="wrapper wrapper-content bg-white">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-                        @Html.AntiForgeryToken()
+                @Html.AntiForgeryToken()
 
-                        <div class="form-horizontal">
-                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
-
-                            <fieldset>
-                                <div class="row">
-                                    <div class="col-lg-6">
-
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.CustomerAccountId, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.CustomerAccountId)
-                                                @Html.TextBoxFor(model => model.CustomerAccountCustomerFullName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
+                                <div class="form-group row">
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.CustomerAccountFullAccountNumber)
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.CustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Account Number..." } })
+                                            <div class="input-group-append">
+                                                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lookupModal">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
                                             </div>
                                         </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.Value)
+                                        @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Value..." } })
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.Term)
+                                        @Html.EditorFor(model => model.Term, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Term in Months..." } })
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.Category)
+                                        @Html.DropDownListFor(model => model.Category, new SelectList(new List<SelectListItem>
+                                                                                                                                                                                            {
+                                    new SelectListItem { Text = "Term Deposit", Value = "TermDeposit" },
+                                    new SelectListItem { Text = "Call Deposit", Value = "CallDeposit" }
+                                }), "Select Category", new { @class = "form-control" })
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.Rate)
+                                        @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Annual Percentage Rate..." } })
+                                    </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.Remarks)
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="MaturityAction">Maturity Action:</label>
+                                        <select id="MaturityAction" class="form-control">
+                                            <option value="PayPrincipalAndInterestDue">Pay Principal & Interest Due</option>
+                                            <option value="PayInterestDueAndRolloverPrincipal">Pay Interest Due & Roll-over Principal</option>
+                                            <option value="RolloverPrincipalAndInterestDue">Roll-over Principal & Interest Due</option>
+                                        </select>
+                                    </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "PayrollNumbers", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                        </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reason", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
-                                        </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.BranchDescription)
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
+                                    </div>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                        </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.CustomerAccountStatusDescription)
+                                        @Html.EditorFor(model => model.CustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
+                                    </div>
 
-                                        <div class="form-group form-group-sm">
-                                            <div class="col-md-offset-2">
-                                                <input type="submit" value="Create" class="btn btn-primary" />
-                                            </div>
-                                        </div>
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference1)
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
+                                    </div>
 
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference2)
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.CustomerAccountCustomerReference3)
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        @Html.LabelFor(model => model.CustomerAccountCustomerFullName)
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks..." } })
                                     </div>
 
 
-                                    <div class="col-lg-6">
+                                </div> <!-- Modal for Lookup for full account number-->
+                                                <div class="modal fade" id="lookupModal" tabindex="-1" role="dialog" aria-labelledby="lookupModalLabel" aria-hidden="true">
+                                                    <div class="modal-dialog modal-lg" role="document">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="lookupModalLabel">Account Lookup</h5>
+                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                    <span aria-hidden="true">&times;</span>
+                                                                </button>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <!-- Search Filters -->
+                                                                <div class="row mb-3">
+                                                                    <div class="col-md-4">
+                                                                        <select id="searchField" class="form-control">
+                                                                            <option value="Address Line 1">Address Line 1</option>
+                                                                            <option value="Address Line 2">Address Line 2</option>
+                                                                            <option value="City">City</option>
+                                                                            <option value="Email">Email</option>
+                                                                            <option value="First Name">First Name</option>
+                                                                            <option value="Identity Card #">Identity Card #</option>
+                                                                            <option value="Land Line">Land Line</option>
+                                                                            <option value="Last Name">Last Name</option>
+                                                                            <option value="Mobile Line">Mobile Line</option>
+                                                                            <option value="Org. Name">Org. Name</option>
+                                                                            <option value="Org. Registration #">Org. Registration #</option>
+                                                                            <option value="Payroll Numbers">Payroll Numbers</option>
+                                                                            <option value="Personal Identification #">Personal Identification #</option>
+                                                                            <option value="Postal Code">Postal Code</option>
+                                                                            <option value="Account Number">Account Number</option>
+                                                                            <option value="Membership Number">Membership Number</option>
+                                                                            <option value="Personal File Number">Personal File Number</option>
+                                                                            <option value="Serial Number">Serial Number</option>
+                                                                        </select>
+                                                                    </div>
+
+                                                                    <!-- Dropdown for selecting account type -->
+                                                                    <select id="accountType">
+                                                                        <option value="investments">Investments</option>
+                                                                        <option value="loans">Loans</option>
+                                                                        <option value="savings">Savings</option>
+                                                                    </select>
+
+                                                                </div>
+
+                                                                <!-- Lookup Table -->
+                                                                <table id="CustomerAccountsGrid" class="table table-striped table-bordered">
+                                                                    <thead>
+                                                                        <tr>
+                                                                            <th>Branch</th>
+                                                                            <th>Status</th>
+                                                                            <th>Full Account Number</th>
+                                                                            <th>Remarks</th>
+                                                                            <th>Product Name</th>
+                                                                            <th>Customer Type</th>
+                                                                            <th>Membership Number</th>
+                                                                            <th>Personal File Number</th>
+                                                                            <th>Account Number</th>
+                                                                            <th>Customer Name</th>
+                                                                        </tr>
+                                                                    </thead>
+                                                                    <tbody>
+                                                                        <!-- Data rows will be populated here -->
+
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+                                                            <div class="modal-footer">
+                                                                <button type="button" class="btn btn-secondary" id="refreshButton">Refresh</button>
+                                                                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div> <!-- Tabs for Fixed Deposit Payables -->
+                                                <ul class="nav nav-tabs">
 
 
+                                                    <li class="nav-item">
+                                                        <a class="nav-link active" data-toggle="tab" href="#FixedDepositPayable">Fixed Deposit Payables</a>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer SerialNumber", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
-                                        </div>
+                                                    </li>
 
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer File Number" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
-                                        </div>
+                                                </ul>
+                                                <div class="tab-content">
+                                                    <div class="tab-pane fade show active" id="fixedDepositPayable">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-bordered">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>Full Account Number</th>
+                                                                        <th>Account Status</th>
+                                                                        <th>Available Balance</th>
+                                                                        <th>Customer</th>
+                                                                        <th>Payroll Number</th>
+                                                                        <th>Personal File Number</th>
+                                                                        <th>Membership Number</th>
+                                                                        <th>Ctegory</th>
+                                                                        <th>Value</th>
+                                                                        <th>Remarks</th>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
-                                        </div>
+                                                                        <th>Select</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    @if (Model != null)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>@Html.DisplayFor(model => model.CustomerAccountFullAccountNumber)</td>
+                                                                            <td>@Html.DisplayFor(model => model.CustomerAccountStatusDescription)</td>
+                                                                            <td>@Html.DisplayFor(model => model.TotalExpected)</td>
+                                                                            <td>@Html.DisplayFor(model => model.CustomerAccountCustomerId)</td>
+                                                                            <td>@Html.DisplayFor(model => model.CustomerAccountCustomerIdentificationNumber)</td>
+                                                                            <td>@Html.DisplayFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers)</td>
+                                                                            <td>@Html.DisplayFor(model => model.CustomerAccountCustomerReference1)</td>
+                                                                            <td>@Html.DisplayFor(model => model.Category)</td>
+                                                                            <td>@Html.DisplayFor(model => model.Value)</td>
+                                                                            <td>@Html.DisplayFor(model => model.Remarks)</td>
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer Identity Card Number", disabled = "disabled" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                        </div>
+                                                                        </tr>
+                                                                    }
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
 
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.FixedDepositTypeId, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.FixedDepositTypeId)
-                                                @Html.TextBoxFor(model => model.FixedDepositTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#FixedDepositeTypes"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>
-                                        </div>
+                                                <div class="col-md-12 text-right">
+                                                    <button type="button" class="btn btn-primary">Create</button>
+                                                </div>}
 
-                                    </div>
-                                </div>
-                            </fieldset>
-                        </div>
-                    }
+
                 </div>
-
-            </div>
-
-        </div>
-    </div>
-</div>
-
-<div class="modal  fade" id="FixedDepositeTypes" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Fixed Deposite Types Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="FixedDepositeTypesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-@* customer lookup *@
-<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -263,224 +282,163 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    @*<script>
-            // Disable automatic page refresh
-            window.onload = function () {
-                window.addEventListener("beforeunload", function (e) {
-                    e.preventDefault();
-                });
-            };
-
-        </script>*@
 
     <script>
+    $(document).ready(function () {
+        var accountsMap = {}; // Initialize accounts map
+        var addedEntries = []; // Array to hold added entries
 
-        // Disable automatic page refresh
-        window.onload = function () {
-            window.addEventListener("beforeunload", function (e) {
-                e.preventDefault();
+        // Typeahead functionality
+        $('.StationsLookup').typeahead({
+            source: function (query, process) {
+                return $.getJSON('@Url.Action("GetAccountNumbers", "FixedDeposit", new { Area = "FrontOffice" })', { query: query }, function (accounts) {
+                    var newAccountsData = [];
+                    accountsMap = {};
+                    $.each(accounts, function (i, account) {
+                        newAccountsData.push(account.FullAccountNumber);
+                        accountsMap[account.FullAccountNumber] = account;
+                    });
+                    process(newAccountsData);
+                });
+            },
+            updater: function (item) {
+                var account = accountsMap[item]; // Get the selected account details
+                // Auto-fill form fields with the selected account data
+                $('#CustomerAccountFullAccountNumber').val(account.CustomerAccountFullAccountNumber);
+                $('#CustomerAccountRemarks').val(account.Remarks);
+                $('#CustomerAccountTypeTargetProductDescription').val(account.ProductName);
+                $('#CustomerAccountCustomerId').val(account.CustomerId);
+                $('#CustomerAccountCustomerTypeDescription').val(account.CustomerTypeDescription);
+                $('#CustomerAccountCustomerIndividualPayrollNumbers').val(account.IndividualPayrollNumbers);
+                $('#CustomerAccountCustomerReference3').val(account.CustomerReference3);
+                $('#CustomerAccountCustomerIdentificationNumber').val(account.IdentificationNumber);
+                $('#CustomerAccountCustomerReference1').val(account.CustomerReference1);
+                $('#CustomerAccountCustomerReference2').val(account.CustomerReference2);
+                $('#MaturityAction').val(account.MaturityAction);
+                $('#lookupModal').modal('hide'); // Close the modal after selection
+            }
+        });
+
+        // Add button click handler
+        $('#addButton').click(function () {
+            var entry = {
+                FullAccountNumber: $('#CustomerAccountFullAccountNumber').val(),
+                Remarks: $('#CustomerAccountRemarks').val(),
+                ProductName: $('#CustomerAccountTypeTargetProductDescription').val(),
+                CustomerId: $('#CustomerAccountCustomerId').val(),
+                CustomerTypeDescription: $('#CustomerAccountCustomerTypeDescription').val(),
+                IndividualPayrollNumbers: $('#CustomerAccountCustomerIndividualPayrollNumbers').val(),
+                CustomerReference3: $('#CustomerAccountCustomerReference3').val(),
+                IdentificationNumber: $('#CustomerAccountCustomerIdentificationNumber').val(),
+                CustomerReference1: $('#CustomerAccountCustomerReference1').val(),
+                CustomerReference2: $('#CustomerAccountCustomerReference2').val(),
+                MaturityAction: $('#MaturityAction').val()
+            };
+
+            addedEntries.push(entry);
+            updateAddedTransactionsTable();
+        });
+
+        // Function to update the added transactions table
+        function updateAddedTransactionsTable() {
+            var tbody = $('#AddedTransactionsTable tbody');
+            tbody.empty();
+
+            $.each(addedEntries, function (index, entry) {
+                var row = `<tr data-index="${index}">
+                    <td>${entry.FullAccountNumber}</td>
+                    <td>${entry.Remarks}</td>
+                    <td>${entry.ProductName}</td>
+                    <td>${entry.CustomerId}</td>
+                    <td>${entry.CustomerTypeDescription}</td>
+                    <td>${entry.IndividualPayrollNumbers}</td>
+                    <td>${entry.CustomerReference3}</td>
+                    <td>${entry.IdentificationNumber}</td>
+                    <td>${entry.CustomerReference1}</td>
+                    <td>${entry.CustomerReference2}</td>
+                    <td>${entry.Reason}</td>
+                    <td>${entry.MaturityAction}</td>
+                    <td><button class="remove-entry">Remove</button></td>
+                </tr>`;
+                tbody.append(row);
             });
-        };
+        }
 
+        // Remove button click handler within the table
+        $('#AddedTransactionsTable').on('click', '.remove-entry', function () {
+            var index = $(this).closest('tr').data('index');
+            addedEntries.splice(index, 1);
+            updateAddedTransactionsTable();
+        });
 
+        // Create button click handler
+        $('#createButton').click(function (event) {
+            event.preventDefault();
 
-    $('#FixedDepositeTypesGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "FixedDepositType", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            // Add AJAX request here to send addedEntries to the server for processing
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            alert('Operation successful.');
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            // Reset the addedEntries array and update the table
+            addedEntries = [];
+            updateAddedTransactionsTable();
+        });
 
-                    var selectUrl = '<a  href="/FrontOffice/FixedDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(2)', nRow).html(dt_Created);
-                    $('td:eq(3)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-
-            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "3%" },
-            { "mDataProp": "Months", "sTitle": "Months", "sWidth": "4%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-             });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#FixedDepositTypeId').val(data.Id);
-        $('input[name=FixedDepositTypeId]').val(data.Id);
-        $('input[name=Description]').val(data.Description);
-
-        var FixedDepositTypeId = "";
-        FixedDepositTypeId = FixedDepositTypesMap[item].Id;
-
-        $('#FixedDepositTypeId').val(FixedDepositTypesMap[item].FixedDepositTypeId);
-        $('#Description').val(FixedDepositTypesMap[item].Description);
-        $('#FixedDepositTypeId').val(CustomersMap[item].Id);
-        $('#FixedDepositTypeDescription').val(CustomersMap[item].Description);
-        //$('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        //$('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        //$('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-        $('#FixedDepositeTypesGrid').modal('hide');
-    });
-
-
-
-
-
-
-
-
-
-                //Station typehead starts here
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
-
-
-
+        // DataTable for CustomerAccountsGrid
         $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/FixedDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-             });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
-        $('#CustomerAccountId').val(data.Id);
-        $('input[name=CustomerAccountId]').val(data.Id);
-        $('input[name=CustomerAccountCustomerFullName]').val(data.Fullname);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-
-        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountCustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
-        $('#customerLookupModal').modal('hide');
-    });
-
-         //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" })",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                return nRow;
+            },
+            "columns": [
+                { "data": "BranchDescription" },
+                { "data": "StatusDescription" },
+                { "data": "FullAccountNumber" },
+                { "data": "Remarks" },
+                { "data": "CustomerTypeDescription" },
+                { "data": "CustomerAccountTypeTargetProductDescription" },
+                { "data": "CustomerFullName" },
+                { "data": "CustomerReference1" },
+                { "data": "CustomerReference2" },
+                { "data": "CustomerReference3" },
+                {
+                    "data": "Id",
+                    "render": function (data) {
+                        return '<button class="btn btn-outline-info select-account" data-id="' + data + '">Select</button>';
                     }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
                 }
-            });
+            ]
+        });
 
+        // Select button click handler within the DataTable
+        $('#CustomerAccountsGrid tbody').on('click', '.select-account', function () {
+            var data = $('#CustomerAccountsGrid').DataTable().row($(this).parents('tr')).data();
+            if (data) {
+                populateFormFields(data);
+                $('#lookupModal').modal('hide');
+            }
+        });
 
-
+        // Function to populate form fields with selected data
+        function populateFormFields(data) {
+            $('#CustomerAccountFullAccountNumber').val(data.FullAccountNumber);
+            $('#Remarks').val(data.Remarks);
+            $('#CustomerAccountTypeTargetProductDescription').val(data.ProductName);
+            $('#CustomerAccountCustomerId').val(data.CustomerId);
+            $('#CustomerAccountCustomerTypeDescription').val(data.CustomerTypeDescription);
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
+            $('#CustomerAccountCustomerReference3').val(data.CustomerReference3);
+            $('#CustomerAccountCustomerIdentificationNumber').val(data.IdentificationNumber);
+            $('#CustomerAccountCustomerReference1').val(data.CustomerReference1);
+            $('#CustomerAccountCustomerReference2').val(data.CustomerReference2);
+            $('#MaturityAction').val(data.MaturityAction);
+        }
+    });
     </script>
+
+
 }

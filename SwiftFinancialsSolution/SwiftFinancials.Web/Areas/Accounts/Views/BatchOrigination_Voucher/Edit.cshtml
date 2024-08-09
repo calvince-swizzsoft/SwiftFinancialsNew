@@ -142,8 +142,48 @@
                                 </div>
                             </div>
                         </fieldset>
+
+
+                        <row>
+                            <div class="ibox-content m-b-sm border-bottom bg-white text-dark">
+                                <table class="footable table table-stripped toggle-arrow-tiny bg-white  ">
+                                    <thead>
+                                        <tr>
+                                            <th data-toggle="true">CoA Name</th>
+                                            <th data-hide="phone">Total Value</th>
+                                            <th data-hide="phone">Remarks</th>
+                                            <th data-hide="phone"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.JournalVoucherEntryDTOs != null)
+                                        {
+                                            foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
+                                            {
+                                                <tr>
+                                                    <td>
+                                                        @journalVoucherEntries.ChartOfAccountName
+                                                    </td>
+
+
+                                                    <td>
+                                                        @journalVoucherEntries.TotalValue
+                                                    </td>
+
+
+                                                    <td>
+                                                        @journalVoucherEntries.Remarks
+                                                    </td>
+
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </row>
                     }
-                    
+
                 </div>
             </div>
         </div>

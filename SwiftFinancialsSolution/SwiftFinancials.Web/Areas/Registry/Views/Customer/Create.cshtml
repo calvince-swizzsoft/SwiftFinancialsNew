@@ -17,7 +17,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Customer</h2>
+        <h1>Registry</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -48,6 +48,17 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+
+                    <h2>Customers</h2>
+
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Customer Registration Failed !</strong> @TempData["Error"]
+                        </div>
+                    }
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
