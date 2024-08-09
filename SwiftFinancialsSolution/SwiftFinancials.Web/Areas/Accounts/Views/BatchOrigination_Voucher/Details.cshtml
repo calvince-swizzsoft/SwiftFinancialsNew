@@ -2,6 +2,37 @@
 @{
     ViewBag.Title = "Journal Voucher Details";
 }
+<style>
+    #JournalVoucherEntryDTOs {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #JournalVoucherEntryDTOs thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #JournalVoucherEntryDTOs th, #JournalVoucherEntryDTOs td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #JournalVoucherEntryDTOs th {
+            font-weight: bold;
+        }
+
+        #JournalVoucherEntryDTOs tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #JournalVoucherEntryDTOs tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Accounts</h1>
@@ -105,14 +136,40 @@
 
                                 @Html.DisplayFor(model => model.Reference)<br>
                             </p>
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TotalValue)</strong><br>
 
-                                @Html.DisplayFor(model => model.TotalValue)<br>
-                            </p>
 
                         </div>
                     </div>
+
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <table id="JournalVoucherEntryDTOs" class="footable table table-striped toggle-arrow-tiny grey-table" style=" color: black; width: 100%;">
+                                <thead style="font-style: italic; color: cadetblue; text-align: center; ">
+                                    <tr>
+                                        <th style="width: 20%;">CoA Name</th>
+                                        <th style="width: 20%;">Total Value</th>
+                                        <th style="width: 5%;">Remarks</th>
+                                        
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (ViewBag.JournalVoucherEntryDTOs != null)
+                                    {
+                                        foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
+                                        {
+                                            <tr >
+                                                <td>@journalVoucherEntries.ChartOfAccountAccountName</td>
+                                                <td>@journalVoucherEntries.TotalValue</td>
+                                                
+                                                <td>@journalVoucherEntries.Remarks</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
 
                     <div class="row">
                         <div class="col-lg-12">

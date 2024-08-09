@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -51,9 +52,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var OverDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
+            var overDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindOverDeductionBatchEntriesByOverDeductionBatchIdAsync(id,true,GetServiceHeader());
 
-            return View(OverDeductionBatchDTO);
+            ViewBag.batchEntries = batchentries;
+
+            return View(overDeductionBatchDTO);
         }
         public async Task<ActionResult> Create()
         {
@@ -89,6 +93,80 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var k = await _channelService.FindOverDeductionBatchAsync(id ,GetServiceHeader());
             return View(k);
         }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid? id, OverDeductionBatchDTO overDeductionBatchDTO)
+        {
+            await ServeNavigationMenus();
+
+            OverDeductionBatchEntryDTOs = TempData["OverDeductionBatchEntryDTOs"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+
+            
+
+            var creditCustomerAccount = overDeductionBatchDTO.overDeductionBatchEntries;
+            var debitCustomerAccount = overDeductionBatchDTO.overDeductionBatchEntries;
+
+            if (OverDeductionBatchEntryDTOs == null)
+                OverDeductionBatchEntryDTOs = new ObservableCollection<OverDeductionBatchEntryDTO>();
+
+            if (overDeductionBatchDTO.BranchDescription == null || overDeductionBatchDTO.TotalValue == 0)
+            {
+                TempData["tPercentage"] = "Branch  and TotalValue are required to proceed.";
+            }
+            else
+            {
+                Guid parseId;
+
+                if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+                {
+                    TempData["tPercentage"] = "Could not add refundBatchEntries Choose Batch";
+
+                    await ServeNavigationMenus();
+
+                    return View("Create", overDeductionBatchDTO);
+                }
+
+
+                foreach (var overDeductionBatchEntryDTO in overDeductionBatchDTO.overDeductionBatchEntry)
+                {
+                    overDeductionBatchEntryDTO.Id = parseId;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountId = creditCustomerAccount.CreditCustomerAccountId;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountBranchId= creditCustomerAccount.DebitCustomerAccountBranchId;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountCustomerIndividualFirstName= creditCustomerAccount.DebitCustomerAccountCustomerIndividualFirstName;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountId = debitCustomerAccount.CreditCustomerAccountId;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountBranchId = debitCustomerAccount.CreditCustomerAccountBranchId;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName = debitCustomerAccount.DebitCustomerAccountCustomerIndividualFirstName;
+
+
+                    TempData["tPercentage"] = "";
+
+
+                    if (overDeductionBatchEntryDTO.CreditFullAccountNumber == null || overDeductionBatchEntryDTO.DebitFullAccountNumber == null)
+                    {
+                        TempData["tPercentage"] = "Provide Both the Credit and Debit accounts to create refund .";
+                    }
+                    else
+                    {
+                        OverDeductionBatchEntryDTOs.Add(overDeductionBatchEntryDTO);
+
+                       
+                    }
+                };
+            }
+
+            ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+
+
+            TempData["OverDeductionBatchEntryDTOs"] = OverDeductionBatchEntryDTOs;
+
+
+            //TempData["ChargeDTO"] = commissionDTO;
+
+            return View("Create");
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> RefundEntries(OverDeductionBatchEntryDTO overDeductionBatchEntryDTO)
