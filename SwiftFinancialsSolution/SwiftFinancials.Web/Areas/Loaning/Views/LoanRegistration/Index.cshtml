@@ -101,14 +101,19 @@
                         <div class="alert alert-success">
                             <strong>Success !</strong> @TempData["AlertMessage"]
                         </div>
-                    } 
-                    
-                    
+                    }
+
+
                     @if (TempData["Edit"] != null)
                     {
                         <div class="alert alert-success">
                             <strong>Success !</strong> @TempData["Edit"]
                         </div>
+                    }
+
+                    @if (TempData["LoanCaseStatusInvalid"] != null)
+                    {
+                        <div class="alert alert-danger"><strong>Attempt Failed !</strong> @TempData["LoanCaseStatusInvalid"]</div>
                     }
 
                     <hr />
@@ -147,8 +152,9 @@
                                 <input type="submit" class="btn btn-primary" value="Refresh" style="width: 70px; border-radius: 10px;" />
                             }
                         </div>
-                    </div>*@
+                    </div>
 
+                    <br />*@
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
@@ -222,7 +228,6 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/loaning/loanregistration/edit/${aData.Id}">Edit</a>
                                 <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
                             </div>
                         </div>`;
