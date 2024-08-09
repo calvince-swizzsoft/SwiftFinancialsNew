@@ -1,0 +1,784 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO
+
+@{
+    /**/
+
+    ViewBag.Title = "Create Customer Receipt";
+
+
+}
+
+<head>
+    <style>
+        .tab-content > .tab-pane {
+            display: none;
+        }
+
+            .tab-content > .tab-pane.active {
+                display: block;
+            }
+
+        .secondary-tab-content > .secondary-tab-pane {
+            display: none;
+        }
+
+            .secondary-tab-content > .secondary-tab-pane.active {
+                display: block;
+            }
+    </style>
+</head>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Cash Transactions</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "CustomerReceipts", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
+                    @using (Html.BeginForm("Create", "CustomerReceipts", new { Area = "FrontOffice" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                        <div style="border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px;">
+                            <!-- First Row -->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.FullAccountNumber, "Full Account Number:", new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.TextBoxFor(model => model.FullAccountNumber, new { @class = "form-control", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
+                                                    <span class="fa fa-search"></span>
+                                                </a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.StatusDescription, "Account Status:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.StatusDescription, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Remarks, "Account Remarks:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.Remarks, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductId)
+
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductParentId)
+
+                                        @Html.LabelFor(model => model.CustomerAccountTypeTargetProductId, "Product Name:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerAccountTypeTargetProductId, new { @class = "form-control" })
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <!-- Second Row -->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.HiddenFor(model => model.CustomerId)
+                                        @Html.LabelFor(model => model.CustomerFullName, "Customer:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerFullName, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CustomerTypeDescription, "Type:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerTypeDescription, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, "Payroll Numbers:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerIndividualPayrollNumbers, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.BranchDescription, new { @class = "form-control", @readonly = "readonly" })
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <!-- Third Row -->
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CustomerIdentificationNumber, "Serial Number:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerIdentificationNumber, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CustomerReference1, "Account Number:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerReference1, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CustomerReference2, "Membership Number:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerReference2, new { @class = "form-control" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CustomerReference3, "Personal File Number:", new { @class = "control-label" })
+                                        @Html.TextBoxFor(model => model.CustomerReference3, new { @class = "form-control", @Value = "0000131769" })
+                                    </div>
+                                </div>
+                            </div>
+
+                         </div>
+                            <!-- Tabs -->
+                            <ul class="nav nav-tabs" style="margin-bottom: 20px;">
+                                <li class="nav-item">
+                                    <a class="nav-link active" data-toggle="tab" href="#transaction">Transaction</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#tellerGlAccountStatement">Teller G/L Account Statement</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" data-toggle="tab" href="#customerAccountPreview">Customer Account Preview</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div id="transaction" class="tab-pane active">
+
+                                    <!-- Secondary Tabs (indented) -->
+                                    <div style="margin-left: 20px;">
+                                        <ul class="nav secondary-nav-tabs" style="margin-bottom: 20px;">
+                                            <li class="secondary-nav-item">
+                                                <a class="secondary-nav-link active" data-toggle="tab" href="#cashReceipt">Cash Receipt</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="secondary-nav-link" data-toggle="tab" href="#apportionment">Apportionment (Loan / Investment / Savings / GL Account)</a>
+                                            </li>
+                                            <li class="nav-item">
+                                                <a class="secondary-nav-link" data-toggle="tab" href="#speciment">Specimen</a>
+                                            </li>
+                                        </ul>
+
+                                        <div class="secondary-tab-content" style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
+                                            <!-- Cash Receipt Tab -->
+                                            <div id="cashReceipt" class="secondary-tab-pane active">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                                        </div>
+
+
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.CashDeposit.Remarks, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.CashDeposit.Remarks, new { htmlAttributes = new { @class = "form-control" } })
+                                                            @Html.ValidationMessageFor(model => model.CashDeposit.Remarks, "", new { @class = "text-danger" })
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Apportionment Tab -->
+                                            <div id="apportionment" class="secondary-tab-pane">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="form-group">
+                                                            <label for="apportionTo">Apportion To:</label>
+                                                            @Html.DropDownList("ApportionTo", new SelectList(new[] { "Customer Account", "G/L Account" }), new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="fullAccountNumber">Full Account Number:</label>
+                                                            @Html.TextBox("FullAccountNumber", "001-002705-001-001", new { @class = "form-control", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="customer">Customer:</label>
+                                                            @Html.TextBox("Customer", "JUSTUS AMOS", new { @class = "form-control", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="accountNumber">Account Number:</label>
+                                                            @Html.TextBox("AccountNumber", "0101-001-00024", new { @class = "form-control", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label for="membershipNumber">Membership Number:</label>
+                                                            @Html.TextBox("MembershipNumber", "11197", new { @class = "form-control", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row">
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="principal">Principal:</label>
+                                                            @Html.TextBox("Principal", "10,000.00", new { @class = "form-control", @readonly = "readonly" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="interest">Interest:</label>
+                                                            @Html.TextBox("Interest", "0.00", new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-4">
+                                                        <div class="form-group">
+                                                            <label for="primaryDescription">Primary Description:</label>
+                                                            @Html.TextBox("PrimaryDescription", "", new { @class = "form-control" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="btn btn-primary float-right">Add</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>Apportion To</th>
+                                                                    <th>Full Account Number</th>
+                                                                    <th>Product Name</th>
+                                                                    <th>Principal</th>
+                                                                    <th>Interest</th>
+                                                                    <th>Primary Description</th>
+                                                                    <th>Secondary Description</th>
+                                                                    <th>Reference</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>Customer Account</td>
+                                                                    <td>001-002705-001-001</td>
+                                                                    <td>SHARES DEPOSITS</td>
+                                                                    <td>10,000.00</td>
+                                                                    <td>0.00</td>
+                                                                    <td>ok</td>
+                                                                    <td></td>
+                                                                    <td>Apportion to Customer Account</td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Apportioned:</label>
+                                                            <input type="text" class="form-control" value="10,000.00" readonly>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-md-6">
+                                                        <div class="form-group">
+                                                            <label>Shortage:</label>
+                                                            <input type="text" class="form-control" value="0.00" readonly>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="row mt-3">
+                                                    <div class="col-md-12">
+                                                        <button type="button" class="btn btn-primary float-right">Remove</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    
+                                    <div class="form-group" style="margin-top: 20px; text-align: right;">
+                                        <button type="submit" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
+                                    </div>
+                       
+                                </div>
+
+                                <!-- Teller G/L Account Statement Tab -->
+                                <div id="tellerGlAccountStatement" class="tab-pane">
+                                    <!-- Add content here for the 'Teller G/L Account Statement' tab -->
+                                </div>
+
+                                <!-- Customer Account Preview Tab -->
+                                <div id="customerAccountPreview" class="tab-pane">
+                                    <!-- Add content here for the 'Customer Account Preview' tab -->
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<input type='hidden' id='h' name='h' />
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+
+        $('#CustomerAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/FrontOffice/CashReceipts/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(5)', nRow).html(dt_Created);
+
+                    $('td:eq(6)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+            // Display settings
+            "aoColumns": [
+
+                { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                { "mDataProp": "CustomerReference1", "sTitle": "customer", "sWidth": "2%" },
+                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
+                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "2%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
+        });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = CustomerAccountsGrid.row(this).data();
+        $('#Id').val(data.Id);
+        $('#Id').val(data.CustomerId);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=FullAccountNumber]').val(data.FullAccountNumber);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+
+
+        $('#id').val(CustomersMap[item].CustomerAccountId);
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
+        $('#FullAccountNumber').val(CustomersMap[item].FullAccountNumber);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
+        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
+        $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
+        $('#customerLookupModal').modal('hide');
+    });
+
+
+
+        ///// Investment products lookup /////
+$('.InvestmentProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (InvestmentProducts) {
+                var newInvestmentProductsData = [];
+                InvestmentProductsMap = {};
+                $.each(InvestmentProducts, function (i, InvestmentProduct) {
+                    newInvestmentProductsData.push(InvestmentProduct.Description);
+                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
+                });
+                process(newInvestmentProductsData);
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var investmentProductId = "";
+        investmentProductId = InvestmentProductsMap[item].Id;
+        $('#InvestmentProductId').val(investmentProductId);
+        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
+        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
+
+        //console.log(investmentProductId)
+        return item;
+    }
+});
+
+
+             //Station typehead starts here
+
+            $('.StationsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                        { query: query },
+                        function (Stations) {
+                            var newStationsData = [];
+                            StationsMap = {};
+                            $.each(Stations, function (i, Station) {
+                                newStationsData.push(Station.Description);
+                                StationsMap[Station.Description] = Station;
+                            });
+                            process(newStationsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var stationId = "";
+                    StationId = StationsMap[item].Id;
+                    $('#StationId').val(StationId);
+                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
+                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
+                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
+                    //console.log(StationId)
+                    return item;
+                }
+            });
+
+
+    $('#customersGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                "sServerMethod": "POST",
+                // Callback settings
+
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(5)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
+            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
+            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    $("#s tbody").on("click", "tr", function () {
+        var data = customersGrid.row(this).data();
+
+        $('#CustomerId').val(data.Id);
+        $('input[name=CustomerId]').val(data.Id);
+        $('input[name=CustomerFullName]').val(data.FullName);
+
+        var CustomerId = "";
+        CustomerId = CustomersMap[item].Id;
+        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
+        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
+        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
+        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
+        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
+        $('#customerLookupModal').modal('hide');
+    });
+
+
+         //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+        $('.SavingProductsLookup').typeahead({
+    source: function (query, process) {
+        return $.getJSON(
+         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
+            { query: query },
+            function (SavingProducts) {
+                var newSavingProductsData = [];
+                SavingProductsMap = {};
+                $.each(SavingProducts, function (i, SavingProduct) {
+                    newSavingProductsData.push(SavingProduct.Description);
+                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
+                });
+                process(newSavingProductsData);
+                return;
+            });
+    },
+    matcher: function (item) {
+        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+            return true;
+        }
+    },
+    sorter: function (items) {
+        return items.sort();
+    },
+    highlighter: function (item) {
+        var regex = new RegExp('(' + this.query + ')', 'gi');
+        return item.replace(regex, "<strong>$1</strong>");
+    },
+    updater: function (item) {
+        var savingProductId = "";
+        savingProductId = SavingProductsMap[item].Id;
+        $('#SavingProductId').val(savingProductId);
+        //console.log(savingProductId)
+        return item;
+    }
+});
+        function captureDetails() {
+            var Remarks = document.getElementById('Remark').value;
+            var BranchDescription = document.getElementById('BranchDescription').value;
+            //var h = document.getElementById('h');
+            //h.value = word;
+            //$.post("Registry/WithdrawalNotification/AssignText", { word });
+            $.ajax({
+                url: "/Registry/WithdrawalNotification/AssignText",
+                type: "POST",
+                data: { "Remarks": Remarks, "BranchDescription": BranchDescription },
+                //success: function (mydata) {
+                //    alert("Saved");
+                //},
+                //error: function (error) {
+                //    alert('failed');
+                //    alert(error);
+                //}
+            });
+
+        }
+
+
+    </script>
+
+    @*repetitive code*@
+<script>
+    $(document).ready(function () {
+        $('.nav-link').on('click', function (e) {
+            e.preventDefault();
+            var target = $(this).attr('href');
+
+            // Switch tab content
+            $('.tab-pane').removeClass('active');
+            $(target).addClass('active');
+
+            // Update tab styles
+            $('.nav-link').removeClass('active').css('background-color', '#f1f1f1');
+            $(this).addClass('active').css('background-color', '#ddd');
+
+            // Update tab content area background
+            $('.tab-content').css('background-color', '#ddd');
+        });
+
+        $('.secondary-nav-link').on('click', function (e) {
+            e.preventDefault();
+            var target = $(this).attr('href');
+
+            // Switch secondary tab content
+            $('.secondary-tab-pane').removeClass('active');
+            $(target).addClass('active');
+
+            // Update secondary tab styles
+            $('.secondary-nav-link').removeClass('active');
+            $(this).addClass('active');
+        });
+    });
+</script>
+}

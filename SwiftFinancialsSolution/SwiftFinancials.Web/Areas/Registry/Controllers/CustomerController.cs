@@ -38,7 +38,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, 1, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -130,7 +130,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                
 
-                    return View("index", customerBindingModel);
+                    return View("create", customerBindingModel);
                 }
                 TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
                 return RedirectToAction("Index");
@@ -138,7 +138,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             else
             {
                 var errorMessages = customerBindingModel.ErrorMessages;
-                TempData["Error"] = customerBindingModel.ErrorMessages;
+                TempData["Error2"] = customerBindingModel.ErrorMessages;
 
                 ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
                 ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());

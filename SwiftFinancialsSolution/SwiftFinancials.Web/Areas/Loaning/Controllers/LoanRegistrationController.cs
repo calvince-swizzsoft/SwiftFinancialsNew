@@ -30,10 +30,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, LoanCaseDTO loanCaseDTO)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             //ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription);
-
 
             int totalRecordCount = 0;
 
@@ -93,12 +92,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var cusomerEditDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
 
+            if (cusomerEditDTO.Status != (int)LoanCaseStatus.Registered)
+            {
+                TempData["LoanCaseStatusInvalid"] = "Editing Loan Cases is only available for registered loans !";
+                return View("index");
+            }
+
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
             if (cusomerEditDTO != null)
             {
+                loanCaseDTO.CaseNumber = cusomerEditDTO.CaseNumber;
                 loanCaseDTO.CustomerId = cusomerEditDTO.CustomerId;
-                loanCaseDTO.CustomerIndividualFirstName = cusomerEditDTO.CustomerIndividualFirstName;
+                loanCaseDTO.CustomerIndividualFirstName = cusomerEditDTO.CustomerIndividualSalutationDescription + " " + cusomerEditDTO.CustomerIndividualFirstName + " " + cusomerEditDTO.CustomerIndividualLastName;
                 loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = cusomerEditDTO.CustomerStationZoneDivisionEmployerDescription;
                 loanCaseDTO.CustomerStation = cusomerEditDTO.CustomerStation;
                 loanCaseDTO.CustomerReference1 = cusomerEditDTO.CustomerReference1;
@@ -108,10 +114,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.BranchDescription = cusomerEditDTO.BranchDescription;
                 loanCaseDTO.LoanProductId = cusomerEditDTO.LoanProductId;
                 loanCaseDTO.LoanProductDescription = cusomerEditDTO.LoanProductDescription;
-                loanCaseDTO.InterestCalculationModeDescription = cusomerEditDTO.InterestCalculationModeDescription;
+                loanCaseDTO.InterestCalculationModeDescription = cusomerEditDTO.LoanInterestCalculationModeDescription;
                 loanCaseDTO.LoanInterestCalculationMode = cusomerEditDTO.LoanInterestCalculationMode;
                 loanCaseDTO.LoanInterestAnnualPercentageRate = cusomerEditDTO.LoanInterestAnnualPercentageRate;
-                loanCaseDTO.LoanProductSectionDescription = cusomerEditDTO.LoanProductSectionDescription;
+                loanCaseDTO.LoanProductSectionDescription = cusomerEditDTO.LoanRegistrationLoanProductSectionDescription;
                 loanCaseDTO.LoanRegistrationTermInMonths = cusomerEditDTO.LoanRegistrationTermInMonths;
                 loanCaseDTO.LoanProductInvestmentsBalance = cusomerEditDTO.LoanProductInvestmentsBalance;
                 loanCaseDTO.LoanProductLoanBalance = cusomerEditDTO.LoanProductLoanBalance;
@@ -126,37 +132,18 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.LoanPurposeDescription = cusomerEditDTO.LoanPurposeDescription;
                 loanCaseDTO.AmountApplied = cusomerEditDTO.AmountApplied;
                 loanCaseDTO.Reference = cusomerEditDTO.Reference;
+                loanCaseDTO.Status = cusomerEditDTO.Status;
+
+                Session["editViewLoanee"] = loanCaseDTO;
+                Session["Status"] = loanCaseDTO.Status;
+                Session["CaseNumber"] = loanCaseDTO.CaseNumber;
             }
 
             return View(loanCaseDTO);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(LoanCaseDTO loanCaseDTO)
-        {
-            loanCaseDTO.ValidateAll();
 
-            if (!loanCaseDTO.HasErrors)
-            {
-                await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = loanCaseDTO.ErrorMessages;
-
-                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
-                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
-                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
-
-
-                return View(loanCaseDTO);
-            }
-        }
-
-
+        // Create Lookups
         public async Task<ActionResult> LoaneeLookup(Guid? id, LoanCaseDTO loanCaseDTO)
         {
             await ServeNavigationMenus();
@@ -202,12 +189,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.Remarks = Session["Remarks"].ToString();
             }
 
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
-
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             if (customer != null)
@@ -228,7 +209,52 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Session["CustomerReference2"] = loanCaseDTO.CustomerReference2;
                 Session["CustomerReference3"] = loanCaseDTO.CustomerReference3;
 
-                
+
+                //// Standing Orders
+                //var customerAccountId = Guid.Empty;
+                //var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, false, GetServiceHeader());
+                //customerAccountId = customerAccounts.Select(account => account.Id).FirstOrDefault();
+                //var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(customerAccountId, true, GetServiceHeader());
+                //if (standingOrders != null)
+                //{
+                //    ViewBag.StandingOrders = standingOrders;
+                //}
+                //else
+                //{
+                //    TempData["StandingOrders"] = "The selected customer does not have any standing orders.";
+                //}
+
+
+                //// Loan Applications
+                //var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
+                //if (loanApplications != null)
+                //{
+                //    ViewBag.LoanApplications = loanApplications;
+                //}
+                //else
+                //{
+                //    TempData["LoanApplication"] = "The selected customer does not have any loan application history";
+                //}
+
+
+                //// Collaterals...
+
+
+
+                //// Income History
+                //// Payouts
+                //var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchAuthOption.Post, parseId, GetServiceHeader());                
+                //if (payouts != null)
+                //{
+                //    ViewBag.Payouts = payouts;
+                //}
+                //else
+                //{
+                //    TempData["Payouts"] = "The selected customer does not have any payouts history.";
+                //}
+
+                ////Salary
+                //TempData["Salary"] = "The selected customer has no salary history.";
             }
 
 
@@ -614,8 +640,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-
-
         // Edit Lookups
         public async Task<ActionResult> LoaneeLookupEdit(Guid? id, LoanCaseDTO loanCaseDTO)
         {
@@ -627,6 +651,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 return View("edit");
             }
+
+            loanCaseDTO = Session["editViewLoanee"] as LoanCaseDTO;
 
             // Check Sessions for data and keep in controls
             if (Session["LoanPurposeIdE"] != null)
@@ -661,12 +687,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.RegistrationRemarkId = (Guid)Session["RegistrationRemarkIdE"];
                 loanCaseDTO.Remarks = Session["RemarksE"].ToString();
             }
-
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
 
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
@@ -725,19 +745,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("edit");
             }
 
+            loanCaseDTO = Session["editViewLoanee"] as LoanCaseDTO;
 
             // Check Sessions for data and keep in controls
-            if (Session["CustomerIdE"] != null)
-            {
-                loanCaseDTO.CustomerId = (Guid)Session["CustomerIdE"];
-                loanCaseDTO.CustomerIndividualFirstName = Session["CustomerIndividualFirstNameE"].ToString();
-                loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = Session["CustomerStationZoneDivisionEmployerDescriptionE"].ToString();
-                loanCaseDTO.CustomerStation = Session["CustomerStationE"].ToString();
-                loanCaseDTO.CustomerReference1 = Session["CustomerReference1E"].ToString();
-                loanCaseDTO.CustomerReference2 = Session["CustomerReference2E"].ToString();
-                loanCaseDTO.CustomerReference3 = Session["CustomerReference3E"].ToString();
-            }
-
             if (Session["LoanProductIdE"] != null)
             {
                 loanCaseDTO.LoanProductId = (Guid)Session["LoanProductIdE"];
@@ -765,14 +775,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.Remarks = Session["RemarksE"].ToString();
             }
 
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
-
-
-
             var loanPurpose = await _channelService.FindLoanPurposeAsync(parseId, GetServiceHeader());
             if (loanPurpose != null)
             {
@@ -798,19 +800,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("edit");
             }
 
+            loanCaseDTO = Session["editViewLoanee"] as LoanCaseDTO;
 
             // Check Sessions for data and keep in controls
-            if (Session["CustomerIdE"] != null)
-            {
-                loanCaseDTO.CustomerId = (Guid)Session["CustomerIdE"];
-                loanCaseDTO.CustomerIndividualFirstName = Session["CustomerIndividualFirstNameE"].ToString();
-                loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = Session["CustomerStationZoneDivisionEmployerDescriptionE"].ToString();
-                loanCaseDTO.CustomerStation = Session["CustomerStationE"].ToString();
-                loanCaseDTO.CustomerReference1 = Session["CustomerReference1E"].ToString();
-                loanCaseDTO.CustomerReference2 = Session["CustomerReference2E"].ToString();
-                loanCaseDTO.CustomerReference3 = Session["CustomerReference3E"].ToString();
-            }
-
             if (Session["LoanPurposeIdE"] != null)
             {
                 loanCaseDTO.LoanPurposeId = (Guid)Session["LoanPurposeIdE"];
@@ -828,14 +820,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.RegistrationRemarkId = (Guid)Session["RegistrationRemarkIdE"];
                 loanCaseDTO.Remarks = Session["RemarksE"].ToString();
             }
-
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
-
-
 
             var loanProduct = await _channelService.FindLoanProductAsync(parseId, GetServiceHeader());
             if (loanProduct != null)
@@ -956,19 +940,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("edit");
             }
 
+            loanCaseDTO = Session["editViewLoanee"] as LoanCaseDTO;
 
             // Check Sessions for data and keep in controls
-            if (Session["CustomerIdE"] != null)
-            {
-                loanCaseDTO.CustomerId = (Guid)Session["CustomerIdE"];
-                loanCaseDTO.CustomerIndividualFirstName = Session["CustomerIndividualFirstNameE"].ToString();
-                loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = Session["CustomerStationZoneDivisionEmployerDescriptionE"].ToString();
-                loanCaseDTO.CustomerStation = Session["CustomerStationE"].ToString();
-                loanCaseDTO.CustomerReference1 = Session["CustomerReference1E"].ToString();
-                loanCaseDTO.CustomerReference2 = Session["CustomerReference2E"].ToString();
-                loanCaseDTO.CustomerReference3 = Session["CustomerReference3E"].ToString();
-            }
-
             if (Session["LoanPurposeIdE"] != null)
             {
                 loanCaseDTO.LoanPurposeId = (Guid)Session["LoanPurposeIdE"];
@@ -996,14 +970,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.Remarks = Session["RemarksE"].ToString();
             }
 
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
-
-
-
             var savingsProduct = await _channelService.FindSavingsProductAsync(parseId, GetServiceHeader());
             if (savingsProduct != null)
             {
@@ -1029,18 +995,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View("edit");
             }
 
+            loanCaseDTO = Session["editViewLoanee"] as LoanCaseDTO;
 
             // Check Sessions for data and keep in controls
-            if (Session["CustomerIdE"] != null)
-            {
-                loanCaseDTO.CustomerId = (Guid)Session["CustomerIdE"];
-                loanCaseDTO.CustomerIndividualFirstName = Session["CustomerIndividualFirstNameE"].ToString();
-                loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = Session["CustomerStationZoneDivisionEmployerDescriptionE"].ToString();
-                loanCaseDTO.CustomerStation = Session["CustomerStationE"].ToString();
-                loanCaseDTO.CustomerReference1 = Session["CustomerReference1E"].ToString();
-                loanCaseDTO.CustomerReference2 = Session["CustomerReference2E"].ToString();
-                loanCaseDTO.CustomerReference3 = Session["CustomerReference3E"].ToString();
-            }
 
             if (Session["LoanPurposeIdE"] != null)
             {
@@ -1069,13 +1026,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.SavingsProductDescription = Session["SavingsProductDescriptionE"].ToString();
             }
 
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
-
-
             var loaningRemarks = await _channelService.FindLoaningRemarkAsync(parseId, GetServiceHeader());
             if (loaningRemarks != null)
             {
@@ -1092,83 +1042,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
-
-
-        //public async Task<ActionResult> BranchesLookup(Guid? id, LoanCaseDTO loanCaseDTO)
-        //{
-        //    await ServeNavigationMenus();
-
-        //    Guid parseId;
-
-        //    if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-        //    {
-        //        return View("create");
-        //    }
-
-        //    if (Session["CustomerId"] != null)
-        //    {
-        //        loanCaseDTO.CustomerId = (Guid)Session["CustomerId"];
-        //        loanCaseDTO.CustomerIndividualFirstName = Session["CustomerIndividualFirstName"].ToString();
-        //        loanCaseDTO.CustomerStationZoneDivisionEmployerDescription = Session["CustomerStationZoneDivisionEmployerDescription"].ToString();
-        //        loanCaseDTO.CustomerStation = Session["CustomerStation"].ToString();
-        //        loanCaseDTO.CustomerReference1 = Session["CustomerReference1"].ToString();
-        //        loanCaseDTO.CustomerReference2 = Session["CustomerReference2"].ToString();
-        //        loanCaseDTO.CustomerReference3 = Session["CustomerReference3"].ToString();
-        //    }
-
-        //    if (Session["LoanPurposeId"] != null)
-        //    {
-        //        loanCaseDTO.LoanPurposeId = (Guid)Session["LoanPurposeId"];
-        //        loanCaseDTO.LoanPurposeDescription = Session["LoanPurposeDescription"].ToString();
-        //    }
-
-        //    if (Session["LoanProductId"] != null)
-        //    {
-        //        loanCaseDTO.LoanProductId = (Guid)Session["LoanProductId"];
-        //        loanCaseDTO.LoanProductDescription = Session["LoanProductDescription"].ToString();
-        //        loanCaseDTO.InterestCalculationModeDescription = Session["InterestCalculationModeDescription"].ToString();
-        //        loanCaseDTO.LoanInterestAnnualPercentageRate = Convert.ToDouble(Session["LoanInterestAnnualPercentageRate"].ToString());
-        //        loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescription"].ToString();
-        //        loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonths"].ToString());
-        //        loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmount"].ToString());
-
-        //        loanCaseDTO.LoanInterestRecoveryMode = Convert.ToInt32(Session["LoanInterestRecoveryMode"].ToString());
-        //        loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
-        //        loanCaseDTO.LoanInterestCalculationMode = Convert.ToInt32(Session["LoanInterestCalculationMode"].ToString());
-        //    }
-
-        //    if (Session["SavingsProductId"] != null)
-        //    {
-        //        loanCaseDTO.SavingsProductId = (Guid)Session["SavingsProductId"];
-        //        loanCaseDTO.SavingsProductDescription = Session["SavingsProductDescription"].ToString();
-        //    }
-
-        //    if (Session["RegistrationRemarkId"] != null)
-        //    {
-        //        loanCaseDTO.RegistrationRemarkId = (Guid)Session["RegistrationRemarkId"];
-        //        loanCaseDTO.Remarks = Session["Remarks"].ToString();
-        //    }
-
-
-
-        //    var branch = await _channelService.FindBranchAsync(parseId, GetServiceHeader());
-        //    if (branch != null)
-        //    {
-        //        loanCaseDTO.BranchId = branch.Id;
-        //        loanCaseDTO.BranchDescription = branch.Description;
-
-        //        Session["BranchId"] = loanCaseDTO.BranchId;
-        //        Session["BranchDescription"] = loanCaseDTO.BranchDescription;
-        //    }
-
-        //    return View("Create", loanCaseDTO);
-        //}
-
-
-
-
-
-
+        // Create Loan Case
         [HttpPost]
         public async Task<ActionResult> Create(LoanCaseDTO loanCaseDTO)
         {
@@ -1268,14 +1142,29 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.RegistrationRemarkId = (Guid)Session["RegistrationRemarkId"];
             loanCaseDTO.Remarks = Session["Remarks"].ToString();
 
-  
+
 
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
             {
+                if (loanCaseDTO.AmountApplied < 1)
+                {
+                    TempData["lessAmountApplied"] = "The amount you are applying for is too low. Enter amount greater than " + loanCaseDTO.AmountApplied;
+                    return View("create", loanCaseDTO);
+                }
+
                 var loanCase = await _channelService.AddLoanCaseAsync(loanCaseDTO, GetServiceHeader());
 
+
+                if (loanCase.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["existngApplicationError"] = loanCase.ErrorMessageResult;
+
+                    return View();
+                }
 
                 // Clear sessions
 
@@ -1325,5 +1214,157 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
         }
 
+
+        // Edit Loan Case
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(LoanCaseDTO loanCaseDTO)
+        {
+            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
+            loanCaseDTO.AmountApplied = loanCaseDTO.AmountApplied;
+            loanCaseDTO.Reference = loanCaseDTO.Reference;
+            loanCaseDTO.CaseNumber = Convert.ToInt32(Session["CaseNumber"].ToString());
+            loanCaseDTO.Status = Convert.ToInt32(Session["Status"].ToString());
+
+            if (Session["LoanPurposeIdE"] != null)
+            {
+                // Loan Purpose
+                loanCaseDTO.LoanPurposeId = (Guid)Session["LoanPurposeIdE"];
+                loanCaseDTO.LoanPurposeDescription = Session["LoanPurposeDescriptionE"].ToString();
+            }
+
+            if (Session["LoanProductIdE"] != null)
+            {
+                // Loan Product
+                loanCaseDTO.LoanProductId = (Guid)Session["LoanProductIdE"];
+                loanCaseDTO.LoanProductDescription = Session["LoanProductDescriptionE"].ToString();
+                loanCaseDTO.InterestCalculationModeDescription = Session["InterestCalculationModeDescriptionE"].ToString();
+                loanCaseDTO.LoanInterestAnnualPercentageRate = Convert.ToDouble(Session["LoanInterestAnnualPercentageRateE"].ToString());
+                loanCaseDTO.LoanProductSectionDescription = Session["LoanProductSectionDescriptionE"].ToString();
+                loanCaseDTO.LoanRegistrationTermInMonths = Convert.ToInt32(Session["LoanRegistrationTermInMonthsE"].ToString());
+                loanCaseDTO.LoanRegistrationMaximumAmount = Convert.ToDecimal(Session["LoanRegistrationMaximumAmountE"].ToString());
+
+                var loanProduct = await _channelService.FindLoanProductAsync(loanCaseDTO.LoanProductId, GetServiceHeader());
+
+                if (loanProduct != null)
+                {
+                    loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear = loanProduct.LoanRegistrationPaymentFrequencyPerYear;
+                    loanCaseDTO.LoanRegistrationMinimumAmount = loanProduct.LoanRegistrationMinimumAmount;
+                    loanCaseDTO.LoanRegistrationMinimumInterestAmount = loanProduct.LoanRegistrationMinimumInterestAmount;
+                    loanCaseDTO.LoanRegistrationMinimumGuarantors = loanProduct.LoanRegistrationMinimumGuarantors;
+                    loanCaseDTO.LoanRegistrationMinimumMembershipPeriod = loanProduct.LoanRegistrationMinimumMembershipPeriod;
+                    loanCaseDTO.LoanRegistrationMaximumGuarantees = loanProduct.LoanRegistrationMaximumGuarantees;
+                    loanCaseDTO.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement = loanProduct.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement;
+                    loanCaseDTO.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage = loanProduct.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage;
+                    loanCaseDTO.LoanRegistrationLoanProductSection = loanProduct.LoanRegistrationLoanProductSection;
+                    loanCaseDTO.LoanRegistrationLoanProductCategory = loanProduct.LoanRegistrationLoanProductCategory;
+                    loanCaseDTO.LoanRegistrationConsecutiveIncome = loanProduct.LoanRegistrationConsecutiveIncome;
+                    loanCaseDTO.LoanRegistrationInvestmentsMultiplier = loanProduct.LoanRegistrationInvestmentsMultiplier;
+                    loanCaseDTO.LoanRegistrationRejectIfMemberHasBalance = loanProduct.LoanRegistrationRejectIfMemberHasBalance;
+                    loanCaseDTO.LoanRegistrationSecurityRequired = loanProduct.LoanRegistrationSecurityRequired;
+                    loanCaseDTO.LoanRegistrationAllowSelfGuarantee = loanProduct.LoanRegistrationAllowSelfGuarantee;
+                    loanCaseDTO.LoanRegistrationGracePeriod = loanProduct.LoanRegistrationGracePeriod;
+                    loanCaseDTO.LoanRegistrationPaymentDueDate = loanProduct.LoanRegistrationPaymentDueDate;
+                    loanCaseDTO.LoanRegistrationPayoutRecoveryMode = loanProduct.LoanRegistrationPayoutRecoveryMode;
+                    loanCaseDTO.LoanRegistrationPayoutRecoveryPercentage = loanProduct.LoanRegistrationPayoutRecoveryPercentage;
+                    loanCaseDTO.LoanRegistrationAggregateCheckOffRecoveryMode = loanProduct.LoanRegistrationAggregateCheckOffRecoveryMode;
+                    loanCaseDTO.LoanRegistrationChargeClearanceFee = loanProduct.LoanRegistrationChargeClearanceFee;
+                    loanCaseDTO.LoanRegistrationMicrocredit = loanProduct.LoanRegistrationMicrocredit;
+                    loanCaseDTO.LoanRegistrationStandingOrderTrigger = loanProduct.LoanRegistrationStandingOrderTrigger;
+                    loanCaseDTO.LoanRegistrationTrackArrears = loanProduct.LoanRegistrationTrackArrears;
+                    loanCaseDTO.LoanRegistrationChargeArrearsFee = loanProduct.LoanRegistrationChargeArrearsFee;
+                    loanCaseDTO.LoanRegistrationEnforceSystemAppraisalRecommendation = loanProduct.LoanRegistrationEnforceSystemAppraisalRecommendation;
+                    loanCaseDTO.LoanRegistrationBypassAudit = loanProduct.LoanRegistrationBypassAudit;
+                    loanCaseDTO.LoanRegistrationGuarantorSecurityMode = loanProduct.LoanRegistrationGuarantorSecurityMode;
+                    loanCaseDTO.LoanRegistrationRoundingType = loanProduct.LoanRegistrationRoundingType;
+                    loanCaseDTO.LoanRegistrationDisburseMicroLoanLessDeductions = loanProduct.LoanRegistrationDisburseMicroLoanLessDeductions;
+                    loanCaseDTO.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal = loanProduct.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal;
+                    loanCaseDTO.LoanRegistrationThrottleScheduledArrearsRecovery = loanProduct.LoanRegistrationThrottleScheduledArrearsRecovery;
+                    loanCaseDTO.LoanRegistrationCreateStandingOrderOnLoanAudit = loanProduct.LoanRegistrationCreateStandingOrderOnLoanAudit;
+                    loanCaseDTO.TakeHomeType = loanProduct.TakeHomeType;
+                    loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
+                    loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
+
+
+                    loanCaseDTO.LoanInterestChargeMode = loanProduct.LoanInterestChargeMode;
+                    loanCaseDTO.LoanInterestRecoveryMode = loanProduct.LoanInterestRecoveryMode;
+                    loanCaseDTO.LoanInterestCalculationMode = loanProduct.LoanInterestCalculationMode;
+
+
+                }
+
+            }
+
+            if (Session["SavingsProductIdE"] != null)
+            {
+                // Savings Product
+                loanCaseDTO.SavingsProductId = (Guid)Session["SavingsProductIdE"];
+                loanCaseDTO.SavingsProductDescription = Session["SavingsProductDescriptionE"].ToString();
+            }
+
+
+            if (Session["RegistrationRemarkIdE"] != null)
+            {
+                // Loaning Remarks
+                loanCaseDTO.RegistrationRemarkId = (Guid)Session["RegistrationRemarkIdE"];
+                loanCaseDTO.Remarks = Session["RemarksE"].ToString();
+            }
+
+
+            loanCaseDTO.ValidateAll();
+
+            if (!loanCaseDTO.HasErrors)
+            {
+                await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
+
+                // Loanee sessions
+                Session.Remove("CustomerIdE");
+                Session.Remove("CustomerIndividualFirstNameE");
+                Session.Remove("CustomerStationZoneDivisionEmployerDescriptionE");
+                Session.Remove("CustomerStationE");
+                Session.Remove("CustomerReference1E");
+                Session.Remove("CustomerReference2E");
+                Session.Remove("CustomerReference3E");
+
+                // Loan Purpose sessions
+                Session.Remove("LoanPurposeIdE");
+                Session.Remove("LoanPurposeDescriptionE");
+
+                // Loan Product Sessions
+                Session.Remove("LoanProductIdE");
+                Session.Remove("LoanProductDescriptionE");
+                Session.Remove("InterestCalculationModeDescriptionE");
+                Session.Remove("LoanInterestAnnualPercentageRateE");
+                Session.Remove("LoanProductSectionDescriptionE");
+                Session.Remove("LoanRegistrationTermInMonthsE");
+                Session.Remove("LoanRegistrationMaximumAmountE");
+
+                // Savings Products Sessions
+                Session.Remove("SavingsProductIdE");
+                Session.Remove("SavingsProductDescriptionE");
+
+                // Loan Registration Remarks Sessions
+                Session.Remove("RegistrationRemarkIdE");
+                Session.Remove("RemarksE");
+
+                TempData["Edit"] = "Loan Case edited Successfully";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = loanCaseDTO.ErrorMessages;
+
+                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
+                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());
+                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(loanCaseDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
+
+                TempData["EditError"] = "Loan Case Unsuccessful";
+
+                return View(loanCaseDTO);
+            }
+        }
     }
 }
