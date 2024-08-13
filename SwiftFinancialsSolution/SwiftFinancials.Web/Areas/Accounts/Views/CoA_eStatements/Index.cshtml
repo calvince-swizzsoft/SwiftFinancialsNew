@@ -1,11 +1,11 @@
 ﻿
 @{
-    ViewBag.Title = "Withdrawal Notifications";
+    ViewBag.Title = "CoA_eStatements";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Withdrawal Notification</h2>
+        <h2>CoA_eStatements</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -16,6 +16,9 @@
         </ol>
     </div>
 </div>
+
+
+
 <style>
     .dropdown-item {
         display: block;
@@ -43,19 +46,28 @@
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
 </style>
+
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-
-                @if (TempData["SuccessMessage"] != null)
-                {
-                    <div class="alert alert-success">
-                        @TempData["SuccessMessage"]
-                    </div>
-                }
                 <div class="ibox-title">
-                    @Html.ActionLink("Create WithdrawalNotification", "Create", "WithdrawalNotification", new { Area = "Registry" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create CoA_eStatements", "Create", "CoA_eStatements", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -71,7 +83,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="withdrawalNotificationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="CoA_eStatementssGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -97,12 +109,12 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#withdrawalNotificationsGrid').DataTable({
+            $('#CoA_eStatementssGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "WithdrawalNotification", new { Area = "Registry"}))",
+                "sAjaxSource": "@(Url.Action("Index", "CoA_eStatements", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -114,42 +126,55 @@
 
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
+
+                    var startDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + startDate.getHours()).slice(-2);
+                    var m = ("0" + startDate.getMinutes()).slice(-2);
+                    var s = ("0" + startDate.getSeconds()).slice(-2);
+
+                    var dt_StartDate = $.datepicker.formatDate('dd/mm/yy', startDate) ;
+                    aData.DurationStartDate = dt_StartDate;
+
+                    var endDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + endDate.getHours()).slice(-2);
+                    var m = ("0" + endDate.getMinutes()).slice(-2);
+                    var s = ("0" + endDate.getSeconds()).slice(-2);
+
+                    var dt_EndDate = $.datepicker.formatDate('dd/mm/yy', endDate) ;
+                    aData.DurationEndDate = dt_EndDate;
+
+                    var editUrl = '<a  href="/accounts/CoA_eStatements/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/CoA_eStatements/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var CloseUrl = '<a  href="/accounts/CoA_eStatements/Close/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Close</a>';
+                    $('td:eq(1)', nRow).html(dt_StartDate);
+                    $('td:eq(2)', nRow).html(dt_EndDate);
+                    $('td:eq(6)', nRow).html(dt_Created);
                     var dropdownHtml = `
                         <div class="dropdown">
                             <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Actions
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/Registry/WithdrawalNotification/details/${aData.Id}">View</a>                                
-                                    <a class="dropdown-item" href="/Registry/WithdrawalNotification/Approval/${aData.Id}">Approval</a>
-                                        <a class="dropdown-item" href="/Registry/WithdrawalNotification/Verify/${aData.Id}">Verify</a>
-                                    <a class="dropdown-item" href="/Registry/WithdrawalNotification/Settlement/${aData.Id}">Settlement</a>
-                                        <a class="dropdown-item" href="/Registry/WithdrawalNotification/Deathclaim/${aData.Id}">Deathclaim</a>
-
-                                  
-
+                                <a class="dropdown-item" href="/accounts/CoA_eStatements/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/CoA_eStatements/edit/${aData.Id}">Edit</a>
                             </div>
                         </div>`;
 
                     $('td:eq(7)', nRow).html(dropdownHtml);
-
-                   // $('td:eq(3)', nRow).html(dt_Created);
-                   // $('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + ApproveUrl + '&nbsp;' + verifyUrl + '&nbsp;' + SettlementUrl + '&nbsp;' + DeathClaimUrl);
-
                     return nRow;
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Customer.FullName", "sTitle": "Customer", "sWidth": "4%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "StatusDescription", "sWidth": "4%" },
-                    { "mDataProp": "CustomerStationDescription", "sTitle": "Station", "sWidth": "4%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "4%" },
-                    { "mDataProp": "CategoryDescription", "sTitle": "Category", "sWidth": "4%" },
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "4%" },
-                    { "mDataProp": "CustomerReference1", "sTitle": "Ac/No", "sWidth": "4%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "6%", "bSortable": false }],
+                    { "mDataProp": "FullAccountNumber", "sTitle": "FullAccountNumber" },
+                    { "mDataProp": "DurationStartDate", "sTitle": "Start Date"},
+                    { "mDataProp": "DurationEndDate", "sTitle": "End Date" },
+                    { "mDataProp": "ProductDescription", "sTitle": "ProductDescription" },
+                    { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Name" },
+                    { "mDataProp": "Remarks", "sTitle": "Remarks" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false },
+                    { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {

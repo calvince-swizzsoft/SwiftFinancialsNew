@@ -329,7 +329,7 @@
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_ChequeBooksController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\CoA_IntraAccountTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_eStatementsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_SignatoriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -348,6 +348,7 @@
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
@@ -1096,6 +1097,11 @@
     <Content Include="Areas\Accounts\Views\Insurers\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\IntraAccountTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
