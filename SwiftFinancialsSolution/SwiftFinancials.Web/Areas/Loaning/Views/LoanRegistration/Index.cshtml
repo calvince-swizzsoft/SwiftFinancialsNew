@@ -76,7 +76,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Loaning</h1>
+        <h1>Back Office</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -101,6 +101,19 @@
                         <div class="alert alert-success">
                             <strong>Success !</strong> @TempData["AlertMessage"]
                         </div>
+                    }
+
+
+                    @if (TempData["Edit"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["Edit"]
+                        </div>
+                    }
+
+                    @if (TempData["LoanCaseStatusInvalid"] != null)
+                    {
+                        <div class="alert alert-danger"><strong>Attempt Failed !</strong> @TempData["LoanCaseStatusInvalid"]</div>
                     }
 
                     <hr />
@@ -139,8 +152,9 @@
                                 <input type="submit" class="btn btn-primary" value="Refresh" style="width: 70px; border-radius: 10px;" />
                             }
                         </div>
-                    </div>*@
+                    </div>
 
+                    <br />*@
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
@@ -209,13 +223,12 @@
 
                     var dropdownHtml = `
                         <div class="dropdown">
-                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
-                                <a class="dropdown-item" href="/loaning/attachguarantor/repaymentSchedule/${aData.Id}">Repayment Schedule</a>
                             </div>
                         </div>`;
 
@@ -231,16 +244,14 @@
                     { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
                     { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%"},
-                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "5%"},
+                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "10%"},
                     { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%"},
+                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
                     { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
-
-
 
                 // Code to print table data to CSV, pdf and Excel
                 //"dom": "Bfrtip",
@@ -275,7 +286,8 @@
                 //        text: '<i class="fa fa-print"></i> Print'
                 //    },
                 //],
-            });
+            }
+            );
         });
 
         $(document).ajaxStart(function () {

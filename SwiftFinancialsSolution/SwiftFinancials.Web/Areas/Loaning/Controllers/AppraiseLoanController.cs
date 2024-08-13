@@ -51,7 +51,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         public async Task<ActionResult> Appraise(Guid Id, Guid? id)
-
         {
             await ServeNavigationMenus();
             int caseNumber = 0;
@@ -78,7 +77,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 loanCaseDTO.CaseNumber = loaneeCustomer.CaseNumber;
                 loanCaseDTO.CustomerId = loaneeCustomer.CustomerId;
-                loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualFirstName;
+                loanCaseDTO.CustomerIndividualFirstName = loaneeCustomer.CustomerIndividualSalutationDescription + " " + loaneeCustomer.CustomerIndividualFirstName + " " + loaneeCustomer.CustomerIndividualLastName;
                 loanCaseDTO.CustomerReference2 = loaneeCustomer.CustomerReference2;
                 loanCaseDTO.CustomerReference1 = loaneeCustomer.CustomerReference1;
                 loanCaseDTO.LoanProductDescription = loaneeCustomer.LoanProductDescription;
@@ -89,6 +88,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.AmountApplied = loaneeCustomer.AmountApplied;
                 loanCaseDTO.LoanRegistrationTermInMonths = loaneeCustomer.LoanRegistrationTermInMonths;
                 loanCaseDTO.BranchDescription = loaneeCustomer.BranchDescription;
+                loanCaseDTO.Reference = loaneeCustomer.Reference;
 
             }
 

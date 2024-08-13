@@ -1,4 +1,5 @@
 ﻿using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
@@ -476,7 +477,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Parent")]
         public Guid? CustomerAccountTypeTargetProductParentId { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Maximum Allowed Withdrawal")]
         public decimal CustomerAccountTypeTargetProductMaximumAllowedWithdrawal { get; set; }
@@ -698,5 +699,18 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         // Getting and Setting values from the Registry Module
         [DataMember]
         public CustomerDTO Customers { get; set; }
+
+
+        [DataMember]
+        public CashDepositRequestDTO CashDeposit { get; set; }
+
+        public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
+
+        public PaymentVoucherDTO PaymentVoucher { get; set; }
+
+        public TellerDTO Teller { get; set; }
+
+        public ExternalChequeDTO ChequeDeposit { get; set; }
+
     }
 }

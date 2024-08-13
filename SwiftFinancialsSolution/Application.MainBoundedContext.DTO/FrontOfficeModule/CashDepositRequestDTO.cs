@@ -1,6 +1,7 @@
 ﻿using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -12,6 +13,16 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public CashDepositRequestDTO()
         {
             AddAllAttributeValidators();
+        }
+
+        public CashDepositRequestDTO(CustomerAccountDTO customerAccountDTO)
+        {
+
+            BranchId = customerAccountDTO.BranchId;
+            CustomerAccountId = customerAccountDTO.Id;
+            Status = customerAccountDTO.Status;
+            Amount = customerAccountDTO.TotalValue;
+            Remarks = customerAccountDTO.Remarks;
         }
 
         [DataMember]
@@ -256,6 +267,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
 
 
-
+        [DataMember]
+        [Display(Name = "Product")]
+        public string CustomerAccountCustomerAccountTypeTargetProductDescription { get; set; }
     }
 }

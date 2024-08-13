@@ -7,6 +7,40 @@
     var queuePriorities = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
 }
 
+
+<style>
+    .main{
+        border: 1px solid gray;
+        border-radius: 10px;  
+    }
+
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+        
+        margin: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        
+        background-color: #00e0ff;
+    }
+    .content {
+        border: 1px solid #00ffff;
+        margin-bottom: 30px;
+        justify-content: center;
+        align-content: baseline;
+        margin: 20px;
+        font-size: 18px;
+        font-weight: bold;
+        padding: 20px;
+        padding-bottom:160px;
+    }
+    .btn-primary{
+        border-radius:10px;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -40,7 +74,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Debit Batch</h2>
+                    
                     <hr />
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -56,48 +90,72 @@
                     {
                         @Html.AntiForgeryToken()
                         <h1>Debit Batch</h1>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
-                                    <div class="input-group" data-autoclose="true">
-                                        @Html.HiddenFor(model => model.DebitTypeId)
-                                        @Html.TextBoxFor(model => model.DebitTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                        <span class="input-group-addon">
-                                            <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
-                                        </span>
+                        <div class="main">
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.DebitTypeId)
+                                                @Html.TextBoxFor(model => model.DebitTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <div class="col-md-offset-2">
-                                        <input type="submit" value="Create" class="btn btn-primary" />
+                                <div class="row">
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Priority)
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Priority)
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
 
 
+                                </div>
+
+                                
+                            </div>
+                            
+                            <div class="bottom-button">
+                                <div class="row">
+                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
                         </div>
+                        
+                        
+                        
+                        
                     }
                 </div>
             </div>

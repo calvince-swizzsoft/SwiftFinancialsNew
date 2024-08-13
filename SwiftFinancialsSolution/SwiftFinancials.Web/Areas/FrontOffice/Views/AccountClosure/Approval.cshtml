@@ -2,22 +2,15 @@
 
 @{
     ViewBag.Title = "Approval";
-
-
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2> Account Closure Approval</h2>
+        <h2>Account Closure Approval</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
-            </li>
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "Approval", new { Area = "FrontOffice" }, null)
-            </li>
-            <li class="breadcrumb-item active">
-                <strong>Approval</strong>
-            </li>
+            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home")</li>
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "Approval", new { Area = "FrontOffice" })</li>
+            <li class="breadcrumb-item active"><strong>Approval</strong></li>
         </ol>
     </div>
 </div>
@@ -26,160 +19,411 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
-                    </div>
-                </div>
                 <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Approval", "AccountClosure", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
 
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-6">
-
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "PayrollNumbe", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reason", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.Reason, "", new { @class = "text-danger" })
+                        <div class="form-group row">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.CustomerAccountFullAccountNumber)
+                                <div class="input-group">
+                                    @Html.EditorFor(model => model.CustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                                    <div class="input-group-append">
+                                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#lookupModal">
+                                            <i class="fa fa-search"></i>
+                                        </button>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="form-group form-group-sm">
-                                    <div class="col-md-offset-2">
-                                        <input type="submit" value="Approve" class="btn btn-primary" />
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.StatusDescription)
+                                @Html.EditorFor(model => model.StatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountRemarks)
+                                @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription)
+                                @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerId)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerId, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerTypeDescription)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerReference3)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerIdentificationNumber)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerReference1)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CustomerAccountCustomerReference2)
+                                @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.Reason)
+                                @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+                        </div>
+
+                        <!-- Modal for Lookup -->
+                        <div class="modal fade" id="lookupModal" tabindex="-1" role="dialog" aria-labelledby="lookupModalLabel" aria-hidden="true">
+                            <div class="modal-dialog modal-lg" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="lookupModalLabel">Account Lookup</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
-                                </div>
+                                    <div class="modal-body">
+                                        <!-- Lookup Table -->
+                                        <table id="CustomerAccountsGrid" class="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Branch</th>
+                                                    <th>Status</th>
+                                                    <th>Full Account Number</th>
+                                                    <th>Product Name</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Account Number</th>
+                                                    <th>Membership Number</th>
+                                                    <th>Personal File Number</th>
+                                                    <th>Select</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- Data rows will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" id="refreshButton">Refresh</button>
+                                        <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                                    </div>
 
-
-                                <div class="col-lg-6">
-                                    <div class="form-group form-group-lg">
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "form-control", @placeholder = "BranchDescription", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                    <div class="form-group row">
+                                        <div class="col-md-3">
+                                            <label>Items per page:</label>
+                                            <select class="form-control">
+                                                <option>15</option>
+                                            </select>
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerSerialNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "CustomerSerialNumber", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerSerialNumber, "", new { @class = "text-danger" })
+                                        <div class="col-md-3">
+                                            <label>Start Date:</label>
+                                            <input type="date" id="startDate" class="form-control" value="2018-02-20" />
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Identity Card Number", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                        <div class="col-md-3">
+                                            <label>End Date:</label>
+                                            <input type="date" id="endDate" class="form-control" value="2018-02-20" />
                                         </div>
-                                        <div class="form-group form-group-sm">
-                                            @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer FullName", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.CustomerAccountCustomerFullName, "", new { @class = "text-danger" })
+                                        <div class="col-md-3">
+                                            <label>Status Filter:</label>
+                                            <select class="form-control" id="statusFilter">
+                                                <option>Registered</option>
+                                                <option>Approved</option>
+                                                <option>Verified</option>
+                                                <option>Deferred</option>
+                                                <option>Settled</option>
+                                            </select>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="closureAction">Closure Action</label>
+                            <select class="form-control" id="closureAction" name="closureAction">
+                                <option value="Approve">Approve</option>
+                                <option value="Defer">Defer</option>
+                            </select>
+                        </div>
+
+                        <!-- Tabs for Loan Accounts, Investment Accounts, and Loans Guaranteed -->
+                        <ul class="nav nav-tabs">
+                            <li class="nav-item">
+                                <a class="nav-link active" data-toggle="tab" href="#loanAccounts">Loan Accounts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#investmentAccounts">Investment Accounts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" data-toggle="tab" href="#loansGuaranteed">Loans Guaranteed</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane fade show active" id="loanAccounts">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Branch</th>
+                                                <th>Status</th>
+                                                <th>Full Account Number</th>
+                                                <th>Product Name</th>
+                                                <th>Customer Name</th>
+                                                <th>Account Number</th>
+                                                <th>Membership Number</th>
+                                                <th>Personal File Number</th>
+                                                <th>Select</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data rows go here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="investmentAccounts">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Branch</th>
+                                                <th>Status</th>
+                                                <th>Full Account Number</th>
+                                                <th>Product</th>
+                                                <th>Investment</th>
+                                                <th>Projected Rate</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data rows go here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade" id="loansGuaranteed">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Branch</th>
+                                                <th>Status</th>
+                                                <th>Full Account Number</th>
+                                                <th>Product</th>
+                                                <th>Investment</th>
+                                                <th>Projected Rate</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Data rows go here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
 
 
-
-                    }                    
-
-                    <div>
-                        @Html.ActionLink("Back to List", "Index", "CustomerAccounts", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
-                    </div>
+                        <div class="form-group row mt-3">
+                            <div class="col-md-12 text-right">
+                                <button type="submit" class="btn btn-primary" id="updateButton">Update</button>
+                            </div>
+                        </div>
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
-    <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
 
-                    var form = $(this);
+<script>
 
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
+    $(document).ready(function () {
+    var accountsMap = {}; // Initialize accounts map
 
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
+    $('#refreshButton').click(function () {
+        $('#CustomerAccountsGrid').DataTable().ajax.reload(); // Reload DataTable data
+    });
 
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
+    $('.StationsLookup').typeahead({
+        source: function (query, process) {
+            return $.getJSON('@Url.Action("GetAccountNumbers", "AccountClosure", new { Area = "FrontOffice" })', { query: query }, function (accounts) {
+                var newAccountsData = [];
+                accountsMap = {};
+                $.each(accounts, function (i, account) {
+                    newAccountsData.push(account.FullAccountNumber);
+                    accountsMap[account.FullAccountNumber] = account;
+                });
+                process(newAccountsData);
             });
-        });</script>
+        },
+        updater: function (item) {
+            $('#CustomerAccountFullAccountNumber').val(accountsMap[item].FullAccountNumber);
+            $('#CustomerAccountRemarks').val(accountsMap[item].Remarks);
+            $('#CustomerAccountTypeTargetProductDescription').val(accountsMap[item].ProductName);
+            $('#CustomerAccountCustomerId').val(accountsMap[item].CustomerId);
+            $('#CustomerAccountCustomerTypeDescription').val(accountsMap[item].CustomerTypeDescription);
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(accountsMap[item].IndividualPayrollNumbers);
+            $('#CustomerAccountCustomerReference3').val(accountsMap[item].CustomerAccountCustomerReference3);
+            $('#CustomerAccountCustomerIdentificationNumber').val(accountsMap[item].IdentificationNumber);
+            $('#CustomerAccountCustomerReference1').val(accountsMap[item].CustomerAccountCustomerReference1);
+            $('#CustomerAccountCustomerReference2').val(accountsMap[item].CustomerAccountCustomerReference2);
+            $('#Reason').val(accountsMap[item].Reason);
+            $('#lookupModal').modal('hide');
+        }
+    });
+
+    $('#CustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            $('td:eq(4)', nRow).html('<button class="btn btn-outline-info select-account" data-id="' + aData[8] + '">Select</button>');
+            return nRow;
+        },
+        "columns": [
+            { "data": "BranchDescription" },
+            { "data": "StatusDescription" },
+            { "data": "FullAccountNumber" },
+            { "data": "CustomerAccountTypeTargetProductDescription" },
+            { "data": "CustomerFullName" },
+            { "data": "CustomerReference1" },
+            { "data": "CustomerReference2" },
+            { "data": "CustomerReference3" },
+            {
+                "data": "Id",
+                "render": function (data) {
+                    return '<button class="btn btn-outline-info select-account" data-id="' + data + '">Select</button>';
+                }
+            }
+        ]
+    });
+
+    $('#CustomerAccountsGrid tbody').on('click', '.select-account', function () {
+        var data = $('#CustomerAccountsGrid').DataTable().row($(this).parents('tr')).data();
+        if (data) {
+            $('#CustomerAccountFullAccountNumber').val(data.FullAccountNumber);
+            $('#CustomerAccountRemarks').val(data.Remarks);
+            $('#CustomerAccountTypeTargetProductDescription').val(data.ProductName);
+            $('#CustomerAccountCustomerId').val(data.CustomerId);
+            $('#CustomerAccountCustomerTypeDescription').val(data.CustomerTypeDescription);
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
+            $('#CustomerAccountCustomerReference3').val(data.CustomerReference3);
+            $('#CustomerAccountCustomerIdentificationNumber').val(data.IdentificationNumber);
+            $('#CustomerAccountCustomerReference1').val(data.CustomerReference1);
+            $('#CustomerAccountCustomerReference2').val(data.CustomerReference2);
+            $('#Reason').val(data.Reason);
+            $('#lookupModal').modal('hide');
+        }
+    });
+
+    $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+        var target = $(e.target).attr("href");
+        if (target === '#loanAccounts') {
+            populateTab('#loanAccounts', '@Url.Action("GetLoanAccountsData", "AccountClosure", new { Area = "FrontOffice" })');
+        } else if (target === '#investmentAccounts') {
+            populateTab('#investmentAccounts', '@Url.Action("GetInvestmentAccountsData", "AccountClosure", new { Area = "FrontOffice" })');
+        } else if (target === '#loansGuaranteed') {
+            populateTab('#loansGuaranteed', '@Url.Action("GetLoansGuaranteedData", "AccountClosure", new { Area = "FrontOffice" })');
+        }
+    });
+
+    function applyFilters() {
+        let startDate = $('#startDate').val();
+        let endDate = $('#endDate').val();
+        let statusFilter = $('#statusFilter').val();
+        $('#CustomerAccountsGrid').DataTable().ajax.reload();
+    }
+
+    $('#startDate, #endDate, #statusFilter').change(applyFilters);
+    $('#searchAccountNumber').on('keyup', function () {
+        $('#CustomerAccountsGrid').DataTable().search(this.value).draw();
+    });
+
+    $('#updateButton').click(function (event) {
+        event.preventDefault();
+        var action = $('#closureAction').val();
+        if (action === 'Approve') {
+            alert('Account closure approved.');
+        } else if (action === 'Defer') {
+            alert('Account closure deferred.');
+        }
+
+        // After showing the alert, navigate to the index view
+    $('#form').submit(function(e) {
+        e.preventDefault();
+        window.location.href = '@Url.Action("Index", "AccountClosure", new { Area = "FrontOffice" })';
+    });
+        $('#form').submit();
+    });
+});
+</script>
+
 }
+
+

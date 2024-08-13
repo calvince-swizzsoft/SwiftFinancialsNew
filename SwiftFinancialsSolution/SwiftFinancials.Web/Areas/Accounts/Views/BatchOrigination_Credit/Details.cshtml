@@ -3,9 +3,77 @@
 @{
     ViewBag.Title = "Credit Batch Details";
 }
+<style>
+    .custom-container {
+        border: 2px solid gray;
+        padding: 10px;
+        border-radius: 5px;
+        
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        text-align: center;
+        margin-top: 30px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    .combined-container {
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+        font-size: 15px;
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        border: 2px solid #00ffff;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        margin-top: 5px;
+    }
+
+    .control-label {
+        font-size: 18px; /* Increased label font size */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    .form-value {
+        font-size: 16px;
+        color: #007bff; /* Set a different color for the field values */
+    }
+
+    #policies {
+        color: black;
+    }
+
+    .checkbox-label {
+        font-size: 18px; /* Increased label font size */
+        color: #333; /* Set a different color for the checkbox labels */
+    }
+
+    .checkbox-field {
+        font-size: 16px;
+        color: #007bff; /* Set a different color for the checkbox fields */
+    }
+
+    .main1 {
+        border: 1px solid black;
+        padding: 10px;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Accounts</h2>
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -14,7 +82,7 @@
                 @Html.ActionLink("Home", "Index", "BatchOrigination_Credit", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>View</strong>
+                <strong>Details</strong>
             </li>
         </ol>
     </div>
@@ -24,9 +92,10 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <h2>Credit Batch Details</h2>
-                <hr />
                 <div class="ibox-title">
+                    <h2 style="font-weight: bold;">Credit Batch Details</h2>
+                    <hr />
+                    @Html.ActionLink("Back To List", "Index", "BatchOrigination_Credit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -36,39 +105,144 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content">
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.PostingPeriodDescription)</strong><br>
+                <div class="ibox-content bg-white text-info">
+                    <div class="form-horizontal">
+                        <fieldset>
+                            <div class="main1">
+                                <div class="combined-container">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.PostingPeriodDescription, new { @class = "control-label" })
+                                                <div class="form-value">@Model.PostingPeriodDescription</div>
+                                            </div>
+                                        </div>
 
-                                @Html.DisplayFor(model => model.PostingPeriodDescription)<br>
-                            </p>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.ConcessionFixedAmount, new { @class = "control-label" })
+                                                <div class="form-value">@Model.ConcessionFixedAmount</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CreditTypeDescription, new { @class = "control-label" })
+                                                <div class="form-value">@Model.CreditTypeDescription</div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <p>
-                                <strong>@Html.DisplayNameFor(model => model.TypeDescription)</strong><br>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
+                                                <div class="form-value">@Model.TypeDescription</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
+                                                <div class="form-value">@Model.BranchDescription</div>
+                                            </div>
+                                        </div>
 
-                                @Html.DisplayFor(model => model.TypeDescription)<br>
-                            </p>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Reference, new { @class = "control-label" })
+                                                <div class="form-value">@Model.Reference</div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                            <p>
-                                <strong> @Html.DisplayNameFor(model => model.CreatedDate)</strong><br>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Month, new { @class = "control-label" })
+                                                <div class="form-value">@Model.Month</div>
+                                            </div>
+                                        </div>
 
-                                @Html.DisplayFor(model => model.CreatedDate)<br>
-                            </p>
-                        </div>
-                    </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.ConcessionType, new { @class = "control-label" })
+                                                <div class="form-value">@Model.ConcessionType</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                                <div class="form-value">@Model.Priority</div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <p>
-                                @Html.ActionLink("Edit", "Edit", "BatchOrigination_Credit", new { id = Model.Id, Area = "Accounts" }, new { @class = "btn btn-success" })
-                                @Html.ActionLink("Back to List", "Index", "BatchOrigination_Credit", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                            </p>
-                        </div>
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TotalValue, new { @class = "control-label" })
+                                                <div class="form-value">@Model.TotalValue</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AuthorizedBy, new { @class = "control-label" })
+                                                <div class="form-value">@Model.AuthorizedBy</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AuthorizedBy, new { @class = "control-label" })
+                                                <div class="form-value">@Model.AuthorizedBy</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="custom-container">
+                                    <div class="row" id="policies">
+                                        <div class="col-lg-12">
+                                            <div class="row">
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.CheckBoxFor(model => model.PreserveAccountBalance, new { @disabled = "disabled" })
+                                                        @Html.LabelFor(model => model.PreserveAccountBalance, new { @class = "checkbox-label" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.CheckBoxFor(model => model.RecoverArrearages, new { @disabled = "disabled" })
+                                                        @Html.LabelFor(model => model.RecoverArrearages, new { @class = "checkbox-label" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.CheckBoxFor(model => model.RecoverIndefiniteCharges, new { @disabled = "disabled" })
+                                                        @Html.LabelFor(model => model.RecoverIndefiniteCharges, new { @class = "checkbox-label" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.CheckBoxFor(model => model.RecoverCarryForwards, new { @disabled = "disabled" })
+                                                        @Html.LabelFor(model => model.RecoverCarryForwards, new { @class = "checkbox-label" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </fieldset>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+
+
+

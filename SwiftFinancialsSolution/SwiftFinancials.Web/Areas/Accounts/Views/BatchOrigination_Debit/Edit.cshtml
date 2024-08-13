@@ -4,9 +4,71 @@
     ViewBag.Title = "Edit Debit Batch";
     var queuePriorities = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
 }
+
+<style>
+    .custom-container {
+        border: 2px solid gray;
+        padding: 10px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        text-align: center;
+        margin-top: 30px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    .row {
+        width: 100%;
+        font-size: 16px;
+    }
+
+    .combined-container {
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+        font-size: 15px;
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        border: 2px solid #00ffff;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .input-group-addon {
+        padding: 10px;
+    }
+
+    .form-control {
+        margin-top: 5px;
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+    }
+
+    #policies {
+        color: black;
+    }
+
+    .main1 {
+        border: 1px solid black;
+        padding: 10px;
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Accounts</h2>
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -21,12 +83,23 @@
     </div>
 </div>
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Edit Debit Batch</h2>
+                    <h2 style="font-weight: bold;">Debit Batch</h2>
                     <hr />
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -38,55 +111,74 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Edit", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Edit", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <fieldset>
+                                <div class="main1">
+                                    <div class="combined-container">
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.DebitTypeDescription, new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.DebitTypeId)
+                                                    @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Debit Type Description", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.DebitTypeDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.BranchId)
+                                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Branch Description", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
 
-                        <h1>Debit Batch</h1>
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.DebitTypeId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.HiddenFor(model => model.DebitTypeId)
-                                    @Html.ValidationMessageFor(model => model.DebitTypeId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.DebitTypeDescription, new { htmlAttributes = new { @class = "DebitTypesLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Priority)
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                        @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md" })
+                                                        @Html.ValidationMessageFor(model => model.Priority)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="custom-container">
+                                        <div class="row">
+                                            <div class="col-lg-12">
+                                                <div class="style-button" style="text-align: right;">
+                                                    <input type="submit" value="Save Changes" style="width: 150px;" class="btn btn-primary" />
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-sm">
-                                    <div class="col-md-offset-2">
-                                        <input type="submit" value="Edit" class="btn btn-primary" />
-                                    </div>
-                                </div>
-                            </div>
+                            </fieldset>
                         </div>
                     }
-
-                    <div>
-                        @Html.ActionLink("Back to List", "Index", "BatchOrigination_Debit", new { Area = "Accounts" }, new { @class = "btn btn-success" })
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
