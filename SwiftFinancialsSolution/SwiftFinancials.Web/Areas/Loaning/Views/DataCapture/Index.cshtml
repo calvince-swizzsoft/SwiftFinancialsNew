@@ -3,6 +3,8 @@
     ViewBag.Title = "Data Periods";
 }
 
+<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Back Office</h1>
@@ -17,6 +19,15 @@
     </div>
 </div>
 
+<div id="tabs-container">
+    <ul class="nav-tabs">
+        <li>@Html.ActionLink("Data Periods", "Index", "DataCapture")</li>
+        <li>@Html.ActionLink("Data Processing", "Index", "DataProcessing")</li>
+        <li>@Html.ActionLink("Closing", "Index", "Closing")</li>
+        <li>@Html.ActionLink("Catalogue", "Index", "Catalogue")</li>
+    </ul>
+</div>
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -27,16 +38,11 @@
                     @Html.ActionLink("Create Data Period", "Create", "DataCapture", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                     <br />
                     <br />
-                    @if (TempData["AlertMessage"] != null)
+
+                    @if (TempData["message"] != null)
                     {
                         <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>
-                                    &times;
-                                </span>
-                            </button>
+                            <strong>Success !</strong> @TempData["message"]
                         </div>
                     }
 
@@ -105,8 +111,7 @@
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/loaning/DataCapture/index/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/loaning/DataCapture/appraise/${aData.Id}">Appraise Loan</a>
+                                <a class="dropdown-item" href="/loaning/DataCapture/details/${aData.Id}">View</a>
                             </div>
                         </div>`;
 

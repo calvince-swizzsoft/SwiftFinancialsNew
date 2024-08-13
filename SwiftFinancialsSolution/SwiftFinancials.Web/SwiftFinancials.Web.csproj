@@ -392,6 +392,7 @@
     <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AuthorizeLoanBatchController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataCaptureController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\DataProcessingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -432,6 +433,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanRestructuringController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\RepaymentScheduleController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
@@ -627,8 +629,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\bank.jpg" />
+    <Content Include="Images\idDemo_Front.jpg" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
+    <Content Include="Images\passportDemo.jpg" />
+    <Content Include="Images\signatureDemo.jpg" />
     <Content Include="Images\table.png" />
     <Content Include="Reports\Report.aspx" />
     <Content Include="Reports\ReportViewer.aspx" />
@@ -1099,6 +1104,10 @@
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\DataCapture\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\DataCapture\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\Reports\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataProcessing\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataProcessing\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

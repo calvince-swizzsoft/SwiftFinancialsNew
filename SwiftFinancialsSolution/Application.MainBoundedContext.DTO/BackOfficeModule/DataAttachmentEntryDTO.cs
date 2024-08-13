@@ -5,6 +5,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using Application.MainBoundedContext.DTO.RegistryModule;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -238,5 +239,50 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name ="Data Period")]
+        public string DataAttachmentPeriodDescription { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public Guid CustomerAccountCustomerStationZoneDivisionStationId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public string CustomerAccountCustomerStationZoneDivisionStationDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Registration Date")]
+        public DateTime? CustomerAccountCustomerNonIndividualRegistrationDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string CustomerRemarks { get; set; }
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Account Number")]
+        public string Ref1 { get; set; } 
+        
+        
+        [DataMember]
+        [Display(Name = "Membership Number")]
+        public string Ref2 { get; set; }
+         
+
+        [DataMember]
+        [Display(Name = "Personal File Number")]
+        public string Ref3 { get; set; }
+
+        [DataMember]
+        public CustomerDTO CustomerDTO { get; set; } 
     }
 }

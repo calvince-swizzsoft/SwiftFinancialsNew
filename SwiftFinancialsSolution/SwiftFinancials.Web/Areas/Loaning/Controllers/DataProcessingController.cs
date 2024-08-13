@@ -15,7 +15,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
-    public class DataCaptureController : MasterController
+    public class DataProcessingController : MasterController
     {
 
         public async Task<ActionResult> Index()
@@ -50,18 +50,23 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Details(Guid? id)
         {
             await ServeNavigationMenus();
 
-            var dataCapture = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
-           
-            return View(dataCapture);
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            return View();
         }
 
 
-
-        public async Task<ActionResult> Create(Guid? id, DataAttachmentPeriodDTO dataPeriodDTO)
+        public async Task<ActionResult> Create(Guid? id, DataAttachmentEntryDTO dataAttachmentEntryDTO)
         {
             await ServeNavigationMenus();
 
@@ -74,14 +79,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var postingPeriod = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
-            if (postingPeriod != null)
+            var dataPeriod = await _channelService.FindDataAttachmentPeriodAsync(parseId, GetServiceHeader());
+            if (dataPeriod != null)
             {
-                dataPeriodDTO.PostingPeriodId = postingPeriod.Id;
-                dataPeriodDTO.PostingPeriodDescription = postingPeriod.Description;
+                dataAttachmentEntryDTO.DataAttachmentPeriodId = dataPeriod.Id;
+                dataAttachmentEntryDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
+                dataAttachmentEntryDTO.Remarks = dataPeriod.Remarks;
             }
 
-            return View(dataPeriodDTO);
+            return View(dataAttachmentEntryDTO);
         }
 
 

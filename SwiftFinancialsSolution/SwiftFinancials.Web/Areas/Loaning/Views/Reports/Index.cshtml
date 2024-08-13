@@ -1,0 +1,59 @@
+﻿@{
+    ViewBag.Title = "Back Office Reports";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Back Office</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "LoanRegistration", new { Area = "Loaning" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Reports</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Index", "Reports", new { Area = "Loaning" }, FormMethod.Post))
+                    {
+                        <fieldset>
+                            <label id="module">Sub-module</label>
+                            <select id="sub-module">
+                                <option value="0">Loan Cases Report</option>
+                                <option value="1">Approved Loans Report</option>
+                                <option value="2">Appraised Loans Report</option>
+                                <option value="3">Verified Loans Report</option>
+                                <option value="4">Rejected Loans Report</option>
+                                <option value="5">Disbursed Loans Report</option>
+                            </select>
+
+                            <input type="submit" class="btn btn-dark" value="Generate Report" style="width: 150px;"/>
+                        </fieldset>
+                    }
+                    </div>
+            </div>
+        </div>
+    </div>
+</div>
+
