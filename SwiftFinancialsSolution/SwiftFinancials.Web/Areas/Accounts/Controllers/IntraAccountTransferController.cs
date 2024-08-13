@@ -14,7 +14,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
-    public class CoA_IntraAccountTransferController : MasterController
+    public class IntraAccountTransferController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -60,12 +60,64 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["customerAccountSignatoryDTOs"] = p;
             return View(customerAccountDTO);
         }
-
-
-        public async Task<ActionResult> Create(Guid? id, InterAccountTransferBatchDTO customerAccountSignatoryDTO)
+        public async Task<ActionResult> Search(Guid? id, InterAccountTransferBatchDTO standingOrderDTO)
         {
             await ServeNavigationMenus();
 
+
+            Guid parseId;
+
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+            ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
+
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+            bool includeBalances = false;
+            bool includeProductDescription = false;
+            bool includeInterestBalanceForLoanAccounts = false;
+            bool considerMaturityPeriodForInvestmentAccounts = false;
+
+            if (Session["Customers"] != null)
+            {
+                standingOrderDTO = Session["Customers"] as InterAccountTransferBatchDTO;
+            }
+
+            if (Session["benefactorAccounts"] != null)
+            {
+                standingOrderDTO.interAccountTransferBatch = Session["benefactorAccounts"] as CustomerAccountDTO;
+            }
+
+
+
+            var beneficiaryAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+            if (beneficiaryAccounts != null)
+            {
+
+                standingOrderDTO.CustomerAccountId = beneficiaryAccounts.Id;
+                standingOrderDTO.interAccountTransferBatch = beneficiaryAccounts;
+                //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
+                standingOrderDTO.CustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerFullName;
+
+
+            }
+            Session["interAccountTransferBatch"] = standingOrderDTO.interAccountTransferBatch;
+            return View("Create", standingOrderDTO);
+        }
+
+        public async Task<ActionResult> Create(Guid? id, InterAccountTransferBatchDTO standingOrderDTO)
+        {
+            await ServeNavigationMenus();
+            if (Session["interAccountTransferBatch"] != null)
+            {
+                standingOrderDTO = Session["interAccountTransferBatch"] as InterAccountTransferBatchDTO;
+            }
 
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
@@ -92,22 +144,20 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bool includeProductDescription = false;
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
-            var benefactorAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var beneficiaryAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
 
-
-            if (customerAccountSignatoryDTO != null)
+            if (beneficiaryAccounts != null)
             {
-                customerAccountSignatoryDTO.CustomerAccountId = benefactorAccounts.Id;
-                customerAccountSignatoryDTO.Customers = benefactorAccounts;
+
+                standingOrderDTO.Customers = beneficiaryAccounts;
+                standingOrderDTO.interAccountTransferBatch = beneficiaryAccounts;
                 //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
-                customerAccountSignatoryDTO.CustomerAccountCustomerIndividualFirstName = benefactorAccounts.CustomerFullName;
-                //customerAccountSignatoryDTO.AddressEmail = benefactorAccounts.CustomerAddressEmail;
+                standingOrderDTO.CustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerFullName;
 
 
             }
-
-            Session["benefactorAccounts"] = benefactorAccounts;
-            return View(customerAccountSignatoryDTO);
+            Session["interAccountTransferBatch"] = standingOrderDTO.interAccountTransferBatch;
+            return View("Create", standingOrderDTO);
         }
         //[HttpPost]
         //public async Task<ActionResult> Add(Guid? id, InterAccountTransferBatchDTO customerAccountSignatoryDTO, CustomerAccountDTO customerAccountDTO)
@@ -152,27 +202,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         //}
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerAccountSignatoryDTO customerBindingModel)
+        public async Task<ActionResult> Create(InterAccountTransferBatchDTO customerBindingModel, ObservableCollection<InterAccountTransferBatchEntryDTO> interAccountTransferBatchEntryCollection)
         {
 
             customerBindingModel.ValidateAll();
 
             if (!customerBindingModel.HasErrors)
             {
-                await _channelService.AddCustomerAccountSignatoryAsync(customerBindingModel, GetServiceHeader());
+                await _channelService.AddInterAccountTransferBatchAsync(customerBindingModel, GetServiceHeader());
+                await _channelService.UpdateInterAccountTransferBatchEntryCollectionAsync(customerBindingModel.Id, interAccountTransferBatchEntryCollection, GetServiceHeader());
                 TempData["AlertMessage"] = "Customer Account signatory created successfully";
-                return RedirectToAction("Index");
+                return RedirectToAction("Create");
             }
             else
             {
                 var errorMessages = customerBindingModel.ErrorMessages;
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.CustomerAccountCustomerType.ToString());
-                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IdentityCardType.ToString());
-                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IdentityCardType.ToString());
-                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.Salutation.ToString());
-                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.Gender.ToString());
-                ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerBindingModel.Relationship.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Status.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.Status.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.Status.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.Status.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.Status.ToString());
+                ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerBindingModel.Status.ToString());
 
                 return View(customerBindingModel);
             }

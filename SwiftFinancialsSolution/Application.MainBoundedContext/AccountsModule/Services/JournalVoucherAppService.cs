@@ -73,7 +73,11 @@ namespace Application.MainBoundedContext.AccountsModule.Services
                 if (postingPeriodDTO != null)
                 {
                     if (journalVoucherDTO.ValueDate != null && (journalVoucherDTO.ValueDate < postingPeriodDTO.DurationStartDate || journalVoucherDTO.ValueDate > postingPeriodDTO.DurationEndDate || journalVoucherDTO.ValueDate > DateTime.Today))
-                        throw new ArgumentOutOfRangeException("ValueDate", "Sorry, but value date is out of range!");
+                    {
+                        journalVoucherDTO.ErrorMessageResult=string.Format("ValueDate", "Sorry, but value date is out of range!");
+
+                        return journalVoucherDTO;
+                    }
 
                     using (var dbContextScope = _dbContextScopeFactory.Create())
                     {

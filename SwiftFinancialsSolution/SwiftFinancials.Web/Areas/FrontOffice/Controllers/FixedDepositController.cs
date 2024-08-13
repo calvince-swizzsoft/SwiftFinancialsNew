@@ -151,23 +151,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             fixedDepositDTO.ValidateAll();
 
-            int moduleNavigationItemCode = 0;
-
             if (!fixedDepositDTO.HasErrors)
             {
+                int moduleNavigationItemCode = 0;
                 await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
-
+                TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = fixedDepositDTO.ErrorMessages;
+                ViewBag.ErrorMessages = errorMessages;
 
-                return View();
+                return View(fixedDepositDTO);
             }
         }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -305,9 +306,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
 
             if (Session["Description"] != null)
-                {
+            {
                 fixedDepositTypeDTOs.Description = Session["Description"].ToString();
-                }
+            }
             if (Session["Remarks"] != null)
             {
                 fixedDepositDTO.Remarks = Session["Remarks"].ToString();
@@ -321,12 +322,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
             return View("Create", fixedDepositTypeDTOs);
-    }
+        }
 
         [HttpPost]
         public ActionResult AssignText(string Remarks, string Description)
         {
-            
+
             Session["Description"] = Description;
             return null;
         }

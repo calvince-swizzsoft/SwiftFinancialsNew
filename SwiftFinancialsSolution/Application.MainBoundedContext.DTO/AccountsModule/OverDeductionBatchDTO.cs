@@ -9,6 +9,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -104,5 +105,22 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        
+
+        [DataMember]
+        public OverDeductionBatchEntryDTO overDeductionBatchEntry { get; set; }
+        
+        public ObservableCollection<OverDeductionBatchEntryDTO> overDeductionBatchEntries { get; set; }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
+
+
+        [DataMember]
+        public CustomerAccountDTO CreditCustomerAccountDTO { get; set; } 
+        
+        [DataMember]
+        public CustomerAccountDTO DebitCustomerAccountDTO { get; set; }
     }
 }
