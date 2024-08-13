@@ -1096,6 +1096,12 @@
     <Content Include="Areas\Accounts\Views\Insurers\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

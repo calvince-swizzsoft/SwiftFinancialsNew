@@ -343,8 +343,19 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
 
+
+
+
+
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntries { get; set; }
 
         public JournalVoucherEntryDTO JournalVoucherEntry { get; set; }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
+
+
+        [DataMember]
+        public int rowId { get; set; }
     }
 }
