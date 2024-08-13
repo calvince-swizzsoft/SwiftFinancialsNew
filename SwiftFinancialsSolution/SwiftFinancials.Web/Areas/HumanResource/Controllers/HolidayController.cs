@@ -71,6 +71,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             holidayDTO.DurationStartDate = DateTime.Parse(startDate).Date;
 
             holidayDTO.DurationEndDate = DateTime.Parse(endDate).Date;
+            var k = await _channelService.FindPostingPeriodAsync(holidayDTO.PostingPeriodId,GetServiceHeader());
+            holidayDTO.PostingPeriodDurationEndDate = k.DurationEndDate;
+            holidayDTO.PostingPeriodDurationStartDate = k.DurationStartDate;
             holidayDTO.ValidateAll();
 
             if (!holidayDTO.HasErrors)

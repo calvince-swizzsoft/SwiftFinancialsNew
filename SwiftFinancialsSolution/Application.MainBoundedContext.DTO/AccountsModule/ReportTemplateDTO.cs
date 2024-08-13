@@ -80,7 +80,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Template File Name")]
         public string TemplateFileName { get; set; }
 
-        [DataMember]
+        [DataMember]    
         [Display(Name = "Template Cut-Off Date")]
         public DateTime TemplateCutOffDate { get; set; }
 

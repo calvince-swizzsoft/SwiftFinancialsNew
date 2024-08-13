@@ -3,6 +3,7 @@
     ViewBag.Title = "Loan Cancellation";
 }
 
+<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 
 <style>
     #tabs-container {
@@ -37,7 +38,6 @@
             }
 </style>
 
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Back Office</h1>
@@ -50,6 +50,17 @@
             </li>
         </ol>
     </div>
+</div>
+
+<div id="tabs-container">
+    <ul class="nav-tabs">
+        <li>@Html.ActionLink("Loan Registration", "Index", "LoanRegistration")</li>
+        <li>@Html.ActionLink("Loan Appraisal", "Index", "AppraiseLoan")</li>
+        <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan")</li>
+        <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification")</li>
+        <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation")</li>
+
+    </ul>
 </div>
 
 <div class="wrapper wrapper-content">
