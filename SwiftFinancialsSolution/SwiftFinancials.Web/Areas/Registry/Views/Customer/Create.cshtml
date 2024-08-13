@@ -17,7 +17,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h1>Registry</h1>
+        <h2>Customer</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -57,7 +57,6 @@
                             <strong>Customer Registration Failed !</strong> @TempData["Error"]
                         </div>
                     }
-
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -151,7 +150,7 @@
                             </div>
                         </div>
 
-                        
+
 
                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
                             <li class="nav-item">
@@ -185,73 +184,68 @@
 
 
                         <div class="tab-content">
-                            <div id="address" class="tab-pane fade" role="tabpanel">
+                            <div id="address" class="tab-pane" role="tabpanel">
                                 <div class="tab-content">
-                                    <div id="address" class="tab-pane fade show active" role="tabpanel">
-                                        <h1>Address</h1>
-                                        <fieldset>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                                    </div>
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                                    </div>
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                                    </div>
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
                                                 </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                                    </div>
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                                    </div>
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
-                                                    </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
-                                                    </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
                                                 </div>
-                                                <div class="col-lg-6">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-                                                        @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-                                                        @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                                    </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Land line" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                        </fieldset>
-                                    </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
                                 </div>
                             </div>
 
-                            <div id="IndividualParticulars" class="tab-pane fade" role="tabpanel">
-
+                            <div id="IndividualParticulars" class="tab-pane" role="tabpanel">
                                 <div class="row">
                                     <div class="col-4">
-
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.IndividualSalutation, htmlAttributes: new { @class = "" })
                                             <div class="input-group">
@@ -368,37 +362,99 @@
                                 </div>
                             </div>
 
-                            <div id="Referees" class="tab-pane fade" role="tabpanel">
+                            <div id="Referees" class="tab-pane" role="tabpanel">
 
 
                             </div>
 
-                            <div id="CreditTypes" class="tab-pane fade" role="tabpanel">
+                            <div id="CreditTypes" class="tab-pane" role="tabpanel">
 
 
                             </div>
 
-                            <div id="DebitTypes" class="tab-pane fade" role="tabpanel">
+                            <div id="DebitTypes" class="tab-pane" role="tabpanel">
+
+                            </div>
+
+                            <div id="InvestmentProducts" class="tab-pane" role="tabpanel">
+
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                    <th data-hide="phone">Percentage</th>
+                                                    <th data-hide="phone">Remove Entry</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.savings != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.invesment)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.Description
+                                                            </td>
+
+                                                            <td>
+                                                                <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+
+                                    </div>
+                                </row>
+                            </div>
+
+                            <div id="SavingsProducts" class="tab-pane" role="tabpanel">
+
+
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                    <th data-hide="phone">Percentage</th>
+                                                    <th data-hide="phone">Remove Entry</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.savings != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.savings)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.Description
+                                                            </td>
+
+                                                            <td>
+                                                                <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+
+
+                                    </div>
+                                </row>
+                            </div>
+
+                            <div id="Specimen" class="tab-pane" role="tabpanel">
 
 
                             </div>
 
-                            <div id="InvestmentProducts" class="tab-pane fade" role="tabpanel">
-
-
-                            </div>
-
-                            <div id="SavingsProducts" class="tab-pane fade" role="tabpanel">
-
-
-                            </div>
-
-                            <div id="Specimen" class="tab-pane fade" role="tabpanel">
-
-
-                            </div>
-
-                            <div id="SpecimenCapture" class="tab-pane fade" role="tabpanel">
+                            <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
 
 
                             </div>
@@ -418,13 +474,6 @@
         </div>
     </div>
 </div>
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
 
 @section Styles{

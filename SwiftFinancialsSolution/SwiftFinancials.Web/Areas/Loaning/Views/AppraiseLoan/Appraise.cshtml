@@ -45,7 +45,7 @@
         }
 
     .tab-content, .sub-tab-content {
-        max-height: 100%; /* Adjust the height as needed */
+        max-height: 7000px; /* Adjust the height as needed */
         overflow-y: auto;
         padding: 10px;
         /*border: 1px solid #ccc;*/ /* Borderline around tab content */
@@ -89,7 +89,70 @@
 </style>
 
 
+<style>
+    .ibox-content {
+        padding: 20px;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
 
+        .ibox-content label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        .ibox-content input[type="text"],
+        .ibox-content dropdowmlist,
+        .ibox-content textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+
+            .ibox-content input[type="text"]:focus,
+            .ibox-content select:focus,
+            .ibox-content dropdowmlist:focus,
+            .ibox-content textarea:focus {
+                border-color: #007bff;
+                outline: none;
+            }
+
+    .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        font-size: 1em;
+        margin-bottom: 15px;
+    }
+
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .btn{
+            border-radius: 4px;
+            outline: outset;
+        }
+
+            .nav a{
+                font-weight: bold;
+                font-size: large;
+            }
+
+    h2, h1, h3, h4, h5, h6 {
+        font-weight: bold;
+    }
+</style>
 
 
 
@@ -153,7 +216,6 @@
                                     <div class="col-md-2 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.CaseNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.ValidationMessageFor(model => model.CaseNumber, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.CaseNumber, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @readonly = "readonly" } })
                                         </div>
                                     </div>
@@ -282,7 +344,7 @@
                                     <div class="col-md-3 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -734,16 +796,16 @@
                                             @Html.ValidationMessageFor(model => model.LoanProductInvestmentsBalance, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.LoanProductInvestmentsBalance, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
-                                    </div>  
-                                    
+                                    </div>
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00" } })
                                         </div>
-                                    </div> 
-                                    
+                                    </div>
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationMaximumLoan, htmlAttributes: new { @class = "control-label" })
@@ -796,16 +858,16 @@
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationTotalAllowance, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
-                                    </div> 
-                                    
+                                    </div>
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationTotalDeduction, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationTotalDeduction, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
-                                    </div> 
-                                    
+                                    </div>
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationTotalIncome, htmlAttributes: new { @class = "control-label" })
@@ -822,18 +884,18 @@
                                             @Html.ValidationMessageFor(model => model.TakeHomeFixedAmount, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
-                                    </div> 
-                                    
-                                    
+                                    </div>
+
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationAbilityToPay, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationAbilityToPay, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.LoanRegistrationAbilityToPay, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
-                                    </div> 
-                                    
-                                    
+                                    </div>
+
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, htmlAttributes: new { @class = "control-label" })
@@ -851,7 +913,7 @@
                                             @Html.EditorFor(model => model.LoanRegistrationLoanPlusInterest, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationLoanPart, htmlAttributes: new { @class = "control-label" })
@@ -859,7 +921,7 @@
                                             @Html.EditorFor(model => model.LoanRegistrationLoanPart, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
-                                    
+
                                     <div class="col-md-4 form-group">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationInterestPart, htmlAttributes: new { @class = "control-label" })
@@ -1054,7 +1116,7 @@
 
                                 <div class="row">
                                     <div class="col-lg-4">
-                                        <input type="submit" value="Update" style="width: 150px;" class="btn btn-primary"/>
+                                        <input type="submit" value="Update" style="width: 150px;" class="btn btn-primary" />
                                     </div>
                                 </div>
                             </div>
