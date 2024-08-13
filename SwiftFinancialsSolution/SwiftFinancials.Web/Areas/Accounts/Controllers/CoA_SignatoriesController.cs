@@ -125,7 +125,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 Signatory.FirstName = customerAccountSignatoryDTO.FirstName;
                 Signatory.LastName = Signatory.LastName;
                 Signatory.AddressAddressLine1 = Signatory.AddressAddressLine1;
-                Signatory.AddressAddressLine2 = Signatory.AddressAddressLine2;
+                Signatory.AddressAddressLine2 = Signatory.AddressAddressLine2; 
                 Signatory.AddressCity = Signatory.AddressCity;
                 Signatory.AddressEmail = Signatory.AddressEmail;
                 Signatory.AddressMobileLine = Signatory.AddressMobileLine;
