@@ -38,17 +38,17 @@
             border: 1px solid #ddd;
         }
 
-    #ChargeSplits th {
-        font-weight: bold;
-    }
+        #RefundBatchEntry th {
+            font-weight: bold;
+        }
 
-    #RefundBatchEntry tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+        #RefundBatchEntry tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
 
-    #RefundBatchEntry tbody tr:hover {
-        background-color: #f1f1f1;
-    }
+        #RefundBatchEntry tbody tr:hover {
+            background-color: #f1f1f1;
+        }
 
     /* Container and Title Styles */
     .batch-entries-container, .section2 {
@@ -105,13 +105,13 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    @using (Html.BeginForm("Add", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="create-batch">
                             <div class="row large-font">
 
-                                <div class="col-lg-4">
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
                                         <div class="col-md-10">
@@ -120,7 +120,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-lg-4">
+                                @*<div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
                                         @Html.HiddenFor(model => model.BranchId)
@@ -128,8 +128,8 @@
                                         @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                     </div>
 
-                                </div>
-                                <div class="col-lg-4">
+                                </div>*@
+                                <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
                                         <div class="col-md-10">
@@ -147,6 +147,8 @@
 
 
                         <br />
+                        <br />
+                        <br />
 
                         <div class="batch-entries-container">
                             <h2 class="batch-title">Batch Entries</h2>
@@ -154,24 +156,24 @@
                                 <div class="row large-font">
                                     <div class="col-lg-6">
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.CreditCustomerAccountId, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.FullAccountNumber, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.overDeductionBatchEntries.CreditCustomerAccountId)
-                                                @Html.TextBoxFor(model => model.overDeductionBatchEntries.CreditCustomerAccountId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.CreditCustomerAccountDTO.FullAccountNumber)
+                                                @Html.TextBoxFor(model => model.CreditCustomerAccountDTO.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.DebitCustomerAccountId, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.FullAccountNumber, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.overDeductionBatchEntries.DebitCustomerAccountId)
-                                                @Html.TextBoxFor(model => model.overDeductionBatchEntries.DebitCustomerAccountId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.DebitCustomerAccountDTO.FullAccountNumber)
+                                                @Html.TextBoxFor(model => model.DebitCustomerAccountDTO.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
                                         </div>
@@ -180,193 +182,215 @@
                                 <div class="row large-font">
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.CreditProductDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries.CreditProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries.CreditProductDescription, "", new { @class = "text-danger" })
-                                            </div>
+                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription)
+                                            @Html.EditorFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.DebitProductDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries.DebitProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries.DebitProductDescription, "", new { @class = "text-danger" })
-                                            </div>
+                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription)
+                                            @Html.EditorFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
+
                                         </div>
                                     </div>
                                 </div>
                                 <div class="row large-font">
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.CreditCustomerAccountBranchId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries.CreditCustomerAccountBranchId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries.CreditCustomerAccountBranchId, "", new { @class = "text-danger" })
-                                            </div>
+                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.CustomerFullName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.CreditCustomerAccountDTO.CustomerFullName)
+                                            @Html.EditorFor(model => model.CreditCustomerAccountDTO.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CreditCustomerAccountDTO.CustomerFullName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+
                                     <div class="col-lg-6">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.DebitCustomerAccountBranchId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries.DebitCustomerAccountBranchId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries.DebitCustomerAccountBranchId, "", new { @class = "text-danger" })
-                                            </div>
+                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.CustomerFullName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.DebitCustomerAccountDTO.CustomerFullName)
+                                            @Html.EditorFor(model => model.DebitCustomerAccountDTO.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitCustomerAccountDTO.CustomerFullName, "", new { @class = "text-danger" })
+
                                         </div>
                                     </div>
                                 </div>
-                                <div class="row large-font">
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.CreditCustomerAccountCustomerIndividualFirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries.CreditCustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries.CreditCustomerAccountCustomerIndividualFirstName, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
+
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
                                     </div>
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.overDeductionBatchEntries.DebitCustomerAccountCustomerIndividualFirstName, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries.DebitCustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries.DebitCustomerAccountCustomerIndividualFirstName, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
+
                                 </div>
+
                             </div>
                         </div>
 
-
-
-                        <br /> <br />
-                        <row>
-                            <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                    <tr>
-                                        <th style="width: 10%;">Credit Customer Account</th>
-                                        <th style="width: 10%;">Debit Customer Account </th>
-                                        <th style="width: 10%;">Total Value</th>
-                                        <th style="width: 10%;">Credit Acc CustomerName</th>
-                                        <th style="width: 10%;">Debit Acc CustomerName</th>
-                                        <th style="width:  5%;">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (ViewBag.ChargeSplitDTOs != null)
-                                    {
-                                        foreach (var refundBatchEntry in ViewBag.OverDeductionBatchEntryDTOs)
-                                        {
-                                            <tr data-id="@refundBatchEntry.Id">
-                                                <td>@refundBatchEntry.overDeductionBatchEntries.CreditCustomerAccountId</td>
-                                                <td>@refundBatchEntry.overDeductionBatchEntries.DebitCustomerAccountId</td>
-                                                <td>@refundBatchEntry.CreditCustomerAccountCustomerIndividualFirstName</td>
-                                                <td>@refundBatchEntry.DebitCustomerAccountCustomerIndividualFirstName</td>
-                                                <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                        <br/>
+                        <div>
+                            <div>
+                                <br /> <br />
+                                <row>
+                                    <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 10%;">Credit Customer Account</th>
+                                                <th style="width: 10%;">Debit Customer Account </th>
+                                                <th style="width: 10%;">Total Value</th>
+                                                <th style="width: 10%;">Credit Acc CustomerName</th>
+                                                <th style="width: 10%;">Debit Acc CustomerName</th>
+                                                <th style="width:  5%;">Action</th>
                                             </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.ChargeSplitDTOs != null)
+                                            {
+                                                foreach (var refundBatchEntry in ViewBag.OverDeductionBatchEntryDTOs)
+                                                {
+                                                    <tr data-id="@refundBatchEntry.Id">
+                                                        <td>@refundBatchEntry.overDeductionBatchEntries.CreditCustomerAccountId</td>
+                                                        <td>@refundBatchEntry.overDeductionBatchEntries.DebitCustomerAccountId</td>
+                                                        <td>@refundBatchEntry.CreditCustomerAccountCustomerIndividualFirstName</td>
+                                                        <td>@refundBatchEntry.DebitCustomerAccountCustomerIndividualFirstName</td>
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
 
-                            @if (TempData["tPercentage"] != null)
-                            {
-                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                            }
-                        </row>
-                        <div class="row">
-                            <div class="col-lg-12 text-left">
-                                <div class="form-group form-group-lg" style="margin-left: 20px;">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                    @if (TempData["tPercentage"] != null)
+                                    {
+                                        <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                    }
+                                </row>
+
+                                <br/>
+                                <br/>
+                                <div class="row">
+                                    <div class="col-lg-12 text-left">
+                                        <div class="form-group form-group-lg" style="margin-left: 20px;">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
-                    }
+                    }          
 
                 </div>
             </div>
         </div>
     </div>
 </div>
-<div class="modal  fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-            </div>
-            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
-                    <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="modal  fade" id="CreditcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header  bg-primary">
+                        <h3 class="font-bold">Credit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                    </div>
+                    <table id="CreditCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">
+                                    Loading data from server
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-            <div class="modal-footer">
-                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
-}
+        <div class="modal  fade" id="DebitcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header  bg-primary">
+                        <h3 class="font-bold">Debit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+                    </div>
+                    <table id="DebitCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                        <tbody>
+                            <tr>
+                                <td class="dataTables_empty">
+                                    Loading data from server
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-    <script>
-        ////////customer lookup//////////
+        @section Styles{
+            @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+            @Styles.Render("~/plugins/wizardStepsStyles")
+            @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+            @Styles.Render("~/plugins/awesomeCheckboxStyles")
+            @Styles.Render("~/plugins/clockpickerStyles")
+            @Styles.Render("~/plugins/dateRangeStyles")
+            @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+            @Styles.Render("~/plugins/switcheryStyles")
+            @Styles.Render("~/plugins/jasnyBootstrapStyles")
+            @Styles.Render("~/plugins/nouiSliderStyles")
+            @Styles.Render("~/plugins/dataPickerStyles")
+            @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+            @Styles.Render("~/plugins/imagecropperStyles")
+            @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+            @Styles.Render("~/plugins/select2Styles")
+            @Styles.Render("~/plugins/touchSpinStyles")
+            @Styles.Render("~/plugins/tagInputsStyles")
+            @Styles.Render("~/plugins/duallistStyles")
+        }
 
-    $('#customersGrid').DataTable({
+        @section Scripts{
+            @Scripts.Render("~/plugins/wizardSteps")
+            @Scripts.Render("~/plugins/validate")
+            @Scripts.Render("~/plugins/typehead")
+            @Scripts.Render("~/plugins/dataTables")
+            @Scripts.Render("~/plugins/iCheck")
+            @Scripts.Render("~/plugins/dataPicker")
+            @Scripts.Render("~/plugins/ionRange")
+            @Scripts.Render("~/plugins/nouiSlider")
+            @Scripts.Render("~/plugins/jasnyBootstrap")
+            @Scripts.Render("~/plugins/switchery")
+            @Scripts.Render("~/plugins/chosen")
+            @Scripts.Render("~/plugins/knob")
+            @Scripts.Render("~/plugins/imagecropper")
+            @Scripts.Render("~/plugins/colorpicker")
+            @Scripts.Render("~/plugins/clockpicker")
+            @Scripts.Render("~/plugins/dateRange")
+            @Scripts.Render("~/plugins/select2")
+            @Scripts.Render("~/plugins/touchSpin")
+            @Scripts.Render("~/plugins/tagInputs")
+            @Scripts.Render("~/plugins/duallist")
+
+            <script>
+
+
+
+
+
+    //////////Credit customer accounts lookup modol/////////
+        $('#CreditCustomerAccountsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
+                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -379,62 +403,9 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/Accounts/Management/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
-            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
-            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
-            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
-
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#customerLookupModal').modal('hide');
-    });
+                    var selectUrl = '<a  href="/Accounts/BatchOrigination_Refund/CreditCustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
 
-    //////////customer accounts lookup modol/////////
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Account/Management/CustomerManagement/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(3)', nRow).html(dt_Created);
                     $('td:eq(4)', nRow).html(selectUrl);
@@ -452,7 +423,50 @@
         "aaSorting": [[0, "desc"]]
              });
 
-    $("#s tbody").on("click", "tr", function () {
+
+
+
+
+    ////////// Debit customer accounts lookup modol/////////
+        $('#DebitCustomerAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BatchOrigination_Refund/DebitCustomerAccountLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+             });
+
+    @*$("#s tbody").on("click", "tr", function () {
         var data = CustomerAccountsGrid.row(this).data();
         $('#CustomerAccountId').val(data.Id);
         $('input[name=CustomerAccountId]').val(data.Id);
@@ -469,203 +483,7 @@
         $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].ProductDescription);
         $('#customerLookupModal').modal('hide');
-    });
-        ///// Investment products lookup /////
-$('.InvestmentProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (InvestmentProducts) {
-                var newInvestmentProductsData = [];
-                InvestmentProductsMap = {};
-                $.each(InvestmentProducts, function (i, InvestmentProduct) {
-                    newInvestmentProductsData.push(InvestmentProduct.Description);
-                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
-                });
-                process(newInvestmentProductsData);
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
+    });*@
+
+            </script>
         }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var investmentProductId = "";
-        investmentProductId = InvestmentProductsMap[item].Id;
-        $('#InvestmentProductId').val(investmentProductId);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
-        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
-
-        //console.log(investmentProductId)
-        return item;
-    }
-});
-        /////saving products lookup /////
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription);
-        $('#SavingProductId').val(CustomerAccountTypeTargetProductId);
-
-        //console.log(savingProductId)
-        return item;
-    }
-});
-             //Station typehead starts here
-
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
-
-
-
-         //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetSavingProductsAsync", "SavingProduct", new { Area = "Admin" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        //console.log(savingProductId)
-        return item;
-    }
-});
-
-    </script>
-}
