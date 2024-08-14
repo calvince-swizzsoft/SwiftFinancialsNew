@@ -50,19 +50,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-        public async Task<ActionResult> Details(Guid? id)
+        public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-
-            return View();
+            var dataCapture = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
+           
+            return View(dataCapture);
         }
 
 
@@ -102,7 +96,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 await _channelService.AddDataAttachmentPeriodAsync(dataPeriodDTO, GetServiceHeader());
 
-                TempData["AlertMessage"] = "Successfully Created Data Period";
+                TempData["message"] = "Successfully created Data Period";
 
                 return RedirectToAction("Index");
             }
@@ -112,9 +106,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 TempData["BugdetBalance"] = errorMessages;
 
-                TempData["approveError"] = "Loan Appraisal Unsuccessful";
+                TempData["messageError"] = "Could not create Data Period";
 
                 ViewBag.MonthSelectList = GetMonthsAsync(dataPeriodDTO.MonthDescription);
+
+                await ServeNavigationMenus();
 
                 return View();
             }

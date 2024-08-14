@@ -279,5 +279,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Remarks")]
         [Required]
         public string Remarks { get; set; }
+
+        // Additional DTOs
+        [DataMember]
+        public int rowId { get; set; }
     }
 }

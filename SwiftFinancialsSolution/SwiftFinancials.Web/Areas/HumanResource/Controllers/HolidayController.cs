@@ -71,6 +71,9 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             holidayDTO.DurationStartDate = DateTime.Parse(startDate).Date;
 
             holidayDTO.DurationEndDate = DateTime.Parse(endDate).Date;
+            var k = await _channelService.FindPostingPeriodAsync(holidayDTO.PostingPeriodId,GetServiceHeader());
+            holidayDTO.PostingPeriodDurationEndDate = k.DurationEndDate;
+            holidayDTO.PostingPeriodDurationStartDate = k.DurationStartDate;
             holidayDTO.ValidateAll();
 
             if (!holidayDTO.HasErrors)
@@ -87,14 +90,14 @@ namespace SwiftFinancials.Web.Areas.HumanResource.Controllers
             }
         }
 
-        /*public async Task<ActionResult> Edit(Guid id)
+        public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
 
-            var holidayDTO = await _channelService.FindHolidayAsync(id, GetServiceHeader());
+            var holidayDTO = await _channelService.FindHolidaysByPostingPeriodAsync(id, GetServiceHeader());
 
             return View(holidayDTO);
-        }*/
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

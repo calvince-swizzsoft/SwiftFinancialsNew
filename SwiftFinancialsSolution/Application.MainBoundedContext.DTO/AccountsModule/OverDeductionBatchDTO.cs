@@ -106,9 +106,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
-        //Maxon Added This
+        
 
-        public OverDeductionBatchEntryDTO overDeductionBatchEntries { get; set; }
-        public ObservableCollection<OverDeductionBatchEntryDTO> overDeductionBatchEntry { get; set; }
+        [DataMember]
+        public OverDeductionBatchEntryDTO overDeductionBatchEntry { get; set; }
+        
+        public ObservableCollection<OverDeductionBatchEntryDTO> overDeductionBatchEntries { get; set; }
+
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
+
+
+        [DataMember]
+        public CustomerAccountDTO CreditCustomerAccountDTO { get; set; } 
+        
+        [DataMember]
+        public CustomerAccountDTO DebitCustomerAccountDTO { get; set; }
     }
 }
