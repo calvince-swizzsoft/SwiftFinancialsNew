@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewBag.Title = "Designations";
 }
 
@@ -37,7 +38,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="designationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="DesignationsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -46,6 +47,7 @@
                                 </tr>
                             </tbody>
                         </table>
+
                     </div>
                 </div>
             </div>
@@ -63,7 +65,7 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#designationsGrid').DataTable({
+            $('#DesignationsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
@@ -92,8 +94,8 @@
                 // Display settings
                 "aoColumns": [
                  { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                    { "mDataProp": "IsLocked", "sTitle": "Is Locked?", "sWidth": "10%" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "10%" },
-                    { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
@@ -109,3 +111,5 @@
     </script>
 
 }
+
+

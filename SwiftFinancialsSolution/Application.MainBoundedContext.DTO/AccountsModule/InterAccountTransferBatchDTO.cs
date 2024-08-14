@@ -140,7 +140,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Reference")]
-        [Required]
+        //[Required]
         public string Reference { get; set; }
 
         [DataMember]
@@ -193,6 +193,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
         public CustomerAccountDTO Customers { get; set; }
-        public InterAccountTransferBatchEntryDTO interAccountTransferBatch { get; set; }
+        public CustomerAccountDTO interAccountTransferBatch { get; set; }
     }
 }

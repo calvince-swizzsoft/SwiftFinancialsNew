@@ -52,16 +52,16 @@
       <HintPath>..\packages\AutoMapper.8.0.0\lib\net461\AutoMapper.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -329,7 +329,7 @@
     <Compile Include="Areas\Accounts\Controllers\ClosePostingPeriodController.cs" />
     <Compile Include="Areas\Accounts\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_ChequeBooksController.cs" />
-    <Compile Include="Areas\Accounts\Controllers\CoA_IntraAccountTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\CoA_eStatementsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_RegisterController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CoA_SignatoriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\CommissionController.cs" />
@@ -348,6 +348,7 @@
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
     <Compile Include="Areas\Accounts\Controllers\LevyController.cs" />
@@ -391,6 +392,8 @@
     <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AuthorizeLoanBatchController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\DataCaptureController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\DataProcessingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -431,6 +434,7 @@
     <Compile Include="Areas\Loaning\Controllers\LoanRestructuringController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanVerificationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\RepaymentScheduleController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\ReportsController.cs" />
     <Compile Include="Areas\Loaning\LoaningAreaRegistration.cs" />
     <Compile Include="Areas\Loaning\Model\LoanCaseViewModel.cs" />
     <Compile Include="Areas\Messaging\Controllers\EmailAlertController.cs" />
@@ -626,8 +630,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Images\bank.jpg" />
+    <Content Include="Images\idDemo_Front.jpg" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
+    <Content Include="Images\passportDemo.jpg" />
+    <Content Include="Images\signatureDemo.jpg" />
     <Content Include="Images\table.png" />
     <Content Include="Reports\Report.aspx" />
     <Content Include="Reports\ReportViewer.aspx" />
@@ -1096,6 +1103,17 @@
     <Content Include="Areas\Accounts\Views\Insurers\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\Insurers\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\Reports\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataCapture\Details.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataProcessing\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\DataProcessing\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\IntraAccountTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\CoA_eStatements\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1107,6 +1125,7 @@
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
     <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
+    <Content Include="Scripts\js\navlink.js" />
     <Content Include="Scripts\js\openDifferentSection.js" />
     <Content Include="Scripts\js\sectionsAlternate.js" />
     <Content Include="Scripts\messageAlert.js" />

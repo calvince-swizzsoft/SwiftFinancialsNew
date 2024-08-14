@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -32,7 +33,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindOverDeductionBatchesByStatusAndFilterInPageAsync(1,startDate,endDate,jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindOverDeductionBatchesByStatusAndFilterInPageAsync(1, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -51,13 +52,130 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var OverDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
+            var overDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindOverDeductionBatchEntriesByOverDeductionBatchIdAsync(id, true, GetServiceHeader());
 
-            return View(OverDeductionBatchDTO);
+            ViewBag.batchEntries = batchentries;
+
+            return View(overDeductionBatchDTO);
         }
+
+
+
+        public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, OverDeductionBatchDTO overDeductionBatchDTO)
+        {
+
+            var TotalValue = overDeductionBatchDTO.TotalValue;
+            var Reference = overDeductionBatchDTO.Reference;
+
+            Session["TotalValue"] = TotalValue;
+            Session["Reference"] = Reference;
+
+            Guid parseId;
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                await ServeNavigationMenus();
+
+                return View("Create", overDeductionBatchDTO);
+            }
+
+            if (Session["debitCustomerAccount"] != null)
+            {
+                overDeductionBatchDTO.DebitCustomerAccountDTO = Session["debitCustomerAccount"] as CustomerAccountDTO;
+            }
+            if (Session["TotalValue"] != null)
+            {
+                int totalValue;
+                if (int.TryParse(Session["TotalValue"].ToString(), out totalValue))
+                {
+                    overDeductionBatchDTO.TotalValue = totalValue;
+                }
+                else
+                {
+                    
+                    overDeductionBatchDTO.TotalValue = 0;
+                }
+            }
+            else
+            {
+               
+                overDeductionBatchDTO.TotalValue = 0; 
+            }
+
+            if (Session["Reference"] != null)
+            {
+                overDeductionBatchDTO.Reference = Session["Reference"] as string;
+            }
+
+
+            var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
+            if (creditcustomerAccount != null)
+            {
+               /* overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
+                overDeductionBatchDTO.overDeductionBatchEntry.DebitCustomerAccountFullAccountNumber = overDeductionBatchDTO.overDeductionBatchEntry.DebitFullAccountNumber;
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription = overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription;
+                overDeductionBatchDTO.overDeductionBatchEntry.DebitProductDescription = overDeductionBatchDTO.overDeductionBatchEntry.DebitProductDescription;
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullName = overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerFullName;
+
+                overDeductionBatchDTO.overDeductionBatchEntry.DebitCustomerAccountFullName = overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerFullName;*/
+
+                overDeductionBatchDTO.CreditCustomerAccountDTO = creditcustomerAccount as CustomerAccountDTO;
+               
+                Session["creditCustomerAcct"] = overDeductionBatchDTO.CreditCustomerAccountDTO;
+            }
+
+            return View("create", overDeductionBatchDTO);
+        }
+
+        public async Task<ActionResult> DebitCustomerAccountLookup(Guid? Id, OverDeductionBatchDTO overDeductionBatchDTO)
+        {
+
+            Guid parseId;
+            if (Id == Guid.Empty || !Guid.TryParse(Id.ToString(), out parseId))
+            {
+                await ServeNavigationMenus();
+
+                return View("Create", overDeductionBatchDTO);
+            }
+
+
+            if (Session["creditCustomerAcct"] != null)
+            {
+                overDeductionBatchDTO.CreditCustomerAccountDTO = Session["creditCustomerAcct"] as CustomerAccountDTO;
+            }
+
+            if (Session["OverDeductionBatchDTO"] != null)
+            {
+                overDeductionBatchDTO = Session["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
+            }
+
+            var debitcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
+            if (debitcustomerAccount != null)
+            {
+                //overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountId = creditcustomerAccount.Id;
+                //overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
+                //overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription = creditcustomerAccount.CustomerAccountTypeTargetProductDescription;
+                //overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullName = creditcustomerAccount.CustomerIndividualSalutationDescription+" "+creditcustomerAccount.CustomerIndividualFirstName+" "+
+                //    " "+creditcustomerAccount.CustomerIndividualLastName;
+
+                overDeductionBatchDTO.DebitCustomerAccountDTO = debitcustomerAccount as CustomerAccountDTO;
+
+                Session["debitCustomerAccount"] = overDeductionBatchDTO.DebitCustomerAccountDTO;
+            }
+
+            return View("create", overDeductionBatchDTO);
+        }
+
+
+
+
+
         public async Task<ActionResult> Create()
         {
+
             await ServeNavigationMenus();
+
+            
 
             return View();
         }
@@ -65,20 +183,78 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
         {
+            /*overDeductionBatchDTO.TotalValue = overDeductionBatchDTO.TotalValue;
+            overDeductionBatchDTO.Reference = overDeductionBatchDTO.Reference;
+
+            Session["TotalValue"] = overDeductionBatchDTO.TotalValue;
+            Session["Reference"] = overDeductionBatchDTO.Reference;*/
+
+            Session["OverDeductionBatchDTO"] = overDeductionBatchDTO;
+
+            overDeductionBatchDTO = TempData["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
+
+            OverDeductionBatchEntryDTOs = TempData["OverDeductionBatchEntryDTOs"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+
+
+            if (TempData["OverDeductionBatchDTO"] != null)
+            {
+                overDeductionBatchDTO.overDeductionBatchEntries = TempData["OverDeductionBatchDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+            }
+
+
             overDeductionBatchDTO.ValidateAll();
+
+
+
 
             if (!overDeductionBatchDTO.HasErrors)
             {
-                await _channelService.AddOverDeductionBatchAsync(overDeductionBatchDTO, GetServiceHeader());
+                var OverDeductionBatchEntries = new ObservableCollection<OverDeductionBatchEntryDTO>();
 
-                return RedirectToAction("Index");
+
+
+                foreach (var overDeductionBatchEntryDTO in overDeductionBatchDTO.overDeductionBatchEntries)
+                {
+                    overDeductionBatchEntryDTO.CreditCustomerAccountId = overDeductionBatchEntryDTO.CreditCustomerAccountId;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountBranchId = overDeductionBatchEntryDTO.DebitCustomerAccountBranchId;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountCustomerIndividualFirstName = overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountId = overDeductionBatchEntryDTO.CreditCustomerAccountId;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountBranchId = overDeductionBatchEntryDTO.CreditCustomerAccountBranchId;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName = overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName;
+                    OverDeductionBatchEntries.Add(overDeductionBatchEntryDTO);
+                    /*await _channelService.AddOverDeductionBatchEntryAsync(overDeductionBatchEntryDTO, GetServiceHeader());*/
+                }
+
+
+                var overDeductionBatch = await _channelService.AddOverDeductionBatchAsync(overDeductionBatchDTO, GetServiceHeader());
+
+                if (overDeductionBatchDTO.ErrorMessageResult != null)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = overDeductionBatch.ErrorMessageResult;
+
+                    return View();
+                }
+
+                TempData["SuccessMessage"] = "Successfully Created refund Batch";
+                TempData["OverDeductionBatchDTO"] = "";
+
+
+
+                if (OverDeductionBatchEntries.Any())
+                    //Update the OverDeductionBatchEntries
+
+                    /* await _channelService.AddOverDeductionBatchEntryAsync( OverDeductionBatchEntries, GetServiceHeader());*/
+
+                    TempData["OverDeductionBatchDTO"] = "";
+
+
             }
-            else
-            {
-                var errorMessages = overDeductionBatchDTO.ErrorMessages;
-                
-                return View(overDeductionBatchDTO);
-            }
+            return RedirectToAction("Index");
+
+
         }
 
 
@@ -86,9 +262,59 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var k = await _channelService.FindOverDeductionBatchAsync(id ,GetServiceHeader());
+            var k = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
             return View(k);
         }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(OverDeductionBatchDTO overDeductionBatchDTO)
+        {
+            await ServeNavigationMenus();
+
+            OverDeductionBatchEntryDTOs = TempData["OverDeductionBatchEntryDTOs"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+
+            if (OverDeductionBatchEntryDTOs == null)
+                OverDeductionBatchEntryDTOs = new ObservableCollection<OverDeductionBatchEntryDTO>();
+
+            Session["debitCustomerAccount"] = overDeductionBatchDTO.DebitCustomerAccountDTO;
+
+
+            /*int CreditAccountNumber = int.Parse(overDeductionBatchDTO.CreditCustomerAccountDTO.FullAccountNumber);
+            int DebitAccountNumber = int.Parse(overDeductionBatchDTO.DebitCustomerAccountDTO.FullAccountNumber);*/
+
+            foreach (var overDeductionBatchEntryDTO in overDeductionBatchDTO.overDeductionBatchEntries)
+            {
+                overDeductionBatchEntryDTO.CreditCustomerAccountFullName = overDeductionBatchDTO.CreditCustomerAccountDTO.CustomerFullName;
+                overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName = overDeductionBatchDTO.DebitCustomerAccountDTO.CustomerFullName;
+                overDeductionBatchEntryDTO.CreditProductDescription = overDeductionBatchDTO.CreditCustomerAccountDTO.CustomerAccountTypeTargetProductDescription;
+                overDeductionBatchEntryDTO.DebitProductDescription = overDeductionBatchDTO.DebitCustomerAccountDTO.CustomerAccountTypeTargetProductDescription;
+                overDeductionBatchEntryDTO.DebitCustomerAccountCustomerSerialNumber =int.Parse(overDeductionBatchDTO.DebitCustomerAccountDTO.FullAccountNumber);
+                overDeductionBatchEntryDTO.DebitCustomerAccountCustomerSerialNumber = int.Parse(overDeductionBatchDTO.DebitCustomerAccountDTO.FullAccountNumber);
+
+                OverDeductionBatchEntryDTOs.Add(overDeductionBatchEntryDTO);
+
+                Session["overDeductionBatchEntries"] = OverDeductionBatchEntryDTOs;
+
+            };
+
+
+
+            ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+
+            TempData["OverDeductionBatchEntryDTO"] = OverDeductionBatchEntryDTOs;
+            Session["OverDeductionBatchEntryDTO"] = OverDeductionBatchEntryDTOs;
+            TempData["OverDeductionBatchDTO"] = overDeductionBatchDTO;
+
+
+
+            return View("Create");
+
+
+
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> RefundEntries(OverDeductionBatchEntryDTO overDeductionBatchEntryDTO)
@@ -114,7 +340,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-          
+
             var overDeductionBatchDTO = await _channelService.FindOverDeductionBatchAsync(id, GetServiceHeader());
 
             return View(overDeductionBatchDTO);
@@ -160,13 +386,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!debitBatchDTO.HasErrors)
             {
                 await _channelService.AuditOverDeductionBatchAsync(debitBatchDTO, 1, GetServiceHeader());
-                
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = debitBatchDTO.ErrorMessages;
-                
+
                 return View(debitBatchDTO);
             }
         }
@@ -203,7 +429,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
-        
+
 
 
 

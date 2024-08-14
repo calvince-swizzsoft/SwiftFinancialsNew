@@ -8,6 +8,85 @@
     var journalVoucherEntryTypes = ViewBag.JournalVoucherEntryTypeSelectList as List<SelectListItem>;
 }
 
+<style>
+
+    .custom-style {
+        padding: 15px;
+        margin: 10px 0;
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .journal-voucher-container {
+        border: 1px solid #ddd;
+        margin-top: 20px;
+        padding: 20px;
+        font-weight: bold;
+        font-size: 18px;
+        border-radius: 8px;
+        position: relative;
+        padding-top: 40px; /* Space for the h2 */
+        margin-bottom: 30px;
+    }
+
+        .journal-voucher-container h2 {
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            margin: 0;
+        }
+
+        .journal-voucher-container .form-control,
+        .journal-voucher-container .input-group-addon {
+            font-weight: normal; /* Retain normal weight for controls */
+        }
+
+    /* Ensure that lookups and date pickers retain their normal styles */
+    .JournalVoucherEntryChartOfAccountsLookup,
+    .BranchesLookup {
+        font-weight: normal; /* Override bold for lookups */
+    }
+
+    .btn btn-success {
+        padding: 10px;
+        margin-left: 20px;
+        margin-bottom: 10px;
+    }
+    @*css for the journal entries*@
+
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h2>Accounts</h2>
@@ -42,6 +121,14 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Journal Voucher</h2>
+
+                    @if (TempData["ErrorMsg"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Attempt Failed !</strong> @TempData["ErrorMsg"]
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -55,14 +142,14 @@
                     @using (Html.BeginForm("Add", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
 
-                        <div class="row">
+                        <div class="row custom-style">
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                    @Html.LabelFor(model => model.JournalVoucherEntries[0].TypeDescription, new { @class = "control-label" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Type)
+                                        @Html.DropDownListFor(model => model.JournalVoucherEntries[0].TypeDescription, journalVoucherTypes, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].TypeDescription)
                                     </div>
                                 </div>
                                 <div class="form-group form-group-lg">
@@ -71,18 +158,6 @@
                                     @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account.." } })
                                 </div>
-
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                    </div>*@
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PrimaryDescription", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "text-danger" })
-                                    </div>*@
                             </div>
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
@@ -99,118 +174,122 @@
                                     </div>
                                 </div>
                             </div>
-
                             <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.PostingPeriodId)
-                                    @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
                                 </div>
-
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
                                     @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                     @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                 </div>
-
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "SecondaryDescription", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "text-danger" })
-                                    </div>*@
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                    </div>*@
                             </div>
                         </div>
+
 
                         <h1>Voucher Entries</h1>
 
-                        <!-- Button to trigger the modal -->
+                        <br />
 
-
-
-
-
-                        <h2>Add Journal Voucher Entry</h2>
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.JournalVoucherEntries[0].EntryType, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.JournalVoucherEntries[0].EntryType, journalVoucherEntryTypes, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].EntryType)
+                        <div class="journal-voucher-container">
+                            <h2>Add Journal Voucher Entry</h2>
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].EntryType, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.JournalVoucherEntries[0].EntryType, journalVoucherEntryTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].EntryType)
+                                        </div>
                                     </div>
                                 </div>
-                                <!-- Add text-align: center to center the inputs -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.JournalVoucherEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.JournalVoucherEntry.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.JournalVoucherEntry.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.JournalVoucherEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "Description.." } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.BranchId, new { htmlAttributes = new { @class = "JournalVoucherEntryBranchesLookup form-control required", placeholder = "Branch Description" } })
-                                </div>
-                                <!-- Add text-align: center to center the inputs -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.JournalVoucherEntries[0].TotalValue, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.JournalVoucherEntries[0].TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].TotalValue, "", new { @class = "text-danger" })
-                                </div>
-                                <!-- Add text-align: center to center the inputs -->
 
-                            </div>
-                            <div class="col-lg-4">
-                                <!-- Add text-align: center to center the inputs -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.JournalVoucherEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "SecondaryDescription", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.JournalVoucherEntry.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntry.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.JournalVoucherEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                    </div>
                                 </div>
-                                <!-- Add text-align: center to center the inputs -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.JournalVoucherEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.JournalVoucherEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Reference, "", new { @class = "text-danger" })
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "branch Description" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "SecondaryDescription" } })
+                                        @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "" })
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <!-- Add text-align: center to center the inputs -->
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+
+
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.JournalVoucherEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Reference, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PrimaryDescription", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.JournalVoucherEntries[0].Amount, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.JournalVoucherEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ksh", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.JournalVoucherEntries[0].Amount, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
-                              
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "PrimaryDescription" } })
+                                        @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "" })
+                                    </div>
+                                </div>
                             </div>
 
-                        </div>
-                        <!-- Center the Submit button -->
-                        <button id="submitEntry" style="margin-top: 20px;">Submit</button>
+                            <div class="row">
+                                <!-- Center the Submit button -->
+                                <div style="text-align: right; margin: 20px 20px;">
+                                    <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                </div>
 
+                            </div>
 
-                        <row>
-                            <div class="ibox-content m-b-sm border-bottom bg-white text-dark">
-                                <table class="footable table table-stripped toggle-arrow-tiny bg-white  ">
-                                    <thead>
+                            <br />
+
+                            <row>
+
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                         <tr>
-                                            <th data-toggle="true">CoA Name</th>
-                                            <th data-hide="phone">Total Value</th>
-                                            <th data-hide="phone">Remarks</th>
-                                            <th data-hide="phone"></th>
+                                            <th style="width: 15%;">CoA Name</th>
+                                            <th style="width: 10%;">Amount</th>
+                                            <th style="width: 5%;">Remarks</th>
+                                            <th style="width: 5%;">Action</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -218,28 +297,20 @@
                                         {
                                             foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
                                             {
-                                                <tr>
-                                                    <td>
-                                                        @journalVoucherEntries.ChartOfAccountName
-                                                    </td>
+                                        <tr data-id="@journalVoucherEntries.Id">
+                                            <td>@journalVoucherEntries.ChartOfAccountAccountName</td>
+                                            <td>@journalVoucherEntries.Amount</td>
+                                            <td>@journalVoucherEntries.Remarks</td>
+                                            <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
 
 
-                                                    <td>
-                                                        @journalVoucherEntries.TotalValue
-                                                    </td>
-
-
-                                                    <td>
-                                                        @journalVoucherEntries.Remarks
-                                                    </td>
-
-                                                </tr>
+                                        </tr>
                                             }
                                         }
                                     </tbody>
                                 </table>
-                            </div>
-                        </row>
+                            </row>
+                        </div>
                     }
                 </div>
                 <div class="ibox-content m-b-sm border-bottom">
@@ -248,7 +319,7 @@
                         <div class="row">
                             <div class="col-sm-2">
                                 <div class="form-group">
-                                    <input type="submit" value="Post" class="btn btn-success" />
+                                    <input type="submit" value="Create" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
                                 </div>
                             </div>
                         </div>
@@ -308,7 +379,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
+<script>
     // Open the modal
     $("#openModalButton").click(function () {
         $("#journalModal").css("display", "block");
@@ -373,6 +444,26 @@
                 }
     });
 
+         $(document).ready(function () {
+            $('.remove-btn').click(function () {
+                var row = $(this).closest('tr');
+                var id = row.data('id');
+
+
+                $.ajax({
+                    url: '@Url.Action("removeChargeSplit", "BatchOrigination_Voucher")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function () {
+                        row.remove();
+                    },
+                    error: function () {
+                        alert('Error removing row.');
+                    }
+                });
+            });
+        });
+
         //PostingPeriod typehead starts here
     $('.JournalVoucherEntryPostingPeriodsLookup').typeahead({
                 source: function (query, process) {
@@ -409,42 +500,6 @@
                     return item;
                 }
     });
-    //Branch typehead starts here
-    $('.JournalVoucherEntryBranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#Id').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
 
     //ChartOfAccount typehead starts here
     $('.ChartOfAccountsLookup').typeahead({

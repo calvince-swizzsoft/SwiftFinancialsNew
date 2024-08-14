@@ -82,10 +82,34 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
+
+                    var startDate = new Date(parseInt(aData.DurationStartDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var hStart = ("0" + startDate.getHours()).slice(-2);
+                    var mStart = ("0" + startDate.getMinutes()).slice(-2);
+                    var sStart = ("0" + startDate.getSeconds()).slice(-2);
+
+                    var dt_DurationStart = $.datepicker.formatDate('dd/mm/yy', startDate) + " " + hStart + ":" + mStart + ":" + sStart;
+                    aData.DurationStartDate = dt_DurationStart;
+
+
+
+                    var endDate = new Date(parseInt(aData.DurationEndDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var hEnd = ("0" + endDate.getHours()).slice(-2);
+                    var mEnd = ("0" + endDate.getMinutes()).slice(-2);
+                    var sEnd = ("0" + endDate.getSeconds()).slice(-2);
+
+                    var dt_DurationEnd = $.datepicker.formatDate('dd/mm/yy', endDate) + " " + hEnd + ":" + mEnd + ":" + sEnd;
+                    aData.DurationEndDate = dt_DurationEnd;
+
+
+
+
                     var editUrl = '<a  href="/HumanResource/Holiday/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
                     var viewUrl = '<a  href="/HumanResource/Holiday/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
                     $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(1)', nRow).html(dt_DurationEnd);
+                    $('td:eq(2)', nRow).html(dt_DurationStart);
                     $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;

@@ -107,16 +107,7 @@
         </ol>
     </div>
 </div>
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
@@ -150,15 +141,15 @@
                         <div class="alert alert-danger">
                             <strong>Attempt Failed !</strong> @TempData["EmptyData"]
                         </div>
-                    } 
-                    
+                    }
+
                     @if (TempData["existngApplicationError"] != null)
                     {
                         <div class="alert alert-danger">
                             <strong>Attempt Failed !</strong> @TempData["existngApplicationError"]
                         </div>
-                    } 
-                    
+                    }
+
                     @if (TempData["lessAmountApplied"] != null)
                     {
                         <div class="alert alert-warning">
@@ -469,9 +460,13 @@
                                     <i class="fa fa-table" aria-hidden="true"></i> Collaterals
                                 </div>
 
-                                @*<div class="tab-button" onclick="openTab(event, 'section5')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Guarantors
-                                    </div>*@
+                                <div class="tab-button" onclick="openTab(event, 'section5')">
+                                    <i class="fa fa-table" aria-hidden="true"></i> Guarantors
+                                </div>
+
+                                <div class="tab-button" onclick="openTab(event, 'section6')">
+                                    <i class="fa fa-table" aria-hidden="true"></i> Loan Accounts
+                                </div>
                             </div>
 
                             <div id="section1" class="tab active">
@@ -491,8 +486,6 @@
                                                     <th>Payment Per Period</th>
                                                     <th>Principal</th>
                                                     <th>Interest</th>
-                                                    <th>Principal Arrears</th>
-                                                    <th>Interest Arrears</th>
                                                     <th>Charge Type</th>
                                                     <th>Fixed Amount</th>
                                                     <th>Percentage</th>
@@ -510,8 +503,6 @@
                                                             <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
                                                             <td style="text-align: right;">@standingOrder.Principal</td>
                                                             <td style="text-align: right;">@standingOrder.Interest</td>
-                                                            <td style="text-align: right;">@*@standingOrder.PrincipalArrears*@</td>
-                                                            <td style="text-align: right;">@*@standingOrder.InterestArrears*@</td>
                                                             <td>@standingOrder.ChargeTypeDescription</td>
                                                             <td>@standingOrder.ChargeFixedAmount</td>
                                                             <td>@standingOrder.ChargePercentage</td>
@@ -521,9 +512,9 @@
                                             </tbody>
                                         </table>
 
-                                        @if (TempData["standingOrder"] != null)
+                                        @if (TempData["StandingOrders"] != null)
                                         {
-                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["StandingOrders"]</strong></p>
                                         }
                                     </row>
                                 </div>
@@ -551,53 +542,42 @@
                                                     <th>Batch Number</th>
                                                     <th>Batch Reference</th>
                                                     <th>Status</th>
-                                                    <th>Principal</th>
-                                                    <th>Interest</th>
-                                                    <th>Beneficiary</th>
-                                                    <th>Reference</th>
-                                                    <th>Full Account Number</th>
-                                                    <th>Product Name</th>
-                                                    <th>Balance</th>
-                                                    <th>Customer Name</th>
+                                                    @*<th>Principal</th>
+                                                        <th>Interest</th>
+                                                        <th>Beneficiary</th>
+                                                        <th>Reference</th>
+                                                        <th>Full Account Number</th>
+                                                        <th>Product Name</th>
+                                                        <th>Balance</th>
+                                                        <th>Customer Name</th>*@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (ViewBag.StandingOrders != null)
+                                                @if (ViewBag.Payouts != null)
                                                 {
-                                                    foreach (var standingOrder in ViewBag.StandingOrders)
+                                                    foreach (var standingOrder in ViewBag.Payouts)
                                                     {
                                                         <tr>
-
-
-
-
-
-
-
-                                                            <!--<td>@standingOrder.TriggerDescription</td>
-                                                            <td>@standingOrder.BeneficiaryProductDescription</td>
-                                                            <td style="text-align: right;">@standingOrder.LoanAmount</td>
-                                                            <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
-                                                            <td style="text-align: right;">@standingOrder.Principal</td>
-                                                            <td style="text-align: right;">@standingOrder.Interest</td>
-                                                            <td style="text-align: right;">-->
-                                                            @*@standingOrder.PrincipalArrears*@
-                                                            <!--</td>
-                                                            <td style="text-align: right;">-->
-                                                            @*@standingOrder.InterestArrears*@
-                                                            <!--</td>
-                                                            <td>@standingOrder.ChargeTypeDescription</td>
-                                                            <td>@standingOrder.ChargeFixedAmount</td>
-                                                            <td>@standingOrder.ChargePercentage</td>-->
+                                                            <td>@standingOrder.BatchNumber</td>
+                                                            <td>@standingOrder.BatchReference</td>
+                                                            <td>@standingOrder.StatusDescription</td>
+                                                            @*<td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
+                                                                <td style="text-align: right;">@standingOrder.Principal</td>
+                                                                <td style="text-align: right;">@standingOrder.Interest</td>
+                                                                <td style="text-align: right;">@standingOrder.PrincipalArrears</td>
+                                                                <td style="text-align: right;">@standingOrder.InterestArrears</td>
+                                                                <td>@standingOrder.ChargeTypeDescription</td>
+                                                                <td>@standingOrder.ChargeFixedAmount</td>
+                                                                <td>@standingOrder.ChargePercentage</td>*@
                                                         </tr>
                                                     }
                                                 }
                                             </tbody>
                                         </table>
 
-                                        @if (TempData["standingOrder"] != null)
+                                        @if (TempData["Payouts"] != null)
                                         {
-                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["Payouts"]</strong></p>
                                         }
                                     </row>
                                 </div>
@@ -630,12 +610,6 @@
                                                     {
                                                         <tr>
 
-
-
-
-
-
-
                                                             <!--<td>@standingOrder.TriggerDescription</td>
                                                             <td>@standingOrder.BeneficiaryProductDescription</td>
                                                             <td style="text-align: right;">@standingOrder.LoanAmount</td>
@@ -657,9 +631,9 @@
                                             </tbody>
                                         </table>
 
-                                        @if (TempData["standingOrder"] != null)
+                                        @if (TempData["Salary"] != null)
                                         {
-                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["Salary"]</strong></p>
                                         }
                                     </row>
                                 </div>
@@ -693,28 +667,25 @@
                                                 {
                                                     foreach (var loanApplications in ViewBag.LoanApplications)
                                                     {
-                                                        @*<tr>
-                                                                <td>@loanApplications.BeneficiaryProductDescription</td>
-                                                                <td style="text-align: right;">@loanApplications.LoanAmount</td>
-                                                                <td style="text-align: right;">@loanApplications.PaymentPerPeriod</td>
-                                                                <td style="text-align: right;">@loanApplications.Principal</td>
-                                                                <td style="text-align: right;">@loanApplications.Interest</td>
-                                                                <td style="text-align: right;">@loanApplications.Interest</td>
-                                                                <td style="text-align: right;">
-                                                                    @loanApplications.PrincipalArrears
-                                                                </td>
-                                                                <td style="text-align: right;">
-                                                                    @loanApplications.InterestArrears
-                                                                </td>
-                                                            </tr>*@
+                                                        <tr>
+                                                            <td>@loanApplications.CaseNumber</td>
+                                                            <td>@loanApplications.StatusDescription</td>
+                                                            <td>@loanApplications.CustomerFullName</td>
+                                                            <td>@loanApplications.CustomerReference3</td>
+                                                            <td>@loanApplications.LoanProductDescription</td>
+                                                            <td>@loanApplications.ReceivedDate</td>
+                                                            <td style="text-align: right;">@loanApplications.AmountApplied</td>
+                                                            <td style="text-align: right;">@loanApplications.AppraisedAmount</td>
+                                                            <td>@loanApplications.SystemAppraisalRemarks</td>
+                                                        </tr>
                                                     }
                                                 }
                                             </tbody>
                                         </table>
 
-                                        @if (TempData["standingOrder"] != null)
+                                        @if (TempData["LoanApplication"] != null)
                                         {
-                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
+                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["LoanApplication"]</strong></p>
                                         }
                                     </row>
                                 </div>
@@ -727,53 +698,25 @@
                                 <!-- Collaterals -->
                                 <div class="tab-content">
 
-                                    <row>
-                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                <tr>
-                                                    <th>Select ?</th>
-                                                    <th>Type</th>
-                                                    <th>Title</th>
-                                                    <th>MIME Type</th>
-                                                    <th>Collateral Value</th>
-                                                    <th>Collateral Advance Rate</th>
-                                                    <th>Collateral Status</th>
-                                                    <th>Record Status</th>
-                                                </tr>
-                                            </thead>
+
+                                    <div style="text-align: left;">
+                                        <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
+                                        <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
                                             <tbody>
-                                                @if (ViewBag.LoanApplications != null)
-                                                {
-                                                    foreach (var loanApplications in ViewBag.LoanApplications)
-                                                    {
-                                                        @*<tr>
-                                                                <td>@loanApplications.BeneficiaryProductDescription</td>
-                                                                <td style="text-align: right;">@loanApplications.LoanAmount</td>
-                                                                <td style="text-align: right;">@loanApplications.PaymentPerPeriod</td>
-                                                                <td style="text-align: right;">@loanApplications.Principal</td>
-                                                                <td style="text-align: right;">@loanApplications.Interest</td>
-                                                                <td style="text-align: right;">@loanApplications.Interest</td>
-                                                                <td style="text-align: right;">
-                                                                    @loanApplications.PrincipalArrears
-                                                                </td>
-                                                                <td style="text-align: right;">
-                                                                    @loanApplications.InterestArrears
-                                                                </td>
-                                                            </tr>*@
-                                                    }
-                                                }
+                                                <tr>
+                                                    <td colspan="7" class="dataTables_empty">
+                                                        Loading data from server
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
-
-                                        @if (TempData["standingOrder"] != null)
-                                        {
-                                            <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["standingOrder"]</strong></p>
-                                        }
-                                    </row>
+                                    </div>
                                 </div>
                             </div>
-
-
 
 
                             <div id="section5" class="tab">
@@ -1780,13 +1723,14 @@
                     return item;
                 }
             });
+    </script>
 
 
 
 
 
-
-        @*$(document).ready(function () {
+    <script>
+        $(document).ready(function () {
     // Function to save the state of the header checkbox to local storage
     function saveCheckboxState(key, state) {
         // Implementation for saving checkbox state goes here
@@ -1811,7 +1755,7 @@
         });
 
         // Event listener for individual row checkboxes
-        $('#CollateralsGrid').on('change', '.rowCheckbox', function () {
+        $('#LoanProductsGrid').on('change', '.rowCheckbox', function () {
             // Save the state of the checkbox to local storage
             var checkboxKey = $(this).attr('id');
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
@@ -1835,12 +1779,12 @@
     });
 
     // Initialize the DataTable
-            var table = $('#CollateralsGrid').DataTable({
+    var table = $('#LoanProductsGrid').DataTable({
         // Ajax settings
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "Collaterals", new { Area = "Accounts"}))",
+        "sAjaxSource": "@(Url.Action("Index", "Commission", new { Area = "Accounts"}))",
 
         "sServerMethod": "POST",
         // Callback settings
@@ -1867,17 +1811,7 @@
         // Display settings
         "aoColumns": [
             { "mDataProp": "Id", "sTitle": "Select", "sWidth": "0.09%" },
-            { "mDataProp": "Description", "sTitle": "Type", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Title", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "MIME Types", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Collateral Value", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Collateral Advance Rate", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Collateral Status", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Record Status", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Modified By", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Modified Date", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Created By", "sWidth": "10%", "bSortable": false }
-            { "mDataProp": "Description", "sTitle": "Created Date", "sWidth": "10%", "bSortable": false }
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "10%", "bSortable": false }
         ],
         "aaSorting": [[0, "desc"]],
         "initComplete": function(settings, json) {
@@ -1915,33 +1849,5 @@
         }
     });
         });
-
-
-
-
-        $('#submit-btn').click(function () {
-            var selectedRowsData = [];
-            $('.rowCheckbox:checked').each(function () {
-                var rowData = {
-                    Id: $(this).data('id'),
-                    // Add other properties you want to include
-                };
-                selectedRowsData.push(rowData);
-            });
-
-            // Send the selected rows data to the backend using AJAX
-            $.ajax({
-                url: '/Accounts/DebitType/Create',
-                type: 'POST',
-                contentType: 'application/json',
-                data: JSON.stringify(selectedRowsData),
-                success: function (response) {
-                    // Handle success response
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response
-                }
-            });
-        });*@
     </script>
 }

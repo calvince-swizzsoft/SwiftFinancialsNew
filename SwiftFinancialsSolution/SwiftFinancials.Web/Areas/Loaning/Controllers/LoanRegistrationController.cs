@@ -30,10 +30,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, LoanCaseDTO loanCaseDTO)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             //ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription);
-
 
             int totalRecordCount = 0;
 
@@ -58,6 +57,35 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+        [HttpPost]
+        public async Task<JsonResult> GetAllLoanCases(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            double positiveInfinity = double.PositiveInfinity;
+            int positiveInfinityAsInt = positiveInfinity > int.MaxValue ? int.MaxValue : (int)positiveInfinity;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, 0, positiveInfinityAsInt, true, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -92,6 +120,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             var cusomerEditDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            if (cusomerEditDTO.Status != (int)LoanCaseStatus.Registered)
+            {
+                TempData["LoanCaseStatusInvalid"] = "Editing Loan Cases is only available for registered loans !";
+                return View("index");
+            }
 
             LoanCaseDTO loanCaseDTO = new LoanCaseDTO();
 
@@ -184,12 +218,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.Remarks = Session["Remarks"].ToString();
             }
 
-            //if (Session["BranchId"] != null)
-            //{
-            //    loanCaseDTO.BranchId = (Guid)Session["BranchId"]; ;
-            //    loanCaseDTO.BranchDescription = Session["BranchDescription"].ToString();
-            //}
-
 
             var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
             if (customer != null)
@@ -211,6 +239,51 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 Session["CustomerReference3"] = loanCaseDTO.CustomerReference3;
 
 
+                //// Standing Orders
+                //var customerAccountId = Guid.Empty;
+                //var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, false, GetServiceHeader());
+                //customerAccountId = customerAccounts.Select(account => account.Id).FirstOrDefault();
+                //var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(customerAccountId, true, GetServiceHeader());
+                //if (standingOrders != null)
+                //{
+                //    ViewBag.StandingOrders = standingOrders;
+                //}
+                //else
+                //{
+                //    TempData["StandingOrders"] = "The selected customer does not have any standing orders.";
+                //}
+
+
+                //// Loan Applications
+                //var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
+                //if (loanApplications != null)
+                //{
+                //    ViewBag.LoanApplications = loanApplications;
+                //}
+                //else
+                //{
+                //    TempData["LoanApplication"] = "The selected customer does not have any loan application history";
+                //}
+
+
+                //// Collaterals...
+
+
+
+                //// Income History
+                //// Payouts
+                //var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchAuthOption.Post, parseId, GetServiceHeader());                
+                //if (payouts != null)
+                //{
+                //    ViewBag.Payouts = payouts;
+                //}
+                //else
+                //{
+                //    TempData["Payouts"] = "The selected customer does not have any payouts history.";
+                //}
+
+                ////Salary
+                //TempData["Salary"] = "The selected customer has no salary history.";
             }
 
 
@@ -1273,12 +1346,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanCaseDTO.HasErrors)
             {
-                if (loanCaseDTO.Status != (int)LoanCaseStatus.Registered)
-                {
-                    TempData["LoanCaseStatusInvalid"] = "Loan Case edit is only available for registered loans !";
-                    return View("edit", loanCaseDTO);
-                }
-
                 await _channelService.UpdateLoanCaseAsync(loanCaseDTO, GetServiceHeader());
 
                 // Loanee sessions

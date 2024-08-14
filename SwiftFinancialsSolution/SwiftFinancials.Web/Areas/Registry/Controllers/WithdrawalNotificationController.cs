@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using System.Web.Services;
 using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Presentation.Infrastructure.Util;
@@ -364,24 +365,50 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-
-
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
             var creditBatchDTO = await _channelService.FindWithdrawalNotificationAsync(id, GetServiceHeader());
 
             ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+           
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+            // await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(parseId,int[], false, false, false, false, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+
+            WithdrawalNotificationDTO withdrawalNotificationDTO = new WithdrawalNotificationDTO();
+
+            if (customer != null)
+            {
+
+                withdrawalNotificationDTO.CustomerId = customer.Id;
+                withdrawalNotificationDTO.CustomerFullName = customer.FullName;
+                withdrawalNotificationDTO.CustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                withdrawalNotificationDTO.CustomerSerialNumber = customer.SerialNumber;
+                withdrawalNotificationDTO.CustomerIndividualIdentityCardNumber = customer.IndividualIdentityCardNumber;
+                withdrawalNotificationDTO.CustomerStationDescription = customer.StationDescription;
+                withdrawalNotificationDTO.CustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+            }
+            //var k = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync();
             return View(creditBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeathClaim(WithdrawalNotificationDTO withdrawalNotificationDTO, WithdrawalSettlementDTO withdrawalSettlementDTOs)
+        public async Task<ActionResult> DeathClaim(WithdrawalNotificationDTO withdrawalNotificationDTO, ObservableCollection<WithdrawalSettlementDTO> withdrawalSettlementDTOs, InsuranceCompanyDTO insuranceCompanyDTO)
         {
+            //var mandatoryInvestmentProducts = new ObservableCollection<WithdrawalSettlementDTO>();
+            var k =await _channelService.FindWithdrawalSettlementsByWithdrawalNotificationIdAsync(withdrawalNotificationDTO.Id, false, GetServiceHeader());
+            k = withdrawalSettlementDTOs;
             withdrawalNotificationDTO.ValidateAll();
 
             if (!withdrawalNotificationDTO.HasErrors)
             {
-                await _channelService.SettleWithdrawalNotificationAsync(withdrawalNotificationDTO, 1, 1, GetServiceHeader());
+                await _channelService.ProcessDeathSettlementsAsync(withdrawalNotificationDTO, withdrawalSettlementDTOs, insuranceCompanyDTO,1, GetServiceHeader());
 
                 return RedirectToAction("Index");
             }

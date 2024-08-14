@@ -1163,5 +1163,56 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public string ErrorMessageResult { get; set; }
+
+
+        // Additional Fields for Loan Qualification Section in Loan Appraisal
+        [DataMember]
+        [Display(Name = "Maximum Loan")]
+        public decimal LoanRegistrationMaximumLoan { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Outstanding Loans Balance")]
+        public decimal LoanRegistrationOutstandingLoansBalance { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Maxmimum Entitled")]
+        public decimal LoanRegistrationMaximumEntitled { get; set; }
+
+        [DataMember]
+        [Display(Name = "Net Income")]
+        public decimal LoanRegistrationNetIncome { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Total Allowance")]
+        public decimal LoanRegistrationTotalAllowance { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Total Deduction")]
+        public decimal LoanRegistrationTotalDeduction { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Total Income")]
+        public decimal LoanRegistrationTotalIncome { get; set; } 
+        
+        
+        [DataMember]
+        [Display(Name = "Ability to Pay")]
+        public decimal LoanRegistrationAbilityToPay { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Ability to Pay Over Loan Term")]
+        public decimal LoanRegistrationAbilityToPayOverLoanTerm { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Loan + Interest")]
+        public decimal LoanRegistrationLoanPlusInterest { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Loan Part")]
+        public decimal LoanRegistrationLoanPart { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Interest Part")]
+        public decimal LoanRegistrationInterestPart { get; set; }
     }
 }
