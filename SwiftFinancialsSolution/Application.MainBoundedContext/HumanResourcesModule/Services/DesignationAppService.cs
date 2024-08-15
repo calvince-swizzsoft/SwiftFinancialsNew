@@ -133,7 +133,7 @@ namespace Application.MainBoundedContext.HumanResourcesModule.Services
         }
 
         public PageCollectionInfo<DesignationDTO> FindDesignations(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
-        {
+      {
             using (_dbContextScopeFactory.CreateReadOnly())
             {
                 var filter = DesignationSpecifications.DesignationFullText(text);
