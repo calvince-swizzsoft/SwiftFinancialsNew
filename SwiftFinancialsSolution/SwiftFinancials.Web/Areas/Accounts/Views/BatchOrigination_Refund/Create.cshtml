@@ -150,101 +150,88 @@
                         <br />
                         <br />
 
-                        <!-- Trigger button to open the modal -->
-                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#batchEntriesModal">
-                            Open Batch Entries
-                        </button>
+                        
 
-                        <!-- Modal -->
-                        <div id="batchEntriesModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="batchEntriesModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-lg" role="document">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="batchEntriesModalLabel">Batch Entries</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
+                        <div class="batch-entries-container">
+                            <h2 class="batch-title">Batch Entries</h2>
+                            <div class="enter-batch">
+                                <div class="row large-font">
+                                    <div class="col-lg-6">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.FullAccountNumber, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.CreditCustomerAccountDTO.FullAccountNumber)
+                                                @Html.TextBoxFor(model => model.CreditCustomerAccountDTO.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="modal-body">
-                                        <div class="batch-entries-container">
-                                            <h2 class="batch-title">Batch Entries</h2>
-                                            <div class="enter-batch">
-                                                <div class="row large-font">
-                                                    <div class="col-lg-6">
-                                                        <div class="col-md-13 form-group">
-                                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.FullAccountNumber, new { @class = "control-label" })
-                                                            <div class="input-group" data-autoclose="true">
-                                                                @Html.HiddenFor(model => model.CreditCustomerAccountDTO.FullAccountNumber)
-                                                                @Html.TextBoxFor(model => model.CreditCustomerAccountDTO.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                                <span class="input-group-addon">
-                                                                    <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="col-md-13 form-group">
-                                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.FullAccountNumber, new { @class = "control-label" })
-                                                            <div class="input-group" data-autoclose="true">
-                                                                @Html.HiddenFor(model => model.DebitCustomerAccountDTO.FullAccountNumber)
-                                                                @Html.TextBoxFor(model => model.DebitCustomerAccountDTO.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                                <span class="input-group-addon">
-                                                                    <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                                </span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row large-font">
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            @Html.HiddenFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription)
-                                                            @Html.EditorFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                            @Html.ValidationMessageFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            @Html.HiddenFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription)
-                                                            @Html.EditorFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                            @Html.ValidationMessageFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row large-font">
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.CustomerFullName, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            @Html.HiddenFor(model => model.CreditCustomerAccountDTO.CustomerFullName)
-                                                            @Html.EditorFor(model => model.CreditCustomerAccountDTO.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                            @Html.ValidationMessageFor(model => model.CreditCustomerAccountDTO.CustomerFullName, "", new { @class = "text-danger" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-lg-6">
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.CustomerFullName, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                            @Html.HiddenFor(model => model.DebitCustomerAccountDTO.CustomerFullName)
-                                                            @Html.EditorFor(model => model.DebitCustomerAccountDTO.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                            @Html.ValidationMessageFor(model => model.DebitCustomerAccountDTO.CustomerFullName, "", new { @class = "text-danger" })
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div class="row">
-                                                    <!-- Center the Submit button -->
-                                                    <div style="text-align: right; margin: 20px 20px;">
-                                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
-                                                    </div>
-                                                </div>
+                                    <div class="col-lg-6">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.FullAccountNumber, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.DebitCustomerAccountDTO.FullAccountNumber)
+                                                @Html.TextBoxFor(model => model.DebitCustomerAccountDTO.FullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row large-font">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription)
+                                            @Html.EditorFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CreditCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription)
+                                            @Html.EditorFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitCustomerAccountDTO.CustomerAccountTypeProductCodeDescription, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row large-font">
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CreditCustomerAccountDTO.CustomerFullName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.CreditCustomerAccountDTO.CustomerFullName)
+                                            @Html.EditorFor(model => model.CreditCustomerAccountDTO.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.CreditCustomerAccountDTO.CustomerFullName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitCustomerAccountDTO.CustomerFullName, htmlAttributes: new { @class = "control-label col-md-2" })
+                                            @Html.HiddenFor(model => model.DebitCustomerAccountDTO.CustomerFullName)
+                                            @Html.EditorFor(model => model.DebitCustomerAccountDTO.CustomerFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitCustomerAccountDTO.CustomerFullName, "", new { @class = "text-danger" })
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                    </div>
+
+                                </div>
+
                             </div>
                         </div>
-
-
                         <br />
                         <div>
                             <div>
