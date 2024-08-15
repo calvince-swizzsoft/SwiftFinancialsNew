@@ -96,7 +96,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (userDTO.BranchId != null)
             {
 
-
                 customerBindingModel.BranchId = (Guid)userDTO.BranchId;
 
             }
@@ -310,7 +309,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (!customerBindingModel.HasErrors)
             {
                 await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
-                TempData["SuccessMessage"] = $"Successfully {customerBindingModel.RecordStatusDescription} Customer {customerBindingModel.FullName}";
+                TempData["SuccessMessage"] = $"Successfully Edited {customerBindingModel.RecordStatusDescription} Customer {customerBindingModel.FullName}";
                 ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
                 ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
                 return RedirectToAction("Index");
@@ -361,10 +360,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             await ServeNavigationMenus();
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
-            if (customerDTO != null)
-            {
-                nextOfKinDTO.customerDTO = customerDTO;
-            }
+
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
             ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
@@ -373,7 +369,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
             ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
-            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty); 
             ViewBag.recordstatus = GetRecordStatusSelectList(string.Empty);
 
             Session["customerDTO"] = customerDTO;
@@ -445,5 +441,56 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             }
         }
 
+
+
+
+        public async Task<ActionResult> Documents(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
+            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
+            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
+            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
+            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
+            ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
+            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
+            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
+            ViewBag.recordstatus = GetRecordStatusSelectList(string.Empty);
+            return View(customerDTO.MapTo<CustomerBindingModel>());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Documents(Guid id, CustomerBindingModel customerBindingModel)
+        {
+            customerBindingModel.ValidateAll();
+
+            if (!customerBindingModel.HasErrors)
+            {
+                await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
+                TempData["SuccessMessage"] = $"Successfully {customerBindingModel.RecordStatusDescription} Customer {customerBindingModel.FullName}";
+                ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
+                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
+                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
+                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
+                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
+
+                return View(customerBindingModel);
+            }
+        }
     }
 }
