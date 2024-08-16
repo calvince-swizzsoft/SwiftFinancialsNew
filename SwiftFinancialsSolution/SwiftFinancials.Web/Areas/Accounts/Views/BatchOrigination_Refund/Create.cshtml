@@ -120,7 +120,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                @*<div class="col-lg-4">
+                                <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
@@ -128,7 +128,7 @@
                                             @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                         </div>
 
-                                    </div>*@
+                                    </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
@@ -381,7 +381,7 @@
     <script>
 
 
-
+    
 
 
     //////////Credit customer accounts lookup modol/////////
@@ -487,27 +487,6 @@
 
     </script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
-    $(document).ready(function () {
-        $('#batchEntriesModal').on('hidden.bs.modal', function () {
-            $.ajax({
-                url: '@Url.Action("UpdateModalData", "YourController")', // Replace with your action and controller
-                type: 'POST',
-                data: {
-                    // Add any data you want to send to the server here
-                },
-                success: function (response) {
-                    // Handle success if needed
-                    console.log('Server responded:', response);
-                },
-                error: function (xhr, status, error) {
-                    console.error('An error occurred:', error);
-                }
-            });
-        });
-    });
-    </script>
+    
 
 }
