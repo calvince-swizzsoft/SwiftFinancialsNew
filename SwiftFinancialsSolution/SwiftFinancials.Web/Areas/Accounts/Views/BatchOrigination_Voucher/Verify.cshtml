@@ -8,6 +8,15 @@
     var journalVoucherAuthOptions = ViewBag.JournalVoucherAuthOptionSelectList as List<SelectListItem>;
 }
 <style>
+
+    .big-box {
+        border: 1px solid gray;
+        border-radius: 12px;
+        background-color: #f1f1f1
+    }
+    .row{
+        margin:20px;
+    }
     #ChargeSplits {
         width: 100%;
         border-collapse: collapse;
@@ -37,6 +46,134 @@
         #ChargeSplits tbody tr:hover {
             background-color: #f1f1f1;
         }
+    h2 {
+        font-weight: bold;
+        margin-left: 40px;
+    }
+    .custom-container {
+        border: 2px solid gray; /* Border color set to gray */
+        @*padding: 5px; *@/* Padding inside the border */
+        border-radius: 20px; /* Rounded corners (optional) */
+
+        display: flex; /* Enable Flexbox */
+        align-items: center; /* Center content vertically */
+        justify-content: center; /* Center content horizontally */
+        font-size: 15px; /* Set font size to 15px */
+        text-align: center; /* Center text within elements */
+        margin: 20px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    /* Ensure that any child elements that need to be centered don't affect the container alignment */
+        .custom-container .row {
+             width: 100%; /* Make sure row takes full width */
+            font-size: 16px;
+        }
+
+    
+
+    .row {
+        margin-bottom: 20px; /* Space between rows */
+    }
+
+    .form-group {
+        margin-bottom: 15px; /* Space between form groups */
+    }
+
+    .input-group-addon {
+        padding: 10px; /* Padding inside the input group addon */
+    }
+
+    .form-control {
+        margin-top: 5px; /* Space above input controls */
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+    }
+
+    #policies {
+        color: black;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .main1 {
+        border: 1px solid black;
+        padding: 10px;
+        margin-top: 20px;
+    }
+
+    @*css form status dropdown*@ .button-container {
+        display: inline-block;
+        position: relative;
+    }
+
+    .custom-dropdown {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc; /* Border around the button */
+        border-radius: 4px;
+        padding: 5px 10px;
+        background-color: #f9f9f9; /* Background color of the button */
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: 16px;
+        position: relative;
+        min-width: 150px; /* Minimum width to prevent overlap */
+        width: auto; /* Adjust width based on content */
+    }
+
+    .custom-select {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+        width: 100%; /* Make the dropdown take full width of the container */
+        -webkit-appearance: none; /* Remove default dropdown styles in WebKit browsers */
+        -moz-appearance: none; /* Remove default dropdown styles in Firefox */
+        font-weight: bold;
+        text-align: left;
+        line-height: 1.5; /* Adjust line height for better vertical alignment */
+        color: #007bff; /* Blue color for the text */
+    }
+
+    .custom-dropdown::after {
+        content: '\f078'; /* Unicode for down arrow */
+        font-family: FontAwesome; /* FontAwesome for the down arrow */
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* Allow clicks to pass through the arrow */
+    }
+
+    @* css form Authorization remarks*@ .form-group-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between label and input field */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    h2 {
+        font-weight: bold;
+    }
+
+        .form-control {
+        flex: 1; /* Allow input field to take up remaining space */
+    }
 </style>
 
 
@@ -88,153 +225,184 @@
                     @using (Html.BeginForm("Verify", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        <h1>Journal Voucher</h1>
+                        
+                        <div class="big-box">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" ,@style = "color: #007bff;" })
+                                            @Html.ValidationMessageFor(model => model.Type)
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                                    </div>
 
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Type)
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.BranchId)
+                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Description.." } })
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ValueDate", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Status, journalVoucherTypes, new { @class = "form-control input-md" , @style = "color: #007bff;" })
+                                            @Html.ValidationMessageFor(model => model.Status)
+                                        </div>
+                                    </div>
 
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name" } })
                                 </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.PostingPeriodId)
-                                    @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "ValueDate", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Status, journalVoucherTypes, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Status)
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                             </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary Description", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Primary Description", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.AuthOption, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.AuthOption, journalVoucherAuthOptions, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.AuthOption)
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.PrimaryDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.SecondaryDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+
                             </div>
-                        </div>
 
-                        <br />
-                        <br />
+                            <br />
+                            <br />
+                            <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Journal Voucher Entries</h2>
 
-                        <row>
-
-                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
-                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                    <tr>
-                                        <th style="width: 15%;">CoA Name</th>
-                                        <th style="width: 10%;">Amount</th>
-                                        <th style="width: 5%;">Remarks</th>
-
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if (ViewBag.JournalVoucherEntryDTOs != null)
-                                    {
-                                        foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
-                                        {
-                                            <tr data-id="@journalVoucherEntries.JournalVoucherId">
-                                                <td>@journalVoucherEntries.ChartOfAccountAccountName</td>
-                                                <td>@journalVoucherEntries.Amount</td>
-                                                <td>@journalVoucherEntries.Remarks</td>
-
-
+                                <row>
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
+                                        <thead style="font-style: italic; color: #333; text-align: center;">
+                                            <tr>
+                                                <th style="width: 10%;">Type</th>
+                                                <th style="width: 5%;">ChartofAccount Name</th>
+                                                <th style="width: 10%;">Amount</th>
                                             </tr>
-                                        }
-                                    }
-                                </tbody>
-                            </table>
-                        </row>
+                                        </thead>
+                                        <tbody style="color: #007bff;">
+                                            @if (ViewBag.JournalVoucherEntryDTOs != null)
+                                            {
+                                                foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
+                                                {
+                                                    <tr data-id="@journalVoucherEntries.JournalVoucherId">
+                                                        <td>@journalVoucherEntries.TypeDescription</td>
+                                                        <td>@journalVoucherEntries.ChartOfAccountName</td>
+                                                        <td>@journalVoucherEntries.Amount</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </row>
+                            </div>
+
+                            <br />
+                            <br />
+                            
+
+                            <div class="custom-container">
+                                <div class="row" id="policies">
+                                    <div class="col-lg-10">
+                                        <div class="row">
+                                            <div class="col-lg-8">
+                                                <div class="form-group form-group-lg">
+                                                    <div class="form-group-container">
+                                                        Remarks:
+                                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                                    </div>
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    <div class="button-container">
+                                                        <div class="custom-dropdown">
+                                                            @Html.DropDownListFor(model => model.AuthOption, journalVoucherAuthOptions, new { @class = "custom-select" })
+                                                        </div>
+                                                    </div>
+                                                </div>
 
 
-                        <div class="row">
-                            <div class="form-group form-group-sm" style="margin-left: 20px;">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Verify" class="btn btn-primary" />
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="col-lg-2">
+                                        <div class="row">
+
+                                            <div class="col-lg-12">
+                                                <div class="style-button" style="text-align: right;">
+                                                    <input type="submit" value="Verify" style="width: 150px;" class="btn btn-primary" />
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
+
+                            
+                        
 
                     }
                 </div>
@@ -290,73 +458,7 @@
 
     <script>
 
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
-
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
+        
 
      //ChartOfAccount typehead starts here
             $('.ChartOfAccountsLookup').typeahead({

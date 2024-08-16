@@ -11,6 +11,6 @@
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_WireTransfer",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\Charges"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers\\BatchOrigination_RefundController.cs",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Voucher\\Details.cshtml",
   "PreviewInSolutionExplorer": false
 }

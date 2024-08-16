@@ -3,6 +3,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -548,6 +549,8 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
             return string.Format("{0}", stringBuilder);
         }
+
+        public List<NextOfKinDTO>nextOfKins;
 
         //HashSet<NextOfKinDTO> _nextOfKin;
         //[DataMember]
