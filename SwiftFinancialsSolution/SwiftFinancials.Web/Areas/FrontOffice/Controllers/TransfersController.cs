@@ -11,6 +11,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
+
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class TransfersController : MasterController
@@ -36,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ExternalChequeDTO externalChequeDTO)
         {
-            externalChequeDTO.ValidateAll();
+            /*ashTransferRequestDTO.ValidateAll();*/
 
             if (!externalChequeDTO.HasErrors)
             {

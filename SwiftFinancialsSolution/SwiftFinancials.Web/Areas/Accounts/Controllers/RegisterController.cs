@@ -190,7 +190,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!alternateChannelDTO.HasErrors)
             {
                 var result = await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
-                TempData["SuccessMessage"] = "Create successful.";
+                TempData["SuccessMessage"] =  $"Successfully created Alternate channel For Member {alternateChannelDTO.CustomerFullName}";
+
                 if (result.ErrorMessageResult != null)
                 {
                     TempData["ErrorMsg"] = result.ErrorMessageResult;
@@ -243,7 +244,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(alternateChannelDTO.RecordStatus.ToString());
 
                 ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());
-                TempData["SuccessMessage"] = "Create successful.";
+
+                TempData["SuccessMessage"] = $"Successfully {alternateChannelDTO.RecordStatusDescription}  Alternate channel For Member {alternateChannelDTO.CustomerFullName}";
+
                 return RedirectToAction("Index");
             }
             else

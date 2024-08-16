@@ -70,7 +70,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
-            ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
 
             Guid parseId;
 
@@ -84,37 +84,137 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             {
                 dataAttachmentEntryDTO.DataAttachmentPeriodId = dataPeriod.Id;
                 dataAttachmentEntryDTO.DataAttachmentPeriodDescription = dataPeriod.MonthDescription;
-                dataAttachmentEntryDTO.Remarks = dataPeriod.Remarks;
+                dataAttachmentEntryDTO.DataPeriodRemarks = dataPeriod.Remarks;
+
+                Session["DataAttachmentPeriod"] = dataAttachmentEntryDTO;
             }
 
             return View(dataAttachmentEntryDTO);
         }
 
 
+
+        public async Task<ActionResult> CustomerLookUp(Guid? id, DataAttachmentEntryDTO dataAttachmentEntryDTO)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
+
+            if (Session["DataAttachmentPeriod"] != null)
+                dataAttachmentEntryDTO = Session["DataAttachmentPeriod"] as DataAttachmentEntryDTO;
+
+
+              if (Session["customerAccountLookUp"] != null)
+                dataAttachmentEntryDTO = Session["customerAccountLookUp"] as DataAttachmentEntryDTO;
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+
+
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            if (customer != null)
+            {
+                dataAttachmentEntryDTO.CustomerAccountCustomerId = customer.Id;
+                dataAttachmentEntryDTO.CustomerAccountCustomerIndividualFirstName = customer.IndividualSalutationDescription + " " + customer.IndividualFirstName + " " +
+                    customer.IndividualLastName;
+                dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionEmployerId = (Guid)customer.StationZoneDivisionEmployerId;
+                dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionEmployerDescription = customer.StationZoneDivisionEmployerDescription;
+                dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationId = (Guid)customer.StationId;
+                dataAttachmentEntryDTO.CustomerAccountCustomerStationZoneDivisionStationDescription = customer.StationDescription;
+                dataAttachmentEntryDTO.CustomerAccountCustomerSerialNumber = customer.SerialNumber;
+                dataAttachmentEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.IndividualPayrollNumbers;
+                dataAttachmentEntryDTO.CustomerAccountCustomerNonIndividualRegistrationDate = customer.RegistrationDate;
+                dataAttachmentEntryDTO.CustomerRemarks = customer.Remarks;
+                dataAttachmentEntryDTO.CustomerAccountCustomerPersonalIdentificationNumber = customer.PersonalIdentificationNumber;
+                dataAttachmentEntryDTO.Ref1 = customer.Reference1;
+                dataAttachmentEntryDTO.Ref2 = customer.Reference2;
+                dataAttachmentEntryDTO.Ref3 = customer.Reference3;
+
+
+                var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, true, GetServiceHeader());
+                if (CustomerAccounts != null)
+                    ViewBag.CustomerAccounts = CustomerAccounts;
+                else
+                    TempData["customerAccount"] = "The selected customer has no associated/attached accounts";
+
+                dataAttachmentEntryDTO.CustomerDTO = customer;
+
+                Session["customerDetails"] = dataAttachmentEntryDTO;
+
+                foreach(var cId in CustomerAccounts)
+                {
+                    var idId = cId.Id;
+
+                    Session["customerAccountId"] = idId;
+                }
+            }
+
+            return View("create", dataAttachmentEntryDTO);
+        }
+
+
+        public async Task<ActionResult> CustomerAccountLookUp(Guid? id, DataAttachmentEntryDTO dataAttachmentEntryDTO)
+        {
+            await ServeNavigationMenus();
+
+            ViewBag.TransactionTypeSelectList = GetDataAttachmentTransactionTypeTypeSelectList(string.Empty);
+
+            if (Session["customerDetails"] != null)
+                dataAttachmentEntryDTO = Session["customerDetails"] as DataAttachmentEntryDTO;
+
+            if (Session["DataAttachmentPeriod"] != null)
+                dataAttachmentEntryDTO = Session["DataAttachmentPeriod"] as DataAttachmentEntryDTO;
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+            if (customerAccount != null)
+            {
+                dataAttachmentEntryDTO.customerAccountDTO = customerAccount;
+                dataAttachmentEntryDTO.CustomerAccountId = customerAccount.Id;
+
+                Session["customerAccountLookUp"] = dataAttachmentEntryDTO;
+            }
+
+            return View("create", dataAttachmentEntryDTO);
+        }
+
+
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create(DataAttachmentPeriodDTO dataPeriodDTO)
+        public async Task<ActionResult> Create(DataAttachmentEntryDTO dataAttachmentEntryDTO)
         {
 
-            dataPeriodDTO.ValidateAll();
+            dataAttachmentEntryDTO.CustomerAccountId = (Guid)Session["customerAccountId"];
 
-            if (!dataPeriodDTO.HasErrors)
+            dataAttachmentEntryDTO.ValidateAll();
+
+            if (!dataAttachmentEntryDTO.HasErrors)
             {
-                await _channelService.AddDataAttachmentPeriodAsync(dataPeriodDTO, GetServiceHeader());
+                await _channelService.AddDataAttachmentEntryAsync(dataAttachmentEntryDTO, GetServiceHeader());
 
-                TempData["message"] = "Successfully created Data Period";
+                TempData["message"] = "Successfully created Data Attachment Entry";
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = dataPeriodDTO.ErrorMessages.ToString();
+                var errorMessages = dataAttachmentEntryDTO.ErrorMessages.ToString();
 
                 TempData["BugdetBalance"] = errorMessages;
 
                 TempData["messageError"] = "Could not create Data Period";
 
-                ViewBag.MonthSelectList = GetMonthsAsync(dataPeriodDTO.MonthDescription);
+                ViewBag.MonthSelectList = GetDataAttachmentTransactionTypeTypeSelectList(dataAttachmentEntryDTO.TransactionTypeDescription);
 
                 await ServeNavigationMenus();
 

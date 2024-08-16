@@ -1,4 +1,4 @@
-﻿@model Application.MainBoundedContext.DTO.GeneralLedgerTransaction
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
 @{
     ViewBag.Title = "Create Sundry Payments";
@@ -111,21 +111,31 @@
 
                                 <div class="tab-content mt-3" id="transactionSubTabContent">
                                     <div id="cashPaymentTab" class="tab-pane fade show active" role="tabpanel">
-                                        <div class="form-group row">
-                                            <label for="glAccount" class="col-sm-3 col-form-label">G/L Account:</label>
-                                            <div class="col-sm-9">
-                                                <input type="text" class="form-control" id="glAccount">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "text-success" })
+                                                <div class="input-group">
+                                                    @Html.HiddenFor(model => model.ChartOfAccountId)
+                                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Account Name" } })
+                                                    <div class="input-group-append">
+                                                        <button class="btn btn-outline-secondary" type="button">
+                                                            <i class="fa fa-search"></i>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="amount" class="col-sm-3 col-form-label">Amount:</label>
-                                            <div class="col-sm-9">
-                                                <input type="number" class="form-control" id="amount">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "text-success" })
+                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        <div class="form-group row">
-                                            <label for="reference" class="col-sm-3 col-form-label">Reference:</label>
-                                            <div class="col-sm-9">
+                                        <div class="form-row">
+                                            <div class="form-group col-md-4">
+                                                <label for="reference" class="text-success">Reference:</label>
                                                 <input type="text" class="form-control" id="reference">
                                             </div>
                                         </div>
@@ -445,39 +455,88 @@
     </div>
 </div>
 
+@section Scripts{
+    @Scripts.Render("~/plugins/typehead")
+
+    <script>
+
+    //ChartOfAccount typehead starts here
+    $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+
+                    $('#ChartOfAccountId').val(ChartOfAccountId);
+
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+
+    </script>
+
+
+}
+
 <script>
-$(document).ready(function() {
-    // Function to update tab styles
-    function updateTabStyles() {
-        $('.nav-tabs a').removeClass('active bg-light');
-        $('.nav-tabs a.active').addClass('bg-light');
-    }
+    $(document).ready(function () {
+        // Function to update tab styles
+        function updateTabStyles() {
+            $('.nav-tabs a').removeClass('active bg-light');
+            $('.nav-tabs a.active').addClass('bg-light');
+        }
 
-    // Function to show/hide tab content
-    function updateTabContent() {
-        $('.tab-pane').removeClass('show active');
-        $('.tab-pane.active').addClass('show');
-    }
+        // Function to show/hide tab content
+        function updateTabContent() {
+            $('.tab-pane').removeClass('show active');
+            $('.tab-pane.active').addClass('show');
+        }
 
-    // Main tabs
-    $('#mainTabContent a').on('click', function (e) {
-        e.preventDefault();
-        $(this).tab('show');
+        // Main tabs
+        $('#mainTabContent a').on('click', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            updateTabStyles();
+            updateTabContent();
+        });
+
+        // Transaction sub-tabs
+        $('#transactionSubTabs').on('click', 'a', function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+            updateTabStyles();
+            updateTabContent();
+        });
+
+
+        // Initial update
         updateTabStyles();
         updateTabContent();
     });
-
-    // Transaction sub-tabs
-    $('#transactionSubTabs').on('click', 'a', function (e) {
-        e.preventDefault();
-        $(this).tab('show');
-        updateTabStyles();
-        updateTabContent();
-    });
-
-
-    // Initial update
-    updateTabStyles();
-    updateTabContent();
-});
 </script>

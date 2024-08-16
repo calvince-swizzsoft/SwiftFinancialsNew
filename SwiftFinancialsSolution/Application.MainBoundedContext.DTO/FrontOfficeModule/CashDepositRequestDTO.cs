@@ -15,16 +15,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
             AddAllAttributeValidators();
         }
 
-        public CashDepositRequestDTO(CustomerAccountDTO customerAccountDTO)
-        {
-
-            BranchId = customerAccountDTO.BranchId;
-            CustomerAccountId = customerAccountDTO.Id;
-            Status = customerAccountDTO.Status;
-            Amount = customerAccountDTO.TotalValue;
-            Remarks = customerAccountDTO.Remarks;
-        }
-
+      
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }

@@ -22,6 +22,7 @@ using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.HumanResourcesModule;
 using SwiftFinancials.Presentation.Infrastructure.Models;
+//using Application.MainBoundedContext.FrontOfficeModule.Services;
 
 namespace SwiftFinancials.Web.Controllers
 {
@@ -81,6 +82,21 @@ namespace SwiftFinancials.Web.Controllers
             }
             set { channelService = value; }
         }
+
+        //private ICashDepositRequestAppService cashDepositRequestAppService;
+
+        //public ICashDepositRequestAppService _cashDepositRequestAppService
+        //{
+        //    get
+        //    {
+        //        if (cashDepositRequestAppService == null)
+        //        {
+        //            cashDepositRequestAppService = DependencyResolver.Current.GetService<ICashDepositRequestAppService>();
+        //        }
+        //        return cashDepositRequestAppService;
+        //    }
+        //    set { cashDepositRequestAppService = value; }
+        //}
 
         private ApplicationRoleManager applicationRoleManager;
         public ApplicationRoleManager _applicationRoleManager
@@ -344,6 +360,25 @@ namespace SwiftFinancials.Web.Controllers
             frontOfficeTransactionType.AddRange(items);
 
             return frontOfficeTransactionType;
+        }
+
+        [NonAction]
+        protected List<SelectListItem> GetGeneralTransactionTypeSelectList (string selectedValue)
+        {
+
+            List<SelectListItem> generalTransactionType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(GeneralTransactionType)).Cast<GeneralTransactionType>().Select(v => new SelectListItem
+
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue
+            }).ToList();
+
+            generalTransactionType.AddRange(items);
+
+            return generalTransactionType;
         }
 
         [NonAction]
@@ -1570,7 +1605,7 @@ namespace SwiftFinancials.Web.Controllers
 
         [NonAction]
         protected List<SelectListItem> GetLoanDisbursementTypeBatchTypeSelectList(string selectedValue)
-        {
+        { 
             List<SelectListItem> disbursementType = new List<SelectListItem>();
 
             var items = Enum.GetValues(typeof(DisbursementType)).Cast<DisbursementType>().Select(v => new SelectListItem
@@ -1619,6 +1654,24 @@ namespace SwiftFinancials.Web.Controllers
             LoanCaseFilter.AddRange(items);
 
             return LoanCaseFilter;
+        } 
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetDataAttachmentTransactionTypeTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> dataAttachmentTransactionType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DataAttachmentTransactionType)).Cast<DataAttachmentTransactionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            dataAttachmentTransactionType.AddRange(items);
+
+            return dataAttachmentTransactionType;
         }
     }
 }

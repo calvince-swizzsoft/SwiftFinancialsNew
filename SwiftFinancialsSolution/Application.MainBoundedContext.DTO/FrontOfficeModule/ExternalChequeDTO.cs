@@ -17,23 +17,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
             AddAllAttributeValidators();
         }
 
-        public ExternalChequeDTO(CustomerAccountDTO customerAccountDTO)
-        {
-
-            CustomerAccountId = customerAccountDTO.Id;
-            Amount = customerAccountDTO.TotalValue;
-            Remarks = customerAccountDTO.Remarks;
-            Drawer = customerAccountDTO.ChequeDeposit.Drawer;
-            DrawerBank = customerAccountDTO.ChequeDeposit.DrawerBank;
-            DrawerBankBranch = customerAccountDTO.ChequeDeposit.DrawerBankBranch;
-            WriteDate = customerAccountDTO.ChequeDeposit.WriteDate;
-            ChequeTypeDescription = customerAccountDTO.ChequeDeposit.ChequeTypeDescription;
-            ChequeTypeId = customerAccountDTO.ChequeDeposit.ChequeTypeId;
-            MaturityDate = customerAccountDTO.ChequeDeposit.MaturityDate;
-            Number = customerAccountDTO.ChequeDeposit.Number;
-
-        }
-
+  
         [DataMember]
         [Display(Name = "Id")]
         public Guid Id { get; set; }

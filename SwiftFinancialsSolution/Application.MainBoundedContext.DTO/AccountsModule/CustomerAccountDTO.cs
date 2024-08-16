@@ -284,7 +284,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Branch")]
-        [ValidGuid]
         public Guid BranchId { get; set; }
 
         [DataMember]
@@ -355,7 +354,6 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Product")]
-        [ValidGuid]
         public Guid CustomerAccountTypeTargetProductId { get; set; }
 
         [DataMember]
@@ -680,8 +678,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Amount Applied")]
-        [RegularExpression(@"^\s*(?=.*[1-9])\d*(?:\.\d{1,2})?\s*$", ErrorMessage = "Amount applied must be greater than zero!")]
         public decimal TotalValue { get; set; }
+
         public CustomerAccountDTO CustomerAccount { get; set; }
         public List<SavingsProductDTO> savingsProduct { get; set; }
         public SavingsProductDTO Savings { get; set; }
@@ -700,17 +698,29 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         public CustomerDTO Customers { get; set; }
 
+        [DataMember]
+        [Display(Name = " New Available Balance")]
+        public decimal NewAvailableBalance { get; set; }
+
 
         [DataMember]
-        public CashDepositRequestDTO CashDeposit { get; set; }
+        public LoanProductDTO LoanProductsDTO { get; set; }
 
-        public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
 
-        public PaymentVoucherDTO PaymentVoucher { get; set; }
 
-        public TellerDTO Teller { get; set; }
 
-        public ExternalChequeDTO ChequeDeposit { get; set; }
+        // Additional DTOs
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Payment Per Period")]
+        public double PaymentPerPeriod { get; set; }
 
+        [DataMember]
+        [Display(Name = "Number Of Periods")]
+        public int NumberOfPeriods { get; set; }
+
+        [DataMember]
+        [Display(Name = "Reference")]
+        public string Reference { get; set; }
     }
 }

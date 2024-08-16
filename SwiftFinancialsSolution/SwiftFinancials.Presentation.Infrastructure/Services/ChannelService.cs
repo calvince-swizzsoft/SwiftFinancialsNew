@@ -7084,6 +7084,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<CashDepositRequestDTO>> FindCashDepositRequestsAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CashDepositRequestDTO>>();
+
+            ICashDepositRequestService service = GetService<ICashDepositRequestService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CashDepositRequestDTO> response = ((ICashDepositRequestService)result.AsyncState).EndFindCashDepositRequests(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CashDepositRequestDTO>(response ?? new List<CashDepositRequestDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindCashDepositRequests(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<bool> PostCashDepositRequestAsync(CashDepositRequestDTO cashDepositRequestDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();

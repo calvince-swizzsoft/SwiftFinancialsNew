@@ -18,8 +18,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class ReportsController : MasterController
     {
-        public int choice { get; private set; }
-
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -27,15 +25,22 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
         [HttpPost]
         public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             await ServeNavigationMenus();
 
+            await GetRegisteredLoans(jQueryDataTablesModel);
+            await GetAppraisedLoans(jQueryDataTablesModel);
+            await GetApprovedLoans(jQueryDataTablesModel);
+            await GetRejectedLoans(jQueryDataTablesModel);
+            await GetVerifiedLoans(jQueryDataTablesModel);
+            await GetDisbursedLoans(jQueryDataTablesModel);
+            await GetDeferredLoans(jQueryDataTablesModel);
+            await GetRestructuredLoans(jQueryDataTablesModel);
+
             return View();
         }
-
 
 
         [HttpPost]
