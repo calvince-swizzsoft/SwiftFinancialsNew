@@ -2,8 +2,8 @@
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
-using Application.MainBoundedContext.DTO.AccountsModule;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -14,28 +14,6 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public CashWithdrawalRequestDTO()
         {
             AddAllAttributeValidators();
-        }
-
-        public CashWithdrawalRequestDTO(CustomerAccountDTO customerAccountDTO)
-        {
-
-
-            CustomerAccountCustomerId = customerAccountDTO.CustomerId;
-            CustomerAccountId = customerAccountDTO.Id;
-            CustomerAccountCustomerIndividualFirstName = customerAccountDTO.CustomerIndividualFirstName;
-            //  accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-            CustomerAccountCustomerSerialNumber = customerAccountDTO.CustomerSerialNumber;
-            CustomerAccountCustomerAccountTypeTargetProductCode = customerAccountDTO.CustomerAccountTypeProductCode;
-            CustomerAccountCustomerSerialNumber = customerAccountDTO.CustomerSerialNumber;
-            CustomerAccountCustomerReference1 = customerAccountDTO.CustomerReference1;
-            CustomerAccountCustomerReference2 = customerAccountDTO.CustomerReference2;
-            CustomerAccountCustomerReference3 = customerAccountDTO.CustomerReference3;
-            CustomerAccountCustomerSerialNumber = customerAccountDTO.CustomerSerialNumber;
-            CustomerAccountCustomerPersonalIdentificationNumber = customerAccountDTO.CustomerPersonalIdentificationNumber;
-            CustomerAccountRemarks = customerAccountDTO.CashWithdrawal.Remarks;
-            BranchDescription = customerAccountDTO.BranchDescription;
-            BranchId = customerAccountDTO.BranchId;
-            Amount = customerAccountDTO.CashWithdrawal.Amount;
         }
 
         [DataMember]
@@ -322,5 +300,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public List<CashDepositRequestDTO> CashDepositRequests { get; set; }
     }
 }

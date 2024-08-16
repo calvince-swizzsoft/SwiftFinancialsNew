@@ -1,8 +1,10 @@
 ﻿using Application.MainBoundedContext.DTO.AccountsModule;
+using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Models
 {
@@ -10,6 +12,9 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
     {
         public CustomerTransactionModel()
         {
+            CustomerAccount = new CustomerAccountDTO();
+            CashDepositRequest = new CashDepositRequestDTO();
+            Teller = new TellerDTO();
             AddAllAttributeValidators();
         }
 
@@ -80,7 +85,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
 
         string _secondaryDescription;
         [Display(Name = "Secondary Description")]
-        [StringLength(256)]
+        [StringLength(256)]                                     
         public string SecondaryDescription
         {
             get { return _secondaryDescription; }
@@ -248,5 +253,23 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
                 }
             }
         }
+
+  
+        public CustomerAccountDTO CustomerAccount { get; set; }
+
+  
+        public CashDepositRequestDTO CashDepositRequest { get; set; }
+
+        [DataMember]
+        public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
+
+        
+        public PaymentVoucherDTO PaymentVoucher { get; set; }
+
+        
+        public TellerDTO Teller { get; set; }
+
+        
+        public ExternalChequeDTO ChequeDeposit { get; set; }
     }
 }

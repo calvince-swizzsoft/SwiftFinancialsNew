@@ -1,5 +1,6 @@
 ﻿using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.Seedwork;
 using System;
 using System.ComponentModel.DataAnnotations;
@@ -206,6 +207,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Description")]
         public string Description { get; set; }
+
+        public SavingsProductDTO SavingsProduct { get; set; }
+
+        public TellerDTO Teller { get; set; }
 
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
@@ -77,5 +78,17 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [Display(Name = "From")]
         public string CreatedBy { get; set; }
+
+
+
+
+
+
+        // Additional DTOs
+        [DataMember]
+        public ExternalChequeDTO ExternalCheque;
+
+        [DataMember]
+        public InHouseChequeDTO InHouseChequeDTO;
     }
 }

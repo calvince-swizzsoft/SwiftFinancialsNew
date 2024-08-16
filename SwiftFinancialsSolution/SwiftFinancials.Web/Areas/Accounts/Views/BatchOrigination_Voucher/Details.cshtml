@@ -16,6 +16,11 @@
         font-size: 18px;
         font-weight: bold;
     }
+    .big-box {
+        border: 1px solid gray;
+        border-radius: 12px;
+        background-color: #f1f1f1
+    }
 
     .journal-voucher-container {
         border: 1px solid #ddd;
@@ -60,6 +65,9 @@
         width: 100%;
         border-collapse: collapse;
         font-family: Arial, sans-serif;
+        margin-left:20px;
+        margin-right:20px;
+
     }
 
         #ChargeSplits thead {
@@ -85,6 +93,17 @@
         #ChargeSplits tbody tr:hover {
             background-color: #f1f1f1;
         }
+        
+        .custom-label {
+         color: #333; /* Replace with your desired color */
+        }
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+
+    h2{
+        font-weight:bold;
+    }
 
         </style>
 
@@ -95,7 +114,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Accounts</h2>
+        <h1>Accounts</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -126,7 +145,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Journal Voucher</h2>
+                    
 
                     @if (TempData["ErrorMsg"] != null)
                     {
@@ -147,86 +166,92 @@
                 <div class="ibox-content bg-white text-info">
                     @using (Html.BeginForm("Details", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-
-                        <div class="row custom-style">
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Type)
+                        <h2>Journal Voucher</h2>
+                        <div class="big-box">
+                            <div class="row custom-style">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Type, new { @class = "control-label custom-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.TypeDescription, journalVoucherTypes, new { @class = "form-control input-md", @style = "color: #007bff;", @readonly = "readonly" })
+                                            @Html.ValidationMessageFor(model => model.Type)
+                                        </div>
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label custom-label" })
+                                        @Html.HiddenFor(model => model.ChartOfAccountId)
+                                        @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required  custom-editor", placeholder = "Enter space to autofill G/L Account..", @readonly = "readonly" } })
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account.." } })
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label custom-label" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control custom-editor", @placeholder = "Kshs. 0.00", @required = "", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                    </div>
 
-                                <div class="form-group" id="data_3">
-                                    @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                    <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label custom-label" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label custom-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required  custom-editor", placeholder = "Posting Period Description", @readonly = "readonly" } })
+                                    </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label custom-label" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control  custom-editor", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.PostingPeriodId)
-                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description" } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                </div>
+
+
+                            <br />
+                            <br />
+
+                            <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Journal Voucher Entries</h2>
+
+                                <row>
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
+                                        <thead style="font-style: italic; color: #333; text-align: center;">
+                                            <tr>
+                                                <th style="width: 10%;">Type</th>
+                                                <th style="width: 5%;">ChartofAccount Name</th>
+                                                <th style="width: 10%;">Amount</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody style="color: #007bff;">
+                                            @if (ViewBag.JournalVoucherEntryDTOs != null)
+                                            {
+                                                foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
+                                                {
+                                                    <tr data-id="@journalVoucherEntries.JournalVoucherId">
+                                                        <td>@journalVoucherEntries.TypeDescription</td>
+                                                        <td>@journalVoucherEntries.ChartOfAccountName</td>
+                                                        <td>@journalVoucherEntries.Amount</td>
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </row>
                             </div>
+
+
                         </div>
 
 
-                        
-
-                            <row>
-
-                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
-                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                        <tr>
-                                            <th style="width: 15%;">CoA Name</th>
-                                            <th style="width: 10%;">Amount</th>
-                                            <th style="width: 5%;">Remarks</th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.JournalVoucherEntryDTOs != null)
-                                        {
-                                            foreach (var journalVoucherEntries in ViewBag.JournalVoucherEntryDTOs)
-                                            {
-                                                <tr data-id="@journalVoucherEntries.JournalVoucherId">
-                                                    <td>@journalVoucherEntries.ChartOfAccountAccountName</td>
-                                                    <td>@journalVoucherEntries.Amount</td>
-                                                    <td>@journalVoucherEntries.Remarks</td>
-
-
-                                                </tr>
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-                            </row>
-                        
                     }
                 </div>
                 <div class="ibox-content m-b-sm border-bottom">

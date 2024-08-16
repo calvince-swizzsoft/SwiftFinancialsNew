@@ -5,6 +5,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Runtime.Serialization;
 
 namespace SwiftFinancials.Presentation.Infrastructure.Models
 {
@@ -12,8 +13,11 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
     {
         public TransactionModel()
         {
+            CustomerAccount = new CustomerAccountDTO();
+            Teller = new TellerDTO();
             AddAllAttributeValidators();
         }
+
 
         Guid _branchId;
         [Display(Name = "Branch")]
@@ -265,7 +269,30 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             }
         }
 
-        public List<TransactionModel> TransactionModels { get; set; }
-        public FiscalCountDTO transactionModels { get; set; }
+        //public List<TransactionModel> TransactionModels { get; set; }
+        //public FiscalCountDTO transactionModels { get; set; }
+
+        //added on Thursday 8/2/24
+
+
+        [DataMember]
+        public CustomerAccountDTO CustomerAccount { get; set; }
+
+        [DataMember]
+        public CashDepositRequestDTO CashDepositRequest { get; set; }
+
+        [DataMember]
+        public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
+
+        [DataMember]
+        public PaymentVoucherDTO PaymentVoucher { get; set; }
+
+        [DataMember]
+        public TellerDTO Teller { get; set; }
+
+        [DataMember]
+        public ExternalChequeDTO ChequeDeposit { get; set; }
+
+
     }
 }

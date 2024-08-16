@@ -1,0 +1,185 @@
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.CashWithdrawalRequestDTO
+
+
+@{
+    ViewBag.Title = "Cash Transactions";
+    var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
+}
+
+<head>
+    <style>
+        .nav-tabs .nav-link {
+            background-color: transparent;
+        }
+
+            .nav-tabs .nav-link.active {
+                background-color: #f8f9fa; /* light grey */
+            }
+
+        .tab-pane {
+            display: none;
+        }
+
+            .tab-pane.show {
+                display: block;
+            }
+    </style>
+</head>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Cash Transactions</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "CashTransactions", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Cash Transactions</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div id="cashTransactions" class="container-fluid mt-3">
+    <div class="card">
+        <div class="card-body">
+            @using (Html.BeginForm("Create", "CashWithdrawalRequest", new { Area = "FrontOffice" }, FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <ul class="nav nav-tabs mb-3" id="mainTabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" data-toggle="tab" href="#cashDepositTab">Cash Deposit Requests</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" data-toggle="tab" href="#cashWithdrawalTab">Cash Withdrawal Requests</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content" id="mainTabContent">
+                    <div id="cashDepositTab" class="tab-pane fade show active">
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="nav nav-tabs mt-3" id="cashDepositSubTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#depositRequestsTab">Cash Deposit Requests</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#createDepositRequestTab">Create Cash Deposit Request</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content mt-3" id="cashDepositSubTabContent">
+                                    <div id="depositRequestsTab" class="tab-pane fade show active" role="tabpanel">
+                                        <h4>Cash Deposit Requests</h4>
+                                        <table class="table table-striped table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Actions</th>
+                                                    <th>Authorization Status</th>
+                                                    <th>Request Type</th>
+                                                    <th>Amount</th>
+                                                    <th>Customer Account Number</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Account Number</th>
+                                                    <th>Membership Number</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var request in Model)
+                                                {
+                                <tr>
+                                    <td>
+                                        <a href="#" class="btn btn-sm btn-primary" title="View"><i class="fa fa-eye"></i></a>
+                                        @if (request.Status == (int)CashDepositRequestAuthStatus.Pending)
+                                        {
+                                <a href="#" class="btn btn-sm btn-success" title="Authorize"><i class="fa fa-check"></i></a>
+                                                        <a href="#" class="btn btn-sm btn-danger" title="Reject"><i class="fa fa-times"></i></a>}
+                                    </td>
+                                    <td>@request.StatusDescription</td>
+                                    <td>@request.TypeDescription</td>
+                                    <td>@request.Amount.ToString("N2")</td>
+                                    <td>@request.CustomerAccountFullAccountNumber</td>
+                                    <td>@request.CustomerAccountCustomerFullName</td>
+                                    <td>@request.CustomerAccountCustomerReference1</td>
+                                    <td>@request.CustomerAccountCustomerReference2</td>
+                                </tr>}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    This table now directly uses the properties from the CashDepositRequestDTO. Here are the key changes and notes:
+
+                                    The model declaration at the top assumes you're passing a List of CashDepositRequestDTO
+
+                                    <div id="createDepositRequestTab" class="tab-pane fade" role="tabpanel">
+                                        <!-- Content for Create Cash Deposit Request form -->
+                                        <h4>Create Cash Deposit Request</h4>
+                                        <!-- Add your form for creating a new deposit request here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="cashWithdrawalTab" class="tab-pane fade">
+                        <div class="card">
+                            <div class="card-body">
+                                <ul class="nav nav-tabs mt-3" id="cashWithdrawalSubTabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" data-toggle="tab" href="#withdrawalRequestsTab">Cash Withdrawal Requests</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" data-toggle="tab" href="#createWithdrawalRequestTab">Create Cash Withdrawal Request</a>
+                                    </li>
+                                </ul>
+
+                                <div class="tab-content mt-3" id="cashWithdrawalSubTabContent">
+                                    <div id="withdrawalRequestsTab" class="tab-pane fade show active" role="tabpanel">
+                                        <!-- Content for Cash Withdrawal Requests list -->
+                                        <h4>Cash Withdrawal Requests</h4>
+                                        <!-- Add your table or list of withdrawal requests here -->
+                                    </div>
+
+                                    <div id="createWithdrawalRequestTab" class="tab-pane fade" role="tabpanel">
+                                        <!-- Content for Create Cash Withdrawal Request form -->
+                                        <h4>Create Cash Withdrawal Request</h4>
+                                        <!-- Add your form for creating a new withdrawal request here -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div style="margin-top: 20px; text-align: right;">
+                        <button type="submit" class="btn btn-primary">Process Transaction</button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#mainTabs a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+
+            $('#cashDepositSubTabs a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+
+            $('#cashWithdrawalSubTabs a').on('click', function (e) {
+                e.preventDefault()
+                $(this).tab('show')
+            })
+        })
+    </script>
+}

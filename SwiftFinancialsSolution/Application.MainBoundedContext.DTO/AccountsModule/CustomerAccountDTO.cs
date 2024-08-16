@@ -698,17 +698,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         public CustomerDTO Customers { get; set; }
 
-
         [DataMember]
-        public CashDepositRequestDTO CashDeposit { get; set; }
-
-        public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
-
-        public PaymentVoucherDTO PaymentVoucher { get; set; }
-
-        public TellerDTO Teller { get; set; }
-
-        public ExternalChequeDTO ChequeDeposit { get; set; }
+        [Display(Name = " New Available Balance")]
+        public decimal NewAvailableBalance { get; set; }
 
 
         [DataMember]
