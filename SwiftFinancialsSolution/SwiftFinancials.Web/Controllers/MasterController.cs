@@ -1619,6 +1619,24 @@ namespace SwiftFinancials.Web.Controllers
             LoanCaseFilter.AddRange(items);
 
             return LoanCaseFilter;
+        } 
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetDataAttachmentTransactionTypeTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> dataAttachmentTransactionType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(DataAttachmentTransactionType)).Cast<DataAttachmentTransactionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            dataAttachmentTransactionType.AddRange(items);
+
+            return dataAttachmentTransactionType;
         }
     }
 }

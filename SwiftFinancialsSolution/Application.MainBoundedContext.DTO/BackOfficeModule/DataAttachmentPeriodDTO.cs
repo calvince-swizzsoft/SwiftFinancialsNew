@@ -88,5 +88,14 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+
+        // Additional DTOs
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Data Period")]
+        public string DataAttachmentPeriodDescription { get; set; }
+
     }
 }

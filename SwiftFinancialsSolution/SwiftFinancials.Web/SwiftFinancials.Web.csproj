@@ -392,6 +392,8 @@
     <Compile Include="Areas\Loaning\Controllers\ApproveLoanController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AttachGuarantorController.cs" />
     <Compile Include="Areas\Loaning\Controllers\AuthorizeLoanBatchController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\CatalogueController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataCaptureController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataProcessingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
@@ -1114,6 +1116,10 @@
     <Content Include="Areas\Accounts\Views\CoA_eStatements\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_eStatements\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_eStatements\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\Closing\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\Closing\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\Catalogue\Index.cshtml" />
+    <Content Include="Areas\Loaning\Views\Catalogue\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
