@@ -99,24 +99,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
 
-            if(Session["postingPeriodId"] != null)
+            if (Session["postingPeriodId"] != null)
             {
                 bankReconciliationPeriodDTO.PostingPeriodId = (Guid)Session["postingPeriodId"];
             }
 
-            if(Session["postingPeriodDescription"] != null)
+            if (Session["postingPeriodDescription"] != null)
             {
                 bankReconciliationPeriodDTO.PostingPeriodDescription = Session["postingPeriodDescription"].ToString();
             }
 
 
-            var bankDetails = await _channelService.FindBankAsync(parseId, GetServiceHeader());
+            var bankDetails = await _channelService.FindBankLinkageAsync(parseId, GetServiceHeader());
 
             if (bankDetails != null)
             {
                 bankReconciliationPeriodDTO.BankLinkageId = bankDetails.Id;
-                bankReconciliationPeriodDTO.BankLinkageBankName = bankDetails.Description;
-
+                bankReconciliationPeriodDTO.BankLinkageBankName = bankDetails.BankName;
+                bankReconciliationPeriodDTO.BranchId = bankDetails.BranchId;
+                bankReconciliationPeriodDTO.ChartOfAccountId = bankDetails.ChartOfAccountId;
+                bankReconciliationPeriodDTO.BankAccountNumber = bankDetails.BankAccountNumber;
                 Session["BankId"] = bankReconciliationPeriodDTO.BankLinkageId;
                 Session["BankName"] = bankReconciliationPeriodDTO.BankLinkageBankName;
             }
@@ -141,6 +143,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             bankReconciliationPeriodDTO.PostingPeriodId = (Guid)Session["postingPeriodId"];
             bankReconciliationPeriodDTO.PostingPeriodDescription = Session["postingPeriodDescription"].ToString();
+            var k = await _channelService.FindBankLinkageAsync(bankReconciliationPeriodDTO.BankLinkageId, GetServiceHeader());
+            bankReconciliationPeriodDTO.BankAccountNumber = k.BankAccountNumber;
+            bankReconciliationPeriodDTO.BranchId = k.BranchId;
+            bankReconciliationPeriodDTO.ChartOfAccountId = k.ChartOfAccountId;
+            bankReconciliationPeriodDTO.DurationEndDate = DateTime.Now;
 
             bankReconciliationPeriodDTO.ValidateAll();
 

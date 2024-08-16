@@ -122,9 +122,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var electronicStatementOrderHistoryDTO = await _channelService.FindElectronicStatementOrdersByCustomerAccountIdAsync(id, true,GetServiceHeader());
+            var electronicStatementOrderHistoryDTO = await _channelService.FindElectronicStatementOrderHistoryAsync(id,GetServiceHeader());
             ViewBag.MonthsSelectList = GetPaymentFrequencyPerYearSelectList(string.Empty);
-            return View(electronicStatementOrderHistoryDTO);
+            return View("Edit",electronicStatementOrderHistoryDTO);
         }
 
         [HttpPost]

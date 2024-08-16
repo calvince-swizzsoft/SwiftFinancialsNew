@@ -323,7 +323,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Bank", new { Area = "Admin" }))",
+                "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts" }))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -345,8 +345,8 @@
                 },
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "Description", "sTitle": "Bank Name", "sWidth": "20%" },
-                    { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "5%" },
+                    { "mDataProp": "BankAccountNumber", "sTitle": "BankAccountNumber", "sWidth": "20%" },
+                    { "mDataProp": "BankName", "sTitle": "BankName", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
