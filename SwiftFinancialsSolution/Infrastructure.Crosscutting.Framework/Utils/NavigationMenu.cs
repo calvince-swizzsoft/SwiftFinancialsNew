@@ -232,9 +232,9 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                                         // Operations
                 //... Application...//
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-address-book", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-book", ControllerName="LoanRestructuring", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 7},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-book", ControllerName="LoanRestructuring", ActionName="Create", AreaName = "Loaning", Code = 0x00005DC0 + 7},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon="fa fa-database", ControllerName="DataCapture", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 8},
-                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Reports", Icon="fa fa-database", ControllerName="Reports", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 9},
+                //new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Reports", Icon="fa fa-database", ControllerName="Reports", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 9},
                 //.
                 //.
                 //.

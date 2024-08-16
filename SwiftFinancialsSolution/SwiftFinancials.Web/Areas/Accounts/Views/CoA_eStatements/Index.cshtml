@@ -148,7 +148,7 @@
                     var CloseUrl = '<a  href="/accounts/CoA_eStatements/Close/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Close</a>';
                     $('td:eq(1)', nRow).html(dt_StartDate);
                     $('td:eq(2)', nRow).html(dt_EndDate);
-                    $('td:eq(6)', nRow).html(dt_Created);
+                   // $('td:eq(6)', nRow).html(dt_Created);
                     //var dropdownHtml = `
                     //    <div class="dropdown">
                     //        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -171,7 +171,7 @@
                     { "mDataProp": "ProductDescription", "sTitle": "ProductDescription" },
                     { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Name" },
                     { "mDataProp": "Remarks", "sTitle": "Remarks" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "bSortable": false }],
+                    { "mDataProp": "ScheduleFrequencyDescription", "sTitle": "Frequency", "bSortable": false }],
                    /* { "mDataProp": "CreatedDate", "sTitle": "Actions",  "bSortable": false }],*/
                 "aaSorting": [[0, "desc"]]
             });

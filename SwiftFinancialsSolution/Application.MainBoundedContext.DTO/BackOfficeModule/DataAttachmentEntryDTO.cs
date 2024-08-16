@@ -6,6 +6,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Application.MainBoundedContext.DTO.AccountsModule;
 
 namespace Application.MainBoundedContext.DTO.BackOfficeModule
 {
@@ -241,6 +242,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public DateTime CreatedDate { get; set; }
 
 
+
+
+
+
         // Additional DTOs
         [DataMember]
         [Display(Name ="Data Period")]
@@ -283,6 +288,17 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string Ref3 { get; set; }
 
         [DataMember]
-        public CustomerDTO CustomerDTO { get; set; } 
+        public CustomerDTO CustomerDTO { get; set; }
+
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string fAccountNumber { get; set; }
+
+        [DataMember]
+        public CustomerAccountDTO customerAccountDTO { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string DataPeriodRemarks { get; set; }
     }
 }
