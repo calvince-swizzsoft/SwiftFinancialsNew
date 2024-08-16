@@ -138,9 +138,28 @@
                     var editUrl = '<a  href="/accounts/Register/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve/Reject</a>';
                     var viewUrl = '<a  href="/accounts/Register/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/Register/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/accounts/Register/edit/${aData.Id}">Edit</a>
+                            </div>
+                        </div>`;
+
+
+
+                    $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(dropdownHtml);
+
+
+
+
                     $('td:eq(2)', nRow).html(expiryDate);
                     $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                   // $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
                 },
@@ -153,6 +172,7 @@
                     { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Acc number", "sWidth": "5%" },
                     { "mDataProp": "TypeDescription", "sTitle": "type", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "RecordStatusDescription", "sTitle": "Status", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "48s%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
         });
