@@ -128,7 +128,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string CustomerNonIndividualRegistrationNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "PIN")] // Personal Identification Number
+        [Display(Name = "Personal Identification Number")] // Personal Identification Number
         public string CustomerPersonalIdentificationNumber { get; set; }
 
         [DataMember]
@@ -1123,6 +1123,10 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Section")]
+        public int LoanProductSectionSection { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Section")]
         public string LoanProductSectionDescription { get; set; }
 
 
@@ -1214,5 +1218,25 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Interest Part")]
         public decimal LoanRegistrationInterestPart { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Account Status")]
+        public string AccountStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Principal Balance")]
+        public decimal PrincipalBalance { get; set; }
+
+        [DataMember]
+        [Display(Name = "Interest Balance")]
+        public decimal InterestBalance { get; set; }
+
+        [DataMember]
+        [Display(Name = "Payment Per Period")]
+        public double PaymentPerPeriod { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Number Of Periods")]
+        public int NumberOfPeriods { get; set; }
     }
 }

@@ -17,7 +17,7 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Branch Linkage</h2>
+        <h2>Account Alerts</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -49,7 +49,7 @@
             <div class="ibox">
                 <div class="ibox-title">
 
-                    <h2>Customers Details</h2>
+                    <h2>Customers</h2>
 
                     @if (TempData["Error"] != null)
                     {
@@ -150,88 +150,16 @@
                             </div>
                         </div>
 
-                        <div class="row">
-                            <div class="col-md-12">
-                                <!-- This is the blue box with a form or input elements -->
-                                <div class="form-group">
-                                    <div class="input-area" style="background-color: #add8e6; padding: 10px; border-radius: 5px;">
-                                        <!-- You can add content here, like form fields, text, or other elements -->
-                                        <div class="row">
-                                            <div class="col-md-10">
-                                                <!-- Input or other content goes here -->
-                                            </div>
-                                            <div class="col-md-2">
-                                                <!-- Update button -->
-                                                <button class="btn btn-success float-right">Update</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <div class="Head">
-                            <h2>Specimen</h2>
-                        </div>
-
-                        <div class="row">
-
-                            <div class="col-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Passport</label>
-                                        <div class="image-upload-area" style="border: 5px solid #ccc; height: 300px; width: 500%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>Signature</label>
-                                        <div class="image-upload-area" style="border: 5px solid #ccc; height: 300px; width: 500%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>ID (Front)</label>
-                                        <div class="image-upload-area" style="border: 5px solid #ccc; height: 300px; width: 500%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-3">
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label>ID (Back)</label>
-                                        <div class="image-upload-area" style="border: 5px solid #ccc; height: 300px; width: 500%;"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                        </div>
-
-
-
-
-
-
 
 
                         @*<div class="form-group form-group-sm">
-                                <div class="col-md-offset-2">
-                                    @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                                    {
-                                        <input type="submit" value="Create" class="btn btn-primary" />
-                                    }
-                                </div>
-                            </div>*@
+                            <div class="col-md-offset-2">
+                                @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                                {
+                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                }
+                            </div>
+                        </div>*@
                     }
                 </div>
 

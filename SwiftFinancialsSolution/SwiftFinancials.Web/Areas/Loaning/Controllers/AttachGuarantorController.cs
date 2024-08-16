@@ -127,6 +127,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var loanCaseDTO = await _channelService.FindLoanCaseAsync(loanGuarantorDTO.LoanCase.Id, GetServiceHeader());
 
+            // cheat
             loanGuarantorDTO.CustomerId = customerDTO.Id;
             loanGuarantorDTO.LoaneeCustomerId = loanCaseDTO.CustomerId;
             loanGuarantorDTO.LoanProductId = loanCaseDTO.LoanProductId;
