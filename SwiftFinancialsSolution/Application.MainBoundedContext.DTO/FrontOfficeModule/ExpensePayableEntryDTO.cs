@@ -49,6 +49,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "G/L Account Name")]
         public string ChartOfAccountAccountName { get; set; }
 
+        
+
         [DataMember]
         [Display(Name = "G/L Account Name")]
         public string ChartOfAccountName
@@ -67,14 +69,20 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "G/L Account Cost Center")]
         public string ChartOfAccountCostCenterDescription { get; set; }
 
+        
+
         [DataMember]
         [Display(Name = "Value")]
         public decimal Value { get; set; }
+
+        
 
         [DataMember]
         [Display(Name = "Primary Description")]
         [Required]
         public string PrimaryDescription { get; set; }
+
+        
 
         [DataMember]
         [Display(Name = "Secondary Description")]
@@ -83,10 +91,14 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         
 
+
+
         [DataMember]
         [Display(Name = "Reference")]
         [Required]
         public string Reference { get; set; }
+
+        
 
         [DataMember]
         [Display(Name = "Status")]

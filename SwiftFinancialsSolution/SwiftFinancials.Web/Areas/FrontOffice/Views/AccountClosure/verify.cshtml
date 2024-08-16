@@ -107,11 +107,9 @@
                                                     <th>Branch</th>
                                                     <th>Status</th>
                                                     <th>Full Account Number</th>
-                                                    <th>Product Name</th>
                                                     <th>Customer Name</th>
                                                     <th>Account Number</th>
                                                     <th>Membership Number</th>
-                                                    <th>Personal File Number</th>
                                                     <th>Select</th>
                                                 </tr>
                                             </thead>
@@ -348,18 +346,15 @@
         "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
         "sServerMethod": "POST",
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            $('td:eq(4)', nRow).html('<button class="btn btn-outline-info select-account" data-id="' + aData[8] + '">Select</button>');
-            return nRow;
+           
         },
         "columns": [
             { "data": "BranchDescription" },
             { "data": "StatusDescription" },
             { "data": "FullAccountNumber" },
-            { "data": "CustomerAccountTypeTargetProductDescription" },
             { "data": "CustomerFullName" },
             { "data": "CustomerReference1" },
             { "data": "CustomerReference2" },
-            { "data": "CustomerReference3" },
             {
                 "data": "Id",
                 "render": function (data) {

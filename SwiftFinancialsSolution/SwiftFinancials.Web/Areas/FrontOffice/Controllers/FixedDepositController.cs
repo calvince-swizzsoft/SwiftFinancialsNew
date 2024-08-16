@@ -84,12 +84,24 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (customer != null)
             {
-                fixedDepositDTO.CustomerAccountCustomerId = customer.Id;
-                fixedDepositDTO.CustomerAccountId = customer.Id;
-                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
+                // Populate the DTO with placeholder customer details
+                // accountClosureRequestDTO.CustomerAccountFullAccountNumber = customer.FullAccountNumber;
                 fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                fixedDepositDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
+                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
+                fixedDepositDTO.Remarks = customer.Remarks;
+                fixedDepositDTO.ProductDescription = customer.CustomerAccountTypeTargetProductDescription;
+                fixedDepositDTO.CustomerAccountCustomerNonIndividualDescription = customer.TypeDescription;
+                fixedDepositDTO.CustomerAccountCustomerNonIndividualRegistrationNumber = customer.RecordStatusDescription;
+                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
+                fixedDepositDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
+                fixedDepositDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
+                fixedDepositDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
+                fixedDepositDTO.CustomerAccountCustomerReference1 = customer.FullAccountNumber;
+                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
+                fixedDepositDTO.CustomerAccountCustomerId = customer.CustomerId;
+                fixedDepositDTO.BranchId = customer.BranchId;
+                fixedDepositDTO.CustomerAccountId = customer.Id;
+                
             }
 
             var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
@@ -126,9 +138,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             foreach (var fixedDepositPayableDTO in fixedDepositDTO.FixedDepositPayables)
             {
 
-                fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountId = fixedDepositDTO.Id;
                 fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountName = fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountName;
-                fixedDepositPayableDTO.CustomerAccountBranchId = fixedDepositPayableDTO.CustomerAccountBranchId;
                 fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription = fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription;
                 fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection = fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection;
 
@@ -145,28 +155,53 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
             return View("Create", fixedDepositDTO);
         }
-
         [HttpPost]
         public async Task<ActionResult> Create(FixedDepositDTO fixedDepositDTO)
         {
+            // Handle unexpected null DTO
+            if (fixedDepositDTO == null)
+            {
+                TempData["ErrorMessage"] = "An unexpected error occurred. Please try again.";
+                return View("Error");
+            }
+
+            // Access the hidden fields
+            var branchId = fixedDepositDTO.BranchId;
+            var customerAccountId = fixedDepositDTO.CustomerAccountId;
+
+            // Validate the DTO
             fixedDepositDTO.ValidateAll();
 
             if (!fixedDepositDTO.HasErrors)
             {
-                int moduleNavigationItemCode = 0;
-                await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
+                try
+                {
+                    // Process the fixed deposit creation
+                    int moduleNavigationItemCode = 0;
+                    await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
 
-                TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
-                return RedirectToAction("Index");
+                    TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
+                    return RedirectToAction("Index");
+                }
+                catch (Exception)
+                {
+                    // Log unexpected errors
+                    TempData["ErrorMessage"] = "An unexpected error occurred while processing your request. Please try again.";
+                    return View("Error");
+                }
             }
             else
             {
-                var errorMessages = fixedDepositDTO.ErrorMessages;
-                ViewBag.ErrorMessages = errorMessages;
+                // Log validation errors
+                foreach (var error in fixedDepositDTO.ErrorMessages)
+                {
+                }
 
+                TempData["ErrorMessage"] = "There were errors in your submission. Please review the form and try again.";
                 return View(fixedDepositDTO);
             }
         }
+
 
 
 
