@@ -183,6 +183,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
         {
+            overDeductionBatchDTO = TempData["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
             /*overDeductionBatchDTO.TotalValue = overDeductionBatchDTO.TotalValue;
             overDeductionBatchDTO.Reference = overDeductionBatchDTO.Reference;
 

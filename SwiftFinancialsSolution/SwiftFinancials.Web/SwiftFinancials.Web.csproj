@@ -1114,6 +1114,14 @@
     <Content Include="Areas\Accounts\Views\CoA_eStatements\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_eStatements\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\CoA_eStatements\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
