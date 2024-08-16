@@ -268,8 +268,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             case CashDepositCategory.AboveMaximumAllowed:
 
-                                //TempData["test"] = "Above limit";
-
                                 var createNewCashDepositRequest = default(bool);
 
                                 var actionableCashDepositRequests = await _channelService.FindActionableCashDepositRequestsByCustomerAccountAsync(SelectedCustomerAccount, GetServiceHeader());
@@ -302,6 +300,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                         // Show a message box with Yes/No options
                                         DialogResult result = MessageBox.Show(
+                                            Form.ActiveForm,
                                             message,
                                             "Authorization Request",
                                             MessageBoxButtons.YesNo,
@@ -363,7 +362,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                 if (createNewCashDepositRequest)
                                 {
-                                    // Format the message to display
                                     string message = string.Format(
                                         "{0}.\nDo you want to proceed and place a cash deposit authorization request?",
                                         EnumHelper.GetDescription(cashDepositCategory)

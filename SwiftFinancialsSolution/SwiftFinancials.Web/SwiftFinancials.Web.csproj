@@ -212,6 +212,7 @@
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
@@ -371,8 +372,13 @@
     <Compile Include="Areas\FrontOffice\Controllers\CashManagementController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashTransferController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashWithdrawalController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CashWithdrawalRequestController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ChequesController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\CustomerReceiptsController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\EndOfDayController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\EmployeeDocumentsController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\PaySlipsController.cs" />
@@ -1122,6 +1128,11 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_Refund\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Disbursement\Verify.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CashWithdrawalRequest\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\CustomerReceipts\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\EndOfDay\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\SundryPayments\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

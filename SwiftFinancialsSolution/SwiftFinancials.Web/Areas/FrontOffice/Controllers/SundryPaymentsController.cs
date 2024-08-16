@@ -100,7 +100,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 if (customerAccountDTO.TypeDescription.Equals("Cash Withdrawal"))
                 {
 
-                    CashWithdrawalRequestDTO cashWithdrawalRequestDTO = new CashWithdrawalRequestDTO(customerAccountDTO);
+                    CashWithdrawalRequestDTO cashWithdrawalRequestDTO = new CashWithdrawalRequestDTO();
 
                     cashWithdrawalRequestDTO.ValidateAll();
 
@@ -112,7 +112,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
 
 
-                    CashDepositRequestDTO cashDepositRequestDTO = new CashDepositRequestDTO(customerAccountDTO);
+                    CashDepositRequestDTO cashDepositRequestDTO = new CashDepositRequestDTO();
 
                     cashDepositRequestDTO.ValidateAll();
 
@@ -124,7 +124,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
 
 
-                    ExternalChequeDTO chequeDepositDTO = new ExternalChequeDTO(customerAccountDTO);
+                    ExternalChequeDTO chequeDepositDTO = new ExternalChequeDTO();
                     chequeDepositDTO.ValidateAll();
 
                     await _channelService.AddExternalChequeAsync(chequeDepositDTO, GetServiceHeader());

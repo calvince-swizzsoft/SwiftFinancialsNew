@@ -577,6 +577,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<CashDepositRequestDTO> FindCashDepositRequestAsync(Guid cashDepositRequestId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<CashDepositRequestDTO>> FindCashDepositRequestsAsync(ServiceHeader serviceHeader = null);
+
         Task<bool> PostCashDepositRequestAsync(CashDepositRequestDTO cashDepositRequestDTO, ServiceHeader serviceHeader = null);
 
         Task<bool> AuthorizeCashDepositRequestAsync(CashDepositRequestDTO cashDepositRequestDTO, int customerTransactionAuthOption, ServiceHeader serviceHeader = null);
