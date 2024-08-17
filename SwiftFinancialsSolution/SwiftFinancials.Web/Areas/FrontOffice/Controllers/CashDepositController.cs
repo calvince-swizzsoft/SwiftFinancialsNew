@@ -140,18 +140,15 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         public async Task<ActionResult> Create(Guid? id)
         {
-            // Serve navigation menus and initialize select lists
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
 
-            // Validate the GUID
             if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out Guid parseId))
             {
               
                 return View();
             }
 
-            // Initialize flags
             bool includeBalances = false;
             bool includeProductDescription = true;
             bool includeInterestBalanceForLoanAccounts = false;
