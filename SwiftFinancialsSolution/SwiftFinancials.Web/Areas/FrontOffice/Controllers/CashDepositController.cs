@@ -149,7 +149,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View();
             }
 
-            bool includeBalances = false;
+            bool includeBalances = true;
             bool includeProductDescription = true;
             bool includeInterestBalanceForLoanAccounts = false;
             bool considerMaturityPeriodForInvestmentAccounts = false;
@@ -249,7 +249,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         switch (cashDepositCategory)
                         {
                             case CashDepositCategory.WithinLimits:
-                                var withinLimitsCashDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tarrifs);
+                                var withinLimitsCashDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tarrifs,GetServiceHeader());
 
                                 transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
                                 var updateWithinLimitResult = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
@@ -479,6 +479,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        FrontOfficeTransactionType _frontOfficeTransactionType;
+        public FrontOfficeTransactionType FrontOfficeTransactionType
+        {
+            get { return _frontOfficeTransactionType; }
+            set
+            {
+                if (_frontOfficeTransactionType != value)
+                {
+                    _frontOfficeTransactionType = value;
+        
+                }
+            }
+        }
+
+
+
         [HttpPost]
         public async Task<ActionResult> Create(CustomerTransactionModel transactionModel)
         {
@@ -488,17 +504,41 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             SelectedBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
             _selectedTeller = await GetCurrentTeller();
 
-            transactionModel.PostingPeriodId = Guid.NewGuid();
-            transactionModel.DebitChartOfAccountId = Guid.NewGuid();
+            transactionModel.PostingPeriodId = Guid.NewGuid(); //findPostingPeriodCurrent
+            transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
             transactionModel.PrimaryDescription = "ok";
             transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
             transactionModel.CreditChartOfAccountId = (Guid)transactionModel.Teller.ChartOfAccountId;
 
-            transactionModel.CreditCustomerAccountId = transactionModel.CustomerAccount.Id;
-            transactionModel.DebitCustomerAccountId = transactionModel.CustomerAccount.Id;
+
+            
+
+            switch ((FrontOfficeTransactionType)transactionModel.CustomerAccount.Type)
+            {
+                case FrontOfficeTransactionType.CashDeposit:
+
+                  
+
+                    if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                        transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+
+                    if (SelectedCustomerAccount != null)
+                    {
+                        transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
+                        transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
+                        transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
+                        transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
+                        transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+                    }
+
+                    break;
 
 
+            }
+                
+
+           
             
             transactionModel.ValidateAll();
 
