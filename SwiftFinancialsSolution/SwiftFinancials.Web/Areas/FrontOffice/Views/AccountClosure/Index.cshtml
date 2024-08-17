@@ -1,4 +1,4 @@
-﻿﻿
+﻿﻿﻿
 @{
     ViewBag.Title = "AccountClosure";
 }
@@ -23,6 +23,20 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create AccountClosure", "Create", "AccountClosure", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -98,7 +112,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-<script type="text/javascript">
+    <script type="text/javascript">
 
         $(document).ready(function () {
             $('#AccountClosuresGrid').DataTable({
@@ -163,5 +177,5 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-</script>
-    }
+    </script>
+}

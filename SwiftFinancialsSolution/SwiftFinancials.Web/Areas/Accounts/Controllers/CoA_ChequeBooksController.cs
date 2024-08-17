@@ -179,6 +179,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
             }
+           var k= await _channelService.FindPaymentVouchersByChequeBookIdAsync(parseId, GetServiceHeader());
+
+            ViewBag.j = k;
 
             return View(customerAccountDTO);
         }

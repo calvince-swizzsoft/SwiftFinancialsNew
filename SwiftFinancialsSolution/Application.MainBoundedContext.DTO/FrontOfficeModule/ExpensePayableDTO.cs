@@ -57,7 +57,16 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "G/L Account Name")]
         public string ChartOfAccountAccountName { get; set; }
 
+        //new g/l
+
         [DataMember]
+        [Display(Name = "G/L Accounts")]
+        public string ChartOfAccounts { get; set; }
+
+    
+
+
+        [DataMember]     
         [Display(Name = "G/L Account Name")]
         public string ChartOfAccountName
         {
@@ -187,4 +196,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public ExpensePayableEntryDTO ExpensePayableEntry { get; set; }
 
     }
+
+    // new G/L validation
+
+    
 }

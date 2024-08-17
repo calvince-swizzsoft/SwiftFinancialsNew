@@ -605,8 +605,8 @@
 
                     var selectUrl = '<a  href="/Accounts/CoA_ChequeBooks/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(selectUrl);
+                    $('td:eq(6)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(selectUrl);
 
                     return nRow;
                 },
@@ -615,10 +615,9 @@
             { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "3%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "3%" },
             { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "3%" },
-            { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "15%" },
+            { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "5%" },
             { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-            { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "5%" },
-            { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "5%" },
+            { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "5%" },            
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
             { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
