@@ -39,8 +39,11 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
-        // Maxon Included this
+        
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
+
+        public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
+        public ObservableCollection<CreditBatchEntryDTO> DebitBatchEntryDTOs;
 
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
