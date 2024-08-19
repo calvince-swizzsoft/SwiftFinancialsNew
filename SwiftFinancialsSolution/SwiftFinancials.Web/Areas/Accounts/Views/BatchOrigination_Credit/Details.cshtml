@@ -2,6 +2,14 @@
 
 @{
     ViewBag.Title = "Credit Batch Details";
+
+    var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
+    var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
+    var Monthtype = ViewBag.MonthsSelectList as List<SelectListItem>;
+
+    var Months = ViewBag.MonthsSelectList as List<SelectListItem>;
+    var ChargeType = ViewBag.ChargeTypeSelectList as List<SelectListItem>;
+    var ConcessionType = ViewBag.ConcessionTypeSelectList as List<SelectListItem>;
 }
 <style>
     .custom-container {
@@ -29,6 +37,36 @@
         border: 2px solid #00ffff;
     }
 
+    @* Batch Entries table Styling*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
     .row {
         margin-bottom: 20px;
     }
@@ -45,7 +83,12 @@
         font-size: 18px; /* Increased label font size */
         color: #333; /* Set a different color for the labels */
     }
-
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .style1 {
+        color: #007bff; /* Replace with your desired color */
+    }
     .form-value {
         font-size: 16px;
         color: #007bff; /* Set a different color for the field values */
@@ -111,92 +154,193 @@
                             <div class="main1">
                                 <div class="combined-container">
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.PostingPeriodDescription, new { @class = "control-label" })
-                                                <div class="form-value">@Model.PostingPeriodDescription</div>
+                                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.PostingPeriodId)
+                                                @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Description", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.ConcessionFixedAmount, new { @class = "control-label" })
-                                                <div class="form-value">@Model.ConcessionFixedAmount</div>
+                                                @Html.LabelFor(model => model.ConcessionFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.ConcessionFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "ConcessionFixedAmount", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.ConcessionFixedAmount, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.CreditTypeDescription, new { @class = "control-label" })
-                                                <div class="form-value">@Model.CreditTypeDescription</div>
+                                                @Html.LabelFor(model => model.CreditTypeId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.CreditTypeId)
+                                                @Html.ValidationMessageFor(model => model.CreditTypeId, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.CreditTypeDescription, new { htmlAttributes = new { @class = "CreditTypesLookup form-control required", placeholder = "Credit Type Description", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon style1"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.Type, creditBatchType, new { @class = "form-control input-md", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.Type)
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-4">
+
+
+
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
-                                                <div class="form-value">@Model.TypeDescription</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
-                                                <div class="form-value">@Model.BranchDescription</div>
+                                                @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.BranchId)
+                                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description..", @readonly = "readonly" } })
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.Reference, new { @class = "control-label" })
-                                                <div class="form-value">@Model.Reference</div>
+                                                @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                    </div>
-
-                                    <div class="row">
-                                        <div class="col-lg-4">
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Month, new { @class = "control-label" })
-                                                <div class="form-value">@Model.Month</div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon style1"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.Month, Monthtype, new { @class = "form-control input-md", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.Month)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.ConcessionType, new { @class = "control-label" })
+                                                <div class="input-group">
+                                                    <span class="input-group-addon style1"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.ConcessionType, ChargeType, new { @class = "form-control input-md", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.ConcessionType)
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.ConcessionType, new { @class = "control-label" })
-                                                <div class="form-value">@Model.ConcessionType</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
+                                    </div>
+
+
+
+                                    <div class="row">
+
+
+
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                                <div class="form-value">@Model.Priority</div>
+                                                <div class="input-group">
+                                                    <span class="input-group-addon style1"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.Priority)
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "TotalValue", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
 
                                     <div class="row">
-                                        <div class="col-lg-4">
+
+
+
+
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.TotalValue, new { @class = "control-label" })
-                                                <div class="form-value">@Model.TotalValue</div>
+                                                @Html.LabelFor(model => model.AuditedBy, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.AuditedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.AuditedBy, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
+
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AuthorizedBy, new { @class = "control-label" })
-                                                <div class="form-value">@Model.AuthorizedBy</div>
+                                                @Html.LabelFor(model => model.AuthorizedBy, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.AuthorizedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.AuthorizedBy, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
-                                        <div class="col-lg-4">
+
+                                        <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AuthorizedBy, new { @class = "control-label" })
-                                                <div class="form-value">@Model.AuthorizedBy</div>
+                                                @Html.LabelFor(model => model.AuthorizedDate, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.AuthorizedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.AuthorizedDate, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+
+
+                                <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
+
+                                    <row>
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
+                                            <thead style="font-style: italic; color: #333; text-align: center;">
+                                                <tr>
+                                                    <th style="width: 10%;">Account Number</th>
+                                                    <th style="width: 5%;">Product Description</th>
+                                                    <th style="width: 10%;">Principal</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="color: #007bff;">
+                                                @if (ViewBag.CrdeitBatchEntryDTOs != null)
+                                                {
+                                                    foreach (var journalVoucherEntries in ViewBag.CrdeitBatchEntryDTOs)
+                                                    {
+                                                        <tr data-id="@journalVoucherEntries.Id">
+                                                            <td>@journalVoucherEntries.FullAccountNumber</td>
+                                                            <td>@journalVoucherEntries.ProductDescription</td>
+                                                            <td>@journalVoucherEntries.Principal</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </row>
+                                </div>
+
 
                                 <div class="custom-container">
                                     <div class="row" id="policies">

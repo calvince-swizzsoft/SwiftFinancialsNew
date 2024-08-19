@@ -243,6 +243,10 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         //Additional DTOs
         [DataMember]
+        public CustomerAccountDTO customer { get; set; }
+
+
+        [DataMember]
         [Display(Name = "CreditAccount Full Account Number")]
         public string CreditCustomerAccountFullAccountNumber { get; set; }
 

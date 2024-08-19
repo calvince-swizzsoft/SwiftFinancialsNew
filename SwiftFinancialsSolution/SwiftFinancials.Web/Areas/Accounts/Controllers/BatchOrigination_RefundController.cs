@@ -83,28 +83,25 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 overDeductionBatchDTO.DebitCustomerAccountDTO = Session["debitCustomerAccount"] as CustomerAccountDTO;
             }
-            if (Session["TotalValue"] != null)
+            Session["totalValue"] = overDeductionBatchDTO.TotalValue;
+            Session["branchDescription"] = overDeductionBatchDTO.BranchDescription;
+            Session["reference"] = overDeductionBatchDTO.Reference;
+
+            TempData["totalValue"] = overDeductionBatchDTO.TotalValue;
+            TempData["branchDescription"] = overDeductionBatchDTO.BranchDescription;
+            TempData["reference"] = overDeductionBatchDTO.Reference;
+            if (Session["totalValue"]!= null)
             {
-                int totalValue;
-                if (int.TryParse(Session["TotalValue"].ToString(), out totalValue))
-                {
-                    overDeductionBatchDTO.TotalValue = totalValue;
-                }
-                else
-                {
-                    
-                    overDeductionBatchDTO.TotalValue = 0;
-                }
+                overDeductionBatchDTO.TotalValue = (decimal)Session["totalValue"];
             }
-            else
+            if (Session["branchDescription"] != null)
             {
-               
-                overDeductionBatchDTO.TotalValue = 0; 
+                overDeductionBatchDTO.Reference = (string)Session["reference"];
             }
 
-            if (Session["Reference"] != null)
+            if (Session["reference"] != null)
             {
-                overDeductionBatchDTO.Reference = Session["Reference"] as string;
+                overDeductionBatchDTO.Reference = (string)Session["reference"];
             }
 
 
@@ -170,25 +167,32 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBattchDTO)
         {
 
             await ServeNavigationMenus();
 
+            var overDeductionBatchDTO = new OverDeductionBatchDTO();
+
             
 
-            return View();
+            return View(overDeductionBatchDTO);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
+        public async Task<ActionResult> Create(Guid id,OverDeductionBatchDTO overDeductionBatchDTO) 
         {
-            overDeductionBatchDTO = TempData["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
-            /*overDeductionBatchDTO.TotalValue = overDeductionBatchDTO.TotalValue;
-            overDeductionBatchDTO.Reference = overDeductionBatchDTO.Reference;
 
-            Session["TotalValue"] = overDeductionBatchDTO.TotalValue;
-            Session["Reference"] = overDeductionBatchDTO.Reference;*/
+            Session["totalValue"] = overDeductionBatchDTO.TotalValue;
+            Session["branchDescription"] = overDeductionBatchDTO.BranchDescription;
+            Session["reference"] = overDeductionBatchDTO.Reference;
+
+            TempData["totalValue"] = overDeductionBatchDTO.TotalValue;
+            TempData["branchDescription"] = overDeductionBatchDTO.BranchDescription;
+            TempData["reference"] = overDeductionBatchDTO.Reference;
+
+            overDeductionBatchDTO = TempData["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
+            
 
             Session["OverDeductionBatchDTO"] = overDeductionBatchDTO;
 
@@ -267,7 +271,36 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(k);
         }
 
+        public async Task<ActionResult> Add(Guid id, OverDeductionBatchDTO overDeductionBatchDTO)
+        {
+            await ServeNavigationMenus();
 
+            /*var totalValue = overDeductionBatchDTO.TotalValue;
+            var branchDescription = overDeductionBatchDTO.BranchDescription;
+            var reference = overDeductionBatchDTO.Reference;*/
+
+            Session["totalValue"] = overDeductionBatchDTO.TotalValue;
+            Session["branchDescription"] = overDeductionBatchDTO.BranchDescription;
+            Session["reference"] = overDeductionBatchDTO.Reference;
+
+            TempData["totalValue"] = overDeductionBatchDTO.TotalValue;
+            TempData["branchDescription"] = overDeductionBatchDTO.BranchDescription;
+            TempData["reference"] = overDeductionBatchDTO.Reference;
+
+            return View(overDeductionBatchDTO);
+        }
+
+        public async Task<ActionResult>AddBatch(OverDeductionBatchDTO overDeductionBatchDTO)
+        {
+            await ServeNavigationMenus();
+
+            
+
+            await _channelService.AddOverDeductionBatchAsync(overDeductionBatchDTO);
+
+            return View("Create");
+
+        }
 
         [HttpPost]
         public async Task<ActionResult> Add(OverDeductionBatchDTO overDeductionBatchDTO)
