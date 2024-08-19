@@ -450,6 +450,7 @@
     <Compile Include="Areas\Messaging\MessagingAreaRegistration.cs" />
     <Compile Include="Areas\Messaging\Models\RichTextEditorViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
+    <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
@@ -1084,7 +1085,6 @@
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\Register\Details.cshtml" />
-    <Content Include="Areas\Registry\Views\Customer\Directors.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\Delegates.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatechannelManagement\History.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Index.cshtml" />
@@ -1141,6 +1141,8 @@
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\StationLinkage.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
