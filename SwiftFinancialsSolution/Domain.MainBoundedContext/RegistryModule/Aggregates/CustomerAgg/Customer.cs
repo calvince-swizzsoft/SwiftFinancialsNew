@@ -101,5 +101,9 @@ namespace Domain.MainBoundedContext.RegistryModule.Aggregates.CustomerAgg
             if (InhibitGuaranteeing)
                 this.InhibitGuaranteeing = false;
         }
+
+
+
+        
     }
 }

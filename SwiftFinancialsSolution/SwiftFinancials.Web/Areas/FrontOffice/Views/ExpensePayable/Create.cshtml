@@ -1,11 +1,119 @@
 ﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
-@{ ViewBag.Title = "Create Expense Payable";
-    var journalVoucherTypes = ViewBag.JournalVoucherTypeSelectList as List<SelectListItem>; }
+@{
+    ViewBag.Title = "Create Expense Payable";
+
+    ViewBag.DebitCreditOptions = new List<SelectListItem>
+{
+        new SelectListItem { Value = "Debit", Text = "Debit" },
+        new SelectListItem { Value = "Credit", Text = "Credit" }
+    };
+}
+
+<style>
+    #tabs-container {
+        background-color: whitesmoke;
+        border-bottom: 1px solid #ddd;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Add a subtle box shadow */
+        margin-bottom: 20px;
+        overflow-x: auto; /* Allow horizontal scrolling if necessary */
+        width: 50%;
+    }
+
+    .nav-tabs {
+        padding: 10px 0; /* Adjusted padding */
+        list-style: none;
+        margin: 0;
+        white-space: nowrap; /* Prevent line breaks */
+    }
+
+        .nav-tabs li {
+            display: inline-block;
+            margin-right: 20px;
+        }
+
+        .nav-tabs a {
+            text-decoration: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: bold; /* Set font weight to bold */
+            padding: 10px 15px;
+            border-bottom: 2px solid transparent;
+            transition: border-bottom-color 0.3s ease-in-out;
+        }
+
+            .nav-tabs a:hover,
+            .nav-tabs a:active {
+                border-bottom-color: #007bff;
+                color: #007bff;
+            }
+</style>
+
+<style>
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        // Initially activate the first tab
+        $('.nav-tabs li:first-child a').addClass('active');
+        $('#tab1').addClass('active');
+
+        // Handle tab click event
+        $('.tab-link').on('click', function (e) {
+            e.preventDefault();
+
+            // Deactivate all tabs
+            $('.tab-link').removeClass('active');
+            $('.tab-content').removeClass('active');
+
+            // Activate the clicked tab
+            $(this).addClass('active');
+            $($(this).attr('href')).addClass('active');
+        });
+
+        // Datepicker Initialization
+        $('#ValueDate').datepicker({
+            format: 'mm/dd/yyyy',
+            todayHighlight: true,
+            autoclose: true
+        });
+    });
+</script>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Expense Payables</h2>
+        <h1>Expense Payable</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -20,21 +128,27 @@
     </div>
 </div>
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>}
-
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    <h2>Create Expense Payable</h2>
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                <div class="alert alert-danger">
+                    @TempData["ErrorMessage"]
+                </div>}
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -44,737 +158,662 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Add", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
-                        <h1>Expense Payable</h1>
 
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Type)
+                        <!-- Expense Payables -->
+                        <fieldset>
+                            <div class="ibox-content bg-white text-info">
+                                <h1>Expense Payable Details</h1>
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ExpensePayableAuthOption, new { @class = "control-label", @for = "ExpensePayableAuthOption_1" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon">
+                                                    <i class="fa fa-bars fa-fw"></i>
+                                                </span>
+                                                @Html.DropDownListFor(model => model.ExpensePayableAuthOption,
+                                                    new SelectList(ViewBag.DebitCreditOptions, "Value", "Text"),
+                                                    "Select",
+                                                    new { @class = "form-control", @id = "ExpensePayableAuthOption_1" })
+                                                @Html.ValidationMessageFor(model => model.ExpensePayableAuthOption)
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg text-center">
+                                            @Html.LabelFor(model => model.ChartOfAccounts, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ChartOfAccountId, new { id = "ChartOfAccountId" })
+                                            @Html.EditorFor(model => model.ChartOfAccounts, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Account Name", id = "ChartOfAccounts" } })
+                                            @Html.ValidationMessageFor(model => model.ChartOfAccounts, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period Name", id = "PostingPeriodDescription" } })
+                                            @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableBranchesLookup form-control required", placeholder = "Branch Name" } })
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.PostingPeriodId)
-                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
-                                </div>
 
-                            </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control", @placeholder = "Principal", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
 
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group" id="data_3">
-                                    @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                    <div class="input-group date">
-                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Value Date", @id = "ValueDate", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                            @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter remarks", @required = "" })
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
 
+                                <br />
+                                <hr />
 
-                        <h1>Expense Payable entries</h1>
+                                <h2 style="color: cadetblue;">Expense Payable Details</h2>
 
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg" style="text-align: center;">
-                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].Reference, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg" style="text-align: center;">
-                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary description", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg" style="text-align: center;">
-                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "primary description", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
-                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountName, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId, new { id = "ExpensePayableEntry_ChartOfAccountId" })
+                                            @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account...", id = "ExpensePayableEntry_ChartOfAccountAccountName" } })
+                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
 
-                                <div class="form-group form-group-lg" style="text-align: center;">
-                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].TotalValue, htmlAttributes: new { @class = "control-label" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].TotalValue, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg" style="text-align: center;">
-                                    @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId)
-                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
+                                    <div class="col-lg-4 text-center">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ExpensePayableEntry.Reference, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ExpensePayableEntry.Reference, new { htmlAttributes = new { @id = "mainReference", @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Reference, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 text-center">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ExpensePayableEntry.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ExpensePayableEntry.SecondaryDescription, new { htmlAttributes = new { @id = "mainSecondaryDescription", @class = "form-control", @placeholder = "Secondary description", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.SecondaryDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
                                 </div>
 
-                                <div class="form-group form-group-lg" style="text-align: center;">
-                                    @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.ExpensePayableEntry.BranchId)
-                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.BranchId, "", new { @class = "text-danger" })
-                                    @Html.EditorFor(model => model.ExpensePayableEntry.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "posting period Name" } })
+                                <div class="row">
+                                    <div class="col-lg-4 text-center">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ExpensePayableEntry.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ExpensePayableEntry.PrimaryDescription, new { htmlAttributes = new { @id = "mainPrimaryDescription", @class = "form-control", @placeholder = "Primary description", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.PrimaryDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 text-center">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.ExpensePayableEntry.Value, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.ExpensePayableEntry.Value, new { htmlAttributes = new { @id = "mainValue", @class = "form-control", @placeholder = "Value", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Value, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId, new { id = "BranchId" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Branch Name" } })
+                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
                                 </div>
 
-                            </div>
-                        </div>
+                                <br />
+                                <hr />
 
-                        <div class="form-group form-group-lg" style="text-align: left;">
-                            <label></label>
-                            <div class="input-group-btn">
-                                <button id="add_button" class="btn btn-success" type="submit" style="right: 25px;" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#expense-payable-entry">Add Entry</button>
-                            </div>
-                        </div>
+                                <div class="row d-flex justify-content-end">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-sm">
+                                            <input type="button" id="addEntryButton" value="Add" style="width: 100px;" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
 
-                        <div class="container mt-4">
-                            <!-- Nav tabs -->
-                            <ul class="nav nav-tabs" id="expenseTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <a class="nav-link active" id="entries-tab" data-toggle="tab" href="#entries" role="tab" aria-controls="entries" aria-selected="true">Expense Payable Entries</a>
-                                </li>
-                            </ul>
 
-                            <!-- Tab content -->
-                            <div class="tab-content" id="expenseTabsContent">
-                                <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
-                                    <!-- Expense Payable Entries Table -->
-                                    <table class="table table-striped table-hover table-bordered mt-3" id="entries-table">
-                                        <thead>
-                                            <tr>
-                                                <th data-hide="phone">Reference</th>
-                                                <th data-hide="phone">TotalValue</th>
-                                                <th data-hide="phone">Secondary Description</th>
-                                                <th data-hide="phone">Primary Description</th>
-                                                <th data-hide="phone">G/L Account</th>
-                                                <th data-hide="phone">Branch Id</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.ExpensePayableEntryDTOs != null)
-                                            {
-                                                foreach (var ExpensePayableEntries in ViewBag.ExpensePayableEntryDTOs)
-                                                {
-                                            <tr data-id="@ExpensePayableEntries.Id">
-                                                <td>@ExpensePayableEntries.Reference</td>
-                                                <td class="amount-cell">@ExpensePayableEntries.TotalValue</td>
-                                                <td>@ExpensePayableEntries.SecondaryDescription</td>
-                                                <td>@ExpensePayableEntries.PrimaryDescription</td>
-                                                <td>@ExpensePayableEntries.ChartOfAccountId</td>
-                                                <td>@ExpensePayableEntries.BranchId</td>
 
-                                                <td>
-                                                    <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
-                                                </td>
-                                            </tr>
-                                                }
-                                            }
-                                        </tbody>
+
+                                <!-- Table for Entries -->
+                                <table id="ExpensePayableEntries" class="footable table table-striped toggle-arrow-tiny grey-table" style="color: black; width: 100%;">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                        <tr>
+                                            <th style="width: 15%">Branch</th>
+                                            <th style="width: 15%;">G/L Account Name</th>
+                                            <th style="width: 10%;">Reference</th>
+                                            <th style="width: 20%;">Primary description</th>
+                                            <th style="width: 20%;">Secondary description</th>
+                                            <th style="width: 10%;">Value</th>
+                                            <th style="width: 5%;">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <!-- Entries will be added here dynamically -->
+                                    </tbody>
+                                </table>
+
+                                <br />
+                                <hr />
+
+                                <!-- Account Summary -->
+                                <div class="container1">
+                                    <h2>ACCOUNT SUMMARY</h2>
+                                    <table class="summary-table">
+                                        <tr>
+                                            <td>
+                                                <label for="Appropotioned">Appropotioned Amount:</label>
+                                                <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
+                                            </td>
+                                            <td>
+                                                <label for="Shortage">Shortage Amount:</label>
+                                                <input type="text" id="Shortage" placeholder="Shortage" readonly>
+                                            </td>
+                                        </tr>
                                     </table>
+                                    <h3>Appropotioned Amount should not exceed the total Amount</h3>
                                 </div>
+
+
+                            </div>
+                        </fieldset>
+
+                        <div class="ibox-content bg-white text-info">
+                            <div class="col-lg-3" style="float: right;">
+                                <input type="submit" style="width: 100px;" value="Create" class="btn btn-primary" />
                             </div>
                         </div>
 
-                        <div class="container1">
-                            <h2>ACCOUNT SUMMARY</h2>
-                            <table class="summary-table">
-                                <tr>
-                                    <td>
-                                        <label for="Appropotioned">Appropotioned Amount:</label>
-                                        <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
-                                    </td>
-                                    <td>
-                                        <label for="Shortage">Shortage Amount:</label>
-                                        <input type="text" id="Shortage" placeholder="Shortage" readonly>
-                                    </td>
-                                </tr>
-                            </table>
-                            <h3>Appropotioned Amount should not exceed the total Amount</h3>
-                        </div>
-
-                        <style>
-                            .container1 {
-                                padding: 20px;
-                                background-color: #f9f9f9;
-                                border-radius: 5px;
-                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                            }
-
-                            h2 {
-                                margin-bottom: 20px;
-                                font-size: 24px;
-                                color: #333;
-                            }
-
-                            .summary-table {
-                                width: 100%;
-                                border-collapse: collapse;
-                                margin-bottom: 20px;
-                            }
-
-                                .summary-table td {
-                                    padding: 10px;
-                                    vertical-align: top;
-                                }
-
-                                .summary-table label {
-                                    display: block;
-                                    font-weight: bold;
-                                    margin-bottom: 5px;
-                                }
-
-                                .summary-table input {
-                                    width: 100%;
-                                    padding: 8px;
-                                    border: 1px solid #ccc;
-                                    border-radius: 4px;
-                                    box-sizing: border-box;
-                                }
-
-                            h3 {
-                                font-size: 18px;
-                                color: #666;
-                            }
-                        </style>
                     }
                 </div>
 
-                <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="text-right">
-                                    <input type="submit" class="btn btn-primary" style="width:150px;" value="Create" />
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
+
             </div>
         </div>
     </div>
 </div>
 
 
-    @section Styles{
-        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-        @Styles.Render("~/plugins/wizardStepsStyles")
-        @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-        @Styles.Render("~/plugins/awesomeCheckboxStyles")
-        @Styles.Render("~/plugins/clockpickerStyles")
-        @Styles.Render("~/plugins/dateRangeStyles")
-        @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-        @Styles.Render("~/plugins/switcheryStyles")
-        @Styles.Render("~/plugins/jasnyBootstrapStyles")
-        @Styles.Render("~/plugins/nouiSliderStyles")
-        @Styles.Render("~/plugins/dataPickerStyles")
-        @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-        @Styles.Render("~/plugins/imagecropperStyles")
-        @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-        @Styles.Render("~/plugins/select2Styles")
-        @Styles.Render("~/plugins/touchSpinStyles")
-        @Styles.Render("~/plugins/tagInputsStyles")
-        @Styles.Render("~/plugins/duallistStyles")
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    //typehead initialization
+
+< <script>
+$(document).ready(function () {
+    // Initialize typeahead for Chart of Accounts
+    function initChartOfAccountTypeahead(selector, hiddenFieldId) {
+        var ChartOfAccountsMap = {};  // Define the map outside the scope of the typeahead
+        $(selector).typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData);
+                    }
+                );
+            },
+            matcher: function (item) {
+                return item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1;
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccount = ChartOfAccountsMap[item];
+                if (chartOfAccount) {
+                    $('#' + hiddenFieldId).val(chartOfAccount.Id);
+
+                }
+                return item;
+            }
+        });
     }
 
-    @section Scripts{
-        @Scripts.Render("~/plugins/wizardSteps")
-        @Scripts.Render("~/plugins/validate")
-        @Scripts.Render("~/plugins/typehead")
-        @Scripts.Render("~/plugins/dataTables")
-        @Scripts.Render("~/plugins/iCheck")
-        @Scripts.Render("~/plugins/dataPicker")
-        @Scripts.Render("~/plugins/ionRange")
-        @Scripts.Render("~/plugins/nouiSlider")
-        @Scripts.Render("~/plugins/jasnyBootstrap")
-        @Scripts.Render("~/plugins/switchery")
-        @Scripts.Render("~/plugins/chosen")
-        @Scripts.Render("~/plugins/knob")
-        @Scripts.Render("~/plugins/imagecropper")
-        @Scripts.Render("~/plugins/colorpicker")
-        @Scripts.Render("~/plugins/clockpicker")
-        @Scripts.Render("~/plugins/dateRange")
-        @Scripts.Render("~/plugins/select2")
-        @Scripts.Render("~/plugins/touchSpin")
-        @Scripts.Render("~/plugins/tagInputs")
-        @Scripts.Render("~/plugins/duallist")
+    // Initialize typeahead for both fields
+    initChartOfAccountTypeahead('#ChartOfAccounts', 'ChartOfAccountId');
+    initChartOfAccountTypeahead('#ExpensePayableEntry_ChartOfAccountAccountName', 'ExpensePayableEntry_ChartOfAccountAccountName');
+});
+    </script>
 
 
 
-
-
-        <script>
-
-
-
-
-
-        // Open the modal
-        $("#openModalButton").click(function () {
-            $("#expenseModal").css("display", "block");
-        });
-
-        // Close the modal
-        $(".close").click(function () {
-            $("#expenseModal").css("display", "none");
-        });
-
-        $("#submitEntry").click(function () {
-            const type = $("#type").val();
-            const chartOfAccountId = $("#chartOfAccountId").val();
-            const branchId = $("#branchId").val();
-            const postingPeriodId = $("#postingPeriodId").val();
-            const totalValue = $("#totalValue").val();
-            const primaryDescription = $("#primaryDescription").val();
-            const secondaryDescription = $("#secondaryDescription").val();
-            const reference = $("#reference").val();
-            const remarks = $("#remarks").val();
-
-            // Perform AJAX request to send the data to your server
-            $.post("/addExpensePayableEntry", { type, chartOfAccountId, branchId, postingPeriodId, totalValue, primaryDescription, secondaryDescription, reference, remarks }, function (response) {
-                // Handle the response from the server
-            });
-        });
-
-
-
-     //ChartOfAccount typehead starts here
-    $('.ExpensePayableEntryChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-
-                    $('#Id').val(ChartOfAccountId);
-
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-    });
-
+    <script>
 
         $(document).ready(function () {
-            // Click event handler for the remove button
-            $('.remove-btn').on('click', function () {
-                // Remove the parent row of the clicked button
-                $(this).closest('tr').remove();
-            });
-        });
-
-
-
-
-    //ChartOfAccount typehead starts here
-    $('.ChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
-
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-    //ChartOfAccount typehead starts here
-    $('.EntriesChartOfAccountsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
-                        { query: query },
-                        function (ChartOfAccounts) {
-                            var newChartOfAccountsData = [];
-                            ChartOfAccountsMap = {};
-                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
-                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
-                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
-                            });
-                            process(newChartOfAccountsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-
-                    $('#ExpensePayableEntry.ChartOfAccountId').val(ChartOfAccountId);
-
-                    //console.log(ChartOfAccountId)
-                    return item;
-                }
-            });
-
-                //PostingPeriod typehead starts here
-            $('.PostingPeriodsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
-                        { query: query },
-                        function (PostingPeriods) {
-                            var newPostingPeriodsData = [];
-                            PostingPeriodsMap = {};
-                            $.each(PostingPeriods, function (i, PostingPeriod) {
-                                newPostingPeriodsData.push(PostingPeriod.Description);
-                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
-                            });
-                            process(newPostingPeriodsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var postingPeriodId = "";
-                    PostingPeriodId = PostingPeriodsMap[item].Id;
-                    $('#PostingPeriodId').val(PostingPeriodId);
-                    //console.log(PostingPeriodId)
-                    return item;
-                }
-            });
-
-            $(document).ready(function () {
-                $('#data_3 .input-group.date').datepicker({
-                    startView: 2,
-                    todayBtn: "linked",
-                    keyboardNavigation: false,
-                    forceParse: false,
-                    autoclose: true,
-                });
-            });
-
-
-
-         //Branch typehead starts here
-    $('.ExpensePayableBranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId  = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-         //Branch typehead starts here
-    $('.ExpensePayableEntryBranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId  = BranchesMap[item].Id;
-                    $('#ExpensePayableEntry.BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-
-    $(document).ready(function () {
-        $("#wizard").steps();
-        $("#form").steps({
-            bodyTag: "fieldset",
-            onStepChanging: function (event, currentIndex, newIndex) {
-                // Always allow going backward even if the current step contains invalid fields!
-                if (currentIndex > newIndex) {
-                    return true;
-                }
-
-                // Forbid suppressing "Warning" step if the user is to young
-                if (newIndex === 3 && Number($("#age").val()) < 18) {
-                    return false;
-                }
-
-                var form = $(this);
-
-                // Clean up if user went backward before
-                if (currentIndex < newIndex) {
-                    // To remove error styles
-                    $(".body:eq(" + newIndex + ") label.error", form).remove();
-                    $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                }
-
-                // Disable validation on fields that are disabled or hidden.
-                form.validate().settings.ignore = ":disabled,:hidden";
-
-                // Start validation; Prevent going forward if false
-                return form.valid();
-            },
-            onStepChanged: function (event, currentIndex, priorIndex) {
-                // Suppress (skip) "Warning" step if the user is old enough.
-                if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                    $(this).steps("next");
-                }
-
-                // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                if (currentIndex === 2 && priorIndex === 3) {
-                    $(this).steps("previous");
-                }
-            },
-            onFinishing: function (event, currentIndex) {
-                var form = $(this);
-
-                // Disable validation on fields that are disabled.
-                // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                form.validate().settings.ignore = ":disabled";
-
-                // Start validation; Prevent form submission if false
-                return form.valid();
-            },
-            onFinished: function (event, currentIndex) {
-                event.preventDefault(); 
-
-                var form = $(this);
-
-                // Perform an AJAX submission
-                $.ajax({
-                    type: form.attr('method'),   // Get the form method (POST/GET)
-                    url: form.attr('action'),    // Get the form action URL
-                    data: form.serialize(),      // Serialize the form data
-                    success: function (response) {
-                        // If submission is successful, show the success modal
-                        alert("Operation successful!"); // Display the success message
-
-                        // Optionally, you can close the form or redirect the user
-                    window.location.href = "@Url.Action("Index", "ExpensePayable", new { Area = "FrontOffice" })";
-
-                        // OR reset the form fields if you want to stay on the same page
-                        form[0].reset();
-                    },
-                    error: function (xhr, status, error) {
-                        // Handle errors if any
-                        alert("There was an error submitting the form: " + error);
-                    }
-                });
+    // Initialize the steps wizard
+    $("#wizard").steps();
+    $("#form").steps({
+        bodyTag: "fieldset",
+        onStepChanging: function (event, currentIndex, newIndex) {
+            if (currentIndex > newIndex) {
+                return true;
             }
 
-
-
-
-        }).validate({
-            errorPlacement: function (error, element) {
-                element.before(error);
-            },
-            rules: {
-                confirm: {
-                    equalTo: "#password"
-                }
+            if (newIndex === 3 && Number($("#age").val()) < 18) {
+                return false;
             }
-        });
 
+            var form = $(this);
 
+            if (currentIndex < newIndex) {
+                $(".body:eq(" + newIndex + ") label.error", form).remove();
+                $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+            }
 
+            form.validate().settings.ignore = ":disabled,:hidden";
 
+            return form.valid();
+        },
+        onStepChanged: function (event, currentIndex, priorIndex) {
+            if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                $(this).steps("next");
+            }
 
+            if (currentIndex === 2 && priorIndex === 3) {
+                $(this).steps("previous");
+            }
+        },
+        onFinishing: function (event, currentIndex) {
+            var form = $(this);
+
+            form.validate().settings.ignore = ":disabled";
+
+            return form.valid();
+        },
+        onFinished: function (event, currentIndex) {
+            var form = $(this);
+
+            form.submit();
+        }
+    }).validate({
+        errorPlacement: function (error, element) {
+            element.before(error);
+        },
+        rules: {
+            confirm: {
+                equalTo: "#password"
+            }
+        }
     });
-        </script>
 
-        <script>
-            function updateAmounts() {
-                var totalAmount = 0;
-                var amountCells = document.getElementsByClassName('amount-cell');
+    // Function to update amounts
+    function updateAmounts() {
+        var totalAmount = 0;
+        var amountCells = $('#ExpensePayableEntries tbody tr td:nth-child(6)'); // Get all value cells
 
-                console.log('Amount Cells Count:', amountCells.length);
+        amountCells.each(function () {
+            var text = $(this).text();
+            var amount = parseFloat(text.replace(/[^0-9.-]/g, '')); // Clean the text
+            if (!isNaN(amount)) {
+                totalAmount += amount;
+            }
+        });
 
-                for (var i = 0; i < amountCells.length; i++) {
-                    var text = amountCells[i].innerText;
-                    console.log('Amount Cell Text:', text);
-                    var amount = parseFloat(text.replace(/[^0-9.-]/g, '')); // Clean the text
-                    console.log('Parsed Amount:', amount);
-                    if (!isNaN(amount)) {
-                        totalAmount += amount;
-                    }
+        var totalValueElement = $('[name="TotalValue"]');
+        var appropotionedElement = $('#Appropotioned');
+        var shortageElement = $('#Shortage');
+
+        var totalValue = parseFloat(totalValueElement.val()) || 0;
+
+        if (totalAmount > totalValue) {
+            alert('Appropotioned amount exceeds the total value!');
+            return;
+        }
+
+        appropotionedElement.val(totalAmount.toFixed(2));
+
+        var shortage = totalValue > totalAmount ? totalValue - totalAmount : 0;
+        shortageElement.val(shortage.toFixed(2));
+    }
+
+    // Function to check for duplicate entries
+    function isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue) {
+        var isDuplicate = false;
+        $('#ExpensePayableEntries tbody tr').each(function () {
+            var existingBranchDescription = $(this).find('td').eq(0).text().trim();
+            var existingChartOfAccount = $(this).find('td').eq(1).text().trim();
+            var existingReference = $(this).find('td').eq(2).text().trim();
+            var existingPrimaryDescription = $(this).find('td').eq(3).text().trim();
+            var existingSecondaryDescription = $(this).find('td').eq(4).text().trim();
+            var existingValue = $(this).find('td').eq(5).text().trim();
+
+            if (branchDescription === existingBranchDescription &&
+                chartOfAccount === existingChartOfAccount &&
+                reference === existingReference &&
+                primaryDescription === existingPrimaryDescription &&
+                secondaryDescription === existingSecondaryDescription &&
+                formattedValue === existingValue) {
+                isDuplicate = true;
+                return false; // Exit loop early
+            }
+        });
+        return isDuplicate;
+    }
+
+    // Add Entry
+    $('#addEntryButton').click(function (e) {
+        e.preventDefault();
+
+        // Capture data from form fields
+        var branchDescription = $('#BranchDescription').val();
+        var chartOfAccount = $('#ExpensePayableEntry_ChartOfAccountAccountName').val();
+        var reference = $('#mainReference').val();
+        var primaryDescription = $('#mainPrimaryDescription').val();
+        var secondaryDescription = $('#mainSecondaryDescription').val();
+        var value = $('#mainValue').val();
+
+        // Ensure all required fields have values
+        if (!branchDescription || !chartOfAccount || !reference || !primaryDescription || !value) {
+            alert("Please fill in all required fields.");
+            return;
+        }
+
+        // Format value as currency (optional)
+        var formattedValue = parseFloat(value).toLocaleString('en-US', { style: 'currency', currency: 'Ksh' });
+
+        // Check for duplicate entries
+        if (isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue)) {
+            alert("This entry already exists in the table.");
+            return;
+        }
+
+        // Create new row
+        var newRow = '<tr>' +
+            '<td>' + branchDescription + '</td>' +
+            '<td>' + chartOfAccount + '</td>' +
+            '<td>' + reference + '</td>' +
+            '<td>' + primaryDescription + '</td>' +
+            '<td>' + secondaryDescription + '</td>' +
+            '<td>' + formattedValue + '</td>' +
+            '<td class="text-center">' +
+            '<button type="button" class="btn btn-danger remove-entry">' +
+            '<i class="fa fa-times"></i>' +
+            '</button>' +
+            '</td>' +
+            '</tr>';
+
+        // Append the new row to the table
+        $('#ExpensePayableEntries tbody').append(newRow);
+
+        // Clear form fields after adding the entry
+        $('#BranchDescription').val('');
+        $('#ExpensePayableEntry_ChartOfAccountAccountName').val('');
+        $('#mainReference').val('');
+        $('#mainPrimaryDescription').val('');
+        $('#mainSecondaryDescription').val('');
+        $('#mainValue').val('');
+
+        // Update amounts after adding the entry
+        updateAmounts();
+    });
+
+    // Remove Entry
+    $(document).on('click', '.remove-entry', function () {
+        $(this).closest('tr').remove();
+        updateAmounts(); // Update amounts after removing an entry
+    });
+
+    // Initialize typeahead for various fields
+    function initTypeahead(selector, url, hiddenFieldId) {
+        var dataMap = {};
+        $(selector).typeahead({
+            source: function (query, process) {
+                return $.getJSON(url, { query: query }, function (data) {
+                    var newData = [];
+                    dataMap = {};
+                    $.each(data, function (i, item) {
+                        newData.push(item.Description);
+                        dataMap[item.Description] = item;
+                    });
+                    process(newData);
+                });
+            },
+            matcher: function (item) {
+                return item.toLowerCase().indexOf(this.query.trim().toLowerCase()) !== -1;
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var data = dataMap[item];
+                if (data) {
+                    $('#' + hiddenFieldId).val(data.Id); // Update the hidden input with the selected ID
                 }
+                return item;
+            }
+        });
+    }
 
-                var totalValueElement = document.querySelector('[name="TotalValue"]');
-                var appropotionedElement = document.getElementById('Appropotioned');
-                var shortageElement = document.getElementById('Shortage');
+    initTypeahead('.PostingPeriodsLookup', '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })', 'PostingPeriodId');
+    initTypeahead('.ChartOfAccountsLookup', '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })', 'ExpensePayableEntry_ChartOfAccountId');
+    initTypeahead('.ExpensePayableEntryBranchesLookup', '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })', 'BranchId');
+});
+    </script>
 
-                var totalValue = parseFloat(totalValueElement.value);
-                console.log('Total Value:', totalValue);
+    <script>
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "ExpensePayable")',
+            data: { id: id },
+            success: function (response) {
+        if (response.success) {
+            // Redirect to the index page
+            window.location.href = response.redirectUrl;
+        } else {
+            // Display the error message
+            alert(response.message);
+        }
+    },
+    error: function () {
+        alert("An error occurred while processing your request.");
+    }
+});
 
-                if (isNaN(totalValue)) {
-                    totalValue = 0;
-                }
+    </script>
 
-                if (totalAmount > totalValue) {
-                    alert('Appropotioned amount exceeds the total value!');
-                    return;
-                }
+    //ajax form submisstion
+    <script>
+       $(document).ready(function () {
+    $('#form').submit(function (e) {
+        e.preventDefault();
 
-                console.log('Total Amount:', totalAmount);
-                appropotionedElement.value = totalAmount.toFixed(2);
-
-                if (totalValue > totalAmount) {
-                    var shortage = totalValue - totalAmount;
-                    shortageElement.value = shortage.toFixed(2);
+        $.ajax({
+            type: "POST",
+            url: '@Url.Action("Create", "ExpensePayable")',
+            data: $(this).serialize(),
+            success: function (response) {
+                if (response.success) {
+                    // Redirect to the Index page of the ExpensePayable controller
+                    window.location.href = '@Url.Action("Index", "ExpensePayable")';
                 } else {
-                    shortageElement.value = '0.00';
+                    alert(response.message);
                 }
+            },
+            error: function () {
+                alert("An error occurred while processing your request.");
+            }
+        });
+    });
+});
+
+
+    </script>
+
+
+
+
+
+
+    <style>
+        .table-container {
+            display: none;
+            overflow-x: auto; /* Enable horizontal scrolling */
+        }
+
+        table {
+            border-collapse: collapse;
+            white-space: nowrap; /* Prevent line breaks in table cells */
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        #Guarantors {
+            table-layout: fixed; /* Forces the table to use the fixed layout algorithm */
+        }
+
+            #Guarantors th, #Guarantors td {
+                white-space: nowrap; /* Prevents wrapping of text within cells */
+                overflow: hidden; /* Hides any content that exceeds the cell dimensions */
+                text-overflow: ellipsis; /* Displays an ellipsis (...) when content overflows */
+                padding: 8px; /* Adjust padding as needed */
             }
 
-            // Call the function on page load and when the Total Value changes
-            document.addEventListener('DOMContentLoaded', function () {
-                updateAmounts();
 
-                // Add event listener to Total Value input to update on change
-                var totalValueElement = document.querySelector('[name="TotalValue"]');
-                totalValueElement.addEventListener('input', updateAmounts);
-            });</script>
+        /* Styling for the button */
+        .toggle-button {
+            cursor: pointer;
+            padding: 10px 20px;
+            background-color: darkgreen;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            outline: none;
+        }
+        /* Styling for the section */
+        .section {
+            display: none;
+            margin-top: 20px;
+        }
+
+            .section.open {
+                display: block;
+            }
 
 
-       
-    }
+
+
+
+        .custom-button {
+            display: flex;
+            align-items: center;
+            background: linear-gradient(45deg, #4CAF50, #2E7D32);
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-family: 'Arial', sans-serif;
+            color: white;
+            cursor: not-allowed;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background 0.3s ease, transform 0.3s ease;
+        }
+
+            .custom-button:disabled {
+                background: linear-gradient(45deg, #9E9E9E, #616161);
+            }
+
+            .custom-button .button-icon {
+                width: 24px;
+                height: 24px;
+                margin-right: 10px;
+            }
+
+            .custom-button:hover:enabled {
+                background: linear-gradient(45deg, #66BB6A, #388E3C);
+                transform: translateY(-2px);
+            }
+    </style>
+
+}

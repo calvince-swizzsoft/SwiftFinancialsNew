@@ -1139,6 +1139,8 @@
     <Content Include="Areas\FrontOffice\Views\EndOfDay\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\SundryPayments\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\StationLinkage.cshtml" />
+    <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
