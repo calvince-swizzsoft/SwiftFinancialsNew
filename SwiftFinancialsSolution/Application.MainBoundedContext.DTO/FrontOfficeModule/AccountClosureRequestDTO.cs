@@ -1,4 +1,5 @@
-﻿using Application.Seedwork;
+﻿using Application.MainBoundedContext.DTO.BackOfficeModule;
+using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
@@ -305,6 +306,11 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [CustomValidation(typeof(AccountClosureRequestDTO), "ValidateLoansGuaranteed", ErrorMessage = "The number of loans guaranteed must be zero!")]
         public int TotalLoansGuaranteed { get; set; }
 
+
+        //Added properties
+
+
+
         public static ValidationResult ValidateNetRefundable(object value, ValidationContext context)
         {
             var bindingModel = context.ObjectInstance as AccountClosureRequestDTO;
@@ -342,5 +348,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
             return ValidationResult.Success;
         }
+
+        public LoanCaseDTO loanCaseDTO { get; set; }
+       
     }
 }

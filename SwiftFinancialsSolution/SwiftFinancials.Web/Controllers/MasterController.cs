@@ -39,8 +39,11 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
-        // Maxon Included this
+        
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
+
+        public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
+        public ObservableCollection<CreditBatchEntryDTO> DebitBatchEntryDTOs;
 
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
@@ -289,7 +292,22 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
+        [NonAction]
+        protected List<SelectListItem> GetsystemPermissionTypeList(string selectedValue)
+        {
+            List<SelectListItem> systemPermissionType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemPermissionType)).Cast<SystemPermissionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemPermissionType.AddRange(items);
+
+            return systemPermissionType;
+        }
 
 
 

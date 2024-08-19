@@ -49,8 +49,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
             var creditBatchDTO = await _channelService.FindCreditBatchAsync(id, GetServiceHeader());
+
+            var creditBatches = await _channelService.FindCreditBatchEntriesByCreditBatchIdAsync(id,true, GetServiceHeader());
+
+            ViewBag.CrdeitBatchEntryDTOs = creditBatches;
 
             return View(creditBatchDTO);
         }
@@ -121,6 +129,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
@@ -133,6 +143,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
+
+            var creditBatches = await _channelService.FindCreditBatchEntriesByCreditBatchIdAsync(id,true, GetServiceHeader());
+
+            ViewBag.CrdeitBatchEntryDTOs = creditBatches;
+
 
             return View(creditBatchDTO);
         }
@@ -178,6 +194,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
+            var creditBatches = await _channelService.FindCreditBatchEntriesByCreditBatchIdAsync(id, true, GetServiceHeader());
+
+            ViewBag.CrdeitBatchEntryDTOs = creditBatches;
+
             return View(creditBatchDTO);
         }
 
@@ -185,7 +205,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Authorize(Guid id, CreditBatchDTO creditBatchDTO)
         {
-            var batchAuthOption = creditBatchDTO.Month;
+            var batchAuthOption = creditBatchDTO.Status;
 
             creditBatchDTO.ValidateAll();
 
@@ -204,7 +224,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = creditBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(creditBatchDTO.TypeDescription.ToString());
+                await _channelService.AuthorizeCreditBatchAsync(creditBatchDTO, 1, batchAuthOption, GetServiceHeader());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(creditBatchDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
                 return View(creditBatchDTO);
             }
         }
