@@ -367,6 +367,7 @@
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
+    <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashManagementController.cs" />
@@ -1141,6 +1142,13 @@
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\StationLinkage.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
+    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemTransactiontypes\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
