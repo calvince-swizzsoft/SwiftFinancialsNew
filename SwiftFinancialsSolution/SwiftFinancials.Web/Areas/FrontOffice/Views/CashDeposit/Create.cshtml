@@ -555,7 +555,43 @@
 
                                 <!-- Teller G/L Account Statement Tab -->
                                 <div id="tellerGlAccountStatement" class="tab-pane">
-                                    <!-- Add content here for the 'Teller G/L Account Statement' tab -->
+                                 
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Branch</th>
+                                                    <th>Txn Date</th>
+                                                    <th>Primary Description</th>
+                                                    <th>Debit</th>
+                                                    <th>Credit</th>
+                                                    <th>Running Balance</th>
+                                                    <th>Contra G/L Account</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (Model.TellerStatements != null && Model.TellerStatements.PageCollection.Any())
+                                                {
+                                                    foreach (var transaction in Model.TellerStatements.PageCollection)
+                                                    {
+                                <tr>
+                                    <td>@transaction.BranchDescription</td>
+                                    <td>@transaction.JournalCreatedDate</td>
+                                    <td>@transaction.JournalPrimaryDescription</td>
+                                    <td>@transaction.Debit</td>
+                                    <td>@transaction.Credit</td>
+                                    <td>@transaction.RunningBalance</td>
+                                    <td>@transaction.ContraGLAccountName</td>
+                                </tr> }
+                                                }
+                                                else
+                                                {
+                                <tr>
+                                    <td colspan="6">No transactions available.</td>
+                                </tr>                }
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
 
                                 <!-- Customer Account Preview Tab -->
