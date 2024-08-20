@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
@@ -274,6 +275,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         public ExternalChequeDTO ChequeDeposit { get; set; }
 
         public PageCollectionInfo<GeneralLedgerTransaction> TellerStatements { get; set; }
+
+        public CustomerDTO CustomerDTO { get; set; }
 
 
     }

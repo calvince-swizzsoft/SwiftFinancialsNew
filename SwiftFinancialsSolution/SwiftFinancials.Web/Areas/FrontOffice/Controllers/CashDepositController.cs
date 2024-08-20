@@ -201,6 +201,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
 
+
+
             if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out Guid parseId))
             {
                 _selectedTeller = await GetCurrentTeller();
@@ -221,7 +223,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             bool considerMaturityPeriodForInvestmentAccounts = false;
 
             // Fetch customer details
-            var customer = await _channelService.FindCustomerAccountAsync(
+            var customerAccount = await _channelService.FindCustomerAccountAsync(
                 parseId,
                 includeBalances,
                 includeProductDescription,
@@ -235,38 +237,40 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
        
 
-            if (customer != null)
+            if (customerAccount != null)
             {
                 transactionModel.CustomerAccount = new CustomerAccountDTO
                 {
-                    Id = customer.Id,
-                    CustomerId = customer.CustomerId,
-                    CustomerIndividualFirstName = customer.CustomerFullName,
-                    CustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers,
-                    CustomerSerialNumber = customer.CustomerSerialNumber,
-                    CustomerReference1 = customer.CustomerReference1,
-                    CustomerReference2 = customer.CustomerReference2,
-                    CustomerReference3 = customer.CustomerReference3,
-                    CustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber,
-                    Remarks = customer.Remarks,
-                    CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription,
-                    BranchId = customer.BranchId,
-                    BranchDescription = customer.BranchDescription,
-                    CustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductId,
-                    CustomerAccountTypeTargetProductCode = customer.CustomerAccountTypeTargetProductCode,
-                    CustomerAccountTypeTargetProductParentId = customer.CustomerAccountTypeTargetProductParentId,
-                    CustomerAccountTypeProductCode = customer.CustomerAccountTypeProductCode,
-                    AvailableBalance = customer.AvailableBalance,
-                    NewAvailableBalance = customer.NewAvailableBalance,
-                    BookBalance = customer.BookBalance,
-                    CustomerAccountTypeTargetProductMaximumAllowedDeposit = customer.CustomerAccountTypeTargetProductMaximumAllowedDeposit
+                    Id = customerAccount.Id,
+                    CustomerId = customerAccount.CustomerId,
+                    CustomerIndividualFirstName = customerAccount.CustomerFullName,
+                    CustomerIndividualPayrollNumbers = customerAccount.CustomerIndividualPayrollNumbers,
+                    CustomerSerialNumber = customerAccount.CustomerSerialNumber,
+                    CustomerReference1 = customerAccount.CustomerReference1,
+                    CustomerReference2 = customerAccount.CustomerReference2,
+                    CustomerReference3 = customerAccount.CustomerReference3,
+                    CustomerIndividualIdentityCardNumber = customerAccount.CustomerIndividualIdentityCardNumber,
+                    Remarks = customerAccount.Remarks,
+                    CustomerAccountTypeTargetProductDescription = customerAccount.CustomerAccountTypeTargetProductDescription,
+                    BranchId = customerAccount.BranchId,
+                    BranchDescription = customerAccount.BranchDescription,
+                    CustomerAccountTypeTargetProductId = customerAccount.CustomerAccountTypeTargetProductId,
+                    CustomerAccountTypeTargetProductCode = customerAccount.CustomerAccountTypeTargetProductCode,
+                    CustomerAccountTypeTargetProductParentId = customerAccount.CustomerAccountTypeTargetProductParentId,
+                    CustomerAccountTypeProductCode = customerAccount.CustomerAccountTypeProductCode,
+                    AvailableBalance = customerAccount.AvailableBalance,
+                    NewAvailableBalance = customerAccount.NewAvailableBalance,
+                    BookBalance = customerAccount.BookBalance,
+                    CustomerAccountTypeTargetProductMaximumAllowedDeposit = customerAccount.CustomerAccountTypeTargetProductMaximumAllowedDeposit
                     
                 };
 
+                var customerDTO = await _channelService.FindCustomerAsync(customerAccount.CustomerId, GetServiceHeader());
 
-              
 
-                transactionModel.BranchId = customer.BranchId;
+                transactionModel.BranchId = customerAccount.BranchId;
+
+                transactionModel.CustomerDTO = customerDTO;
 
                  _selectedTeller = await GetCurrentTeller();
 
@@ -288,6 +292,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                    
 
                     transactionModel.TellerStatements = TellerStatements;
+
+                    transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
+
+    
 
                     //var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
                     //var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
