@@ -212,6 +212,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 CustomerTransactionModel model = new CustomerTransactionModel();
 
+                
                 model.TellerStatements = TellerStatements;
 
                 return View(model);
@@ -265,11 +266,22 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     
                 };
 
+                var uncleatedChequescollection = await _channelService.FindUnClearedExternalChequesByCustomerAccountIdAsync(customerAccount.Id, GetServiceHeader());
+                var _unclearedCheques = uncleatedChequescollection.ToList();
+                transactionModel.CustomerAccountUnclearedCheques = _unclearedCheques;
+
+                var signatoriesCollection = await _channelService.FindCustomerAccountSignatoriesByCustomerAccountIdAsync(customerAccount.Id, GetServiceHeader());
+                var _signatories = signatoriesCollection.ToList();
+                transactionModel.CustomerAccountSignatories = _signatories;
+
+
+
+                var miniStatementOrdersCollection = await _channelService.FindElectronicStatementOrdersByCustomerAccountIdAsync(customerAccount.Id, true, GetServiceHeader());
+                var _miniStatement = miniStatementOrdersCollection.ToList();
+                transactionModel.CustomerAccountMiniStatement = _miniStatement;
+
                 var customerDTO = await _channelService.FindCustomerAsync(customerAccount.CustomerId, GetServiceHeader());
-
-
                 transactionModel.BranchId = customerAccount.BranchId;
-
                 transactionModel.CustomerDTO = customerDTO;
 
                  _selectedTeller = await GetCurrentTeller();
