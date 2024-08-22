@@ -66,6 +66,8 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<SavingsProductDTO> savingsProductDTOs;
         public ObservableCollection<LoanProductDTO> loanProductDTOs;
 
+        public ObservableCollection<StandingOrderDTO> standingOrdersDTOs;
+
 
         public ObservableCollection<Guid> customerAccountsIds;
 

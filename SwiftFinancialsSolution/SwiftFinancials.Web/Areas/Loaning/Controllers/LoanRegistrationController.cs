@@ -240,50 +240,52 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
                 //// Standing Orders
-                //var customerAccountId = Guid.Empty;
-                //var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, false, GetServiceHeader());
-                //customerAccountId = customerAccounts.Select(account => account.Id).FirstOrDefault();
-                //var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(customerAccountId, true, GetServiceHeader());
-                //if (standingOrders != null)
-                //{
-                //    ViewBag.StandingOrders = standingOrders;
-                //}
-                //else
-                //{
-                //    TempData["StandingOrders"] = "The selected customer does not have any standing orders.";
-                //}
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>(); 
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true,true, GetServiceHeader());
 
+                foreach (var accounts in customerAccounts)
+                {
+                    customerAccountId.Add(accounts.Id);
+                }
 
-                //// Loan Applications
-                //var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
-                //if (loanApplications != null)
-                //{
-                //    ViewBag.LoanApplications = loanApplications;
-                //}
-                //else
-                //{
-                //    TempData["LoanApplication"] = "The selected customer does not have any loan application history";
-                //}
+                List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
 
-
-                //// Collaterals...
-
+                // Iterate through each account ID and collect standing orders
+                foreach (var Ids in customerAccountId)
+                {
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                    if (standingOrders != null && standingOrders.Any())
+                    {
+                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                    }
+                }
+                ViewBag.StandingOrders = allStandingOrders;
 
 
                 //// Income History
                 //// Payouts
-                //var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchAuthOption.Post, parseId, GetServiceHeader());                
-                //if (payouts != null)
-                //{
-                //    ViewBag.Payouts = payouts;
-                //}
-                //else
-                //{
-                //    TempData["Payouts"] = "The selected customer does not have any payouts history.";
-                //}
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchAuthOption.Post, parseId, GetServiceHeader());
+                if (payouts != null)
+                {
+                    ViewBag.Payouts = payouts;
+                }
+               
 
                 ////Salary
-                //TempData["Salary"] = "The selected customer has no salary history.";
+                // No method fetching by customerId
+
+
+
+                //// Loan Applications
+                var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
+                if (loanApplications != null)
+                {
+                    ViewBag.LoanApplications = loanApplications;
+                }
+
+                //// Collaterals...
+                // No method fetching by customerId
+
             }
 
 

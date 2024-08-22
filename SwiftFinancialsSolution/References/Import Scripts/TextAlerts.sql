@@ -1,5 +1,5 @@
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_TextAlerts] ([Id]
-  ,[CompanyId]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_TextAlerts] ([Id]
+  ,[BranchId]
   ,[TextMessage_Recipient]
   ,[TextMessage_Body]
   ,[TextMessage_DLRStatus]
@@ -12,7 +12,7 @@ INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_TextAlerts] ([Id]
   ,[CreatedBy]
   ,[CreatedDate])
 SELECT [Id]
-  ,(SELECT TOP 1 [Id] FROM [swiftfin_Companies]) AS [CompanyId] -- Replace [Company] with the actual table name containing company identifiers
+  ,(SELECT TOP 1 [Id] FROM [swiftFin_Branches]) AS [BranchId] -- Replace [Company] with the actual table name containing company identifiers
   ,[TextMessage_Recipient]
   ,[TextMessage_Body]
   ,[TextMessage_DLRStatus]
