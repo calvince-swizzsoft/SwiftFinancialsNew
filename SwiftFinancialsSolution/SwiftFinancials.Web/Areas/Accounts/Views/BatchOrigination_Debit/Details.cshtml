@@ -2,9 +2,23 @@
 
 @{
     ViewBag.Title = "Debit Batch Details";
+    var queuePriorities = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
 }
 
 <style>
+    .main1 {
+        border: 1px solid black;
+        padding: 10px;
+        margin-top: 20px;
+    }
+    .control-label {
+        color: #333; /* Replace with your desired color */
+        font-weight:bold;
+    }
+
+    .input-md{
+        color: #007bff; /* Replace with your desired color */
+    }
     .custom-container {
         border: 2px solid gray;
         padding: 10px;
@@ -27,6 +41,36 @@
         flex-direction: column;
         font-weight: bold;
         border: 2px solid #00ffff;
+    }
+    @* Batch Entries table Styling*@ 
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
     }
 
     .row {
@@ -68,6 +112,7 @@
     .main1 {
         border: 1px solid black;
         padding: 10px;
+        border-radius:12px;
     }
 </style>
 
@@ -105,44 +150,91 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
-                    <div class="form-horizontal">
-                        <fieldset>
-                            <div class="main1">
-                                <div class="combined-container">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DebitTypeDescription, new { @class = "control-label" })
-                                                <div class="form-value">@Model.DebitTypeDescription</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.BranchDescription, new { @class = "control-label" })
-                                                <div class="form-value">@Model.BranchDescription</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                                <div class="form-value">@Model.Priority</div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.Reference, new { @class = "control-label" })
-                                                <div class="form-value">@Model.Reference</div>
-                                            </div>
-                                        </div>
+                
+                <div class="main1">
+                    <div class="content" style="padding: 20px; margin: 20px;">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.HiddenFor(model => model.DebitTypeId)
+                                        @Html.TextBoxFor(model => model.DebitTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
                                     </div>
                                 </div>
-                                
+
                             </div>
-                        </fieldset>
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control input-md required", placeholder = "Description..", @readonly = "readonly" } })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Priority, queuePriorities, new { @class = "form-control input-md", @readonly = "readonly" })
+                                        @Html.ValidationMessageFor(model => model.Priority)
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
+                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                        </div>
+
+
                     </div>
+                    <br/>
+                    <br/>
+                    <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                        <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Debit Batch Entries</h2>
+
+                        <row>
+                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
+                                <thead style="font-style: italic; color: #333; text-align: center;">
+                                    <tr>
+                                        <th style="width: 10%;">Customer Account</th>
+                                        <th style="width: 5%;">Multiplier</th>
+                                        <th style="width: 10%;">Reference</th>
+                                        <th style="width: 10%;">Basis Value</th>
+                                    </tr>
+                                </thead>
+                                <tbody style="color: #007bff;">
+                                    @if (ViewBag.CrdeitBatchEntryDTOs != null)
+                                    {
+                                        foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
+                                        {
+                                            <tr data-id="@debitBatchEntries.Id">
+                                                <td>@debitBatchEntries.CustomerAccountId</td>
+                                                <td>@debitBatchEntries.Multiplier</td>
+                                                <td>@debitBatchEntries.Reference</td>
+                                                <td>@debitBatchEntries.BasisValue</td>
+                                            </tr>
+                                        }
+                                    }
+                                </tbody>
+                            </table>
+                        </row>
+                    </div>
+
+                    
                 </div>
             </div>
         </div>

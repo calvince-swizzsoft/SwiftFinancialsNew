@@ -51,6 +51,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
 
             return View(debitBatchDTO);
         }
@@ -156,6 +158,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+            /*ViewBag.DebitBatchTypeSelectList = GetDebitBatchesAsync(string.Empty);*/
 
             var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
 
@@ -194,6 +198,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             var debitBatchDTO = await _channelService.FindDebitBatchAsync(id, GetServiceHeader());
+
+            var debitBatches = await _channelService.FindDebitBatchEntriesByDebitBatchIdAsync(id,true, GetServiceHeader());
+
+            ViewBag.DebitBatchEntryDTOs = debitBatches;
 
             return View(debitBatchDTO);
         }

@@ -355,5 +355,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public CustomerAccountDTO Customer { get; set; }
     }
 }

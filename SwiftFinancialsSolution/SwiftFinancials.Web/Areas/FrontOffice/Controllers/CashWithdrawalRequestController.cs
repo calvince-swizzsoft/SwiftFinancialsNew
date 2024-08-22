@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using SwiftFinancials.Web.Controllers;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -10,8 +11,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
     public class CashWithdrawalRequestController : MasterController
     {
         // GET: FrontOffice/CashWithdrawalRequest
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
+
+            await ServeNavigationMenus();
             return View();
         }
 
@@ -34,7 +37,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
-                return View();
+
+                var observableCollection1 = await _channelService.FindCashDepositRequestsAsync(GetServiceHeader());
+
+                //cashWithdrawalRequestDTO.CashDepositRequests = observableCollection.ToList();
+
+                var model = new CashWithdrawalRequestDTO
+                {
+                    // Initialize with empty list if no data is available
+                    CashDepositRequests = observableCollection1.ToList()
+                };
+
+
+                return View(model);
             }
 
 
