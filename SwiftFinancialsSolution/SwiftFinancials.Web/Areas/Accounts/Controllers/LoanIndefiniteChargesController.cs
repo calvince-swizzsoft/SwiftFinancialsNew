@@ -123,7 +123,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(ObservableCollection<LoanProductDTO> selectedRow, RecurringBatchDTO recurringBatchDTO)
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, ObservableCollection<LoanProductDTO> selectedRow)
         {
             var selectedRow1= new ObservableCollection<LoanProductDTO>();
             recurringBatchDTO.ValidateAll();

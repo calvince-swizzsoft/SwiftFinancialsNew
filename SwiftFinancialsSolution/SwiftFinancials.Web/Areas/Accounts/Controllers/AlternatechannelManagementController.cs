@@ -1,6 +1,7 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
@@ -64,47 +65,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(debitBatchDTO);
         }
 
-        public async Task<ActionResult> Create(Guid id,AlternateChannelDTO alternateChannelDTO1)
+        public async Task<ActionResult> Create(Guid id)
         {
+
             await ServeNavigationMenus();
+            ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(string.Empty);
 
-            Guid parseId;
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
+            ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
 
-            //var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            var alternateChannelDTO = await _channelService.FindAlternateChannelAsync(id, true, GetServiceHeader());
 
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            AlternateChannelDTO alternateChannelDTO = new AlternateChannelDTO();
-
-            if (customer != null)
-            {
-                alternateChannelDTO.CustomerAccountCustomerId = customer.Id;
-                alternateChannelDTO.CustomerAccountId = customer.Id;
-                alternateChannelDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                alternateChannelDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                alternateChannelDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                alternateChannelDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                alternateChannelDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                alternateChannelDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                alternateChannelDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
-                alternateChannelDTO.Remarks = customer.Remarks;
-                alternateChannelDTO.CardNumber = customer.FullAccountNumber;
-
-
-            }
-
-             alternateChannelDTO.Id = (Guid)Session["Id"];
+            alternateChannelDTO.Id = (Guid)Session["Id"];
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
@@ -124,7 +96,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!alternateChannelDTO.HasErrors)
             {
 
-
+                //if ()
+                //{
+                    
+                //}
                 await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
 
                 TempData["SuccessMessage"] = "Create successful.";
@@ -229,11 +204,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> History( AlternateChannelDTO alternateChannelDTO)
+        public async Task<ActionResult> History(AlternateChannelDTO alternateChannelDTO)
         {
-            alternateChannelDTO.ValidateAll();   
+            alternateChannelDTO.ValidateAll();
 
-           
+
 
             //var sortPropertyName = ""; // Define the property name for sorting
 
@@ -241,11 +216,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             //{
             //    sortPropertyName = jQueryDataTablesModel.GetSortedColumns()[sortColumnIndex].PropertyName;
             //}
-            if (alternateChannelDTO!=null)
+            if (alternateChannelDTO != null)
             {
                 var pageCollectionInfo = await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAsync(alternateChannelDTO.Id, GetServiceHeader());
                 return View("");
-            
+
             }
 
             else

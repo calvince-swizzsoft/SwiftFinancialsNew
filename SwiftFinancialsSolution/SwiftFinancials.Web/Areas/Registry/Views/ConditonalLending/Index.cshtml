@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "Customers";
+    ViewBag.Title = "Conditional Lending";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -16,48 +16,6 @@
         </ol>
     </div>
 </div>
-
-<div class="row row-center">
-
-    <div class="col-lg-12">
-        <div class="nav1">
-            <div class="col-lg-12">
-                <nav class="nav">
-                    <a href="@Url.Action("Index", "ConditonalLending", new { Area = "ConditonalLending" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Conditonal Lending
-                    </a>
-                    <a href="@Url.Action("Index", "AccountAlerts", new { Area = "Customer" })" class="nav-link">
-                        <i class="fa fa-cog"></i> AccountA lerts
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Debit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Refund Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Disbursement Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Wire Transfer Batch
-                    </a>
-                    <a href="#" class="nav-link disabled">
-                        <i class="fa fa-cog"></i> General Ledger Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Reversal Batch
-                    </a>
-                    <a href="#" class="nav-link disabled">
-                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
-                    </a>
-
-                </nav>
-            </div>
-
-        </div>
-    </div>
-</div>
-
 
 <style>
     .dropdown-item {
@@ -104,7 +62,7 @@
                     </div>
                 }
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Customer", "Create", "Customer", new { Area = "Registry" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Conditional Lending", "Create", "Conditional Lending", new { Area = "Registry" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -120,7 +78,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="CustomersGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="conditionalLEndingGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -151,7 +109,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Conditional Lending", new { Area = "Registry"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -174,15 +132,6 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/registry/Customer/details/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/registry/Customer/edit/${aData.Id}">Edit</a>
-                                <a class="dropdown-item" href="/registry/Customer/Delegates/${aData.Id}">Delegates</a>
-
-                                <a class="dropdown-item" href="/registry/Customer/NextofKin/${aData.Id}">NextofKin</a>
-                                <a class="dropdown-item" href="/registry/Customer/BranchLinkage/${aData.Id}">BranchLinkage</a>
-                                <a class="dropdown-item" href="/registry/Customer/Documents/${aData.Id}">Documents</a>
-                                <a class="dropdown-item" href="/registry/Customer/StationLinkage/${aData.Id}">Station Linkage</a>
-                                <a class="dropdown-item" href="/registry/Customer/AccountAlerts/${aData.Id}">AccountAlerts</a>
-
                             </div>
                         </div>`;
 

@@ -69,6 +69,8 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<SavingsProductDTO> savingsProductDTOs;
         public ObservableCollection<LoanProductDTO> loanProductDTOs;
 
+        public ObservableCollection<StandingOrderDTO> standingOrdersDTOs;
+
 
         public ObservableCollection<Guid> customerAccountsIds;
 
@@ -292,7 +294,22 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
+        [NonAction]
+        protected List<SelectListItem> GetsystemPermissionTypeList(string selectedValue)
+        {
+            List<SelectListItem> systemPermissionType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemPermissionType)).Cast<SystemPermissionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemPermissionType.AddRange(items);
+
+            return systemPermissionType;
+        }
 
 
 

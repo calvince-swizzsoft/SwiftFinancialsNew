@@ -75,6 +75,13 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader());
+            ViewBag.investment = investmentProducts;
+            ViewBag.savings = savingsProducts;
+            ViewBag.debit = debitTypes;
+
             return View();
         }
 

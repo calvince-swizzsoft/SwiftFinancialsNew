@@ -1,4 +1,4 @@
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_DebitBatches]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_DebitBatches]
 SELECT TOP (1000) [Id]
       ,[DebitTypeId]
       ,[BranchId]
