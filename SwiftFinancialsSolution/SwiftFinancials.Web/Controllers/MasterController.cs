@@ -43,7 +43,7 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
 
         public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
-        public ObservableCollection<CreditBatchEntryDTO> DebitBatchEntryDTOs;
+        public ObservableCollection<DebitBatchEntryDTO> DebitBatchEntryDTOs;
 
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
