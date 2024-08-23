@@ -998,7 +998,6 @@
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\ApproveLoan\Approve.cshtml" />
-    <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Index.cshtml" />
@@ -1151,6 +1150,7 @@
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
