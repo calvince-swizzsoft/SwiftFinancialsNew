@@ -159,6 +159,7 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
+                                            @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId)
                                             @Html.HiddenFor(model => model.CustomerAccount.Id)
                                             @Html.LabelFor(model => model.CustomerAccount.FullAccountNumber, "Full Account Number:", new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
@@ -339,6 +340,7 @@
                                             <!-- Cash Withdrawal Tab -->
                                             <div id="cashWithdrawal" class="inner-tab-pane">
                                                 <div class="form-group form-group-lg">
+                                                    @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductMaximumAllowedWithdrawal)
                                                     @Html.LabelFor(model => model.CashWithdrawal.Amount, htmlAttributes: new { @class = "" })
                                                     @Html.EditorFor(model => model.CashWithdrawal.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
                                                     @Html.ValidationMessageFor(model => model.CashWithdrawal.Amount, "", new { @class = "text-danger" })
@@ -351,29 +353,32 @@
                                                     @Html.ValidationMessageFor(model => model.CashWithdrawal.Remarks, "", new { @class = "text-danger" })
                                                 </div>
 
-                                                <div class="row">
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label>Passport</label>
-                                                            <div class="image-upload-area" style="border: 1px solid #ccc; height: 100px;"></div>
+                                                <div class="upload-container">
+                                                    <div class="upload-box">
+                                                        <label for="passport">Passport</label>
+                                                        <div id="passport" class="upload-area">
+                                                            <img src="~/Images/passportDemo.jpg" style="width: 54%; height: auto;" />
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label>Signature</label>
-                                                            <div class="image-upload-area" style="border: 1px solid #ccc; height: 100px;"></div>
+
+                                                    <div class="upload-box">
+                                                        <label for="signature">Signature</label>
+                                                        <div id="signature" class="upload-area">
+                                                            <img src="~/Images/signatureDemo.jpg" style="width: 100%; height: 60%;" />
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label>Identity Card (Front)</label>
-                                                            <div class="image-upload-area" style="border: 1px solid #ccc; height: 100px;"></div>
+
+                                                    <div class="upload-box">
+                                                        <label for="id-front">Identity Card (Front)</label>
+                                                        <div id="id-front" class="upload-area">
+                                                            <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
                                                         </div>
                                                     </div>
-                                                    <div class="col-md-3">
-                                                        <div class="form-group">
-                                                            <label>Identity Card (Back)</label>
-                                                            <div class="image-upload-area" style="border: 1px solid #ccc; height: 100px;"></div>
+
+                                                    <div class="upload-box">
+                                                        <label for="id-back">Identity Card (Back)</label>
+                                                        <div id="id-back" class="upload-area">
+                                                            <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
                                                         </div>
                                                     </div>
                                                 </div>
