@@ -107,7 +107,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             }
 
-
             customerBindingModel.ValidateAll();
 
             //cheat
@@ -126,6 +125,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             if (!customerBindingModel.HasErrors)
             {
+
+
+
+
 
                 var result = await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts, 1, GetServiceHeader());
                 if (result.ErrorMessageResult != null)
@@ -153,6 +156,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 var errorMessages = customerBindingModel.ErrorMessages;
                 TempData["Error2"] = customerBindingModel.ErrorMessages;
+
+                await ServeNavigationMenus();
 
                 ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
                 ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
