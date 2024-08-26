@@ -1000,7 +1000,6 @@
     <Content Include="Areas\FrontOffice\Views\CashWithdrawal\Index.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\ApproveLoan\Approve.cshtml" />
-    <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanCancellation\Cancel.cshtml" />
     <Content Include="Areas\Loaning\Views\LoanVerification\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_Voucher\Index.cshtml" />
@@ -1150,6 +1149,9 @@
     <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
     <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
@@ -1158,11 +1160,13 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
+    <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
+    <Content Include="Scripts\js\CaptureSpecimenDetails.js" />
     <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
     <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
     <Content Include="Scripts\js\navlink.js" />

@@ -1,0 +1,94 @@
+﻿.container {
+    width: 2000px;
+    height: 550px; /* Full height of the viewport */
+    margin: 0;
+    padding: 20px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); /* Four columns */
+    grid-gap: 20px;
+   /* background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);*/
+}
+
+    .container > div {
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 450px; /* Full height within the row */
+        overflow: hidden; /* Hide overflow */
+        position: relative;
+        width: 370px;
+    }
+
+.image-placeholder {
+    width: 100%;
+    height: calc(100% - 60px); /* Adjust the height to fit within the div */
+    background-color: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    position: relative;
+    overflow: hidden; /* Hide overflow */
+}
+
+    .image-placeholder img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain; /* Adjusts the image to fit within the placeholder */
+    }
+
+.button {
+    width: 80%; /* Smaller button width */
+    padding: 10px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+    .button:hover {
+        background-color: #218838;
+    }
+
+.remove-button {
+    display: none; /* Hide by default */
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 5px 10px;
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+    .remove-button:hover {
+        background-color: #c82333;
+    }
+
+@media (max-width: 1200px) {
+    .container {
+        grid-template-columns: repeat(2, 1fr); /* Two columns on medium screens */
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr; /* Single column on smaller screens */
+        height: auto; /* Adjust height to auto on smaller screens */
+    }
+
+    .button {
+        width: auto;
+    }
+}

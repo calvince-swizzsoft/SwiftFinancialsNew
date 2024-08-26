@@ -271,5 +271,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntries { get; set; }
         [DataMember]
         public CreditBatchEntryDTO CreditBatchEntry { get; set; }
+        
+
     }
 }

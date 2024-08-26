@@ -139,15 +139,15 @@
             outline: none;
         }
 
-        .btn{
-            border-radius: 4px;
-            outline: outset;
-        }
+    .btn {
+        border-radius: 4px;
+        outline: outset;
+    }
 
-            .nav a{
-                /*font-weight: bold;*/
-                /*font-size: large;*/
-            }
+    .nav a {
+        /*font-weight: bold;*/
+        /*font-size: large;*/
+    }
 
     h2, h1, h3, h4, h5, h6 {
         /*font-weight: bold;*/
@@ -194,7 +194,7 @@
                 <div class="ibox-content bg-white" style="padding: 20px;">
                     @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
-
+                        @Html.AntiForgeryToken()
 
                         <ul class="nav nav-tabs" style="margin-bottom: 20px;">
                             <li class="nav-item">
@@ -846,9 +846,21 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationNetIncome, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationNetIncome, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationNetIncome, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationNetIncome, new
+                                            {
+                                                htmlAttributes = new
+                                                {
+                                                    @id = "LoanRegistrationNetIncome",
+                                                    @class = "form-control required",
+                                                    @placeholder = "Kshs.0.00",
+                                                    @inputmode = "numeric",
+                                                    @pattern = "[0-9]*",
+                                                    @oninput = "this.value = this.value.replace(/[^0-9]/g, '')"
+                                                }
+                                            })
                                         </div>
                                     </div>
+
                                 </div>
 
                                 <div class="row">
@@ -856,7 +868,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationTotalAllowance, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationTotalAllowance, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationTotalAllowance, new { htmlAttributes = new { @id = "LoanRegistrationTotalAllowance", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
 
@@ -864,7 +876,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationTotalDeduction, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationTotalDeduction, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationTotalDeduction, new { htmlAttributes = new { @id = "LoanRegistrationTotalDeduction", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
 
@@ -872,7 +884,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationTotalIncome, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationTotalIncome, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationTotalIncome, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationTotalIncome, new { htmlAttributes = new { @id = "LoanRegistrationTotalIncome", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
                                 </div>
@@ -882,7 +894,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.TakeHomeFixedAmount, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.TakeHomeFixedAmount, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @id = "TakeHomeFixedAmount", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
 
@@ -891,7 +903,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationAbilityToPay, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationAbilityToPay, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationAbilityToPay, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationAbilityToPay, new { htmlAttributes = new { @id = "LoanRegistrationAbilityToPay", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
 
@@ -900,7 +912,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationAbilityToPayOverLoanTerm, new { htmlAttributes = new { @id = "LoanRegistrationAbilityToPayOverLoanTerm", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
                                 </div>
@@ -910,7 +922,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationLoanPlusInterest, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationLoanPlusInterest, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationLoanPlusInterest, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationLoanPlusInterest, new { htmlAttributes = new { @id = "LoanRegistrationLoanPlusInterest", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
 
@@ -918,7 +930,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationLoanPart, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationLoanPart, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationLoanPart, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationLoanPart, new { htmlAttributes = new { @id = "LoanRegistrationLoanPart", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
 
@@ -926,12 +938,46 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.LoanRegistrationInterestPart, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.LoanRegistrationInterestPart, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.LoanRegistrationInterestPart, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.LoanRegistrationInterestPart, new { htmlAttributes = new { @id = "LoanRegistrationInterestPart", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
                                         </div>
                                     </div>
                                 </div>
 
+                                <br />
 
+                                <h2>Income Adjustment Details</h2>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.incomeAdjustment.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.incomeAdjustment.Id)
+                                            @Html.EditorFor(model => model.incomeAdjustment.Description, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.incomeAdjustment.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.incomeAdjustment.Id)
+                                            @Html.EditorFor(model => model.incomeAdjustment.Description, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.incomeAdjustment.Description, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.incomeAdjustment.Id)
+                                            @Html.EditorFor(model => model.incomeAdjustment.Description, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Kshs.0.00", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px;" />
+                                    </div>
+                                </div>
                             </div>
 
 
@@ -1106,15 +1152,29 @@
                                     </div>
                                 </div>
 
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <input type="submit" value="Update" style="width: 150px;" class="btn btn-primary" />
+                                @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                                {
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <input type="submit" value="Update" style="width: 150px;" class="btn btn-primary" />
+                                        </div>
                                     </div>
-                                </div>
+                                }
                             </div>
                         </div>
                     }
                 </div>
+
+                @*<div class="ibox-content bg-white" style="padding: 20px;">
+                        @using (Html.BeginForm("Appraise", "AppraiseLoan", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <input type="submit" value="Update" style="width: 150px;" class="btn btn-primary" />
+                                </div>
+                            </div>
+                        }
+                    </div>*@
             </div>
         </div>
     </div>
@@ -1189,130 +1249,60 @@
     @Scripts.Render("~/plugins/duallist")
 
 
+    <script src="~/Scripts/js/navlink.js"></script>
+
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const tabLinks = document.querySelectorAll(".tab-link");
-            const tabContents = document.querySelectorAll(".tab-content");
+            // Get references to the fields
+            const netIncomeField = document.querySelector("#LoanRegistrationNetIncome"); // Replace with the correct ID for Net Income
+            const totalAllowancesField = document.querySelector("#LoanRegistrationTotalAllowance"); // Replace with the correct ID
+            const totalDeductionsField = document.querySelector("#LoanRegistrationTotalDeduction"); // Replace with the correct ID
+            const totalIncomeField = document.querySelector("#LoanRegistrationTotalIncome"); // Replace with the correct ID
+            const takeHomeField = document.querySelector("#TakeHomeFixedAmount"); // Replace with the correct ID
+            const abilityToPayField = document.querySelector("#LoanRegistrationAbilityToPay"); // Replace with the correct ID
+            const abilityToPayOverLoanTermField = document.querySelector("#LoanRegistrationAbilityToPayOverLoanTerm"); // Replace with the correct ID
+            const loanPlusInterestField = document.querySelector("#LoanRegistrationLoanPlusInterest"); // Replace with the correct ID
+            const loanPartField = document.querySelector("#LoanRegistrationLoanPart"); // Replace with the correct ID
+            const interestPartField = document.querySelector("#LoanRegistrationInterestPart"); // Replace with the correct ID
 
-            tabLinks.forEach(link => {
-                link.addEventListener("click", function () {
-                    const tabId = this.getAttribute("data-tab");
+            // Function to calculate all values
+            function calculateValues() {
+                const netIncome = parseFloat(netIncomeField.value.replace(/,/g, '')) || 0;
+                const totalAllowances = parseFloat(totalAllowancesField.value.replace(/,/g, '')) || 0;
+                const totalDeductions = parseFloat(totalDeductionsField.value.replace(/,/g, '')) || 0;
 
-                    tabLinks.forEach(link => {
-                        link.classList.remove("active");
-                    });
+                // Calculate total income
+                const totalIncome = netIncome + totalAllowances;
+                totalIncomeField.value = totalIncome.toFixed(2).toLocaleString();
 
-                    tabContents.forEach(content => {
-                        content.classList.remove("active");
-                    });
+                // Calculate take-home value (assuming it's netIncome - totalDeductions)
+                const takeHomeValue = netIncome - totalDeductions;
+                takeHomeField.value = takeHomeValue.toFixed(2).toLocaleString();
 
-                    this.classList.add("active");
-                    document.getElementById(tabId).classList.add("active");
-                });
-            });
+                // Calculate ability to pay (net income - deductions + allowances)
+                const abilityToPay = netIncome - totalDeductions + totalAllowances;
+                abilityToPayField.value = abilityToPay.toFixed(2).toLocaleString();
 
-            // Activate the first tab by default
-            tabLinks[0].classList.add("active");
-            tabContents[0].classList.add("active");
+                // Calculate ability to pay over the loan term
+                const loanTerm = 12; // Replace with actual loan term value
+                const abilityToPayOverLoanTerm = abilityToPay * loanTerm;
+                abilityToPayOverLoanTermField.value = abilityToPayOverLoanTerm.toFixed(2).toLocaleString();
+
+                // Calculate loan + interest (assuming some rate, replace with actual logic)
+                const interestRate = 0.05; // Example interest rate
+                const loanPlusInterest = abilityToPayOverLoanTerm * (1 + interestRate);
+                loanPlusInterestField.value = loanPlusInterest.toFixed(2).toLocaleString();
+
+                // Calculate loan part and interest part
+                loanPartField.value = abilityToPayOverLoanTerm.toFixed(2).toLocaleString();
+                interestPartField.value = (loanPlusInterest - abilityToPayOverLoanTerm).toFixed(2).toLocaleString();
+            }
+
+            // Attach the event listener to the net income field for real-time calculations
+            netIncomeField.addEventListener("input", calculateValues);
         });
 
-
-
-
-
-
-        // Initialize variables to track the active tab and modal status
-        var activeTab = localStorage.getItem('activeTab') || 'section1';
-        var isModalOpened = localStorage.getItem('isModalOpened') === 'true';
-
-        // Function to open a tab and set it as active
-        function openTab(evt, tabName) {
-            var i, tabcontent, tabbuttons;
-
-            // Hide all tab contents
-            tabcontent = document.getElementsByClassName("tab");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-                tabcontent[i].classList.remove("active");
-            }
-
-            // Remove the active class from all tab buttons
-            tabbuttons = document.getElementsByClassName("tab-button");
-            for (i = 0; i < tabbuttons.length; i++) {
-                tabbuttons[i].classList.remove("active");
-            }
-
-            // Show the current tab and add active class to the button and tab content
-            document.getElementById(tabName).style.display = "block";
-            document.getElementById(tabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-
-            // Update the active tab
-            activeTab = tabName;
-            localStorage.setItem('activeTab', tabName);
-        }
-
-        // Function to open a sub-tab and set it as active
-        function openSubTab(evt, subTabName) {
-            var i, subTabContent, subTabButtons;
-
-            // Hide all sub-tab contents
-            subTabContent = document.getElementsByClassName("sub-tab-content");
-            for (i = 0; i < subTabContent.length; i++) {
-                subTabContent[i].style.display = "none";
-                subTabContent[i].classList.remove("active");
-            }
-
-            // Remove the active class from all sub-tab buttons
-            subTabButtons = document.getElementsByClassName("sub-tab-button");
-            for (i = 0; i < subTabButtons.length; i++) {
-                subTabButtons[i].classList.remove("active");
-            }
-
-            // Show the current sub-tab and add active class to the button and sub-tab content
-            document.getElementById(subTabName).style.display = "block";
-            document.getElementById(subTabName).classList.add("active");
-            evt.currentTarget.classList.add("active");
-        }
-
-        // Ensure active tab is maintained when opening the modal
-        document.getElementById("GuarantorLookupModal").addEventListener("show.bs.modal", function () {
-            isModalOpened = true;
-            activeTab = 'section5'; // Ensure section5 is set as the active tab
-            localStorage.setItem('activeTab', 'section5');
-            localStorage.setItem('isModalOpened', 'true');
-        });
-
-        // Initial setup to show the active tab on page load
-        document.addEventListener("DOMContentLoaded", function () {
-            var tab = document.getElementById(activeTab);
-            if (tab) {
-                tab.style.display = "block";
-                tab.classList.add("active");
-
-                var tabButton = document.querySelector(`.tab-header .tab-button[onclick="openTab(event, '${activeTab}')"]`);
-                if (tabButton) {
-                    tabButton.classList.add("active");
-                }
-            }
-
-            // Ensure section1 is inactive if section5 is active after modal open
-            if (activeTab === 'section5') {
-                var section1 = document.getElementById('section1');
-                if (section1) {
-                    section1.style.display = "none";
-                    section1.classList.remove("active");
-
-                    var section1Button = document.querySelector('.tab-header .tab-button[onclick="openTab(event, \'section1\')"]');
-                    if (section1Button) {
-                        section1Button.classList.remove("active");
-                    }
-                }
-
-                localStorage.removeItem('isModalOpened'); // Clear the modal flag after it has been handled
-            }
-        });
     </script>
 
 }
