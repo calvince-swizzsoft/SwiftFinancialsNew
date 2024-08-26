@@ -65,12 +65,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, OverDeductionBatchDTO overDeductionBatchDTO)
         {
 
-            var TotalValue = overDeductionBatchDTO.TotalValue;
-            var Reference = overDeductionBatchDTO.Reference;
-
-            Session["TotalValue"] = TotalValue;
-            Session["Reference"] = Reference;
-
+            
             Guid parseId;
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
@@ -78,51 +73,46 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return View("Create", overDeductionBatchDTO);
             }
-
-            if (Session["debitCustomerAccount"] != null)
+            if (Session["BatchDTO"] != null)
             {
-                overDeductionBatchDTO.DebitCustomerAccountDTO = Session["debitCustomerAccount"] as CustomerAccountDTO;
-            }
-            Session["totalValue"] = overDeductionBatchDTO.TotalValue;
-            Session["branchDescription"] = overDeductionBatchDTO.BranchDescription;
-            Session["reference"] = overDeductionBatchDTO.Reference;
-
-            TempData["totalValue"] = overDeductionBatchDTO.TotalValue;
-            TempData["branchDescription"] = overDeductionBatchDTO.BranchDescription;
-            TempData["reference"] = overDeductionBatchDTO.Reference;
-            if (Session["totalValue"]!= null)
-            {
-                overDeductionBatchDTO.TotalValue = (decimal)Session["totalValue"];
-            }
-            if (Session["branchDescription"] != null)
-            {
-                overDeductionBatchDTO.Reference = (string)Session["reference"];
+                overDeductionBatchDTO = Session["BatchDTO"] as OverDeductionBatchDTO;
             }
 
-            if (Session["reference"] != null)
+            OverDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+
+
+            ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+
+            if (overDeductionBatchDTO != null && overDeductionBatchDTO.overDeductionBatchEntries == null)
             {
-                overDeductionBatchDTO.Reference = (string)Session["reference"];
+                overDeductionBatchDTO.overDeductionBatchEntries = new ObservableCollection<OverDeductionBatchEntryDTO>();
             }
 
+            // Ensure at least one entry exists before trying to access it by index
+            if (overDeductionBatchDTO.overDeductionBatchEntries.Count == 0)
+            {
+                overDeductionBatchDTO.overDeductionBatchEntries.Add(new OverDeductionBatchEntryDTO());
+            }
 
             var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
+
             if (creditcustomerAccount != null)
             {
-               /* overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
-                overDeductionBatchDTO.overDeductionBatchEntry.DebitCustomerAccountFullAccountNumber = overDeductionBatchDTO.overDeductionBatchEntry.DebitFullAccountNumber;
-                overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription = overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription;
-                overDeductionBatchDTO.overDeductionBatchEntry.DebitProductDescription = overDeductionBatchDTO.overDeductionBatchEntry.DebitProductDescription;
-                overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullName = overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerFullName;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].CreditProductDescription = creditcustomerAccount.CustomerAccountTypeProductCodeDescription;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].CreditCustomerAccountFullName = creditcustomerAccount.CustomerFullName;
 
-                overDeductionBatchDTO.overDeductionBatchEntry.DebitCustomerAccountFullName = overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerFullName;*/
-
-                overDeductionBatchDTO.CreditCustomerAccountDTO = creditcustomerAccount as CustomerAccountDTO;
-               
-                Session["creditCustomerAcct"] = overDeductionBatchDTO.CreditCustomerAccountDTO;
+                Session["CreditCustomerAccountFullAccountNumber"] = overDeductionBatchDTO.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber;
+                Session["CreditProductDescription"] = overDeductionBatchDTO.overDeductionBatchEntries[0].CreditProductDescription;
+                Session["CreditCustomerAccountFullName"] = overDeductionBatchDTO.overDeductionBatchEntries[0].CreditCustomerAccountFullName;
             }
 
-            return View("create", overDeductionBatchDTO);
+            return View("Create", overDeductionBatchDTO);
         }
+
+
+
+
 
         public async Task<ActionResult> DebitCustomerAccountLookup(Guid? Id, OverDeductionBatchDTO overDeductionBatchDTO)
         {
@@ -135,30 +125,66 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View("Create", overDeductionBatchDTO);
             }
 
-
-            if (Session["creditCustomerAcct"] != null)
+            if (Session["BatchDTO"] != null)
             {
-                overDeductionBatchDTO.CreditCustomerAccountDTO = Session["creditCustomerAcct"] as CustomerAccountDTO;
+                overDeductionBatchDTO = Session["BatchDTO"] as OverDeductionBatchDTO;
             }
 
-            if (Session["OverDeductionBatchDTO"] != null)
+            OverDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+
+
+
+            ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+
+            if (overDeductionBatchDTO != null && overDeductionBatchDTO.overDeductionBatchEntry == null)
             {
-                overDeductionBatchDTO = Session["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
+                overDeductionBatchDTO.overDeductionBatchEntry = new OverDeductionBatchEntryDTO();
+            }
+
+            ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+
+            var creditCustomerAccountFullAccountNumber = Session["CreditCustomerAccountFullAccountNumber"] as string;
+            var creditProductDescription = Session["CreditProductDescription"] as string;
+            var creditCustomerAccountFullName = Session["CreditCustomerAccountFullName"] as string;
+
+            if (creditCustomerAccountFullAccountNumber != null && creditProductDescription != null && creditCustomerAccountFullName != null)
+            {
+                // Assign the values back to the DTO or use them as needed
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullAccountNumber = creditCustomerAccountFullAccountNumber;
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription = creditProductDescription;
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullName = creditCustomerAccountFullName;
+            }
+
+
+
+            if (overDeductionBatchDTO != null && overDeductionBatchDTO.overDeductionBatchEntries == null)
+            {
+                overDeductionBatchDTO.overDeductionBatchEntries = new ObservableCollection<OverDeductionBatchEntryDTO>();
+            }
+
+            // Ensure at least one entry exists before trying to access it by index
+            if (overDeductionBatchDTO.overDeductionBatchEntries.Count == 0)
+            {
+                overDeductionBatchDTO.overDeductionBatchEntries.Add(new OverDeductionBatchEntryDTO());
             }
 
             var debitcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
+
             if (debitcustomerAccount != null)
             {
-                //overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountId = creditcustomerAccount.Id;
-                //overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
-                //overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription = creditcustomerAccount.CustomerAccountTypeTargetProductDescription;
-                //overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullName = creditcustomerAccount.CustomerIndividualSalutationDescription+" "+creditcustomerAccount.CustomerIndividualFirstName+" "+
-                //    " "+creditcustomerAccount.CustomerIndividualLastName;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber = debitcustomerAccount.FullAccountNumber;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].DebitProductDescription = debitcustomerAccount.CustomerAccountTypeProductCodeDescription;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].DebitCustomerAccountFullName = debitcustomerAccount.CustomerFullName;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].Principal = overDeductionBatchDTO.overDeductionBatchEntries[0].Principal;
+                overDeductionBatchDTO.overDeductionBatchEntries[0].Interest = overDeductionBatchDTO.overDeductionBatchEntries[0].Interest;
 
-                overDeductionBatchDTO.DebitCustomerAccountDTO = debitcustomerAccount as CustomerAccountDTO;
 
-                Session["debitCustomerAccount"] = overDeductionBatchDTO.DebitCustomerAccountDTO;
+                Session["DebitCustomerAccountFullAccountNumber"] = overDeductionBatchDTO.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber;
+                Session["DebitProductDescription"] = overDeductionBatchDTO.overDeductionBatchEntries[0].DebitProductDescription;
+                Session["DebitCustomerAccountFullName"] = overDeductionBatchDTO.overDeductionBatchEntries[0].DebitCustomerAccountFullName;
             }
+
+
 
             return View("create", overDeductionBatchDTO);
         }
@@ -167,44 +193,31 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBattchDTO)
+        public async Task<ActionResult> Create()
         {
+
 
             await ServeNavigationMenus();
 
-            var overDeductionBatchDTO = new OverDeductionBatchDTO();
 
-            
-
-            return View(overDeductionBatchDTO);
+            return View();
         }
 
+
+
         [HttpPost]
-        public async Task<ActionResult> Create(Guid id,OverDeductionBatchDTO overDeductionBatchDTO) 
+        public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
         {
 
-            Session["totalValue"] = overDeductionBatchDTO.TotalValue;
-            Session["branchDescription"] = overDeductionBatchDTO.BranchDescription;
-            Session["reference"] = overDeductionBatchDTO.Reference;
+            overDeductionBatchDTO = Session["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
 
-            TempData["totalValue"] = overDeductionBatchDTO.TotalValue;
-            TempData["branchDescription"] = overDeductionBatchDTO.BranchDescription;
-            TempData["reference"] = overDeductionBatchDTO.Reference;
-
-            overDeductionBatchDTO = TempData["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
-            
-
-            Session["OverDeductionBatchDTO"] = overDeductionBatchDTO;
-
-            overDeductionBatchDTO = TempData["OverDeductionBatchDTO"] as OverDeductionBatchDTO;
-
-            OverDeductionBatchEntryDTOs = TempData["OverDeductionBatchEntryDTOs"] as ObservableCollection<OverDeductionBatchEntryDTO>;
-            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            OverDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
 
 
-            if (TempData["OverDeductionBatchDTO"] != null)
+
+            if (Session["OverDeductionBatchEntryDTO"] != null)
             {
-                overDeductionBatchDTO.overDeductionBatchEntries = TempData["OverDeductionBatchDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+                overDeductionBatchDTO.overDeductionBatchEntries = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
             }
 
 
@@ -221,18 +234,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 foreach (var overDeductionBatchEntryDTO in overDeductionBatchDTO.overDeductionBatchEntries)
                 {
-                    overDeductionBatchEntryDTO.CreditCustomerAccountId = overDeductionBatchEntryDTO.CreditCustomerAccountId;
-                    overDeductionBatchEntryDTO.CreditCustomerAccountBranchId = overDeductionBatchEntryDTO.DebitCustomerAccountBranchId;
-                    overDeductionBatchEntryDTO.CreditCustomerAccountCustomerIndividualFirstName = overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName;
-                    overDeductionBatchEntryDTO.DebitCustomerAccountId = overDeductionBatchEntryDTO.CreditCustomerAccountId;
-                    overDeductionBatchEntryDTO.DebitCustomerAccountBranchId = overDeductionBatchEntryDTO.CreditCustomerAccountBranchId;
-                    overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName = overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountFullName = overDeductionBatchEntryDTO.CreditCustomerAccountFullName;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountFullName = overDeductionBatchEntryDTO.DebitCustomerAccountFullName;
+                    overDeductionBatchEntryDTO.CreditProductDescription = overDeductionBatchEntryDTO.CreditProductDescription;
+                    overDeductionBatchEntryDTO.DebitProductDescription = overDeductionBatchEntryDTO.DebitProductDescription;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber = overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber;
+                    overDeductionBatchEntryDTO.DebitCustomerAccountFullAccountNumber = overDeductionBatchEntryDTO.DebitCustomerAccountFullAccountNumber;
+
                     OverDeductionBatchEntries.Add(overDeductionBatchEntryDTO);
-                    /*await _channelService.AddOverDeductionBatchEntryAsync(overDeductionBatchEntryDTO, GetServiceHeader());*/
+
+
+                  /*var Entry =  await _channelService.AddOverDeductionBatchEntryAsync(overDeductionBatchEntryDTO, GetServiceHeader());*/
                 }
 
 
                 var overDeductionBatch = await _channelService.AddOverDeductionBatchAsync(overDeductionBatchDTO, GetServiceHeader());
+
 
                 if (overDeductionBatchDTO.ErrorMessageResult != null)
                 {
@@ -245,15 +262,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["SuccessMessage"] = "Successfully Created refund Batch";
                 TempData["OverDeductionBatchDTO"] = "";
-
-
-
-                if (OverDeductionBatchEntries.Any())
-                    //Update the OverDeductionBatchEntries
-
-                    /* await _channelService.AddOverDeductionBatchEntryAsync( OverDeductionBatchEntries, GetServiceHeader());*/
-
-                    TempData["OverDeductionBatchDTO"] = "";
 
 
             }
@@ -271,67 +279,125 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(k);
         }
 
-        public async Task<ActionResult> Add(Guid id, OverDeductionBatchDTO overDeductionBatchDTO)
+        
+
+        [HttpPost]
+        public async Task<ActionResult> AddBatch(OverDeductionBatchDTO overDeductionBatchDTO)
         {
             await ServeNavigationMenus();
 
-            /*var totalValue = overDeductionBatchDTO.TotalValue;
-            var branchDescription = overDeductionBatchDTO.BranchDescription;
-            var reference = overDeductionBatchDTO.Reference;*/
 
-            Session["totalValue"] = overDeductionBatchDTO.TotalValue;
-            Session["branchDescription"] = overDeductionBatchDTO.BranchDescription;
-            Session["reference"] = overDeductionBatchDTO.Reference;
 
-            TempData["totalValue"] = overDeductionBatchDTO.TotalValue;
-            TempData["branchDescription"] = overDeductionBatchDTO.BranchDescription;
-            TempData["reference"] = overDeductionBatchDTO.Reference;
 
-            return View(overDeductionBatchDTO);
-        }
+            var creditCustomerAccountFullAccountNumber = Session["CreditCustomerAccountFullAccountNumber"] as string;
+            var creditProductDescription = Session["CreditProductDescription"] as string;
+            var creditCustomerAccountFullName = Session["CreditCustomerAccountFullName"] as string;
 
-        public async Task<ActionResult>AddBatch(OverDeductionBatchDTO overDeductionBatchDTO)
-        {
-            await ServeNavigationMenus();
+            /*if (creditCustomerAccountFullAccountNumber != null && creditProductDescription != null && creditCustomerAccountFullName != null)
+            {
+                // Assign the values back to the DTO or use them as needed
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullAccountNumber = creditCustomerAccountFullAccountNumber;
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditProductDescription = creditProductDescription;
+                overDeductionBatchDTO.overDeductionBatchEntry.CreditCustomerAccountFullName = creditCustomerAccountFullName;
+            }
 
-            
 
-            await _channelService.AddOverDeductionBatchAsync(overDeductionBatchDTO);
+            var debitCustomerAccountFullName = Session["DebitCustomerAccountFullName"] as string;
+            var debitProductDescription = Session["DebitProductDescription"] as string;
+            var debitCustomerAccountFullAccountNumber = Session["DebitCustomerAccountFullAccountNumber"] as string;
+
+            if (debitCustomerAccountFullName != null && debitProductDescription != null && debitCustomerAccountFullAccountNumber != null)
+            {
+                // Assign the values back to the DTO or use them as needed
+                overDeductionBatchDTO.overDeductionBatchEntry.DebitCustomerAccountFullName = debitCustomerAccountFullName;
+                overDeductionBatchDTO.overDeductionBatchEntry.DebitProductDescription = debitProductDescription;
+                overDeductionBatchDTO.overDeductionBatchEntry.DebitCustomerAccountFullAccountNumber = debitCustomerAccountFullAccountNumber;
+            }*/
+
+
+            Session["BatchDTO"] = overDeductionBatchDTO;
+            Session["TotalValue"] = overDeductionBatchDTO.TotalValue;
+            Session["Reference"] = overDeductionBatchDTO.Reference;
+            Session["Branch"] = overDeductionBatchDTO.BranchDescription;
+            Session["BranchId"] = overDeductionBatchDTO.BranchId;
+
+
+
+            TempData["BatchSuccess"] = "Partial Batch Saved Successifully";
+
 
             return View("Create");
-
         }
+
+
+        
+
 
         [HttpPost]
         public async Task<ActionResult> Add(OverDeductionBatchDTO overDeductionBatchDTO)
         {
             await ServeNavigationMenus();
 
-            OverDeductionBatchEntryDTOs = TempData["OverDeductionBatchEntryDTOs"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+            if (Session["TotalValue"] != null)
+            {
+                overDeductionBatchDTO.TotalValue = (decimal)Session["TotalValue"];
+            }
+            if (Session["Reference"] != null)
+            {
+                overDeductionBatchDTO.Reference = (string)Session["Reference"];
+            }
+
+            if(Session["Branch"] != null)
+            {
+                overDeductionBatchDTO.BranchDescription = (string)Session["Branch"];
+            }
+            if (Session["BranchId"] != null)
+            {
+                overDeductionBatchDTO.BranchId = (Guid)Session["BranchId"];
+            }
+
+
+
+
+            OverDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+
+            
+
+            ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+
+
 
             if (OverDeductionBatchEntryDTOs == null)
+            {
                 OverDeductionBatchEntryDTOs = new ObservableCollection<OverDeductionBatchEntryDTO>();
+            }
 
-            Session["debitCustomerAccount"] = overDeductionBatchDTO.DebitCustomerAccountDTO;
 
-
-            /*int CreditAccountNumber = int.Parse(overDeductionBatchDTO.CreditCustomerAccountDTO.FullAccountNumber);
-            int DebitAccountNumber = int.Parse(overDeductionBatchDTO.DebitCustomerAccountDTO.FullAccountNumber);*/
 
             foreach (var overDeductionBatchEntryDTO in overDeductionBatchDTO.overDeductionBatchEntries)
             {
-                overDeductionBatchEntryDTO.CreditCustomerAccountFullName = overDeductionBatchDTO.CreditCustomerAccountDTO.CustomerFullName;
-                overDeductionBatchEntryDTO.DebitCustomerAccountCustomerIndividualFirstName = overDeductionBatchDTO.DebitCustomerAccountDTO.CustomerFullName;
-                overDeductionBatchEntryDTO.CreditProductDescription = overDeductionBatchDTO.CreditCustomerAccountDTO.CustomerAccountTypeTargetProductDescription;
-                overDeductionBatchEntryDTO.DebitProductDescription = overDeductionBatchDTO.DebitCustomerAccountDTO.CustomerAccountTypeTargetProductDescription;
-                overDeductionBatchEntryDTO.DebitCustomerAccountCustomerSerialNumber =int.Parse(overDeductionBatchDTO.DebitCustomerAccountDTO.FullAccountNumber);
-                overDeductionBatchEntryDTO.DebitCustomerAccountCustomerSerialNumber = int.Parse(overDeductionBatchDTO.DebitCustomerAccountDTO.FullAccountNumber);
+                overDeductionBatchEntryDTO.DebitCustomerAccountFullName = overDeductionBatchEntryDTO.DebitCustomerAccountFullName;
+                overDeductionBatchEntryDTO.DebitProductDescription = overDeductionBatchEntryDTO.DebitProductDescription;
+                overDeductionBatchEntryDTO.DebitCustomerAccountFullAccountNumber = overDeductionBatchEntryDTO.DebitCustomerAccountFullAccountNumber;
+                overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber = overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber;
+                overDeductionBatchEntryDTO.CreditProductDescription = overDeductionBatchEntryDTO.CreditProductDescription;
+                overDeductionBatchEntryDTO.CreditCustomerAccountFullName = overDeductionBatchEntryDTO.CreditCustomerAccountFullName;
+                overDeductionBatchEntryDTO.Interest = overDeductionBatchDTO.overDeductionBatchEntries[0].Interest;
+                overDeductionBatchEntryDTO.Principal = overDeductionBatchDTO.overDeductionBatchEntries[0].Principal;
+
 
                 OverDeductionBatchEntryDTOs.Add(overDeductionBatchEntryDTO);
+                
+
+
 
                 Session["overDeductionBatchEntries"] = OverDeductionBatchEntryDTOs;
 
             };
+
+            Session["CreditCustomerAccountFullAccountNumber"] = null;
+            Session["CreditProductDescription"] = null;
+            Session["CreditCustomerAccountFullName"] = null;
 
 
 
@@ -340,10 +406,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["OverDeductionBatchEntryDTO"] = OverDeductionBatchEntryDTOs;
             Session["OverDeductionBatchEntryDTO"] = OverDeductionBatchEntryDTOs;
             TempData["OverDeductionBatchDTO"] = overDeductionBatchDTO;
+            Session["OverDeductionBatchDTO"] = overDeductionBatchDTO;
 
 
 
-            return View("Create");
+            return View("Create",overDeductionBatchDTO);
 
 
 

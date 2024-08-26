@@ -1,5 +1,4 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
- INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Tellers]([Id]
+ INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_Tellers]([Id]
   ,[Type]
       ,[EmployeeId]
       ,[ChartOfAccountId]

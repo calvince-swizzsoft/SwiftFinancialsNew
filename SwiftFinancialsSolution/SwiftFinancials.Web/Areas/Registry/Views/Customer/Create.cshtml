@@ -36,7 +36,7 @@
 {
     <div class="alert alert-danger fade in">
         <button class="close" data-dismiss="alert">
-            ×
+            
         </button>
         <i class="fa-fw fa fa-times"></i>
         <strong>Error!</strong> @TempData["Error"]
@@ -68,8 +68,6 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-
-
                     @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
@@ -150,7 +148,8 @@
                             </div>
                         </div>
 
-
+                        <br />
+                       
 
                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
                             <li class="nav-item">
@@ -243,7 +242,7 @@
                                 </div>
                             </div>
 
-                            <div id="IndividualParticulars" class="tab-pane" role="tabpanel">
+                            <div id="IndividualParticulars" class="tab-pane active" role="tabpanel">
                                 <div class="row">
                                     <div class="col-4">
                                         <div class="form-group form-group-lg">
@@ -364,15 +363,132 @@
 
                             <div id="Referees" class="tab-pane" role="tabpanel">
 
+                                <row>
+                                    <h2>REFEREES</h2>
+
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.Id)
+                                            @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                </row>
+
 
                             </div>
 
                             <div id="CreditTypes" class="tab-pane" role="tabpanel">
 
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">CreditTypeDescription</th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountId</th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountAccountType </th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountAccountCode </th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountAccountName </th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountName </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.credit != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.credit)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.CreditTypeDescription
+                                                            </td>
 
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountId
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountAccountType
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountAccountCode
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountAccountName
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountName
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </row>
                             </div>
 
                             <div id="DebitTypes" class="tab-pane" role="tabpanel">
+
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                    <th data-toggle="true">CustomerAccountTypeProductCode</th>
+                                                    <th data-toggle="true">ProductCode</th>
+                                                    <th data-toggle="true">CustomerAccountTypeProductCodeDescription</th>
+                                                    <th data-toggle="true">IsLocked</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.debit != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.debit)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.Description
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CustomerAccountTypeProductCode
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.ProductCode
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.CustomerAccountTypeProductCodeDescription
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.IsLocked
+                                                            </td>
+
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </row>
 
                             </div>
 
@@ -384,14 +500,17 @@
                                             <thead>
                                                 <tr>
                                                     <th data-toggle="true">Description</th>
-                                                    <th data-hide="phone">Percentage</th>
-                                                    <th data-hide="phone">Remove Entry</th>
+                                                    <th data-hide="phone">MinimumBalance</th>
+                                                    <th data-hide="phone">PoolAmount </th>
+                                                    <th data-hide="phone">Priority </th>
+                                                    <th data-hide="phone">MaturityPeriod </th>
+                                                    <th data-hide="phone">AnnualPercentageYield </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (ViewBag.savings != null)
+                                                @if (ViewBag.investment != null)
                                                 {
-                                                    foreach (var levySplit in ViewBag.invesment)
+                                                    foreach (var levySplit in ViewBag.investment)
                                                     {
                                                         <tr>
                                                             <td>
@@ -399,30 +518,46 @@
                                                             </td>
 
                                                             <td>
-                                                                <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
+                                                                @levySplit.MinimumBalance
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.PoolAmount
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.Priority
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.MaturityPeriod
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.AnnualPercentageYield
                                                             </td>
                                                         </tr>
                                                     }
                                                 }
                                             </tbody>
                                         </table>
-
-
                                     </div>
                                 </row>
                             </div>
 
                             <div id="SavingsProducts" class="tab-pane" role="tabpanel">
-
-
                                 <row>
                                     <div class="ibox-content m-b-sm border-bottom  text-dark">
                                         <table class="footable table table-stripped toggle-arrow-tiny grey-table">
                                             <thead>
                                                 <tr>
                                                     <th data-toggle="true">Description</th>
-                                                    <th data-hide="phone">Percentage</th>
-                                                    <th data-hide="phone">Remove Entry</th>
+                                                    <th data-hide="phone">MaximumAllowedWithdrawal</th>
+                                                    <th data-hide="phone">MaximumAllowedDeposit </th>
+
+                                                    <th data-hide="phone">MinimumBalance </th>
+                                                    <th data-hide="phone">OperatingBalance </th>
+                                                    <th data-hide="phone">AnnualPercentageYield </th>
                                                 </tr>
                                             </thead>
                                             <tbody>
@@ -436,95 +571,172 @@
                                                             </td>
 
                                                             <td>
-                                                                <button type="button" class="btn btn-outline-danger remove-btn">Remove</button>
+                                                                @levySplit.MaximumAllowedWithdrawal
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.MaximumAllowedDeposit
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.MinimumBalance
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.OperatingBalance
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.AnnualPercentageYield
                                                             </td>
                                                         </tr>
                                                     }
                                                 }
                                             </tbody>
                                         </table>
-
-
                                     </div>
                                 </row>
                             </div>
 
                             <div id="Specimen" class="tab-pane" role="tabpanel">
 
-
                             </div>
 
+
+                            <!--Specimen Capture-->
                             <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
 
+                                <div class="container">
+                                    <!-- Capture Passport from Webcam or File System -->
+                                    <div>
+                                        <h3>Passport</h3>
+                                        <div class="image-placeholder" id="passportImagePlaceholder">
+                                            <video id="webcam" autoplay style="display:none;"></video>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="captureWebcamImage()" style="width: 100px;">
+                                                <i class="fa fa-camera" aria-hidden="true"></i> Capture
+                                            </button>
+                                            <button class="button" onclick="browseImage('passportInput', 'passportImagePlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('passportImagePlaceholder', 'passportInput', 'webcam')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.PassportPhoto, new { type = "file", id = "passportInput", style = "display:none;", accept = "image/*", onchange = "showImage('passportInput', 'passportImagePlaceholder')" })
+                                        <canvas id="canvas" style="display:none;"></canvas>
+                                    </div>
+
+                                    <!-- Capture Signature from File System -->
+                                    <div>
+                                        <h3>Signature</h3>
+                                        <div class="image-placeholder" id="signaturePlaceholder"></div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="browseImage('signatureInput', 'signaturePlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('signaturePlaceholder', 'signatureInput')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.SignaturePhoto, new { type = "file", id = "signatureInput", style = "display:none;", accept = "image/*", onchange = "showImage('signatureInput', 'signaturePlaceholder')" })
+                                    </div>
+
+                                    <!-- Capture Identity Card (Front) from File System -->
+                                    <div>
+                                        <h3>Identity Card (Front)</h3>
+                                        <div class="image-placeholder" id="idFrontPlaceholder"></div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="browseImage('idFrontInput', 'idFrontPlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('idFrontPlaceholder', 'idFrontInput')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.IDCardFrontPhoto, new { type = "file", id = "idFrontInput", style = "display:none;", accept = "image/*", onchange = "showImage('idFrontInput', 'idFrontPlaceholder')" })
+                                    </div>
+
+                                    <!-- Capture Identity Card (Back) from File System -->
+                                    <div>
+                                        <h3>Identity Card (Back)</h3>
+                                        <div class="image-placeholder" id="idBackPlaceholder"></div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="browseImage('idBackInput', 'idBackPlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('idBackPlaceholder', 'idBackInput')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.IDCardBackPhoto, new { type = "file", id = "idBackInput", style = "display:none;", accept = "image/*", onchange = "showImage('idBackInput', 'idBackPlaceholder')" })
+                                    </div>
+
+                                </div>
 
                             </div>
                         </div>
-                        <div class="form-group form-group-sm">
-                            <div class="col-md-offset-2">
-                                @using (Html.BeginForm("Create", "Customer", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                                {
-                                    <input type="submit" value="Create" class="btn btn-primary" />
-                                }
+
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <input type="submit" value="Create" class="btn btn-primary" style="width: 150px;" />
                             </div>
                         </div>
                     }
                 </div>
-
             </div>
         </div>
     </div>
-</div>
 
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
-}
+    @section Styles{
+        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+        @Styles.Render("~/plugins/wizardStepsStyles")
+        @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+        @Styles.Render("~/plugins/awesomeCheckboxStyles")
+        @Styles.Render("~/plugins/clockpickerStyles")
+        @Styles.Render("~/plugins/dateRangeStyles")
+        @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+        @Styles.Render("~/plugins/switcheryStyles")
+        @Styles.Render("~/plugins/jasnyBootstrapStyles")
+        @Styles.Render("~/plugins/nouiSliderStyles")
+        @Styles.Render("~/plugins/dataPickerStyles")
+        @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+        @Styles.Render("~/plugins/imagecropperStyles")
+        @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+        @Styles.Render("~/plugins/select2Styles")
+        @Styles.Render("~/plugins/touchSpinStyles")
+        @Styles.Render("~/plugins/tagInputsStyles")
+        @Styles.Render("~/plugins/duallistStyles")
+    }
 
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
+    @section Scripts{
+        @Scripts.Render("~/plugins/wizardSteps")
+        @Scripts.Render("~/plugins/validate")
+        @Scripts.Render("~/plugins/typehead")
+        @Scripts.Render("~/plugins/dataTables")
+        @Scripts.Render("~/plugins/iCheck")
+        @Scripts.Render("~/plugins/dataPicker")
+        @Scripts.Render("~/plugins/ionRange")
+        @Scripts.Render("~/plugins/nouiSlider")
+        @Scripts.Render("~/plugins/jasnyBootstrap")
+        @Scripts.Render("~/plugins/switchery")
+        @Scripts.Render("~/plugins/chosen")
+        @Scripts.Render("~/plugins/knob")
+        @Scripts.Render("~/plugins/imagecropper")
+        @Scripts.Render("~/plugins/colorpicker")
+        @Scripts.Render("~/plugins/clockpicker")
+        @Scripts.Render("~/plugins/dateRange")
+        @Scripts.Render("~/plugins/select2")
+        @Scripts.Render("~/plugins/touchSpin")
+        @Scripts.Render("~/plugins/tagInputs")
+        @Scripts.Render("~/plugins/duallist")
 
-
-    <script>
+        <link href="~/Scripts/css/CaptureSpecimenForm.css" rel="stylesheet" />
+        <script src="~/Scripts/js/CaptureSpecimenDetails.js"></script>
+        <script>
         $(document).ready(function () {
-
-
-
             $('#data_3 .input-group.date').datepicker({
                 startView: 2,
                 todayBtn: "linked",
@@ -548,7 +760,8 @@
                                 rolesMap[role.Name] = role;
                             });
                             process(newRolesData); return;
-                        });
+                        }
+                    );
                 },
                 matcher: function (item) {
                     if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
@@ -585,7 +798,9 @@
                                 StationsMap[Station.Description] = Station;
                             });
                             process(newStationsData); return;
-                        });
+                        }
+                    );
+
                 },
                 matcher: function (item) {
                     if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
@@ -625,7 +840,8 @@
                                 BranchesMap[Branch.Description] = Branch;
                             });
                             process(newBranchesData); return;
-                        });
+                        }
+                    );
                 },
                 matcher: function (item) {
                     if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
@@ -649,5 +865,5 @@
             });
         });
 
-    </script>
-}
+        </script>
+    }

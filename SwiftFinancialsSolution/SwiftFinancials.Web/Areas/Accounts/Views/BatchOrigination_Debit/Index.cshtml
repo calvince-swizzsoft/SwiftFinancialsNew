@@ -9,13 +9,20 @@
         flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
         padding: 0;
         margin: 5px;
-        margin-bottom: 0;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
         gap: 10px; /* Space between links */
         text-align: center; /* Centers the text inside links */
+
+        padding:10px;
     }
 
     .nav-link {
         display: flex;
+
+
         text-decoration: none;
         color: #007bff; /* Default text color */
         transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
@@ -24,7 +31,7 @@
         font-size: 14px; /* Adjust font size for better fit */
         white-space: nowrap; /* Prevents text from wrapping inside the link */
 
-        border: 1px solid #007bff; /* Border color and style */
+       @* border: 1px solid #007bff;*@ /* Border color and style */
     }
 
         .nav-link:hover {
@@ -71,7 +78,7 @@
 <div class="row row-center">
     
     <div class="col-lg-12">
-        <div class="nav">
+        <div class="nav1">
             <div class="col-lg-12">
                 <nav class="nav">
                     <a href="@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })" class="nav-link">

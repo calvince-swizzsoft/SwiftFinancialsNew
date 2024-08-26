@@ -1,4 +1,4 @@
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_ExpensePayables] ([Id]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_ExpensePayables] ([Id]
 
       ,[BranchId]
       ,[ChartOfAccountId]

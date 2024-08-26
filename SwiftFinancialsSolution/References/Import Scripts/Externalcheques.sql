@@ -1,5 +1,4 @@
-/****** Script for SelectTopNRows command from SSMS  ******/
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_ExternalCheques]([Id]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_ExternalCheques]([Id]
       ,[TellerId]
       ,[ChequeTypeId]
       ,[CustomerAccountId]

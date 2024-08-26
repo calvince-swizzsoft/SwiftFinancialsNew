@@ -1238,5 +1238,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Number Of Periods")]
         public int NumberOfPeriods { get; set; }
+
+
+        [DataMember]
+        public IncomeAdjustmentDTO incomeAdjustment { get; set; }
     }
 }

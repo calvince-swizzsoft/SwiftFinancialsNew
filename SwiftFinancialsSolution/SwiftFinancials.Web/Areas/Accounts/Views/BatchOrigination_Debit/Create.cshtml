@@ -13,6 +13,15 @@
         border: 1px solid gray;
         border-radius: 10px;  
     }
+    .row{
+        margin-top:20px;
+    }
+    h2{
+        color:#333; 
+        font-weight:bold;
+        
+        
+    }
 
     .bottom-button {
         border: 2px solid gray; /* Border color set to gray */
@@ -26,19 +35,88 @@
         background-color: #00e0ff;
     }
     .content {
-        border: 1px solid #00ffff;
+        border: 4px solid #00ffff;
+        border-radius: 12px;
         margin-bottom: 30px;
         justify-content: center;
         align-content: baseline;
         margin: 20px;
-        font-size: 18px;
+        font-size: 15px;
         font-weight: bold;
         padding: 20px;
-        padding-bottom:160px;
     }
     .btn-primary{
         border-radius:10px;
     }
+    @*Styling for Entries*@ 
+    .journal-voucher-container {
+        border: 1px solid #333;
+        margin: 20px;
+        padding: 20px;
+        font-size: 15px;
+        border-radius: 8px;
+        position: relative;
+        padding: 40px; /* Space for the h2 */
+        
+    }
+
+    .journal-voucher-container h2 {
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background: #fff;
+        padding: 0 10px;
+        margin: 0;
+    }
+
+    .journal-voucher-container .form-control,
+    .journal-voucher-container .input-group-addon {
+        font-weight: normal; /* Retain normal weight for controls */
+    }
+
+    @*css for the journal entries*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .form-control {
+        color: #007bff;
+    }
+
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -86,11 +164,13 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
-                        <h1>Debit Batch</h1>
-                        <div class="main">
+                   
+                        
+                    <h1>Debit Batch</h1>
+                    <div class="main">
+                        @using (Html.BeginForm("AddBatch", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+
                             <div class="content">
                                 <div class="row">
                                     <div class="col-lg-6">
@@ -110,7 +190,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
-                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                         </div>
                                     </div>
@@ -131,16 +211,212 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
                                             @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                            @*@Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })*@
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <br/>
+                                
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group" style="text-align:right;">
+                                            <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                            </div>
+                        }
+                        <br />
+                        <br />
+                        @using (Html.BeginForm("Add", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="journal-voucher-container">
+                                <h2>Add Debit Batch Entries</h2>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                               @* @Html.HiddenFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber)*@
+                                                @Html.TextBoxFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
+                                            
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                        </div>
+                                    </div>
+                                    @*<div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountRemarks, htmlAttributes: new { @class = "control-label" })
+                                            
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountRemarks, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountRemarks, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                        </div>
+                                    </div>*@
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
+                                            
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].ProductDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
                                         </div>
                                     </div>
 
 
                                 </div>
 
-                                
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.HiddenFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerId)
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+
+
+
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].Multiplier, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Multiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Multiplier, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Reference, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                    </div>
+
+                                </div>
+
+                                <br />
+                                <br />
+
+                                <row>
+
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 15%;">Debit Customer</th>
+                                                <th style="width: 10%;">Debit Account</th>
+                                                <th style="width: 5%;">Multiplier</th>
+                                                <th style="width: 5%;">Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.DebitBatchEntryDTOs != null)
+                                            {
+                                                foreach (var DebitBatchEntries in ViewBag.DebitBatchEntryDTOs)
+                                                {
+                                                    <tr data-id="@DebitBatchEntries.Id">
+                                                        <td>@DebitBatchEntries.DebitCustomerAccountFullName</td>
+                                                        <td>@DebitBatchEntries.DebitCustomerAccountFullAccountNumber</td>
+                                                        <td>@DebitBatchEntries.Multiplier</td>
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+
+
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </row>
+
+
+
+
                             </div>
+
+
+
                             
+
+                        }
+
+
+
+
+                        @using (Html.BeginForm("Create", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
                             <div class="bottom-button">
                                 <div class="row">
                                     <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
@@ -151,13 +427,16 @@
 
                                 </div>
                             </div>
-                        </div>
-                        
-                        
-                        
-                        
-                    }
-                </div>
+
+                        }
+
+
+
+
+
+                    </div>
+
+                    
             </div>
         </div>
     </div>
@@ -179,6 +458,29 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="DebitcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Debit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="DebitCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -230,7 +532,7 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script>
+<script>
 
      $('#BenefactorCustomerAccountsGrid').DataTable({
        // Ajax settings
@@ -320,75 +622,7 @@
 
 
 
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
-
-                    var form = $(this);
-
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
-
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
-
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
-
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-        });
 
                  //Branch typehead starts here
             $('.BranchesLookup').typeahead({
@@ -426,5 +660,46 @@
                     return item;
                 }
 
-            }); </script>
+            });
+
+        ////////// Debit customer accounts lookup modol/////////
+        $('#DebitCustomerAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BatchOrigination_Debit/DebitCustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+             });
+
+</script>
 }

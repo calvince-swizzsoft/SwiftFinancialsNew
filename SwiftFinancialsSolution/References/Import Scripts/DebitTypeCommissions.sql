@@ -1,4 +1,4 @@
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_DebitTypeCommissions]([Id]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_DebitTypeCommissions]([Id]
       ,[DebitTypeId]
       ,[CommissionId]
       ,[SequentialId]

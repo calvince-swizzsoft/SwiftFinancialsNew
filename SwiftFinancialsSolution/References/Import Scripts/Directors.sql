@@ -1,4 +1,4 @@
-INSERT INTO  [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Directors] ([Id]
+INSERT INTO  [SwiftFinancialsDB_Live].[dbo].[swiftfin_Directors] ([Id]
   ,[DivisionId]
       ,[CustomerId]
       ,[Remarks]

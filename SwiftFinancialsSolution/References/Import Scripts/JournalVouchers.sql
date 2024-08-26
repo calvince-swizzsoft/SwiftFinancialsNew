@@ -1,5 +1,5 @@
 
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_JournalVouchers]([Id]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_JournalVouchers]([Id]
       ,[BranchId]
       ,[PostingPeriodId]
       ,[ChartOfAccountId]

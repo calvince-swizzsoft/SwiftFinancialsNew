@@ -83,5 +83,7 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public string ErrorMessageResult;
+        public CustomerDTO CustomerDTO;
     }
 }
