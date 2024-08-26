@@ -1142,13 +1142,14 @@
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\StationLinkage.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Processing.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Closing.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemTransactiontypes\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

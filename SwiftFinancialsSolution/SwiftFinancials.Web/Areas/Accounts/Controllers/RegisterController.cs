@@ -224,7 +224,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ManagementSelectList = GetalternateChannelManagementActionSelectList(string.Empty);
 
+            
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
 

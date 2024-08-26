@@ -18,7 +18,7 @@
                 @Html.ActionLink("Home", "Index", "AlternatePeriods", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Closing</strong>
             </li>
         </ol>
     </div>
@@ -51,7 +51,7 @@
                     </div>
                 }
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Index", "AlternatePeriods", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Closing", "AlternatePeriods", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -116,7 +116,7 @@
 
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                    <input type="submit" value="Closing" class="btn btn-primary" />
                                 </div>
                             </div>
                         </fieldset>

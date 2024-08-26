@@ -1,7 +1,7 @@
 ﻿
 
 @{
-    ViewBag.Title = "Bank Linkage";
+    ViewBag.Title = "Bank Reconciliation";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -118,6 +118,8 @@
                     var viewUrl = '<a  href="/accounts/BankReconciliation_Periods/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
                     var ClosingUrl = '<a  href="/accounts/BankReconciliation_Periods/Closing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Closing</a>';
                     var ProcessingUrl = '<a  href="/accounts/BankReconciliation_Periods/Processing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Processing</a>';
+
+
 
                     $('td:eq(6)', nRow).html(dt_Created);
                    $('td:eq(6)', nRow).html(viewUrl+ ClosingUrl+ ProcessingUrl);

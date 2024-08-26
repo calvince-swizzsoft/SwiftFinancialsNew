@@ -7,7 +7,7 @@
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
     var record = ViewBag.RecordStatusSelectList as List<SelectListItem>;
 
-
+    var Management = ViewBag.ManagementSelectList as List<SelectListItem>;
 
     var customerTypes = ViewBag.alternateChannelType as List<SelectListItem>;
 }
@@ -64,6 +64,15 @@
 
 
                             <fieldset>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Operations, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Operations, Management, new { @class = "form-control input-md" })
+                                        @Html.HiddenFor(model => model.Operations, new { htmlAttributes = new { @class = "form-control" } })
+                                        @Html.ValidationMessageFor(model => model.Operations)
+                                    </div>
+                                </div>
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="col-md-13 form-group">
@@ -155,15 +164,11 @@
                                             @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Customer membership  Number", disabled = "disabled" } })
                                             @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
-                                        @*<div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.RecordStatus, new { @class = "control-label" })
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.RecordStatus, record, new { @class = "form-control input-md" })
-                                                    @Html.HiddenFor(model => model.RecordStatus, new { htmlAttributes = new { @class = "form-control" } })
-                                                    @Html.ValidationMessageFor(model => model.RecordStatus)
-                                                </div>
-                                            </div>*@
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks"} })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
                                         <div class="form-group form-group-lg">
                                             @Html.CheckBoxFor(model => model.IsThirdPartyNotified, htmlAttributes: new { @class = "" })
                                             @Html.LabelFor(model => model.IsThirdPartyNotified, new { htmlAttributes = new { @class = "form-control", @placeholder = "Is Locked?" } })
@@ -177,6 +182,49 @@
 
                                     </div>
                                 </div>
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">fullname</th>
+                                                    <th data-hide="phone">ManagementActionDescription</th>
+                                                    <th data-hide="phone">CustomerAccountType</th>
+                                                    <th data-hide="phone">Remarks</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.history != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.history)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.CustomerAccountCustomerFullName
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.ManagementActionDescription
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.CustomerAccountCustomerTypeDescription
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.Remarks
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                        @if (TempData["tPercentage"] != null)
+                                        {
+                                            <p style="color: red; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                        }
+
+                                    </div>
+                                </row>
+
                             </fieldset>
                         </div>
                     }

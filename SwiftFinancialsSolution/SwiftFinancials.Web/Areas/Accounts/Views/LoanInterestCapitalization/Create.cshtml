@@ -41,8 +41,47 @@
                     @using (Html.BeginForm("Create", "LoanInterestCapitalization", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
+
+                        <div style="border: 2px solid cadetblue; padding: 20px; border-radius: 10px; background-color: white;">
+
+                            <div class="form-group form-group-lg" style="color:cadetblue">
+                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
+                                    @Html.ValidationMessageFor(model => model.Priority)
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm" style="color:cadetblue">
+                                        @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Month, Months, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Month)
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm" style="color:cadetblue">
+                                        @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId)
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+
+
 
                             <div class="ibox-content">
                                 <div class="sk-spinner sk-spinner-double-bounce">
@@ -65,35 +104,6 @@
                                 <label for="headerCheckbox" style="font-weight: bold; color: blue;">Select All</label>
 
                             </div>
-
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                    @Html.DropDownListFor(model => model.Month, Months, new { @class = "form-control input-md" })
-                                    @Html.ValidationMessageFor(model => model.Month)
-                                </div>
-                            </div>
-
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.PostingPeriodId)
-                                @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
-                            </div>
-
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                    @Html.DropDownListFor(model => model.Priority, QueuePriority, new { @class = "form-control input-md" })
-                                    @Html.ValidationMessageFor(model => model.Priority)
-                                </div>
-                            </div>
-
-
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2 col-md-10">
                                     <input type="button" value="Create" class="btn btn-primary" id="createButton" />

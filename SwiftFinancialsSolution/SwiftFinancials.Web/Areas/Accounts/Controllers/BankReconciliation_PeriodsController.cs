@@ -53,6 +53,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var bankReconciliationPeriodDTO = await _channelService.FindBankReconciliationPeriodAsync(id, GetServiceHeader());
 
+           var k= await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
+            ViewBag.history = k;
             return View(bankReconciliationPeriodDTO);
         }
 
@@ -120,9 +122,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 bankReconciliationPeriodDTO.ChartOfAccountId = bankDetails.ChartOfAccountId;
                 bankReconciliationPeriodDTO.BankAccountNumber = bankDetails.BankAccountNumber;
                 Session["BankId"] = bankReconciliationPeriodDTO.BankLinkageId;
+
+                var k = await _channelService.FindBankLinkageAsync(bankReconciliationPeriodDTO.BankLinkageId, GetServiceHeader());
+                bankReconciliationPeriodDTO.BankAccountNumber = k.BankAccountNumber;
+                bankReconciliationPeriodDTO.BranchId = k.BranchId;
+                bankReconciliationPeriodDTO.ChartOfAccountId = k.ChartOfAccountId;
+                var j = await _channelService.FindGeneralLedgerAccountAsync(k.ChartOfAccountId, true, GetServiceHeader());
+                ViewBag.j = j.Balance;
+                bankReconciliationPeriodDTO.GeneralLedgerAccountBalance = j.Balance;
                 Session["BankName"] = bankReconciliationPeriodDTO.BankLinkageBankName;
             }
-
+            
+           
             return View("Create", bankReconciliationPeriodDTO);
         }
 
@@ -147,6 +158,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             bankReconciliationPeriodDTO.BankAccountNumber = k.BankAccountNumber;
             bankReconciliationPeriodDTO.BranchId = k.BranchId;
             bankReconciliationPeriodDTO.ChartOfAccountId = k.ChartOfAccountId;
+            var j = await _channelService.FindGeneralLedgerAccountAsync(k.ChartOfAccountId, true, GetServiceHeader());
+            ViewBag.j = j.Balance;
+            bankReconciliationPeriodDTO.ChartOfAccountAccountName = k.ChartOfAccountAccountName;
+           
             bankReconciliationPeriodDTO.DurationEndDate = DateTime.Now;
 
             bankReconciliationPeriodDTO.ValidateAll();
@@ -204,20 +219,32 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var bankReconciliationPeriodDTO = await _channelService.FindBankReconciliationPeriodAsync(id, GetServiceHeader());
-
+            var k = await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
+            ViewBag.history = k;
+            
             return View(bankReconciliationPeriodDTO);
         }
 
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Processing(Guid? id, BankReconciliationEntryDTO bankReconciliationPeriodDTO)
+        public async Task<ActionResult> Processing(BankReconciliationPeriodDTO bankReconciliationPeriodDTO,BankReconciliationEntryDTO bankReconciliationEntryDTO)
         {
+            bankReconciliationPeriodDTO.bankReconciliationEntryDTOs = bankReconciliationEntryDTO;
             if (!bankReconciliationPeriodDTO.HasErrors)
             {
-                await _channelService.AddBankReconciliationEntryAsync(bankReconciliationPeriodDTO, GetServiceHeader());
+                 bankReconciliationEntryDTO.BankReconciliationPeriodId= bankReconciliationPeriodDTO.Id ;
+                bankReconciliationEntryDTO.ChartOfAccountId = bankReconciliationPeriodDTO.ChartOfAccountId;
+                bankReconciliationEntryDTO.ChartOfAccountId = bankReconciliationPeriodDTO.ChartOfAccountId;
+                bankReconciliationEntryDTO.ChequeNumber = bankReconciliationPeriodDTO.ChequeNumber;
+                bankReconciliationEntryDTO.ChequeDrawee = bankReconciliationPeriodDTO.ChequeDrawee;
+                bankReconciliationEntryDTO.Value = bankReconciliationPeriodDTO.Value;
 
-                TempData["Edit"] = "Successfully edited Bank Reconciliation Period";
+
+
+                await _channelService.AddBankReconciliationEntryAsync(bankReconciliationEntryDTO, GetServiceHeader());
+
+                TempData["Edit"] = "Successfully Processed Bank Reconciliation Period";
 
                 return RedirectToAction("Index");
             }
@@ -243,6 +270,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             if (!bankReconciliationPeriodDTO.HasErrors)
             {
+                
+
+                var k = await _channelService.FindBankLinkageAsync(bankReconciliationPeriodDTO.BankLinkageId, GetServiceHeader());
+                bankReconciliationPeriodDTO.BankAccountNumber = k.BankAccountNumber;
+                bankReconciliationPeriodDTO.BranchId = k.BranchId;
+                bankReconciliationPeriodDTO.ChartOfAccountId = k.ChartOfAccountId;
+                var j = await _channelService.FindGeneralLedgerAccountAsync(k.ChartOfAccountId, true, GetServiceHeader());
+                ViewBag.j = j.Balance;
+                bankReconciliationPeriodDTO.ChartOfAccountAccountName = k.ChartOfAccountAccountName;
+
+                bankReconciliationPeriodDTO.DurationEndDate = DateTime.Now;
+
                 await _channelService.CloseBankReconciliationPeriodAsync(bankReconciliationPeriodDTO,1,2,GetServiceHeader());
 
                 TempData["Edit"] = "Successfully edited Bank Reconciliation Period";

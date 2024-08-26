@@ -137,6 +137,7 @@
 
                     var editUrl = '<a  href="/accounts/Register/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve/Reject</a>';
                     var viewUrl = '<a  href="/accounts/Register/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var viewUrl = '<a  href="/accounts/AlternatechannelManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Management</a>';
 
                     var dropdownHtml = `
                         <div class="dropdown">
@@ -146,6 +147,7 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/accounts/Register/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/accounts/Register/edit/${aData.Id}">Edit</a>
+                                <a class="dropdown-item" href="/accounts/AlternatechannelManagement/Create/${aData.Id}">Management</a>
                             </div>
                         </div>`;
 
