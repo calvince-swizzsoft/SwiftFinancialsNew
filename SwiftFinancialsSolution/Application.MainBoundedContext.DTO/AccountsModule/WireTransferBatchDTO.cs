@@ -4,6 +4,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
+using System.Collections.ObjectModel;
 
 namespace Application.MainBoundedContext.DTO.AccountsModule
 {
@@ -153,5 +154,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        public ObservableCollection<WireTransferBatchEntryDTO> WireTransferEntries { get; set; }
+        [DataMember]
+
+        public WireTransferBatchEntryDTO WireTransferEntry { get; set; }
+
     }
 }

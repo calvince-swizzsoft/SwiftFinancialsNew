@@ -242,7 +242,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 creditBatchDTO.TotalValue = (decimal)Session["TotalValue"];
             }
 
-
+           
 
 
             CreditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
@@ -298,7 +298,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["CreditBatchDTO"] = creditBatchDTO;
             Session["CreditBatchDTO"] = creditBatchDTO;
 
-            Session["creditBatchDTO2"] = null;
+            
+
+
+
 
 
 
@@ -324,21 +327,46 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
         {
 
+            Session["RecoverCarryForwards"] = creditBatchDTO.RecoverCarryForwards;
+            Session["PreserveAccountBalance"] = creditBatchDTO.PreserveAccountBalance;
+            Session["RecoverIndefiniteCharges"] = creditBatchDTO.RecoverIndefiniteCharges;
+            Session["RecoverArrearages"] = creditBatchDTO.RecoverArrearages;
+
             creditBatchDTO = Session["CreditBatchDTO"] as CreditBatchDTO;
 
             CreditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
 
 
+            
             if (Session["CreditBatchEntryDTO"] != null)
             {
                 creditBatchDTO.CreditBatchEntries = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
             }
 
 
-            creditBatchDTO.RecoverCarryForwards = creditBatchDTO.RecoverCarryForwards;
-            creditBatchDTO.PreserveAccountBalance = creditBatchDTO.PreserveAccountBalance;
-            creditBatchDTO.RecoverIndefiniteCharges = creditBatchDTO.RecoverIndefiniteCharges;
-            creditBatchDTO.RecoverArrearages = creditBatchDTO.RecoverArrearages;
+            if (Session["RecoverCarryForwards"] != null)
+            {
+                creditBatchDTO.RecoverCarryForwards = (bool)Session["RecoverCarryForwards"];
+            }
+
+            if (Session["PreserveAccountBalance"] != null)
+            {
+                creditBatchDTO.PreserveAccountBalance = (bool)Session["PreserveAccountBalance"];
+            }
+            if (Session["RecoverIndefiniteCharges"] != null)
+            {
+                creditBatchDTO.RecoverIndefiniteCharges = (bool)Session["RecoverIndefiniteCharges"];
+            }
+
+            if (Session["RecoverArrearages"] != null)
+            {
+                creditBatchDTO.RecoverArrearages = (bool)Session["RecoverArrearages"];
+            }
+
+
+
+
+            
 
             creditBatchDTO.ValidateAll();
 
@@ -384,7 +412,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
 
                 TempData["SuccessMessage"] = "Successfully Created Credit Batch";
-                TempData["OverDeductionBatchDTO"] = "";
+                Session["CreditBatchEntryDTO"] = null;
+                Session["CreditBatchDTO"] = null;
 
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
@@ -473,6 +502,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
+
+                TempData["VerifySuccess"] = "Verification Successiful";
                 return RedirectToAction("Index");
             }
             else
@@ -524,6 +555,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
 
+                TempData["AuthorizeSuccess"] = "Authorization Successiful";
+
                 return RedirectToAction("Index");
             }
             else
@@ -536,6 +569,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
+
+                TempData["AuthorizeFail"] = "Authorization Failed";
                 return View(creditBatchDTO);
             }
         }

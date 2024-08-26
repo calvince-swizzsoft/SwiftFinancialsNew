@@ -17,8 +17,9 @@
 }
 
 <style>
-    .main1{
-        font-weight:bold;
+    .main1 {
+        font-weight: bold;
+        background-color: #f1f1f1;
     }
     h2{
         color:#333;
@@ -82,7 +83,8 @@
         border-radius:12px;
         padding:20px;
     }
-    @*css for the journal entries*@ #ChargeSplits {
+    @*css for the journal entries
+        *@ #ChargeSplits {
         width: 100%;
         border-collapse: collapse;
         font-family: Arial, sans-serif;
@@ -115,7 +117,7 @@
 
     @*Styling for Entries*@
     .journal-voucher-container {
-        border: 1px solid #ddd;
+        border: 3px solid gray;
         margin-top: 20px;
         padding: 20px;
         font-size: 15px;
@@ -210,7 +212,7 @@
                                     <div class="combined-container">
                                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.PostingPeriodId)
@@ -219,14 +221,14 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ConcessionFixedAmount, htmlAttributes: new { @class = "control-label" })
                                                     @Html.EditorFor(model => model.ConcessionFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "ConcessionFixedAmount", @required = "" } })
                                                     @Html.ValidationMessageFor(model => model.ConcessionFixedAmount, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditTypeId, htmlAttributes: new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.CreditTypeId)
@@ -234,12 +236,7 @@
                                                     @Html.EditorFor(model => model.CreditTypeDescription, new { htmlAttributes = new { @class = "CreditTypesLookup form-control required", placeholder = "Credit Type Description" } })
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
-
-
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
                                                     <div class="input-group">
@@ -249,7 +246,13 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
+                                        </div>
+
+                                        <div class="row">
+
+
+
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                                     @Html.HiddenFor(model => model.BranchId)
@@ -258,20 +261,14 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
                                                     @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                                     @*@Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })*@
                                                 </div>
                                             </div>
-
-                                        </div>
-
-
-
-                                        <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.Month, new { @class = "control-label" })
                                                     <div class="input-group">
@@ -282,7 +279,7 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ConcessionType, new { @class = "control-label" })
                                                     <div class="input-group">
@@ -292,7 +289,14 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
+
+                                        </div>
+
+
+
+                                        <div class="row">
+
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                                     <div class="input-group">
@@ -302,12 +306,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
-
-
-                                            <div class="col-lg-6">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
                                                     @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "TotalValue", @required = "" } })
@@ -316,13 +315,12 @@
                                             </div>
                                             <div class="col-lg-6">
                                                 <div class="form-group" style="text-align:right;">
-                                                    <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;margin-top:40px;" />
+                                                    <input type="submit" value="Add Batch" class="btn btn-primary" style="width: 100px; border-radius: 4px; margin-top: 40px; " />
                                                 </div>
                                             </div>
-
                                         </div>
-                                        <br />
-                                        <br />
+
+                                    
 
 
 
@@ -339,7 +337,7 @@
                                     <div class="journal-voucher-container">
                                         <h2>Add credit Batch Entries</h2>
                                         <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="col-md-13 form-group">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                     <div class="input-group" data-autoclose="true">
@@ -352,78 +350,98 @@
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
                                                     @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription)*@
                                                     @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, "", new { @class = "text-danger" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
                                                     @* @Html.HiddenFor(model => model.CreditBatchEntries[0].ProductDescription)*@
                                                     @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].ProductDescription, "", new { @class = "text-danger" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
                                                 </div>
                                             </div>
-
-
-                                        </div>
-
-
-                                        <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerId, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerId, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
 
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
                                         </div>
+
+
                                         <div class="row">
 
 
 
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
 
-
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
 
-                                            <div class="col-lg-4">
+                                        </div>
+                                        
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal" } })
+                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Principal, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].Beneficiary, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].Beneficiary, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Beneficiary, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Interest, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
                                                     @Html.EditorFor(model => model.CreditBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
@@ -433,51 +451,21 @@
 
                                         </div>
                                         <div class="row">
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal" } })
-                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Principal, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].Beneficiary, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].Beneficiary, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Beneficiary, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.CreditBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreditBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].Interest, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-
-
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-3">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreditBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
                                                     @Html.EditorFor(model => model.CreditBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
                                                     @Html.ValidationMessageFor(model => model.CreditBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-
-                                        </div>
-                                        <div class="row">
-                                            <!-- Center the Submit button -->
-                                            <div style="text-align: right; margin: 20px 20px;">
-                                                <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                            <div class="col-lg-9">
+                                                <div style="text-align: right; margin: 20px 20px;">
+                                                    <input type="submit" value="Add Entry" class="btn btn-primary" style="width: 150px; border-radius: 4px; " />
+                                                </div>
                                             </div>
 
                                         </div>
+                                        
 
                                         <br />
 
@@ -561,7 +549,7 @@
 
                                             <div class="col-lg-2">
                                                 <div class="form-group" style="text-align:right;">
-                                                    <input type="submit" value="Create" class="btn btn-primary" style="width: 100px; margin-left:20px; border-radius: 4px;" />
+                                                    <input type="submit" value="Create" class="btn btn-primary" style="width: 100px; margin-left: 20px; border-radius: 4px; background-color: dodgerblue;" />
                                                 </div>
                                             </div>
 
