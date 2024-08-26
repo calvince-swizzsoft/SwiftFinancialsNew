@@ -637,5 +637,14 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
         [DataMember]
         [Display(Name = "ID (Back)")]
         public string IDCardBackPhoto { get; set; }
+
+
+
+
+        [Display(Name = "Referee")]
+        public string RefereeFirstName { get; set; }
+
+        [Display(Name = "Id")]
+        public Guid RefereeId { get; set; }
     }
 }
