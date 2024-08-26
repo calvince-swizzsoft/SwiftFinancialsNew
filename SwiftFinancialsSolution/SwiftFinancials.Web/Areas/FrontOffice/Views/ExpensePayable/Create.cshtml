@@ -2,12 +2,13 @@
 
 @{
     ViewBag.Title = "Create Expense Payable";
-
     ViewBag.DebitCreditOptions = new List<SelectListItem>
 {
         new SelectListItem { Value = "Debit", Text = "Debit" },
         new SelectListItem { Value = "Credit", Text = "Credit" }
     };
+
+
 }
 
 <style>
@@ -144,9 +145,9 @@
 
                     @if (TempData["ErrorMessage"] != null)
                     {
-                <div class="alert alert-danger">
-                    @TempData["ErrorMessage"]
-                </div>}
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>}
 
 
                     <div class="ibox-tools">
@@ -160,7 +161,7 @@
                 </div>
 
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Add", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
 
@@ -172,16 +173,16 @@
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableAuthOption, new { @class = "control-label", @for = "ExpensePayableAuthOption_1" })
+                                            @Html.LabelFor(model => model.ExpensePayableAuthOptionDescription, new { @class = "control-label", @for = "ExpensePayableAuthOption_1" })
                                             <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="fa fa-bars fa-fw"></i>
                                                 </span>
-                                                @Html.DropDownListFor(model => model.ExpensePayableAuthOption,
+                                                @Html.DropDownListFor(model => model.ExpensePayableAuthOptionDescription,
                                                     new SelectList(ViewBag.DebitCreditOptions, "Value", "Text"),
                                                     "Select",
                                                     new { @class = "form-control", @id = "ExpensePayableAuthOption_1" })
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableAuthOption)
+                                                @Html.ValidationMessageFor(model => model.ExpensePayableAuthOptionDescription)
                                             </div>
                                         </div>
                                     </div>
@@ -217,10 +218,17 @@
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Value Date", @id = "ValueDate", @required = "" } })
+                                            @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Value Date", id = "ValueDate", required = "required" } })
+                                            <span id="ValueDateError" class="text-danger" style="display:none;"></span> <!-- Error message element -->
                                             @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
+
+
+
+
+
+
 
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
@@ -233,7 +241,7 @@
                                 <br />
                                 <hr />
 
-                                <h2 style="color: cadetblue;">Expense Payable Details</h2>
+                                <h2 style="color: cadetblue;">Expense Payable Entries</h2>
 
                                 <div class="row">
                                     <div class="col-lg-4">
@@ -295,31 +303,66 @@
                                 <div class="row d-flex justify-content-end">
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-sm">
-                                            <input type="button" id="addEntryButton" value="Add" style="width: 100px;" class="btn btn-primary" />
+                                            <input type="submit" value="Add" style="width: 100px;" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="container mt-4">
+                                    <!-- Tab Navigation -->
+                                    <ul class="nav nav-tabs" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="entries-tab" data-toggle="tab" href="#entries" role="tab" aria-controls="entries" aria-selected="true">Entries</a>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Tab Content -->
+                                    <div class="tab-content mt-3">
+                                        <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
+                                            <!-- Table for Entries -->
+                                            <table id="ExpensePayableEntries" class="footable table table-striped toggle-arrow-tiny grey-table" style="color: black; width: 100%;">
+                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                    <tr>
+                                                        <th style="width: 15%">Branch</th>
+                                                        <th style="width: 15%;">G/L Account Name</th>
+                                                        <th style="width: 10%;">Reference</th>
+                                                        <th style="width: 20%;">Primary description</th>
+                                                        <th style="width: 20%;">Secondary description</th>
+                                                        <th style="width: 10%;">Value</th>
+                                                        <th style="width: 5%;">Action</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    @if (ViewBag.ExpensePayableEntryDTOs != null)
+                                                    {
+                                                        foreach (var entry in ViewBag.ExpensePayableEntryDTOs)
+                                                        {
+                                                            <tr id="row-@entry.Id">
+                                                                <td>@entry.BranchDescription</td>
+                                                                <td>@entry.ChartOfAccountName</td>
+                                                                <td>@entry.Reference</td>
+                                                                <td>@entry.PrimaryDescription</td>
+                                                                <td>@entry.SecondaryDescription</td>
+                                                                <td>@String.Format("{0:C}", entry.Value)</td>
+                                                                <td>
+                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeEntry('@entry.Id')">Remove</button>
+                                                                </td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        <tr>
+                                                            <td colspan="7" class="text-center">No entries added yet.</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </table>
                                         </div>
                                     </div>
                                 </div>
 
 
-
-
-                                <!-- Table for Entries -->
-                                <table id="ExpensePayableEntries" class="footable table table-striped toggle-arrow-tiny grey-table" style="color: black; width: 100%;">
-                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                        <tr>
-                                            <th style="width: 15%">Branch</th>
-                                            <th style="width: 15%;">G/L Account Name</th>
-                                            <th style="width: 10%;">Reference</th>
-                                            <th style="width: 20%;">Primary description</th>
-                                            <th style="width: 20%;">Secondary description</th>
-                                            <th style="width: 10%;">Value</th>
-                                            <th style="width: 5%;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- Entries will be added here dynamically -->
-                                    </tbody>
-                                </table>
 
                                 <br />
                                 <hr />
@@ -339,20 +382,29 @@
                                             </td>
                                         </tr>
                                     </table>
-                                    <h3>Appropotioned Amount should not exceed the total Amount</h3>
                                 </div>
+
+
+
+
 
 
                             </div>
                         </fieldset>
 
+
+
+                    }
+
+                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
+                    {
                         <div class="ibox-content bg-white text-info">
                             <div class="col-lg-3" style="float: right;">
                                 <input type="submit" style="width: 100px;" value="Create" class="btn btn-primary" />
                             </div>
                         </div>
-
                     }
+
                 </div>
 
 
@@ -383,6 +435,8 @@
     @Styles.Render("~/plugins/touchSpinStyles")
     @Styles.Render("~/plugins/tagInputsStyles")
     @Styles.Render("~/plugins/duallistStyles")
+    @Styles.Render("~/Content/plugins/jqueryValidationStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
 }
 
 @section Scripts{
@@ -406,11 +460,15 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+    @Scripts.Render("~/plugins/jquery")
+    @Scripts.Render("~/plugins/jqueryValidate")
+    @Scripts.Render("~/plugins/jqueryValidateUnobtrusive")
 
 
     //typehead initialization
 
-< <script>
+    <
+    <script>
 $(document).ready(function () {
     // Initialize typeahead for Chart of Accounts
     function initChartOfAccountTypeahead(selector, hiddenFieldId) {
@@ -520,122 +578,89 @@ $(document).ready(function () {
         }
     });
 
-    // Function to update amounts
-    function updateAmounts() {
-        var totalAmount = 0;
-        var amountCells = $('#ExpensePayableEntries tbody tr td:nth-child(6)'); // Get all value cells
+            // Function to check for duplicate entries
+            function isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue) {
+                var isDuplicate = false;
+                $('#ExpensePayableEntries tbody tr').each(function () {
+                    var existingBranchDescription = $(this).find('td').eq(0).text().trim();
+                    var existingChartOfAccount = $(this).find('td').eq(1).text().trim();
+                    var existingReference = $(this).find('td').eq(2).text().trim();
+                    var existingPrimaryDescription = $(this).find('td').eq(3).text().trim();
+                    var existingSecondaryDescription = $(this).find('td').eq(4).text().trim();
+                    var existingValue = $(this).find('td').eq(5).text().trim();
 
-        amountCells.each(function () {
-            var text = $(this).text();
-            var amount = parseFloat(text.replace(/[^0-9.-]/g, '')); // Clean the text
-            if (!isNaN(amount)) {
-                totalAmount += amount;
+                    if (branchDescription === existingBranchDescription &&
+                        chartOfAccount === existingChartOfAccount &&
+                        reference === existingReference &&
+                        primaryDescription === existingPrimaryDescription &&
+                        secondaryDescription === existingSecondaryDescription &&
+                        formattedValue === existingValue) {
+                        isDuplicate = true;
+                        return false; // Exit loop early
+                    }
+                });
+                return isDuplicate;
             }
-        });
 
-        var totalValueElement = $('[name="TotalValue"]');
-        var appropotionedElement = $('#Appropotioned');
-        var shortageElement = $('#Shortage');
+            // Add Entry
+            $('#addEntryButton').click(function (e) {
+                e.preventDefault();
 
-        var totalValue = parseFloat(totalValueElement.val()) || 0;
+                // Capture data from form fields
+                var branchDescription = $('#BranchDescription').val();
+                var chartOfAccount = $('#ExpensePayableEntry_ChartOfAccountAccountName').val();
+                var reference = $('#mainReference').val();
+                var primaryDescription = $('#mainPrimaryDescription').val();
+                var secondaryDescription = $('#mainSecondaryDescription').val();
+                var value = $('#mainValue').val();
 
-        if (totalAmount > totalValue) {
-            alert('Appropotioned amount exceeds the total value!');
-            return;
-        }
+                // Ensure all required fields have values
+                if (!branchDescription || !chartOfAccount || !reference || !primaryDescription || !value) {
+                    alert("Please fill in all required fields.");
+                    return;
+                }
 
-        appropotionedElement.val(totalAmount.toFixed(2));
+                // Format value as currency
+                var formattedValue = parseFloat(value).toFixed(2); // Ensure value is formatted consistently
 
-        var shortage = totalValue > totalAmount ? totalValue - totalAmount : 0;
-        shortageElement.val(shortage.toFixed(2));
-    }
+                // Check for duplicate entries
+                if (isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue)) {
+                    alert("This entry already exists in the table.");
+                    return;
+                }
 
-    // Function to check for duplicate entries
-    function isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue) {
-        var isDuplicate = false;
-        $('#ExpensePayableEntries tbody tr').each(function () {
-            var existingBranchDescription = $(this).find('td').eq(0).text().trim();
-            var existingChartOfAccount = $(this).find('td').eq(1).text().trim();
-            var existingReference = $(this).find('td').eq(2).text().trim();
-            var existingPrimaryDescription = $(this).find('td').eq(3).text().trim();
-            var existingSecondaryDescription = $(this).find('td').eq(4).text().trim();
-            var existingValue = $(this).find('td').eq(5).text().trim();
+                // Create new row
+                var newRow = '<tr>' +
+                    '<td>' + branchDescription + '</td>' +
+                    '<td>' + chartOfAccount + '</td>' +
+                    '<td>' + reference + '</td>' +
+                    '<td>' + primaryDescription + '</td>' +
+                    '<td>' + secondaryDescription + '</td>' +
+                    '<td class="amount">' + formattedValue + '</td>' + // Use a class for easy targeting
+                    '<td class="text-center">' +
+                    '<button type="button" class="btn btn-danger remove-entry">' +
+                    '<i class="fa fa-times"></i>' +
+                    '</button>' +
+                    '</td>' +
+                    '</tr>';
 
-            if (branchDescription === existingBranchDescription &&
-                chartOfAccount === existingChartOfAccount &&
-                reference === existingReference &&
-                primaryDescription === existingPrimaryDescription &&
-                secondaryDescription === existingSecondaryDescription &&
-                formattedValue === existingValue) {
-                isDuplicate = true;
-                return false; // Exit loop early
-            }
-        });
-        return isDuplicate;
-    }
+                // Append the new row to the table
+                $('#ExpensePayableEntries tbody').append(newRow);
 
-    // Add Entry
-    $('#addEntryButton').click(function (e) {
-        e.preventDefault();
+                // Update amounts after adding the entry
+                updateAmounts();
+            });
 
-        // Capture data from form fields
-        var branchDescription = $('#BranchDescription').val();
-        var chartOfAccount = $('#ExpensePayableEntry_ChartOfAccountAccountName').val();
-        var reference = $('#mainReference').val();
-        var primaryDescription = $('#mainPrimaryDescription').val();
-        var secondaryDescription = $('#mainSecondaryDescription').val();
-        var value = $('#mainValue').val();
+            // Delegate event handler for dynamically added remove buttons
+            $('#ExpensePayableEntries').on('click', '.remove-entry', function () {
+                var row = $(this).closest('tr');
+                row.remove();
+                updateAmounts(); // Update amounts after removal
+            });
 
-        // Ensure all required fields have values
-        if (!branchDescription || !chartOfAccount || !reference || !primaryDescription || !value) {
-            alert("Please fill in all required fields.");
-            return;
-        }
-
-        // Format value as currency (optional)
-        var formattedValue = parseFloat(value).toLocaleString('en-US', { style: 'currency', currency: 'Ksh' });
-
-        // Check for duplicate entries
-        if (isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue)) {
-            alert("This entry already exists in the table.");
-            return;
-        }
-
-        // Create new row
-        var newRow = '<tr>' +
-            '<td>' + branchDescription + '</td>' +
-            '<td>' + chartOfAccount + '</td>' +
-            '<td>' + reference + '</td>' +
-            '<td>' + primaryDescription + '</td>' +
-            '<td>' + secondaryDescription + '</td>' +
-            '<td>' + formattedValue + '</td>' +
-            '<td class="text-center">' +
-            '<button type="button" class="btn btn-danger remove-entry">' +
-            '<i class="fa fa-times"></i>' +
-            '</button>' +
-            '</td>' +
-            '</tr>';
-
-        // Append the new row to the table
-        $('#ExpensePayableEntries tbody').append(newRow);
-
-        // Clear form fields after adding the entry
-        $('#BranchDescription').val('');
-        $('#ExpensePayableEntry_ChartOfAccountAccountName').val('');
-        $('#mainReference').val('');
-        $('#mainPrimaryDescription').val('');
-        $('#mainSecondaryDescription').val('');
-        $('#mainValue').val('');
-
-        // Update amounts after adding the entry
-        updateAmounts();
-    });
 
     // Remove Entry
-    $(document).on('click', '.remove-entry', function () {
-        $(this).closest('tr').remove();
-        updateAmounts(); // Update amounts after removing an entry
-    });
+
 
     // Initialize typeahead for various fields
     function initTypeahead(selector, url, hiddenFieldId) {
@@ -729,6 +754,155 @@ $(document).ready(function () {
 
 
 
+    <script>
+        $(document).ready(function () {
+            // Set allowed date range
+            var minDate = new Date("2024-01-01");
+            var maxDate = new Date("2024-12-31");
+
+            // Monitor changes in the ValueDate input field
+            $("#ValueDate").on("change", function () {
+                // Parse the selected date
+                var selectedDate = new Date($(this).val());
+
+                // Check if the selected date is out of range
+                if (selectedDate < minDate || selectedDate > maxDate || selectedDate > new Date()) {
+                    $("#ValueDateError").text("Sorry, but the value date is out of range!").show();
+                    $(this).addClass("is-invalid"); // Optional: add invalid class for styling
+                } else {
+                    $("#ValueDateError").text("").hide();
+                    $(this).removeClass("is-invalid"); // Optional: remove invalid class for styling
+                }
+            });
+        });
+    </script>
+
+
+
+    <script type="text/javascript">
+    // Function to remove an entry via AJAX and update the amounts
+    function removeEntry(id) {
+        if (confirm("Are you sure you want to remove this entry?")) {
+            $.ajax({
+                url: '@Url.Action("RemoveEntry", "ExpensePayable")',
+                type: 'POST',
+                data: { id: id },
+                success: function (result) {
+                    if (result.success) {
+                        // Remove the row from the table
+                        $('#row-' + id).remove();
+
+                        // Update the amounts after removal
+                        updateAmounts();
+                    } else {
+                        alert("Error: " + result.message);
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while trying to remove the entry.");
+                }
+            });
+        }
+    }
+
+    // Function to update amounts
+    function updateAmounts() {
+        var totalAmount = 0;
+        var amountCells = $('#ExpensePayableEntries tbody tr td:nth-child(6)'); // Get all value cells
+
+        // Calculate the total amount from the entries
+        amountCells.each(function () {
+            var text = $(this).text();
+            var amount = parseFloat(text.replace(/[^0-9.-]/g, '')); // Clean the text
+            if (!isNaN(amount)) {
+                totalAmount += amount;
+            }
+        });
+
+        // Get the elements for Total Value, Appropotioned, and Shortage
+        var totalValueElement = $('[name="TotalValue"]');
+        var appropotionedElement = $('#Appropotioned');
+        var shortageElement = $('#Shortage');
+
+        // Get the total value input by the user
+        var totalValue = parseFloat(totalValueElement.val()) || 0;
+
+        // Update the Appropotioned field
+        appropotionedElement.val(totalAmount.toFixed(2));
+
+        // Calculate and update the Shortage field
+        var shortage = totalValue - totalAmount;
+        if (shortage < 0) {
+            shortage = 0;
+            alert('Appropotioned amount exceeds the total value!');
+        }
+        shortageElement.val(shortage.toFixed(2));
+    }
+
+    // Function to add a new entry
+    function addEntry(entryData) {
+        updateAmounts(); // Ensure the amounts are updated before adding a new entry
+
+        var appropotionedAmount = parseFloat($('#Appropotioned').val()) || 0;
+        var totalValue = parseFloat($('[name="TotalValue"]').val()) || 0;
+
+        // Check if adding this entry would exceed the Total Value
+        if (appropotionedAmount + entryData.value > totalValue) {
+            alert("Cannot add this entry. The Appropotioned Amount would exceed the Total Value.");
+            return false; // Prevent adding the entry
+        }
+
+        // Code to add the entry (e.g., add a new row in the table)
+        // ...
+
+        updateAmounts(); // Update amounts after adding the entry
+    }
+
+    // Ensure this function runs whenever the relevant entries are updated
+    $(document).ready(function () {
+        // Call updateAmounts when the page loads
+        updateAmounts();
+
+        // Update amounts when any input in the table is changed
+        $('#ExpensePayableEntries').on('change', 'input, select, textarea', function () {
+            updateAmounts();
+        });
+
+        // Example usage: Call addEntry when a new entry is being added
+        $('#addEntryButton').on('click', function () {
+            var entryData = {
+                value: parseFloat($('#newEntryValue').val()) || 0, // Assuming there's an input for the new entry value
+                // Other entry data...
+            };
+
+            addEntry(entryData); // Attempt to add the new entry
+        });
+
+        // Update amounts if new rows are dynamically added to the table
+        $('#ExpensePayableEntries').on('DOMNodeInserted', 'tr', function () {
+            updateAmounts();
+        });
+
+        // Update amounts when a row is removed using the AJAX removeEntry function
+        $('#ExpensePayableEntries').on('click', '.remove-entry', function () {
+            var id = $(this).data('id'); // Assuming the button has a data-id attribute
+            removeEntry(id);
+        });
+    });
+    </script>
+
+
+
+    
+
+
+
+
+
+
+
+
+
 
 
 
@@ -817,3 +991,10 @@ $(document).ready(function () {
     </style>
 
 }
+
+
+
+
+
+
+

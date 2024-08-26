@@ -459,6 +459,16 @@ namespace SwiftFinancials.Web
                         "~/Scripts/plugins/pwstrength/pwstrength-bootstrap.min.js",
                         "~/Scripts/plugins/pwstrength/zxcvbn.js"));
 
+            // jQuery Validation
+            bundles.Add(new ScriptBundle("~/plugins/jqueryValidate").Include(
+                        "~/Scripts/jquery.validate*"));
+
+            // jQuery Validation Unobtrusive
+            bundles.Add(new ScriptBundle("~/plugins/jqueryValidateUnobtrusive").Include(
+                        "~/Scripts/jquery.validate.unobtrusive*"));
+
+
+
             ////Scripts for Grid MVC
             //bundles.Add(new ScriptBundle("~/bundles/Gridmvc").Include(
             //    "~/scripts/gridmvc*"));

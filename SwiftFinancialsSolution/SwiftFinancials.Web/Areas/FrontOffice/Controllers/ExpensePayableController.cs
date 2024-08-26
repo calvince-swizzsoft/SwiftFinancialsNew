@@ -58,9 +58,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
 
             var expensePayableDTO = await _channelService.FindExpensePayableAsync(id, GetServiceHeader());
+            var expensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(id, GetServiceHeader());
 
+            ViewBag.ExpensePaybleTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
+            
+
+
+            ViewBag.ExpensePayableEntryDTOs = expensePayableEntries;
             return View(expensePayableDTO);
         }
+
+
 
         public async Task<ActionResult> Create()
         {
@@ -73,130 +81,213 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var model = new ExpensePayableDTO
             {
-                ExpensePayableEntries = new List<ExpensePayableEntryDTO>() // Initialize the list to avoid null reference
+                ExpensePayableEntries = new List<ExpensePayableEntryDTO>()
             };
 
             return View(model);
         }
 
-        
-
-
-
-
 
         [HttpPost]
-        public async Task<ActionResult> Add(Guid? id, ExpensePayableDTO expensePayableDTO)
+        public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO, ObservableCollection<ExpensePayableEntryDTO>expensePayableEntries)
         {
-            await ServeNavigationMenus();
-
-            ExpensePayableEntryDTOs = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
-
-            if (ExpensePayableEntryDTOs == null)
-                ExpensePayableEntryDTOs = new ObservableCollection<ExpensePayableEntryDTO>();
-
-            Guid parseId;
-
-            // Check if id is null or cannot be parsed
-            if (!id.HasValue || id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            // Retrieve ExpensePayableDTO and ExpensePayableEntryDTOs from TempData
+            expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO ?? expensePayableDTO;
+           
+            // Check if individual ExpensePayableEntryDTO is present in TempData and assign it to ExpensePayableEntries
+            if (TempData["ExpensePayableEntryDTOs"] != null)
             {
-                return Json(new { success = false, message = "Invalid ID provided!" });
+                // expensePayableDTO.ExpensePayableEntries = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
+                ExpensePayableEntryDTOs = TempData["ExpensePayableEntryDTOs"] as ObservableCollection<ExpensePayableEntryDTO>;
+
             }
 
-            // Validation for ChartOfAccountId and other required fields
-            if (expensePayableDTO.ChartOfAccountId == Guid.Empty || string.IsNullOrWhiteSpace(expensePayableDTO.ChartOfAccountName))
-            {
-                return Json(new { success = false, message = "The G/L Account identifier is invalid!" });
-            }
-
-            if (expensePayableDTO.BranchId == Guid.Empty || string.IsNullOrWhiteSpace(expensePayableDTO.BranchDescription))
-            {
-                return Json(new { success = false, message = "The Branch Name identifier is invalid!" });
-            }
-
-            foreach (var expensePayableEntryDTO in expensePayableDTO.ExpensePayableEntries)
-            {
-                // Assuming that these fields are mandatory, ensure proper assignment
-                expensePayableEntryDTO.ChartOfAccountId = expensePayableDTO.ChartOfAccountId;
-                expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountAccountName;
-                expensePayableEntryDTO.BranchDescription = expensePayableEntryDTO.BranchDescription;
-                expensePayableEntryDTO.ChartOfAccountAccountName = expensePayableEntryDTO.ChartOfAccountName;
-                expensePayableEntryDTO.TotalValue = expensePayableEntryDTO.TotalValue;
-                expensePayableEntryDTO.PrimaryDescription = expensePayableEntryDTO.PrimaryDescription;
-                expensePayableEntryDTO.SecondaryDescription = expensePayableEntryDTO.SecondaryDescription;
-                expensePayableEntryDTO.Reference = expensePayableEntryDTO.Reference;
-                ExpensePayableEntryDTOs.Add(expensePayableEntryDTO);
-            }
-
-            TempData["ExpensePayableEntryDTO"] = ExpensePayableEntryDTOs;
-            TempData["ExpensePayableDTO"] = expensePayableDTO;
-
-            ViewBag.ExpensePayableEntryDTOs = ExpensePayableEntryDTOs;
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(expensePayableDTO.Type.ToString());
-
-            return View("Create", expensePayableDTO);
-        }
-
-
-
-
-
-
-        [HttpPost]
-        public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO)
-        {
-            if (expensePayableDTO == null)
-            {
-                TempData["ErrorMessage"] = "Failed to retrieve the expense payable data.";
-                return RedirectToAction("Create");
-            }
-
-            // Validate the expensePayableDTO
+            // Validate the ExpensePayableDTO
             expensePayableDTO.ValidateAll();
 
             if (!expensePayableDTO.HasErrors)
             {
-                try
+                //var expensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
+
+                //// Iterate through each entry and assign properties accordingly
+                //foreach (var entryDTO in expensePayableDTO.ExpensePayableEntries)
+                //{
+                //    entryDTO.BranchDescription = expensePayableDTO.BranchDescription;
+                //    entryDTO.ChartOfAccountId = expensePayableDTO.ChartOfAccountId;
+                //    entryDTO.ChartOfAccountCostCenterDescription = expensePayableDTO.ChartOfAccountCostCenterDescription;
+                //    entryDTO.ChartOfAccountAccountName = expensePayableDTO.ChartOfAccountAccountName;
+                //    entryDTO.Value = expensePayableDTO.TotalValue;
+
+                //    expensePayableEntries.Add(entryDTO);
+                //}
+
+                // Call the service to add the expense payable
+                var expensePayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+
+                if (expensePayable.ErrorMessageResult != null)
                 {
-                    var expensePayable = await _channelService.AddExpensePayableAsync(expensePayableDTO, GetServiceHeader());
+                    await ServeNavigationMenus();
 
-                    if (expensePayable != null)
+                    TempData["ErrorMessage"] = expensePayable.ErrorMessageResult;
+                    return View();
+                }
+
+                TempData["SuccessMessage"] = "Expense payable created successfully!";
+                TempData["ExpensePayableDTO"] = "";
+
+                //if (expensePayableEntries.Any())
+                //{
+                    await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, ExpensePayableEntryDTOs, GetServiceHeader());
+                //}
+
+                TempData["ExpensePayableEntryDTO"] = "";
+                TempData["Success"] = "Expense payable and entries have been created successfully";
+
+                return RedirectToAction("Index");
+            }
+
+            // If validation fails, reload data from TempData and redirect back to the view
+            //expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO;
+            //expensePayableEntryDTOs = TempData["ExpensePayableEntryDTOs"] as ObservableCollection<ExpensePayableEntryDTO>;
+
+            return RedirectToAction("Create");
+        }
+
+        //[httppost]
+        //public async task<actionresult> create(expensepayabledto expensepayabledto)
+        //{
+        //    // retrieve expensepayabledto and expensepayableentrydtos from tempdata if available
+        //    expensepayabledto = tempdata["expensepayabledto"] as expensepayabledto ?? expensepayabledto;
+        //expensepayableentrydtos = tempdata["expensepayableentrydtos"] as observablecollection<expensepayableentrydto> ?? new observablecollection<expensepayableentrydto>();
+
+        //    // initialize expensepayableentries if available in tempdata
+        //    if (tempdata["expensepayableentrydto"] != null)
+        //    {
+        //        var expensepayableentrycollection = tempdata["expensepayableentrydto"] as observablecollection<expensepayableentrydto>;
+        //        expensepayableentrydtos = expensepayableentrycollection;
+        //        if (expensepayableentrycollection != null)
+        //        {
+        //            // ensure expensepayableentries is initialized before assignment
+        //            if (expensepayabledto.expensepayableentries == null)
+        //            {
+        //                // initialize to the correct collection type (e.g., list or observablecollection)
+        //                expensepayabledto.expensepayableentries = new list<expensepayableentrydto>();
+        //            }
+
+        //            // assign values from tempdata collection
+        //            foreach (var entry in expensepayableentrycollection)
+        //            {
+        //                expensepayabledto.expensepayableentries.add(entry);
+        //            }
+        //        }
+        //    }
+
+        //    // validate the expensepayabledto
+        //    expensepayabledto.validateall();
+
+        //    if (!expensepayabledto.haserrors)
+        //    {
+        //        try
+        //        {
+        //            // call the service to add the expense payable
+        //            var expensepayable = await _channelservice.addexpensepayableasync(expensepayabledto, getserviceheader());
+
+        //            if (expensepayable != null)
+        //            {
+        //                if (expensepayableentrydtos.any())
+        //                {
+        //                    await _channelservice.updateexpensepayableentriesbyexpensepayableidasync(expensepayable.id, expensepayableentrydtos, getserviceheader());
+        //                }
+
+        //                // set success message in tempdata
+        //                tempdata["successmessage"] = "expense payable created successfully!";
+        //                return redirecttoaction("index"); // redirect to index view
+        //            }
+        //            else
+        //            {
+        //                tempdata["errormessage"] = "failed to create expense payable.";
+        //                return redirecttoaction("create"); // redirect back to create view
+        //            }
+        //        }
+        //        catch (exception)
+        //        {
+        //            tempdata["errormessage"] = "an error occurred while processing your request.";
+        //            return redirecttoaction("create"); // redirect back to create view
+        //        }
+        //    }
+        //    else
+        //    {
+        //        // handle validation errors
+        //        tempdata["errormessage"] = string.join(", ", expensepayabledto.errormessages);
+        //        return redirecttoaction("create"); // redirect back to create view
+        //    }
+        //}
+
+
+       
+        [HttpPost]
+        public async Task<ActionResult> Add(ExpensePayableDTO expensePayableDTO)
+        {
+            // Ensure that navigation menus are loaded
+            await ServeNavigationMenus();
+
+            // Retrieve the current list of entries from TempData or initialize a new list
+            ObservableCollection<ExpensePayableEntryDTO> expensePayableEntryDTOs = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
+            if (expensePayableEntryDTOs == null)
+                expensePayableEntryDTOs = new ObservableCollection<ExpensePayableEntryDTO>();
+
+            // Add the new entry to the list
+            var newEntry = expensePayableDTO.ExpensePayableEntry;
+            if (newEntry != null)
+            {
+                // Assign values to newEntry from the provided expensePayableDTO
+                newEntry.BranchId = expensePayableDTO.BranchId;
+                newEntry.BranchDescription = expensePayableDTO.BranchDescription;
+                newEntry.ChartOfAccountAccountName = expensePayableDTO.ChartOfAccountAccountName;
+                newEntry.Reference = expensePayableDTO.ExpensePayableEntry.Reference;
+                newEntry.SecondaryDescription = expensePayableDTO.ExpensePayableEntry.SecondaryDescription;
+                newEntry.PrimaryDescription = expensePayableDTO.ExpensePayableEntry.PrimaryDescription;
+                newEntry.Value = expensePayableDTO.ExpensePayableEntry.Value;
+
+                // Validate the entry and add it to the list if valid
+                if (string.IsNullOrWhiteSpace(newEntry.PrimaryDescription) ||
+                    string.IsNullOrWhiteSpace(newEntry.SecondaryDescription) ||
+                    newEntry.Value <= 0)
+                {
+                    TempData["tPercentage"] = "Could not add Expense Payable Entry. Ensure all required fields are entered.";
+                }
+                else
+                {
+                    // Add the entry to the collection
+                    expensePayableEntryDTOs.Add(newEntry);
+
+                    // Calculate the total value of the entries
+                    decimal sumValue = expensePayableEntryDTOs.Sum(e => e.Value);
+
+                    // Check if the total value exceeds the allowed amount
+                    if (sumValue > expensePayableDTO.TotalValue)
                     {
-                        ExpensePayableEntryDTOs = TempData["ExpensePayableEntryDTOs"] as ObservableCollection<ExpensePayableEntryDTO>;
-                        var expensePayableEntries = new ObservableCollection<ExpensePayableEntryDTO>();
-
-                        ExpensePayableEntryDTOs = expensePayableEntries;
-
-                        if (expensePayableEntries.Any())
-                        {
-                            await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, expensePayableEntries, GetServiceHeader());
-                        }
-
-                        // Set success message in TempData
-                        TempData["SuccessMessage"] = "Expense payable created successfully!";
-                        return RedirectToAction("Index"); // Redirect to Index view
+                        TempData["tPercentage"] = "Failed to add Expense Payable Entry. Total value exceeded allowed amount.";
+                        expensePayableEntryDTOs.Remove(newEntry);
                     }
                     else
                     {
-                        TempData["ErrorMessage"] = "Failed to create expense payable.";
-                        return RedirectToAction("Create"); // Redirect back to Create view
+                        // Save the updated entries back to TempData and Session
+                        TempData["ExpensePayableEntryDTO"] = expensePayableEntryDTOs;
+                        Session["ExpensePayableEntries"] = expensePayableEntryDTOs;
+                        TempData["ExpensePayableDTO"] = expensePayableDTO;
+
+                        TempData["EntryAdded"] = "Successfully added an entry.";
                     }
                 }
-                catch (Exception)
-                {
-                    TempData["ErrorMessage"] = "An error occurred while processing your request.";
-                    return RedirectToAction("Create"); // Redirect back to Create view
-                }
             }
-            else
-            {
-                TempData["ErrorMessage"] = string.Join(", ", expensePayableDTO.ErrorMessages);
-                return RedirectToAction("Create"); // Redirect back to Create view
-            }
+
+            // Pass the updated list back to the view
+            ViewBag.ExpensePayableEntryDTOs = expensePayableEntryDTOs;
+
+            // Return to the Create/Edit view
+            return View("Create");
         }
-
-
 
 
 
@@ -218,6 +309,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -280,32 +372,61 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Verify(Guid id, ExpensePayableDTO expensePayableDTO)
         {
             expensePayableDTO.ValidateAll();
-
             var expensePayableAuthOption = expensePayableDTO.Type;
 
             if (!expensePayableDTO.HasErrors)
             {
+                try
+                {
+                    await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
 
-                await _channelService.AuditExpensePayableAsync(expensePayableDTO, expensePayableAuthOption, GetServiceHeader());
+                    // Set success message in TempData
+                    TempData["SuccessMessage"] = "Expense payable has been successfully verified.";
 
-                ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                    // Prepare view bags for the view
+                    ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                    ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                    ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                    ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
+                    ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
+                    // Redirect to Index action with a success message
+                    return RedirectToAction("Index");
+                }
+                catch (Exception ex)
+                {
+                    // Set error message in TempData
+                    TempData["ErrorMessage"] = "An error occurred while verifying the expense payable: " + ex.Message;
+
+                    // Prepare view bags for the view
+                    ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
+                    ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
+                    ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
+                    ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
+                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
+                    ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
+
+                    return View(expensePayableDTO);
+                }
+            }
+            else
+            {
+                // Set error message in TempData
+                TempData["ErrorMessage"] = "Validation failed. Please correct the errors and try again.";
+
+                // Prepare view bags for the view
                 ViewBag.ExpensePayableAuthOptionTypeSelectList = GetExpensePayableAuthOptionSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(expensePayableDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(expensePayableDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(expensePayableDTO.Type.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(expensePayableDTO.Type.ToString());
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(expensePayableDTO.Type.ToString());
 
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                var errorMessages = expensePayableDTO.ErrorMessages;
-
                 return View(expensePayableDTO);
             }
         }
+
 
         public async Task<ActionResult> Approve(Guid id)
         {
@@ -363,23 +484,28 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> RemoveEntry(Guid id, ExpensePayableDTO expensePayableDTO)
         {
             await ServeNavigationMenus();
-            // Retrieve the TempData
-            var ExpensePayableEntryDTOs = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
 
-            if (ExpensePayableEntryDTOs != null)
+            // Retrieve the TempData
+            var expensePayableEntryDTOs = TempData["ExpensePayableEntryDTO"] as ObservableCollection<ExpensePayableEntryDTO>;
+
+            if (expensePayableEntryDTOs != null)
             {
                 // Find the entry to remove
-                var entryToRemove = ExpensePayableEntryDTOs.FirstOrDefault(e => e.Id == id);
+                var entryToRemove = expensePayableEntryDTOs.FirstOrDefault(e => e.Id == id);
                 if (entryToRemove != null)
                 {
-                    ExpensePayableEntryDTOs.Remove(entryToRemove);
+                    expensePayableEntryDTOs.Remove(entryToRemove);
+
                     // Update TempData
-                    TempData["ExpensePayableEntryDTO"] = ExpensePayableEntryDTOs;
+                    TempData["ExpensePayableEntryDTO"] = expensePayableEntryDTOs;
+
                     return Json(new { success = true });
                 }
             }
-            return Json(new { success = false });
+
+            return Json(new { success = false, message = "Entry not found." });
         }
+
 
 
         // In your Controller
@@ -389,6 +515,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             // Your logic here
             return Json(new { success = true });
         }
+
 
 
 
