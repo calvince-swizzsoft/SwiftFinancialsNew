@@ -17,7 +17,7 @@ using System.Web.Mvc;
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
     [RoleBasedAccessControl]
-    public class CustomerController : MasterController
+    public class NextofKinController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -75,8 +75,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
-            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(false, GetServiceHeader());
-            var creditTypes = await _channelService.FindCreditBatchesAsync(GetServiceHeader());
+            var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
+            var creditTypes = await _channelService.FindMandatoryDebitTypesAsync(true, GetServiceHeader());
             var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
             var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader());
             ViewBag.investment = investmentProducts;
@@ -147,7 +147,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
                     return View("create", customerBindingModel);
                 }
-                TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
+                TempData["SuccessMessage"] = "Successfully Created NextofKin" + customerBindingModel.FullName;
                 return RedirectToAction("Index");
             }
             else
