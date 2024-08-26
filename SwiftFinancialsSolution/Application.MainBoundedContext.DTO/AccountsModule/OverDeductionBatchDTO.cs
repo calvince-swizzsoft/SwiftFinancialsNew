@@ -48,7 +48,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Reference")]
-        [Required]
+        
         public string Reference { get; set; }
 
         [DataMember]

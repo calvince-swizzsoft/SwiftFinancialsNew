@@ -29,6 +29,37 @@
         background-color: #00e0ff;
     }
 
+    @* Batch Entries table Styling*@ 
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
     /* Ensure that any child elements that need to be centered don't affect the container alignment */
     .row {
         width: 100%; /* Make sure row takes full width */
@@ -37,13 +68,13 @@
 
     .combined-container {
         padding: 20px; /* Padding inside the container */
-        border-radius: 5px; /* Rounded corners (optional) */
+        border-radius: 12px; /* Rounded corners (optional) */
         margin: 20px 0; /* Margin above and below the container */
         font-size: 15px; /* Set font size to 15px */
         display: flex; /* Enable Flexbox for alignment */
         flex-direction: column; /* Stack rows vertically */
         font-weight: bold;
-        border: 2px solid #00ffff;
+        border: 4px solid #00ffff;
     }
 
     .row {
@@ -75,10 +106,24 @@
 
     }
 
+    .control-label {
+        color: #333; /* Replace with your desired color */
+    }
+
+    .checkbox-label {
+        color: #333;
+    }
+
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+
     .main1 {
         border: 1px solid black;
         padding: 10px;
-        margin-top:20px;
+        margin-top: 20px;
+        border-radius: 12px;
+        background-color: #f1f1f1;
     }
 
     @*css form status dropdown*@
@@ -213,7 +258,7 @@
 
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.ConcessionFixedAmount, htmlAttributes: new { @class = "" })
+                                                    @Html.LabelFor(model => model.ConcessionFixedAmount, htmlAttributes: new { @class = "control-label" })
                                                     @Html.EditorFor(model => model.ConcessionFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "ConcessionFixedAmount", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.ConcessionFixedAmount, "", new { @class = "text-danger" })
                                                 </div>
@@ -300,7 +345,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "TotalValue", @required = "", @readonly = "readonly" } })
+                                                    @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -308,14 +353,14 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.AuditedBy, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.AuditedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "TotalValue", @required = "", @readonly = "readonly" } })
+                                                    @Html.EditorFor(model => model.AuditedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.AuditedBy, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                    @Html.EditorFor(model => model.AuditedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.AuditedDate, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -328,12 +373,45 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "TotalValue", @required = "", @readonly = "readonly" } })
+                                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                                     @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            
+
                                         </div>
+                                    </div>
+
+
+                                    <br />
+                                    <br />
+
+                                    <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                        <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
+
+                                        <row>
+                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
+                                                <thead style="font-style: italic; color: #333; text-align: center;">
+                                                    <tr>
+                                                        <th style="width: 10%;">Account Number</th>
+                                                        <th style="width: 5%;">Product Description</th>
+                                                        <th style="width: 10%;">Principal</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody style="color: #007bff;">
+                                                    @if (ViewBag.CrdeitBatchEntryDTOs != null)
+                                                    {
+                                                        foreach (var journalVoucherEntries in ViewBag.CrdeitBatchEntryDTOs)
+                                                        {
+                                                            <tr data-id="@journalVoucherEntries.Id">
+                                                                <td>@journalVoucherEntries.FullAccountNumber</td>
+                                                                <td>@journalVoucherEntries.ProductDescription</td>
+                                                                <td>@journalVoucherEntries.Principal</td>
+                                                            </tr>
+                                                        }
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </row>
                                     </div>
 
                                     <div class="custom-container">

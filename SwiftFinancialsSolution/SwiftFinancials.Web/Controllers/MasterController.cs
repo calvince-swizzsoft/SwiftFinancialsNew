@@ -39,8 +39,11 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CommissionSplitDTO> ChargeSplitDTOs;
 
-        // Maxon Included this
+        
         public ObservableCollection<OverDeductionBatchEntryDTO> OverDeductionBatchEntryDTOs;
+
+        public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
+        public ObservableCollection<DebitBatchEntryDTO> DebitBatchEntryDTOs;
 
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
@@ -65,6 +68,8 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<InvestmentProductDTO> investmentProductDTOs;
         public ObservableCollection<SavingsProductDTO> savingsProductDTOs;
         public ObservableCollection<LoanProductDTO> loanProductDTOs;
+
+        public ObservableCollection<StandingOrderDTO> standingOrdersDTOs;
 
 
         public ObservableCollection<Guid> customerAccountsIds;
@@ -289,7 +294,22 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
+        [NonAction]
+        protected List<SelectListItem> GetsystemPermissionTypeList(string selectedValue)
+        {
+            List<SelectListItem> systemPermissionType = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(SystemPermissionType)).Cast<SystemPermissionType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            systemPermissionType.AddRange(items);
+
+            return systemPermissionType;
+        }
 
 
 
@@ -1672,6 +1692,42 @@ namespace SwiftFinancials.Web.Controllers
             dataAttachmentTransactionType.AddRange(items);
 
             return dataAttachmentTransactionType;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetImageTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> imageType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ImageType)).Cast<ImageType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            imageType.AddRange(items);
+
+            return imageType;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetImageSourceTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> imageSource = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ImageSource)).Cast<ImageSource>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            imageSource.AddRange(items);
+
+            return imageSource;
         }
     }
 }

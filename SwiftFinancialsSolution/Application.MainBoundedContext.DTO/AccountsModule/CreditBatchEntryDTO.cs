@@ -355,5 +355,35 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        public CustomerAccountDTO Customer { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Credit Customer")]
+        public string CreditCustomerAccountFullName { get; set; }
+
+        [DataMember]
+        [Display(Name = "CreditAccount Full Account Number")]
+        public string CreditCustomerAccountFullAccountNumber { get; set; }
+
+        [Display(Name = "Credit Customer Id")]
+        public string CreditCustomerAccountIdentificationNumber { get; set; }
+
+
+        [Display(Name = "Credit Customer Status")]
+        public string CreditCustomerAccountStatusDescription { get; set; }
+
+
+        [Display(Name = "Credit Customer Remarks")]
+        public string CreditCustomerAccountRemarks { get; set; }
+
+        [Display(Name = "Credit Customer Type")]
+        public string CreditCustomerAccountTypeDescription { get; set; }
+
+
+
+
     }
-}
+} 
+

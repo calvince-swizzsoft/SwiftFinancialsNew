@@ -144,7 +144,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (tellers != null)
             {
                 fiscalCountDTO.TellerId = tellers.EmployeeCustomerId;
-                fiscalCountDTO.Description = tellers.EmployeeCustomerFullName;
+                //fiscalCountDTO.Description = tellers.EmployeeCustomerFullName;
+                //fiscalCountDTO.BranchId = tellers.EmployeeBranchId;
                 ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(TreasuryTransactionType.TreasuryToTeller.ToString());
             }
 
@@ -157,6 +158,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 fiscalCountDTO.TreasuryId = treasury.Id;
                 fiscalCountDTO.Description = treasury.Description;
+                fiscalCountDTO.BranchId = treasury.BranchId;
                 ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(TreasuryTransactionType.TreasuryToTreasury.ToString());
             }
 
@@ -174,9 +176,47 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             if (!fiscalCountDTO.HasErrors)
             {
-                //var tariffs = new ObservableCollection<TariffWrapper>();
-
                 TransactionModel transactionModel = new TransactionModel();
+
+                var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+                fiscalCountDTO.PostingPeriodId = postingPeriod.Id;
+
+                // Source and destination branches are the same for now
+                fiscalCountDTO.BranchId = fiscalCountDTO.DestinationBranchId;
+
+                var treasury = await _channelService.FindTreasuryByBranchIdAsync(fiscalCountDTO.BranchId, true, GetServiceHeader());
+
+                fiscalCountDTO.Id = treasury.Id;
+                fiscalCountDTO.ChartOfAccountId = treasury.ChartOfAccountId;
+                var debitChartOfAccountId = treasury.ChartOfAccountId;
+
+                var balance = treasury.BookBalance;
+
+                if (balance < fiscalCountDTO.TotalValue)
+                {
+                    // Show a Windows Forms message box to the user
+                    System.Windows.Forms.MessageBox.Show(
+                        "Insufficient balance. The transaction cannot proceed.",
+                        "Error",
+                        System.Windows.Forms.MessageBoxButtons.OK,
+                        System.Windows.Forms.MessageBoxIcon.Error,
+                        System.Windows.Forms.MessageBoxDefaultButton.Button1,
+                        System.Windows.Forms.MessageBoxOptions.ServiceNotification
+                        );
+
+                    // Return to the view with the current model state
+                    ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(fiscalCountDTO.TransactionType.ToString());
+                    return View(fiscalCountDTO);
+                }
+
+                transactionModel.DebitChartOfAccountId = debitChartOfAccountId;
+                transactionModel.CreditChartOfAccountId = (Guid)fiscalCountDTO.Teller.ChartOfAccountId;
+                transactionModel.TotalValue = fiscalCountDTO.TotalValue;
+                transactionModel.TransactionCode = fiscalCountDTO.TransactionCode;
+                transactionModel.PostingPeriodId = postingPeriod.Id;
+                transactionModel.PrimaryDescription = "ok";
+                transactionModel.ValueDate = DateTime.Today;
 
                 await _channelService.AddCashManagementJournalAsync(fiscalCountDTO, transactionModel, GetServiceHeader());
 
@@ -189,6 +229,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View(fiscalCountDTO);
             }
         }
+
 
     }
 }

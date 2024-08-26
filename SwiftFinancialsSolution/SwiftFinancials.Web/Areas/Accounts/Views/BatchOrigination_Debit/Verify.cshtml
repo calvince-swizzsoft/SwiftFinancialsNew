@@ -4,61 +4,179 @@
     ViewBag.Title = "Verify Debit Batch";
     var debitBatchType = ViewBag.DebitBatchTypeSelectList as List<SelectListItem>;
     var queuePriority = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
+
+    var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
 }
 
 <style>
+
+    .big-box {
+        border: 1px solid gray;
+        border-radius: 12px;
+        background-color: #f1f1f1
+    }
+    .row{
+        margin:20px;
+    }
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+    h2 {
+        font-weight: bold;
+        margin-left: 40px;
+    }
     .custom-container {
-        border: 2px solid gray;
-        padding: 10px;
-        border-radius: 5px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 15px;
-        text-align: center;
-        margin-top: 30px;
+        border: 2px solid gray; /* Border color set to gray */
+        
+        border-radius: 12px; /* Rounded corners (optional) */
+
+        display: flex; /* Enable Flexbox */
+        align-items: center; /* Center content vertically */
+        justify-content: center; /* Center content horizontally */
+        font-size: 15px; /* Set font size to 15px */
+        text-align: center; /* Center text within elements */
+        margin: 20px;
         font-weight: bold;
         background-color: #00e0ff;
     }
 
-    .combined-container {
-        padding: 20px;
-        border-radius: 5px;
-        margin: 20px 0;
-        font-size: 15px;
-        display: flex;
-        flex-direction: column;
-        font-weight: bold;
-        border: 2px solid #00ffff;
-    }
+    /* Ensure that any child elements that need to be centered don't affect the container alignment */
+        .custom-container .row {
+             width: 100%; /* Make sure row takes full width */
+            font-size: 16px;
+        }
+
+
 
     .row {
-        margin-bottom: 20px;
+        margin-bottom: 20px; /* Space between rows */
     }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 15px; /* Space between form groups */
     }
 
     .input-group-addon {
-        padding: 10px;
+        padding: 10px; /* Padding inside the input group addon */
     }
 
     .form-control {
-        margin-top: 5px;
+        margin-top: 5px; /* Space above input controls */
     }
 
     .btn-primary {
         border-radius: 10px;
     }
 
-    #policies {
+    @*#policies {
         color: black;
-    }
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }*@
 
     .main1 {
         border: 1px solid black;
+        border-radius: 12px;
         padding: 10px;
+        margin-top: 20px;
+        background-color: #f1f1f1;
+    }
+
+    @*css form status dropdown*@
+    .button-container {
+        display: inline-block;
+        position: relative;
+    }
+
+    .custom-dropdown {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc; /* Border around the button */
+        border-radius: 4px;
+        padding: 5px 10px;
+        background-color: #f9f9f9; /* Background color of the button */
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: 16px;
+        position: relative;
+        min-width: 150px; /* Minimum width to prevent overlap */
+        width: auto; /* Adjust width based on content */
+    }
+
+    .custom-select {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+        width: 100%; /* Make the dropdown take full width of the container */
+        -webkit-appearance: none; /* Remove default dropdown styles in WebKit browsers */
+        -moz-appearance: none; /* Remove default dropdown styles in Firefox */
+        font-weight: bold;
+        text-align: left;
+        line-height: 1.5; /* Adjust line height for better vertical alignment */
+        color: #007bff; /* Blue color for the text */
+    }
+
+    .custom-dropdown::after {
+        content: '\f078'; /* Unicode for down arrow */
+        font-family: FontAwesome; /* FontAwesome for the down arrow */
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* Allow clicks to pass through the arrow */
+    }
+
+    @* css form Authorization remarks*@ .form-group-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between label and input field */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+    .input-md {
+        color: #007bff; /* Replace with your desired color */
+    }
+    h2 {
+        font-weight: bold;
+    }
+
+        .form-control {
+        flex: 1; /* Allow input field to take up remaining space */
     }
 </style>
 
@@ -111,30 +229,30 @@
                     {
                     @Html.AntiForgeryToken()
 
-                    <div class="form-horizontal">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-                        <fieldset>
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            
                             <div class="main1">
                                 <div class="combined-container">
                                     <div class="row">
-                                        <div class="col-lg-4">
+                                        @*<div class="col-lg-4">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.DebitBatchTypeId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.DebitTypeDescription, htmlAttributes: new { @class = "control-label" })
                                                 <div class="input-group">
                                                     <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.DebitBatchTypeId, debitBatchType, new { @class = "form-control input-md", @readonly = "readonly" })
-                                                    @Html.ValidationMessageFor(model => model.DebitBatchTypeId)
+                                                    @Html.DropDownListFor(model => model.DebitTypeDescription, debitBatchType, new { @class = "form-control input-md", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.DebitTypeDescription)
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div>*@
 
                                         <div class="col-lg-4">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
+                                                @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
                                                 <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.Priority, queuePriority, new { @class = "form-control input-md", @readonly = "readonly" })
-                                                    @Html.ValidationMessageFor(model => model.Priority)
+                                                    <span class="input-group-addon input-md"><i class="fa fa-bars fa-fw"></i></span>
+                                                    @Html.DropDownListFor(model => model.PriorityDescription, queuePriority, new { @class = "form-control input-md", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.PriorityDescription)
                                                 </div>
                                             </div>
                                         </div>
@@ -142,75 +260,104 @@
                                         <div class="col-lg-4">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
 
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "", @readonly = "readonly" } })
-                                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
+                                        
 
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                                @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Audit Remarks", @required = "" } })
-                                                @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.StatusDescription, new { @class = "control-label" })
-                                                <div class="input-group">
-                                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                    @Html.DropDownListFor(model => model.StatusDescription, debitBatchType, new { @class = "form-control input-md" })
-                                                    @Html.ValidationMessageFor(model => model.StatusDescription)
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Add fields for post and posting remarks here -->
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                <!-- Placeholder for Post field -->
-                                                @Html.Label("Post", new { @class = "control-label" })
-                                                @Html.Editor("Post", new { htmlAttributes = new { @class = "form-control", @placeholder = "Post", @required = "" } })
-                                                @Html.ValidationMessage("Post", "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                <!-- Placeholder for Posting Remarks field -->
-                                                @Html.Label("PostingRemarks", new { @class = "control-label" })
-                                                @Html.Editor("PostingRemarks", new { htmlAttributes = new { @class = "form-control", @placeholder = "Posting Remarks", @required = "" } })
-                                                @Html.ValidationMessage("PostingRemarks", "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
+                                    
                                 </div>
+                                <br/>
+                                <br/>
+
+
+                                <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
+
+                                    <row>
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
+                                            <thead style="font-style: italic; color: #333; text-align: center;">
+                                                <tr>
+                                                    <th style="width: 10%;">Customer Account</th>
+                                                    <th style="width: 5%;">Multiplier</th>
+                                                    <th style="width: 10%;">Reference</th>
+                                                    <th style="width: 10%;">Basis Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody style="color: #007bff;">
+                                                @if (ViewBag.CrdeitBatchEntryDTOs != null)
+                                                {
+                                                    foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
+                                                    {
+                                                        <tr data-id="@debitBatchEntries.Id">
+                                                            <td>@debitBatchEntries.CustomerAccountId</td>
+                                                            <td>@debitBatchEntries.Multiplier</td>
+                                                            <td>@debitBatchEntries.Reference</td>
+                                                            <td>@debitBatchEntries.BasisValue</td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </row>
+                                </div>
+
+
+
+
 
                                 <div class="custom-container">
                                     <div class="row" id="policies">
-                                        <div class="col-lg-12">
-                                            <div class="style-button" style="text-align: right;">
-                                                <input type="submit" value="Verify" style="width: 150px;" class="btn btn-primary" />
+                                        <div class="col-lg-10">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="form-group-container">
+                                                            Remarks:
+                                                            @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="button-container">
+                                                            <div class="custom-dropdown">
+                                                                @Html.DropDownListFor(model => model.BatchAuthOption, batchAuthOptions, new { @class = "custom-select" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
                                             </div>
+
                                         </div>
+
+                                        <div class="col-lg-2">
+                                            <div class="row">
+
+                                                <div class="col-lg-12">
+                                                    <div class="style-button" style="text-align: right;">
+                                                        <input type="submit" value="Verify" style="width: 150px;" class="btn btn-primary" />
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
                                     </div>
                                 </div>
                             </div>
-                        </fieldset>
-                    </div>
+                            
+                        </div>
                     }
                 </div>
             </div>

@@ -8,6 +8,92 @@
     var batchType = ViewBag.BatchType as List<SelectListItem>;
 
 }
+<style>
+    @*css for the journal entries *@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .main1 {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 20px;
+        background-color: #f1f1f1;
+    }
+
+
+    .combined-container {
+        padding: 20px; /* Padding inside the container */
+        border-radius: 12px; /* Rounded corners (optional) */
+        margin: 20px 0; /* Margin above and below the container */
+        font-size: 15px; /* Set font size to 15px */
+        display: flex; /* Enable Flexbox for alignment */
+        flex-direction: column; /* Stack rows vertically */
+        font-weight: bold;
+        border: 4px solid #00ffff;
+    }
+
+
+    @*Styling for Entries*@
+    .Wire-Transfer-container {
+        border: 1px solid #ddd;
+        margin-top: 20px;
+        padding: 20px;
+        font-size: 15px;
+        border-radius: 8px;
+        position: relative;
+        padding: 40px; /* Space for the h2 */
+        margin-bottom: 30px;
+    }
+
+        .Wire-Transfer-container h2 {
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            background: #fff;
+            padding: 0 10px;
+            margin: 0;
+        }
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+
+    .form-control {
+        color: #007bff;
+    }
+
+    .control-label {
+        color: #333;
+        font-weight:bold;
+    }
+    h2 {
+        color: #333;
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -44,7 +130,7 @@
                 <div class="ibox-title">
                     <h2>Create Wire Transfer</h2>
                     <hr />
-                    @Html.ActionLink("Back to List", "Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, new { @class = "btn btn-success" })
+                   
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -54,71 +140,267 @@
                         </a>
                     </div>
                 </div>
+
+                
+
+
+
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
+                    <div class="main1">
+                        @using (Html.BeginForm("Create", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                    <fieldset>
-                        <div class="row">
-                            <div class="col-lg-4">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.TypeDescription, batchType, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.TypeDescription)
+                        <div class="combined-container">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.TypeDescription, batchType, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.TypeDescription)
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 form-group">
+                                    @Html.LabelFor(model => model.WireTransferTypeId, new { @class = "control-label" })
+                                    <div class="input-group" data-autoclose="true">
+                                        @Html.TextBoxFor(model => model.WireTransferTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "" })
+                                        @Html.HiddenFor(model => model.WireTransferTypeId)
+                                        <span class="input-group-addon">
+                                            <a data-toggle="modal" data-target="#wireTransferTypeLookupModal"><span class="fa fa-search"></span></a>
+                                        </span>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-md-8 form-group">
-                                @Html.LabelFor(model => model.WireTransferTypeId, new { @class = "control-label" })
-                                <div class="input-group" data-autoclose="true">
-                                    @Html.TextBoxFor(model => model.WireTransferTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "Wire Transfer Type" })
-                                    <span class="input-group-addon">
-                                        <a data-toggle="modal" data-target="#wireTransferTypeLookupModal"><span class="fa fa-search"></span></a>
-                                    </span>
+                            <div class="row">
+                                <div class="col-md-6 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.PriorityDescription, priority, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.PriorityDescription)
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-4 form-group">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PriorityDescription, new { @class = "control-label" })
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.PriorityDescription, priority, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.PriorityDescription)
+                                <div class="col-lg-6">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg-8">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                            <div class="row">
+                                <div class="col-md-12 form-group">
+                                    <div class="form-group form-group-sm">
+                                        @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
+                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                    </div>
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-12 form-group">
-                                <div class="form-group form-group-sm">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                            <div class="col-lg-12">
+                                <div class="form-group" style="text-align:right;">
+                                    <input type="submit" value="Add Batch" class="btn btn-primary" style="width: 100px; border-radius: 4px;margin-top:40px;" />
                                 </div>
                             </div>
-                        </div>
 
-                        <div class="form-group form-group-sm">
-                            <input type="submit" value="Create" class="btn btn-primary" />
                         </div>
-                    </fieldset>
-                    }
+                            
+                        }
+
+
+                        <br />
+                        @using (Html.BeginForm("Add", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post))
+
+                        {
+                            <div class="Wire-Transfer-container">
+                                <h2>Batch Entries</h2>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @*@Html.HiddenFor(model => model.WireTransferEntries[0].CreditCustomerAccountFullAccountNumber)*@
+                                                @Html.TextBoxFor(model => model.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#WireTransferAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].Status, htmlAttributes: new { @class = "control-label" })
+                                            @*@Html.HiddenFor(model => model.WireTransferEntries[0].CreditCustomerAccountStatusDescription)*@
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
+                                            @* @Html.HiddenFor(model => model.WireTransferEntries[0].ProductDescription)*@
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerId, htmlAttributes: new { @class = "control-label" })
+                                             @Html.HiddenFor(model => model.WireTransferEntries[0].CustomerAccountCustomerId)
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+
+
+
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].Amount, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].Amount, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].Payee, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].Payee, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].Payee, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].AccountNumber, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].AccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].AccountNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.WireTransferEntries[0].Reference, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                                
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add Entry" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                    </div>
+
+                                </div>
+
+                                <br />
+
+                                <row>
+
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 15%;">Account Number</th>
+                                                <th style="width: 10%;">Product Description</th>
+                                                <th style="width: 5%;">Principal</th>
+                                                <th style="width: 5%;">Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.CreditBatchEntryDTOs != null)
+                                            {
+                                                foreach (var WireTransferEntries in ViewBag.CreditBatchEntryDTOs)
+                                                {
+                                                    <tr data-id="@WireTransferEntries.Id">
+                                                        <td>@WireTransferEntries.CreditCustomerAccountFullAccountNumber</td>
+                                                        <td>@WireTransferEntries.ProductDescription</td>
+                                                        <td>@WireTransferEntries.Principal</td>
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+
+
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </row>
+                            </div>
+
+
+
+                        }
+
+
+
+
+                    </div>
+
+                    
                 </div>
             </div>
         </div>
@@ -148,7 +430,28 @@
         </div>
     </div>
 </div>
+<div class="modal  fade" id="WireTransferAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Wire Transfer Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="WireTransferAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
@@ -197,7 +500,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
+<script>
         $(document).ready(function () {
             $("#wizard").steps();
             $("#form").steps({
@@ -266,6 +569,45 @@
                 }
             });
 
+            $('#WireTransferAccountsGrid').DataTable({
+                // Ajax settings
+                "sPaginationType": "full_numbers",
+                "bProcessing": true,
+                "bServerSide": true,
+                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+                "sServerMethod": "POST",
+                // Callback settings
+                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var h = ("0" + createdDate.getHours()).slice(-2);
+                    var m = ("0" + createdDate.getMinutes()).slice(-2);
+                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                    aData.CreatedDate = dt_Created;
+
+                    var selectUrl = '<a  href="/Accounts/BatchOrigination_WireTransfer/CreditCustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+
+
+
+                    $('td:eq(3)', nRow).html(dt_Created);
+                    $('td:eq(4)', nRow).html(selectUrl);
+
+                    return nRow;
+                },
+        // Display settings
+        "aoColumns": [
+
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+             });
+
+
             $('#wireTransferTypeGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
@@ -294,16 +636,16 @@
         // Display settings
         "aoColumns": [
 
-            { "mDataProp": "WireTransferTypeDescription", "sTitle": "Wire Transfer Type", "sWidth": "3%" },
-            { "mDataProp": "WireTransferTypeTransactionOwnership", "sTitle": "Wire Transfer Type Transaction Ownership", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "20%" },
+            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "20%" },
+            { "mDataProp": "TransactionOwnershipDescription", "sTitle": "Transaction Ownership", "sWidth": "20%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "20%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
              });
 
     $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
+        var data = wireTransferTypeGrid.row(this).data();
         $('#WireTransferTypeId').val(data.Id);
         $('input[name=WireTransferTypeId]').val(data.WireTransferTypeId);
         $('input[name=WireTransferTypeDescription]').val(data.WireTransferTypeDescription);
@@ -319,6 +661,6 @@
     });
 
         });
-    </script>
+</script>
 }
 

@@ -184,7 +184,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid? id, BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
         {
-            if (ModelState.IsValid)
+            if (!bankReconciliationPeriodDTO.HasErrors)
             {
                 await _channelService.UpdateBankReconciliationPeriodAsync(bankReconciliationPeriodDTO, GetServiceHeader());
 
@@ -197,6 +197,69 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(bankReconciliationPeriodDTO);
             }
         }
+
+
+        public async Task<ActionResult> Processing(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var bankReconciliationPeriodDTO = await _channelService.FindBankReconciliationPeriodAsync(id, GetServiceHeader());
+
+            return View(bankReconciliationPeriodDTO);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Processing(Guid? id, BankReconciliationEntryDTO bankReconciliationPeriodDTO)
+        {
+            if (!bankReconciliationPeriodDTO.HasErrors)
+            {
+                await _channelService.AddBankReconciliationEntryAsync(bankReconciliationPeriodDTO, GetServiceHeader());
+
+                TempData["Edit"] = "Successfully edited Bank Reconciliation Period";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(bankReconciliationPeriodDTO);
+            }
+        }
+
+        public async Task<ActionResult> Closing(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var bankReconciliationPeriodDTO = await _channelService.FindBankReconciliationPeriodAsync(id, GetServiceHeader());
+
+            return View(bankReconciliationPeriodDTO);
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Closing(Guid? id, BankReconciliationPeriodDTO bankReconciliationPeriodDTO)
+        {
+            if (!bankReconciliationPeriodDTO.HasErrors)
+            {
+                await _channelService.CloseBankReconciliationPeriodAsync(bankReconciliationPeriodDTO,1,2,GetServiceHeader());
+
+                TempData["Edit"] = "Successfully edited Bank Reconciliation Period";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                return View(bankReconciliationPeriodDTO);
+            }
+        }
+
     }
+
+
+
+  
 }
+
 

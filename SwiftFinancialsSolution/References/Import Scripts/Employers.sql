@@ -1,5 +1,5 @@
 
-INSERT INTO [SwiftFinancialsDB_DEV].[dbo].[swiftfin_Employers]([Id]
+INSERT INTO [SwiftFinancialsDB_Live].[dbo].[swiftfin_Employers]([Id]
 	  ,[Description]
       ,[Address_AddressLine1]
       ,[Address_AddressLine2]

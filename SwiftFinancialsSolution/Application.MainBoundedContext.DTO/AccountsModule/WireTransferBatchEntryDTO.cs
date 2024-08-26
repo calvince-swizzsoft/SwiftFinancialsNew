@@ -285,5 +285,24 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "WireTransferAccount Full Account Number")]
+        public string WiretransferCustomerAccountFullAccountNumber { get; set; }
+
+        
+
+        [DataMember]
+        [Display(Name = "WireTransfer Customer")]
+        public string WireTranferCustomerAccountFullName { get; set; }
+
+        [Display(Name = "Identification Number")]
+        public string WireTransferAccountIdentificationNumber { get; set; }
+
+
+        [Display(Name = "Account Status")]
+        public string WireTransferAccountStatusDescription { get; set; }
     }
 }

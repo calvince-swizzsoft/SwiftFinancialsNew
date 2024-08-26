@@ -114,11 +114,13 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    //var editUrl = '<a  href="/accounts/BankReconciliation_Periods/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    //var viewUrl = '<a  href="/accounts/BankReconciliation_Periods/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var editUrl = '<a  href="/accounts/BankReconciliation_Periods/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
+                    var viewUrl = '<a  href="/accounts/BankReconciliation_Periods/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var ClosingUrl = '<a  href="/accounts/BankReconciliation_Periods/Closing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Closing</a>';
+                    var ProcessingUrl = '<a  href="/accounts/BankReconciliation_Periods/Processing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Processing</a>';
 
                     $('td:eq(6)', nRow).html(dt_Created);
-                   // $('td:eq(7)', nRow).html(viewUrl);
+                   $('td:eq(6)', nRow).html(viewUrl+ ClosingUrl+ ProcessingUrl);
 
                     return nRow;
                 },

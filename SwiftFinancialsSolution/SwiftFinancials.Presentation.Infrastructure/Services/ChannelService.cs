@@ -40132,5 +40132,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         {
             throw new NotImplementedException();
         }
+
+        public Task FindCustomersByStationIdAndFilterInPageAsync(Func<StationDTO> mapTo)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

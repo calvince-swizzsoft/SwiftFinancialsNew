@@ -214,5 +214,38 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+       
+
+        public CustomerAccountDTO Customer { get; set; }
+
+
+
+        [DataMember]
+        [Display(Name = "Debit Customer")]
+        public string DebitCustomerAccountFullName { get; set; }
+
+        [DataMember]
+        [Display(Name = "DebitAccount Full Account Number")]
+        public string DebitCustomerAccountFullAccountNumber { get; set; }
+
+        [Display(Name = "Debit Customer Id")]
+        public string DebitCustomerAccountIdentificationNumber { get; set; }
+
+
+        [Display(Name = "Debit Customer Status")]
+        public string DebitCustomerAccountStatusDescription { get; set; }
+
+
+        [Display(Name = "Debit Customer Remarks")]
+        public string DebitCustomerAccountRemarks { get; set; }
+
+        [Display(Name = "Debit Customer Type")]
+        public string DebitCustomerAccountTypeDescription { get; set; }
+
+        [Display(Name = "Debit Status Description")]
+        public string DebitCustomerAccountStausDescription { get; set; }
+
     }
 }

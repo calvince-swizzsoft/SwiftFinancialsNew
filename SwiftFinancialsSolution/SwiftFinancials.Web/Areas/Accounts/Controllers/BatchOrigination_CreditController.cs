@@ -5,6 +5,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -49,11 +50,269 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
             var creditBatchDTO = await _channelService.FindCreditBatchAsync(id, GetServiceHeader());
 
+            var creditBatches = await _channelService.FindCreditBatchEntriesByCreditBatchIdAsync(id,true, GetServiceHeader());
+
+            ViewBag.CrdeitBatchEntryDTOs = creditBatches;
+
             return View(creditBatchDTO);
         }
+
+
+        public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, CreditBatchDTO  creditBatchDTO)
+        {
+
+
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
+            Guid parseId;
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                await ServeNavigationMenus();
+
+                return View("Create", creditBatchDTO);
+            }
+
+            
+
+            if (Session["CreditBatchDTO1"] != null)
+            {
+                creditBatchDTO = Session["CreditBatchDTO1"] as CreditBatchDTO;
+            }
+
+            CreditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+
+
+            ViewBag.CreditBatchEntryDTOs = CreditBatchEntryDTOs;
+
+            if (creditBatchDTO != null && creditBatchDTO.CreditBatchEntries == null)
+            {
+                creditBatchDTO.CreditBatchEntries = new ObservableCollection<CreditBatchEntryDTO>();
+            }
+
+            // Ensure at least one entry exists before trying to access it by index
+            if (creditBatchDTO.CreditBatchEntries.Count == 0)
+            {
+                creditBatchDTO.CreditBatchEntries.Add(new CreditBatchEntryDTO());
+            }
+
+            var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
+
+            if (creditcustomerAccount != null)
+            {
+                creditBatchDTO.CreditBatchEntries[0].CreditCustomerAccountFullName = creditcustomerAccount.CustomerFullName;
+                creditBatchDTO.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
+                creditBatchDTO.CreditBatchEntries[0].CustomerAccountCustomerReference2 = creditcustomerAccount.CustomerReference2;
+                creditBatchDTO.CreditBatchEntries[0].CustomerAccountCustomerReference3 = creditcustomerAccount.CustomerReference3;
+                creditBatchDTO.CreditBatchEntries[0].CreditCustomerAccountIdentificationNumber= creditcustomerAccount.CustomerIndividualIdentityCardNumber;
+                creditBatchDTO.CreditBatchEntries[0].CreditCustomerAccountStatusDescription= creditcustomerAccount.StatusDescription;
+                creditBatchDTO.CreditBatchEntries[0].CreditCustomerAccountRemarks= creditcustomerAccount.Remarks;
+                creditBatchDTO.CreditBatchEntries[0].ProductDescription= creditcustomerAccount.CustomerAccountTypeProductCodeDescription;
+                creditBatchDTO.CreditBatchEntries[0].CustomerAccountCustomerId = creditcustomerAccount.Id;
+                creditBatchDTO.CreditBatchEntries[0].CreditCustomerAccountTypeDescription = creditcustomerAccount.TypeDescription;
+                creditBatchDTO.CreditBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers = creditcustomerAccount.CustomerIndividualPayrollNumbers;
+
+
+               
+            }
+
+            Session["creditBatchDTO2"] = creditBatchDTO;
+
+            return View("Create", creditBatchDTO);
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> AddBatch(CreditBatchDTO creditBatchDTO)
+        {
+            await ServeNavigationMenus();
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
+            Session["CreditBatchDTO1"] = creditBatchDTO;
+
+
+
+
+            Session["PostingPeriod"] = creditBatchDTO.PostingPeriodDescription;
+            Session["PostingPeriodId"] = creditBatchDTO.PostingPeriodId;
+            Session["CFixedAmount"] = creditBatchDTO.ConcessionFixedAmount;
+            Session["CreditType"] = creditBatchDTO.CreditTypeDescription;
+            Session["CreditTypeId"] = creditBatchDTO.CreditTypeId;
+            Session["BatchType"] = creditBatchDTO.Type;
+            Session["Branch"] = creditBatchDTO.BranchDescription;
+            Session["BranchId"] = creditBatchDTO.BranchId;
+            Session["Reference"] = creditBatchDTO.Reference;
+            Session["Month"] = creditBatchDTO.Month;
+            Session["MonthDec"] = creditBatchDTO.MonthDescription;
+            Session["ConcesType"] = creditBatchDTO.ConcessionType;
+            Session["ConcesTypeDec"] = creditBatchDTO.ConcessionTypeDescription;
+            Session["Priority"] = creditBatchDTO.Priority;
+            Session["PriorityDec"] = creditBatchDTO.PriorityDescription;
+            Session["TotalValue"] = creditBatchDTO.TotalValue;
+
+
+
+            return View("Create");
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(CreditBatchDTO creditBatchDTO)
+        {
+            await ServeNavigationMenus();
+            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
+            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
+            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
+            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
+            
+
+
+            if (Session["PostingPeriod"] != null)
+            {
+                creditBatchDTO.PostingPeriodDescription = (string)Session["PostingPeriod"];
+            }
+
+            if (Session["PostingPeriodId"] != null)
+            {
+                creditBatchDTO.PostingPeriodId = (Guid)Session["PostingPeriodId"];
+            }
+            if (Session["CFixedAmount"] != null)
+            {
+                creditBatchDTO.ConcessionFixedAmount = (decimal)Session["CFixedAmount"];
+            }
+            if (Session["CreditType"] != null)
+            {
+                creditBatchDTO.CreditTypeDescription = (string)Session["CreditType"];
+            }
+
+            if (Session["CreditTypeId"] != null)
+            {
+                creditBatchDTO.CreditTypeId = (Guid)Session["CreditTypeId"];
+            }
+            if (Session["BatchType"] != null)
+            {
+                creditBatchDTO.Type = (int)Session["BatchType"];
+            }
+            if (Session["Branch"] != null)
+            {
+                creditBatchDTO.BranchDescription = (string)Session["Branch"];
+            }
+            if (Session["BranchId"] != null)
+            {
+                creditBatchDTO.BranchId = (Guid)Session["BranchId"];
+            }
+            if (Session["Reference"] != null)
+            {
+                creditBatchDTO.Reference = (string)Session["Reference"];
+            }
+            if (Session["Month"] != null)
+            {
+                creditBatchDTO.Month = (int)Session["Month"];
+            }
+            
+            if (Session["Month"] != null)
+            {
+                creditBatchDTO.Month = (int)Session["Month"];
+            }
+            if (Session["ConcesType"] != null)
+            {
+                creditBatchDTO.ConcessionType = (int)Session["ConcesType"];
+            }
+
+            if (Session["Priority"] != null)
+            {
+                creditBatchDTO.Priority = (int)Session["Priority"];
+            }
+            if (Session["TotalValue"] != null)
+            {
+                creditBatchDTO.TotalValue = (decimal)Session["TotalValue"];
+            }
+
+           
+
+
+            CreditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+
+
+
+            ViewBag.CreditBatchEntryDTOs = CreditBatchEntryDTOs;
+
+
+
+            if (CreditBatchEntryDTOs == null)
+            {
+                CreditBatchEntryDTOs = new ObservableCollection<CreditBatchEntryDTO>();
+            }
+
+
+
+            foreach (var overDeductionBatchEntryDTO in creditBatchDTO.CreditBatchEntries)
+            {
+                overDeductionBatchEntryDTO.CreditCustomerAccountFullName = overDeductionBatchEntryDTO.CreditCustomerAccountFullName;
+                overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber = overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber;
+                overDeductionBatchEntryDTO.CustomerAccountCustomerReference2 = overDeductionBatchEntryDTO.CustomerAccountCustomerReference2;
+                overDeductionBatchEntryDTO.CustomerAccountCustomerReference3 = overDeductionBatchEntryDTO.CustomerAccountCustomerReference3;
+                overDeductionBatchEntryDTO.CreditCustomerAccountIdentificationNumber = overDeductionBatchEntryDTO.CreditCustomerAccountIdentificationNumber;
+                overDeductionBatchEntryDTO.CreditCustomerAccountStatusDescription = overDeductionBatchEntryDTO.CreditCustomerAccountStatusDescription;
+                overDeductionBatchEntryDTO.CreditCustomerAccountRemarks = overDeductionBatchEntryDTO.CreditCustomerAccountRemarks;
+                overDeductionBatchEntryDTO.ProductDescription = overDeductionBatchEntryDTO.ProductDescription;
+                overDeductionBatchEntryDTO.CustomerAccountCustomerId = overDeductionBatchEntryDTO.CustomerAccountCustomerId;
+                overDeductionBatchEntryDTO.CreditCustomerAccountTypeDescription = overDeductionBatchEntryDTO.CreditCustomerAccountTypeDescription;
+                overDeductionBatchEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers = overDeductionBatchEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers;
+                overDeductionBatchEntryDTO.Principal = overDeductionBatchEntryDTO.Principal;
+                overDeductionBatchEntryDTO.Beneficiary = overDeductionBatchEntryDTO.Beneficiary;
+                overDeductionBatchEntryDTO.Interest = overDeductionBatchEntryDTO.Interest;
+                overDeductionBatchEntryDTO.Reference = overDeductionBatchEntryDTO.Reference;
+
+                CreditBatchEntryDTOs.Add(overDeductionBatchEntryDTO);
+
+
+
+
+                
+
+            };
+
+            
+
+            Session["creditBatchDTO"] = creditBatchDTO;
+
+            ViewBag.CreditBatchEntryDTOs = CreditBatchEntryDTOs;
+
+            TempData["CreditBatchEntryDTO"] = CreditBatchEntryDTOs;
+            Session["CreditBatchEntryDTO"] = CreditBatchEntryDTOs;
+            TempData["CreditBatchDTO"] = creditBatchDTO;
+            Session["CreditBatchDTO"] = creditBatchDTO;
+
+            
+
+
+
+
+
+
+
+
+            return View("Create", creditBatchDTO);
+        }
+
+
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -67,11 +326,94 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
         {
+
+            Session["RecoverCarryForwards"] = creditBatchDTO.RecoverCarryForwards;
+            Session["PreserveAccountBalance"] = creditBatchDTO.PreserveAccountBalance;
+            Session["RecoverIndefiniteCharges"] = creditBatchDTO.RecoverIndefiniteCharges;
+            Session["RecoverArrearages"] = creditBatchDTO.RecoverArrearages;
+
+            creditBatchDTO = Session["CreditBatchDTO"] as CreditBatchDTO;
+
+            CreditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+
+
+            
+            if (Session["CreditBatchEntryDTO"] != null)
+            {
+                creditBatchDTO.CreditBatchEntries = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+            }
+
+
+            if (Session["RecoverCarryForwards"] != null)
+            {
+                creditBatchDTO.RecoverCarryForwards = (bool)Session["RecoverCarryForwards"];
+            }
+
+            if (Session["PreserveAccountBalance"] != null)
+            {
+                creditBatchDTO.PreserveAccountBalance = (bool)Session["PreserveAccountBalance"];
+            }
+            if (Session["RecoverIndefiniteCharges"] != null)
+            {
+                creditBatchDTO.RecoverIndefiniteCharges = (bool)Session["RecoverIndefiniteCharges"];
+            }
+
+            if (Session["RecoverArrearages"] != null)
+            {
+                creditBatchDTO.RecoverArrearages = (bool)Session["RecoverArrearages"];
+            }
+
+
+
+
+            
+
             creditBatchDTO.ValidateAll();
 
             if (!creditBatchDTO.HasErrors)
             {
-                await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
+                
+
+                var creditBatchEntries = new ObservableCollection<CreditBatchEntryDTO>();
+
+                foreach (var overDeductionBatchEntryDTO in creditBatchDTO.CreditBatchEntries)
+                {
+                    overDeductionBatchEntryDTO.CreditCustomerAccountFullName = overDeductionBatchEntryDTO.CreditCustomerAccountFullName;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber = overDeductionBatchEntryDTO.CreditCustomerAccountFullAccountNumber;
+                    overDeductionBatchEntryDTO.CustomerAccountCustomerReference2 = overDeductionBatchEntryDTO.CustomerAccountCustomerReference2;
+                    overDeductionBatchEntryDTO.CustomerAccountCustomerReference3 = overDeductionBatchEntryDTO.CustomerAccountCustomerReference3;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountIdentificationNumber = overDeductionBatchEntryDTO.CreditCustomerAccountIdentificationNumber;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountStatusDescription = overDeductionBatchEntryDTO.CreditCustomerAccountStatusDescription;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountRemarks = overDeductionBatchEntryDTO.CreditCustomerAccountRemarks;
+                    overDeductionBatchEntryDTO.ProductDescription = overDeductionBatchEntryDTO.ProductDescription;
+                    overDeductionBatchEntryDTO.CustomerAccountCustomerId = overDeductionBatchEntryDTO.CustomerAccountCustomerId;
+                    overDeductionBatchEntryDTO.CreditCustomerAccountTypeDescription = overDeductionBatchEntryDTO.CreditCustomerAccountTypeDescription;
+                    overDeductionBatchEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers = overDeductionBatchEntryDTO.CustomerAccountCustomerIndividualPayrollNumbers;
+                    overDeductionBatchEntryDTO.Principal = overDeductionBatchEntryDTO.Principal;
+                    overDeductionBatchEntryDTO.Beneficiary = overDeductionBatchEntryDTO.Beneficiary;
+                    overDeductionBatchEntryDTO.Interest = overDeductionBatchEntryDTO.Interest;
+                    overDeductionBatchEntryDTO.Reference = overDeductionBatchEntryDTO.Reference;
+
+
+                   /* var creditBatchEntry = await _channelService.AddCreditBatchEntryAsync(overDeductionBatchEntryDTO, GetServiceHeader());*/
+                }
+
+                var creditBatch = await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
+
+                /*await _channelService.AddOverDeductionBatchEntryAsync(OverDeductionBatchEntries, GetServiceHeader());*/
+
+                if (creditBatch.HasErrors)
+                {
+                    await ServeNavigationMenus();
+
+                    TempData["ErrorMsg"] = creditBatchDTO.ErrorMessages;
+
+                    return View();
+                }
+
+                TempData["SuccessMessage"] = "Successfully Created Credit Batch";
+                Session["CreditBatchEntryDTO"] = null;
+                Session["CreditBatchDTO"] = null;
 
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
                 ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
@@ -121,6 +463,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
@@ -133,6 +477,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
+
+
+            var creditBatches = await _channelService.FindCreditBatchEntriesByCreditBatchIdAsync(id,true, GetServiceHeader());
+
+            ViewBag.CrdeitBatchEntryDTOs = creditBatches;
+
 
             return View(creditBatchDTO);
         }
@@ -152,6 +502,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
+
+                TempData["VerifySuccess"] = "Verification Successiful";
                 return RedirectToAction("Index");
             }
             else
@@ -178,6 +530,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
+            var creditBatches = await _channelService.FindCreditBatchEntriesByCreditBatchIdAsync(id, true, GetServiceHeader());
+
+            ViewBag.CrdeitBatchEntryDTOs = creditBatches;
+
             return View(creditBatchDTO);
         }
 
@@ -185,7 +541,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Authorize(Guid id, CreditBatchDTO creditBatchDTO)
         {
-            var batchAuthOption = creditBatchDTO.Month;
+            var batchAuthOption = creditBatchDTO.Status;
 
             creditBatchDTO.ValidateAll();
 
@@ -199,12 +555,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
                 ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
 
+                TempData["AuthorizeSuccess"] = "Authorization Successiful";
+
                 return RedirectToAction("Index");
             }
             else
             {
                 var errorMessages = creditBatchDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(creditBatchDTO.TypeDescription.ToString());
+                await _channelService.AuthorizeCreditBatchAsync(creditBatchDTO, 1, batchAuthOption, GetServiceHeader());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(creditBatchDTO.Type.ToString());
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
+
+                TempData["AuthorizeFail"] = "Authorization Failed";
                 return View(creditBatchDTO);
             }
         }

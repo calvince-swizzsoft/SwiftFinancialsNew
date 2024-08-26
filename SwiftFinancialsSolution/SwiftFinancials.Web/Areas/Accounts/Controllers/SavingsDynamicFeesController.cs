@@ -53,18 +53,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<SavingsProductDTO> selectedRows)
-        {           
-            
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, ObservableCollection<SavingsProductDTO> selectedRows)
+        {
+
             recurringBatchDTO.ValidateAll();
-         int Priority=  recurringBatchDTO.Priority;
+            int Priority = recurringBatchDTO.Priority;
             if (!recurringBatchDTO.HasErrors)
             {
                 foreach (var selectedRow in selectedRows)
                 {
                     var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
                     savingsProductDTO.AutomateLedgerFeeCalculation = true;
-                    await _channelService.CapitalizeInterestAsync(1, GetServiceHeader());
+                    await _channelService.ChargeSavingsDynamicFeesAsync(recurringBatchDTO, selectedRows, GetServiceHeader());
 
                 }
                 ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(recurringBatchDTO.Month.ToString());
