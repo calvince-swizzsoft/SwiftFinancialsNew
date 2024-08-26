@@ -3,60 +3,116 @@
     ViewBag.Title = "Customers";
 }
 
-<div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Customers</h2>
-        <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+<nav class="navbar">
+    <div class="container">
+        <ul class="nav-menu">
+            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "ConditionalLending" ? "active" : "")">
+                <a href="@Url.Action("Index", "ConditionalLending")" class="nav-link">Conditional Lending</a>
             </li>
-            <li class="breadcrumb-item active">
-                <strong>List</strong>
+            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "StationLinkage" ? "active" : "")">
+                <a href="@Url.Action("Create", "StationLinkage")" class="nav-link">Station Linkage</a>
             </li>
-        </ol>
+            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "NextofKin" ? "active" : "")">
+                <a href="@Url.Action("Create", "NextofKin")" class="nav-link">Next of Kin </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="page-header">
+    <div class="container">
+        <h1>Customers</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">List</li>
+            </ol>
+        </nav>
     </div>
 </div>
 
-<div class="row row-center">
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-    <div class="col-lg-12">
-        <div class="nav1">
-            <div class="col-lg-12">
-                <nav class="nav">
-                    <a href="@Url.Action("Index", "ConditonalLending", new { Area = "ConditonalLending" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Conditonal Lending
-                    </a>
-                    <a href="@Url.Action("Index", "AccountAlerts", new { Area = "Customer" })" class="nav-link">
-                        <i class="fa fa-cog"></i> AccountA lerts
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Debit Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Refund", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Refund Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Disbursement", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Disbursement Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Wire Transfer Batch
-                    </a>
-                    <a href="#" class="nav-link disabled">
-                        <i class="fa fa-cog"></i> General Ledger Batch
-                    </a>
-                    <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="nav-link">
-                        <i class="fa fa-cog"></i> Reversal Batch
-                    </a>
-                    <a href="#" class="nav-link disabled">
-                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
-                    </a>
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
 
-                </nav>
-            </div>
+    .page-header {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 20px 0;
+        margin-bottom: 20px;
+    }
 
-        </div>
-    </div>
-</div>
+        .page-header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+        }
+
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+        margin: 0;
+    }
+
+
+    .breadcrumb-item {
+        font-size: 14px;
+    }
+
+        .breadcrumb-item a {
+            text-decoration: none;
+        }
+
+    .navbar {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        padding: 10px 0;
+    }
+
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .nav-item {
+        margin-right: 5px;
+    }
+
+    .nav-link {
+        text-decoration: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        transition: all 0.3s ease;
+    }
+
+        .nav-link:hover, .nav-item.active .nav-link {
+            background-color: #f0f0f0;
+        }
+
+    media screen and (max-width: 768px) {
+        .nav-menu
+
+    {
+        flex-direction: column;
+    }
+
+    .nav-item {
+        margin-right: 0;
+        margin-bottom: 5px;
+    }
+    }
+</style>
+@*  End of narbar menu  *@
 
 
 <style>
@@ -212,5 +268,7 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
+
+
 
 }

@@ -619,5 +619,32 @@ namespace Application.MainBoundedContext.DTO.RegistryModule
 
             return ValidationResult.Success;
         }
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Passport")]
+        public string PassportPhoto { get; set; }
+
+        [DataMember]
+        [Display(Name = "Signature")]
+        public string SignaturePhoto { get; set; }
+
+        [DataMember]
+        [Display(Name = "ID (Front)")]
+        public string IDCardFrontPhoto { get; set; }
+
+        [DataMember]
+        [Display(Name = "ID (Back)")]
+        public string IDCardBackPhoto { get; set; }
+
+
+
+
+        [Display(Name = "Referee")]
+        public string RefereeFirstName { get; set; }
+
+        [Display(Name = "Id")]
+        public Guid RefereeId { get; set; }
     }
 }

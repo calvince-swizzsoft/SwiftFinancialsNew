@@ -162,6 +162,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
+            _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            _selectedTeller = await GetCurrentTeller();
+
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -170,21 +173,29 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             DateTime endDate = DateTime.Now;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCashDepositRequestsByFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.iColumns, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.sEcho, 1, 1, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(pageIndex,jQueryDataTablesModel.iDisplayLength, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, jQueryDataTablesModel.sSearch, 20, 1, true, GetServiceHeader());
+  
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
+
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<CashDepositRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -201,21 +212,36 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
 
+            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
+
+
+            _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            _selectedTeller = await GetCurrentTeller();
+
+            if (_selectedTeller != null)
+            {
+                var chartOfAccountId = _selectedTeller.ChartOfAccountId;
+                var chartOfAccount = await _channelService.FindChartOfAccountAsync((Guid)chartOfAccountId, GetServiceHeader());
+                var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid)chartOfAccountId, true, GetServiceHeader());
+
+
+                _selectedEmployee = await _channelService.FindEmployeeAsync((Guid)_selectedTeller.EmployeeId, GetServiceHeader());
+              
+                var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
+
+              
+                SelectedTeller.BookBalance = generalLedgerAccount.Balance;
+                transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
+                transactionModel.TellerStatements = TellerStatements;
+
+            }
+
 
 
             if (id == null || id == Guid.Empty || !Guid.TryParse(id.ToString(), out Guid parseId))
             {
-                _selectedTeller = await GetCurrentTeller();
-                _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-                var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
 
-
-                CustomerTransactionModel model = new CustomerTransactionModel();
-
-                
-                model.TellerStatements = TellerStatements;
-
-                return View(model);
+                return View(transactionModel);
             }
 
             bool includeBalances = true;
@@ -234,7 +260,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             );
 
             // Create and populate transaction model
-            CustomerTransactionModel transactionModel = new CustomerTransactionModel();
+            //CustomerTransactionModel transactionModel = new CustomerTransactionModel();
 
        
 
@@ -268,16 +294,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 };
 
+                //customer account uncleared cheques
                 var uncleatedChequescollection = await _channelService.FindUnClearedExternalChequesByCustomerAccountIdAsync(customerAccount.Id, GetServiceHeader());
                 var _unclearedCheques = uncleatedChequescollection.ToList();
                 transactionModel.CustomerAccountUnclearedCheques = _unclearedCheques;
 
+                //customer account signatories
                 var signatoriesCollection = await _channelService.FindCustomerAccountSignatoriesByCustomerAccountIdAsync(customerAccount.Id, GetServiceHeader());
                 var _signatories = signatoriesCollection.ToList();
                 transactionModel.CustomerAccountSignatories = _signatories;
 
 
-
+                //customer acount ministatement
                 var miniStatementOrdersCollection = await _channelService.FindElectronicStatementOrdersByCustomerAccountIdAsync(customerAccount.Id, true, GetServiceHeader());
                 var _miniStatement = miniStatementOrdersCollection.ToList();
                 transactionModel.CustomerAccountMiniStatement = _miniStatement;
@@ -286,34 +314,34 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.BranchId = customerAccount.BranchId;
                 transactionModel.CustomerDTO = customerDTO;
 
-                 _selectedTeller = await GetCurrentTeller();
+                 //_selectedTeller = await GetCurrentTeller();
 
                 _ = _selectedTeller != null ? transactionModel.Teller = _selectedTeller : TempData["Missing Teller"] = "You are working without a Recognized Teller";
 
                 
                 
-                if (_selectedTeller != null)
-                {
-                    var chartOfAccountId = _selectedTeller.ChartOfAccountId;
+                //if (_selectedTeller != null)
+                //{
+                    //var chartOfAccountId = _selectedTeller.ChartOfAccountId;
 
-                    var chartOfAccount = await _channelService.FindChartOfAccountAsync((Guid)chartOfAccountId, GetServiceHeader());
+                    //var chartOfAccount = await _channelService.FindChartOfAccountAsync((Guid)chartOfAccountId, GetServiceHeader());
 
-                    _currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+                    //_currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
-                    SelectedEmployee = await _channelService.FindEmployeeAsync((Guid)_selectedTeller.EmployeeId, GetServiceHeader());
+                    //SelectedEmployee = await _channelService.FindEmployeeAsync((Guid)_selectedTeller.EmployeeId, GetServiceHeader());
 
                     //probably should use customerId chartOfAcount may not be uniq to teller
-                    var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)chartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
+                    //var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)chartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
 
                    
 
-                    transactionModel.TellerStatements = TellerStatements;
+                    //transactionModel.TellerStatements = TellerStatements;
 
-                    var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid) chartOfAccountId, true, GetServiceHeader());
+                    //var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid) chartOfAccountId, true, GetServiceHeader());
 
-                    SelectedTeller.BookBalance = generalLedgerAccount.Balance;
+                    //SelectedTeller.BookBalance = generalLedgerAccount.Balance;
 
-                     transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
+                     //transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
 
     
 
@@ -325,7 +353,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     //TellerStatements = await _channelService.FindGeneralLedgerTransactionsByCustomerAccountIdAndDateRangeAsync(targetAccount, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, true, GetServiceHeader());
 
                 
-                }
+                //}
 
 
 

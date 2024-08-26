@@ -1693,5 +1693,41 @@ namespace SwiftFinancials.Web.Controllers
 
             return dataAttachmentTransactionType;
         }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetImageTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> imageType = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ImageType)).Cast<ImageType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            imageType.AddRange(items);
+
+            return imageType;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetImageSourceTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> imageSource = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ImageSource)).Cast<ImageSource>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            imageSource.AddRange(items);
+
+            return imageSource;
+        }
     }
 }
