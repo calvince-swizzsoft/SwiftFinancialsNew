@@ -104,5 +104,9 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
             return ValidationResult.Success;
         }
+        [DataMember]
+        [Display(Name = "Amount")]
+        public decimal Amount { get; set; }
+        public AlternateChannelReconciliationEntryDTO AlternateChannelReconciliationEntryDTO;
     }
 }

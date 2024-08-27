@@ -403,6 +403,7 @@
     <Compile Include="Areas\Loaning\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataCaptureController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataProcessingController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\GuarantorRelievingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -1152,23 +1153,33 @@
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Create.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
+
+    <Content Include="Areas\Loaning\Views\GuarantorRelieving\Index.cshtml" />
+
     <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <Content Include="Areas\Registry\Views\NextofKin\Create.cshtml" />
+
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Processing.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Closing.cshtml" />
+    <Content Include="Areas\Admin\Views\SystemTransactiontypes\Edit.cshtml" />
+    <Content Include="Areas\Accounts\Views\AlternatePeriods\Clos.cshtml" />
+    <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
+    <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
+    <Content Include="Scripts\css\_layout.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />

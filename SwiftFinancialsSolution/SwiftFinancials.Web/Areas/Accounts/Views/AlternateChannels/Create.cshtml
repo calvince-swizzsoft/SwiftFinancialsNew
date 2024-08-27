@@ -57,7 +57,7 @@
                 </div>
 
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "AlternateChannels", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("AlternateChannels", "AlternateChannels", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
@@ -103,8 +103,9 @@
                                     <div class="col-lg-3">
 
                                     </div>
+                                    <input type="submit" value="Al" class="btn btn-primary" />
                                     <div class="col-lg-3">
-                                        <button type="button" class="btn btn-info" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
+                                        <button type="button" class="btn btn-primary" id="openModalButton" onclick="sendFormData()">Add Applicable Charges</button>
                                     </div>
                                 </div>
 

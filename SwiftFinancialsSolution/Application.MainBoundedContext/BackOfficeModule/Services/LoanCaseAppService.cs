@@ -2557,7 +2557,10 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                     var existingGuarantors = _loanGuarantorRepository.AllMatching(LoanGuarantorSpecifications.LoanGuarantorWithLoaneeCustomerIdAndLoanProductId(loanGuarantorDTO.LoaneeCustomerId ?? Guid.Empty, loanGuarantorDTO.LoanProductId), serviceHeader);
 
                     if (existingGuarantors != null && existingGuarantors.Any(x => x.Status == (int)LoanGuarantorStatus.Attached && x.CustomerId == loanGuarantorDTO.CustomerId))
-                        throw new InvalidOperationException("Sorry, but the selected customer is already attached as a guarantor for the selected loan account!");
+                    {
+                        loanGuarantorDTO.ErrorMsgResult = string.Format("Sorry, but the selected customer is already attached as a guarantor for the selected loan account!");
+                        return loanGuarantorDTO;
+                    }
 
                     var loanGuarantor = LoanGuarantorFactory.CreateLoanGuarantor(loanGuarantorDTO.CustomerId, loanGuarantorDTO.LoaneeCustomerId, loanGuarantorDTO.LoanProductId, loanGuarantorDTO.LoanCaseId, loanGuarantorDTO.TotalShares, loanGuarantorDTO.CommittedShares, loanGuarantorDTO.AmountGuaranteed, loanGuarantorDTO.AmountPledged, loanGuarantorDTO.AppraisalFactor);
 

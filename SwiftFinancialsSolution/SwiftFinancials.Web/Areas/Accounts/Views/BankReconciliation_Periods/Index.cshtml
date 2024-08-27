@@ -1,7 +1,7 @@
 ﻿
 
 @{
-    ViewBag.Title = "Bank Linkage";
+    ViewBag.Title = "Bank Reconciliation";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -17,6 +17,33 @@
         </ol>
     </div>
 </div>
+<style>
+    .dropdown-item {
+        display: block;
+        padding: 10px 15px;
+        color: #333;
+        text-decoration: none;
+        background-color: #f8f9fa;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        transition: background-color 0.3s, color 0.3s;
+    }
+
+        .dropdown-item:hover {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .dropdown-item:active {
+            background-color: #0056b3;
+            color: #fff;
+        }
+
+        .dropdown-item:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+</style>
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -119,8 +146,25 @@
                     var ClosingUrl = '<a  href="/accounts/BankReconciliation_Periods/Closing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Closing</a>';
                     var ProcessingUrl = '<a  href="/accounts/BankReconciliation_Periods/Processing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Processing</a>';
 
-                    $('td:eq(6)', nRow).html(dt_Created);
-                   $('td:eq(6)', nRow).html(viewUrl+ ClosingUrl+ ProcessingUrl);
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/BankReconciliation_Periods/details/${aData.Id}">details</a>
+
+                                <a class="dropdown-item" href="/accounts/BankReconciliation_Periods/Closing/${aData.Id}">Closing</a>
+                                <a class="dropdown-item" href="/accounts/BankReconciliation_Periods/Processing/${aData.Id}">Processing</a>
+
+                            </div>
+                        </div>`;
+
+                    $('td:eq(6)', nRow).html(dropdownHtml);
+
+
+                   // $('td:eq(6)', nRow).html(dt_Created);
+                  // $('td:eq(6)', nRow).html(viewUrl+ ClosingUrl+ ProcessingUrl);
 
                     return nRow;
                 },

@@ -39,6 +39,13 @@
         <strong>Error!</strong> @TempData["Error"]
     </div>
 }
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        alert('@TempData["SuccessMessage"]');
+    </script>
+}
+
 
 <div class="wrapper wrapper-content">
     <div class="row">

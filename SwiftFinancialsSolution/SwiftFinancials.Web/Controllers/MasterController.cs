@@ -221,6 +221,29 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetCashRequestTypeSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> cashRequestTypeSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(FrontOfficeCashRequestType)).Cast<FrontOfficeCashRequestType>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            cashRequestTypeSelectList.AddRange(items);
+
+            return cashRequestTypeSelectList;
+
+           
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetRecordStatusSelectList(string selectedValue)
         {
             List<SelectListItem> recordStatusSelectList = new List<SelectListItem>();
@@ -1540,7 +1563,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return alternateChannelKnownChargeType;
         }
-
+        
         [NonAction]
         protected List<SelectListItem> GetAlternateChannelTypeSelectList(string selectedValue)
         {
@@ -1558,7 +1581,22 @@ namespace SwiftFinancials.Web.Controllers
             return alternateChannelType;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetalternateChannelManagementActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> alternateChannelManagementAction = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(AlternateChannelManagementAction)).Cast<AlternateChannelManagementAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            alternateChannelManagementAction.AddRange(items);
+
+            return alternateChannelManagementAction;
+        }
 
 
 

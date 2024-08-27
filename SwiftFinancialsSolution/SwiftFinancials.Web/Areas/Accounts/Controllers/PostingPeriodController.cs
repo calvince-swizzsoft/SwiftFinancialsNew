@@ -171,7 +171,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!postingPeriodDTO.HasErrors)
             {
                 await _channelService.ClosePostingPeriodAsync(postingPeriodDTO, moduleNavigationItemCode, GetServiceHeader());
-                await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO, GetServiceHeader());
+              //  await _channelService.UpdatePostingPeriodAsync(postingPeriodDTO, GetServiceHeader());
                 TempData["SuccessMessage"] = "posting period Closed successful.";
                 return RedirectToAction("Index");
             }

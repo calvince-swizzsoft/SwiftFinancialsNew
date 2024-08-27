@@ -1,12 +1,27 @@
 ﻿@using SwiftFinancials.Web.Identity
 
-<nav class="navbar-expand navbar-static-side" role="navigation">
-    <div class="sidebar-collapse">
-        <ul class="nav metismenu" id="side-menu">
-            <li class="nav-header">
-                <div class="dropdown profile-element">
-                    <a data-toggle="dropdown" class="dropdown-toggle" href="#">
 
+<style>
+    .sidebar-collapse::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .sidebar-collapse::-webkit-scrollbar-thumb {
+        background-color: #1ab394;
+        border-radius: 10px;
+    }
+
+</style>
+
+
+
+
+<nav class="navbar-expand navbar-static-side" role="navigation">
+    <div class="sidebar-collapse" style="height: 100vh; overflow-y: auto; background-color: #2f4050;">
+        <ul class="nav metismenu" id="side-menu" style="padding: 15px;">
+            <li class="nav-header" style="margin-bottom: 20px;">
+                <div class="dropdown profile-element">
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="#" style="color: #fff;">
                         @if (Request.IsAuthenticated)
                         {
                             <span class="block m-t-xs font-bold">
@@ -20,15 +35,17 @@
                                 @Html.Raw("Unknown user.")
                             </span>
                         }
-
                     </a>
                 </div>
-                <div class="logo-element">
+                <div class="logo-element" style="color: #fff; font-weight: bold;">
                     Menu
                 </div>
             </li>
             <li class="@Html.IsSelected("Home")">
-                <a href="@Url.Action("Index", "Home", new { Area = ""})"><i class="fa fa-home"></i> <span class="nav-label">Dashboard</span></a>
+                <a href="@Url.Action("Index", "Home", new { Area = ""})" style="color: #a7b1c2;">
+                    <i class="fa fa-home"></i>
+                    <span class="nav-label">Dashboard</span>
+                </a>
             </li>
             @{
                 var menuList = ViewBag.NavigationItems as List<Application.MainBoundedContext.DTO.AdministrationModule.NavigationItemDTO>;
@@ -41,6 +58,7 @@
         </ul>
     </div>
 </nav>
+
 
 @* Razor helper that recursively loops a <List> and renders a nested menu. *@
 @helper RenderDynamicMenu(List<Application.MainBoundedContext.DTO.AdministrationModule.NavigationItemDTO> menusList, int? code = 0, int level = 0)

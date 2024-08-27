@@ -73,14 +73,19 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(SystemPermissionTypeInRoleDTO roleBindingModel, ObservableCollection<SystemPermissionTypeInRoleDTO> rolesInSystemPermissionType)
+        public async Task<ActionResult> Create(SystemPermissionTypeInRoleDTO roleBindingModel, ObservableCollection<SystemPermissionTypeInRoleDTO> rolesInSystemPermissionType, ObservableCollection<BranchDTO> SystemPermissionTypeInBranchDTO)
         {
+            roleBindingModel.systemPermissionTypeInBranchDTOs[0].Id = roleBindingModel.BranchId;
+
+
             if (!roleBindingModel.HasErrors)
             {
             
-                await _channelService.AddSystemPermissionTypeToRolesAsync(roleBindingModel.SystemPermissionType, rolesInSystemPermissionType, GetServiceHeader());
+                await _channelService.AddSystemPermissionTypeToRolesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInRoles, GetServiceHeader());
 
-                TempData["Success"] = "Role Created Successfully";
+                await _channelService.AddSystemPermissionTypeToBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
+
+                TempData["Success"] = "System Permissions Linked Successfully";
 
                 return RedirectToAction("Create", "SystemTransactiontypes", new { Area = "Admin" });
             }
@@ -90,40 +95,22 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         public async Task<ActionResult> Edit(string id)
         {
             await ServeNavigationMenus();
+            ViewBag.SalaryHeadTypeSelectList = GetsystemPermissionTypeList(string.Empty);
 
-            if (id != null)
-            {
-                var identityRole = await _applicationRoleManager.FindByIdAsync(id);
-
-                return View(identityRole.MapTo<RoleBindingModel>());
-            }
-            else
-                return View();
+            return View();
+            
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(string id, RoleBindingModel roleBindingModel)
+        public async Task<ActionResult> Edit(SystemPermissionTypeInRoleDTO roleBindingModel, ObservableCollection<string> rolesInSystemPermissionType, ObservableCollection<BranchDTO> SystemPermissionTypeInBranchDTO)
         {
             if (ModelState.IsValid)
             {
-                var current = await _applicationRoleManager.FindByIdAsync(roleBindingModel.Id);
-                current.Name = roleBindingModel.Name;
+                await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, rolesInSystemPermissionType, GetServiceHeader());
 
-                var result = await _applicationRoleManager.UpdateAsync(current);
+                await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
 
-                if (result.Succeeded)
-                {
-                    TempData["Success"] = "Role Updated Successfully";
-
-                    return RedirectToAction("Index", "Role", new { Area = "Admin" });
-                }
-                else
-                {
-                    TempData["Error"] = string.Join(",", result.Errors);
-
-                    return View();
-                }
             }
             return View();
         }
