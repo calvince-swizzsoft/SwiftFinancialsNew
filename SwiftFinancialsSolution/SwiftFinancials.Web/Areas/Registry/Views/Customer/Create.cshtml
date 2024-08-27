@@ -152,10 +152,22 @@
 
                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
 
+                            <li class="nav-item">
+                                <a class="nav-link" href="#IndividualParticulars" data-toggle="tab">Individual-Particulars</a>
+                            </li>
 
                             <li class="nav-item">
-                                <a class="nav-link" href="#IndividualParticulars" data-toggle="tab">IndividualParticulars</a>
+                                <a class="nav-link" href="#Partnership" data-toggle="tab">Partnership-Particulars</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#Corporation" data-toggle="tab">Corporation-Particulars</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#MicroCredit" data-toggle="tab">Micro-credit-Particulars</a>
+                            </li>
+
+
+
                             <li class="nav-item">
                                 <a class="nav-link" href="#address" data-toggle="tab">Address</a>
                             </li>
@@ -362,7 +374,6 @@
                                 </div>
                             </div>
 
-                            @*referees section*@
                             <div id="Referees" class="tab-pane" role="tabpanel">
                                 <h2>Referees</h2>
 
@@ -391,23 +402,7 @@
                                 </div>
                             </div>
 
-                            <div id="Micro-credit " class="tab-pane" role="tabpanel">
-                                <h2>Micro-credit </h2>
-                                <div class="tab-content">
-                                    <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.NonIndividualDateEstablished, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code" } })
-                                                @Html.ValidationMessageFor(model => model.NonIndividualDateEstablished, "", new { @class = "text-danger" })
-                                            </div>
 
-
-
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <div id="CreditTypes" class="tab-pane" role="tabpanel">
 
@@ -619,6 +614,56 @@
 
                             </div>
 
+                            <div id="MicroCredit" class="tab-pane" role="tabpanel">
+                                <div class="row">
+                                    <div class="col-lg-6">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NonIndividualDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NonIndividualDescription, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group" id="data_3">
+                                            @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input type="text" name="birthdate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.NonIndividualRegistrationNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identification Number ", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.NonIndividualRegistrationNumber, "", new { @class = "text-danger" })
+                                        </div>
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Personal ID  ", @required = "" } })
+                                            @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div id="Corporation" class="tab-pane" role="tabpanel">
+
+                            </div>
+
+                            <div id="Partnership" class="tab-pane" role="tabpanel">
+
+                            </div>
+
                             <!--Specimen Capture-->
                             <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
 
@@ -705,32 +750,32 @@
         </div>
     </div>
 </div>
-    </div>
 
 
 
-    <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header  bg-primary">
-                    <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-                </div>
-                <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                    <tbody>
-                        <tr>
-                            <td class="dataTables_empty">
-                                Loading data from server
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+<div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="customersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
+</div>
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -753,27 +798,6 @@
     @Styles.Render("~/plugins/duallistStyles")
 }
 
-    @section Styles{
-        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-        @Styles.Render("~/plugins/wizardStepsStyles")
-        @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-        @Styles.Render("~/plugins/awesomeCheckboxStyles")
-        @Styles.Render("~/plugins/clockpickerStyles")
-        @Styles.Render("~/plugins/dateRangeStyles")
-        @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-        @Styles.Render("~/plugins/switcheryStyles")
-        @Styles.Render("~/plugins/jasnyBootstrapStyles")
-        @Styles.Render("~/plugins/nouiSliderStyles")
-        @Styles.Render("~/plugins/dataPickerStyles")
-        @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-        @Styles.Render("~/plugins/imagecropperStyles")
-        @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-        @Styles.Render("~/plugins/select2Styles")
-        @Styles.Render("~/plugins/touchSpinStyles")
-        @Styles.Render("~/plugins/tagInputsStyles")
-        @Styles.Render("~/plugins/duallistStyles")
-    }
-
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
@@ -795,6 +819,8 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+
 
     <link href="~/Scripts/css/CaptureSpecimenForm.css" rel="stylesheet" />
     <script src="~/Scripts/js/CaptureSpecimenDetails.js"></script>
@@ -926,8 +952,5 @@
                 }
             });
         });
-        </script>
-    }
-
     </script>
 }
