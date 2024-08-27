@@ -221,6 +221,29 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetCashRequestTypeSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> cashRequestTypeSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(FrontOfficeCashRequestType)).Cast<FrontOfficeCashRequestType>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            cashRequestTypeSelectList.AddRange(items);
+
+            return cashRequestTypeSelectList;
+
+           
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetRecordStatusSelectList(string selectedValue)
         {
             List<SelectListItem> recordStatusSelectList = new List<SelectListItem>();
@@ -1716,6 +1739,24 @@ namespace SwiftFinancials.Web.Controllers
         
         [NonAction]
         protected List<SelectListItem> GetImageSourceTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> imageSource = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ImageSource)).Cast<ImageSource>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            imageSource.AddRange(items);
+
+            return imageSource;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetDebitBatchesAsync(string selectedValue)
         {
             List<SelectListItem> imageSource = new List<SelectListItem>();
 

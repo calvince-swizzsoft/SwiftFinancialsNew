@@ -125,24 +125,22 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#Referees" data-toggle="tab">Referees</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#CreditTypes" data-toggle="tab">Credit Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#DebitTypes" data-toggle="tab">Debit Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#SavingsProducts" data-toggle="tab"> Savings Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#Specimen" data-toggle="tab">Specimen</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#SpecimenCapture" data-toggle="tab">Specimen Capture</a>
-                            </li>
+                            @* <li class="nav-item">
+                                    <a class="nav-link" href="#CreditTypes" data-toggle="tab">Credit Types</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#DebitTypes" data-toggle="tab">Debit Types</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#SavingsProducts" data-toggle="tab"> Savings Products</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#Specimen" data-toggle="tab">Specimen</a>
+                                </li>*@
+
                         </ul>
 
 
@@ -291,6 +289,32 @@
 
                             <div id="Referees" class="tab-pane fade" role="tabpanel">
 
+                                <h2>Referees</h2>
+
+
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.Id)
+                                                @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-6">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
 
                             </div>
 
@@ -315,11 +339,6 @@
                             </div>
 
                             <div id="Specimen" class="tab-pane fade" role="tabpanel">
-
-
-                            </div>
-
-                            <div id="SpecimenCapture" class="tab-pane fade" role="tabpanel">
 
 
                             </div>
@@ -385,196 +404,196 @@
 
 
     <script>
-        $(document).ready(function () {
+                $(document).ready(function () {
 
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+                    $("#wizard").steps();
+                    $("#form").steps({
+                        bodyTag: "fieldset",
+                        onStepChanging: function (event, currentIndex, newIndex) {
+                            // Always allow going backward even if the current step contains invalid fields!
+                            if (currentIndex > newIndex) {
+                                return true;
+                            }
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
+                            // Forbid suppressing "Warning" step if the user is to young
+                            if (newIndex === 3 && Number($("#age").val()) < 18) {
+                                return false;
+                            }
 
-                    var form = $(this);
+                            var form = $(this);
 
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
+                            // Clean up if user went backward before
+                            if (currentIndex < newIndex) {
+                                // To remove error styles
+                                $(".body:eq(" + newIndex + ") label.error", form).remove();
+                                $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                            }
 
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
+                            // Disable validation on fields that are disabled or hidden.
+                            form.validate().settings.ignore = ":disabled,:hidden";
 
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
+                            // Start validation; Prevent going forward if false
+                            return form.valid();
+                        },
+                        onStepChanged: function (event, currentIndex, priorIndex) {
+                            // Suppress (skip) "Warning" step if the user is old enough.
+                            if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                                $(this).steps("next");
+                            }
 
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
+                            // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                            if (currentIndex === 2 && priorIndex === 3) {
+                                $(this).steps("previous");
+                            }
+                        },
+                        onFinishing: function (event, currentIndex) {
+                            var form = $(this);
 
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
+                            // Disable validation on fields that are disabled.
+                            // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                            form.validate().settings.ignore = ":disabled";
 
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
+                            // Start validation; Prevent form submission if false
+                            return form.valid();
+                        },
+                        onFinished: function (event, currentIndex) {
+                            var form = $(this);
 
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
+                            // Submit form input
+                            form.submit();
+                        }
+                    }).validate({
+                        errorPlacement: function (error, element) {
+                            element.before(error);
+                        },
+                        rules: {
+                            confirm: {
+                                equalTo: "#password"
+                            }
+                        }
+                    });
 
-            $('#data_3 .input-group.date').datepicker({
-                startView: 2,
-                todayBtn: "linked",
-                keyboardNavigation: false,
-                forceParse: false,
-                autoclose: true,
-            });
-            //roles typehead starts here
-            $('.rolesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
-                        { query: query },
-                        function (roles) {
-                            var newRolesData = [];
-                            rolesMap = {};
-                            $.each(roles, function (i,role) {
-                                newRolesData.push(role.Name);
-                                rolesMap[role.Name] = role;
-                            });
-                            process(newRolesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var roleId = "";
-                    roleId = rolesMap[item].Id;
-                    $('#RoleId').val(roleId);
-                    //console.log(roleId)
-                    return item;
-                }
-            });
+                    $('#data_3 .input-group.date').datepicker({
+                        startView: 2,
+                        todayBtn: "linked",
+                        keyboardNavigation: false,
+                        forceParse: false,
+                        autoclose: true,
+                    });
+                    //roles typehead starts here
+                    $('.rolesLookup').typeahead({
+                        source: function (query, process) {
+                            return $.getJSON(
+                                '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
+                                { query: query },
+                                function (roles) {
+                                    var newRolesData = [];
+                                    rolesMap = {};
+                                    $.each(roles, function (i,role) {
+                                        newRolesData.push(role.Name);
+                                        rolesMap[role.Name] = role;
+                                    });
+                                    process(newRolesData); return;
+                                });
+                        },
+                        matcher: function (item) {
+                            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                return true;
+                            }
+                        },
+                        sorter: function (items) {
+                            return items.sort();
+                        },
+                        highlighter: function (item) {
+                            var regex = new RegExp('(' + this.query + ')', 'gi');
+                            return item.replace(regex, "<strong>$1</strong>");
+                        },
+                        updater: function (item) {
+                            var roleId = "";
+                            roleId = rolesMap[item].Id;
+                            $('#RoleId').val(roleId);
+                            //console.log(roleId)
+                            return item;
+                        }
+                    });
 
-            //Station typehead starts here
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
+                    //Station typehead starts here
+                    $('.StationsLookup').typeahead({
+                        source: function (query, process) {
+                            return $.getJSON(
+                                '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
+                                { query: query },
+                                function (Stations) {
+                                    var newStationsData = [];
+                                    StationsMap = {};
+                                    $.each(Stations, function (i, Station) {
+                                        newStationsData.push(Station.Description);
+                                        StationsMap[Station.Description] = Station;
+                                    });
+                                    process(newStationsData); return;
+                                });
+                        },
+                        matcher: function (item) {
+                            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                return true;
+                            }
+                        },
+                        sorter: function (items) {
+                            return items.sort();
+                        },
+                        highlighter: function (item) {
+                            var regex = new RegExp('(' + this.query + ')', 'gi');
+                            return item.replace(regex, "<strong>$1</strong>");
+                        },
+                        updater: function (item) {
+                            var stationId = "";
+                            StationId = StationsMap[item].Id;
+                            $('#StationId').val(StationId);
+                            $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
+                            $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
+                            $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
+                            //console.log(StationId)
+                            return item;
+                        }
+                    });
 
-            //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
-        });
+                    //Branch typehead starts here
+                    $('.BranchesLookup').typeahead({
+                        source: function (query, process) {
+                            return $.getJSON(
+                                '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                                { query: query },
+                                function (Branches) {
+                                    var newBranchesData = [];
+                                    BranchesMap = {};
+                                    $.each(Branches, function (i, Branch) {
+                                        newBranchesData.push(Branch.Description);
+                                        BranchesMap[Branch.Description] = Branch;
+                                    });
+                                    process(newBranchesData); return;
+                                });
+                        },
+                        matcher: function (item) {
+                            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                                return true;
+                            }
+                        },
+                        sorter: function (items) {
+                            return items.sort();
+                        },
+                        highlighter: function (item) {
+                            var regex = new RegExp('(' + this.query + ')', 'gi');
+                            return item.replace(regex, "<strong>$1</strong>");
+                        },
+                        updater: function (item) {
+                            var branchId = "";
+                            BranchId = BranchesMap[item].Id;
+                            $('#BranchId').val(BranchId);
+                            //console.log(BranchId)
+                            return item;
+                        }
+                    });
+                });
 
     </script>
 }

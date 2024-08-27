@@ -271,11 +271,11 @@
                                                 <th style="width: 10%;">Customer Account</th>
                                                 <th style="width: 5%;">Multiplier</th>
                                                 <th style="width: 10%;">Reference</th>
-                                                <th style="width: 10%;">Basis Value</th>
+                                                <th style="width: 10%;">Status</th>
                                             </tr>
                                         </thead>
                                         <tbody style="color: #007bff;">
-                                            @if (ViewBag.CrdeitBatchEntryDTOs != null)
+                                            @if (ViewBag.DebitBatchEntryDTOs != null)
                                             {
                                                 foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
                                                 {
@@ -283,7 +283,7 @@
                                                         <td>@debitBatchEntries.CustomerAccountId</td>
                                                         <td>@debitBatchEntries.Multiplier</td>
                                                         <td>@debitBatchEntries.Reference</td>
-                                                        <td>@debitBatchEntries.BasisValue</td>
+                                                        <td>@debitBatchEntries.Status</td>
                                                     </tr>
                                                 }
                                             }

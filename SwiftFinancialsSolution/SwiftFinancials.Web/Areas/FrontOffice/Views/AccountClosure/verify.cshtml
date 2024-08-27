@@ -38,9 +38,10 @@
                             </div>
 
                             <div class="col-md-3">
-                                @Html.LabelFor(model => model.StatusDescription)
-                                @Html.EditorFor(model => model.StatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                                @Html.LabelFor(model => model.CreatedBy)
+                                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
                             </div>
+
                             <div class="col-md-3">
                                 @Html.LabelFor(model => model.CustomerAccountRemarks)
                                 @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
@@ -86,6 +87,31 @@
                             <div class="col-md-3">
                                 @Html.LabelFor(model => model.Reason)
                                 @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+
+                            
+                        </div>
+                        <div class="form-group row">
+
+
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.AuditRemarks)
+                                @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+
+                            
+
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CreatedDate)
+                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="closureAction">Closure Action</label>
+                                <select class="form-control" id="closureAction" name="closureAction">
+                                    <option value="Verify">Verify</option>
+                                    <option value="Defer">Defer</option>
+                                </select>
                             </div>
                         </div>
 
@@ -153,83 +179,77 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="closureAction">Closure Action</label>
-                            <select class="form-control" id="closureAction" name="closureAction">
-                                <option value="Verify">Verify</option>
-                                <option value="Defer">Defer</option>
-                            </select>
-                        </div>
+                        
                         <br />
                         <hr />
 
 
                         <!--<ul class="nav nav-tabs" id="loanAccountsTab">
-                            <li class="nav-item">
-                                <a class="nav-link active" href="#loanAccounts" data-toggle="tab">Loan Accounts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#investmentAccounts" data-toggle="tab">Investment Accounts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#loansGuaranteed" data-toggle="tab">Loans Guaranteed</a>
-                            </li>
-                        </ul>
+            <li class="nav-item">
+                <a class="nav-link active" href="#loanAccounts" data-toggle="tab">Loan Accounts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#investmentAccounts" data-toggle="tab">Investment Accounts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#loansGuaranteed" data-toggle="tab">Loans Guaranteed</a>
+            </li>
+        </ul>
 
-                        <div class="tab-content">-->
-                            <!-- Loan Accounts Tab Content -->
-                            <!--<div id="loanAccounts" class="tab-pane fade show active">
-                                <h3>Customer Loan Accounts</h3>
+        <div class="tab-content">-->
+                        <!-- Loan Accounts Tab Content -->
+                        <!--<div id="loanAccounts" class="tab-pane fade show active">
+                <h3>Customer Loan Accounts</h3>
 
-                                @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
-                                {
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Full Account Number</th>
-                                                <th>Status</th>
-                                                <th>Remarks</th>
-                                                <th>Product Code</th>
-                                                <th>Product Name</th>
-                                                <th>Section</th>
-                                                <th>Branch</th>
-                                                <th>Book Balance</th>
-                                                <th>Principal Balance</th>
-                                                <th>Interest Balance</th>
-                                                <th>Record Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @foreach (var levySplit in ViewBag.LoanAccounts)
-                                            {
-                                                <tr>
-                                                    <td>@levySplit.FullAccountNumber</td>
-                                                    <td>@levySplit.StatusDescription</td>
-                                                    <td>@levySplit.Remarks</td>
-                                                    <td>@levySplit.CustomerAccountTypeTargetProductCode</td>
-                                                    <td>@levySplit.CustomerAccountTypeTargetProductDescription</td>
-                                                    <td>@levySplit.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
-                                                    <td>@levySplit.BranchDescription</td>
-                                                    <td>@levySplit.BookBalance</td>
-                                                    <td>@levySplit.PrincipalBalance</td>
-                                                    <td>@levySplit.InterestBalance</td>
-                                                    <td>@levySplit.RecordStatus</td>
-                                                </tr>
-                                            }
-                                        </tbody>
-                                    </table>
-                                }
-                                else
-                                {
-                                    <p>No loan accounts found for this customer.</p>
-                                }
-                            </div>
-
-
+                @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
+                {
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Full Account Number</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Section</th>
+                                <th>Branch</th>
+                                <th>Book Balance</th>
+                                <th>Principal Balance</th>
+                                <th>Interest Balance</th>
+                                <th>Record Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var levySplit in ViewBag.LoanAccounts)
+                            {
+                                <tr>
+                                    <td>@levySplit.FullAccountNumber</td>
+                                    <td>@levySplit.StatusDescription</td>
+                                    <td>@levySplit.Remarks</td>
+                                    <td>@levySplit.CustomerAccountTypeTargetProductCode</td>
+                                    <td>@levySplit.CustomerAccountTypeTargetProductDescription</td>
+                                    <td>@levySplit.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
+                                    <td>@levySplit.BranchDescription</td>
+                                    <td>@levySplit.BookBalance</td>
+                                    <td>@levySplit.PrincipalBalance</td>
+                                    <td>@levySplit.InterestBalance</td>
+                                    <td>@levySplit.RecordStatus</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No loan accounts found for this customer.</p>
+                }
+            </div>
 
 
 
-                        </div>-->
+
+
+        </div>-->
 
 
 
@@ -238,7 +258,6 @@
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary btn-md float-right">Verify</button>
-                                @Html.ActionLink("Edit", "Edit", "AccountClosure", new { id = Model.Id, Area = "FrontOffice" }, new { @class = "btn btn-success" })
                             </div>
                         </div>
                     }

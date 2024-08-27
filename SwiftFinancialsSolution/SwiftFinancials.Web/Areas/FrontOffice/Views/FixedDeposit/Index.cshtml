@@ -148,15 +148,13 @@
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                            dropdownHtml += terminateButton + liquidationButton;
                             break;
+
                         case 8: // Audited
                             dropdownHtml += verifyButton + terminateButton + liquidationButton;
                             break;
-                        case 2:
-                            dropdownHtml += terminateButton;
-                            break;
-
+                        
                         default:
                             dropdownHtml += verifyButton + terminateButton + liquidationButton;
                             break;

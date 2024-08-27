@@ -61,36 +61,10 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             return View(customerDTO);
         }
 
-        public async Task<ActionResult> Create(Guid? id, CustomerBindingModel customerBindingModel)
+        public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
-                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
-                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
-                ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
-                ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
-                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
-                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(string.Empty);
-                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
-                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
-
-                return View();
-            }
-
-            var findCustomer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
-            if (findCustomer != null)
-            {
-                customerBindingModel.RefereeId = findCustomer.Id;
-                customerBindingModel.RefereeFirstName = findCustomer.IndividualSalutationDescription + " " + findCustomer.IndividualFirstName + " " + findCustomer.IndividualLastName;
-            }
-
-
-
+           
 
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
@@ -103,8 +77,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
 
             var debitTypes = await _channelService.FindMandatoryDebitTypesAsync(false, GetServiceHeader());
-            var creditTypes = await _channelService.FindCreditBatchesAsync(GetServiceHeader());
-            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(true, GetServiceHeader());
+            var creditTypes = await _channelService.FindCreditTypesAsync(GetServiceHeader());
+            var investmentProducts = await _channelService.FindMandatoryInvestmentProductsAsync(false, GetServiceHeader());
             var savingsProducts = await _channelService.FindMandatorySavingsProductsAsync(false, GetServiceHeader());
             ViewBag.investment = investmentProducts;
             ViewBag.savings = savingsProducts;

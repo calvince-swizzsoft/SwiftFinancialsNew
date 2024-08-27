@@ -642,6 +642,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             {
                                 cashWithdrawalCategory = CashWithdrawalCategory.BelowMinimumBalance;
                             }
+                            
+                            //TODO: maybe u want to Check for OverDraw earlier 
                             else if ((transactionModel.TotalValue + tariffs.Where(x => x.ChargeBenefactor == (int)ChargeBenefactor.Customer).Sum(x => x.Amount)) > (SelectedCustomerAccount.AvailableBalance + SelectedCustomerAccount.CustomerAccountTypeTargetProductMinimumBalance))
                             {
                                 cashWithdrawalCategory = CashWithdrawalCategory.Overdraw;
@@ -1089,7 +1091,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
-        public async Task<TellerDTO> GetCurrentTeller() 
+        private async Task<TellerDTO> GetCurrentTeller() 
         {
 
             // Get the current user

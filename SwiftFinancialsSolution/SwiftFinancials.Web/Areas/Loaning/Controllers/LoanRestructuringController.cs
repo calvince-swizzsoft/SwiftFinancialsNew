@@ -131,17 +131,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-
-        //public async Task<ActionResult>Data(CustomerAccountDTO customerAccountDTO)
-        //{
-        //    Session["reference"] = customerAccountDTO.Reference;
-        //    Session["paymentPerPeriod"] = customerAccountDTO.PaymentPerPeriod;
-
-        //    return View("create",)
-        //}
-
-
-
         [HttpPost]
         public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
         {
