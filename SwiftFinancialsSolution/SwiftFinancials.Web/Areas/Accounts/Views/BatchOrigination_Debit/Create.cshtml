@@ -191,7 +191,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                               @* @Html.HiddenFor(model => model.DebitTypeId)*@
+                                                @Html.HiddenFor(model => model.DebitTypeId)
                                                 @Html.TextBoxFor(model => model.DebitTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
