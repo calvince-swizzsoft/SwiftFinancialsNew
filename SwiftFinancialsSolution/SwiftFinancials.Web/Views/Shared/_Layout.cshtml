@@ -6,12 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title> @ViewBag.Title</title>
+    <title>@ViewBag.Title</title>
 
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700' rel='stylesheet' type='text/css'>
     <!-- Add local styles, mostly for plugins css file -->
     @if (IsSectionDefined("Styles"))
-    {@RenderSection("Styles", required: false)}
+    {
+        @RenderSection("Styles", required: false)
+    }
 
     <!-- Add jQuery Style direct - used for jQGrid plugin -->
     <link href="@Url.Content("~/Scripts/plugins/jquery-ui/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
@@ -23,33 +25,30 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/plugins/toastrStyles")
     @Styles.Render("~/plugins/summernoteStyles")
-
 </head>
 <body>
-
     <!-- Wrapper-->
-    <!-- PageClass give you ability to specify custom style for specific view based on action -->
     <div id="wrapper" class="@Html.PageClass()">
-
         <!-- Navigation -->
-        @Html.Partial("_Navigation")
+        <nav class="navbar-static-side" role="navigation">
+            @Html.Partial("_Navigation")
+        </nav>
 
-        <!-- Page wraper -->
+        <!-- Page wrapper -->
         <div id="page-wrapper" class="gray-bg @ViewBag.SpecialClass">
-
             <!-- Top Navbar -->
             @Html.Partial("_TopNavbar")
 
-            <!-- Main view  -->
-            @RenderBody()
+            <!-- Main view -->
+            <div class="main-content">
+                @RenderBody()
+            </div>
 
             <!-- Footer -->
-            @Html.Partial("_Footer")
-
+            <div class="footer">
+                @Html.Partial("_Footer")
+            </div>
         </div>
-        <!-- End page wrapper-->
-
-
     </div>
     <!-- End wrapper-->
     <!-- Section for main scripts render -->
@@ -62,26 +61,24 @@
     @Scripts.Render("~/plugins/idletimer")
     @Scripts.Render("~/plugins/toastr")
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
-    @*<script src="https://cdn.datatables.net/ajax/buttons/1.6.2/js/datatables.buttons.min.js"></script>*@
 
     <!-- Handler for local scripts -->
     @RenderSection("scripts", required: false)
 
     <script src="~/Scripts/messageAlert.js"></script>
     <link href="~/Scripts/css/ActionDropDown.css" rel="stylesheet" />
-
+    <link href="~/Scripts/css/_layout.css" rel="stylesheet" />
     <script>
         var lockScreen = false;
 
-        //disable autocomplete
+        // Disable autocomplete
         $(document).ready(function () {
             $("input:text,form").attr("autocomplete", "off");
-        })
+        });
 
         $(document).ready(function () {
             // Set idle time
             $(document).idleTimer(@System.Configuration.ConfigurationManager.AppSettings["AppTimeout"]);
-
         });
 
         $(document).on("idle.idleTimer", function (event, elem, obj) {
@@ -100,7 +97,7 @@
                 "hideEasing": "linear",
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
-            }
+            };
 
             toastr.warning('Application is locking...', 'Application');
             $('.custom-alert').fadeIn();
@@ -108,15 +105,14 @@
 
             lockScreen = true;
 
-            // function you want to fire when the user becomes inactive
-            setTimeout(redirectToLockScreen, 10000)
+            // Function you want to fire when the user becomes inactive
+            setTimeout(redirectToLockScreen, 10000);
         });
 
         $(document).on("active.idleTimer", function (event, elem, obj, triggerevent) {
-
             lockScreen = false;
 
-            // function you want to fire when the user becomes active again
+            // Function you want to fire when the user becomes active again
             toastr.clear();
 
             toastr.options = {
@@ -134,7 +130,7 @@
                 "hideEasing": "linear",
                 "showMethod": "fadeIn",
                 "hideMethod": "fadeOut"
-            }
+            };
 
             toastr.success('Application has been activated.', 'Application');
             $('.custom-alert').fadeOut();

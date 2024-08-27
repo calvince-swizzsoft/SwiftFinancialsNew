@@ -327,6 +327,16 @@
                                 document.getElementById("SubSubTab1-1-1").style.display = "block";
                             </script>
 
+                            <!--Sub-tabs Script-->
+                            <script>
+                                $(document).ready(function () {
+                                    $('a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+                                        var target = $(e.target).attr("href"); // activated tab
+                                        $(target).siblings('.sub-tab-pane').removeClass('active show');
+                                        $(target).addClass('active show');
+                                    });
+                                });
+                            </script>
 
                             <style>
                                 .tab {
@@ -367,7 +377,7 @@
                                     background-color: white;
                                     margin: 0 20px;
                                     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                                    height: 500px;
+                                    height: 900px;
                                 }
 
                                     .tabcontent h3 {
@@ -376,26 +386,37 @@
                             </style>
 
 
+                            <br />
+
                             <!--Insert Tab for Application Details (Rows 3, 4, 5 and 6)-->
                             <ul class="nav nav-tabs" style="margin-bottom: 20px;">
                                 <li class="nav-item">
                                     <a class="nav-link active" href="#applicationDetails"><i class="fa fa-table" aria-hidden="true"></i> Application Details</a>
                                 </li>
+
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="#standingOrders"><i class="fa fa-table" aria-hidden="true"></i> Standing Orders</a>
                                 </li>
+
+
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#incomeHistory"><i class="fa fa-table" aria-hidden="true"></i> Income History</a>
+                                    <a class="nav-link" href="#payoutsHistory"><i class="fa fa-table" aria-hidden="true"></i> Payouts History</a>
                                 </li>
+
+
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#salaryHistory"><i class="fa fa-table" aria-hidden="true"></i> Salary History</a>
+                                </li>
+
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="#loanApplications"><i class="fa fa-table" aria-hidden="true"></i> Loan Applications</a>
                                 </li>
+
+
                                 <li class="nav-item">
                                     <a class="nav-link" href="#collaterals"><i class="fa fa-table" aria-hidden="true"></i> Collaterals</a>
-                                </li>  
-                                
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#guarantors"><i class="fa fa-table" aria-hidden="true"></i> Guarantors</a>
                                 </li>
                             </ul>
 
@@ -616,101 +637,48 @@
                                     </row>
                                 </div>
 
-                                <div id="incomeHistory" class="tab-pane" style="margin-left: 20px;">
-                                    <div class="tab">
-                                        <button class="tablinks active" onclick="openTab(event, 'MainTab1')"><i class="fa fa-table" aria-hidden="true"></i> Payouts</button>
-                                        <button class="tablinks" onclick="openTab(event, 'MainTab2')"><i class="fa fa-table" aria-hidden="true"></i> Salary</button>
-                                    </div>
-
-                                    <!--Payouts-->
-                                    <div id="MainTab1" class="tabcontent" style="display: block;">
-                                        <row>
-                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Batch Number</th>
-                                                        <th>Batch Reference</th>
-                                                        <th>Status</th>
-                                                        <th>Principal</th>
-                                                        <th>Interest</th>
-                                                            <th>Beneficiary</th>
-                                                        <th>Reference</th>
-                                                        <th>Full Account Number</th>
-                                                        <th>Product Name</th>
-                                                        <th>Balance</th>
-                                                        <th>Customer Name</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.Payouts != null)
-                                                    {
-                                                        foreach (var payouts in ViewBag.Payouts)
-                                                        {
-                                                            <tr>
-                                                                @*<td>@payouts.LoanDisbursementBatchBatchNumber</td>
-                                                                <td>@payouts.LoanDisbursementBatchReference</td>
-                                                                <td>@payouts.StatusDescription</td>
-                                                                <td style="text-align: right;">@payouts.LoanCaseApprovedAmount</td>
-                                                                <td style="text-align: right;">@payouts.Principal</td>
-                                                                    <td style="text-align: right;">@payouts.Interest</td>
-                                                                <td style="text-align: right;">@payouts.Reference</td>
-                                                                <td>@payouts.LoanCaseCustomerReference1</td>
-                                                                <td>@payouts.LoanCaseLoanProductDescription</td>
-                                                                <td>@payouts.LoanCaseLoanProductLoanBalance</td>
-                                                                <td>@payouts.CustomerFullName</td>*@
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </row>
-                                    </div>
-
-                                    <!--Salary-->
-                                    <div id="MainTab2" class="tabcontent">
-                                        <row>
-                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Posting Period</th>
-                                                        <th>Month</th>
-                                                        <th>Net Pay</th>
-                                                        <th>Salary Period Status</th>
-                                                        <th>Remarks</th>
-                                                        <th>Created By</th>
-                                                        <th>Created Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.StandingOrders != null)
-                                                    {
-                                                        foreach (var standingOrder in ViewBag.StandingOrders)
-                                                        {
-                                                            @*<tr>
-                                                                    <td>@standingOrder.TriggerDescription</td>
-                                                                    <td>@standingOrder.BeneficiaryProductDescription</td>
-                                                                    <td style="text-align: right;">@standingOrder.LoanAmount</td>
-                                                                    <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
-                                                                    <td style="text-align: right;">@standingOrder.Principal</td>
-                                                                    <td style="text-align: right;">@standingOrder.Interest</td>
-                                                                    <td style="text-align: right;">
-                                                                        @standingOrder.PrincipalArrears
-                                                                    </td>
-                                                                    <td style="text-align: right;">
-                                                                        @standingOrder.InterestArrears
-                                                                    </td>
-                                                                    <td>@standingOrder.ChargeTypeDescription</td>
-                                                                    <td>@standingOrder.ChargeFixedAmount</td>
-                                                                    <td>@standingOrder.ChargePercentage</td>
-
-                                                                </tr>*@
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </row>
-                                    </div>
+                                <div id="payoutsHistory" class="tab-pane" style="margin-left: 20px;">
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th>Batch Number</th>
+                                                <th>Batch Reference</th>
+                                                <th>Status</th>
+                                                <th>Principal</th>
+                                                <th>Interest</th>
+                                                <th>Beneficiary</th>
+                                                <th>Reference</th>
+                                                <th>Full Account Number</th>
+                                                <th>Product Name</th>
+                                                <th>Balance</th>
+                                                <th>Customer Name</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Your data here -->
+                                        </tbody>
+                                    </table>
                                 </div>
+
+                                <div id="salaryHistory" class="tab-pane" style="margin-left: 20px;">
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th>Posting Period</th>
+                                                <th>Month</th>
+                                                <th>Net Pay</th>
+                                                <th>Salary Period Status</th>
+                                                <th>Remarks</th>
+                                                <th>Created By</th>
+                                                <th>Created Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- Your data here -->
+                                        </tbody>
+                                    </table>
+                                </div>
+
 
                                 <div id="loanApplications" class="tab-pane" style="margin-left: 20px;">
                                     <row>

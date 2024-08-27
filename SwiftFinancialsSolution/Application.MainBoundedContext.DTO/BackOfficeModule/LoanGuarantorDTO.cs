@@ -333,7 +333,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         public string CustomerNonIndividualRegistrationNumber { get; set; }
 
         [DataMember]
-        [Display(Name = "PIN")]
+        [Display(Name = "Personal Identification Number")]
         public string CustomerPersonalIdentificationNumber { get; set; }
 
         [DataMember]
@@ -500,6 +500,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
 
-        public ObservableCollection<LoanGuarantorDTO> LoanGuarantors { get; set; }
+        public ObservableCollection<CustomerDTO> LoanGuarantors { get; set; }
+
+        [DataMember]
+        public string ErrorMsgResult { get; set; }
     }
 }

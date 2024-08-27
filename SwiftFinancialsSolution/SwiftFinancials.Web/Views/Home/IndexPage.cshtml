@@ -1,55 +1,111 @@
 ﻿@using Infrastructure.Crosscutting.Framework.Utils;
 @{ ViewBag.Title = "Home"; }
 
+
+<style>
+    .ibox {
+        background: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1), 0 0 15px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .ibox:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15), 0 0 25px rgba(0, 0, 0, 0.1);
+        }
+
+    .ibox-title {
+        background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+        border-bottom: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 10px 10px 0 0;
+    }
+
+    .ibox-content {
+        padding: 20px;
+        background: #f9f9f9;
+        border-radius: 0 0 10px 10px;
+    }
+
+    .ibox-title .label {
+        font-size: 14px;
+        font-weight: bold;
+        padding: 5px 10px;
+        border-radius: 15px;
+    }
+
+    .no-margins {
+        margin: 0;
+    }
+
+    .label-success {
+        background-color: #28a745;
+    }
+
+    .label-info {
+        background-color: #17a2b8;
+    }
+
+    .label-primary {
+        background-color: #007bff;
+    }
+
+</style>
+
+
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-4">
-            <div class="ibox ">
+            <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
-                    <span class="label label-success float-right">System users</span>
+                    <span class="label label-success">System users</span>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins"><span id="users"></span></h1>
-                    <small>Total number of System Users</small>
+                    <h4>Total number of System Users</h4>
                 </div>
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="ibox ">
+            <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
-                    <span class="label label-info float-right">Companies</span>
+                    <span class="label">Companies</span>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins"><span id="Companies"></span></h1>
-                    <small>Total number of Companies</small>
+                    <h4>Total number of Companies</h4>
                 </div>
             </div>
         </div>
         <div class="col-lg-4">
-            <div class="ibox ">
+            <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
-                    <span class="label label-primary float-right">Customers</span>
+                    <span class="label label-primary">Customers</span>
                 </div>
                 <div class="ibox-content">
                     <h1 class="no-margins"><span id="customers"></span></h1>
-                    <small>Total number of Customers</small>
+                    <h4>Total number of Customers</h4>
                 </div>
             </div>
         </div>
     </div>
+
+
     <div class="row">
         <div class="col-lg-12">
-            <div class="ibox ">
+            <div class="ibox shadow-lg rounded">
                 <div class="ibox-title">
                     <h5>
                         Messaging
                         <small>Email vs text alerts.</small>
                     </h5>
-                    <div ibox-tools></div>
                 </div>
                 <div class="ibox-content">
-                    <div>
-                        <canvas id="lineChart" height="80"></canvas>
+                    <div style="height: 500px;">
+                        <canvas id="lineChart" height="200"></canvas>
                     </div>
                 </div>
             </div>
@@ -62,14 +118,13 @@
     @Scripts.Render("~/plugins/chartjs")
 
     <script type="text/javascript">
-
         var dataLabels = [];
         var emailData = [];
         var textData = [];
 
-        //Get email statistics
         $(document).ready(function () {
-             $.ajax({
+            // Load email statistics
+            $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FindMonthlyEmailAlertsStatistics", "Dashboard", new { Area = "Dashboard" })',
                 success: function (data) {
@@ -79,35 +134,31 @@
                     });
                 }
             });
-        });
 
-        //Get text statistics
-        $(document).ready(function () {
-             $.ajax({
+            // Load text statistics
+            $.ajax({
                 type: 'POST',
                 url: '@Url.Action("FindMonthlyTextAlertsStatistics", "Dashboard", new { Area = "Dashboard" })',
                 success: function (data) {
                     $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        textData.push(val.Total);/*do not put labels since they were added when loading email statistics*/
+                        textData.push(val.Total);
                     });
                 }
             });
-        });
 
-    $(document).ready(function () {
+            // Load Companies
             $.ajax({
-                 type: 'POST',
+                type: 'POST',
                 url: '@Url.Action("Companies", "Dashboard", new { Area = "Dashboard" })',
                 success: function (data) {
                     $('#Companies').empty();
                     $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
                         $('#Companies').append((val.Companies).toLocaleString("en"));
-                  });
+                    });
                 }
             });
-    });
 
-        $(document).ready(function () {
+            // Load Users
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("Users", "Dashboard", new { Area = "Dashboard" })',
@@ -117,11 +168,9 @@
                         $('#users').append((val.Users).toLocaleString("en"));
                     });
                 }
-
             });
-        });
 
-        $(document).ready(function () {
+            // Load Customers
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("Customers", "Dashboard", new { Area = "Dashboard" })',
@@ -131,48 +180,82 @@
                         $('#customers').append((val.Customers).toLocaleString("en"));
                     });
                 }
-
             });
         });
 
-           $(document).ready(function () {
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("AssetRegisters", "Dashboard", new { Area = "Dashboard" })',
-                success: function (data) {
-                    $('#assetregisters').empty();
-                    $(jQuery.parseJSON(JSON.stringify(data))).each(function (key, val) {
-                        $('#assetregisters').append((val.AssetRegisters).toLocaleString("en"));
-                    });
-                }
-
-            });
-        });
-
-
-        //EVENT: load chart after all requests are done
+        // Load chart after all AJAX requests are done
         $(document).ajaxStop(function () {
             var lineData = {
                 labels: dataLabels,
                 datasets: [
                     {
                         label: "Email Alerts",
-                        backgroundColor: 'rgba(26,179,148,0.5)',
-                        borderColor: "rgba(26,179,148,0.7)",
-                        pointBackgroundColor: "rgba(26,179,148,1)",
+                        backgroundColor: 'rgba(0, 123, 255, 0.3)',
+                        borderColor: "#007bff",
+                        borderWidth: 2,
+                        pointBackgroundColor: "#007bff",
                         pointBorderColor: "#fff",
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
                         data: emailData
-                    }, {
+                    },
+                    {
                         label: "Text Alerts",
-                        backgroundColor: 'rgba(169, 169, 169, 1)',
+                        backgroundColor: 'rgba(40, 167, 69, 0.3)',
+                        borderColor: "#28a745",
+                        borderWidth: 2,
+                        pointBackgroundColor: "#28a745",
                         pointBorderColor: "#fff",
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
                         data: textData
                     }
                 ]
             };
 
             var lineOptions = {
-                responsive: true
+                responsive: true,
+                maintainAspectRatio: false,
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                    backgroundColor: 'rgba(0,0,0,0.7)',
+                    titleFontColor: '#fff',
+                    bodyFontColor: '#fff',
+                    borderWidth: 1,
+                    borderColor: '#ccc'
+                },
+                legend: {
+                    display: true,
+                    position: 'top',
+                    labels: {
+                        fontColor: '#333',
+                        fontSize: 14,
+                        usePointStyle: true,
+                    }
+                },
+                scales: {
+                    xAxes: [{
+                        gridLines: {
+                            display: false
+                        },
+                        ticks: {
+                            fontColor: '#333',
+                            fontSize: 12
+                        }
+                    }],
+                    yAxes: [{
+                        gridLines: {
+                            color: '#f3f3f3',
+                            lineWidth: 1,
+                        },
+                        ticks: {
+                            fontColor: '#333',
+                            fontSize: 12,
+                            beginAtZero: true
+                        }
+                    }]
+                }
             };
 
             var ctx = document.getElementById("lineChart").getContext("2d");
