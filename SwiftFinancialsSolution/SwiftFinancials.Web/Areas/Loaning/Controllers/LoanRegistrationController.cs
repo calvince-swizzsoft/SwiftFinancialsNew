@@ -32,8 +32,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            //ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription);
-
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -264,7 +262,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Income History
                 //// Payouts
-                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchAuthOption.Post, parseId, GetServiceHeader());
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, parseId, GetServiceHeader());
                 if (payouts != null)
                 {
                     ViewBag.Payouts = payouts;

@@ -377,23 +377,30 @@
                                     <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
 
                                     <row>
-                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
-                                            <thead style="font-style: italic; color: #333; text-align: center;">
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
-                                                    <th style="width: 10%;">Account Number</th>
-                                                    <th style="width: 5%;">Product Description</th>
-                                                    <th style="width: 10%;">Principal</th>
+                                                    <th style="width: 15%;">Credit BatchId</th>
+                                                    <th style="width: 10%;">Beneficiary</th>
+                                                    <th style="width: 5%;">Principal</th>
+                                                    <th style="width: 5%;">Interest</th>
+                                                    <th style="width: 5%;">Action</th>
+
                                                 </tr>
                                             </thead>
-                                            <tbody style="color: #007bff;">
-                                                @if (ViewBag.CrdeitBatchEntryDTOs != null)
+                                            <tbody>
+                                                @if (ViewBag.CreditBatchEntryDTOs != null)
                                                 {
-                                                    foreach (var journalVoucherEntries in ViewBag.CrdeitBatchEntryDTOs)
+                                                    foreach (var CreditBatchEntries in ViewBag.CreditBatchEntryDTOs)
                                                     {
-                                                        <tr data-id="@journalVoucherEntries.Id">
-                                                            <td>@journalVoucherEntries.FullAccountNumber</td>
-                                                            <td>@journalVoucherEntries.ProductDescription</td>
-                                                            <td>@journalVoucherEntries.Principal</td>
+                                                        <tr data-id="@CreditBatchEntries.Id">
+                                                            <td>@CreditBatchEntries.CreditBatchId</td>
+                                                            <td>@CreditBatchEntries.Beneficiary</td>
+                                                            <td>@CreditBatchEntries.Principal</td>
+                                                            <td>@CreditBatchEntries.Interest</td>
+                                                            <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+
+
                                                         </tr>
                                                     }
                                                 }
@@ -415,11 +422,16 @@
                                                         @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
+
                                                 <div class="col-lg-4">
+
+
+
+
                                                     <div class="form-group form-group-lg">
                                                         <div class="button-container">
                                                             <div class="custom-dropdown">
-                                                                @Html.DropDownListFor(model => model.StatusDescription, batchAuthOptions, new { @class = "custom-select" })
+                                                                @Html.DropDownListFor(model => model.CreditAuthOption, batchAuthOptions, new { @class = "custom-select" })
                                                             </div>
                                                         </div>
                                                     </div>

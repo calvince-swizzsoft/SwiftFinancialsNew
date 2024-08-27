@@ -1,6 +1,112 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.OverDeductionBatchDTO
 
+@{
+    ViewBag.Title = "Refund Batch Details";
 
+}
+<style>
+    .custom-container {
+        border: 2px solid gray;
+        padding:20px;
+        border-radius: 5px;
+
+        align-items: center;
+        justify-content: center;
+        font-size: 15px;
+        text-align: center;
+        margin-top: 30px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    .combined-container {
+        padding: 20px;
+        border-radius: 5px;
+        margin: 20px 0;
+        font-size: 15px;
+        display: flex;
+        flex-direction: column;
+        font-weight: bold;
+        border: 2px solid #00ffff;
+    }
+
+    @* Batch Entries table Styling*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .row {
+        margin-bottom: 20px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        margin-top: 5px;
+    }
+
+    .control-label {
+        font-size: 18px; /* Increased label font size */
+        color: #333; /* Set a different color for the labels */
+    }
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .style1 {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .form-value {
+        font-size: 16px;
+        color: #007bff; /* Set a different color for the field values */
+    }
+
+    #policies {
+        color: black;
+    }
+
+    .checkbox-label {
+        font-size: 18px; /* Increased label font size */
+        color: #333; /* Set a different color for the checkbox labels */
+    }
+
+    .checkbox-field {
+        font-size: 16px;
+        color: #007bff; /* Set a different color for the checkbox fields */
+    }
+
+    .main1 {
+        border: 1px solid black;
+        padding: 10px;
+        background-color: #f1f1f1;
+    }
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -13,35 +119,20 @@
                 @Html.ActionLink("Home", "Index", "BatchOrigination_Refund", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>View</strong>
+                <strong>Details</strong>
             </li>
         </ol>
     </div>
 </div>
-<style>
-    .large-font {
-        font-size: 20px;
-    }
-</style>
-
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger fade in">
-        <button class="close" data-dismiss="alert">
-            ×
-        </button>
-        <i class="fa-fw fa fa-times"></i>
-        <strong>Error!</strong> @TempData["Error"]
-    </div>
-}
 
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>View</h2>
+                    <h2 style="font-weight: bold;">Credit Batch Details</h2>
                     <hr />
+                    
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -52,52 +143,118 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Details", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
+                    <div class="form-horizontal">
 
-                        <div class="row large-font">
+                        <div class="main1">
+                            <div class="combined-container">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchDescription)
+                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
 
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "ConcessionFixedAmount", @readonly = "readonly" } })
+                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                            @*@Html.HiddenFor(model => model.TotalValue)*@
+                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "CreditTypesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="row">
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+                                            @*@Html.HiddenFor(model => model.CreatedBy)*@
+                                            @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "CreditTypesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                            @*@Html.HiddenFor(model => model.CreatedDate)*@
+                                            @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description..", @readonly = "readonly" } })
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+
+
+
+                                
+
+                                
+                            </div>
+
+
+                            <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
+
+                                <row>
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 15%;">Principal</th>
+                                                <th style="width: 10%;">Interest</th>
+                                                <th style="width: 10%;">Status</th>
+                                                
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.OverDeductionBatchEntryDTOs != null)
+                                            {
+                                                foreach (var refundBatchEntries in ViewBag.OverDeductionBatchEntryDTOs)
+                                                {
+                                                    <tr data-id="@refundBatchEntries.Id">
+                                                        <td>@refundBatchEntries.Principal</td>
+                                                        <td>@refundBatchEntries.Interest</td>
+                                                        <td>@refundBatchEntries.Status</td>
+                                                        
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+
+
+                                                    </tr>
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </row>
+                            </div>
+
+
+                            <div class="custom-container">
+                                
+                                <div class="col-lg-12">
+                                    <div class="row">
+                                        @Html.ActionLink("Back To List", "Index", "BatchOrigination_Credit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                                     </div>
                                 </div>
+                                
                             </div>
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name", @readonly = "readonly" } })
-                                    @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                </div>
-
-                            </div>
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                    <div class="col-md-10">
-                                        @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
-                                        @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-
-
-
-                        </div>
-                        <br/> <br/>
-                        <div class="row" style="margin-left: 20px;">
-                            @Html.ActionLink("Back to List", "Index", "BatchOrigination_Refund", new { Area = "Accounts" }, new { @class = "btn btn-success" })
                         </div>
 
-
-
-                    }
+                    </div>
                 </div>
             </div>
         </div>
@@ -105,89 +262,6 @@
 </div>
 
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
-}
-
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
 
 
-
-    <script>
-                    //Branch typehead starts here
-    $('.BranchesLookup').typeahead({
-        source: function (query, process) {
-            return $.getJSON(
-                '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                { query: query },
-                function (Branches) {
-                    var newBranchesData = [];
-                    BranchesMap = {};
-                    $.each(Branches, function (i, Branch) {
-                        newBranchesData.push(Branch.Description);
-                        BranchesMap[Branch.Description] = Branch;
-                    });
-                    process(newBranchesData); return;
-                });
-        },
-        matcher: function (item) {
-            if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                return true;
-            }
-        },
-        sorter: function (items) {
-            return items.sort();
-        },
-        highlighter: function (item) {
-            var regex = new RegExp('(' + this.query + ')', 'gi');
-            return item.replace(regex, "<strong>$1</strong>");
-        },
-        updater: function (item) {
-            var branchId = "";
-            BranchId = BranchesMap[item].Id;
-            $('#BranchId').val(BranchId);
-            //console.log(BranchId)
-            return item;
-        }
-    });
-    </script>
-
-}
 

@@ -89,71 +89,6 @@
 </style>
 
 
-<style>
-    .ibox-content {
-        padding: 20px;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-
-        .ibox-content label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: bold;
-            color: #333;
-            font-size: 1.1em;
-        }
-
-        .ibox-content input[type="text"],
-        .ibox-content dropdowmlist,
-        .ibox-content textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            font-size: 1em;
-            margin-bottom: 15px;
-        }
-
-            .ibox-content input[type="text"]:focus,
-            .ibox-content select:focus,
-            .ibox-content dropdowmlist:focus,
-            .ibox-content textarea:focus {
-                border-color: #007bff;
-                outline: none;
-            }
-
-    .form-control {
-        width: 100%;
-        padding: 10px;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        /*font-size: 1em;*/
-        margin-bottom: 15px;
-    }
-
-        .form-control:focus {
-            border-color: #007bff;
-            outline: none;
-        }
-
-    .btn {
-        border-radius: 4px;
-        outline: outset;
-    }
-
-    .nav a {
-        /*font-weight: bold;*/
-        /*font-size: large;*/
-    }
-
-    h2, h1, h3, h4, h5, h6 {
-        /*font-weight: bold;*/
-    }
-</style>
-
 
 <script src="~/Scripts/js/navlink.js"></script>
 
@@ -351,36 +286,45 @@
                                 </div>
 
 
-                                @*Tabs*@
-                                <div class="tab-header" style="color: black;">
-                                    <div class="tab-button active" onclick="openTab(event, 'section1')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Standing Orders
-                                    </div>
-                                    <div class="tab-button" onclick="openTab(event, 'section2')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Income History
-                                    </div>
-                                    <div class="tab-button" onclick="openTab(event, 'section3')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Loan Applications
-                                    </div>
-                                    <div class="tab-button" onclick="openTab(event, 'section4')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Collaterals
+
+                                <script>
+                                    function openSubTab(event, subTabId) {
+                                        // Hide all sub-tab contents
+                                        document.querySelectorAll('.sub-tab-content').forEach(subTabContent => {
+                                            subTabContent.classList.remove('active');
+                                        });
+
+                                        // Deactivate all sub-tab buttons
+                                        document.querySelectorAll('.sub-tab-button').forEach(subTabButton => {
+                                            subTabButton.classList.remove('active');
+                                        });
+
+                                        // Show the selected sub-tab content and activate the corresponding sub-tab button
+                                        document.getElementById(subTabId).classList.add('active');
+                                        event.currentTarget.classList.add('active');
+                                    }
+
+                                    // Activate the default tab on page load
+                                    document.addEventListener('DOMContentLoaded', () => {
+                                        document.querySelector('.nav-link.active').click();
+                                    });
+                                </script>
+
+
+                                <div id="loanDetails" class="tab-content active">
+                                    <!-- Sub-Tabs inside Loan Details -->
+                                    <div class="sub-tab-header">
+                                        <a class="sub-tab-button active" href="#standingOrders" onclick="openSubTab(event, 'standingOrders')"><i class="fa fa-table" aria-hidden="true"></i> Standing Orders</a>
+                                        <a class="sub-tab-button" href="#payoutsHistory" onclick="openSubTab(event, 'payoutsHistory')"><i class="fa fa-table" aria-hidden="true"></i> Payouts History</a>
+                                        <a class="sub-tab-button" href="#salaryHistory" onclick="openSubTab(event, 'salaryHistory')"><i class="fa fa-table" aria-hidden="true"></i> Salary History</a>
+                                        <a class="sub-tab-button" href="#loanApplications" onclick="openSubTab(event, 'loanApplications')"><i class="fa fa-table" aria-hidden="true"></i> Loan Applications</a>
+                                        <a class="sub-tab-button" href="#guarantors" onclick="openSubTab(event, 'guarantors')"><i class="fa fa-table" aria-hidden="true"></i> Guarantors</a>
+                                        <a class="sub-tab-button" href="#collaterals" onclick="openSubTab(event, 'collaterals')"><i class="fa fa-table" aria-hidden="true"></i> Collaterals</a>
+                                        <a class="sub-tab-button" href="#loanAccounts" onclick="openSubTab(event, 'loanAccounts')"><i class="fa fa-table" aria-hidden="true"></i> Loan Accounts</a>
                                     </div>
 
-                                    <div class="tab-button" onclick="openTab(event, 'section5')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Guarantors
-                                    </div>
-
-                                    <div class="tab-button" onclick="openTab(event, 'section6')">
-                                        <i class="fa fa-table" aria-hidden="true"></i> Loan Accounts
-                                    </div>
-                                </div>
-
-
-
-                                <div id="section1" class="tab active">
-                                    <!-- Standing Orders -->
-                                    <div class="tab-content">
-                                        <h2 style="color: cadetblue;">Standing Orders</h2>
+                                    <div id="standingOrders" class="sub-tab-content active">
+                                        <h2>Standing Orders</h2>
 
                                         <br />
 
@@ -426,362 +370,37 @@
                                             }
                                         </row>
                                     </div>
-                                </div>
 
-
-
-                                <div id="section2" class="tab">
-                                    <!-- Income History -->
-                                    <div class="sub-tab-header" style="color: black;">
-                                        <div class="sub-tab-button" onclick="openSubTab(event, 'payouts')">Payouts</div>
-                                        <div class="sub-tab-button" onclick="openSubTab(event, 'salary')">Salary</div>
+                                    <div id="payoutsHistory" class="sub-tab-content">
+                                        <h2>Payouts History</h2>
+                                        <p>Details about the loan history will go here.</p>
                                     </div>
 
-                                    <!--Payouts-->
-                                    <div id="payouts" class="sub-tab-content">
-                                        <h2 style="color: cadetblue;">Payouts</h2>
-
-                                        <br />
-
-                                        <row>
-                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Batch Number</th>
-                                                        <th>Batch Reference</th>
-                                                        <th>Status</th>
-                                                        @*<th>Principal</th>
-                                                            <th>Interest</th>
-                                                            <th>Beneficiary</th>
-                                                            <th>Reference</th>
-                                                            <th>Full Account Number</th>
-                                                            <th>Product Name</th>
-                                                            <th>Balance</th>
-                                                            <th>Customer Name</th>*@
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.Payouts != null)
-                                                    {
-                                                        foreach (var standingOrder in ViewBag.Payouts)
-                                                        {
-                                                            <tr>
-                                                                <td>@standingOrder.BatchNumber</td>
-                                                                <td>@standingOrder.BatchReference</td>
-                                                                <td>@standingOrder.StatusDescription</td>
-                                                                @*<td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
-                                                                    <td style="text-align: right;">@standingOrder.Principal</td>
-                                                                    <td style="text-align: right;">@standingOrder.Interest</td>
-                                                                    <td style="text-align: right;">@standingOrder.PrincipalArrears</td>
-                                                                    <td style="text-align: right;">@standingOrder.InterestArrears</td>
-                                                                    <td>@standingOrder.ChargeTypeDescription</td>
-                                                                    <td>@standingOrder.ChargeFixedAmount</td>
-                                                                    <td>@standingOrder.ChargePercentage</td>*@
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-
-                                            @if (TempData["Payouts"] != null)
-                                            {
-                                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["Payouts"]</strong></p>
-                                            }
-                                        </row>
+                                    <div id="salaryHistory" class="sub-tab-content">
+                                        <h2>Salary Documents</h2>
+                                        <p>Details about the loan documents will go here.</p>
                                     </div>
-
-
-
-                                    <!--Salary-->
-                                    <div id="salary" class="sub-tab-content">
-                                        <h2 style="color: cadetblue;">Salary</h2>
-
-                                        <br />
-
-                                        <row>
-                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Posting Period</th>
-                                                        <th>Month</th>
-                                                        <th>Net Pay</th>
-                                                        <th>Salary Period Status</th>
-                                                        <th>Remarks</th>
-                                                        <th>Created By</th>
-                                                        <th>Created Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-
-                                                    @if (ViewBag.StandingOrders != null)
-                                                    {
-                                                        foreach (var standingOrder in ViewBag.StandingOrders)
-                                                        {
-                                                            <tr>
-
-
-
-                                                                <!--<td>@standingOrder.TriggerDescription</td>
-                                                                <td>@standingOrder.BeneficiaryProductDescription</td>
-                                                                <td style="text-align: right;">@standingOrder.LoanAmount</td>
-                                                                <td style="text-align: right;">@standingOrder.PaymentPerPeriod</td>
-                                                                <td style="text-align: right;">@standingOrder.Principal</td>
-                                                                <td style="text-align: right;">@standingOrder.Interest</td>
-                                                                <td style="text-align: right;">-->
-                                                                @*@standingOrder.PrincipalArrears*@
-                                                                <!--</td>
-                                                                <td style="text-align: right;">-->
-                                                                @*@standingOrder.InterestArrears*@
-                                                                <!--</td>
-                                                                <td>@standingOrder.ChargeTypeDescription</td>
-                                                                <td>@standingOrder.ChargeFixedAmount</td>
-                                                                <td>@standingOrder.ChargePercentage</td>-->
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-
-                                            @if (TempData["Salary"] != null)
-                                            {
-                                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["Salary"]</strong></p>
-                                            }
-                                        </row>
+                                    
+                                    <div id="loanApplications" class="sub-tab-content">
+                                        <h2>Loan Applications</h2>
+                                        <p>Details about the loan documents will go here.</p>
+                                    </div>
+                                    
+                                    <div id="guarantors" class="sub-tab-content">
+                                        <h2>Guarantors</h2>
+                                        <p>Details about the loan documents will go here.</p>
+                                    </div> 
+                                    
+                                    <div id="collaterals" class="sub-tab-content">
+                                        <h2>Collaterals</h2>
+                                        <p>Details about the loan documents will go here.</p>
+                                    </div>
+                                    
+                                    <div id="loanAccounts" class="sub-tab-content">
+                                        <h2>Loan Accounts</h2>
+                                        <p>Details about the loan documents will go here.</p>
                                     </div>
                                 </div>
-
-
-
-
-                                <div id="section3" class="tab">
-                                    <!-- Loan Applications -->
-                                    <div class="tab-content">
-                                        <h2 style="color: cadetblue;">Loan Applications</h2>
-
-                                        <row>
-                                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                    <tr>
-                                                        <th>Loan Number</th>
-                                                        <th>Status</th>
-                                                        <th>Customer Name</th>
-                                                        <th>Personal File Number</th>
-                                                        <th>Loan Product</th>
-                                                        <th>Received Date</th>
-                                                        <th>Amount Applied</th>
-                                                        <th>Appraised Amount</th>
-                                                        <th>System Appraisal Remarks</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.LoanApplications != null)
-                                                    {
-                                                        foreach (var loanApplications in ViewBag.LoanApplications)
-                                                        {
-                                                            <tr>
-                                                                <td>@loanApplications.CaseNumber</td>
-                                                                <td>@loanApplications.StatusDescription</td>
-                                                                <td>@loanApplications.CustomerFullName</td>
-                                                                <td>@loanApplications.CustomerReference3</td>
-                                                                <td>@loanApplications.LoanProductDescription</td>
-                                                                <td>@loanApplications.ReceivedDate</td>
-                                                                <td style="text-align: right;">@loanApplications.AmountApplied</td>
-                                                                <td style="text-align: right;">@loanApplications.AppraisedAmount</td>
-                                                                <td>@loanApplications.SystemAppraisalRemarks</td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-
-                                            @if (TempData["LoanApplication"] != null)
-                                            {
-                                                <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["LoanApplication"]</strong></p>
-                                            }
-                                        </row>
-                                    </div>
-                                </div>
-
-
-
-                                <div id="section4" class="tab">
-                                    <!-- Collaterals -->
-                                    <div class="tab-content">
-
-
-                                        <div style="text-align: left;">
-                                            <input type="checkbox" id="headerCheckbox" style="transform: scale(1); color: blue;">
-                                            <label for="headerCheckbox" style="font-weight: bold;">Select All</label>
-                                        </div>
-
-                                        <div class="table-responsive">
-                                            <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
-                                                <tbody>
-                                                    <tr>
-                                                        <td colspan="7" class="dataTables_empty">
-                                                            Loading data from server
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <div id="section5" class="tab">
-                                    <!-- Loan Guarantors Section -->
-                                    <div class="tab-content">
-                                        <h2 style="color: cadetblue;">
-                                            Attach Loan Guarantors
-                                        </h2>
-                                        <br />
-                                        <fieldset>
-                                            <div class="row">
-                                                <div class="col-md-4 form-group">
-                                                    @Html.LabelFor(model => model.GuarantorId, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.GuarantorId)
-                                                        @Html.TextBoxFor(model => model.GuarantorName, new { @id = "LoanCaseCaseNumber", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Guarantor..." })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#GuarantorLookupModal" onclick="captureDetails();"><span class="fa fa-search"></span></a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-5 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorEmployerId, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.HiddenFor(model => model.GuarantorEmployerId)
-                                                        @Html.EditorFor(model => model.GuarantorEmployerDescription, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Employer Name...", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorStationDescription, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.HiddenFor(model => model.GuarantorStationId)
-                                                        @Html.EditorFor(model => model.GuarantorStationDescription, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Station Name...", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorIdentificationNumber, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "ID Number...", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorReference1, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorReference1, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "XXXX-XXX-XXXXX", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorReference2, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorReference2, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "XXXXX", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorReference3, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorReference3, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "XXXXXXXX", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.AppraisalFactor, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "eg. 1,2..." } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorTotalshares, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorTotalshares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorCommittedShares, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorCommittedShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Kshs. 0.00", @readonly = "readonly" } })
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-3 form-group">
-                                                    <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GuarantorAmountGuaranteed, htmlAttributes: new { @class = "control-label" })
-                                                        @Html.EditorFor(model => model.GuarantorAmountGuaranteed, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Kshs.0.00" } })
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="row">
-                                                <div class="col-md-6 form-group">
-                                                    @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
-                                                    {
-                                                        <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
-                                                    }
-                                                </div>
-                                            </div>
-
-                                            <br />
-
-                                            <row>
-                                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                                        <tr>
-                                                            <th style="width: 10%;">Customer Name</th>
-                                                            <th style="width: 5%;">ID Type</th>
-                                                            <th style="width: 5%;">ID Number</th>
-                                                            <th style="width: 5%;">Payroll Number</th>
-                                                            <th style="width: 5%;">Total Shares</th>
-                                                            <th style="width: 5%;">Committed shares</th>
-                                                            <th style="width: 5%;">Amount Guaranteed</th>
-                                                            <th style="width: 5%;">Amount Pledged</th>
-                                                            <th style="width: 2%;">Appraisal Factor</th>
-                                                            <th style="width: 5%;">Action</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        @if (ViewBag.ChargeSplitDTOs != null)
-                                                        {
-                                                            foreach (var commissionSplit in ViewBag.ChargeSplitDTOs)
-                                                            {
-                                                                <tr data-id="@commissionSplit.Id">
-                                                                    <td>@commissionSplit.ChartOfAccountAccountName</td>
-                                                                    <td>@commissionSplit.Description</td>
-                                                                    <td style="text-align: right;">@commissionSplit.Percentage</td>
-                                                                    <td>@commissionSplit.Leviable</td>
-                                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                                </tr>
-                                                            }
-                                                        }
-                                                    </tbody>
-                                                </table>
-
-                                                @if (TempData["tPercentage"] != null)
-                                                {
-                                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                                                }
-                                            </row>
-                                        </fieldset>
-                                    </div>
-                                </div>
-
-
-                                <div id="section5" class="tab"></div>
-                                @*Tabs End*@
                             </div>
 
 
@@ -945,7 +564,7 @@
 
                                 <br />
 
-                                <h2>Income Adjustment Details</h2>
+                                @*<h2>Income Adjustment Details</h2>
                                 <div class="row">
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
@@ -977,7 +596,7 @@
                                     <div class="col-lg-4">
                                         <input type="submit" value="Add" class="btn btn-primary" style="width: 150px;" />
                                     </div>
-                                </div>
+                                </div>*@
                             </div>
 
 

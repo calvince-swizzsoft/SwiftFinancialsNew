@@ -121,6 +121,27 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["verify"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["verify"]
+                        </div>
+                    }
+
+                    @if (TempData["AuthorizeSuccess"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AuthorizeSuccess"]
+                        </div>
+                    }
+
                     @Html.ActionLink("Create Debit Batch", "Create", "BatchOrigination_Debit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">

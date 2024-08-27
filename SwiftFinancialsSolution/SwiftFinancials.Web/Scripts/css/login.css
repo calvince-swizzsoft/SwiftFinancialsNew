@@ -1,0 +1,83 @@
+﻿/* Background with subtle gradient */
+body {
+    background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Panel styling */
+.panel-body {
+    width: 100%;
+    max-width: 400px;
+}
+
+.widget-head-color-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+    transition: box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out;
+}
+
+    .widget-head-color-box:hover {
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        transform: translateY(-5px);
+    }
+
+.logo-container {
+    margin-bottom: 30px;
+}
+
+/* Form Control styling */
+.form-control {
+    border: 1px solid #d1d1d1;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+    .form-control:focus {
+        border-color: #007bff;
+        background-color: #f0f8ff;
+        box-shadow: none;
+    }
+
+/* Button styling */
+.btn-rounded {
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-size: 18px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+    .btn-rounded:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px);
+    }
+
+/* Text styling */
+.text-primary {
+    color: #007bff;
+}
+
+    .text-primary:hover {
+        text-decoration: underline;
+    }
+
+/* Adjusted positioning */
+.center-orientation {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+p.font-weight-bold {
+    margin-top: 20px;
+    font-size: 14px;
+}
