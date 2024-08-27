@@ -1,0 +1,62 @@
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.AccountClosureRequestDTO
+
+@{
+    ViewBag.Title = "Account Closure Request Details";
+}
+
+<div class="container">
+    <h2>@ViewBag.Title</h2>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h3>Account Closure Request Details</h3>
+        </div>
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-3">Full Account Number</dt>
+                <dd class="col-sm-9">@Model.CustomerAccountFullAccountNumber</dd>
+
+                <dt class="col-sm-3">Customer Name</dt>
+                <dd class="col-sm-9">@Model.CustomerAccountCustomerFullName</dd>
+
+                <dt class="col-sm-3">Closure Reason</dt>
+                <dd class="col-sm-9">@Model.Reason</dd>
+
+               
+
+               
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9">@Model.StatusDescription</dd>
+
+               
+
+               
+
+                <dt class="col-sm-3">Approved By</dt>
+                <dd class="col-sm-9">@Model.ApprovedBy</dd>
+
+                <dt class="col-sm-3">Approval Date</dt>
+                <dd class="col-sm-9">@Model.ApprovedDate.("dd/MM/yyyy")</dd>
+
+                <dt class="col-sm-3">Approval Comments</dt>
+                <dd class="col-sm-9">@Model.AuditRemarks</dd>
+
+                <dt class="col-sm-3">Created By</dt>
+                <dd class="col-sm-9">@Model.CreatedBy</dd>
+
+                <dt class="col-sm-3">Created Date</dt>
+                <dd class="col-sm-9">@Model.CreatedDate.ToString("dd/MM/yyyy")</dd>
+            </dl>
+        </div>
+        <div class="card-footer">
+            <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-primary">Edit</a>
+            <a href="@Url.Action("Index")" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+            // Add any JavaScript or jQuery code needed for this view
+    </script>
+}

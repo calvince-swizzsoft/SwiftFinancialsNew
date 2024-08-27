@@ -141,7 +141,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             }
 
-            Session["creditBatchDTO2"] = debitBatchDTO;
+            /*Session["creditBatchDTO2"] = debitBatchDTO;*/
 
             return View("Create", debitBatchDTO);
         }
@@ -156,7 +156,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             Session["debitBatchDTO1"] = debitBatchDTO;
 
-            TempData["BatchSuccess"] = "Partial Batch Saved Successifully";
+            Session["DebitTypeId"] = debitBatchDTO.DebitTypeId;
+            Session["DebitTypeDescription"] = debitBatchDTO.DebitTypeDescription;
+            Session["BranchId"] = debitBatchDTO.BranchId;
+            Session["BranchDescription"] = debitBatchDTO.BranchDescription;
+            Session["PriorityDescription"] = debitBatchDTO.PriorityDescription;
+            Session["Reference"] = debitBatchDTO.Reference;
+
+
+
+             TempData["BatchSuccess"] = "Partial Batch Saved Successifully";
 
 
             return View("Create");
@@ -174,6 +183,37 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
 
+
+            
+
+            if (Session["DebitTypeId"] != null)
+            {
+                debitBatchDTO.DebitTypeId = (Guid)Session["DebitTypeId"];
+            }
+            if (Session["DebitTypeDescription"] != null)
+            {
+                debitBatchDTO.DebitTypeDescription = (string)Session["DebitTypeDescription"];
+            }
+            if (Session["BranchId"] != null)
+            {
+                debitBatchDTO.BranchId = (Guid)Session["BranchId"];
+            }
+            if (Session["DebitTypeId"] != null)
+            {
+                debitBatchDTO.DebitTypeId = (Guid)Session["DebitTypeId"];
+            }
+            if (Session["BranchDescription"] != null)
+            {
+                debitBatchDTO.BranchDescription = (string)Session["BranchDescription"];
+            }
+            if (Session["Priority"] != null)
+            {
+                debitBatchDTO.Priority = (int)Session["Priority"];
+            }
+            if (Session["Reference"] != null)
+            {
+                debitBatchDTO.Reference = (string)Session["Reference"];
+            }
 
 
             ViewBag.DebitBatchEntryDTOs = DebitBatchEntryDTOs;
@@ -228,7 +268,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["DebitBatchDTO"] = debitBatchDTO;
             Session["DebitBatchDTO"] = debitBatchDTO;
 
-            Session["creditBatchDTO2"] = null;
+            
+            Session["debitBatchDTO2"] = null;
 
 
 
@@ -239,6 +280,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(DebitBatchDTO debitBatchDTO)
         {
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
 
             debitBatchDTO = Session["DebitBatchDTO"] as DebitBatchDTO;
 

@@ -132,6 +132,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Total Value")]
         public int TotalValue { get; set; }
 
+        [DataMember]
+        [Display(Name = "#")]
+        public int rowId { get; set; }
+
     }
      
 }

@@ -12,6 +12,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
+
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
     public class FixedDepositController : MasterController
@@ -31,19 +32,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-            bool includeProductDescription = false;
-
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindFixedDepositsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, includeProductDescription, GetServiceHeader());
-
+            var pageCollectionInfo = await _channelService.FindFixedDepositsByFilterInPageAsync(
+                   jQueryDataTablesModel.sSearch,
+                   jQueryDataTablesModel.iDisplayStart,
+                   jQueryDataTablesModel.iDisplayLength,
+                    true, 
+                   GetServiceHeader()
+               );
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
 
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -62,142 +67,285 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
 
-            Guid parseId;
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
 
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            var fixedDepositDTO = new FixedDepositDTO();
+
+            if (id.HasValue && id != Guid.Empty)
             {
-                return View();
+                var parseId = id.Value;
+
+                // Retrieve customer account details
+                var customer = await _channelService.FindFixedDepositTypeAsync(parseId,GetServiceHeader());
+
+                if (customer != null)
+                {
+                    // Populate the DTO with customer details
+                    fixedDepositDTO.FixedDepositTypeId = customer.Id;
+                    fixedDepositDTO.FixedDepositTypeDescription = customer.Description;
+                    Session["fixedDepositDTO"] = fixedDepositDTO;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Customer account details could not be found.";
+                    return RedirectToAction("Index");
+                }
             }
 
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
+            return View(fixedDepositDTO);
 
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+        }
 
-            FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
 
-            if (customer != null)
+        public async Task<ActionResult> Search(Guid? id, FixedDepositDTO fixedDepositDTO)
+        {
+            await ServeNavigationMenus();
+            if(Session["fixedDepositDTO"] !=null)
             {
-                // Populate the DTO with placeholder customer details
-                // accountClosureRequestDTO.CustomerAccountFullAccountNumber = customer.FullAccountNumber;
-                fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
-                fixedDepositDTO.Remarks = customer.Remarks;
-                fixedDepositDTO.ProductDescription = customer.CustomerAccountTypeTargetProductDescription;
-                fixedDepositDTO.CustomerAccountCustomerNonIndividualDescription = customer.TypeDescription;
-                fixedDepositDTO.CustomerAccountCustomerNonIndividualRegistrationNumber = customer.RecordStatusDescription;
-                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
-                fixedDepositDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
-                fixedDepositDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
-                fixedDepositDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                fixedDepositDTO.CustomerAccountCustomerReference1 = customer.FullAccountNumber;
-                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
-                fixedDepositDTO.CustomerAccountCustomerId = customer.CustomerId;
-                fixedDepositDTO.BranchId = customer.BranchId;
-                fixedDepositDTO.CustomerAccountId = customer.Id;
-                
+                fixedDepositDTO = Session["fixedDepositDTO"]as FixedDepositDTO;
+            }
+            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
+
+            
+
+            if (id.HasValue && id != Guid.Empty)
+            {
+                var parseId = id.Value;
+
+                // Retrieve customer account details
+                var customer = await _channelService.FindCustomerAccountAsync(
+                    parseId,
+                    includeBalances: false,
+                    includeProductDescription: false,
+                    includeInterestBalanceForLoanAccounts: false,
+                    considerMaturityPeriodForInvestmentAccounts: false,
+                    GetServiceHeader()
+                );
+
+                if (customer != null)
+                {
+                    // Populate the DTO with customer details
+                    fixedDepositDTO.CustomerAccountCustomerNonIndividualDescription = customer.FullAccountNumber;
+                    fixedDepositDTO.CustomerAccountCustomerIndividualLastName = customer.StatusDescription;
+                    fixedDepositDTO.AvailableBalance = customer.AvailableBalance;
+                    fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
+                    fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
+                    fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
+                    fixedDepositDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
+                    fixedDepositDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
+                    fixedDepositDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
+                    fixedDepositDTO.Category = fixedDepositDTO.Category;
+                    fixedDepositDTO.Value = customer.TotalValue;
+                    fixedDepositDTO.Remarks = customer.Remarks;
+                    fixedDepositDTO.BranchId = customer.BranchId;
+                    fixedDepositDTO.CustomerAccountCustomerId = customer.CustomerId;
+                    fixedDepositDTO.ProductChartOfAccountId = customer.CustomerAccountTypeTargetProductId;
+                    fixedDepositDTO.CustomerAccountId = customer.Id;
+
+                    // Fetch loan accounts for the customer based on customer ID and product type ID
+                    var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
+                        customer.CustomerId,
+                        customer.CustomerAccountTypeTargetProductId,
+                        includeBalances: true,
+                        includeProductDescription: true,
+                        includeInterestBalanceForLoanAccounts: true,
+                        considerMaturityPeriodForInvestmentAccounts: true,
+                        serviceHeader: GetServiceHeader()
+                    );
+
+
+                    // Check for null and set ViewBag.LoanAccounts
+                    var loanAccountsList = loanAccounts.Take(3).ToList();
+
+                    // Pass the limited list to the view
+                    ViewBag.LoanAccounts = loanAccountsList;
+
+
+
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Customer account details could not be found.";
+                    return RedirectToAction("Index");
+                }
             }
 
-            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
+            return View("Create",fixedDepositDTO);
+        }
 
-            FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
 
-            if (fixedDepositTypeDTO != null)
+        [HttpPost]
+        public async Task<ActionResult> Create(FixedDepositDTO fixedDepositDTO)
+        {
+            
+            // Validate the expensePayableDTO
+            fixedDepositDTO.ValidateAll();
+
+            if (!fixedDepositDTO.HasErrors)
             {
-                fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
-                fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
-                fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
-                fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
-                fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
+               
+                    // Call the service to add the expense payable
+                    await _channelService.InvokeFixedDepositAsync(fixedDepositDTO, GetServiceHeader());
+
+
+                    
+                        
+                        // Set success message in TempData
+                        TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
+                        
+
+
+                //TempData["ErrorMessage"] = "An error occurred while processing your request.";
+                return RedirectToAction("Index");
+
+            }
+            else
+            {
+                var errormassage = fixedDepositDTO.ErrorMessages;
+                // Handle validation errors
+                TempData["ErrorMessage"] = string.Join(", ", fixedDepositDTO.ErrorMessages);
+                return RedirectToAction("Create");
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(FixedDepositPayableDTO fixedDepositPayableDTO, FormCollection form)
+        {
+            await ServeNavigationMenus();
+
+            ObservableCollection<FixedDepositPayableDTO> fixedDepositPayableDTOs = TempData["FixedDepositPayableDTOs"] as ObservableCollection<FixedDepositPayableDTO>
+                ?? new ObservableCollection<FixedDepositPayableDTO>();
+
+            var selectedAccounts = form.GetValues("selectedAccounts");
+
+            if (selectedAccounts != null)
+            {
+                foreach (var accountNumber in selectedAccounts)
+                {
+                    var accountDetails = form["accountDetails"].Split(',');
+
+                    var newEntry = new FixedDepositPayableDTO
+                    {
+                        CustomerAccountCustomerNonIndividualRegistrationNumber = accountNumber,
+                        CustomerAccountTypeTargetProductDescription = accountDetails[1],
+                        BookBalance = Convert.ToDecimal(accountDetails[2]),
+                        PrincipalBalance = Convert.ToDecimal(accountDetails[3]),
+                        InterestBalance = Convert.ToDecimal(accountDetails[4])
+                    };
+
+                    if (string.IsNullOrWhiteSpace(newEntry.FullAccountNumber) ||
+                        string.IsNullOrWhiteSpace(newEntry.CustomerAccountTypeTargetProductDescription) ||
+                        newEntry.BookBalance <= 0 ||
+                        newEntry.PrincipalBalance <= 0 ||
+                        newEntry.InterestBalance <= 0)
+                    {
+                        TempData["ErrorMessage"] = "Could not add Fixed Deposit Payable Entry. Ensure all required fields are entered.";
+                    }
+                    else
+                    {
+                        fixedDepositPayableDTOs.Add(newEntry);
+                    }
+                }
+                TempData["FixedDepositPayableDTOs"] = fixedDepositPayableDTOs;
+                Session["FixedDepositPayableEntries"] = fixedDepositPayableDTOs;
+                TempData["EntryAdded"] = "Successfully added entries.";
             }
 
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
+            var fixedDepositDTO = new FixedDepositDTO
+            {
+                // Map the properties as needed
+            };
+
+            ViewBag.FixedDepositPayableDTOs = fixedDepositPayableDTOs;
+
+            return View("Create", fixedDepositDTO);
+        }
+
+
+
+
+
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id,GetServiceHeader());
+
 
             return View(fixedDepositDTO);
         }
 
-
-
         [HttpPost]
-        public async Task<ActionResult> Add(FixedDepositDTO fixedDepositDTO)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, FixedDepositDTO fixedDepositDTO)
         {
-            await ServeNavigationMenus();
-
-            FixedDepositPayableDTOs = TempData["FixedDepositPayableDTO"] as ObservableCollection<FixedDepositPayableDTO>;
-
-            if (FixedDepositPayableDTOs == null)
-                FixedDepositPayableDTOs = new ObservableCollection<FixedDepositPayableDTO>();
-
-            foreach (var fixedDepositPayableDTO in fixedDepositDTO.FixedDepositPayables)
-            {
-
-                fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountName = fixedDepositPayableDTO.CustomerAccountTypeTargetProductChartOfAccountName;
-                fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription = fixedDepositPayableDTO.CustomerAccountTypeTargetProductDescription;
-                fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection = fixedDepositPayableDTO.CustomerAccountTypeTargetProductProductSection;
-
-                FixedDepositPayableDTOs.Add(fixedDepositPayableDTO);
-            };
-
-            TempData["FixedDepositPayableDTO"] = FixedDepositPayableDTOs;
-
-            TempData["FixedDepositPayableDTO"] = fixedDepositDTO;
-
-            ViewBag.ExpensePayableEntryDTOs = ExpensePayableEntryDTOs;
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(fixedDepositDTO.CustomerAccountCustomerType.ToString());
-            return View("Create", fixedDepositDTO);
-        }
-        [HttpPost]
-        public async Task<ActionResult> Create(FixedDepositDTO fixedDepositDTO)
-        {
-            // Handle unexpected null DTO
-            if (fixedDepositDTO == null)
-            {
-                TempData["ErrorMessage"] = "An unexpected error occurred. Please try again.";
-                return View("Error");
-            }
-
-            // Access the hidden fields
-            var branchId = fixedDepositDTO.BranchId;
-            var customerAccountId = fixedDepositDTO.CustomerAccountId;
-
-            // Validate the DTO
+            // Validate the FixedDepositDTO object
             fixedDepositDTO.ValidateAll();
+
+            // Define the fixed deposit authentication option
+            int fixedDepositAuthOption =1;
+
+            // Define the module navigation item code (assuming you have this property in your DTO or need to set it)
+            int moduleNavigationItemCode = fixedDepositDTO.ModuleNavigationItemCode;
 
             if (!fixedDepositDTO.HasErrors)
             {
                 try
                 {
-                    // Process the fixed deposit creation
-                    int moduleNavigationItemCode = 0;
-                    await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
+                    // Call the service method to audit the fixed deposit
+                    bool isSuccess = await _channelService.AuditFixedDepositAsync(
+                        fixedDepositDTO,
+                        fixedDepositAuthOption,
+                        moduleNavigationItemCode,
+                        GetServiceHeader());
 
-                    TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
-                    return RedirectToAction("Index");
+                    if (isSuccess)
+                    {
+                        // Set success message
+                        TempData["verifySuccess"] = "Fixed deposit has been successfully verified.";
+
+                       
+                        // Redirect to Index action
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        // Handle failure scenario
+                        TempData["verifyError"] = "Failed to verify the fixed deposit.";
+
+                        // Prepare view bags for the view
+                        ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
+
+                        return View(fixedDepositDTO);
+                    }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Log unexpected errors
-                    TempData["ErrorMessage"] = "An unexpected error occurred while processing your request. Please try again.";
-                    return View("Error");
+                    // Handle exceptions
+                    TempData["verifyError"] = "An error occurred while verifying the fixed deposit: " + ex.Message;
+
+                    // Prepare view bags for the view
+                    ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
+
+                    return View(fixedDepositDTO);
                 }
             }
             else
             {
-                // Log validation errors
-                foreach (var error in fixedDepositDTO.ErrorMessages)
-                {
-                }
+                // Handle validation errors
+                TempData["verifyError"] = "Validation failed. Please correct the errors and try again.";
 
-                TempData["ErrorMessage"] = "There were errors in your submission. Please review the form and try again.";
+                // Prepare view bags for the view
+                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
+
                 return View(fixedDepositDTO);
             }
         }
@@ -205,167 +353,234 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-        public async Task<ActionResult> Edit(Guid id)
+        // GET: Terminate Action
+        public async Task<ActionResult> Terminate(Guid id, DateTime? startDate = null, DateTime? endDate = null, string searchText = null)
         {
             await ServeNavigationMenus();
 
-            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+            // Fetch the fixed deposit account
+            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
 
-            return View(accountClosureRequestDTO);
+            // Optionally filter based on the date range and search text
+            if (fixedDepositDTO != null)
+            {
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    if (!(fixedDepositDTO.CreatedDate >= startDate.Value && fixedDepositDTO.MaturityDate <= endDate.Value))
+                    {
+                        fixedDepositDTO = null;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(searchText) && !fixedDepositDTO.ProductDescription.Contains(searchText))
+                {
+                    fixedDepositDTO = null;
+                }
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new[] { fixedDepositDTO }, JsonRequestBehavior.AllowGet);
+            }
+
+            ViewBag.ModuleNavigationItemCode = 123;
+            ViewBag.FixedDeposit = fixedDepositDTO;
+
+            return View(fixedDepositDTO);
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
 
-                return RedirectToAction("Index");
+        [HttpPost]
+        public async Task<ActionResult> Terminate(Guid[] selectedFixedDepositIds, int moduleNavigationItemCode)
+        {
+            if (selectedFixedDepositIds == null || selectedFixedDepositIds.Length == 0)
+            {
+                TempData["ErrorMessage"] = "No fixed deposit selected for termination.";
+                return RedirectToAction("Terminate"); 
+            }
+
+            // Fetch the fixed deposits using the selected IDs
+            var fixedDeposits = new List<FixedDepositDTO>();
+            foreach (var id in selectedFixedDepositIds)
+            {
+                var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
+                if (fixedDepositDTO != null)
+                {
+                    fixedDeposits.Add(fixedDepositDTO);
+                }
+            }
+
+            if (!fixedDeposits.Any())
+            {
+                TempData["ErrorMessage"] = "The selected fixed deposit(s) could not be found.";
+                return RedirectToAction("Terminate");
+            }
+
+            var selectedFixedDepositObservableCollection = new ObservableCollection<FixedDepositDTO>(fixedDeposits);
+
+            bool result = await _channelService.RevokeFixedDepositsAsync(selectedFixedDepositObservableCollection, moduleNavigationItemCode, GetServiceHeader());
+
+            if (result)
+            {
+                TempData["SuccessMessage"] = "The selected fixed deposit(s) were successfully terminated.";
+                return RedirectToAction("Index", "FixedDeposit", new { Area = "FrontOffice" });
             }
             else
             {
-                return View(accountClosureRequestDTO);
+                TempData["ErrorMessage"] = "An error occurred while terminating the selected fixed deposit(s).";
+                return RedirectToAction("Terminate");
             }
         }
 
 
 
-        public async Task<ActionResult> Approval(Guid id)
+
+        public async Task<ActionResult> Liquidation(Guid id, DateTime? startDate = null, DateTime? endDate = null, string searchText = null)
         {
             await ServeNavigationMenus();
 
-            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+            // Fetch the fixed deposit account
+            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
 
-            return View(accountClosureRequestDTO);
+            // Optionally filter based on the date range and search text
+            if (fixedDepositDTO != null)
+            {
+                if (startDate.HasValue && endDate.HasValue)
+                {
+                    if (!(fixedDepositDTO.CreatedDate >= startDate.Value && fixedDepositDTO.MaturityDate <= endDate.Value))
+                    {
+                        fixedDepositDTO = null;
+                    }
+                }
+
+                if (!string.IsNullOrEmpty(searchText) && !fixedDepositDTO.ProductDescription.Contains(searchText))
+                {
+                    fixedDepositDTO = null;
+                }
+            }
+
+            if (Request.IsAjaxRequest())
+            {
+                return Json(new[] { fixedDepositDTO }, JsonRequestBehavior.AllowGet);
+            }
+            ViewBag.ModuleNavigationItemCode = 123;
+
+
+            ViewBag.FixedDeposit = fixedDepositDTO;
+            return View(fixedDepositDTO);
         }
+
+
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approval(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
+        public async Task<ActionResult> Liquidation(Guid[] selectedFixedDepositIds, int moduleNavigationItemCode)
         {
-            int accountClosureApprovalOption = 0;
-
-            if (ModelState.IsValid)
-
+            if (selectedFixedDepositIds == null || selectedFixedDepositIds.Length == 0)
             {
-                await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureApprovalOption, GetServiceHeader());
+                TempData["ErrorMessage"] = "No fixed deposit selected for liquidation.";
+                return RedirectToAction("Liquidation");
+            }
 
-                return RedirectToAction("Index");
-            }
-            else
+            // Fetch the fixed deposits using the selected IDs
+            var fixedDeposits = new List<FixedDepositDTO>();
+            foreach (var id in selectedFixedDepositIds)
             {
-                return View(accountClosureRequestDTO);
+                var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
+                if (fixedDepositDTO != null)
+                {
+                    if (fixedDepositDTO.MaturityDate > DateTime.Now)
+                    {
+                        TempData["ErrorMessage"] = $"The fixed deposit with account number {fixedDepositDTO.CustomerAccountFullAccountNumber} has not yet reached maturity and cannot be liquidated.";
+                        return RedirectToAction("Liquidation");
+                    }
+                    fixedDeposits.Add(fixedDepositDTO);
+                }
             }
+
+            if (!fixedDeposits.Any())
+            {
+                TempData["ErrorMessage"] = "The selected fixed deposit(s) could not be found.";
+                return RedirectToAction("Liquidation");
+            }
+
+            foreach (var fixedDepositDTO in fixedDeposits)
+            {
+                bool result = await _channelService.PayFixedDepositAsync(fixedDepositDTO, moduleNavigationItemCode, GetServiceHeader());
+
+                if (!result)
+                {
+                    TempData["ErrorMessage"] = $"An error occurred while terminating the fixed deposit with ID {fixedDepositDTO.Id}.";
+                    return RedirectToAction("Liquidation");
+                }
+            }
+
+            TempData["SuccessMessage"] = "The selected fixed deposit(s) were successfully terminated.";
+            return RedirectToAction("Index", "FixedDeposit", new { Area = "FrontOffice" });
         }
 
 
 
 
 
-        public async Task<ActionResult> verify(Guid id)
+
+        public async Task<ActionResult> Catalogue()
         {
             await ServeNavigationMenus();
-
-            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
-            return View(accountClosureRequestDTO);
+            return View();
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> verify(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
+        public async Task<JsonResult> Catalogue(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            int AuditAccountClosureRequestAsync = 0;
+            int totalRecordCount = 0;
 
-            if (ModelState.IsValid)
+            int searchRecordCount = 0;
 
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindFixedDepositsByFilterInPageAsync(
+                   jQueryDataTablesModel.sSearch,
+                   jQueryDataTablesModel.iDisplayStart,
+                   jQueryDataTablesModel.iDisplayLength,
+                   includeProductDescription: true,
+                   GetServiceHeader()
+               );
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, AuditAccountClosureRequestAsync, GetServiceHeader());
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                return RedirectToAction("Index");
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
+            else return this.DataTablesJson(items: new List<FixedDepositDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
-        public async Task<ActionResult> Search(Guid? id)
-        {
-            //string Remarks = "";
-            await ServeNavigationMenus();
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            FixedDepositDTO fixedDepositDTO = new FixedDepositDTO();
-
-            if (customer != null)
-            {
-                fixedDepositDTO.CustomerAccountCustomerId = customer.Id;
-                fixedDepositDTO.CustomerAccountId = customer.Id;
-                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerIndividualFirstName;
-                fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
-                fixedDepositDTO.CustomerAccountCustomerSerialNumber = customer.CustomerSerialNumber;
-                fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
-            }
-
-            var fixedDepositTypeDTO = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
-
-            FixedDepositTypeDTO fixedDepositTypeDTOs = new FixedDepositTypeDTO();
-
-            if (fixedDepositTypeDTO != null)
-            {
-                fixedDepositTypeDTOs.Id = fixedDepositTypeDTO.Id;
-                fixedDepositTypeDTOs.Description = fixedDepositTypeDTO.Description;
-                fixedDepositTypeDTOs.Months = fixedDepositTypeDTO.Months;
-                fixedDepositTypeDTOs.IsLocked = fixedDepositTypeDTO.IsLocked;
-                fixedDepositTypeDTOs.CreatedDate = fixedDepositTypeDTO.CreatedDate;
-            }
-
-            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
-            ViewBag.customertypeSelectList = GetCustomerTypeSelectList(string.Empty);
-
-            if (Session["Description"] != null)
-            {
-                fixedDepositTypeDTOs.Description = Session["Description"].ToString();
-            }
-            if (Session["Remarks"] != null)
-            {
-                fixedDepositDTO.Remarks = Session["Remarks"].ToString();
-            }
-            if (Session["CustomerAccountCustomerIndividualFirstName"] != null)
-            {
-                fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = Session["CustomerAccountCustomerIndividualFirstName"].ToString();
-            }
-            //
 
 
-            //TempData["WithdrawalNotificationDTOs"] = withdrawalNotificationDTO;
-            return View("Create", fixedDepositTypeDTOs);
-        }
 
-        [HttpPost]
-        public ActionResult AssignText(string Remarks, string Description)
-        {
 
-            Session["Description"] = Description;
-            return null;
-        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     }
 }
+

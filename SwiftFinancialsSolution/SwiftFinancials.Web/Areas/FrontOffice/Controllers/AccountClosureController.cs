@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
@@ -11,6 +10,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System.Diagnostics;
+
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -25,37 +25,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
             var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(
-                jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart,
-                jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader()
-            );
+                            jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart,
+                            jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader()
+                        );
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-            var sortedPageCollection = pageCollectionInfo.PageCollection
-                .OrderByDescending(acct => acct.CreatedDate)
-                .ToList();
 
-            var totalRecordCount = pageCollectionInfo.ItemsCount;
-            var searchRecordCount = string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch)
-                ? totalRecordCount
-                : sortedPageCollection.Count;
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
 
-            return this.DataTablesJson(
-                items: sortedPageCollection,
-                totalRecords: totalRecordCount,
-                totalDisplayRecords: searchRecordCount,
-                sEcho: jQueryDataTablesModel.sEcho
-            );
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
+
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
             return View(accountClosureRequestDTO);
         }
-
-
-
 
         // GET: FrontOffice/AccountClosureRequest/Create
         public async Task<ActionResult> Create(Guid? id)
@@ -66,9 +68,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var accountClosureRequestDTO = new AccountClosureRequestDTO();
 
-            if (id != null && id != Guid.Empty && Guid.TryParse(id.ToString(), out Guid parseId))
+            if (id.HasValue && id != Guid.Empty)
             {
-                // Placeholder for customer details (replace this with actual data as needed)
+                var parseId = id.Value;
+
                 // Retrieve customer account details
                 var customer = await _channelService.FindCustomerAccountAsync(
                     parseId,
@@ -81,30 +84,80 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (customer != null)
                 {
-                    // Populate the DTO with placeholder customer details
-                   // accountClosureRequestDTO.CustomerAccountFullAccountNumber = customer.FullAccountNumber;
+                    // Populate the DTO with customer details
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                     accountClosureRequestDTO.CustomerAccountRemarks = customer.Remarks;
                     accountClosureRequestDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.TypeDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerNonIndividualRegistrationNumber = customer.RecordStatusDescription;
-                    accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                     accountClosureRequestDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
                     accountClosureRequestDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
                     accountClosureRequestDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                    accountClosureRequestDTO.CustomerAccountCustomerReference1 = customer.FullAccountNumber;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
-                    accountClosureRequestDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;                   
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerId = customer.CustomerId;
                     accountClosureRequestDTO.BranchId = customer.BranchId;
                     accountClosureRequestDTO.CustomerAccountId = customer.Id;
-                }
 
+                    
+                    // Fetch loan accounts for the customer based on customer ID and product type ID
+                    var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
+                        customer.CustomerId, 
+                        customer.CustomerAccountTypeTargetProductId, 
+                        includeBalances: true, 
+                        includeProductDescription: true,
+                        includeInterestBalanceForLoanAccounts: true,
+                        considerMaturityPeriodForInvestmentAccounts: true,
+                        serviceHeader: GetServiceHeader() 
+                    );
+
+                    var investmentAccounts = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(
+                        productCode: 12345, // Example product code for Investment Accounts
+                        text: string.Empty,
+                        customerFilter: 1 /* Customer Filter */,
+                        pageIndex: 0,
+                        pageSize: 100, // Adjust page size as needed
+                        includeBalances: true,
+                        includeProductDescription: true,
+                        includeInterestBalanceForLoanAccounts: false,
+                        considerMaturityPeriodForInvestmentAccounts: true,
+                        serviceHeader: GetServiceHeader()
+                    );
+
+                    var loansGuaranteed = await _channelService.FindCustomerAccountsByFilterInPageAsync(
+                        text: "Guaranteed", // Filter text to match guaranteed loans
+                        customerFilter: 2, // Example value for guaranteed loans
+                        pageIndex: 0,
+                        pageSize: 10, // Adjust page size as needed
+                        includeBalances: true,
+                        includeProductDescription: true,
+                        includeInterestBalanceForLoanAccounts: false,
+                        considerMaturityPeriodForInvestmentAccounts: false,
+                        serviceHeader: GetServiceHeader()
+                    );
+
+
+                    // Check for null and set ViewBag.LoanAccounts
+                    var loanAccountsList = loanAccounts.Take(3).ToList();
+                    var investmentAccountsList = investmentAccounts;
+                    var loansGuaranteedList = loansGuaranteed;
+
+                    // Pass the limited list to the view
+                    ViewBag.LoanAccounts = loanAccountsList;
+                    ViewBag.InvestmentAccounts = investmentAccountsList;
+                    ViewBag.LoansGuaranteed = loansGuaranteedList;
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Customer account details could not be found.";
+                    return RedirectToAction("Index");
+                }
             }
 
             return View(accountClosureRequestDTO);
         }
+
 
 
         [HttpPost]
@@ -145,8 +198,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
-
-
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -159,14 +210,48 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            if (!accountClosureRequestDTO.HasErrors)
+            if (ModelState.IsValid)
             {
-                await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
-                return RedirectToAction("Index");
+                try
+                {
+                    // Assuming you need to determine the audit option here. Replace with actual logic as needed.
+                    int accountClosureAuditOption = GetAuditOption(accountClosureRequestDTO);
+
+                    // Call the AuditAccountClosureRequestAsync method
+                    bool auditResult = await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureAuditOption, GetServiceHeader());
+
+                    if (auditResult)
+                    {
+                        // Optionally, you might want to update the account closure request status or details here
+                        // await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
+
+                        return RedirectToAction("Index");
+                    }
+                    else
+                    {
+                        // Handle the case where the audit operation failed
+                        ModelState.AddModelError("", "Failed to audit account closure request.");
+                    }
+                }
+                catch (Exception)
+                {
+                    // Log the exception (ex) if necessary
+                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                }
             }
+
             PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
+
+
+        // Method to determine the audit option (provide your implementation)
+        private int GetAuditOption(AccountClosureRequestDTO dto)
+        {
+            // Your logic to determine the audit option
+            return 0; // Example placeholder value
+        }
+
 
         public async Task<ActionResult> Approval(Guid id)
         {
@@ -212,13 +297,16 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(accountClosureRequestDTO);
         }
 
-
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
             PopulateViewBags(accountClosureRequestDTO);
+
+
             return View(accountClosureRequestDTO);
+
+      
         }
 
         [HttpPost]
@@ -231,7 +319,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 try
                 {
-
                     await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestAsync, GetServiceHeader());
 
                     // Set a success message in TempData
@@ -258,6 +345,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(accountClosureRequestDTO);
         }
 
+        // Action to handle Customer Look Up
+        public async Task<JsonResult> CustomerLookUp(Guid customerId)
+        {
+            if (customerId == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid customer ID" }, JsonRequestBehavior.AllowGet);
+            }
+
+            var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customerId, true, true, true, true, GetServiceHeader());
+
+            if (CustomerAccounts != null)
+            {
+                ViewBag.CustomerAccounts = CustomerAccounts;
+                return Json(new { success = true, accounts = CustomerAccounts }, JsonRequestBehavior.AllowGet);
+            }
+            else
+            {
+                return Json(new { success = false, message = "The selected customer has no associated/attached accounts" }, JsonRequestBehavior.AllowGet);
+            }
+        }
 
         private void PopulateViewBags(AccountClosureRequestDTO accountClosureRequestDTO)
         {
@@ -276,6 +383,4 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return dto;
         }
     }
-
 }
-

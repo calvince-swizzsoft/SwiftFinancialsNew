@@ -47,11 +47,13 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Customers", Icon="fa fa-users", ControllerName="Customer", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 3},
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Educational Venues", Icon="fa fa-cog", ControllerName="EducationVenue", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 4},
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Withdrawal Notifications", Icon="fa fa-cog", ControllerName="WithdrawalNotification", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 5},
-                     new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Dispatch", Icon="fa fa-bars", Code = 0x00005208 + 6},
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Dispatch", Icon="fa fa-bars", Code = 0x00005208 + 6},
 
                 new NavigationMenu{AreaCode = 0x00005208 + 6, IsArea = false, Description = "Multi-Destination", Icon="fa fa-cog", ControllerName="MultiDestination", ActionName="Create", AreaName = "Registry", Code = 0x00005208 + 7},
                 new NavigationMenu{AreaCode = 0x00005208 + 6, IsArea = false, Description = "Single-Destination ", Icon="fa fa-cog", ControllerName="SingleDestination ", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 8},
                 new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Register education venue", Icon="fa fa-cog", ControllerName="Registereducationvenue", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 9},
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "ConditionalLending", Icon="fa fa-book", ControllerName="ConditionalLending", ActionName="Index", AreaName = "Registry", Code = 0x00005208 + 10},
+                new NavigationMenu{AreaCode = 0x00005208, IsArea = false, Description = "Station Linkage", Icon="fa fa-book", ControllerName="StationLinkage", ActionName="Create", AreaName = "Registry", Code = 0x00005208 + 11},
 
                 //Human Resource - area 22,000
                 new NavigationMenu{Description = "Human Resource", IsArea = true, Code = 0x000055F0},

@@ -17,7 +17,7 @@ using System.Web.Mvc;
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
     [RoleBasedAccessControl]
-    public class ConditionalLendingController : MasterController
+    public class StationLinkageController : MasterController
     {
         public async Task<ActionResult> Index()
         {
@@ -32,6 +32,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
+
+
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
@@ -54,14 +56,30 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            var ConditionalLendingDTO = await _channelService.FindConditionalLendingEntriesByConditionalLendingIdAsync(id, GetServiceHeader());
+            var StationDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
 
-            return View(ConditionalLendingDTO);
+            return View(StationDTO);
         }
 
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id,StationBindingModel station)
         {
             await ServeNavigationMenus();
+
+            ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+            // await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(parseId,int[], false, false, false, false, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
+            if (customer!=null)
+            {
+                station.CustomerDTO = customer;
+
+            }
 
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
@@ -80,33 +98,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.savings = savingsProducts;
             ViewBag.debit = debitTypes;
 
-            return View();
+            return View(station);
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(ConditionalLendingBindingModel ConditionalLendingBindingModel)
+        public async Task<ActionResult> Create(StationBindingModel StationBindingModel)
         {
             var registrationdate = Request["registrationdate"];
             var birthdate = Request["birthdate"];
             var employmentdate = Request["employmentdate"];
-
-            //customerBindingModel.IndividualBirthDate = DateTime.ParseExact((Request["birthdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-            //customerBindingModel.RegistrationDate = DateTime.ParseExact((Request["registrationdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-            //customerBindingModel.IndividualEmploymentDate = DateTime.ParseExact((Request["employmentdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            //if (userDTO.BranchId != null)
-            //{
-
-            //    customerBindingModel.BranchId = (Guid)userDTO.BranchId;
-
-            //}
-
-
-            ConditionalLendingBindingModel.ValidateAll();
+            StationBindingModel.ValidateAll();
 
             //cheat
             var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
@@ -122,38 +125,33 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             mandatoryProducts.InvestmentProductCollection = investmentProducts.ToList();
             mandatoryProducts.SavingsProductCollection = savingsProducts.ToList();
 
-            if (!ConditionalLendingBindingModel.HasErrors)
+            if (!StationBindingModel.HasErrors)
             {
 
-                var result = await _channelService.AddCustomerAsync(ConditionalLendingBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts, 1, GetServiceHeader());
-                if (result.ErrorMessageResult != null)
-                {
-                    TempData["Error"] = result.ErrorMessageResult + result.ErrorMessages;
+                 await _channelService.UpdateCustomerStationAsync(StationBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
+              
+                    TempData["Successs"] = "update Successs";
                     await ServeNavigationMenus();
-                    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(ConditionalLendingBindingModel.LoanProductId.ToString());
-                    ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(ConditionalLendingBindingModel.LoanProductDescription.ToString());
-                    ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(ConditionalLendingBindingModel.Description.ToString());
-                    ViewBag.SalutationSelectList = GetSalutationSelectList(ConditionalLendingBindingModel.IsLocked.ToString());
-                    ViewBag.GenderSelectList = GetGenderSelectList(ConditionalLendingBindingModel.CreatedBy.ToString());
-                    ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(ConditionalLendingBindingModel.CreatedDate.ToString());
-                    
-                    return View("create", ConditionalLendingBindingModel);
-                }
-                TempData["SuccessMessage"] = "Successfully Created New Conditional Lending " + ConditionalLendingBindingModel;
+                    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(StationBindingModel.Description.ToString());
+                    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(StationBindingModel.ZoneId.ToString());
+                    ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(StationBindingModel.ZoneDivisionDescription.ToString());
+                    ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(StationBindingModel.ZoneDivisionEmployerDescription.ToString());
+
+                    return View("create", StationBindingModel);
+                
+                TempData["Successs"] = "Successfully Created New Station  " + StationBindingModel;
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = ConditionalLendingBindingModel.ErrorMessages;
-                TempData["Error2"] = ConditionalLendingBindingModel.ErrorMessages;
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(ConditionalLendingBindingModel.LoanProductId.ToString());
-                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(ConditionalLendingBindingModel.LoanProductDescription.ToString());
-                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(ConditionalLendingBindingModel.Description.ToString());
-                ViewBag.SalutationSelectList = GetSalutationSelectList(ConditionalLendingBindingModel.IsLocked.ToString());
-                ViewBag.GenderSelectList = GetGenderSelectList(ConditionalLendingBindingModel.CreatedBy.ToString());
-                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(ConditionalLendingBindingModel.CreatedDate.ToString());
+                var errorMessages = StationBindingModel.ErrorMessages;
+                TempData["Error2"] = StationBindingModel.ErrorMessages;
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(StationBindingModel.Description.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(StationBindingModel.ZoneId.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(StationBindingModel.ZoneDivisionDescription.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(StationBindingModel.ZoneDivisionEmployerDescription.ToString());
 
-                return View("Create", ConditionalLendingBindingModel);
+                return View("Create", StationBindingModel);
             }
         }
 
@@ -163,7 +161,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
-            var ConditionalLendingDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
             ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
@@ -174,33 +172,37 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
             ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
             ViewBag.recordstatus = GetRecordStatusSelectList(string.Empty);
-            return View(ConditionalLendingDTO.MapTo<CustomerBindingModel>());
+            return View(customerDTO.MapTo<CustomerBindingModel>());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, ConditionalLendingBindingModel ConditionalLendingBindingModel)
+        public async Task<ActionResult> Edit(Guid id, CustomerBindingModel customerBindingModel)
         {
-            ConditionalLendingBindingModel.ValidateAll();
+            customerBindingModel.ValidateAll();
 
-            if (!ConditionalLendingBindingModel.HasErrors)
+            if (!customerBindingModel.HasErrors)
             {
-                await _channelService.UpdateCustomerAsync(ConditionalLendingBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
-                TempData["SuccessMessage"] = $"Successfully Edited {ConditionalLendingBindingModel} ConditionalLending {ConditionalLendingBindingModel.Id}";
-                ViewBag.recordstatus = GetRecordStatusSelectList(ConditionalLendingBindingModel.ToString());
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(ConditionalLendingBindingModel.LoanProductId.ToString());
+                await _channelService.UpdateCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), GetServiceHeader());
+                TempData["SuccessMessage"] = $"Successfully Edited {customerBindingModel.RecordStatusDescription} Customer {customerBindingModel.FullName}";
+                ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
                 return RedirectToAction("Index");
             }
             else
             {
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(ConditionalLendingBindingModel.LoanProductId.ToString());
-                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(ConditionalLendingBindingModel.LoanProductDescription.ToString());
-                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(ConditionalLendingBindingModel.Description.ToString());
-                ViewBag.SalutationSelectList = GetSalutationSelectList(ConditionalLendingBindingModel.IsLocked.ToString());
-                ViewBag.GenderSelectList = GetGenderSelectList(ConditionalLendingBindingModel.CreatedBy.ToString());
-                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(ConditionalLendingBindingModel.CreatedDate.ToString());
+                ViewBag.recordstatus = GetRecordStatusSelectList(customerBindingModel.RecordStatus.ToString());
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Type.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
+                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
+                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
+                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
+                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
 
-                return View(ConditionalLendingBindingModel);
+                return View(customerBindingModel);
             }
         }
 

@@ -453,13 +453,16 @@
     <Compile Include="Areas\Registry\Controllers\AdministrativeDivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\ConditionalLendingController.cs" />
     <Compile Include="Areas\Registry\Controllers\CustomerController.cs" />
+    <Compile Include="Areas\Registry\Controllers\DeviceViewModel.cs" />
     <Compile Include="Areas\Registry\Controllers\DivisionController.cs" />
     <Compile Include="Areas\Registry\Controllers\EducationVenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\NextofKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
+    <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
@@ -1139,8 +1142,14 @@
     <Content Include="Areas\FrontOffice\Views\EndOfDay\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\SundryPayments\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
-    <Content Include="Areas\Registry\Views\Customer\StationLinkage.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
+<<<<<<< HEAD
+    <Content Include="Areas\FrontOffice\Views\FixedDeposit\Verify.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FixedDeposit\Terminate.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FixedDeposit\Liquidation.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\FixedDeposit\Catalogue.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Details.cshtml" />
+=======
     <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
@@ -1151,6 +1160,11 @@
     <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
+    <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
+    <Content Include="Areas\Registry\Views\NextofKin\Create.cshtml" />
+>>>>>>> c27cec8bb4de1f0ce4e1cbbaccd58a40f7ef3110
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

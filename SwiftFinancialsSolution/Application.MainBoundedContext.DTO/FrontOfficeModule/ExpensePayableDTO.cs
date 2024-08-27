@@ -61,6 +61,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         [DataMember]
         [Display(Name = "G/L Accounts")]
+
         public string ChartOfAccounts { get; set; }
 
     
@@ -130,9 +131,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Total Value")]
         public decimal TotalValue { get; set; }
 
-        [DataMember]
+        [Required(ErrorMessage = "Value Date is required.")]
         [Display(Name = "Value Date")]
         public DateTime ValueDate { get; set; }
+
 
         [DataMember]
         [Display(Name = "Remarks")]
@@ -194,6 +196,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public string ErrorMessageResult;
         public List<ExpensePayableEntryDTO> ExpensePayableEntries { get; set; }
         public ExpensePayableEntryDTO ExpensePayableEntry { get; set; }
+        public string errormassage;
 
     }
 

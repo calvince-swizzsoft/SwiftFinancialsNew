@@ -99,7 +99,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateDebitTypesByCompanyIdAsync(Guid companyId, ObservableCollection<DebitTypeDTO> debitTypes, ServiceHeader serviceHeader = null);
 
         Task<ProductCollectionInfo> FindAttachedProductsByCompanyIdAsync(Guid companyId, ServiceHeader serviceHeader = null);
-
+        Task FindCustomersByStationIdAndFilterInPageAsync(Func<StationDTO> mapTo);
         Task<bool> UpdateAttachedProductsByCompanyIdAsync(Guid companyId, ProductCollectionInfo attachedProductsTuple, ServiceHeader serviceHeader = null);
 
         Task<int> GetCompaniesCountAsync(ServiceHeader serviceHeader);
