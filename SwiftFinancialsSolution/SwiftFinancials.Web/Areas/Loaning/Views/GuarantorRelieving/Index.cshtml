@@ -87,7 +87,7 @@
                             <strong>Success !</strong> @TempData["Edit"]
                         </div>
                     }
-                    
+
                     @if (TempData["AlertMessage"] != null)
                     {
                         <div class="alert alert-success">
@@ -318,93 +318,4 @@
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
-
-
-
-    <script>
-    $(document).ready(function () {
-        $('#loanCasesModal').on('shown.bs.modal', function () {
-            if (!$.fn.DataTable.isDataTable('#LoanCasesExportGrid')) {
-                $('#LoanCasesExportGrid').DataTable({
-                    "sPaginationType": "full_numbers",
-                    "bProcessing": true,
-                    "bServerSide": true,
-                    "sAjaxSource": "@(Url.Action("GetAllLoanCases", "LoanRegistration", new { Area = "Loaning" }))",
-                    "sServerMethod": "POST",
-                    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                        var h = ("0" + createdDate.getHours()).slice(-2);
-                        var m = ("0" + createdDate.getMinutes()).slice(-2);
-                        var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                        var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                        aData.CreatedDate = dt_Created;
-
-                        $('td:eq(8)', nRow).html(dt_Created);
-                    },
-
-                    "aoColumns": [
-                        { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "5%" },
-                        { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "10%" },
-                        { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "5%" },
-                        { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "7%" },
-                        { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "7%" },
-                        { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "7%" },
-                        { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "7%" },
-                        { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
-                        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" }
-                    ],
-
-                    "aaSorting": [[0, "desc"]],
-                    "dom": "Bfrtip",
-                    "buttons": [
-                        {
-                        extend: 'pdf',
-                        className: 'btn btn-light rounded-0',
-                        text: '<i class="fa fa-file-pdf-o"></i> PDF',
-                        customize: function (win) {
-                        var imgSrc = '@Url.Content("~/Images/MIA.JPG")'; // Generate absolute URL
-
-                        $(win.document.body)
-                        .prepend(
-                        `<center><img src="${imgSrc}" style="text-align:center; margin-top:20px; width: 250px;"></center>`)
-                         .css('font-size', '10pt')
-                         .prepend(
-                         `<h1 style="text-align:center;">Swizzsoft Ltd.</h1>`
-                             );
-                           }
-                        },
-
-                        {
-                            extend: 'print',
-                            className: 'btn btn-light rounded-0',
-                            text: '<i class="fa fa-print"></i> Print',
-                            customize: function (win) {
-                                var imgSrc = '@Url.Content("~/Images/MIA.JPG")'; // Generate absolute URL
-
-                                $(win.document.body)
-                                    .prepend(
-                                        `<center><img src="${imgSrc}" style="text-align:center; margin-top:20px; width: 250px;"></center>`
-                                    )
-                                    .css('font-size', '10pt')
-                                    .prepend(
-                                        `<h1 style="text-align:center;">Swizzsoft Ltd.</h1>`
-                                    );
-                            }
-                        }
-                    ],
-
-                    "initComplete": function (settings, json) {
-                        var info = this.api().page.info();
-                        var numEntries = `Showing ${info.start + 1} to ${info.end} of ${info.recordsTotal} entries`;
-                        $(this).append(`<div class="dataTables_info">${numEntries}</div>`);
-                    }
-                });
-            }
-        });
-    });
-    </script>
-
 }

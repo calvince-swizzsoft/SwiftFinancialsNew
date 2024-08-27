@@ -271,7 +271,25 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntries { get; set; }
         [DataMember]
         public CreditBatchEntryDTO CreditBatchEntry { get; set; }
-        
 
+
+
+
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Credit Batch Auth Option")]
+        public byte CreditAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Credit Batch Auth Option")]
+        public string BatchAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)CreditAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)CreditAuthOption) : string.Empty;
+            }
+        }
     }
 }

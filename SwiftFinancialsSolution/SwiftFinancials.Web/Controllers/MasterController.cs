@@ -88,20 +88,6 @@ namespace SwiftFinancials.Web.Controllers
             set { channelService = value; }
         }
 
-        //private ICashDepositRequestAppService cashDepositRequestAppService;
-
-        //public ICashDepositRequestAppService _cashDepositRequestAppService
-        //{
-        //    get
-        //    {
-        //        if (cashDepositRequestAppService == null)
-        //        {
-        //            cashDepositRequestAppService = DependencyResolver.Current.GetService<ICashDepositRequestAppService>();
-        //        }
-        //        return cashDepositRequestAppService;
-        //    }
-        //    set { cashDepositRequestAppService = value; }
-        //}
 
         private ApplicationRoleManager applicationRoleManager;
         public ApplicationRoleManager _applicationRoleManager
@@ -1715,6 +1701,24 @@ namespace SwiftFinancials.Web.Controllers
         
         [NonAction]
         protected List<SelectListItem> GetImageSourceTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> imageSource = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ImageSource)).Cast<ImageSource>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            imageSource.AddRange(items);
+
+            return imageSource;
+        }
+        
+        
+        [NonAction]
+        protected List<SelectListItem> GetDebitBatchesAsync(string selectedValue)
         {
             List<SelectListItem> imageSource = new List<SelectListItem>();
 

@@ -92,6 +92,40 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.Reference = loaneeCustomer.Reference;
 
                 Session["selectedLoanCase"] = loanCaseDTO;
+
+                // Loan Accounts
+                int[] array = new int[] { 2 };
+                var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(loaneeCustomer.CustomerId, array, true, true, true, true, GetServiceHeader());
+                if (loanAccounts != null)
+                {
+
+                }
+
+
+                // Standing Orders
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(Id, true, true, true, true, GetServiceHeader());
+
+                foreach (var accounts in customerAccounts)
+                {
+                    customerAccountId.Add(accounts.Id);
+                }
+
+                List<StandingOrderDTO> allStandingOrders = new List<StandingOrderDTO>();
+
+                // Iterate through each account ID and collect standing orders
+                foreach (var Ids in customerAccountId)
+                {
+                    var standingOrders = await _channelService.FindStandingOrdersByBeneficiaryCustomerAccountIdAsync(Ids, true, GetServiceHeader());
+                    if (standingOrders != null && standingOrders.Any())
+                    {
+                        allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
+                    }
+                }
+                ViewBag.StandingOrders = allStandingOrders;
+
+
+
             }
 
             loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync();
@@ -126,7 +160,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!loanDTO.HasErrors)
             {
-                await _channelService.AppraiseLoanCaseAsync(loanDTO, loanCaseDTO.LoanAppraisalOption, 1, GetServiceHeader());
+                var appraiseLoanSuccess = await _channelService.AppraiseLoanCaseAsync(loanDTO, loanCaseDTO.LoanAppraisalOption, 1, GetServiceHeader());
 
                 TempData["approve"] = "Loan Appraisal Successful";
 

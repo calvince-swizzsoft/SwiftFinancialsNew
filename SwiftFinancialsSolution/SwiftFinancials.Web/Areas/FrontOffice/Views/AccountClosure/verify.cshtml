@@ -38,9 +38,10 @@
                             </div>
 
                             <div class="col-md-3">
-                                @Html.LabelFor(model => model.StatusDescription)
-                                @Html.EditorFor(model => model.StatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                                @Html.LabelFor(model => model.CreatedBy)
+                                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
                             </div>
+
                             <div class="col-md-3">
                                 @Html.LabelFor(model => model.CustomerAccountRemarks)
                                 @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
@@ -86,6 +87,31 @@
                             <div class="col-md-3">
                                 @Html.LabelFor(model => model.Reason)
                                 @Html.EditorFor(model => model.Reason, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+
+                            
+                        </div>
+                        <div class="form-group row">
+
+
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.AuditRemarks)
+                                @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+
+                            
+
+                            <div class="col-md-3">
+                                @Html.LabelFor(model => model.CreatedDate)
+                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Text..." } })
+                            </div>
+
+                            <div class="col-md-4">
+                                <label for="closureAction">Closure Action</label>
+                                <select class="form-control" id="closureAction" name="closureAction">
+                                    <option value="Verify">Verify</option>
+                                    <option value="Defer">Defer</option>
+                                </select>
                             </div>
                         </div>
 
@@ -153,96 +179,85 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="closureAction">Closure Action</label>
-                            <select class="form-control" id="closureAction" name="closureAction">
-                                <option value="Verify">Verify</option>
-                                <option value="Defer">Defer</option>
-                            </select>
-                        </div>
+                        
+                        <br />
+                        <hr />
 
-                        <!-- Tabs for Loan Accounts, Investment Accounts, and Loans Guaranteed -->
-                        <ul class="nav nav-tabs">
-                            <li class="nav-item">
-                                <a class="nav-link active" data-toggle="tab" href="#loanAccounts">Loan Accounts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#investmentAccounts">Investment Accounts</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" data-toggle="tab" href="#loansGuaranteed">Loans Guaranteed</a>
-                            </li>
-                        </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="loanAccounts">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Branch</th>
-                                                <th>Status</th>
-                                                <th>Full Account Number</th>
-                                                <th>Product Name</th>
-                                                <th>Customer Name</th>
-                                                <th>Account Number</th>
-                                                <th>Membership Number</th>
-                                                <th>Personal File Number</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Loan Accounts rows go here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="investmentAccounts">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Branch</th>
-                                                <th>Status</th>
-                                                <th>Full Account Number</th>
-                                                <th>Product Name</th>
-                                                <th>Customer Name</th>
-                                                <th>Account Number</th>
-                                                <th>Membership Number</th>
-                                                <th>Personal File Number</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Investment Accounts rows go here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="tab-pane fade" id="loansGuaranteed">
-                                <div class="table-responsive">
-                                    <table class="table table-bordered">
-                                        <thead>
-                                            <tr>
-                                                <th>Branch</th>
-                                                <th>Status</th>
-                                                <th>Full Account Number</th>
-                                                <th>Product Name</th>
-                                                <th>Customer Name</th>
-                                                <th>Account Number</th>
-                                                <th>Membership Number</th>
-                                                <th>Personal File Number</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Loans Guaranteed rows go here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
+
+                        <!--<ul class="nav nav-tabs" id="loanAccountsTab">
+            <li class="nav-item">
+                <a class="nav-link active" href="#loanAccounts" data-toggle="tab">Loan Accounts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#investmentAccounts" data-toggle="tab">Investment Accounts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#loansGuaranteed" data-toggle="tab">Loans Guaranteed</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">-->
+                        <!-- Loan Accounts Tab Content -->
+                        <!--<div id="loanAccounts" class="tab-pane fade show active">
+                <h3>Customer Loan Accounts</h3>
+
+                @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
+                {
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Full Account Number</th>
+                                <th>Status</th>
+                                <th>Remarks</th>
+                                <th>Product Code</th>
+                                <th>Product Name</th>
+                                <th>Section</th>
+                                <th>Branch</th>
+                                <th>Book Balance</th>
+                                <th>Principal Balance</th>
+                                <th>Interest Balance</th>
+                                <th>Record Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var levySplit in ViewBag.LoanAccounts)
+                            {
+                                <tr>
+                                    <td>@levySplit.FullAccountNumber</td>
+                                    <td>@levySplit.StatusDescription</td>
+                                    <td>@levySplit.Remarks</td>
+                                    <td>@levySplit.CustomerAccountTypeTargetProductCode</td>
+                                    <td>@levySplit.CustomerAccountTypeTargetProductDescription</td>
+                                    <td>@levySplit.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
+                                    <td>@levySplit.BranchDescription</td>
+                                    <td>@levySplit.BookBalance</td>
+                                    <td>@levySplit.PrincipalBalance</td>
+                                    <td>@levySplit.InterestBalance</td>
+                                    <td>@levySplit.RecordStatus</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p>No loan accounts found for this customer.</p>
+                }
+            </div>
+
+
+
+
+
+        </div>-->
+
+
+
+
 
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <button type="submit" class="btn btn-primary btn-md float-right">Verify</button>
-                                <button type="button" class="btn btn-secondary btn-md float-right mr-2" id="resetButton">Reset</button>
                             </div>
                         </div>
                     }

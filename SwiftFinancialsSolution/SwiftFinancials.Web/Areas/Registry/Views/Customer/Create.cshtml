@@ -704,6 +704,8 @@
             </div>
         </div>
     </div>
+</div>
+    </div>
 
 
 
@@ -730,6 +732,26 @@
         </div>
     </div>
 
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
 
     @section Styles{
         @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -752,31 +774,31 @@
         @Styles.Render("~/plugins/duallistStyles")
     }
 
-    @section Scripts{
-        @Scripts.Render("~/plugins/wizardSteps")
-        @Scripts.Render("~/plugins/validate")
-        @Scripts.Render("~/plugins/typehead")
-        @Scripts.Render("~/plugins/dataTables")
-        @Scripts.Render("~/plugins/iCheck")
-        @Scripts.Render("~/plugins/dataPicker")
-        @Scripts.Render("~/plugins/ionRange")
-        @Scripts.Render("~/plugins/nouiSlider")
-        @Scripts.Render("~/plugins/jasnyBootstrap")
-        @Scripts.Render("~/plugins/switchery")
-        @Scripts.Render("~/plugins/chosen")
-        @Scripts.Render("~/plugins/knob")
-        @Scripts.Render("~/plugins/imagecropper")
-        @Scripts.Render("~/plugins/colorpicker")
-        @Scripts.Render("~/plugins/clockpicker")
-        @Scripts.Render("~/plugins/dateRange")
-        @Scripts.Render("~/plugins/select2")
-        @Scripts.Render("~/plugins/touchSpin")
-        @Scripts.Render("~/plugins/tagInputs")
-        @Scripts.Render("~/plugins/duallist")
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
-        <link href="~/Scripts/css/CaptureSpecimenForm.css" rel="stylesheet" />
-        <script src="~/Scripts/js/CaptureSpecimenDetails.js"></script>
-        <script>
+    <link href="~/Scripts/css/CaptureSpecimenForm.css" rel="stylesheet" />
+    <script src="~/Scripts/js/CaptureSpecimenDetails.js"></script>
+    <script>
         $(document).ready(function () {
 
 
@@ -906,3 +928,6 @@
         });
         </script>
     }
+
+    </script>
+}

@@ -1,11 +1,46 @@
 ﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
 
 @{
-    ViewBag.Title = "Add Guarantor";
+    ViewBag.Title = "Attach Guarantor";
 }
 
 <!-- _Layout.cshtml or individual views -->
 <link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
+
+
+<style>
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
@@ -50,11 +85,34 @@
                     </div>
                 }
 
+                @if (TempData["ErrorMsg"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Attempt Failed !</strong> @TempData["ErrorMsg"]
+                    </div>
+                }
+
+
+                @if (TempData["failedErrorMsg"] != null)
+                {
+                    <div class="alert alert-danger">
+                        <strong>Failed !</strong> @TempData["failedErrorMsg"]
+                    </div>
+                }
+
+
+                @if (TempData["AlertMessage"] != null)
+                {
+                    <div class="alert alert-success">
+                        <strong>Success !</strong> @TempData["AlertMessage"]
+                    </div>
+                }
+
+
                 <div class="ibox-content">
                     @using (Html.BeginForm("Create", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-                        @*@Html.ValidationSummary(true, "", new { @class = "text-danger" })*@
                         <fieldset>
                             <h3>Loanee Details</h3>
 
@@ -119,6 +177,80 @@
     }
     })
                                         @Html.ValidationMessageFor(model => model.LoanCase.AmountApplied, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCase.SavingsProductDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanCase.SavingsProductId)
+                                        @Html.EditorFor(model => model.LoanCase.SavingsProductDescription, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @id = "CustomerReference1",
+                                                @class = "form-control required",
+                                                @placeholder = "Kshs.0.00",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.LoanCase.SavingsProductDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCase.CustomerStationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanCase.CustomerStationZoneDivisionEmployerDescription)
+                                        @Html.EditorFor(model => model.LoanCase.CustomerStationZoneDivisionEmployerDescription, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @id = "CustomerReference1",
+                                                @class = "form-control required",
+                                                @placeholder = "Kshs.0.00",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.LoanCase.CustomerStationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCase.LoanPurposeDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanCase.LoanPurposeDescription)
+                                        @Html.EditorFor(model => model.LoanCase.LoanPurposeDescription, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @id = "CustomerReference1",
+                                                @class = "form-control required",
+                                                @placeholder = "Kshs.0.00",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.LoanCase.LoanPurposeDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-2 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.LoanCase.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.LoanCase.Remarks)
+                                        @Html.EditorFor(model => model.LoanCase.Remarks, new
+                                        {
+                                            htmlAttributes = new
+                                            {
+                                                @id = "CustomerReference1",
+                                                @class = "form-control required",
+                                                @placeholder = "Kshs.0.00",
+                                                @readonly = "readonly"
+    }
+    })
+                                        @Html.ValidationMessageFor(model => model.LoanCase.Remarks, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                             </div>
@@ -197,14 +329,6 @@
                             <div class="row">
                                 <div class="col-md-3 form-group">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AppraisalFactor, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "" } })
-                                        @Html.ValidationMessageFor(model => model.AppraisalFactor, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3 form-group">
-                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.TotalShares, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.TotalShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Personal File Number", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.TotalShares, "", new { @class = "text-danger" })
@@ -216,6 +340,14 @@
                                         @Html.LabelFor(model => model.CommittedShares, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CommittedShares, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "Personal File Number", @readonly = "readonly" } })
                                         @Html.ValidationMessageFor(model => model.CommittedShares, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 form-group">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AppraisalFactor, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AppraisalFactor, new { htmlAttributes = new { @id = "TotalShares", @class = "form-control required", @placeholder = "" } })
+                                        @Html.ValidationMessageFor(model => model.AppraisalFactor, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -236,9 +368,53 @@
                                     }
                                 </div>
                             </div>
+
+                            <br />
+
+                            <row>
+                                <h3>Loan Guarantors</h3>
+
+                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                        <tr>
+                                            <th>Guarantor Name</th>
+                                            <th>Identity Card Type</th>
+                                            <th>Identity Card Number</th>
+                                            <th>Total shares</th>
+                                            <th>Committed shares</th>
+                                            <th>Amount Guaranteed</th>
+                                            <th>Appraisal Factor</th>
+                                            <th>Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @if (ViewBag.LoanGuarantors != null)
+                                        {
+                                            foreach (var loanGuarantors in ViewBag.LoanGuarantors)
+                                            {
+                                                <tr data-id="@loanGuarantors.Customer.Id">
+                                                    <td>@loanGuarantors.Customer.FullName</td>
+                                                    <td>@loanGuarantors.Customer.IndividualIdentityCardTypeDescription</td>
+                                                    <td>@loanGuarantors.Customer.IdentificationNumber</td>
+                                                    <td>@loanGuarantors.TotalShares</td>
+                                                    <td>@loanGuarantors.CommittedShares</td>
+                                                    <td>@loanGuarantors.AmountGuaranteed</td>
+                                                    <td>@loanGuarantors.AppraisalFactor</td>
+                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                </tr>
+                                            }
+                                        }
+                                    </tbody>
+                                </table>
+                            </row>
+
                         </fieldset>
                     }
 
+                </div>
+
+                <div class="ibox-content">
+                    @Html.ActionLink("Finish", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
                 </div>
             </div>
         </div>
@@ -615,6 +791,30 @@
                 //}
             });
         }
+
+
+
+
+         // Remove row data
+        $(document).ready(function () {
+            $('.remove-btn').click(function () {
+                var row = $(this).closest('tr');
+                var id = row.data('id');
+
+
+                $.ajax({
+                    url: '@Url.Action("removeGuarantors", "AttachGuarantor")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function () {
+                        row.remove();
+                    },
+                    error: function () {
+                        alert('Error removing row.');
+                    }
+                });
+            });
+        });
     </script>
 
     <style>
