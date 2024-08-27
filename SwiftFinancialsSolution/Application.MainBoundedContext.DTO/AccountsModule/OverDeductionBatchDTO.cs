@@ -122,5 +122,23 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         
         [DataMember]
         public CustomerAccountDTO DebitCustomerAccountDTO { get; set; }
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public byte RefundAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public string BatchAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)RefundAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)RefundAuthOption) : string.Empty;
+            }
+        }
+
+
     }
 }

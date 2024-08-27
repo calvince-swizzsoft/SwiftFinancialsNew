@@ -1251,13 +1251,13 @@ namespace Infrastructure.Crosscutting.Framework.Utils
     public enum TreasuryTransactionType
     {
         [Description("Treasury to Treasury")]
-        TreasuryToTeller = 1,
+        TreasuryToTreasury = 1,
         [Description("Treasury to Bank")]
         TreasuryToBank = 2,
         [Description("Bank to Treasury")]
         BankToTreasury = 4,
         [Description("Treasury to Teller")]
-        TreasuryToTreasury = 8,
+        TreasuryToTeller = 8,
     }
 
     [Flags]

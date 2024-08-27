@@ -26,13 +26,20 @@
         color:#333;
         
     }
-    .main{
-        border:1px solid #333;
-        border-radius:12px;
-        font-weight:bold;
+    .main {
+        border: 1px solid #333;
+        border-radius: 12px;
+        font-weight: bold;
+        background-color: #f1f1f1;
+        padding:20px;
     }
     .form-cotrol {
         color: #007bff;
+    }
+    .create-batch {
+        border: 4px solid #00ffff;
+        padding:10px;
+        border-radius:12px;
     }
 
     .Batch {
@@ -146,40 +153,38 @@
                         </a>
                     </div>
                 </div>
-                <div class="main">
+             
 
-                    <div class="Batch">
+                  
+                <div class="ibox-content bg-white text-info">
 
+                    <div class="main">
                         @using (Html.BeginForm("AddBatch", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
 
                             <div class="create-batch">
                                 <div class="row large-font">
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-5">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
-                                                @*@Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })*@
-                                            </div>
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
+                                            @*@Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            <div class="col-md-10">
-                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
-                                                @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                            </div>
+                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
+                                            @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
                                             @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill.." } })
@@ -187,7 +192,7 @@
                                     </div>
 
                                     <div class="col-lg-1" style="text-align:right">
-                                        <input type="submit" value="Add" class="btn btn-primary" style="width:50px; border-radius: 4px; margin:20px;" />
+                                        <input type="submit" value="Add Batch" class="btn btn-primary" style="width:100px; border-radius: 4px; margin:20px;" />
                                     </div>
 
 
@@ -201,9 +206,9 @@
                             </div>
                         }
 
-                    </div>
 
-                    <div class="ibox-content bg-white text-info">
+
+
                         @using (Html.BeginForm("Add", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
 
@@ -230,7 +235,7 @@
                                                 <div class="col-md-13 form-group">
                                                     @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber)
+                                                        @*@Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber)*@
                                                         @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
@@ -259,6 +264,29 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row large-font">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)
+                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)
+                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, "", new { @class = "text-danger" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         <div class="row large-font">
                                             <div class="col-lg-6">
                                                 <div class="form-group form-group-lg">
@@ -300,6 +328,8 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
 
                                         <div class="row">
                                             <!-- Center the Submit button -->
@@ -358,22 +388,30 @@
 
                         }
 
-                        <div class="ibox-content m-b-sm border-bottom">
-                            @using (Html.BeginForm("Create", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                            {
-                                <div class="row">
-                                    <div class="col-lg-12">
-                                        <div class="form-group" style="text-align:right;">
-                                            <input type="submit" value="Create" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
-                                        </div>
+
+
+
+
+                        @using (Html.BeginForm("Create", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="row">
+                                <div class="col-lg-12">
+                                    <div class="form-group" style="text-align:right;">
+                                        <input type="submit" value="Create" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
                                     </div>
                                 </div>
+                            </div>
 
-                            }
-                        </div>
+                        }
 
                     </div>
+
+
+                        
+                       
+
                 </div>
+                
 
 
             </div>

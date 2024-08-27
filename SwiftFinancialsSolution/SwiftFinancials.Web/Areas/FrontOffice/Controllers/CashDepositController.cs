@@ -180,22 +180,41 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(pageIndex,jQueryDataTablesModel.iDisplayLength, (Guid)SelectedTeller.ChartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, jQueryDataTablesModel.sSearch, 20, 1, true, GetServiceHeader());
-  
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            if (SelectedTeller != null)
             {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+                var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
+                    pageIndex,
+                    jQueryDataTablesModel.iDisplayLength,
+                    (Guid)SelectedTeller.ChartOfAccountId,
+                    CurrentPostingPeriod.DurationStartDate,
+                    CurrentPostingPeriod.DurationEndDate,
+                    jQueryDataTablesModel.sSearch,
+                    20, 
+                    1, 
+                    true,
+                    GetServiceHeader()
+                );
 
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
 
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+                else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
             }
-            else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
         }
 
         public async Task<ActionResult> Details(Guid id)
@@ -259,11 +278,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 GetServiceHeader()
             );
 
-            // Create and populate transaction model
-            //CustomerTransactionModel transactionModel = new CustomerTransactionModel();
-
-       
-
             if (customerAccount != null)
             {
                 transactionModel.CustomerAccount = new CustomerAccountDTO
@@ -314,53 +328,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.BranchId = customerAccount.BranchId;
                 transactionModel.CustomerDTO = customerDTO;
 
-                 //_selectedTeller = await GetCurrentTeller();
-
                 _ = _selectedTeller != null ? transactionModel.Teller = _selectedTeller : TempData["Missing Teller"] = "You are working without a Recognized Teller";
-
-                
-                
-                //if (_selectedTeller != null)
-                //{
-                    //var chartOfAccountId = _selectedTeller.ChartOfAccountId;
-
-                    //var chartOfAccount = await _channelService.FindChartOfAccountAsync((Guid)chartOfAccountId, GetServiceHeader());
-
-                    //_currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-                    //SelectedEmployee = await _channelService.FindEmployeeAsync((Guid)_selectedTeller.EmployeeId, GetServiceHeader());
-
-                    //probably should use customerId chartOfAcount may not be uniq to teller
-                    //var TellerStatements = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(0, 10, (Guid)chartOfAccountId, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, "", 0, 2, true, GetServiceHeader());
-
-                   
-
-                    //transactionModel.TellerStatements = TellerStatements;
-
-                    //var generalLedgerAccount = await _channelService.FindGeneralLedgerAccountAsync((Guid) chartOfAccountId, true, GetServiceHeader());
-
-                    //SelectedTeller.BookBalance = generalLedgerAccount.Balance;
-
-                     //transactionModel.Teller.BookBalance = SelectedTeller.BookBalance;
-
-    
-
-                    //var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-                    //var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-                    //var targetCustomer = customers.FirstOrDefault(c => c.AddressEmail == user.Email);
-                    //var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(targetCustomer.Id, false, false, false, false, GetServiceHeader());
-                    //var targetAccount = customerAccounts.FirstOrDefault();
-                    //TellerStatements = await _channelService.FindGeneralLedgerTransactionsByCustomerAccountIdAndDateRangeAsync(targetAccount, CurrentPostingPeriod.DurationStartDate, CurrentPostingPeriod.DurationEndDate, true, GetServiceHeader());
-
-                
-                //}
-
-
-
+ 
                 ViewBag.WithdrawalNotificationCategorySelectList = GetWithdrawalNotificationCategorySelectList(string.Empty);
                 return View(transactionModel);
             }
-
             // If no customer is found, return the view with no model
             return View();
         }
@@ -405,11 +377,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
                                 var updateWithinLimitResult = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
 
-                              
+                             
                                 if (updateWithinLimitResult)
                                 {
-                                    TempData["RequestSuccess"] = $"success: customer new balance is {transactionModel.CustomerAccount.NewAvailableBalance}";
+                                    string message = $"Operation success: Customer's new balance is {transactionModel.CustomerAccount.NewAvailableBalance}";
+
+                                    MessageBox.Show(
+                                                      message,
+                                                      "CashDeposit Request",
+                                                      MessageBoxButtons.OK,
+                                                      MessageBoxIcon.Information,
+                                                      MessageBoxDefaultButton.Button1,
+                                                      MessageBoxOptions.ServiceNotification
+                                                  );
                                 }
+
 
                                 //PrintReceipt(withinLimitsCashDepositJournal);
                                 break;
@@ -725,14 +707,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                             }
                                                             else
                                                             {
-                                                                // Placeholder for the actual payment processing logic
-                                                                //bool paymentSuccess = await ProcessPaymentAsync(targetCashWithdrawalRequest, SelectedPaymentVoucher);
+           
 
                                                                 bool paymentSuccess = await _channelService.PayCashWithdrawalRequestAsync(targetCashWithdrawalRequest, SelectedPaymentVoucher);
 
                                                                 if (paymentSuccess)
                                                                 {
-                                                                    // Placeholder for adding a journal with customer account and tariffs
+                                                                
                                                                 
 
                                                                     var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs);
@@ -966,7 +947,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     default:
                         //throw new InvalidOperationException("Unsupported transaction type.");
-                        TempData["Error"] = "You may have entered wrong transaction type";
+                         MessageBox.Show("You may have entered the wrong transaction type", "CashWithdrawal Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1,
+                                              MessageBoxOptions.ServiceNotification);
                         return;
                 }
             }

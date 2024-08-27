@@ -36,7 +36,6 @@
 {
     <div class="alert alert-danger fade in">
         <button class="close" data-dismiss="alert">
-            ×
         </button>
         <i class="fa-fw fa fa-times"></i>
         <strong>Error!</strong> @TempData["Error"]
@@ -86,7 +85,6 @@
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.StationId)
-                                    @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
                                     @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description.." } })
                                 </div>
 
@@ -363,12 +361,83 @@
 
                             <div id="Referees" class="tab-pane" role="tabpanel">
 
+                                <row>
+                                    <h2>REFEREES</h2>
+
+                                    <div class="col-md-13 form-group">
+                                        @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
+                                        <div class="input-group" data-autoclose="true">
+                                            @Html.HiddenFor(model => model.Id)
+                                            @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                    </div>
+                                </row>
+
 
                             </div>
 
                             <div id="CreditTypes" class="tab-pane" role="tabpanel">
 
+                                <row>
+                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
+                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th data-toggle="true">CreditTypeDescription</th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountId</th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountAccountType </th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountAccountCode </th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountAccountName </th>
+                                                    <th data-hide="phone">CreditTypeChartOfAccountName </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.credit != null)
+                                                {
+                                                    foreach (var levySplit in ViewBag.credit)
+                                                    {
+                                                        <tr>
+                                                            <td>
+                                                                @levySplit.CreditTypeDescription
+                                                            </td>
 
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountId
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountAccountType
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountAccountCode
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountAccountName
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.CreditTypeChartOfAccountName
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </row>
                             </div>
 
                             <div id="DebitTypes" class="tab-pane" role="tabpanel">
@@ -379,6 +448,10 @@
                                             <thead>
                                                 <tr>
                                                     <th data-toggle="true">Description</th>
+                                                    <th data-toggle="true">CustomerAccountTypeProductCode</th>
+                                                    <th data-toggle="true">ProductCode</th>
+                                                    <th data-toggle="true">CustomerAccountTypeProductCodeDescription</th>
+                                                    <th data-toggle="true">IsLocked</th>
 
                                                 </tr>
                                             </thead>
@@ -392,9 +465,24 @@
                                                                 @levySplit.Description
                                                             </td>
 
+                                                            <td>
+                                                                @levySplit.CustomerAccountTypeProductCode
+                                                            </td>
+
+                                                            <td>
+                                                                @levySplit.ProductCode
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.CustomerAccountTypeProductCodeDescription
+                                                            </td>
+                                                            <td>
+                                                                @levySplit.IsLocked
+                                                            </td>
+
                                                         </tr>
                                                     }
                                                 }
+
                                             </tbody>
                                         </table>
                                     </div>
@@ -509,7 +597,6 @@
                             </div>
 
                             <div id="Specimen" class="tab-pane" role="tabpanel">
-
 
                             </div>
 
@@ -657,43 +744,7 @@
                 autoclose: true,
                 format: "dd/mm/yyyy"  // Set the date format
             });
-
-            //roles typehead starts here
-            $('.rolesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetRoles", "Role", new { Area = "Admin" })',
-                        { query: query },
-                        function (roles) {
-                            var newRolesData = [];
-                            rolesMap = {};
-                            $.each(roles, function (i,role) {
-                                newRolesData.push(role.Name);
-                                rolesMap[role.Name] = role;
-                            });
-                            process(newRolesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var roleId = "";
-                    roleId = rolesMap[item].Id;
-                    $('#RoleId').val(roleId);
-                    //console.log(roleId)
-                    return item;
-                }
-            });
+            
 
             //Station typehead starts here
             $('.StationsLookup').typeahead({
@@ -709,7 +760,9 @@
                                 StationsMap[Station.Description] = Station;
                             });
                             process(newStationsData); return;
-                        });
+                        }
+                    );
+
                 },
                 matcher: function (item) {
                     if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
@@ -734,44 +787,9 @@
                     return item;
                 }
             });
-
-            //Branch typehead starts here
-            $('.BranchesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
-                        { query: query },
-                        function (Branches) {
-                            var newBranchesData = [];
-                            BranchesMap = {};
-                            $.each(Branches, function (i, Branch) {
-                                newBranchesData.push(Branch.Description);
-                                BranchesMap[Branch.Description] = Branch;
-                            });
-                            process(newBranchesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var branchId = "";
-                    BranchId = BranchesMap[item].Id;
-                    $('#BranchId').val(BranchId);
-                    //console.log(BranchId)
-                    return item;
-                }
-            });
         });
+        </script>
+    }
 
     </script>
 }

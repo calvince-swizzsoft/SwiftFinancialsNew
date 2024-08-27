@@ -131,12 +131,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                         TempData["tPercentage"] = "Failed to add  Journal Voucher Entry Total Amount exceeded Total Value.";
 
                         JournalVoucherEntryDTOs.Remove(journalVoucherEntryDTO);
-                        /*TempData["tPercentage"] = "Failed to add  Journal Voucher Entry Total Amount exceeded Total Value.";
-                        ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
-                        return View("Create");*/
+
+
                     }
-
-
 
                 }
 

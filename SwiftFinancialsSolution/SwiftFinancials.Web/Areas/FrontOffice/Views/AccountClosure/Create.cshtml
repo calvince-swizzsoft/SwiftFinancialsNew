@@ -67,9 +67,10 @@
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.BranchId)
                         @Html.HiddenFor(model => model.CustomerAccountId)
+                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
 
                     <div class="form-horizontal">
-                        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
                         <!-- First Row -->
                         <div class="row">
@@ -78,7 +79,7 @@
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number:", new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
-                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @class = "form-control", @readonly = "readonly" })
+                                        @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountFullAccountNumber1" }) <!-- Unique ID here -->
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
                                                 <span class="fa fa-search"></span>
@@ -87,6 +88,7 @@
                                     </div>
                                 </div>
                             </div>
+
 
                             <div class="col-lg-3">
                                 <div class="form-group form-group-lg">
@@ -186,37 +188,84 @@
                         <br />
                         <hr />
 
-                        <!-- Tabs for Loan Accounts, Investment Accounts, and Loans Guaranteed -->
-                        <div class="tab-pane fade show active" id="loanAccounts">
-                            <div class="table-responsive">
-                                <table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Branch</th>
-                                            <th>Status</th>
-                                            <th>Full Account Number</th>
-                                            <th>Product Name</th>
-                                            <th>Customer Name</th>
-                                            <th>Identification Number</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Main Branch</td>
-                                            <td id="loanAccountStatus"></td>
-                                            <td id="loanAccountNumber"></td>
-                                            <td id="loanProductName"></td>
-                                            <td id="loanCustomerName"></td>
-                                            <td id="loanCustomerIdentification"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+
+
+
+                        <ul class="nav nav-tabs" id="loanAccountsTab">
+                            <li class="nav-item">
+                                <a class="nav-link active" href="#loanAccounts" data-toggle="tab">Loan Accounts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#investmentAccounts" data-toggle="tab">Investment Accounts</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#loansGuaranteed" data-toggle="tab">Loans Guaranteed</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <!-- Loan Accounts Tab Content -->
+                            <div id="loanAccounts" class="tab-pane fade show active">
+                                <h3>Customer Loan Accounts</h3>
+
+                                @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
+                                {
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Full Account Number</th>
+                                                <th>Status</th>
+                                                <th>Remarks</th>
+                                                <th>Product Code</th>
+                                                <th>Product Name</th>
+                                                <th>Section</th>
+                                                <th>Branch</th>
+                                                <th>Book Balance</th>
+                                                <th>Principal Balance</th>
+                                                <th>Interest Balance</th>
+                                                <th>Record Status</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var levySplit in ViewBag.LoanAccounts)
+                                            {
+                                                <tr>
+                                                    <td>@levySplit.FullAccountNumber</td>
+                                                    <td>@levySplit.StatusDescription</td>
+                                                    <td>@levySplit.Remarks</td>
+                                                    <td>@levySplit.CustomerAccountTypeTargetProductCode</td>
+                                                    <td>@levySplit.CustomerAccountTypeTargetProductDescription</td>
+                                                    <td>@levySplit.CustomerAccountTypeTargetProductLoanProductSectionDescription</td>
+                                                    <td>@levySplit.BranchDescription</td>
+                                                    <td>@levySplit.BookBalance</td>
+                                                    <td>@levySplit.PrincipalBalance</td>
+                                                    <td>@levySplit.InterestBalance</td>
+                                                    <td>@levySplit.RecordStatus</td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                }
+                                else
+                                {
+                                    <p>No loan accounts found for this customer.</p>
+                                }
                             </div>
+
+
+
+
+
                         </div>
 
 
-                        <!-- Summary Section -->
-                        <div class="row">
+                        <br />
+                        <hr />
+
+
+                        <!--Summary Section-->
+                        <!--<div class="row">
                             <div class="col-lg-4">
                                 <div class="form-group">
                                     @Html.Label("Investments Balance (R)", htmlAttributes: new { @class = "control-label" })
@@ -235,7 +284,7 @@
                                     <input type="text" class="form-control" readonly value="Ksh0.00" />
                                 </div>
                             </div>
-                        </div>
+                        </div>-->
 
                         <div class="ibox-content bg-white text-info">
                             <div class="col-lg-3" style="float: right;">
@@ -326,6 +375,10 @@
 
 
 
+
+
+
+
     <script>
 
         $('#CustomerAccountsGrid').DataTable({
@@ -360,7 +413,7 @@
                 { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
                 { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
                 { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15" },
-                { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
+                { "mDataProp": "CustomerIndividualFirstName", "sTitle": "First Name", "sWidth": "15%" },
                 { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],
@@ -419,26 +472,61 @@
     </script>
 
     <script>
-           $(document).ready(function () {
-               // Update Loan Accounts Tab Content
-               $('input, textarea').on('input', function () {
-                   // Fetch values from form fields
-                   var accountNumber = $('#CustomerAccountRemarks').val();
-                   var accountStatus = $('#CustomerAccountStatusDescription').val();
-                   var productName = $('#CustomerAccountTypeTargetProductDescription').val();
-                   var customerName = $('#CustomerAccountCustomerFullName').val();
-                   var customerIdentification = $('#CustomerAccountCustomerIdentificationNumber').val();
+        $(document).ready(function () {
+            // Update Loan Accounts Tab Content
+            $('input, textarea').on('input', function () {
+                // Fetch values from form fields
+                var accountNumber = $('#CustomerAccountRemarks').val();
+                var accountStatus = $('#CustomerAccountStatusDescription').val();
+                var productName = $('#CustomerAccountTypeTargetProductDescription').val();
+                var customerName = $('#CustomerAccountCustomerFullName').val();
+                var customerIdentification = $('#CustomerAccountCustomerIdentificationNumber').val();
 
-                   // Update the Loan Accounts Tab content
-                   $('#loanAccountNumber').text(accountNumber);
-                   $('#loanAccountStatus').text(accountStatus);
-                   $('#loanProductName').text(productName);
-                   $('#loanCustomerName').text(customerName);
-                   $('#loanCustomerIdentification').text(customerIdentification);
+                // Update the Loan Accounts Tab content
+                $('#loanAccountNumber').text(accountNumber);
+                $('#loanAccountStatus').text(accountStatus);
+                $('#loanProductName').text(productName);
+                $('#loanCustomerName').text(customerName);
+                $('#loanCustomerIdentification').text(customerIdentification);
+            });
+
+
+
+        });
+
+    </script>
+
+    <script>
+           $(document).ready(function () {
+               // Handle tab click events
+               $('#loanAccountsTab a').on('click', function (e) {
+                   e.preventDefault();
+
+                   // Remove 'active' and 'show' classes from all tabs and tab content
+                   $('.nav-link').removeClass('active');
+                   $('.tab-pane').removeClass('show active');
+
+                   // Add 'active' class to the clicked tab
+                   $(this).addClass('active');
+
+                   // Get the href attribute of the clicked tab to determine which tab content to show
+                   var target = $(this).attr('href');
+
+                   // Show the corresponding tab content by adding 'show' and 'active' classes
+                   $(target).addClass('show active');
+
+                   // Debugging: Log the target to ensure it matches the content ID
+                   console.log('Tab clicked:', target);
                });
            });
+
+
+
 
     </script>
 
 
 }
+
+
+

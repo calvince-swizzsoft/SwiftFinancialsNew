@@ -24881,6 +24881,42 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region BankLinkageDTO
 
+        public Task<List<BankLinkageDTO>> FindBankLinkagesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<List<BankLinkageDTO>>();
+
+            IBankLinkageService service = GetService<IBankLinkageService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<BankLinkageDTO> response = ((IBankLinkageService)result.AsyncState).EndFindBankLinkages(result);
+
+                    tcs.TrySetResult(response);
+                }
+
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+
+                finally
+                {
+
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindBankLinkages(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
         public Task<PageCollectionInfo<BankLinkageDTO>> FindBankLinkagesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<BankLinkageDTO>>();
@@ -40129,6 +40165,11 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         }
 
         public Task AddCommissionAsync(DynamicChargeDTO levyDTO, ServiceHeader serviceHeader)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task FindCustomersByStationIdAndFilterInPageAsync(Func<StationDTO> mapTo)
         {
             throw new NotImplementedException();
         }
