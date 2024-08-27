@@ -48,7 +48,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<LoanProductDTO> selectedRows, ObservableCollection<LoanProductDTO> selectedRows1, List<InvestmentProductDTO> selectedRows2, List<EmployeeDTO> selectedRows3)
+        public async Task<ActionResult> Create(RecurringBatchDTO recurringBatchDTO, List<LoanProductDTO> selectedRows, List<LoanProductDTO> selectedRows1, List<InvestmentProductDTO> selectedRows2, List<EmployeeDTO> selectedRows3,ObservableCollection<LoanProductDTO>loans)
         {
 
 
@@ -60,9 +60,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                     foreach (var selectedRow in selectedRows)
                     {
-                        var savingsProductDTO = await _channelService.ChargeLoanDynamicFeesAsync(recurringBatchDTO, selectedRows1, GetServiceHeader());
+                        // var savingsProductDTO = await _channelService.ChargeLoanDynamicFeesAsync(recurringBatchDTO, selectedRows1, GetServiceHeader());
 
-                      //   await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
+                        await _channelService.ChargeLoanDynamicFeesAsync(recurringBatchDTO, loans, GetServiceHeader());
 
                     }
                 }

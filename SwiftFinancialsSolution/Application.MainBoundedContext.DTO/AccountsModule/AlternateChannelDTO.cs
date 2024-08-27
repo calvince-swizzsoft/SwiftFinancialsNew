@@ -77,6 +77,26 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+
+
+
+
+
+
+        [DataMember]
+        [Display(Name = "Operations")]
+        public int Operations { get; set; }
+
+        [DataMember]
+        [Display(Name = "Operations")]
+        public string OperationsDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(AlternateChannelManagementAction), Operations) ? EnumHelper.GetDescription((AlternateChannelManagementAction)Operations) : string.Empty;
+            }
+        }
+
         [DataMember]
         [Display(Name = "Customer Account Record Status")]
         public int CustomerAccountRecordStatus { get; set; }

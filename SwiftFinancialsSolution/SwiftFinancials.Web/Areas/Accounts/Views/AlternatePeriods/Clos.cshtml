@@ -22,9 +22,7 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-title">
-                    @Html.ActionLink("Create Alternate Periods", "Index", "AlternatePeriods", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
-                    @Html.ActionLink("Closed Alternate Channels", "Clos", "AlternatePeriods", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                <div class="ibox-title">                    
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">
@@ -85,7 +83,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Create", "AlternatePeriods", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Clos", "AlternatePeriods", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -114,14 +112,14 @@
                     var dt_EndDate = $.datepicker.formatDate('dd/mm/yy', endDate) ;
                     aData.DurationEndDate = dt_EndDate;
 
-                    var editUrl = '<a  href="/accounts/AlternatePeriods/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/accounts/AlternatePeriods/Processing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Processing</a>';
+                  
+                   // var viewUrl = '<a  href="/accounts/AlternatePeriods/Processing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Processing</a>';
                     var CloseUrl = '<a  href="/accounts/AlternatePeriods/Closing/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Close</a>';
 
                     $('td:eq(3)', nRow).html(dt_StartDate);
                     $('td:eq(4)', nRow).html(dt_EndDate);
                     //$('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + "&nbsp" + CloseUrl);
+                    $('td:eq(5)', nRow).html(CloseUrl);
 
                     return nRow;
                 },

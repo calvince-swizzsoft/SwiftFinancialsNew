@@ -2,6 +2,7 @@
 
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -35,11 +36,20 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [DataMember]
         [Display(Name = "Role Name")]
         public string RoleName { get; set; }
+        [DataMember]
+        [Display(Name = "Branch Description")]
+        public string BranchDescription { get; set; }
+        [DataMember]
+        [Display(Name = "Role")]
+        public Guid? RoleId { get; set; }
 
         [DataMember]
         [Display(Name = "Required Approvers")]
         public int RequiredApprovers { get; set; }
 
+        [DataMember]
+        [Display(Name = "BranchId")]
+        public Guid BranchId { get; set; }
         [DataMember]
         [Display(Name = "Approval Priority")]
         public int ApprovalPriority { get; set; }
@@ -51,5 +61,8 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public ObservableCollection<SystemPermissionTypeInRoleDTO> systemPermissionTypeInRoles { get; set; }
+
+        public ObservableCollection<BranchDTO> systemPermissionTypeInBranchDTOs { get; set; }
     }
 }

@@ -25,10 +25,11 @@
 
                     @if (TempData["SuccessMessage"] != null)
                     {
-                        <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
-                        </div>
+                        <script>
+                              alert('@TempData["SuccessMessage"]');
+                        </script>
                     }
+
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -137,6 +138,7 @@
 
                     var editUrl = '<a  href="/accounts/Register/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve/Reject</a>';
                     var viewUrl = '<a  href="/accounts/Register/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
+                    var viewUrl = '<a  href="/accounts/AlternatechannelManagement/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Management</a>';
 
                     var dropdownHtml = `
                         <div class="dropdown">
@@ -146,19 +148,20 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/accounts/Register/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/accounts/Register/edit/${aData.Id}">Edit</a>
+                                <a class="dropdown-item" href="/accounts/AlternatechannelManagement/Create/${aData.Id}">Management</a>
                             </div>
                         </div>`;
 
 
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(dropdownHtml);
+                   // $('td:eq(4)', nRow).html(dt_Created);
+                    $('td:eq(7)', nRow).html(dropdownHtml);
 
 
 
 
-                    $('td:eq(2)', nRow).html(expiryDate);
-                    $('td:eq(6)', nRow).html(dt_Created);
+                   // $('td:eq(2)', nRow).html(expiryDate);
+                    $('td:eq(5)', nRow).html(dt_Created);
                    // $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
 
                     return nRow;
@@ -167,7 +170,7 @@
                 "aoColumns": [
                     { "mDataProp": "FullAccountNumber", "sTitle": "FullAccountNumber", "sWidth": "20%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "20%" },
-                    { "mDataProp": "Expires", "sTitle": "Expires", "sWidth": "5%" },
+                    
                     { "mDataProp": "MaskedCardNumber", "sTitle": "PAN", "sWidth": "5%" },
                     { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Acc number", "sWidth": "5%" },
                     { "mDataProp": "TypeDescription", "sTitle": "type", "sWidth": "5%" },

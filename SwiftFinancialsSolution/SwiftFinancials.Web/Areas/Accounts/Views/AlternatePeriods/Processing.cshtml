@@ -18,7 +18,7 @@
                 @Html.ActionLink("Home", "Index", "AlternatePeriods", new { Area = "Accounts" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Processing</strong>
             </li>
         </ol>
     </div>
@@ -51,7 +51,7 @@
                     </div>
                 }
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Index", "AlternatePeriods", new { Area = "Accounts" }, FormMethod.Post))
+                    @using (Html.BeginForm("Processing", "AlternatePeriods", new { Area = "Accounts" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -60,6 +60,11 @@
                         <fieldset>
 
                             <div class="row">
+
+
+
+
+
                                 <div class="col-lg-6">
                                     <div class="form-group" id="data_3">
                                         @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
@@ -86,10 +91,9 @@
                                         @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
                                         <div class="input-group date">
                                             <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="endDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                            <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
                                         </div>
                                     </div>
-
                                 </div>
 
                                 <div class="col-lg-6">
@@ -117,7 +121,7 @@
 
                             <div class="form-group form-group-sm">
                                 <div class="col-md-offset-2">
-                                    <input type="submit" value="Create" class="btn btn-primary" />
+                                    <input type="submit" value="Processing" class="btn btn-primary" />
                                 </div>
                             </div>
                         </fieldset>
