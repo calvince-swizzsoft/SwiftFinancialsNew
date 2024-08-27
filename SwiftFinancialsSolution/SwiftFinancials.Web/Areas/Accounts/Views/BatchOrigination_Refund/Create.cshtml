@@ -184,7 +184,7 @@
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
                                             @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
                                             @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill.." } })
@@ -235,7 +235,7 @@
                                                 <div class="col-md-13 form-group">
                                                     @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                     <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber)
+                                                        @*@Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber)*@
                                                         @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                         <span class="input-group-addon">
                                                             <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
@@ -264,6 +264,29 @@
                                                 </div>
                                             </div>
                                         </div>
+
+                                        <div class="row large-font">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)
+                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)
+                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, "", new { @class = "text-danger" })
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+
                                         <div class="row large-font">
                                             <div class="col-lg-6">
                                                 <div class="form-group form-group-lg">
@@ -305,6 +328,8 @@
                                                 </div>
                                             </div>
                                         </div>
+
+
 
                                         <div class="row">
                                             <!-- Center the Submit button -->
