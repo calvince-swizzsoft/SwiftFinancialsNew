@@ -88,20 +88,6 @@ namespace SwiftFinancials.Web.Controllers
             set { channelService = value; }
         }
 
-        //private ICashDepositRequestAppService cashDepositRequestAppService;
-
-        //public ICashDepositRequestAppService _cashDepositRequestAppService
-        //{
-        //    get
-        //    {
-        //        if (cashDepositRequestAppService == null)
-        //        {
-        //            cashDepositRequestAppService = DependencyResolver.Current.GetService<ICashDepositRequestAppService>();
-        //        }
-        //        return cashDepositRequestAppService;
-        //    }
-        //    set { cashDepositRequestAppService = value; }
-        //}
 
         private ApplicationRoleManager applicationRoleManager;
         public ApplicationRoleManager _applicationRoleManager
