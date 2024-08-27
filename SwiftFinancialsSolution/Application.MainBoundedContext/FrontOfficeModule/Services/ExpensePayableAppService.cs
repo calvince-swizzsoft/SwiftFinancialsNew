@@ -68,8 +68,11 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
                 if (postingPeriodDTO != null)
                 {
                     if (expensePayableDTO.ValueDate != null && (expensePayableDTO.ValueDate < postingPeriodDTO.DurationStartDate || expensePayableDTO.ValueDate > postingPeriodDTO.DurationEndDate || expensePayableDTO.ValueDate > DateTime.Today))
-                        throw new ArgumentOutOfRangeException("ValueDate", "Sorry, but value date is out of range!");
 
+                    {
+                        expensePayableDTO.errormassage=string.Format("ValueDate", "Sorry, but value date is out of range!");
+                        return expensePayableDTO;
+                    }
                     using (var dbContextScope = _dbContextScopeFactory.Create())
                     {
                         var expensePayable = ExpensePayableFactory.CreateExpensePayable(expensePayableDTO.BranchId, expensePayableDTO.ChartOfAccountId, expensePayableDTO.Type, expensePayableDTO.TotalValue, expensePayableDTO.ValueDate, expensePayableDTO.Remarks);

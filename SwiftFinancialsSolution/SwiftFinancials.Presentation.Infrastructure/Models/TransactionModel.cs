@@ -270,7 +270,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         }
 
         //public List<TransactionModel> TransactionModels { get; set; }
-        //public FiscalCountDTO transactionModels { get; set; }
+        public FiscalCountDTO fiscalCountDTO { get; set; }
 
         //added on Thursday 8/2/24
 

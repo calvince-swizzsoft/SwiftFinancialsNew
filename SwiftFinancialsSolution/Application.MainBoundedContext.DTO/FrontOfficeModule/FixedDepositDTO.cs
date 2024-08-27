@@ -6,6 +6,9 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
+
+
+
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
     public class FixedDepositDTO : BindingModelBase<FixedDepositDTO>
@@ -330,6 +333,13 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Total Expected")]
         public decimal TotalExpected { get; set; }
 
+        //added parameter
+
+        [DataMember]
+        [Display(Name = "Available Balance")]
+        public decimal AvailableBalance { get; set; }
+
+
         [DataMember]
         [Display(Name = "Is Payable?")]
         public bool IsPayable
@@ -375,5 +385,19 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
         public List<FixedDepositPayableDTO> FixedDepositPayables { get; set; }
         public FixedDepositPayableDTO FixedDepositPayableDTO { get; set; }
+
+        //new property
+        public int FixedDepositAuthOption { get; set; }
+        public int ModuleNavigationItemCode { get; set; }
+        public bool HasErrors { get; set; }
+        public List<string> ErrorMessages { get; set; }
+
+        public List<FixedDepositDTO> FixedDeposits { get; set; } = new List<FixedDepositDTO>();
+        public List<Guid> SelectedFixedDeposits { get; set; }
+
+       
+
+
+
     }
 }
