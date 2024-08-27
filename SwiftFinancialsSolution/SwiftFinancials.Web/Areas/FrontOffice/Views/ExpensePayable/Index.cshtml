@@ -2,9 +2,67 @@
     ViewBag.Title = "Expense Payable";
 }
 
+<style>
+
+    .nav {
+        display: flex;
+        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+        padding: 0;
+        margin: 5px;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
+        gap: 10px; /* Space between links */
+        text-align: center; /* Centers the text inside links */
+
+        padding:10px;
+    }
+
+    .nav-link {
+        display: flex;
+
+
+        text-decoration: none;
+        color: #007bff; /* Default text color */
+        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Adjust font size for better fit */
+        white-space: nowrap; /* Prevents text from wrapping inside the link */
+
+       @* border: 1px solid #007bff;*@ /* Border color and style */
+    }
+
+        .nav-link:hover {
+            color: #fff; /* Text color on hover */
+            background-color: #0056b3; /* Background color on hover */
+        }
+
+        .nav-link i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 16px; /* Adjust icon size */
+        }
+
+        .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+</style>
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Expense Payable</h2>
+        <h2>Expense Payable </h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -16,10 +74,12 @@
     </div>
 </div>
 
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+
                 <div class="ibox-title">
                     @Html.ActionLink("Create Expense Payable", "Create", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
 
@@ -35,6 +95,8 @@
                         <div class="alert alert-danger">
                             @TempData["ErrorMessage"]
                         </div>}
+                    
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -44,6 +106,7 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="ibox-content">
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
@@ -73,7 +136,7 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-<script type="text/javascript">
+    <script type="text/javascript">
         $(document).ready(function () {
             $('#ExpensePayablesGrid').DataTable({
                 "sPaginationType": "full_numbers",
@@ -81,18 +144,13 @@
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "ExpensePayable", new { Area = "FrontOffice"}))",
                 "sServerMethod": "POST",
-
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
-
-
 
                     var valueDate = new Date(parseInt(aData.ValueDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + valueDate.getHours()).slice(-2);
@@ -104,23 +162,41 @@
 
                     var dropdownHtml = `
                         <div class="dropdown">
-                            <button style="width: 100px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/FrontOffice/ExpensePayable/verify/${aData.Id}">Verify</a>
-                                <a class="dropdown-item" href="/FrontOffice/ExpensePayable/approve/${aData.Id}">Approve</a>
-                            </div>
-                        </div>`;
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    var viewButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/Details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/Edit/${aData.Id}">Edit</a>`;
+                    var verifyButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/verify/${aData.Id}">Verify</a>`;
+                    var approveButton = `<a class="dropdown-item" href="/FrontOffice/ExpensePayable/approve/${aData.Id}">Approve</a>`;
+                   
+
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += viewButton + editButton + verifyButton + approveButton;
+                            break;
+                        case 8: // Audited
+                            dropdownHtml += viewButton + approveButton;
+                            break;
+                        case 2: // Posted
+                            dropdownHtml += viewButton;
+                            break;
+                        default:
+                            dropdownHtml += viewButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
 
                     $('td:eq(7)', nRow).html(dt_Created);
                     $('td:eq(8)', nRow).html(dropdownHtml);
                     $('td:eq(2)', nRow).html(dt_Valued);
 
+
                     return nRow;
                 },
-                // Display settings
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "TotalValue", "sTitle": "Total Value", "sWidth": "8%" },
@@ -133,18 +209,17 @@
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
                 ],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-</script>
-
-
+    </script>
 
 
     <style>
@@ -186,16 +261,3 @@
             }
     </style>
 }
-
-﻿
-
-
-
-
-
-
-
-
-
-
-

@@ -461,6 +461,7 @@
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
     <Compile Include="Areas\Registry\Controllers\NextofKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
+    <Compile Include="Areas\Registry\Controllers\StationController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />

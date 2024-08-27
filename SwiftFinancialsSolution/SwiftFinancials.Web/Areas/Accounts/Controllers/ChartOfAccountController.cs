@@ -80,6 +80,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 {
                     TempData["ErrorMsg"] = result.ErrorMessageResult;
                     await ServeNavigationMenus();
+                    ViewBag.ChartOfAccountTypeSelectList = GetChartOfAccountTypeSelectList(chartOfAccountDTO.AccountType.ToString());
+                    ViewBag.ChartOfAccountCategorySelectList = GetChartOfAccountCategorySelectList(chartOfAccountDTO.AccountCategory.ToString());
                     return View();
                 }
 

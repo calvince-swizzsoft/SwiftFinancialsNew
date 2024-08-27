@@ -9,9 +9,10 @@
 
 
 <style>
-    .main{
+    .main {
         border: 1px solid gray;
-        border-radius: 10px;  
+        border-radius: 10px;
+        background-color: #f1f1f1;
     }
     .row{
         margin-top:20px;
@@ -40,10 +41,10 @@
         margin-bottom: 30px;
         justify-content: center;
         align-content: baseline;
-        margin: 20px;
+        margin: 10px;
         font-size: 15px;
         font-weight: bold;
-        padding: 20px;
+        padding: 10px;
     }
     .btn-primary{
         border-radius:10px;
@@ -166,14 +167,14 @@
                 <div class="ibox-content bg-white text-info">
                    
                         
-                    <h1>Debit Batch</h1>
+                    
                     <div class="main">
                         @using (Html.BeginForm("AddBatch", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
 
                             <div class="content">
                                 <div class="row">
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
@@ -186,7 +187,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
@@ -194,10 +195,7 @@
                                             @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                         </div>
                                     </div>
-                                </div>
-                                <div class="row">
-
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                             <div class="input-group">
@@ -207,22 +205,20 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
                                             @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
                                             @*@Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
-
-
                                 </div>
-                                <br/>
+                                
                                 
                                 <div class="row">
                                     <div class="col-lg-12">
                                         <div class="form-group" style="text-align:right;">
-                                            <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                            <input type="submit" value="Add Batch" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
                                         </div>
                                     </div>
                                 </div>
@@ -230,14 +226,13 @@
 
                             </div>
                         }
-                        <br />
-                        <br />
+                        
                         @using (Html.BeginForm("Add", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
                             <div class="journal-voucher-container">
                                 <h2>Add Debit Batch Entries</h2>
                                 <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
@@ -250,12 +245,12 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
                                             
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
                                         </div>
                                     </div>
                                     @*<div class="col-lg-4">
@@ -266,87 +261,62 @@
                                             @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountRemarks, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
                                         </div>
                                     </div>*@
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
                                             
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].ProductDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
                                         </div>
                                     </div>
-
-
-                                </div>
-
-
-                                <div class="row">
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
                                             @Html.HiddenFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerId)
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
+                                </div>
 
-                                    <div class="col-lg-4">
+
+                                <div class="row">
+
+
+
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.DebitBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-                                <div class="row">
-
-
-
-
-
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-4">
+                                    <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-
                                 </div>
                                 <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.DebitBatchEntries[0].Multiplier, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Multiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal" } })
-                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Multiplier, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
 
 
                                     <div class="col-lg-3">
@@ -356,16 +326,30 @@
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Reference, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
-
-                                </div>
-
-                                <div class="row">
-                                    <!-- Center the Submit button -->
-                                    <div style="text-align: right; margin: 20px 20px;">
-                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].Multiplier, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Multiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Multiplier, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
 
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div style="text-align: right; margin: 20px 20px;">
+                                            <input type="submit" value="Add Entry" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                        </div>
+                                    </div>
                                 </div>
+                                
+
+                                
 
                                 <br />
                                 <br />
@@ -435,7 +419,7 @@
 
 
                     </div>
-
+                </div>
                     
             </div>
         </div>

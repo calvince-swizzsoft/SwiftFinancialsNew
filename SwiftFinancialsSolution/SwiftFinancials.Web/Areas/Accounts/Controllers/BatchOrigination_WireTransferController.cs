@@ -4,6 +4,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -21,8 +22,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, DateTime startDate,DateTime endDate)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
+
+            DateTime startDate = DateTime.Now.AddDays(-30);
+            DateTime endDate = DateTime.Now.AddDays(+30);
+
             int totalRecordCount = 0;
 
             int status = 0;
@@ -56,13 +61,85 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(wireTransferBatch);
         }
-        public async Task<ActionResult> Create()
+        public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View();
+            }
+
+            var customer = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
+
+            WireTransferBatchDTO wireTransferBatchDTO = new WireTransferBatchDTO();
+
+            if (customer != null)
+            {
+
+                /*wireTransferBatchDTO.WireTransferTypeDescription = customer.;
+                wireTransferBatchDTO.WireTransferTypeId = customer.Id;*/
+            }
+
+
             return View();
         }
+
+        public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, WireTransferBatchDTO  wireTransferBatchDTO)
+        {
+
+            ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
+            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
+
+            Guid parseId;
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                await ServeNavigationMenus();
+
+                return View("Create", wireTransferBatchDTO);
+            }
+
+
+            if (wireTransferBatchDTO != null && wireTransferBatchDTO.WireTransferEntries == null)
+            {
+                wireTransferBatchDTO.WireTransferEntries = new ObservableCollection<WireTransferBatchEntryDTO>();
+            }
+
+            // Ensure at least one entry exists before trying to access it by index
+            if (wireTransferBatchDTO.WireTransferEntries.Count == 0)
+            {
+                wireTransferBatchDTO.WireTransferEntries.Add(new WireTransferBatchEntryDTO());
+            }
+
+
+            var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
+
+            if (creditcustomerAccount != null)
+            {
+                wireTransferBatchDTO.WireTransferEntries[0].WireTranferCustomerAccountFullName = creditcustomerAccount.CustomerFullName;
+                wireTransferBatchDTO.WireTransferEntries[0].CustomerAccountCustomerReference1 = creditcustomerAccount.CustomerReference1;
+                wireTransferBatchDTO.WireTransferEntries[0].CustomerAccountCustomerReference2 = creditcustomerAccount.CustomerReference2;
+                wireTransferBatchDTO.WireTransferEntries[0].CustomerAccountCustomerReference3 = creditcustomerAccount.CustomerReference3;
+                wireTransferBatchDTO.WireTransferEntries[0].WireTransferAccountIdentificationNumber = creditcustomerAccount.CustomerIndividualIdentityCardNumber;
+                wireTransferBatchDTO.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber = creditcustomerAccount.FullAccountNumber;
+                
+                wireTransferBatchDTO.WireTransferEntries[0].ProductDescription = creditcustomerAccount.CustomerAccountTypeProductCodeDescription;
+                wireTransferBatchDTO.WireTransferEntries[0].CustomerAccountCustomerId = creditcustomerAccount.Id;
+                wireTransferBatchDTO.WireTransferEntries[0].WireTransferAccountStatusDescription = creditcustomerAccount.StatusDescription;
+                
+                wireTransferBatchDTO.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers = creditcustomerAccount.CustomerIndividualPayrollNumbers;
+
+
+
+            }
+
+            return View("Create", wireTransferBatchDTO);
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> Create(WireTransferBatchDTO wireTransferBatchDTO)

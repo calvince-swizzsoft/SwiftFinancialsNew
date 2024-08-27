@@ -1,11 +1,8 @@
-﻿@model  Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
+﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
 @{
-    /**/
-
     ViewBag.Title = "Edit Expense Payable";
     var journalVoucherTypes = ViewBag.JournalVoucherTypeSelectList as List<SelectListItem>;
-
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -52,112 +49,118 @@
                 </div>
                 <div class="ibox-content bg-white text-info">
 
+                    @using (Html.BeginForm("Edit", "ExpensePayable", FormMethod.Post, new { @class = "form-horizontal" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <h1>Expense Payable</h1>
 
-                    @Html.AntiForgeryToken()
-                    <h1>Expense Payable</h1>
-
-                    <div class="row">
-                        <div class="col-lg-5">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Type, new { @class = "control-label" })
-                                <div class="input-group">
-                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                    @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
-                                    @Html.ValidationMessageFor(model => model.Type)
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Type, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.Type)
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.BranchId)
+                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableBranchesLookup form-control required", placeholder = "Branch Name" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ChartOfAccountId)
+                                    @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.PostingPeriodId)
+                                    @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
                                 </div>
                             </div>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.BranchId)
-                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableBranchesLookup form-control required", placeholder = "Branch Name" } })
-                            </div>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.ChartOfAccountId)
-                                @Html.ValidationMessageFor(model => model.ChartOfAccountId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
-                            </div>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.PostingPeriodId)
-                                @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "posting period Name" } })
-                            </div>
-
-                        </div>
-                        <div class="col-lg-5">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group" id="data_3">
-                                @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
-                                <div class="input-group date">
-                                    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                    <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                            <div class="col-lg-5">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                </div>
+                                <div class="form-group" id="data_3">
+                                    @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "" })
+                                    <div class="input-group date">
+                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                    </div>
+                                </div>
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                        </div>
+                        <br />
+                        <hr />
+
+                        <h2>Add Expense Payable Entry</h2>
+
+                        <div class="row">
+                            <div class="col-lg-5">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntry.SecondaryDescription, new { htmlAttributes = new { @id = "mainSecondaryDescription", @class = "form-control", @placeholder = "Secondary description", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.SecondaryDescription, "", new { @class = "text-danger" })
+                                </div>
+
+
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntry.PrimaryDescription, new { htmlAttributes = new { @id = "mainPrimaryDescription", @class = "form-control", @placeholder = "Primary description", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.PrimaryDescription, "", new { @class = "text-danger" })
+                                </div>
+
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntries[0].Value, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntries[0].Value, new { htmlAttributes = new { @class = "form-control", @placeholder = "Value", @required = "" } })
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].Value, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="col-lg-5">
+                                
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId)
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Account Name" } })
+                                </div>
+
+                                <div class="form-group form-group-lg" style="text-align: center;">
+                                    @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
+                                    @Html.HiddenFor(model => model.ExpensePayableEntry.BranchId)
+                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.BranchId, "", new { @class = "text-danger" })
+                                    @Html.EditorFor(model => model.ExpensePayableEntry.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Branch Name" } })
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <h2>Add Expense payable Entry</h2>
-
-
-                    <div class="row">
-                        <div class="col-lg-5">
-
-                            <div class="form-group form-group-lg" style="text-align: center;">
-                                @Html.LabelFor(model => model.ExpensePayableEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.ExpensePayableEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Secondary description", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
-                            </div>
-
-                            <div class="form-group form-group-lg" style="text-align: center;">
-                                @Html.LabelFor(model => model.ExpensePayableEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.ExpensePayableEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "primary description", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
+                        <div class="form-group">
+                            <div class="col-lg-12 text-right">
+                                <button type="submit" class="btn btn-primary">Update</button>
+                                @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
                             </div>
                         </div>
-                        <div class="col-lg-5">
-
-                            <div class="form-group form-group-lg" style="text-align: center;">
-                                @Html.LabelFor(model => model.ExpensePayableEntries[0].TotalValue, htmlAttributes: new { @class = "control-label" })
-                                @Html.EditorFor(model => model.ExpensePayableEntries[0].TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", @required = "" } })
-                                @Html.ValidationMessageFor(model => model.ExpensePayableEntries[0].TotalValue, "", new { @class = "text-danger" })
-                            </div>
-                            <div class="form-group form-group-lg" style="text-align: center;">
-                                @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId)
-                                @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "EntriesChartOfAccountsLookup form-control required", placeholder = "Chart of Acccount Name" } })
-                            </div>
-
-                            <div class="form-group form-group-lg" style="text-align: center;">
-                                @Html.LabelFor(model => model.ExpensePayableEntry.BranchId, htmlAttributes: new { @class = "control-label" })
-                                @Html.HiddenFor(model => model.ExpensePayableEntry.BranchId)
-                                @Html.ValidationMessageFor(model => model.ExpensePayableEntry.BranchId, "", new { @class = "text-danger" })
-                                @Html.EditorFor(model => model.ExpensePayableEntry.BranchDescription, new { htmlAttributes = new { @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "posting period Name" } })
-                            </div>
-                          
-                        </div>
-                    </div>
-
-
-                </div>
-                <div>
-                    @Html.ActionLink("Back to List", "Index", "ExpensePayable", new { Area = "FrontOffice" }, new { @class = "btn btn-success" })
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
+
 
 
 @section Styles{

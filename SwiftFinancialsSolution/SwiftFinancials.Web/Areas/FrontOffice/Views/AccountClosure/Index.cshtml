@@ -1,11 +1,68 @@
-﻿﻿﻿
-@{
-    ViewBag.Title = "AccountClosure";
+﻿@{
+    ViewBag.Title = "Account Closure";
 }
+
+<style>
+
+    .nav {
+        display: flex;
+        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+        padding: 0;
+        margin: 5px;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
+        gap: 10px; /* Space between links */
+        text-align: center; /* Centers the text inside links */
+
+        padding:10px;
+    }
+
+    .nav-link {
+        display: flex;
+
+
+        text-decoration: none;
+        color: #007bff; /* Default text color */
+        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Adjust font size for better fit */
+        white-space: nowrap; /* Prevents text from wrapping inside the link */
+
+       @* border: 1px solid #007bff;*@ /* Border color and style */
+    }
+
+        .nav-link:hover {
+            color: #fff; /* Text color on hover */
+            background-color: #0056b3; /* Background color on hover */
+        }
+
+        .nav-link i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 16px; /* Adjust icon size */
+        }
+
+        .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+</style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Account Closure</h2>
+        <h2>Account Closure </h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -17,10 +74,12 @@
     </div>
 </div>
 
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+
                 <div class="ibox-title">
                     @Html.ActionLink("Create AccountClosure", "Create", "AccountClosure", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
 
@@ -35,8 +94,9 @@
                     {
                         <div class="alert alert-danger">
                             @TempData["ErrorMessage"]
-                        </div>
-                    }
+                        </div>}
+
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -46,6 +106,7 @@
                         </a>
                     </div>
                 </div>
+
                 <div class="ibox-content">
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
@@ -68,91 +129,64 @@
     </div>
 </div>
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
+@section Styles {
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
+@section scripts {
     @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
-
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#AccountClosuresGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "AccountClosure", new { Area = "FrontOffice"}))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/frontoffice/accountClosure/verify/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Verify</a>';
-                    var viewUrl = '<a  href="/frontoffice/accountClosure/approval/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Approve</a>';
-
-                    $('td:eq(5)', nRow).html(dt_Created);
+                    
 
                     var dropdownHtml = `
                         <div class="dropdown">
-                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Actions
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
                             </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/frontoffice/accountClosure/verify/${aData.Id}">Verify</a>
-                                <a class="dropdown-item" href="/frontoffice/accountClosure/approval/${aData.Id}">Approve</a>
-                            </div>
-                        </div>`;
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                    $('td:eq(12)', nRow).html(dropdownHtml);
+                   
+                    var verifyButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/verify/${aData.Id}">Verify</a>`;
+                    var approvalButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/approval/${aData.Id}">Approval</a>`;
+                    $('td:eq(9)', nRow).html(dt_Created);
+
+
+                    switch (aData.Status) {
+                        case 1: // Pending
+                            dropdownHtml += verifyButton + approvalButton;
+                            break;
+                        case 8: // Audited
+                            dropdownHtml += approvalButton;
+                            break;
+                        default:
+                            dropdownHtml += verifyButton + approvalButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
+
+                    $('td:eq(10)', nRow).html(dropdownHtml);
+
+
                     return nRow;
                 },
-                // Display settings
+
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
@@ -162,20 +196,59 @@
                     { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerTypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerSerialNumber", "sTitle": "Serial Number", "sWidth": "15%" },
-                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
-                    { "mDataProp": "CustomerAccountId", "sTitle": "Customer Account Id", "sWidth": "15%" },
                     { "mDataProp": "Reason", "sTitle": "Reason", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
+
+
+    <style>
+        .nav-tabs {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            border-bottom: 2px solid #ccc;
+        }
+
+            .nav-tabs li {
+                margin-right: 10px;
+            }
+
+            .nav-tabs a {
+                text-decoration: none;
+                padding: 10px 15px;
+                display: block;
+                border: 1px solid #ccc;
+                border-bottom: none;
+                background: #f0f0f0;
+                color: #333;
+            }
+
+                .nav-tabs a.active {
+                    background: #fff;
+                    border-bottom: 2px solid #fff;
+                    font-weight: bold;
+                }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ccc;
+        }
+
+            .tab-content.active {
+                display: block;
+            }
+    </style>
 }

@@ -1,4 +1,4 @@
-﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
+﻿﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.ExpensePayableDTO
 
 @{
     ViewBag.Title = "Approve Expense Payable";
@@ -15,7 +15,7 @@
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
             <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Index", "ExpenseApproval", new { Area = "FrontOffice" }, null)
+                @Html.ActionLink("Home", "Index", "ExpensePayable", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
                 <strong>Approve</strong>
@@ -49,7 +49,7 @@
                             <div class="row">
                                 <div class="col-lg-4">
 
-                                   
+
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
@@ -65,7 +65,7 @@
                                         @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                     </div>
-                                    
+
                                 </div>
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
@@ -88,9 +88,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="form-group form-group-sm d-flex justify-content-end">
-                                        <input type="submit" value="Approve" class="btn btn-primary" />
-                                    </div>
+                                    
 
 
                                 </div>
@@ -120,7 +118,64 @@
                                 </div>
 
                             </div>
+
+
+                            <!-- Tab Navigation -->
+                            <div class="container mt-4">
+                                <ul class="nav nav-tabs" role="tablist">
+                                    <li class="nav-item">
+                                        <a class="nav-link active" id="entries-tab" data-toggle="tab" href="#entries" role="tab" aria-controls="entries" aria-selected="true">Entries</a>
+                                    </li>
+                                </ul>
+
+                                <!-- Tab Content -->
+                                <div class="tab-content mt-3">
+                                    <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
+                                        <!-- Table for Entries -->
+                                        <table id="ExpensePayableEntries" class="footable table table-striped toggle-arrow-tiny grey-table" style="color: black; width: 100%;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                <tr>
+                                                    <th style="width: 15%">Branch</th>
+                                                    <th style="width: 15%;">G/L Account Name</th>
+                                                    <th style="width: 10%;">Reference</th>
+                                                    <th style="width: 20%;">Primary description</th>
+                                                    <th style="width: 20%;">Secondary description</th>
+                                                    <th style="width: 10%;">Value</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.ExpensePayableEntryDTOs != null)
+                                                {
+                                                    foreach (var expensePayableEntries in ViewBag.ExpensePayableEntryDTOs)
+                                                    {
+                                                        <tr>
+                                                            <td>@expensePayableEntries.BranchDescription</td>
+                                                            <td>@expensePayableEntries.ChartOfAccountAccountName</td>
+                                                            <td>@expensePayableEntries.Reference</td>
+                                                            <td>@expensePayableEntries.PrimaryDescription</td>
+                                                            <td>@expensePayableEntries.SecondaryDescription</td>
+                                                            <td>@expensePayableEntries.Value</td>
+                                                            <td><!-- Action Buttons --></td>
+                                                        </tr>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <tr>
+                                                        <td colspan="7" class="text-center">No entries available.</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
                         </fieldset>
+
+
+                        <div class="form-group form-group-sm d-flex justify-content-end">
+                            <input type="submit" value="Approve" class="btn btn-primary" />
+                        </div>
                     }
 
                 </div>

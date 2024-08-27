@@ -127,6 +127,20 @@
                         </div>
                     }
 
+                    @if (TempData["VerifySuccess"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["VerifySuccess"]
+                        </div>
+                    }
+
+                    @if (TempData["AuthorizeSuccess"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AuthorizeSuccess"]
+                        </div>
+                    }
+
 
                     @Html.ActionLink("Create Credit Batch", "Create", "BatchOrigination_Credit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
@@ -235,7 +249,7 @@
                             break;
                         case 8:
                             dropdownHtml += viewButton + authorizeButton;
-                            break;
+                            break;  
                         case 2:
                             dropdownHtml += viewButton;
                             break;

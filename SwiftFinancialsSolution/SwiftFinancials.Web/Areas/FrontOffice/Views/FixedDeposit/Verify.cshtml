@@ -1,11 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.FixedDepositDTO
 
 @{
-    /**/
-
-    ViewBag.Title = "Create Fixed Deposit";
-
-
+    ViewBag.Title = "Verify Fixed Deposit";
 }
 
 <head>
@@ -26,11 +22,56 @@
                 display: block;
             }
     </style>
+
+    <script>
+        $(document).ready(function () {
+            // Function to handle the fixed deposit type selection
+            $('#fixedDepositTypeLookupButton').on('click', function () {
+                $('#fixedDepositTypeLookupModal').modal('show');
+            });
+
+            // Function to handle the customer lookup
+            $('#customerLookupButton').on('click', function () {
+                $('#customerLookupModal').modal('show');
+            });
+
+            // Event listener for selection from the Fixed Deposit Type lookup
+            $('#FixedDepositTypeGrid').on('click', 'tr', function () {
+                var selectedTypeId = $(this).data('id');
+                var selectedTypeDescription = $(this).data('description');
+                $('#fixedDepositTypeId').val(selectedTypeId);
+                $('#FixedDepositTypeDescription').val(selectedTypeDescription);
+                $('#fixedDepositTypeLookupModal').modal('hide');
+                // Auto-populate other fields (e.g., Value, Rate) based on selected type
+                // Example: populateFieldsBasedOnType(selectedTypeId);
+            });
+
+            // Event listener for customer selection
+            $('#CustomerAccountsGrid').on('click', 'tr', function () {
+                var selectedCustomerId = $(this).data('id');
+                var selectedCustomerDescription = $(this).data('description');
+                $('#customerId').val(selectedCustomerId);
+                $('#CustomerAccountCustomerNonIndividualDescription').val(selectedCustomerDescription);
+                $('#customerLookupModal').modal('hide');
+            });
+
+            // Handle the Add button functionality
+            $('#addEntryButton').on('click', function () {
+                var $template = $('#fixedDepositTemplate').html();
+                $('#fixedDepositEntries').append($template);
+            });
+
+            // Handle the Remove button functionality
+            $('#fixedDepositEntries').on('click', '.remove-entry-button', function () {
+                $(this).closest('.fixed-deposit-entry').remove();
+            });
+        });
+    </script>
 </head>
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
-        <h2>Fix Deposit</h2>
+        <h2>Verify Fixed Deposit</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -39,7 +80,7 @@
                 @Html.ActionLink("Home", "Index", "FixedDeposit", new { Area = "FrontOffice" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Create</strong>
+                <strong>Verify</strong>
             </li>
         </ol>
     </div>
@@ -61,36 +102,26 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
-                    @using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Verify", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.BranchId)
                         @Html.HiddenFor(model => model.FixedDepositTypeId)
                         @Html.HiddenFor(model => model.CustomerAccountId)
-
-
-
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
 
                         <div class="form-horizontal">
 
                             <!-- First Row -->
                             <div class="row">
-                                <div class="col-md-4">
-                                    <!-- Full Account Number with Lookup Modal -->
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number:", new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.TextBoxFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountCustomerNonIndividualDescription" }) <!-- Unique ID here -->
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
-                                                    <span class="fa fa-search"></span>
-                                                </a>
-                                            </span>
-                                        </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CustomerAccountFullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Full Account Number", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.CustomerAccountFullAccountNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+
 
 
                                 <div class="col-lg-4">
@@ -101,7 +132,6 @@
                                     </div>
                                 </div>
 
-
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.AvailableBalance, htmlAttributes: new { @class = "control-label" })
@@ -109,13 +139,10 @@
                                         @Html.ValidationMessageFor(model => model.AvailableBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-
                             </div>
-
 
                             <!-- Second Row -->
                             <div class="row">
-
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
@@ -140,7 +167,6 @@
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
-
                             </div>
 
                             <!-- Third Row -->
@@ -248,85 +274,110 @@
                                 </div>
                                 <input type="hidden" id="fixedDepositTypeId" name="FixedDepositTypeId" />
 
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CreatedDate, "Create Date:", new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "YYYY-MM-DD", @readonly = "readonly" } })
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.CreatedBy, "Create By:", new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control", @placeholder = "YYYY-MM-DD", @readonly = "readonly" } })
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group" id="data_3">
+                                        @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="AuditedDate" class="form-control" readonly="readonly" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.Label("Action:", new { @class = "control-label" })
+                                        <select id="Action" class="form-control">
+                                            <option value="Post">Post</option>
+                                            <option value="Reject">Reject</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks" } })
+                                        @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
                             </div>
 
                             <br />
                             <hr />
 
+
+
+
                             <ul class="nav nav-tabs">
+
+
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#FixedDepositPayable">Fixed Deposit Payables</a>
-                                </li>
-                            </ul>
 
+                                </li>
+
+
+                            </ul>
                             <div class="tab-content">
+                                <!-- Loan Accounts Tab Content -->
                                 <div id="fixedDepositPayable" class="tab-pane fade show active">
                                     <div id="fixedDepositEntries">
-                                        @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
-                                        {
-                                            <table class="table table-bordered">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Full Account Number</th>
-                                                        <th>Product Name</th>
-                                                        <th>Book Balance</th>
-                                                        <th>Principal Balance</th>
-                                                        <th>Interest Balance</th>
-                                                        <th>Select</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @foreach (var account in ViewBag.LoanAccounts)
-                                                    {
+                                        <div id="noEntriesMessage">
+
+
+
+                                            @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
+                                            {
+                                                <table class="table table-bordered">
+                                                    <thead>
                                                         <tr>
-                                                            <td>@account.FullAccountNumber</td>
-                                                            <td>@account.CustomerAccountTypeTargetProductDescription</td>
-                                                            <td>@account.BookBalance</td>
-                                                            <td>@account.PrincipalBalance</td>
-                                                            <td>@account.InterestBalance</td>
-                                                            <td>
-                                                                <input type="checkbox" name="selectedAccounts" value="@account.FullAccountNumber" />
-                                                                <input type="hidden" name="accountDetails" data-account="@account.FullAccountNumber"
-                                                                       data-product="@account.CustomerAccountTypeTargetProductDescription"
-                                                                       data-bookbalance="@account.BookBalance"
-                                                                       data-principalbalance="@account.PrincipalBalance"
-                                                                       data-interestbalance="@account.InterestBalance" />
-                                                            </td>
+                                                            <th>Full Account Number</th>
+                                                            <th>Product Name</th>
+                                                            <th>Book Balance</th>
+                                                            <th>Principal Balance</th>
+                                                            <th>Interest Balance</th>
                                                         </tr>
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        }
-                                        else
-                                        {
-                                            <p>No Fixed Deposit Payable.</p>
-                                        }
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <!-- Template for adding new Fixed Deposit Payable -->
-                            <div id="fixedDepositTemplate" class="d-none">
-                                <div class="fixed-deposit-entry border p-3 mt-2">
-                                    <div class="form-row">
-                                        <div class="col">
-                                            <input type="text" name="FullAccountNumber[]" class="form-control" placeholder="Full Account Number" />
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" name="ProductName[]" class="form-control" placeholder="Product Name" />
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" name="BookBalance[]" class="form-control" placeholder="Book Balance" />
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" name="PrincipalBalance[]" class="form-control" placeholder="Principal Balance" />
-                                        </div>
-                                        <div class="col">
-                                            <input type="text" name="InterestBalance[]" class="form-control" placeholder="Interest Balance" />
-                                        </div>
-                                        <div class="col-auto">
-                                            <button type="button" class="btn btn-danger remove-entry-button">Remove</button>
+                                                    </thead>
+                                                    <tbody>
+                                                        @foreach (var levySplit in ViewBag.LoanAccounts)
+                                                        {
+                                                            <tr>
+                                                                <td>@levySplit.FullAccountNumber</td>
+                                                                <td>@levySplit.CustomerAccountTypeTargetProductDescription</td>
+                                                                <td>@levySplit.BookBalance</td>
+                                                                <td>@levySplit.PrincipalBalance</td>
+                                                                <td>@levySplit.InterestBalance</td>
+                                                            </tr>
+                                                        }
+                                                    </tbody>
+                                                </table>
+                                            }
+                                            else
+                                            {
+                                                <p>No Fixed Deposit Payable.</p>
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -335,18 +386,14 @@
 
 
 
-                        </div>
 
-
-                        <div class="ibox-content bg-white text-info">
-                            <div class="col-lg-3" style="float: right;">
-                                <input type="submit" style="width: 100px;" value="Create" class="btn btn-primary" />
+                            <div class="col-md-6">
+                                <div class="form-group text-right">
+                                    <button type="submit" class="btn btn-primary">Update</button>
+                                </div>
                             </div>
                         </div>
                     }
-
-
-
 
 
 
@@ -386,8 +433,8 @@
 
 
 <!--FixedDepositType-->
-
-<div class="modal  fade" id="fixedDepositTypeLookupModal" role="dialog" aria-hidden="true">
+<!-- Modal for Lookup -->
+<div class="modal fade" id="fixedDepositTypeLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header bg-primary">
@@ -397,12 +444,21 @@
                 </h3>
             </div>
             <table id="FixedDepositTypeGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                <tbody>
+                <thead>
                     <tr>
-                        <td class="dataTables_empty">
-                            Loading data from server
-                        </td>
+                        <th>Description</th>
+                        <th>Status</th>
+                        <th>Select</th>
                     </tr>
+                </thead>
+                <tbody>
+                    <!-- Sample Data (Replace with actual server-side data) -->
+                    <tr>
+                        <td>Fixed Deposit 1</td>
+                        <td>New</td>
+                        <td><button type="button" class="btn btn-primary select-fixed-deposit-type" data-description="Fixed Deposit 1" data-status="New" data-id="1">Select</button></td>
+                    </tr>
+                    <!-- Add more rows as needed -->
                 </tbody>
             </table>
         </div>
@@ -411,8 +467,6 @@
         </div>
     </div>
 </div>
-
-<input type="hidden" id="fixedDepositTypeId" name="fixedDepositTypeId" />
 
 
 
@@ -568,7 +622,8 @@
         "sAjaxSource": "@(Url.Action("Index", "FixedDepositType", new { Area = "Accounts"}))",
         "sServerMethod": "POST",
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var selectUrl = '<a  href="/FrontOffice/FixedDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+            var selectUrl = '<button type="button" class="btn btn-outline-info select-fixed-deposit-type" ' +
+                            'data-id="' + aData.Id + '" data-description="' + aData.Description + '">Select</button>';
             $('td:eq(1)', nRow).html(selectUrl);
             return nRow;
         },
@@ -589,32 +644,16 @@
     });
     </script>
 
+
     <script>
-        document.getElementById('addEntryButton').addEventListener('click', function () {
-            var template = document.getElementById('fixedDepositTemplate').innerHTML;
-            var container = document.getElementById('fixedDepositEntries');
-
-            container.insertAdjacentHTML('beforeend', template);
-
-            // Show remove buttons and hide "No Entries" message
-            document.getElementById('noEntriesMessage').style.display = 'none';
-
-            // Add event listener to remove button
-            container.querySelectorAll('.remove-entry-button').forEach(function (button) {
-                button.addEventListener('click', function () {
-                    this.closest('.fixed-deposit-entry').remove();
-
-                    // Show "No Entries" message if all entries are removed
-                    if (container.children.length === 0) {
-                        document.getElementById('noEntriesMessage').style.display = 'block';
-                    }
-                });
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
             });
         });
     </script>
-
-
-
 }
-
-
