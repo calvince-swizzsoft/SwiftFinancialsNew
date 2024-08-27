@@ -161,21 +161,24 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                   
+                    var viewButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/Details/${aData.Id}">View</a>`;
+                    var editButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/Edit/${aData.Id}">Edit</a>`;
                     var verifyButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/verify/${aData.Id}">Verify</a>`;
-                    var approvalButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/approval/${aData.Id}">Approval</a>`;
-                    $('td:eq(9)', nRow).html(dt_Created);
+                    var approvalButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/approval/${aData.Id}">Approve</a>`;
 
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += verifyButton + approvalButton;
+                            dropdownHtml += viewButton + editButton + verifyButton + approvalButton;
                             break;
                         case 8: // Audited
-                            dropdownHtml += approvalButton;
+                            dropdownHtml += viewButton + approvalButton;
+                            break;
+                        case 2: // Posted
+                            dropdownHtml += viewButton;
                             break;
                         default:
-                            dropdownHtml += verifyButton + approvalButton;
+                            dropdownHtml += viewButton;
                             break;
                     }
 
@@ -189,13 +192,13 @@
 
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Account Number", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerReference2", "sTitle": "Memebership Number", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerReference3", "sTitle": "Personal File", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerTypeDescription", "sTitle": "Type", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerSerialNumber", "sTitle": "Serial Number", "sWidth": "15%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "Reason", "sTitle": "Reason", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "3%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],

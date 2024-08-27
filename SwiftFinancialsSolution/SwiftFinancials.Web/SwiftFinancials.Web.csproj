@@ -1143,13 +1143,11 @@
     <Content Include="Areas\FrontOffice\Views\SundryPayments\Create.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Transfers\Create.cshtml" />
     <Content Include="Areas\Registry\Views\Customer\AccountAlerts.cshtml" />
-<<<<<<< HEAD
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Verify.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Terminate.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Liquidation.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Catalogue.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Details.cshtml" />
-=======
     <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
@@ -1164,7 +1162,6 @@
     <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <Content Include="Areas\Registry\Views\NextofKin\Create.cshtml" />
->>>>>>> c27cec8bb4de1f0ce4e1cbbaccd58a40f7ef3110
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

@@ -26,30 +26,55 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
-
             int searchRecordCount = 0;
 
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
+            var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            // Define the page size and index
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            int pageSize = jQueryDataTablesModel.iDisplayLength;
 
+            // Fetch data with the provided filter and pagination parameters
             var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(
-                            jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart,
-                            jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader()
-                        );
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                jQueryDataTablesModel.sSearch,
+                0,  // Assuming customerFilter is not used, or set it as needed
+                pageIndex,
+                pageSize,
+                false, // Assuming includeProductDescription is not used, or set it as needed
+                GetServiceHeader()
+            );
+
+            if (pageCollectionInfo != null)
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
+                // Sort the collection based on the sorting criteria
+                var sortedData = pageCollectionInfo.PageCollection
+                    .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime)) // Adjust sorting as needed
+                    .ToList();
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(expensePayable => expensePayable.CreatedDate).ToList();
+                // Determine the count of records matching the search criteria
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                return this.DataTablesJson(
+                    items: sortedData,
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
             }
-            else return this.DataTablesJson(items: new List<AccountClosureRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else
+            {
+                return this.DataTablesJson(
+                    items: new List<AccountClosureRequestDTO>(),
+                    totalRecords: totalRecordCount,
+                    totalDisplayRecords: searchRecordCount,
+                    sEcho: jQueryDataTablesModel.sEcho
+                );
+            }
         }
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -99,8 +124,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     accountClosureRequestDTO.CustomerAccountCustomerId = customer.CustomerId;
                     accountClosureRequestDTO.BranchId = customer.BranchId;
                     accountClosureRequestDTO.CustomerAccountId = customer.Id;
+                    accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
 
-                    
+
                     // Fetch loan accounts for the customer based on customer ID and product type ID
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
                         customer.CustomerId, 
@@ -202,47 +228,48 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-            PopulateViewBags(accountClosureRequestDTO);
+
+
             return View(accountClosureRequestDTO);
+
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            if (ModelState.IsValid)
+            int auditAccountClosureRequestAsync = 1;
+
+            if (!accountClosureRequestDTO.HasErrors)
             {
                 try
                 {
-                    // Assuming you need to determine the audit option here. Replace with actual logic as needed.
-                    int accountClosureAuditOption = GetAuditOption(accountClosureRequestDTO);
+                    await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestAsync, GetServiceHeader());
 
-                    // Call the AuditAccountClosureRequestAsync method
-                    bool auditResult = await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureAuditOption, GetServiceHeader());
-
-                    if (auditResult)
-                    {
-                        // Optionally, you might want to update the account closure request status or details here
-                        // await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
-
-                        return RedirectToAction("Index");
-                    }
-                    else
-                    {
-                        // Handle the case where the audit operation failed
-                        ModelState.AddModelError("", "Failed to audit account closure request.");
-                    }
+                    // Set a success message in TempData
+                    TempData["SuccessMessage"] = "Account closure request Edited successfully.";
+                    return RedirectToAction("Index");
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Log the exception (ex) if necessary
-                    ModelState.AddModelError("", "An error occurred while processing your request.");
+                    // Log the exception if needed
+                    Debug.WriteLine($"Error verifying account closure request: {ex.Message}");
+
+                    // Set an error message in TempData
+                    TempData["ErrorMessage"] = "An error occurred while  the account closure request. Please try again.";
                 }
             }
+            else
+            {
+                // Set an error message if there are validation errors
+                TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
+            }
 
-            PopulateViewBags(accountClosureRequestDTO);
+            // Repopulate the view bags and return the view with the model
             return View(accountClosureRequestDTO);
         }
+
 
 
         // Method to determine the audit option (provide your implementation)
@@ -257,7 +284,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
 
@@ -293,7 +319,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             // Repopulate the view bags and return the view with the model
-            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
 
@@ -301,7 +326,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-            PopulateViewBags(accountClosureRequestDTO);
 
 
             return View(accountClosureRequestDTO);
@@ -341,46 +365,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
 
             // Repopulate the view bags and return the view with the model
-            PopulateViewBags(accountClosureRequestDTO);
             return View(accountClosureRequestDTO);
         }
 
-        // Action to handle Customer Look Up
-        public async Task<JsonResult> CustomerLookUp(Guid customerId)
-        {
-            if (customerId == Guid.Empty)
-            {
-                return Json(new { success = false, message = "Invalid customer ID" }, JsonRequestBehavior.AllowGet);
-            }
 
-            var CustomerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(customerId, true, true, true, true, GetServiceHeader());
+        
 
-            if (CustomerAccounts != null)
-            {
-                ViewBag.CustomerAccounts = CustomerAccounts;
-                return Json(new { success = true, accounts = CustomerAccounts }, JsonRequestBehavior.AllowGet);
-            }
-            else
-            {
-                return Json(new { success = false, message = "The selected customer has no associated/attached accounts" }, JsonRequestBehavior.AllowGet);
-            }
-        }
-
-        private void PopulateViewBags(AccountClosureRequestDTO accountClosureRequestDTO)
-        {
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(accountClosureRequestDTO.CustomerAccountCustomerType.ToString());
-        }
-
-        private AccountClosureRequestDTO PopulateAccountClosureDTO(AccountClosureRequestDTO dto, CustomerAccountDTO customerAccount)
-        {
-            dto.CustomerAccountCustomerId = customerAccount.Id;
-            dto.CustomerAccountId = customerAccount.Id;
-            dto.CustomerAccountCustomerIndividualFirstName = customerAccount.FullAccountNumber;
-            dto.CustomerAccountCustomerIndividualPayrollNumbers = customerAccount.CustomerIndividualPayrollNumbers;
-            dto.CustomerAccountCustomerSerialNumber = customerAccount.CustomerSerialNumber;
-            dto.CustomerAccountCustomerIndividualIdentityCardNumber = customerAccount.CustomerIndividualIdentityCardNumber;
-            dto.CustomerAccountCustomerIndividualLastName = customerAccount.CustomerIndividualFirstName + " " + customerAccount.CustomerIndividualLastName;
-            return dto;
-        }
+        
     }
 }

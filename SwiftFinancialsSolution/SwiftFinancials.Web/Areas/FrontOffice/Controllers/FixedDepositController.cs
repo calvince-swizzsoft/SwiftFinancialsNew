@@ -132,7 +132,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     // Populate the DTO with customer details
                     fixedDepositDTO.CustomerAccountCustomerNonIndividualDescription = customer.FullAccountNumber;
                     fixedDepositDTO.CustomerAccountCustomerIndividualLastName = customer.StatusDescription;
-                    fixedDepositDTO.AvailableBalance = customer.AvailableBalance;
+                    fixedDepositDTO.TotalExpected = customer.AvailableBalance;
                     fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
                     fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                     fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
@@ -291,7 +291,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             fixedDepositDTO.ValidateAll();
 
             // Define the fixed deposit authentication option
-            int fixedDepositAuthOption =1;
+            int fixedDepositAuthOption = 1;
 
             // Define the module navigation item code (assuming you have this property in your DTO or need to set it)
             int moduleNavigationItemCode = fixedDepositDTO.ModuleNavigationItemCode;
@@ -312,7 +312,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         // Set success message
                         TempData["verifySuccess"] = "Fixed deposit has been successfully verified.";
 
-                       
                         // Redirect to Index action
                         return RedirectToAction("Index");
                     }
@@ -327,10 +326,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         return View(fixedDepositDTO);
                     }
                 }
+                catch (InvalidOperationException ex)
+                {
+                    // Handle specific InvalidOperationException (e.g., insufficient balance)
+                    TempData["verifyError"] = "An error occurred while verifying the fixed deposit: " + ex.Message;
+
+                    // Prepare view bags for the view
+                    ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
+
+                    return View(fixedDepositDTO);
+                }
                 catch (Exception ex)
                 {
-                    // Handle exceptions
-                    TempData["verifyError"] = "An error occurred while verifying the fixed deposit: " + ex.Message;
+                    // Handle general exceptions
+                    TempData["verifyError"] = "An unexpected error occurred while verifying the fixed deposit: " + ex.Message;
 
                     // Prepare view bags for the view
                     ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
@@ -349,6 +358,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View(fixedDepositDTO);
             }
         }
+
 
 
 
