@@ -96,6 +96,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.SalaryHeadTypeSelectList = GetsystemPermissionTypeList(string.Empty);
+
             return View();
             
         }

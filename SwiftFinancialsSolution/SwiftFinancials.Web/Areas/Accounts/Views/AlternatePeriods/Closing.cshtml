@@ -61,52 +61,40 @@
 
                             <div class="row">
                                 <div class="col-lg-6">
-                                    <div class="form-group" id="data_3">
+                                    <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="startDate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                        </div>
+                                        @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "DurationStartDate", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
                                     </div>
 
                                 </div>
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AlternateChannelType, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.AlternateChannelType, customerTypes, new { @class = "form-control input-md" })
-                                            @Html.HiddenFor(model => model.AlternateChannelType, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.AlternateChannelType)
-                                        </div>
+                                        @Html.LabelFor(model => model.AlternateChannelTypeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.AlternateChannelTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "AlternateChannelTypeDescription", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.AlternateChannelTypeDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
                                 <div class="col-lg-6">
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.DurationEndDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="endDate" class="form-control" value="@DateTime.Today.ToString("dd/MM/yyyy")">
-                                        </div>
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.DurationStartDate, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.DurationStartDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "DurationStartDate", disabled = "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.DurationStartDate, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.SetDifferenceMode, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.SetDifferenceMode, y, new { @class = "form-control input-md" })
-                                            @Html.HiddenFor(model => model.SetDifferenceMode, new { htmlAttributes = new { @class = "form-control" } })
-                                            @Html.ValidationMessageFor(model => model.SetDifferenceMode)
-                                        </div>
+                                        @Html.LabelFor(model => model.SetDifferenceModeDescription, htmlAttributes: new { @class = "" })
+                                        @Html.EditorFor(model => model.SetDifferenceModeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "SetDifferenceModeDescription",disabled= "disabled" } })
+                                        @Html.ValidationMessageFor(model => model.SetDifferenceModeDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", disabled = "disabled" } })
                                         @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                     </div>
                                 </div>

@@ -55,6 +55,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
            var k= await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
             ViewBag.history = k;
+            bankReconciliationPeriodDTO.Value = k.PageCollection[0].Value;
+            bankReconciliationPeriodDTO.Remarks = k.PageCollection[0].Remarks;
             return View(bankReconciliationPeriodDTO);
         }
 
@@ -220,8 +222,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var bankReconciliationPeriodDTO = await _channelService.FindBankReconciliationPeriodAsync(id, GetServiceHeader());
             var k = await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
-            ViewBag.history = k;
-            
+            if (k.ItemsCount !=0)
+            {
+                ViewBag.history = k;
+
+                // var k = await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
+                ViewBag.history = k;
+                bankReconciliationPeriodDTO.Value = k.PageCollection[0].Value;
+                bankReconciliationPeriodDTO.Remarks = k.PageCollection[0].Remarks;
+            }
             return View(bankReconciliationPeriodDTO);
         }
 
@@ -239,7 +248,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 bankReconciliationEntryDTO.ChequeNumber = bankReconciliationPeriodDTO.ChequeNumber;
                 bankReconciliationEntryDTO.ChequeDrawee = bankReconciliationPeriodDTO.ChequeDrawee;
                 bankReconciliationEntryDTO.Value = bankReconciliationPeriodDTO.Value;
-
+                bankReconciliationEntryDTO.Remarks = bankReconciliationPeriodDTO.Remarks;
 
 
                 await _channelService.AddBankReconciliationEntryAsync(bankReconciliationEntryDTO, GetServiceHeader());
@@ -259,7 +268,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var bankReconciliationPeriodDTO = await _channelService.FindBankReconciliationPeriodAsync(id, GetServiceHeader());
+            var k = await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
+            if (k.ItemsCount != 0)
+            {
+                ViewBag.history = k;
 
+                // var k = await _channelService.FindBankReconciliationEntriesByBankReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, "", 0, 10, GetServiceHeader());
+                ViewBag.history = k;
+                bankReconciliationPeriodDTO.Value = k.PageCollection[0].Value;
+                bankReconciliationPeriodDTO.Remarks = k.PageCollection[0].Remarks;
+            }
             return View(bankReconciliationPeriodDTO);
         }
 

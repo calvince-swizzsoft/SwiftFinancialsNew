@@ -35,7 +35,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindAlternateChannelsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindAlternateChannelsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -191,7 +191,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (!alternateChannelDTO.HasErrors)
             {
                 var result = await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
-                System.Windows.Forms.MessageBox.Show("Test");
+               // System.Windows.Forms.MessageBox.Show("Test");
                 TempData["SuccessMessage"] =  $"Successfully created Alternate channel For Member {alternateChannelDTO.CustomerFullName}";
 
                 if (result.ErrorMessageResult != null)

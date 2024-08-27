@@ -57,6 +57,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
         public async Task<ActionResult> AlternateChannels(AlternateChannelTypeCommissionDTO systemTransactionTypeInCommissionDTO)
         {
+            ViewBag.QueuePrioritySelectList = GetAlternateChannelKnownChargeTypeSelectList(string.Empty);
+            ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
+
             Session["AlternateChannelType"] = systemTransactionTypeInCommissionDTO.AlternateChannelType;
             Session["KnownChargeType"] = systemTransactionTypeInCommissionDTO.KnownChargeType;
             Session["ChargeBenefactor"] = systemTransactionTypeInCommissionDTO.ChargeBenefactor;
@@ -78,8 +82,21 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(AlternateChannelTypeCommissionDTO levyDTO, CustomerAccountDTO customerAccountDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
-            levyDTO.ValidateAll();
+           
+            if(Session["AlternateChannelType"] !=null)
+            {
+                levyDTO.AlternateChannelType = (int)Session["AlternateChannelType"];
+            }
+            if (Session["KnownChargeType"] != null)
+            {
+                levyDTO.AlternateChannelType = (int)Session["KnownChargeType"];
+            }
+            if (Session["ChargeBenefactor"] != null)
+            {
+                levyDTO.AlternateChannelType = (int)Session["ChargeBenefactor"];
+            }
             int alternateChannelType = levyDTO.AlternateChannelType, alternateChannelTypeKnownChargeType = levyDTO.KnownChargeType, chargeBenefactor=levyDTO.ChargeBenefactor; decimal totalValue = 0;
+            levyDTO.ValidateAll();
             if (!levyDTO.HasErrors)
             {
                 await _channelService.UpdateCommissionsByAlternateChannelTypeAsync(alternateChannelType,selectedRows,alternateChannelTypeKnownChargeType,chargeBenefactor ,GetServiceHeader());

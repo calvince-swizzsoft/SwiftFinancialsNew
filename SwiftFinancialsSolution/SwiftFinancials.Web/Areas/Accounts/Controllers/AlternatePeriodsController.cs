@@ -7,6 +7,7 @@ using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -36,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
             DateTime startDate = DateTime.Now.AddDays(-30);
             DateTime endDate = DateTime.Now.AddDays(+30);
-            var pageCollectionInfo = await _channelService.FindAlternateChannelReconciliationPeriodsByFilterInPageAsync(3, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindAlternateChannelReconciliationPeriodsByFilterInPageAsync(1, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -53,39 +54,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        //public async Task<ActionResult> Closing()
-        //{
-        //    await ServeNavigationMenus();
+        public async Task<ActionResult> Clos()
+        {
+            await ServeNavigationMenus();
 
-        //    return View();
-        //}
+            return View();
+        }
 
-        //[HttpPost]
-        //public async Task<JsonResult> Closing(JQueryDataTablesModel jQueryDataTablesModel)
-        //{
-        //    int totalRecordCount = 0;
+        [HttpPost]
+        public async Task<JsonResult> Clos(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
 
-        //    int searchRecordCount = 0;
+            int searchRecordCount = 0;
 
-        //    var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
-        //    var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-        //    DateTime startDate = DateTime.Now.AddDays(-30);
-        //    DateTime endDate = DateTime.Now.AddDays(+30);
-        //    var pageCollectionInfo = await _channelService.FindAlternateChannelReconciliationPeriodsByFilterInPageAsync(2, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+            DateTime startDate = DateTime.Now.AddDays(-30);
+            DateTime endDate = DateTime.Now.AddDays(+30);
+            var pageCollectionInfo = await _channelService.FindAlternateChannelReconciliationPeriodsByFilterInPageAsync(2, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
-        //    if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-        //    {
-        //        totalRecordCount = pageCollectionInfo.ItemsCount;
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-        //        pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
-        //        searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
-        //        return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        //    }
-        //    else return this.DataTablesJson(items: new List<AlternateChannelReconciliationPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        //}
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<AlternateChannelReconciliationPeriodDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
 
 
 
@@ -262,7 +263,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(alternateChannelDTO);
             }
         }
-
+       
         public async Task<ActionResult> Processing(Guid id)
         {
             await ServeNavigationMenus();
@@ -272,6 +273,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.SetDifferenceMode = GetSetDifferenceModeSelectList(string.Empty);
             var bankReconciliationPeriodDTO = await _channelService.FindAlternateChannelReconciliationPeriodAsync(id, GetServiceHeader());
+           var i= await _channelService.FindAlternateChannelsByTypeAndFilterInPageAsync(64, 3, null, 2, 0, 10, true, GetServiceHeader());
                 var k = await _channelService.FindAlternateChannelReconciliationEntriesByAlternateChannelReconciliationPeriodIdAndFilterInPageAsync(bankReconciliationPeriodDTO.Id, 1,"", 0,10, GetServiceHeader());
             ViewBag.history = k;
 

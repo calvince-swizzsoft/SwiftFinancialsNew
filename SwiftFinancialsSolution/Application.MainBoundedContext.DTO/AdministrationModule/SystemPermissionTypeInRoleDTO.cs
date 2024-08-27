@@ -37,6 +37,9 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [Display(Name = "Role Name")]
         public string RoleName { get; set; }
         [DataMember]
+        [Display(Name = "Branch Description")]
+        public string BranchDescription { get; set; }
+        [DataMember]
         [Display(Name = "Role")]
         public Guid? RoleId { get; set; }
 
