@@ -1158,14 +1158,11 @@
     <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
-<<<<<<< HEAD
     <Content Include="Areas\Loaning\Views\GuarantorRelieving\Index.cshtml" />
-=======
     <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditionalLending\Create.cshtml" />
     <Content Include="Areas\Registry\Views\StationLinkage\Create.cshtml" />
     <Content Include="Areas\Registry\Views\NextofKin\Create.cshtml" />
->>>>>>> be67cfb41d07128411dcfdceeac924afdf693802
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
