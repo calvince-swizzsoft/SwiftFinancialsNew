@@ -137,11 +137,11 @@
 
                             <div class="col-4">
                                 <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Relationship, htmlAttributes: new { @class = "" })
+                                    @Html.LabelFor(model => model.RelationshipDescription, htmlAttributes: new { @class = "" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.Relationship, maritalStatuses, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.Relationship)
+                                        @Html.DropDownListFor(model => model.RelationshipDescription, maritalStatuses, new { @class = "form-control input-md" })
+                                        @Html.ValidationMessageFor(model => model.RelationshipDescription)
                                     </div>
                                 </div>
 
@@ -178,7 +178,7 @@
 
                     <div class="form-group form-group-sm">
                         <div class="col-md-offset-2">
-                            @using (Html.BeginForm("Create", "NextofKin", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                            @using (Html.BeginForm("Create", "NextOfKin", new { Area = "Registry" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                             {
                                 <input type="submit" value="Create" class="btn btn-primary" />
                             }
