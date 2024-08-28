@@ -320,11 +320,11 @@
                                     <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
                                         <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                             <tr>
-                                                <th style="width: 15%;">Credit BatchId</th>
-                                                <th style="width: 10%;">Beneficiary</th>
-                                                <th style="width: 5%;">Principal</th>
-                                                <th style="width: 5%;">Interest</th>
-                                                <th style="width: 5%;">Action</th>
+                                                @*<th style="width: 15%;">Credit BatchId</th>*@
+                                                <th style="width: 20%;">Beneficiary</th>
+                                                <th style="width: 15%;">Principal</th>
+                                                <th style="width: 15%;">Interest</th>
+                                                @*<th style="width: 5%;">Action</th>*@
 
                                             </tr>
                                         </thead>
@@ -334,11 +334,11 @@
                                                 foreach (var CreditBatchEntries in ViewBag.CreditBatchEntryDTOs)
                                                 {
                                                     <tr data-id="@CreditBatchEntries.Id">
-                                                        <td>@CreditBatchEntries.CreditBatchId</td>
+                                                        @*<td>@CreditBatchEntries.CreditBatchId</td>*@
                                                         <td>@CreditBatchEntries.Beneficiary</td>
                                                         <td>@CreditBatchEntries.Principal</td>
                                                         <td>@CreditBatchEntries.Interest</td>
-                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                        @*<td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>*@
 
 
                                                     </tr>
