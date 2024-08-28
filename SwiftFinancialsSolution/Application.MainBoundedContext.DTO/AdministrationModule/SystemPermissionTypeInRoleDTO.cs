@@ -2,6 +2,7 @@
 
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
@@ -61,8 +62,8 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
-        public ObservableCollection<SystemPermissionTypeInRoleDTO> systemPermissionTypeInRoles { get; set; }
+        public List<SystemPermissionTypeInRoleDTO> systemPermissionTypeInRoles { get; set; }
 
-        public ObservableCollection<BranchDTO> systemPermissionTypeInBranchDTOs { get; set; }
+        public List<BranchDTO> systemPermissionTypeInBranchDTOs { get; set; }
     }
 }
