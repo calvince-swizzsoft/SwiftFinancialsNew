@@ -1158,7 +1158,6 @@
     <Content Include="Areas\Registry\Views\ConditonalLending\Index.cshtml" />
     <Content Include="Areas\Registry\Views\ConditonalLending\Create.cshtml" />
     <Content Include="Areas\Loaning\Views\AppraiseLoan\Appraise.cshtml" />
-
     <Content Include="Areas\Loaning\Views\GuarantorRelieving\Index.cshtml" />
 
     <Content Include="Areas\Registry\Views\ConditionalLending\Index.cshtml" />
