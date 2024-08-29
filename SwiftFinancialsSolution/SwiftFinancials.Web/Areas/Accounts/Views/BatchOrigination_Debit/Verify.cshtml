@@ -10,6 +10,9 @@
 
 <style>
 
+
+
+
     .big-box {
         border: 1px solid gray;
         border-radius: 12px;
@@ -213,8 +216,8 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2 style="font-weight: bold;">Verify Batch</h2>
-                    <hr />
+                   
+                    
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -289,27 +292,30 @@
                                         <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
                                             <thead style="font-style: italic; color: #333; text-align: center;">
                                                 <tr>
-                                                    <th style="width: 10%;">Customer Account</th>
-                                                    <th style="width: 5%;">Multiplier</th>
-                                                    <th style="width: 10%;">Reference</th>
+                                                    <th style="width: 1%;"></th> <!-- New ID column -->
+                                                    <th style="width: 5%;">Reference</th>
+                                                    <th style="width: 10%;">Multiplier</th>
                                                     <th style="width: 10%;">Status</th>
                                                 </tr>
                                             </thead>
                                             <tbody style="color: #007bff;">
                                                 @if (ViewBag.DebitBatchEntryDTOs != null)
                                                 {
+                                                    int id = 1; // Initialize an ID counter
                                                     foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
                                                     {
                                                         <tr data-id="@debitBatchEntries.Id">
-                                                            <td>@debitBatchEntries.CustomerAccountId</td>
-                                                            <td>@debitBatchEntries.Multiplier</td>
+                                                            <td style="color: black;">@id</td> <!-- Display the current ID -->
                                                             <td>@debitBatchEntries.Reference</td>
+                                                            <td>@debitBatchEntries.Multiplier</td>
                                                             <td>@debitBatchEntries.Status</td>
                                                         </tr>
+                                                        id++; // Increment the ID for the next entry
                                                     }
                                                 }
                                             </tbody>
                                         </table>
+
                                     </row>
                                 </div>
 

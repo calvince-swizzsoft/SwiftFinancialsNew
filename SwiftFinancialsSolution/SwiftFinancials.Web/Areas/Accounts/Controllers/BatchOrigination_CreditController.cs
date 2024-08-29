@@ -68,6 +68,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, CreditBatchDTO creditBatchDTO)
         {
 
+            await ServeNavigationMenus();
+
+            // Check whether header details contain data and proceed to add entries...
+            if (Session["HeaderDetails"] != null)
+            {
+                creditBatchDTO = Session["HeaderDetails"] as CreditBatchDTO;
+            }
+
+
 
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
             ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
@@ -132,7 +141,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> AddBatch(CreditBatchDTO creditBatchDTO)
+        public async Task<ActionResult> BatchOrigination_Credit(CreditBatchDTO creditBatchDTO)
         {
             await ServeNavigationMenus();
             ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
@@ -140,31 +149,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
-            Session["CreditBatchDTO1"] = creditBatchDTO;
+            Session["HeaderDetails"] = creditBatchDTO;
 
-
-
-
-            Session["PostingPeriod"] = creditBatchDTO.PostingPeriodDescription;
-            Session["PostingPeriodId"] = creditBatchDTO.PostingPeriodId;
-            Session["CFixedAmount"] = creditBatchDTO.ConcessionFixedAmount;
-            Session["CreditType"] = creditBatchDTO.CreditTypeDescription;
-            Session["CreditTypeId"] = creditBatchDTO.CreditTypeId;
-            Session["BatchType"] = creditBatchDTO.Type;
-            Session["Branch"] = creditBatchDTO.BranchDescription;
-            Session["BranchId"] = creditBatchDTO.BranchId;
-            Session["Reference"] = creditBatchDTO.Reference;
-            Session["Month"] = creditBatchDTO.Month;
-            Session["MonthDec"] = creditBatchDTO.MonthDescription;
-            Session["ConcesType"] = creditBatchDTO.ConcessionType;
-            Session["ConcesTypeDec"] = creditBatchDTO.ConcessionTypeDescription;
-            Session["Priority"] = creditBatchDTO.Priority;
-            Session["PriorityDec"] = creditBatchDTO.PriorityDescription;
-            Session["TotalValue"] = creditBatchDTO.TotalValue;
-
-            TempData["BatchSuccess"] = "Partial Batch Saved Successifully";
-
-            return View("Create");
+            return View("Create", creditBatchDTO);
         }
 
 
@@ -179,69 +166,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
 
 
-
-
-            if (Session["PostingPeriod"] != null)
+            // Check whether header details contain data and proceed to add entries...
+            if (Session["HeaderDetails"] != null)
             {
-                creditBatchDTO.PostingPeriodDescription = (string)Session["PostingPeriod"];
+                creditBatchDTO = Session["HeaderDetails"] as CreditBatchDTO;
             }
-
-            if (Session["PostingPeriodId"] != null)
-            {
-                creditBatchDTO.PostingPeriodId = (Guid)Session["PostingPeriodId"];
-            }
-            if (Session["CFixedAmount"] != null)
-            {
-                creditBatchDTO.ConcessionFixedAmount = (decimal)Session["CFixedAmount"];
-            }
-            if (Session["CreditType"] != null)
-            {
-                creditBatchDTO.CreditTypeDescription = (string)Session["CreditType"];
-            }
-
-            if (Session["CreditTypeId"] != null)
-            {
-                creditBatchDTO.CreditTypeId = (Guid)Session["CreditTypeId"];
-            }
-            if (Session["BatchType"] != null)
-            {
-                creditBatchDTO.Type = (int)Session["BatchType"];
-            }
-            if (Session["Branch"] != null)
-            {
-                creditBatchDTO.BranchDescription = (string)Session["Branch"];
-            }
-            if (Session["BranchId"] != null)
-            {
-                creditBatchDTO.BranchId = (Guid)Session["BranchId"];
-            }
-            if (Session["Reference"] != null)
-            {
-                creditBatchDTO.Reference = (string)Session["Reference"];
-            }
-            if (Session["Month"] != null)
-            {
-                creditBatchDTO.Month = (int)Session["Month"];
-            }
-
-            if (Session["Month"] != null)
-            {
-                creditBatchDTO.Month = (int)Session["Month"];
-            }
-            if (Session["ConcesType"] != null)
-            {
-                creditBatchDTO.ConcessionType = (int)Session["ConcesType"];
-            }
-
-            if (Session["Priority"] != null)
-            {
-                creditBatchDTO.Priority = (int)Session["Priority"];
-            }
-            if (Session["TotalValue"] != null)
-            {
-                creditBatchDTO.TotalValue = (decimal)Session["TotalValue"];
-            }
-
 
 
 
@@ -283,10 +212,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
                 sumAmount = CreditBatchEntryDTOs.Sum(cs => cs.Principal + cs.Interest);
-                
-
-
-
                 if (sumAmount > creditBatchDTO.TotalValue)
                 {
                     TempData["tPercentage"] = "Failed to add  Credit  Entry Total Amount exceeded Total Value.";
@@ -298,7 +223,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             };
 
 
-
             Session["creditBatchDTO"] = creditBatchDTO;
 
             ViewBag.CreditBatchEntryDTOs = CreditBatchEntryDTOs;
@@ -308,15 +232,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["CreditBatchDTO"] = creditBatchDTO;
             Session["CreditBatchDTO"] = creditBatchDTO;
 
-
-
-
-
-
             Session["sumAmount"] = sumAmount;
-
-
-
             return View("Create", creditBatchDTO);
         }
 
@@ -336,6 +252,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
         {
+            // Cheat: In case header details do not hit Add Action
+            //if (Session["HeaderDetails"] != null)
+            //{
+            //    creditBatchDTO = Session["HeaderDetails"] as CreditBatchDTO;
+            //}
 
             Session["RecoverCarryForwards"] = creditBatchDTO.RecoverCarryForwards;
             Session["PreserveAccountBalance"] = creditBatchDTO.PreserveAccountBalance;

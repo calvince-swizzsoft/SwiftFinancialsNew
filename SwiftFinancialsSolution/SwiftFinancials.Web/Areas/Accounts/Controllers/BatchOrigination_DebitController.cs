@@ -48,6 +48,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<DebitBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+
+        [HttpPost]
+        public async Task<ActionResult> BatchOrigination_Debit(DebitBatchDTO  debitBatchDTO)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+
+            Session["HeaderDetails"] = debitBatchDTO;
+
+            return View("Create", debitBatchDTO);
+        }
+
+
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -89,6 +106,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         public async Task<ActionResult> DebitCustomerAccountLookUp(Guid? id, DebitBatchDTO  debitBatchDTO)
         {
+
+
+            // Check whether header details contain data and proceed to add entries...
+            if (Session["HeaderDetails"] != null)
+            {
+                debitBatchDTO = Session["HeaderDetails"] as DebitBatchDTO;
+            }
+
 
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
 
@@ -150,32 +175,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> AddBatch(DebitBatchDTO  debitBatchDTO)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
-
-            Session["debitBatchDTO1"] = debitBatchDTO;
-
-            Session["DebitTypeId"] = debitBatchDTO.DebitTypeId;
-            Session["DebitTypeDescription"] = debitBatchDTO.DebitTypeDescription;
-            Session["BranchId"] = debitBatchDTO.BranchId;
-            Session["BranchDescription"] = debitBatchDTO.BranchDescription;
-            Session["PriorityDescription"] = debitBatchDTO.PriorityDescription;
-            Session["Reference"] = debitBatchDTO.Reference;
-
-
-
-             TempData["BatchSuccess"] = "Partial Batch Saved Successifully";
-
-
-            return View("Create");
-        }
-
-
-
+       
 
         [HttpPost]
         public async Task<ActionResult> Add(DebitBatchDTO  debitBatchDTO)
@@ -187,35 +187,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
 
 
-            
 
-            if (Session["DebitTypeId"] != null)
+
+            if (Session["HeaderDetails"] != null)
             {
-                debitBatchDTO.DebitTypeId = (Guid)Session["DebitTypeId"];
-            }
-            if (Session["DebitTypeDescription"] != null)
-            {
-                debitBatchDTO.DebitTypeDescription = (string)Session["DebitTypeDescription"];
-            }
-            if (Session["BranchId"] != null)
-            {
-                debitBatchDTO.BranchId = (Guid)Session["BranchId"];
-            }
-            if (Session["DebitTypeId"] != null)
-            {
-                debitBatchDTO.DebitTypeId = (Guid)Session["DebitTypeId"];
-            }
-            if (Session["BranchDescription"] != null)
-            {
-                debitBatchDTO.BranchDescription = (string)Session["BranchDescription"];
-            }
-            if (Session["Priority"] != null)
-            {
-                debitBatchDTO.Priority = (int)Session["Priority"];
-            }
-            if (Session["Reference"] != null)
-            {
-                debitBatchDTO.Reference = (string)Session["Reference"];
+                debitBatchDTO = Session["HeaderDetails"] as DebitBatchDTO;
             }
 
 
@@ -442,6 +418,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 await _channelService.AuthorizeDebitBatchAsync(debitBatchDTO, 1, batchAuthOption, GetServiceHeader());
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
                 ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+                TempData["AuthorizeSuccess"] = "Authorization Successiful";
+
                 return RedirectToAction("Index");
             }
             else
