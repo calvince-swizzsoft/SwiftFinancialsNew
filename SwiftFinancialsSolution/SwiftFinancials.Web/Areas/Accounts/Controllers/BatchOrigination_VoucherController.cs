@@ -72,9 +72,22 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         
 
         [HttpPost]
-        public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
+        public async Task<ActionResult> Add(Guid? id,JournalVoucherDTO journalVoucherDTO)
         {
             await ServeNavigationMenus();
+            Guid parseId;
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                TempData["tPercentage"] = "Could not add charge split. Choose G/L Account.";
+
+                await ServeNavigationMenus();
+
+
+                var Myid = journalVoucherDTO.Id;
+
+                return View("Create", journalVoucherDTO);
+            }
+
             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
@@ -91,6 +104,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
 
             var glAccount = journalVoucherDTO.JournalVoucherEntry;
+
+
+
+
+
 
             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
             {
