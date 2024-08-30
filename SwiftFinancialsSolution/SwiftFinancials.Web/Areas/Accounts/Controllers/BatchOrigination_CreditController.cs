@@ -65,19 +65,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        [HttpPost]
         public async Task<ActionResult> BatchOrigination_Credit(CreditBatchDTO creditBatchDTO)
         {
-            await ServeNavigationMenus();
-            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
-            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-
+            // Store the submitted form data in the session
             Session["HeaderDetails"] = creditBatchDTO;
 
+            // Return an empty response since this method only saves data
             return View("Create", creditBatchDTO);
         }
+
+
+
+
 
         public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, CreditBatchDTO creditBatchDTO)
         {

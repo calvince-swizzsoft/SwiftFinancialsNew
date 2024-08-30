@@ -346,7 +346,9 @@
                                             @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber)*@
                                             @Html.TextBoxFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                             <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                                    <span class="fa fa-search"></span>
+                                                </a>
                                             </span>
                                         </div>
                                     </div>
@@ -675,6 +677,17 @@
 
 
 
+        function handleSearchClick() {
+            // Call sendFormData to submit the form data
+            sendFormData().then(() => {
+                // After form data is successfully sent, open the modal
+                $('#CreditcustomerAccountLookupModal').modal('show');
+            }).catch((error) => {
+                console.error('Error during form submission:', error);
+                // Optionally handle the error (e.g., show an alert)
+            });
+        }
+
         function sendFormData() {
             // Create an object to hold the form data
             let formData = {
@@ -694,7 +707,7 @@
             };
 
             // Send the data to the first controller using fetch
-            fetch('/BatchOrigination_Credit/BatchOrigination_Credit', {
+            return fetch('/BatchOrigination_Credit/BatchOrigination_Credit', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -706,11 +719,14 @@
                 .then(data => {
                     // Handle the response data here
                     console.log('Form Data Submitted:', data);
+                    return data; // Return the data or simply return success
                 })
                 .catch((error) => {
                     console.error('Error:', error);
+                    throw error; // Propagate the error to the caller
                 });
         }
+
 
 
 
