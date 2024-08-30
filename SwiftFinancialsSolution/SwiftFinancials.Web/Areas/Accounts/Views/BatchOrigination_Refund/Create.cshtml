@@ -231,7 +231,9 @@
                                                     @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId)
                                                     @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                     <span class="input-group-addon">
-                                                        <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                        <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                                            <span class="fa fa-search"></span>
+                                                        </a>
                                                     </span>
                                                 </div>
                                             </div>
@@ -519,6 +521,46 @@
 <script>
 
 
+
+    function handleSearchClick() {
+        // Store form data in SessionStorage
+        let formData = {
+            BranchId: document.querySelector('[name="BranchId"]').value,
+            BranchDescription: document.querySelector('[name="BranchDescription"]').value,
+            Reference: document.querySelector('[name="Reference"]').value,
+            TotalValue: document.querySelector('[name="TotalValue"]').value
+
+
+        };
+
+        // Save the form data to SessionStorage
+        sessionStorage.setItem('formData', JSON.stringify(formData));
+
+        // Send the form data to the server
+        $.ajax({
+            type: 'POST',
+            url: '/BatchOrigination_Refund/BatchOrigination_Refund',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            headers: {
+                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
+            },
+            success: function (response) {
+                // Trigger the modal after saving
+                $('#CreditcustomerAccountLookupModal').modal('show');
+            },
+            error: function (error) {
+                console.error('Error saving form data:', error);
+                // Handle the error if needed
+            }
+        });
+    }
+
+
+
+
+
+
     //Branch typehead starts here
             $('.BranchesLookup').typeahead({
                 source: function (query, process) {
@@ -569,35 +611,7 @@
 
 
 
-    function sendFormData() {
-        // Create an object to hold the form data
-        let formData = {
-            BranchId: document.querySelector('[name="BranchId"]').value,
-            BranchDescription: document.querySelector('[name="BranchDescription"]').value,
-            Reference: document.querySelector('[name="Reference"]').value,
-            TotalValue: document.querySelector('[name="TotalValue"]').value
-            
-
-        };
-
-        // Send the data to the first controller using fetch
-        fetch('/BatchOrigination_Refund/BatchOrigination_Refund', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
-            },
-            body: JSON.stringify(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data here
-                console.log('Form Data Submitted:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-    }
+    
 
 
     //////////Credit customer accounts lookup modol/////////

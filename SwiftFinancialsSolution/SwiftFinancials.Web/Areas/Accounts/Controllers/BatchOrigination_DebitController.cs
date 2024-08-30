@@ -50,16 +50,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        [HttpPost]
-        public async Task<ActionResult> BatchOrigination_Debit(DebitBatchDTO  debitBatchDTO)
+        public void BatchOrigination_Debit(DebitBatchDTO  debitBatchDTO)
         {
-            await ServeNavigationMenus();
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
 
             Session["HeaderDetails"] = debitBatchDTO;
 
-            return View("Create", debitBatchDTO);
         }
 
 
@@ -125,13 +120,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
             
-            
-
-            if (Session["debitBatchDTO1"] != null)
-            {
-                debitBatchDTO = Session["debitBatchDTO1"] as DebitBatchDTO;
-            }
-
             DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
 
 
@@ -184,14 +172,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
 
             DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
-
-
-
-
-            if (Session["HeaderDetails"] != null)
-            {
-                debitBatchDTO = Session["HeaderDetails"] as DebitBatchDTO;
-            }
 
 
             ViewBag.DebitBatchEntryDTOs = DebitBatchEntryDTOs;

@@ -54,17 +54,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<ActionResult> BatchOrigination_WireTransfer(WireTransferBatchDTO  wireTransferBatchDTO)
+        public void BatchOrigination_WireTransfer(WireTransferBatchDTO  wireTransferBatchDTO)
         {
-            await ServeNavigationMenus();
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
 
             Session["HeaderDetails"] = wireTransferBatchDTO;
 
-            return View("Create", wireTransferBatchDTO);
         }
+
+
 
 
         public async Task<ActionResult> Details(Guid id)

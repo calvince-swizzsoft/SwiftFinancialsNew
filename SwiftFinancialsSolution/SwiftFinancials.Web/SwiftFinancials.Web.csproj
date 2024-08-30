@@ -1187,7 +1187,6 @@
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Clos.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Edit.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorAttachment\Create.cshtml" />
-    <Content Include="Areas\Loaning\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorSubstitution\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />

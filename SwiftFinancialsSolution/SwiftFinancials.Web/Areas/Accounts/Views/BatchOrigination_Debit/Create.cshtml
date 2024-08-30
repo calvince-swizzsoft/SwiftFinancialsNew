@@ -246,7 +246,9 @@
                                                 @* @Html.HiddenFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber)*@
                                                 @Html.TextBoxFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                                        <span class="fa fa-search"></span>
+                                                    </a>
                                                 </span>
                                             </div>
                                         </div>
@@ -539,10 +541,8 @@
      });
 
 
-
-
-    function sendFormData() {
-        // Create an object to hold the form data
+    function handleSearchClick() {
+        // Store form data in SessionStorage
         let formData = {
             Reference: document.querySelector('[name="Reference"]').value,
             Priority: document.querySelector('[name="Priority"]').value,
@@ -550,29 +550,30 @@
             BranchId: document.querySelector('[name="BranchId"]').value,
             DebitTypeDescription: document.querySelector('[name="DebitTypeDescription"]').value,
             DebitTypeId: document.querySelector('[name="DebitTypeId"]').value,
-            
         };
 
-        // Send the data to the first controller using fetch
-        fetch('/BatchOrigination_Debit/BatchOrigination_Debit', {
-            method: 'POST',
+        // Save the form data to SessionStorage
+        sessionStorage.setItem('formData', JSON.stringify(formData));
+
+        // Send the form data to the server
+        $.ajax({
+            type: 'POST',
+            url: '/BatchOrigination_Debit/BatchOrigination_Debit',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
             headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
+                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
             },
-            body: JSON.stringify(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data here
-                console.log('Form Data Submitted:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            success: function (response) {
+                // Trigger the modal after saving
+                $('#DebitcustomerAccountLookupModal').modal('show');
+            },
+            error: function (error) {
+                console.error('Error saving form data:', error);
+                // Handle the error if needed
+            }
+        });
     }
-
-
 
      $('#BenefactorCustomerAccountsGrid').DataTable({
        // Ajax settings
