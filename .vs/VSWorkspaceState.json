@@ -1,0 +1,17 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\Application.MainBoundedContext\\AdministrationModule\\Services",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Admin\\Views",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Admin\\Views\\SystemTransactiontypes",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Views\\MultiDestination"
+  ],
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers\\BatchOrigination_RefundController.cs",
+  "PreviewInSolutionExplorer": false
+}

@@ -115,8 +115,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
 
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
-
+            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             Guid parseId;
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
