@@ -120,11 +120,19 @@
                 <div class="ibox-title">
                     @Html.ActionLink("Create BatchOrigination_Disbursement", "Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
-                    @if (TempData["SuccessMessage"] != null)
+                    @if (TempData["Verification"] != null)
                     {
                         <div class="alert alert-success">
-                            @TempData["SuccessMessage"]
-                        </div>}
+                            @TempData["Verification"]
+                        </div>
+                    }
+
+                    @if (TempData["Authorization"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Authorization"]
+                        </div>
+                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
