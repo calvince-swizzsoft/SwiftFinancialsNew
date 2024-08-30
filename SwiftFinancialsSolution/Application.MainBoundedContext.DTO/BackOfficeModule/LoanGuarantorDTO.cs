@@ -550,5 +550,9 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Attach To")]
         public Guid AttachToId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string Remarks { get; set; }
     }
 }
