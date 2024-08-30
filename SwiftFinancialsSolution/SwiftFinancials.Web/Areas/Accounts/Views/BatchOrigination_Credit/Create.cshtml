@@ -345,11 +345,11 @@
                                         <div class="input-group" data-autoclose="true">
                                             @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber)*@
                                             @Html.TextBoxFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                            <span class="input-group-addon">
-                                                <a href="javascript:void(0);" onclick="handleSearchClick()">
-                                                    <span class="fa fa-search"></span>
-                                                </a>
-                                            </span>
+                                                <span class="input-group-addon">
+                                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                                        <span class="fa fa-search"></span>
+                                                    </a>
+                                                </span>
                                         </div>
                                     </div>
                                 </div>
@@ -678,18 +678,7 @@
 
 
         function handleSearchClick() {
-            // Call sendFormData to submit the form data
-            sendFormData().then(() => {
-                // After form data is successfully sent, open the modal
-                $('#CreditcustomerAccountLookupModal').modal('show');
-            }).catch((error) => {
-                console.error('Error during form submission:', error);
-                // Optionally handle the error (e.g., show an alert)
-            });
-        }
-
-        function sendFormData() {
-            // Create an object to hold the form data
+            // Store form data in SessionStorage
             let formData = {
                 TotalValue: document.querySelector('[name="TotalValue"]').value,
                 Priority: document.querySelector('[name="Priority"]').value,
@@ -706,26 +695,29 @@
                 PostingPeriodId: document.querySelector('[name="PostingPeriodId"]').value
             };
 
-            // Send the data to the first controller using fetch
-            return fetch('/BatchOrigination_Credit/BatchOrigination_Credit', {
-                method: 'POST',
+            // Save the form data to SessionStorage
+            sessionStorage.setItem('formData', JSON.stringify(formData));
+
+            // Send the form data to the server
+            $.ajax({
+                type: 'POST',
+                url: '/BatchOrigination_Credit/BatchOrigination_Credit',
+                data: JSON.stringify(formData),
+                contentType: 'application/json',
                 headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
+                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
                 },
-                body: JSON.stringify(formData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response data here
-                    console.log('Form Data Submitted:', data);
-                    return data; // Return the data or simply return success
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                    throw error; // Propagate the error to the caller
-                });
+                success: function (response) {
+                    // Trigger the modal after saving
+                    $('#CreditcustomerAccountLookupModal').modal('show');
+                },
+                error: function (error) {
+                    console.error('Error saving form data:', error);
+                    // Handle the error if needed
+                }
+            });
         }
+
 
 
 

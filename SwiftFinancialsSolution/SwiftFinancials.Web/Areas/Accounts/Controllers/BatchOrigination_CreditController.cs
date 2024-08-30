@@ -65,13 +65,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public async Task<ActionResult> BatchOrigination_Credit(CreditBatchDTO creditBatchDTO)
+        public void BatchOrigination_Credit(CreditBatchDTO creditBatchDTO)
         {
-            // Store the submitted form data in the session
+            
             Session["HeaderDetails"] = creditBatchDTO;
 
-            // Return an empty response since this method only saves data
-            return View("Create", creditBatchDTO);
+            
+            
         }
 
 
@@ -168,10 +168,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
             // Check whether header details contain data and proceed to add entries...
-            if (Session["HeaderDetails"] != null)
-            {
-                creditBatchDTO = Session["HeaderDetails"] as CreditBatchDTO;
-            }
+            
 
 
 

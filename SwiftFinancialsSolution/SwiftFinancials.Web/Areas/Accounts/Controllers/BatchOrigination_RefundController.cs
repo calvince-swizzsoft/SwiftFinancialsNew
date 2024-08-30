@@ -62,15 +62,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(overDeductionBatchDTO);
         }
 
-        
-        public async Task<ActionResult> BatchOrigination_Refund(OverDeductionBatchDTO  overDeductionBatchDTO)
+
+        public void BatchOrigination_Refund(OverDeductionBatchDTO overDeductionBatchDTO)
         {
-            await ServeNavigationMenus();
-            
 
             Session["HeaderDetails"] = overDeductionBatchDTO;
 
-            return View("Create", overDeductionBatchDTO);
         }
 
         public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, OverDeductionBatchDTO overDeductionBatchDTO)
@@ -88,15 +85,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 return View("Create", overDeductionBatchDTO);
             }
-            if (Session["BatchDTO"] != null)
-            {
-                overDeductionBatchDTO = Session["BatchDTO"] as OverDeductionBatchDTO;
-            }
+            
 
             OverDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
 
 
             ViewBag.OverDeductionBatchEntryDTOs = OverDeductionBatchEntryDTOs;
+            if (overDeductionBatchDTO != null && overDeductionBatchDTO.overDeductionBatchEntry == null)
+            {
+                overDeductionBatchDTO.overDeductionBatchEntry = new OverDeductionBatchEntryDTO();
+            }
 
             var debitCustomerAccountFullAccountNumber = Session["DebitCustomerAccountFullAccountNumber"] as string;
             var debitProductDescription = Session["DebitProductDescription"] as string;
@@ -120,6 +118,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 overDeductionBatchDTO.overDeductionBatchEntries.Add(new OverDeductionBatchEntryDTO());
             }
+
+            
 
             var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
 
