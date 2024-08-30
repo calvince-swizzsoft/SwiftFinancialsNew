@@ -31,7 +31,7 @@
         border-radius: 12px;
         font-weight: bold;
         background-color: #f1f1f1;
-        padding:20px;
+        
     }
     .form-cotrol {
         color: #007bff;
@@ -39,6 +39,7 @@
     .create-batch {
         border: 4px solid #00ffff;
         padding:10px;
+        margin:10px;
         border-radius:12px;
     }
 
@@ -48,6 +49,19 @@
         padding: 15px;
         margin:20px;
     }
+
+    @*footer Styling*@ 
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
     /* Table Styles */
     #RefundBatchEntry {
         width: 100%;
@@ -83,6 +97,7 @@
         border: 2px solid green; /* Green border around the divs */
         border-radius: 10px; /* Rounded corners */
         padding: 20px; /* Padding inside the border */
+        margin:20px;
         position: relative; /* Ensures the title is positioned relative to this container */
         margin-top: 20px; /* Margin above the container */
     }
@@ -203,192 +218,199 @@
                             </div>
 
 
-                            <div class="main10">
+                            
 
-                                <div class="batch-entries-container">
-                                    <h2 class="batch-title">Batch Entries</h2>
-                                    <div class="enter-batch">
-                                        <div class="row large-font">
-                                            <div class="col-lg-3">
-                                                <div class="col-md-13 form-group">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId)
-                                                        @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @*@Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)*@
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditCustomerIdentificationNumber)
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                        </div>
-
-
-                                        <div class="row large-font">
-                                            <div class="col-lg-3">
-                                                <div class="col-md-13 form-group">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId)
-                                                        @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, htmlAttributes: new { @class = "control-label " })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, "", new { @class = "text-danger" })
-
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.DebitCustomerIdentificationNumber)
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, "", new { @class = "text-danger" })
-
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
+                            <div class="batch-entries-container">
+                                <h2 class="batch-title">Batch Entries</h2>
+                                <div class="enter-batch">
+                                    <div class="row large-font">
+                                        <div class="col-lg-3">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId)
+                                                    @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
-
-
-
-                                        <div class="row large-font">
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Principal, "", new { @class = "text-danger" })
-                                                </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, htmlAttributes: new { @class = "control-label" })
+                                                @*@Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)*@
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, "", new { @class = "text-danger" })
                                             </div>
-
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Interest, "", new { @class = "text-danger" })
-
-                                                </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditCustomerIdentificationNumber)
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
 
-
-                                        <div class="row">
-                                            <!-- Center the Submit button -->
-                                            <div style="text-align: right; margin: 20px 20px;">
-                                                <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, "", new { @class = "text-danger" })
                                             </div>
-
                                         </div>
 
                                     </div>
+
+
+                                    <div class="row large-font">
+                                        <div class="col-lg-3">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId)
+                                                    @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, htmlAttributes: new { @class = "control-label " })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, "", new { @class = "text-danger" })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.overDeductionBatchEntry.DebitCustomerIdentificationNumber)
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, "", new { @class = "text-danger" })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row large-font">
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Principal, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Interest, "", new { @class = "text-danger" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <!-- Center the Submit button -->
+                                        <div style="text-align: right; margin: 20px 20px;">
+                                            <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                        </div>
+
+                                    </div>
+
                                 </div>
-                            </div>
 
 
-
-
-                            <br /> <br />
-                            <row>
-                                <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                        <tr>
-                                            <th style="width: 5%;">Credit Customer Name</th>
-                                            <th style="width: 5%;">Debit Customer Name </th>
-                                            <th style="width: 5%;">Credit Product Description</th>
-                                            <th style="width: 5%;">Debit Product Description</th>
-                                            <th style="width: 5%;">Principal</th>
-                                            <th style="width: 5%;">Interest</th>
-                                            <th style="width:  5%;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.OverDeductionBatchEntryDTOs != null)
-                                        {
-                                            foreach (var refundBatchEntry in ViewBag.OverDeductionBatchEntryDTOs)
+                                <br /> 
+                                <row>
+                                    <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 5%;">Credit Customer Name</th>
+                                                <th style="width: 5%;">Debit Customer Name </th>
+                                                <th style="width: 5%;">Credit Product Description</th>
+                                                <th style="width: 5%;">Debit Product Description</th>
+                                                <th style="width: 5%;">Principal</th>
+                                                <th style="width: 5%;">Interest</th>
+                                                <th style="width:  5%;">Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.OverDeductionBatchEntryDTOs != null)
                                             {
-                                                <tr data-id="@refundBatchEntry.Id">
-                                                    <td>@refundBatchEntry.CreditCustomerAccountFullName</td>
-                                                    <td>@refundBatchEntry.DebitCustomerAccountFullName</td>
-                                                    <td>@refundBatchEntry.CreditProductDescription</td>
-                                                    <td>@refundBatchEntry.DebitProductDescription</td>
-                                                    <td>@refundBatchEntry.Principal</td>
-                                                    <td>@refundBatchEntry.Interest</td>
-                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                </tr>
+                                                foreach (var refundBatchEntry in ViewBag.OverDeductionBatchEntryDTOs)
+                                                {
+                                                    <tr data-id="@refundBatchEntry.Id">
+                                                        <td>@refundBatchEntry.CreditCustomerAccountFullName</td>
+                                                        <td>@refundBatchEntry.DebitCustomerAccountFullName</td>
+                                                        <td>@refundBatchEntry.CreditProductDescription</td>
+                                                        <td>@refundBatchEntry.DebitProductDescription</td>
+                                                        <td>@refundBatchEntry.Principal</td>
+                                                        <td>@refundBatchEntry.Interest</td>
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                    </tr>
+                                                }
                                             }
-                                        }
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
 
-                                @if (TempData["tPercentage"] != null)
-                                {
-                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                                }
-                            </row>
+                                    @if (TempData["tPercentage"] != null)
+                                    {
+                                        <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
+                                    }
+                                </row>
+
+                            </div>
+                            
+
+
+
+
+                            
 
 
                         }
-
-
 
 
 
                         @using (Html.BeginForm("Create", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group" style="text-align:right;">
-                                        <input type="submit" value="Create" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                            <div class="bottom-button">
+                                <div class="row">
+                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
 
                         }
+
+                       
 
                     </div>
 

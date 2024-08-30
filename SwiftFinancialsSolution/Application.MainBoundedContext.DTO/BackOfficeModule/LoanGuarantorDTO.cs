@@ -504,5 +504,51 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public string ErrorMsgResult { get; set; }
+
+
+        // Additnonal DTOs
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string CustomerAccountFullAccountNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public Guid CustomerAccountAccountId { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Account Status")]
+        public string CustomerAccountAccountStatusDescription { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Account Remarks")]
+        public string CustomerAccountAccountRemarks { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Book Balance")]
+        public decimal BookBalance { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Customer")]
+        public string CustomerAccountCustomerFullName { get; set; } 
+        
+        [DataMember]
+        [Display(Name = "Type")]
+        public string CustomerAccounntCustomerTypeDescription { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Apportioned")]
+        public string Apportioned { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Shortage")]
+        public string Shortage { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Attach To")]
+        public string AttachTo { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Attach To")]
+        public Guid AttachToId { get; set; }
     }
 }
