@@ -6,6 +6,7 @@
 
     var priority = ViewBag.Priority as List<SelectListItem>;
     var batchType = ViewBag.BatchType as List<SelectListItem>;
+    var batchAuth = ViewBag.BatchAuthOption as List<SelectListItem>;
 
 }
 <style>
@@ -171,7 +172,7 @@
 
 
                                     <div class="col-md-4 form-group">
-                                        @Html.LabelFor(model => model.WireTransferTypeId, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.BatchAuthOption, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.TextBoxFor(model => model.WireTransferTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "" })
                                             @Html.HiddenFor(model => model.WireTransferTypeId)
@@ -219,7 +220,15 @@
                                         <div class="form-group form-group-sm">
                                             @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                            
+
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
                                         </div>
                                     </div>
                                 </div>
@@ -236,7 +245,9 @@
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.TextBoxFor(model => model.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#WireTransferAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                                        <span class="fa fa-search"></span>
+                                                    </a>
                                                 </span>
                                             </div>
                                         </div>
@@ -259,8 +270,8 @@
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.WireTransferEntries[0].CustomerAccountCustomerId)
+                                            @Html.LabelFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.WireTransferEntries[0].CustomerAccountId)
                                             @Html.EditorFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, "", new { @class = "text-danger" })
                                         </div>
@@ -360,20 +371,20 @@
                                             <tr>
                                                 <th style="width: 15%;">Account Number</th>
                                                 <th style="width: 10%;">Product Description</th>
-                                                <th style="width: 5%;">Principal</th>
+                                                <th style="width: 5%;">Amount</th>
                                                 <th style="width: 5%;">Action</th>
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.CreditBatchEntryDTOs != null)
+                                            @if (ViewBag.WireTransferEntryDTOs != null)
                                             {
-                                                foreach (var WireTransferEntries in ViewBag.CreditBatchEntryDTOs)
+                                                foreach (var WireTransferEntries in ViewBag.WireTransferEntryDTOs)
                                                 {
                                                     <tr data-id="@WireTransferEntries.Id">
-                                                        <td>@WireTransferEntries.CreditCustomerAccountFullAccountNumber</td>
+                                                        <td>@WireTransferEntries.WiretransferCustomerAccountFullAccountNumber</td>
                                                         <td>@WireTransferEntries.ProductDescription</td>
-                                                        <td>@WireTransferEntries.Principal</td>
+                                                        <td>@WireTransferEntries.Amount</td>
                                                         <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
 
 
@@ -509,37 +520,41 @@
 
 <script>
 
-    function sendFormData() {
-        // Create an object to hold the form data
+    function handleSearchClick() {
+        // Store form data in SessionStorage
         let formData = {
-            Reference: document.querySelector('[name="Reference"]').value,
-            TotalValue: document.querySelector('[name="TotalValue"]').value,
-            PriorityDescription: document.querySelector('[name="PriorityDescription"]').value,
             WireTransferTypeDescription: document.querySelector('[name="WireTransferTypeDescription"]').value,
             WireTransferTypeId: document.querySelector('[name="WireTransferTypeId"]').value,
+            Priority: document.querySelector('[name="Priority"]').value,
             TypeDescription: document.querySelector('[name="TypeDescription"]').value,
-            Priority: document.querySelector('[name="Priority"]').value
-
+            TotalValue: document.querySelector('[name="TotalValue"]').value,
+            Reference: document.querySelector('[name="Reference"]').value,
+            BranchDescription: document.querySelector('[name="BranchDescription"]').value,
+            BranchId: document.querySelector('[name="BranchId"]').value
 
         };
 
-        // Send the data to the first controller using fetch
-        fetch('/BatchOrigination_WireTransfer/BatchOrigination_WireTransfer', {
-            method: 'POST',
+        // Save the form data to SessionStorage
+        sessionStorage.setItem('formData', JSON.stringify(formData));
+
+        // Send the form data to the server
+        $.ajax({
+            type: 'POST',
+            url: '/BatchOrigination_WireTransfer/BatchOrigination_WireTransfer',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
             headers: {
-                'Content-Type': 'application/json',
-                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
+                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
             },
-            body: JSON.stringify(formData)
-        })
-            .then(response => response.json())
-            .then(data => {
-                // Handle the response data here
-                console.log('Form Data Submitted:', data);
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
+            success: function (response) {
+                // Trigger the modal after saving
+                $('#WireTransferAccountLookupModal').modal('show');
+            },
+            error: function (error) {
+                console.error('Error saving form data:', error);
+                // Handle the error if needed
+            }
+        });
     }
 
 
@@ -639,7 +654,47 @@
         $('#wireTransferTypeLookupModal').modal('hide');
     });
 
-       
+
+
+
+         //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+
+            });
+
 </script>
 }
 

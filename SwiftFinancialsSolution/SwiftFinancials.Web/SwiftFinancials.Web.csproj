@@ -1168,7 +1168,6 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Liquidation.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Catalogue.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />

@@ -8,9 +8,13 @@
 <style>
     .main1 {
         border: 1px solid black;
-        padding: 10px;
-        margin-top: 20px;
+        
+        
         background-color: #f1f1f1;
+    }
+    .content {
+        border: 3px solid #00ffff;
+        border-radius:12px;
     }
     .control-label {
         color: #333; /* Replace with your desired color */
@@ -28,7 +32,7 @@
         justify-content: center;
         font-size: 15px;
         text-align: center;
-        margin-top: 30px;
+        
         font-weight: bold;
         background-color: #00e0ff;
     }
@@ -36,15 +40,14 @@
     .combined-container {
         padding: 20px;
         border-radius: 5px;
-        margin: 20px 0;
+        
         font-size: 15px;
         display: flex;
         flex-direction: column;
         font-weight: bold;
         border: 2px solid #00ffff;
     }
-    @* Batch Entries table Styling*@ 
-    #ChargeSplits {
+    @* Batch Entries table Styling*@ #ChargeSplits {
         width: 100%;
         border-collapse: collapse;
         font-family: Arial, sans-serif;
@@ -74,8 +77,9 @@
         background-color: #f1f1f1;
     }
 
+
     .row {
-        margin-bottom: 20px;
+        margin-bottom: 5px;
     }
 
     .form-group {
@@ -87,7 +91,7 @@
     }
 
     .control-label {
-        font-size: 18px;
+        font-size: 16px;
         color: #333;
     }
 
@@ -101,7 +105,7 @@
     }
 
     .checkbox-label {
-        font-size: 18px;
+        font-size: 16px;
         color: #333;
     }
 
@@ -110,11 +114,7 @@
         color: #007bff;
     }
 
-    .main1 {
-        border: 1px solid black;
-        padding: 10px;
-        border-radius:12px;
-    }
+   
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -221,31 +221,35 @@
 
 
                     </div>
-                    <br />
-                    <br />
+                    <br/>
                     <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
                         <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Debit Batch Entries</h2>
 
                         <row>
-                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
-                                <thead style="font-style: italic; color: #333; text-align: center;">
+                            <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                     <tr>
-                                        <th style="width: 10%;">Reference</th>
-                                        <th style="width: 5%;">Multiplier</th>
+                                        @*<th style="width: 15%;">Credit BatchId</th>*@
+                                        <th style="width: 20%;">Customer FullName</th>
+                                        <th style="width: 15%;">Full AccountNumber</th>
+                                        <th style="width: 15%;">Product Description</th>
+                                        <th style="width: 15%;"> Multiplier</th>
+                                        
 
-                                        <th style="width: 10%;">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody style="color: #007bff;">
+                                <tbody>
                                     @if (ViewBag.DebitBatchEntryDTOs != null)
                                     {
                                         foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
                                         {
                                             <tr data-id="@debitBatchEntries.Id">
-                                                <td>@debitBatchEntries.Reference</td>
+                                                <td>@debitBatchEntries.CustomerFullName</td>
+                                                <td>@debitBatchEntries.FullAccountNumber</td>
+                                                <td>@debitBatchEntries.ProductDescription</td>
                                                 <td>@debitBatchEntries.Multiplier</td>
+
                                                 
-                                                <td>@debitBatchEntries.Status</td>
                                             </tr>
                                         }
                                     }
@@ -253,6 +257,9 @@
                             </table>
                         </row>
                     </div>
+
+
+                    
 
 
                 </div>

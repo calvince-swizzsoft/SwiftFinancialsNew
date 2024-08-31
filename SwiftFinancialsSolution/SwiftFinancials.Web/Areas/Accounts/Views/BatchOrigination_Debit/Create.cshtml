@@ -15,7 +15,7 @@
         background-color: #f1f1f1;
     }
     .row{
-        margin-top:20px;
+        margin-top:5px;
     }
     h2{
         color:#333; 
@@ -207,7 +207,7 @@
                                             @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
                                             @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill.." } })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
@@ -223,7 +223,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference", @required = "" } })
+                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
                                             @*@Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
@@ -344,7 +344,7 @@
                                     </div>
                                     <div class="col-lg-3">
                                         <div style="text-align: right; margin: 20px 20px;">
-                                            <input type="submit" value="Add Entry" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                                            <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
                                         </div>
                                     </div>
                                 </div>
@@ -363,7 +363,7 @@
                                                 <th style="width: 15%;">Debit Customer</th>
                                                 <th style="width: 10%;">Debit Account</th>
                                                 <th style="width: 5%;">Multiplier</th>
-                                                <th style="width: 5%;">Action</th>
+                                                
 
                                             </tr>
                                         </thead>
@@ -376,7 +376,7 @@
                                                         <td>@DebitBatchEntries.DebitCustomerAccountFullName</td>
                                                         <td>@DebitBatchEntries.DebitCustomerAccountFullAccountNumber</td>
                                                         <td>@DebitBatchEntries.Multiplier</td>
-                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                        
 
 
                                                     </tr>
