@@ -10,6 +10,6 @@
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Disbursement",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Disbursement\\Verify.cshtml",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers\\BatchOrigination_WireTransferController.cs",
   "PreviewInSolutionExplorer": false
 }
