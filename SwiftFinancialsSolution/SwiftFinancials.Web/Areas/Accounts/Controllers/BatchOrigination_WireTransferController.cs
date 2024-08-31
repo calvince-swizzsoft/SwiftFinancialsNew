@@ -66,6 +66,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var wireTransferBatch = await _channelService.FindWireTransferBatchAsync(id, GetServiceHeader());
 
+
+            
+            var wireTransferEntries = await _channelService.FindWireTransferBatchEntriesByWireTransferBatchIdAsync(id, true, GetServiceHeader());
+
+            ViewBag.WireTransferEntryDTOs = wireTransferEntries;
+
+
+
             return View(wireTransferBatch);
         }
 
