@@ -15,6 +15,7 @@ using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
+
     public class GuarantorRelievingController : MasterController
     {
 
@@ -36,7 +37,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 10, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanGuarantorAttachmentHistoryByStatusAndFilterInPageAsync((int)LoanGuarantorAttachmentHistoryStatus.Attached, DateTime.Now, DateTime.Now, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -48,26 +49,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
-        public async Task<ActionResult> Details(Guid id)
+        public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
         {
             await ServeNavigationMenus();
-
-            var dataCapture = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
-
-            return View(dataCapture);
-        }
-
-
-
-        public async Task<ActionResult> Create(Guid? id, DataAttachmentPeriodDTO dataPeriodDTO)
-        {
-            await ServeNavigationMenus();
-
-            ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
 
             Guid parseId;
 
@@ -76,14 +64,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var postingPeriod = await _channelService.FindPostingPeriodAsync(parseId, GetServiceHeader());
-            if (postingPeriod != null)
-            {
-                dataPeriodDTO.PostingPeriodId = postingPeriod.Id;
-                dataPeriodDTO.PostingPeriodDescription = postingPeriod.Description;
-            }
-
-            return View(dataPeriodDTO);
+            return View();
         }
 
 

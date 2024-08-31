@@ -53,6 +53,17 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<WireTransferBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+        public void BatchOrigination_WireTransfer(WireTransferBatchDTO  wireTransferBatchDTO)
+        {
+
+            Session["HeaderDetails"] = wireTransferBatchDTO;
+
+        }
+
+
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -61,39 +72,57 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             return View(wireTransferBatch);
         }
+
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
 
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var customer = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
-
-            WireTransferBatchDTO wireTransferBatchDTO = new WireTransferBatchDTO();
-
-            if (customer != null)
-            {
-
-                /*wireTransferBatchDTO.WireTransferTypeDescription = customer.;
-                wireTransferBatchDTO.WireTransferTypeId = customer.Id;*/
-            }
-
-
             return View();
         }
+        public async Task<ActionResult> WireTransferTypeLookup(Guid? id, WireTransferBatchDTO wireTransferBatchDTO)
+        {
 
-        public async Task<ActionResult> CreditCustomerAccountLookUp(Guid? id, WireTransferBatchDTO  wireTransferBatchDTO)
+            // Check if the id is null or an empty Guid
+            if (id == null || id == Guid.Empty)
+            {
+                await ServeNavigationMenus();
+                return View("Create", wireTransferBatchDTO);
+            }
+
+            // Fetch all wire transfer types and filter by the provided id
+            var wireTransferTypes = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
+            var wireTransferType = wireTransferTypes.FirstOrDefault(wt => wt.Id == id);
+
+            // If the wire transfer type with the specified id is not found, you can handle it accordingly
+            if (wireTransferType == null)
+            {
+                
+                return View("Create", wireTransferBatchDTO);
+            }
+
+            wireTransferBatchDTO.WireTransferTypeDescription = wireTransferType.ChartOfAccountName;
+            wireTransferBatchDTO.WireTransferTypeId = wireTransferType.ChartOfAccountId;
+
+            ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
+            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
+
+            return View("Create", wireTransferBatchDTO);
+        }
+
+
+         
+        public async Task<ActionResult> WireTransferCustomerAccountLookUp(Guid? id, WireTransferBatchDTO  wireTransferBatchDTO)
         {
 
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
+            if (Session["HeaderDetails"] != null)
+            {
+                wireTransferBatchDTO = Session["HeaderDetails"] as WireTransferBatchDTO;
+            }
 
             Guid parseId;
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))

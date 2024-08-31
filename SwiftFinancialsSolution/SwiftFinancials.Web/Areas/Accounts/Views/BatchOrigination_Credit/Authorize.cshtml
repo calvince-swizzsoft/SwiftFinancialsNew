@@ -392,9 +392,9 @@
                                             <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
                                                 <thead style="font-style: italic; color: #333; text-align: center;">
                                                     <tr>
-                                                        <th style="width: 10%;">Account Number</th>
-                                                        <th style="width: 5%;">Product Description</th>
-                                                        <th style="width: 10%;">Principal</th>
+                                                        <th style="width: 10%;">Beneficiary</th>
+                                                        <th style="width: 15%;">Principal </th>
+                                                        <th style="width: 15%;">Interest</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody style="color: #007bff;">
@@ -403,9 +403,9 @@
                                                         foreach (var journalVoucherEntries in ViewBag.CrdeitBatchEntryDTOs)
                                                         {
                                                             <tr data-id="@journalVoucherEntries.Id">
-                                                                <td>@journalVoucherEntries.FullAccountNumber</td>
-                                                                <td>@journalVoucherEntries.ProductDescription</td>
+                                                                <td>@journalVoucherEntries.Beneficiary</td>
                                                                 <td>@journalVoucherEntries.Principal</td>
+                                                                <td>@journalVoucherEntries.Interest</td>
                                                             </tr>
                                                         }
                                                     }
@@ -432,7 +432,7 @@
                                                         <div class="form-group form-group-lg">
                                                             <div class="button-container">
                                                                 <div class="custom-dropdown">
-                                                                    @Html.DropDownListFor(model => model.StatusDescription, batchAuthOptions, new { @class = "custom-select" })
+                                                                    @Html.DropDownListFor(model => model.CreditAuthOption, batchAuthOptions, new { @class = "custom-select" })
                                                                 </div>
                                                             </div>
                                                         </div>

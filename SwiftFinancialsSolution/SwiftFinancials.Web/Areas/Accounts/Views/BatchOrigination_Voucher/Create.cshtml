@@ -193,8 +193,8 @@
                                         @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
                                         <div class="input-group">
                                             <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.TypeDescription, journalVoucherTypes, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.TypeDescription)
+                                            @Html.DropDownListFor(model => model.Type, journalVoucherTypes, new { @class = "form-control input-md" })
+                                            @Html.ValidationMessageFor(model => model.Type)
                                         </div>
                                     </div>
                                     <div class="form-group form-group-lg spacing-form-group">

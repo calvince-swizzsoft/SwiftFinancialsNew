@@ -176,7 +176,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Verify(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
             loanDisbursementBatchDTO.ValidateAll();
-            int batchAuthOption = loanDisbursementBatchDTO.Type;
+            int batchAuthOption = loanDisbursementBatchDTO.Auth;
             if (!loanDisbursementBatchDTO.HasErrors)
             {
                 await _channelService.AuditLoanDisbursementBatchAsync(loanDisbursementBatchDTO, batchAuthOption, GetServiceHeader());
@@ -201,6 +201,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
 
+                TempData["Verification"] = "Verification successfull";
                 return View(loanDisbursementBatchDTO);
             }
         }
@@ -227,7 +228,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Authorize(Guid id, LoanDisbursementBatchDTO loanDisbursementBatchDTO)
         {
             /*var batchAuthOption = wireTransferBatchDTO.batch*/
-            int batchAuthOption = loanDisbursementBatchDTO.Type;
+            int batchAuthOption = loanDisbursementBatchDTO.Auth;
             loanDisbursementBatchDTO.ValidateAll();
 
 
@@ -240,10 +241,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.DisbursementType = GetLoanDisbursementTypeBatchTypeSelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.Category = GetLoanRegistrationLoanProductCategorySelectList(loanDisbursementBatchDTO.Priority.ToString());
                 ViewBag.BatchStatuselectList = GetBatchStatusTypeSelectList(loanDisbursementBatchDTO.Status.ToString());
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.Type.ToString());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(loanDisbursementBatchDTO.Auth.ToString());
 
                 ViewBag.Priority = GetQueuePriorityAsync(loanDisbursementBatchDTO.Priority.ToString());
-                TempData["SuccessMessage"] = "Authorize successfull";
+                TempData["Authorization"] = "Authorization successfull";
                 return RedirectToAction("Index");
             }
             else

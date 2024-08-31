@@ -10,6 +10,7 @@
         border: 1px solid black;
         padding: 10px;
         margin-top: 20px;
+        background-color: #f1f1f1;
     }
     .control-label {
         color: #333; /* Replace with your desired color */
@@ -140,7 +141,7 @@
                 <div class="ibox-title">
                     <h2 style="font-weight: bold;">Debit Batch Details</h2>
                     <hr />
-                    @Html.ActionLink("Back To List", "Index", "BatchOrigination_Debit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -150,11 +151,11 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="main1">
                     <div class="content" style="padding: 20px; margin: 20px;">
                         <div class="row">
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
@@ -167,7 +168,7 @@
                                 </div>
 
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                     @Html.HiddenFor(model => model.BranchId)
@@ -175,10 +176,8 @@
                                     @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control input-md required", placeholder = "Description..", @readonly = "readonly" } })
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
 
-                            <div class="col-lg-6">
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                     <div class="input-group">
@@ -188,7 +187,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6">
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-4">
                                 <div class="form-group form-group-lg">
                                     @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
                                     @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
@@ -196,13 +197,32 @@
                                 </div>
                             </div>
 
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.CreatedBy, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <div class="form-group form-group-lg">
+                                    @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+                                    @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control input-md", @placeholder = "Reference", @required = "", @readonly = "readonly" } })
+                                    @Html.ValidationMessageFor(model => model.CreatedDate, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+
+
 
                         </div>
 
 
                     </div>
-                    <br/>
-                    <br/>
+                    <br />
+                    <br />
                     <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
                         <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Debit Batch Entries</h2>
 
@@ -210,9 +230,9 @@
                             <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
                                 <thead style="font-style: italic; color: #333; text-align: center;">
                                     <tr>
-                                        <th style="width: 10%;">Customer Account</th>
-                                        <th style="width: 5%;">Multiplier</th>
                                         <th style="width: 10%;">Reference</th>
+                                        <th style="width: 5%;">Multiplier</th>
+
                                         <th style="width: 10%;">Status</th>
                                     </tr>
                                 </thead>
@@ -222,9 +242,9 @@
                                         foreach (var debitBatchEntries in ViewBag.DebitBatchEntryDTOs)
                                         {
                                             <tr data-id="@debitBatchEntries.Id">
-                                                <td>@debitBatchEntries.CustomerAccountId</td>
-                                                <td>@debitBatchEntries.Multiplier</td>
                                                 <td>@debitBatchEntries.Reference</td>
+                                                <td>@debitBatchEntries.Multiplier</td>
+                                                
                                                 <td>@debitBatchEntries.Status</td>
                                             </tr>
                                         }
@@ -234,8 +254,11 @@
                         </row>
                     </div>
 
-                    
+
                 </div>
+                <br />
+                @Html.ActionLink("Back To List", "Index", "BatchOrigination_Debit", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+
             </div>
         </div>
     </div>

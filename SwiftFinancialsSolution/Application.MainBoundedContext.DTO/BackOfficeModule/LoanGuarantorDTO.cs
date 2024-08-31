@@ -30,6 +30,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         public CustomerDTO Customer { get; set; }
 
+      
 
         [DataMember]
         [Display(Name = "Loan Number")]
@@ -45,30 +46,12 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
         [DataMember]
-        [Display(Name = "Employer")]
-        public Guid? GuarantorEmployerId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Employer")]
-        public string GuarantorEmployerDescription { get; set; }
-
-
-        [DataMember]
         [Display(Name = "Station")]
         public Guid? StationId { get; set; }
 
         [DataMember]
         [Display(Name = "Station")]
         public string StationDescription { get; set; }
-
-
-        [DataMember]
-        [Display(Name = "Station")]
-        public Guid? GuarantorStationId { get; set; }
-
-        [DataMember]
-        [Display(Name = "Station")]
-        public string GuarantorStationDescription { get; set; }
 
 
         [DataMember]
@@ -504,5 +487,123 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public string ErrorMsgResult { get; set; }
+
+
+        // Additnonal DTOs
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public string CustomerAccountFullAccountNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Full Account Number")]
+        public Guid CustomerAccountAccountId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Account Status")]
+        public string CustomerAccountAccountStatusDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Account Remarks")]
+        public string CustomerAccountAccountRemarks { get; set; }
+
+        [DataMember]
+        [Display(Name = "Book Balance")]
+        public decimal BookBalance { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        public string CustomerAccountCustomerFullName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string CustomerAccounntCustomerTypeDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Apportioned")]
+        public string Apportioned { get; set; }
+
+        [DataMember]
+        [Display(Name = "Shortage")]
+        public string Shortage { get; set; }
+
+        [DataMember]
+        [Display(Name = "Attach To")]
+        public string AttachTo { get; set; }
+
+        [DataMember]
+        [Display(Name = "Attach To")]
+        public Guid AttachToId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string Remarks { get; set; }
+
+        /// <summary>
+        /// Guarantor DTOs
+        /// </summary>
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string GuarantorTypeDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Customer")]
+        public string GuarantorFullName { get; set; }
+        [DataMember]
+        [Display(Name = "Customer")]
+        public Guid GuarantorId { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public Guid? GuarantorEmployerId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Employer")]
+        public string GuarantorEmployerDescription { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public Guid? GuarantorStationId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Station")]
+        public string GuarantorStationDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "Identification Number")]
+        public string GuarantorIdentificationNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Account Number")]
+        public string GuarantorRef1 { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Membership Number")]
+        public string GuarantorRef2 { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Personal File Number")]
+        public string GuarantorRef3 { get; set; }
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string GuarantorRemarks { get; set; }
+
+
+        [DataMember]
+        public List<LoanGuarantorDTO> Guarantors { get; set; }
+
+        [DataMember]
+        [Display(Name ="Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
     }
 }
