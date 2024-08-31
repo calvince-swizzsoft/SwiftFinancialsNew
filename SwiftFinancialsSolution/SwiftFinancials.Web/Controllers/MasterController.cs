@@ -261,6 +261,24 @@ namespace SwiftFinancials.Web.Controllers
         }
 
 
+        [NonAction]
+        protected List<SelectListItem> GetApportionToSelectList(string selectedValue)
+        {
+            List<SelectListItem> apportionToSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ApportionTo)).Cast<ApportionTo>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            apportionToSelectList.AddRange(items);
+
+            return apportionToSelectList;
+        }
+
+
 
 
 
@@ -1771,5 +1789,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return imageSource;
         }
+
+     
     }
 }

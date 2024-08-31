@@ -70,7 +70,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             return Json(loanCases);
         }
-
         private async Task<List<LoanCaseDTO>> GetLoansByStatusAsync(DateTime startDate, DateTime endDate, int statusCode)
         {
             var loanCases = new List<LoanCaseDTO>();
@@ -140,6 +139,10 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
 
+
+
+
+
         [HttpPost]
         public async Task<JsonResult> GetAppraisedLoans(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -168,6 +171,30 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
         [HttpPost]
