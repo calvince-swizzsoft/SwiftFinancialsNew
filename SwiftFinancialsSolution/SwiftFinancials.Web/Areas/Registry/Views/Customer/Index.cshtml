@@ -3,6 +3,20 @@
     ViewBag.Title = "Customers";
 }
 
+
+
+<div class="page-header">
+    <div class="container-fluid">
+        <h1 class="margin-start">Customers</h1>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Dashboard</a></li>
+                <li class="breadcrumb-item active" aria-current="page">List</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
 <nav class="navbar">
     <div class="container">
         <ul class="nav-menu">
@@ -15,21 +29,10 @@
             <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "NextofKin" ? "active" : "")">
                 <a href="@Url.Action("Create", "NextofKin")" class="nav-link">Next of Kin </a>
             </li>
+           
         </ul>
     </div>
 </nav>
-
-<div class="page-header">
-    <div class="container">
-        <h1>Customers</h1>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="@Url.Action("Index", "Home")">Dashboard</a></li>
-                <li class="breadcrumb-item active" aria-current="page">List</li>
-            </ol>
-        </nav>
-    </div>
-</div>
 
 <style>
     body {
@@ -231,14 +234,6 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                 <a class="dropdown-item" href="/registry/Customer/details/${aData.Id}">View</a>
                                 <a class="dropdown-item" href="/registry/Customer/edit/${aData.Id}">Edit</a>
-                                <a class="dropdown-item" href="/registry/Customer/Delegates/${aData.Id}">Delegates</a>
-
-                                <a class="dropdown-item" href="/registry/Customer/NextofKin/${aData.Id}">NextofKin</a>
-                                <a class="dropdown-item" href="/registry/Customer/BranchLinkage/${aData.Id}">BranchLinkage</a>
-                                <a class="dropdown-item" href="/registry/Customer/Documents/${aData.Id}">Documents</a>
-                                <a class="dropdown-item" href="/registry/Customer/StationLinkage/${aData.Id}">Station Linkage</a>
-                                <a class="dropdown-item" href="/registry/Customer/AccountAlerts/${aData.Id}">AccountAlerts</a>
-
                             </div>
                         </div>`;
 
@@ -272,3 +267,5 @@
 
 
 }
+
+

@@ -122,6 +122,19 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
                 return Enum.IsDefined(typeof(DisbursementType), Type) ? EnumHelper.GetDescription((DisbursementType)Type) : string.Empty;
             }
         }
+        [DataMember]
+        [Display(Name = "Auth Options")]
+        public int Auth { get; set; }
+
+        [DataMember]
+        [Display(Name = "Auth Options")]
+        public string AuthDescriptiom
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), Auth) ? EnumHelper.GetDescription((BatchAuthOption)Auth) : string.Empty;
+            }
+        }
 
         [DataMember]
         [Display(Name = "Category")]

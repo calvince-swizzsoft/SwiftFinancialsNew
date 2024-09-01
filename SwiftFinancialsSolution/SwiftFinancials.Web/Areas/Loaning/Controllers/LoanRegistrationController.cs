@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
@@ -13,6 +14,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using SwiftFinancials.Web.PDF;
 
 namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
@@ -32,8 +34,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            //ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(loanCaseDTO.filterTextDescription);
-
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
@@ -44,35 +44,13 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 10, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
+            var page = pageCollectionInfo.PageCollection;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(LoanCase => LoanCase.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-
-        [HttpPost]
-        public async Task<JsonResult> GetAllLoanCases(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            double positiveInfinity = double.PositiveInfinity;
-            int positiveInfinityAsInt = positiveInfinity > int.MaxValue ? int.MaxValue : (int)positiveInfinity;
-
-            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, 0, positiveInfinityAsInt, true, GetServiceHeader());
+            // Call createpdf class
+            var createpdf = new CreatePdf();
+            string fpath = Request.ServerVariables["REMOTE_ADDR"];
+            var addres = Path.Combine(Server.MapPath("~/Files/"));
+            createpdf.WritePdf(fpath, addres, page);
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -86,6 +64,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+      // GetAllLoanCases Transferred to ReportsController
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -240,8 +221,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
                 //// Standing Orders
-                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>(); 
-                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true,true, GetServiceHeader());
+                ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, true, GetServiceHeader());
 
                 foreach (var accounts in customerAccounts)
                 {
@@ -264,12 +245,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 //// Income History
                 //// Payouts
-                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchAuthOption.Post, parseId, GetServiceHeader());
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, parseId, GetServiceHeader());
                 if (payouts != null)
                 {
                     ViewBag.Payouts = payouts;
                 }
-               
+
 
                 ////Salary
                 // No method fetching by customerId

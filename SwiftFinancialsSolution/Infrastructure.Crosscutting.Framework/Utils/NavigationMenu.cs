@@ -189,7 +189,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                new NavigationMenu{AreaCode = 0x000059D8 + 78, IsArea = false, Description = "Periods", Icon="fa fa-money", ControllerName="Periods", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 79},
                new NavigationMenu{AreaCode = 0x000059D8 + 78, IsArea = false, Description = "Processing", Icon="fa fa-money", ControllerName="Processing", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 80},
                new NavigationMenu{AreaCode = 0x000059D8 + 78, IsArea = false, Description = "Closing", Icon="fa fa-money", ControllerName="Closing", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 81},
-               new NavigationMenu{AreaCode = 0x000059D8 + 78, IsArea = false, Description = "Catalog", Icon="fa fa-money", ControllerName="Catalog", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 81},
+               new NavigationMenu{AreaCode = 0x000059D8 + 78, IsArea = false, Description = "Catalog", Icon="fa fa-money", ControllerName="Catalog", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 96},
 
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Discrepancy Matching", Icon="fa fa-money", Code = 0x000059D8 + 82},
                new NavigationMenu{AreaCode = 0x000059D8 + 82, IsArea = false, Description = "Discrepancy Matching Singly", Icon="fa fa-money", ControllerName="DiscrepancyMatchingSingly", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 83},
@@ -199,23 +199,23 @@ namespace Infrastructure.Crosscutting.Framework.Utils
 
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/LAccount", Icon="fa fa-tasks", ControllerName="GLAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 85},
 
-               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 86},
-               new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Periods", Icon="fa fa-money", ControllerName="BankReconciliation_Periods", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 87},
+               
 
 
 
 
-
-               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Alternate channel Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 86},
-               new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Periods", Icon="fa fa-money", ControllerName="AlternatePeriods", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 87},
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Alternate channel Reconciliation", Icon="fa fa-exchange-alt", Code = 0x000059D8 + 86},
+               new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Periods", Icon="fa fa-hourglass-half", ControllerName="AlternatePeriods", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 87},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Processing", Icon="fa fa-money", ControllerName="Processing", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 88},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Closing", Icon="fa fa-money", ControllerName="Closing", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 89},
                new NavigationMenu{AreaCode = 0x000059D8 + 86, IsArea = false, Description = "Catalogue ", Icon="fa fa-money", ControllerName="Catalogue ", ActionName="Create", AreaName = "Accounts", Code = 0x000059D8 + 90},
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/L Account Determination", Icon="fa fa-tasks", ControllerName="SystemGeneralLedgerAccountMapping", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 91},
                new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "standingorder", Icon="fa fa-bars", ControllerName="CustomerAccountstandingorder", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 92},
-              new NavigationMenu{AreaCode = 0x000059D8 + 40, IsArea = false, Description = "Insurance", Icon="fa fa-bars", ControllerName="Insurers", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
+              new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Insurance", Icon="fa fa-bars", ControllerName="Insurers", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 93},
 
-             
+               // new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Bank Reconciliation", Icon="fa fa-money", Code = 0x000059D8 + 94},
+               new NavigationMenu{AreaCode = 0x000059D8 + 5, IsArea = false, Description = "Bank Reconciliation Periods", Icon="fa fa-piggy-bank", ControllerName="BankReconciliation_Periods", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 94},
+
 
 
                             //...... Loaning - area 24,000
@@ -254,15 +254,15 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                     new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Tellers", Icon="fa fa-bars", Code = 0x000061A8 + 5},
 
                  new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Tellers", Icon="fa fa-calculator", ControllerName="Teller", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 6},
-                new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "CashDeposit", Icon="fa fa-money", ControllerName="CashDeposit", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
-                new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Sundry Payments", Icon="fa fa-money", ControllerName="SundryPayments", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},
+                new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Saving Receipts/Payments", Icon="fa fa-money", ControllerName="CashDeposit", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
+                new NavigationMenu{AreaCode = 0x000061A8 + 5, IsArea = false, Description = "Sundry Receipts/Payments", Icon="fa fa-money", ControllerName="SundryPayments", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},
                 
                 //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Withdrawal", Icon="fa fa-money", ControllerName="CashWithdrawal", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 7},
                 //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Transfer", Icon="fa fa-money", ControllerName="CashTransfer", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 8},
                 //new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cash Withdrawal Approval", Icon="fa fa-money", ControllerName="CashWithdrawal", ActionName="Approval", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
-                new NavigationMenu{AreaCode = 0x000061A8 , IsArea = false, Description = "Customer Receipts", Icon="fa fa-money", ControllerName="CustomerReceipts", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
-                new NavigationMenu{AreaCode = 0x000061A8 , IsArea = false, Description = "Cheques/Cash Transfers", Icon="fa fa-money", ControllerName="Transfers", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 10},
-                new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "End of Day", Icon="fa fa-money", ControllerName="EndOfDay", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 11},
+                new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Customer Receipts", Icon="fa fa-money", ControllerName="CustomerReceipts", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 9},
+                new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "Cheques/Cash Transfers", Icon="fa fa-money", ControllerName="Transfers", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 10},
+                new NavigationMenu{AreaCode = 0x000061A8 + 4, IsArea = false, Description = "End of Day", Icon="fa fa-money", ControllerName="EndOfDay", ActionName="Create", AreaName = "FrontOffice", Code = 0x000061A8 + 11},
 
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Fiscal Counts", Icon="fa fa-calculator", ControllerName="FiscalCount", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 12},
                 new NavigationMenu{AreaCode = 0x000061A8, IsArea = false, Description = "Cheques", Icon="fa fa-bars", ControllerName="Cheques", ActionName="Index", AreaName = "FrontOffice", Code = 0x000061A8 + 13},

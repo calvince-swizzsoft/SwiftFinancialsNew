@@ -1,0 +1,285 @@
+﻿@model  Application.MainBoundedContext.DTO.AdministrationModule.SystemPermissionTypeInRoleDTO
+
+@{
+    /**/
+    var month = ViewBag.systemPermissionTypeTypeSelectList as List<SelectListItem>;
+
+    ViewBag.Title = "Remove System Transaction";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Remove System Permission</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Create", new { Area = "Admin" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Remove System Permission</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["Success"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
+                    <div class="ibox-tools">
+                        @*@Html.ActionLink("Remove System Permisssions", "Edit", "SystemTransactiontypes", new { Area = "Admin" }, new { @class = "btn btn-primary" })*@
+
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Edit", "SystemTransactiontypes", new { Area = "Admin" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="form-group form-group-lg">
+                                @Html.LabelFor(model => model.SystemPermissionTypeDescription, htmlAttributes: new { @class = "" })
+                                <div class="input-group">
+                                    <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                    @Html.DropDownListFor(model => model.SystemPermissionType, month, new { @class = "form-control input-md" })
+                                    @Html.ValidationMessageFor(model => model.SystemPermissionTypeDescription)
+                                </div>
+                            </div>
+                        </div> <!-- Hidden inputs to store selected roles and branches -->
+                        <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
+                        <input type="hidden" name="SelectedBranches" id="SelectedBranches" /> <!-- Tabs for Roles and Branches -->
+                        <ul class="nav nav-tabs" id="roleBranchTabs" role="tablist">
+                            <li class="nav-item active">
+                                <a class="nav-link active" id="roles-tab" data-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="true">Roles</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" id="branches-tab" data-toggle="tab" href="#branches" role="tab" aria-controls="branches" aria-selected="false">Branches</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <!-- Roles Tab -->
+                            <div class="tab-pane fade show active" id="roles" role="tabpanel" aria-labelledby="roles-tab">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        Roles
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table table-hover" id="rolesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="display: none">Id</th>
+                                                    <th>Name</th>
+                                                    <th>Map</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="rolesTableBody">
+                                                @*Roles are loaded here*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Branches Tab -->
+                            <div class="tab-pane fade" id="branches" role="tabpanel" aria-labelledby="branches-tab">
+                                <div class="panel panel-primary">
+                                    <div class="panel-heading">
+                                        Branches
+                                    </div>
+                                    <div class="panel-body">
+                                        <table class="table table-hover" id="branchesTable">
+                                            <thead>
+                                                <tr>
+                                                    <th style="display: none">Id</th>
+                                                    <th>Description</th>
+                                                    <th>Map</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="branchesTableBody">
+                                                @*Branches are loaded here*@
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group form-group-sm">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Remove" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $('#roleBranchTabs a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            });
+        });
+    </script>
+    <script src="~/Scripts/js/navlink.js"></script>
+    <script>
+    $(document).ready(function () {
+        // Load roles into the table
+        function loadRoles() {
+            $.ajax({
+                url: '@Url.Action("GetRoles", "SystemTransactiontypes", new { Area = "Admin" })',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var rolesTableBody = $('#rolesTableBody');
+                    rolesTableBody.empty(); // Clear existing rows
+
+                    // Loop through the roles and append them to the table
+                    $.each(data, function (index, role) {
+                        var row = $('<tr></tr>');
+                        row.append($('<td style="display: none"></td>').text(role.Id));
+                        row.append($('<td></td>').text(role.Name));
+                        row.append($('<td></td>').html('<input type="checkbox" class="role-checkbox" data-role-id="' + role.Id + '" data-role-name="' + role.Name + '" />'));
+                        rolesTableBody.append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading roles: ", error);
+                }
+            });
+        }
+
+        // Call the function to load roles when the page is ready
+        loadRoles();
+
+        // Capture selected roles on form submit
+        $('form').on('submit', function () {
+            var selectedRoles = [];
+            $('.role-checkbox:checked').each(function () {
+                selectedRoles.push({
+                    Id: $(this).data('role-id'),
+                    Name: $(this).data('role-name')
+                });
+            });
+            $('#SelectedRoles').val(JSON.stringify(selectedRoles)); // Store selected roles in hidden input
+        });
+    });
+    </script>
+
+    <script>
+        $(document).ready(function () {
+    // Load branches into the table
+    function loadBranches() {
+        $.ajax({
+            url: '@Url.Action("GetBranchesAsync", "SystemTransactiontypes", new { Area = "Admin" })',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                var branchesTableBody = $('#branchesTableBody');
+                branchesTableBody.empty(); // Clear existing rows
+
+                // Loop through the branches and append them to the table
+                $.each(data, function (index, branch) {
+                    var row = $('<tr></tr>');
+                    row.append($('<td style="display: none"></td>').text(branch.Id));
+                    row.append($('<td></td>').text(branch.Description));
+                    row.append($('<td></td>').html('<input type="checkbox" class="branch-checkbox" data-branch-id="' + branch.Id + '" />'));
+                    branchesTableBody.append(row);
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading branches: ", error);
+            }
+        });
+    }
+
+    // Call the function to load branches when the page is ready
+    loadBranches();
+
+    // Capture selected branches on form submit
+    $('form').on('submit', function () {
+        var selectedBranches = [];
+        $('.branch-checkbox:checked').each(function () {
+            selectedBranches.push($(this).data('branch-id'));
+        });
+        $('#SelectedBranches').val(selectedBranches.join(',')); // Store selected branches in hidden input
+    });
+});
+
+    </script>
+}

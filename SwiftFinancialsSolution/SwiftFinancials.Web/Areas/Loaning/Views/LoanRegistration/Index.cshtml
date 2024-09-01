@@ -69,7 +69,7 @@
         <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan")</li>
         <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification")</li>
         <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation")</li>
-
+        <li>@Html.ActionLink("Reports", "Index", "Reports")</li>
     </ul>
 </div>
 
@@ -81,19 +81,17 @@
                 <div class="ibox-title">
                     <h2>Loan Cases</h2>
 
-
-                    @if (TempData["AlertMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-                        </div>
-                    }
-
-
                     @if (TempData["Edit"] != null)
                     {
                         <div class="alert alert-success">
                             <strong>Success !</strong> @TempData["Edit"]
+                        </div>
+                    }
+                    
+                    @if (TempData["AlertMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["AlertMessage"]
                         </div>
                     }
 
@@ -120,33 +118,6 @@
                     </div>
                 </div>
                 <div class="ibox-content">
-                    @*<div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group form-group-lg">
-                                    <div class="input-group">
-                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.filterText, LoanCaseFilter, new { @class = "form-control input-md" })
-                                        @Html.ValidationMessageFor(model => model.filterText)
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6 form-group">
-                                <div class="form-group form-group-lg" style="border-radius:10px;">
-                                    @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @id = "LoanCaseAmountApplied", @class = "form-control required", @placeholder = "Enter filter text..." } })
-                                    @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-
-                            <div class="col-lg-3">
-                                @using (Html.BeginForm("index", "LoanRegistration", new { Area = "Loaning" }, FormMethod.Post))
-                                {
-                                    <input type="submit" class="btn btn-primary" value="Refresh" style="width: 70px; border-radius: 10px;" />
-                                }
-                            </div>
-                        </div>
-
-                        <br />*@
                     <div class="sk-spinner sk-spinner-double-bounce">
                         <div class="sk-double-bounce1"></div>
                         <div class="sk-double-bounce2"></div>
@@ -210,7 +181,7 @@
 
 
 @*<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.7/css/buttons.dataTables.min.css">*@
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.7/css/buttons.dataTables.min.css">*@
 @*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">*@
 
 <!--<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
@@ -218,7 +189,7 @@
 <script src="https://cdn.datatables.net/buttons/2.3.7/js/dataTables.buttons.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>-->
 @*<script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.print.min.js"></script>*@
+    <script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.print.min.js"></script>*@
 <!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>-->
 
 
@@ -269,20 +240,56 @@
                     var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
 
 
-                    var dropdownHtml = `
-                        <div class="dropdown">
-                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                Action
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
-                                <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
-                            </div>
-                        </div>`;
+                    //var dropdownHtml = `
+                    //    <div class="dropdown">
+                    //        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    //            Action
+                    //        </button>
+                    //        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                    //            <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
+                    //            <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
+                    //        </div>
+                    //    </div>`;
 
+
+                    //$('td:eq(8)', nRow).html(dt_Created);
+                    //$('td:eq(9)', nRow).html(dropdownHtml);
+
+
+
+                    // Generate dropdown HTML with conditional logic based on status
+                    var dropdownHtml = `
+                <div class="dropdown">
+                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+                    // Buttons to be included
+                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
+                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>`;
+
+                    // Conditional logic for button enabling/disabling based on status
+                    switch (aData.Status) {
+                        case 48826: // Registered
+                            dropdownHtml += viewButton + AttachGuarantor;
+                            break;
+                        // If the status is 48828 (Approved) or any other status, only "View" button will be enabled
+                        default:
+                            dropdownHtml += viewButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
 
                     $('td:eq(8)', nRow).html(dt_Created);
                     $('td:eq(9)', nRow).html(dropdownHtml);
+
+                    // Prevent default action for disabled links
+                    $('.dropdown-item.disabled').on('click', function (e) {
+                        e.preventDefault();
+                        e.stopPropagation();
+                    });
 
                     return nRow;
                 },
@@ -300,40 +307,6 @@
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
-
-                // Code to print table data to CSV, pdf and Excel
-                //"dom": "Bfrtip",
-                //"buttons": [
-                //    {
-                //        extend: 'copy',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-clipboard"></i> Copy'
-                //    },
-
-                //    {
-                //        extend: 'excel',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-table"></i> Excel'
-                //    },
-
-                //    {
-                //        extend: 'pdf',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-file-pdf-o"></i> PDF'
-                //    },
-
-                //    {
-                //        extend: 'csv',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-file"></i> CSV'
-                //    },
-
-                //    {
-                //        extend: 'print',
-                //        className: 'btn btn-light rounded-0',
-                //        text: '<i class="fa fa-print"></i> Print'
-                //    },
-                //],
             }
             );
         });

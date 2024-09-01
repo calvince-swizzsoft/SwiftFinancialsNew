@@ -1242,5 +1242,13 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         public IncomeAdjustmentDTO incomeAdjustment { get; set; }
+
+
+        // Reports DTOs
+        [DataMember]
+        public DateTime EndDate { get; set; } 
+        
+        [DataMember]
+        public DateTime StartDate { get; set; }
     }
 }

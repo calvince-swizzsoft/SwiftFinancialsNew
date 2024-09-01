@@ -51,7 +51,7 @@
                             <fieldset>
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
+                                        <div class="form-group form-group-lg"style="color:cadetblue">
                                             @Html.LabelFor(model => model.MonthDescription, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -60,7 +60,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group form-group-lg">
+                                        <div class="form-group form-group-lg"style="color:cadetblue">
                                             @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.PostingPeriodId)
                                             @Html.ValidationMessageFor(model => model.PostingPeriodId, "", new { @class = "text-danger" })
@@ -68,7 +68,7 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
+                                        <div class="form-group form-group-lg"style="color:cadetblue">
                                             @Html.LabelFor(model => model.Priority, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
@@ -76,7 +76,7 @@
                                                 @Html.ValidationMessageFor(model => model.Priority)
                                             </div>
                                         </div>
-                                        <div class="form-group form-group-lg">
+                                        <div class="form-group form-group-lg"style="color:cadetblue">
                                             @Html.CheckBoxFor(model => model.EnforceMonthValueDate, htmlAttributes: new { @class = "" })
                                             @Html.LabelFor(model => model.EnforceMonthValueDate, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnforceMonthValueDate?" } })
                                             @Html.ValidationMessageFor(model => model.EnforceMonthValueDate, "", new { @class = "text-danger" })

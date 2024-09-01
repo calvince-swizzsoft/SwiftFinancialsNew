@@ -67,40 +67,46 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
         public async Task<ActionResult> Create(Guid id)
         {
-
             await ServeNavigationMenus();
             ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(string.Empty);
+            ViewBag.ManagementSelectList = GetalternateChannelManagementActionSelectList(string.Empty);
 
             ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.RecordStatusSelectList = GetRecordStatusSelectList(string.Empty);
 
             var alternateChannelDTO = await _channelService.FindAlternateChannelAsync(id, true, GetServiceHeader());
-
-            alternateChannelDTO.Id = (Guid)Session["Id"];
-            ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
-            ViewBag.alternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
-            ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
-            ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
-
+            var k = await _channelService.FindCustomerAccountHistoryByCustomerAccountIdAsync(alternateChannelDTO.CustomerAccountId, GetServiceHeader());
+            ViewBag.history = k;
             return View(alternateChannelDTO);
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(AlternateChannelDTO alternateChannelDTO)
-
-
         {
             alternateChannelDTO.ValidateAll();
-
-
+            ViewBag.ManagementSelectList = GetalternateChannelManagementActionSelectList(alternateChannelDTO.Operations.ToString());
             if (!alternateChannelDTO.HasErrors)
             {
+                switch ((AlternateChannelManagementAction)alternateChannelDTO.Operations)
+                {
+                    case AlternateChannelManagementAction.Delinking:
+                        await _channelService.DelinkAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+                        break;
+                    case AlternateChannelManagementAction.Renewal:
+                        await _channelService.RenewAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+                        break;
+                    case AlternateChannelManagementAction.Replacement:
+                        await _channelService.ReplaceAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+                        break;
+                    case AlternateChannelManagementAction.Linking:
+                        await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader()); 
+                        break;
+                    case AlternateChannelManagementAction.Stoppage:
+                        await _channelService.StopAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+                        break;
 
-                //if ()
-                //{
-                    
-                //}
-                await _channelService.AddAlternateChannelAsync(alternateChannelDTO, GetServiceHeader());
+                }
+
 
                 TempData["SuccessMessage"] = "Create successful.";
                 ViewBag.QueuePrioritySelectList = GetAlternateChannelTypeSelectList(alternateChannelDTO.Type.ToString());

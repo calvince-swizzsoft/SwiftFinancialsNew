@@ -263,9 +263,19 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string DebitCustomerAccountFullName { get; set; }
 
         [DataMember]
+        [Display(Name = "Identification Number")]
+        public string CreditCustomerIdentificationNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Identification Number")]
+        public string DebitCustomerIdentificationNumber { get; set; }
+
+        [DataMember]
         public CustomerAccountDTO CreditCustomerAccountDTO { get; set; }
 
         [DataMember]
         public CustomerAccountDTO DebitCustomerAccountDTO { get; set; }
+
+
     }
 }

@@ -87,6 +87,21 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public decimal TotalValue { get; set; }
 
         [DataMember]
+        [Display(Name = "Auth Option")]
+        public byte BatchAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Auth Option")]
+        public string BatchAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)BatchAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)BatchAuthOption) : string.Empty;
+            }
+        }
+
+
+        [DataMember]
         [Display(Name = "Reference")]
         [Required]
         public string Reference { get; set; }

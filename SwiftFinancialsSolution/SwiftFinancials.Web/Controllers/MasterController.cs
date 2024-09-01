@@ -44,6 +44,7 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
         public ObservableCollection<DebitBatchEntryDTO> DebitBatchEntryDTOs;
+        public ObservableCollection<WireTransferBatchEntryDTO> WireTransferEntryDTOs;
 
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
@@ -56,7 +57,6 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> RecouringBatchDTOs;
-
         public ObservableCollection<TransactionModel> TransactionModels;
 
         public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
@@ -221,6 +221,29 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetCashRequestTypeSelectList(string selectedValue)
+        {
+
+            List<SelectListItem> cashRequestTypeSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(FrontOfficeCashRequestType)).Cast<FrontOfficeCashRequestType>().Select(v => new SelectListItem
+            {
+
+
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+
+            cashRequestTypeSelectList.AddRange(items);
+
+            return cashRequestTypeSelectList;
+
+           
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetRecordStatusSelectList(string selectedValue)
         {
             List<SelectListItem> recordStatusSelectList = new List<SelectListItem>();
@@ -235,6 +258,24 @@ namespace SwiftFinancials.Web.Controllers
             recordStatusSelectList.AddRange(items);
 
             return recordStatusSelectList;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetApportionToSelectList(string selectedValue)
+        {
+            List<SelectListItem> apportionToSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ApportionTo)).Cast<ApportionTo>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            apportionToSelectList.AddRange(items);
+
+            return apportionToSelectList;
         }
 
 
@@ -1540,7 +1581,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return alternateChannelKnownChargeType;
         }
-
+        
         [NonAction]
         protected List<SelectListItem> GetAlternateChannelTypeSelectList(string selectedValue)
         {
@@ -1558,7 +1599,22 @@ namespace SwiftFinancials.Web.Controllers
             return alternateChannelType;
         }
 
+        [NonAction]
+        protected List<SelectListItem> GetalternateChannelManagementActionSelectList(string selectedValue)
+        {
+            List<SelectListItem> alternateChannelManagementAction = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(AlternateChannelManagementAction)).Cast<AlternateChannelManagementAction>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            alternateChannelManagementAction.AddRange(items);
+
+            return alternateChannelManagementAction;
+        }
 
 
 
@@ -1733,5 +1789,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return imageSource;
         }
+
+     
     }
 }

@@ -3,6 +3,23 @@ using System.ComponentModel;
 
 namespace Infrastructure.Crosscutting.Framework.Utils
 {
+    public enum CustomerAccountTransactionRole
+    {
+        [Description("Credit Customer Account")]
+        CreditCustomerAccount = 0,
+        [Description("Debit Customer Account")]
+        DebitCustomerAccount = 1
+    }
+
+    public enum FrontOfficeCashRequestType
+    {
+        [Description("deposit")]
+        CashDeposit = 0,
+        [Description("withdrawal")]
+        CashWithdrawal = 1 
+    }
+
+
     public enum ChartOfAccountType
     {
         [Description("Asset")]

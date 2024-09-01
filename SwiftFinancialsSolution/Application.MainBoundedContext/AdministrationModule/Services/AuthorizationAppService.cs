@@ -314,23 +314,30 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                 {
                     var allAuthTypes = _systemPermissionTypeInRoleRepository.GetAll(serviceHeader);
 
-                    rolesInSystemPermissionType.ForEach((item) =>
+                    foreach (var item in rolesInSystemPermissionType)
                     {
                         var matches = allAuthTypes.Where(x => x.SystemPermissionType == systemPermissionType && x.RoleName.Trim().ToUpper() == item.RoleName.Trim().ToUpper());
 
-                        if (matches.Any()) return;
+                        if (matches.Any())
+                        {
+                            // If a match is found, return false to indicate that the entry already exists
+                            return false;
+                        }
 
                         var systemPermissionTypeInRole = SystemPermissionTypeInRoleFactory.CreateSystemPermissionTypeInRole(systemPermissionType, item.RoleName, item.RequiredApprovers, item.ApprovalPriority);
 
                         systemPermissionTypeInRole.CreatedBy = serviceHeader.ApplicationUserName;
 
                         _systemPermissionTypeInRoleRepository.Add(systemPermissionTypeInRole, serviceHeader);
-                    });
+                    }
 
                     return dbContextScope.SaveChanges(serviceHeader) >= 0;
                 }
             }
-            else return false;
+            else
+            {
+                return false;
+            }
         }
 
         public bool RemoveSystemPermissionTypeFromRoles(int systemPermissionType, string[] roleNames, ServiceHeader serviceHeader)

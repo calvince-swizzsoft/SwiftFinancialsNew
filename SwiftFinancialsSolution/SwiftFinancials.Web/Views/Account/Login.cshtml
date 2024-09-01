@@ -1,7 +1,9 @@
 ﻿@using SwiftFinancials.Web.Models
 @model LoginViewModel
 
-@{ Layout = null; }
+@{
+    Layout = null;
+}
 
 <!DOCTYPE html>
 <html>
@@ -12,47 +14,223 @@
 
     <title>Login</title>
 
-    <!-- Primary Inspinia style -->
     @Styles.Render("~/font-awesome/css")
     @Styles.Render("~/Content/css")
-
+    <link href="~/Scripts/css/login.css" rel="stylesheet" />
 </head>
 
 <body class="bg-transparent">
+    <div id="particles-js"></div>
 
-    <div class="panel-body center-orientation text-center animated fadeInDown">
+    <div class="splash-screen">
+        <div id="splashText" class="splash-text">Flow Finance</div>
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+        <div id="dollar-rain"></div> <!-- Container for dollar signs -->
+    </div>
 
+    <div class="panel-body center-orientation text-center animated fadeInDown" style="display: none;">
         @using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "m-t", role = "form" }))
         {
-        <div class="widget-head-color-box p-lg text-center">
-            <img alt="image" class="rounded" src="~/Images/MIA.jpg">
-            @*<h3><b>Swift Financials Management System</b></h3>*@
-            @Html.AntiForgeryToken()
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <div class="middle-box form-group form-group-lg">
-                @*@Html.LabelFor(m => m.Email, htmlAttributes: new { @class = "control-label col-md-2" })*@
-                @Html.TextBoxFor(m => m.Email, new { @class = "form-control text-dark rounded", @placeholder = "Enter email", @required = "" })
-                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+            <div class="widget-head-color-box p-lg text-center">
+                <div class="logo-container">
+                    <img alt="Swift Financials" class="rounded" src="~/Images/MIA.jpg">
+                </div>
+                @Html.AntiForgeryToken()
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="middle-box form-group form-group-lg">
+                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control text-dark rounded", @placeholder = "Enter email", @required = "" })
+                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger" })
+                </div>
+                <div class="middle-box form-group form-group-lg">
+                    @Html.PasswordFor(m => m.Password, new { @class = "form-control text-dark rounded", @placeholder = "Password", @required = "" })
+                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                </div>
+                <div class="middle-box form-group form-group-lg">
+                    <button type="submit" class="btn btn-rounded block full-width m-b font-bold">Log in</button>
+                </div>
+                <p class="m-t">
+                    @Html.ActionLink("Forgot your password?", "ForgotPassword", new { @class = "text-primary" })
+                </p>
+                <p class="font-weight-bold text-primary"> Copyright &copy; 2024 | Swift Financials. </p>
             </div>
-            <div class="middle-box form-group form-group-lg">
-                @*@Html.LabelFor(m => m.Password, htmlAttributes: new { @class = "control-label col-md-2" })*@
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control text-dark rounded", @placeholder = "Password", @required = "" })
-                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
-            </div>
-            <div class="middle-box form-group form-group-lg">
-                <button type="submit" class="btn btn-rounded btn-pinterest block full-width m-b font-bold">Log in</button>
-            </div>
-            <p class="m-t">
-                @Html.ActionLink("Forgot your password?", "ForgotPassword", new { @class = "text-primary" })
-            </p>
-            <p class="font-weight-bold text-primary "> Copyright  &copy; 2024 | Swift Financials. </p>
-        </div>}
-
+        }
     </div>
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/plugins/slimScroll")
     @Scripts.Render("~/bundles/inspinia")
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+
+
+    <script>
+        $(document).ready(function () {
+            var splashText = $("#splashText");
+
+            splashText.addClass("move-to-center");
+
+            splashText.on("animationend", function () {
+                if (splashText.hasClass("move-to-center")) {
+                    splashText.removeClass("move-to-center").addClass("jump-and-flip");
+
+                    splashText.on("animationend", function () {
+                        var audio = new Audio('https://www.soundjay.com/button/sounds/button-16.mp3');
+                        audio.play();
+
+                        setTimeout(function () {
+                            splashText.removeClass("jump-and-flip").addClass("move-out");
+
+                            splashText.on("animationend", function () {
+                                setTimeout(function () {
+                                    $(".splash-screen").fadeOut(function () {
+                                        $(".panel-body").fadeIn();
+                                    });
+                                }, 1000); // Delay to ensure smooth transition
+                            });
+                        }, 1000); // Delay before moving out
+                    });
+                }
+            });
+
+            // Set splash screen to display for 40 seconds
+            setTimeout(function () {
+                $(".splash-screen").fadeOut(function () {
+                    $(".panel-body").fadeIn();
+                });
+            }, 40000); // 40 seconds
+
+            // Dollar rain effect
+            function createDollarSign() {
+                var dollarSign = $("<div class='dollar-sign'>$</div>");
+                var startPos = Math.random() * 100; // Random horizontal position
+                var duration = Math.random() * 3 + 2; // Random falling speed
+
+                dollarSign.css({
+                    left: startPos + "vw",
+                    animationDuration: duration + "s"
+                });
+
+                $("#dollar-rain").append(dollarSign);
+
+                // Remove dollar sign after animation
+                setTimeout(function () {
+                    dollarSign.remove();
+                }, duration * 1000);
+            }
+
+            // Generate dollar signs at intervals
+            setInterval(createDollarSign, 200);
+        });
+
+        particlesJS("particles-js", {
+            "particles": {
+                "number": {
+                    "value": 80,
+                    "density": {
+                        "enable": true,
+                        "value_area": 800
+                    }
+                },
+                "color": {
+                    "value": "#007bff"
+                },
+                "shape": {
+                    "type": "circle",
+                    "stroke": {
+                        "width": 0,
+                        "color": "#000000"
+                    },
+                    "polygon": {
+                        "nb_sides": 5
+                    }
+                },
+                "opacity": {
+                    "value": 0.5,
+                    "random": false,
+                    "anim": {
+                        "enable": false,
+                        "speed": 1,
+                        "opacity_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "size": {
+                    "value": 3,
+                    "random": true,
+                    "anim": {
+                        "enable": false,
+                        "speed": 40,
+                        "size_min": 0.1,
+                        "sync": false
+                    }
+                },
+                "line_linked": {
+                    "enable": true,
+                    "distance": 150,
+                    "color": "#007bff",
+                    "opacity": 0.4,
+                    "width": 1
+                },
+                "move": {
+                    "enable": true,
+                    "speed": 6,
+                    "direction": "none",
+                    "random": false,
+                    "straight": false,
+                    "out_mode": "out",
+                    "bounce": false,
+                    "attract": {
+                        "enable": false,
+                        "rotateX": 600,
+                        "rotateY": 1200
+                    }
+                }
+            },
+            "interactivity": {
+                "detect_on": "canvas",
+                "events": {
+                    "onhover": {
+                        "enable": true,
+                        "mode": "repulse"
+                    },
+                    "onclick": {
+                        "enable": true,
+                        "mode": "push"
+                    },
+                    "resize": true
+                },
+                "modes": {
+                    "grab": {
+                        "distance": 400,
+                        "line_linked": {
+                            "opacity": 1
+                        }
+                    },
+                    "bubble": {
+                        "distance": 400,
+                        "size": 40,
+                        "duration": 2,
+                        "opacity": 8,
+                        "speed": 3
+                    },
+                    "repulse": {
+                        "distance": 200,
+                        "duration": 0.4
+                    },
+                    "push": {
+                        "particles_nb": 4
+                    },
+                    "remove": {
+                        "particles_nb": 2
+                    }
+                }
+            },
+            "retina_detect": true
+        });
+
+    </script>
 </body>
+
 </html>

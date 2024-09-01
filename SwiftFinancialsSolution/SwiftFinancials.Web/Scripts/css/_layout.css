@@ -1,0 +1,215 @@
+﻿/* Wrapper for the entire page */
+#wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Sidebar (Navigation) */
+.navbar-static-side {
+    width: 250px;
+    position: fixed;
+    height: 100%;
+    overflow-y: auto;
+    background-color: #2f4050;
+    color: #fff;
+}
+
+    .navbar-static-side a {
+        color: #a7b1c2;
+        text-decoration: none;
+    }
+
+        .navbar-static-side a:hover {
+            color: #1ab394;
+        }
+
+/* Content area */
+#page-wrapper {
+    flex-grow: 1;
+    margin-left: 250px; /* Same as sidebar width */
+    padding: 20px;
+    background-color: #f3f3f4;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure the main content takes up space before the footer */
+.main-content {
+    flex-grow: 1;
+    border-radius: 8px; /* Optional: to add rounded corners */
+}
+
+/* Footer styling */
+.footer {
+    padding: 10px 20px;
+    border-top: 1px solid #e7eaec;
+    text-align: center;
+}
+
+/* Form Controls */
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.form-control {
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 100%;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+    .form-control:focus {
+        border-color: #1ab394;
+        box-shadow: 0 0 4px rgba(26, 179, 148, 0.5);
+        outline: none;
+    }
+
+.btn {
+    color: white;
+    background-color: #306982;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+}
+
+    .btn:hover {
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        background-color: #306982;
+    }
+
+.card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.card-header {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.card-body {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Modal */
+
+/* Modal Background */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1050; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.3); /* Dark background with opacity */
+    transition: opacity 0.3s ease;
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #ffffff;
+    border: 1px solid #e1e1e1;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 10% auto; /* Center modal */
+    padding: 20px;
+    width: 100%; /* Responsive width */
+    transition: transform 0.3s ease;
+}
+
+/* Close Button */
+.modal-header .close {
+    color: #1ab394;
+    font-size: 24px;
+    font-weight: bold;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+    .modal-header .close:hover,
+    .modal-header .close:focus {
+        color: #000;
+        opacity: 1;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+/* Modal Header */
+.modal-header {
+    border-bottom: 1px solid #e1e1e1;
+    padding-bottom: 15px;
+    position: relative;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Modal Body */
+.modal-body {
+    font-size: 14px;
+    color: #555;
+    padding: 15px 0;
+}
+
+/* Modal Footer */
+.modal-footer {
+    border-top: 1px solid #e1e1e1;
+    padding-top: 15px;
+    text-align: right;
+}
+
+    .modal-footer .btn {
+        background-color: red;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        padding: 10px 15px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: background-color 0.3s, box-shadow 0.3s;
+    }
+
+        .modal-footer .btn:hover {
+            background-color: darkred;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        }
+
+    .modal-footer .btn-secondary {
+        background-color: #1ab394;
+        border: none;
+    }
+
+        .modal-footer .btn-secondary:hover {
+            background-color: #159d7d;
+        }
+
+body {
+    background-color: #e1e1e1;
+}
+
+
+
