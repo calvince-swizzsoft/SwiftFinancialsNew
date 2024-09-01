@@ -80,7 +80,7 @@
                                 <div class="col-md-4">
                                     <!-- Full Account Number with Lookup Modal -->
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number:", new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number", new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.TextBoxFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountCustomerNonIndividualDescription" }) <!-- Unique ID here -->
                                             <span class="input-group-addon">
@@ -96,7 +96,7 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Status", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -104,9 +104,9 @@
 
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TotalExpected, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.TotalExpected, new { htmlAttributes = new { @id = "TotalExpected", @class = "form-control", @placeholder = "Available Balance", @required = "" } })
-                                        @Html.ValidationMessageFor(model => model.TotalExpected, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.AvailableBalance, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @id = "AvailableBalance", @class = "form-control", @placeholder = "EnterText..", @required = "" } })
+                                        @Html.ValidationMessageFor(model => model.AvailableBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
@@ -119,7 +119,7 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "CustomerAccountCustomerId", @class = "form-control", @placeholder = "Customer", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "CustomerAccountCustomerId", @class = "form-control", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerFullName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -127,7 +127,7 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualPayrollNumbers", @class = "form-control", @placeholder = "Payroll Numbers", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualPayrollNumbers", @class = "form-control", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -136,7 +136,7 @@
                                     <div class="form-group form-group-lg">
                                         @Html.HiddenFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber)
                                         @Html.LabelFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualIdentityCardNumber", @class = "form-control", @placeholder = "Identity Card Number", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualIdentityCardNumber", @class = "form-control", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualIdentityCardNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -148,7 +148,7 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @id = "CustomerAccountCustomerReference1", @class = "form-control datepicker", @placeholder = "Account Number", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @id = "CustomerAccountCustomerReference1", @class = "form-control datepicker", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -156,7 +156,7 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference2, new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @id = "CustomerAccountCustomerReference2", @class = "form-control datepicker", @placeholder = "Membership Number", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @id = "CustomerAccountCustomerReference2", @class = "form-control datepicker", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -165,7 +165,7 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @id = "CustomerAccountCustomerReference3", @class = "form-control datepicker", @placeholder = "Personal File Number", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @id = "CustomerAccountCustomerReference3", @class = "form-control datepicker", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -177,7 +177,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
-                                        <label for="CategoryDescription">Category:</label>
+                                        <label for="CategoryDescription">Category</label>
                                         <select id="CategoryDescription" class="form-control">
                                             <option value="CallDeposit">Call Deposit</option>
                                             <option value="TermDeposit">Term Deposit</option>
@@ -189,15 +189,13 @@
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Value, new { @class = "control-label" })
                                         @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @id = "Value", @class = "form-control", @placeholder = "Enter value" } })
-                                        @Html.ValidationMessageFor(model => model.Value, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remarks", @class = "form-control", @placeholder = "Enter annual percentage rate" } })
-                                        @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remarks", @class = "form-control", @placeholder = "EnterText.." } })
                                     </div>
                                 </div>
 
@@ -208,16 +206,14 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Rate, new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter annual percentage rate" } })
-                                        @Html.ValidationMessageFor(model => model.Rate, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Rate, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter annual percentage rate....." } })
                                     </div>
                                 </div>
 
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.Term, new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Term, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter term in months" } })
-                                        @Html.ValidationMessageFor(model => model.Term, "", new { @class = "text-danger" })
+                                        @Html.EditorFor(model => model.Term, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter term in month....." } })
                                     </div>
                                 </div>
 
@@ -236,7 +232,7 @@
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.FixedDepositTypeDescription, new { @class = "control-label" })
                                         <div class="input-group">
-                                            @Html.EditorFor(model => model.FixedDepositTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Fixed Deposit Type Description", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.FixedDepositTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Space to Aoutofill....", @readonly = "readonly" } })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#fixedDepositTypeLookupModal">
                                                     <span class="fa fa-search"></span>
@@ -270,6 +266,7 @@
                                                         <th>Full Account Number</th>
                                                         <th>Product Name</th>
                                                         <th>Book Balance</th>
+                                                        <th>Available Balance</th>
                                                         <th>Principal Balance</th>
                                                         <th>Interest Balance</th>
                                                         <th>Select</th>
@@ -282,6 +279,7 @@
                                                             <td>@account.FullAccountNumber</td>
                                                             <td>@account.CustomerAccountTypeTargetProductDescription</td>
                                                             <td>@account.BookBalance</td>
+                                                            <td>@account.AvailableBalance</td>
                                                             <td>@account.PrincipalBalance</td>
                                                             <td>@account.InterestBalance</td>
                                                             <td>
@@ -289,6 +287,7 @@
                                                                 <input type="hidden" name="accountDetails" data-account="@account.FullAccountNumber"
                                                                        data-product="@account.CustomerAccountTypeTargetProductDescription"
                                                                        data-bookbalance="@account.BookBalance"
+                                                                       data-availablebalance="@account.AvailableBalance"
                                                                        data-principalbalance="@account.PrincipalBalance"
                                                                        data-interestbalance="@account.InterestBalance" />
                                                             </td>
@@ -319,12 +318,16 @@
                                         <div class="col">
                                             <input type="text" name="BookBalance[]" class="form-control" placeholder="Book Balance" />
                                         </div>
+                                        <div>
+                                            <input type="text" name="AvailableBalance[]" class="form-control" placeholder="Available Balance" />
+                                        </div>
                                         <div class="col">
                                             <input type="text" name="PrincipalBalance[]" class="form-control" placeholder="Principal Balance" />
                                         </div>
                                         <div class="col">
                                             <input type="text" name="InterestBalance[]" class="form-control" placeholder="Interest Balance" />
                                         </div>
+
                                         <div class="col-auto">
                                             <button type="button" class="btn btn-danger remove-entry-button">Remove</button>
                                         </div>
@@ -465,7 +468,17 @@
 
 
 
-
+    <script>
+        $(document).ready(function () {
+            $('input[name="selectedAccounts"]').change(function () {
+                if ($(this).is(':checked')) {
+                    var accountDetails = $(this).next('input[name="accountDetails"]');
+                    var availableBalance = accountDetails.data('availablebalance');
+                    $('#AvailableBalance').val(availableBalance);
+                }
+            });
+        });
+    </script>
 
     <script>
 
@@ -498,14 +511,14 @@
             // Display settings
             // lookup Display settings
             "aoColumns": [
-                { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
-                { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15" },
-                { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
-                { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],
 
+                { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                { "mDataProp": "CustomerReference1", "sTitle": "Customer Account Number", "sWidth": "2%" },
+                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
+                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "2%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
             "aaSorting": [[0, "desc"]]
         });
 

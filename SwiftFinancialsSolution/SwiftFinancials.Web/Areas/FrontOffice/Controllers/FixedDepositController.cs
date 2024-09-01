@@ -40,7 +40,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                    jQueryDataTablesModel.sSearch,
                    jQueryDataTablesModel.iDisplayStart,
                    jQueryDataTablesModel.iDisplayLength,
-                    true, 
+                    true,
                    GetServiceHeader()
                );
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -68,6 +68,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -81,7 +82,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var parseId = id.Value;
 
                 // Retrieve customer account details
-                var customer = await _channelService.FindFixedDepositTypeAsync(parseId,GetServiceHeader());
+                var customer = await _channelService.FindFixedDepositTypeAsync(parseId, GetServiceHeader());
 
                 if (customer != null)
                 {
@@ -102,16 +103,18 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+
+
         public async Task<ActionResult> Search(Guid? id, FixedDepositDTO fixedDepositDTO)
         {
             await ServeNavigationMenus();
-            if(Session["fixedDepositDTO"] !=null)
+            if (Session["fixedDepositDTO"] != null)
             {
-                fixedDepositDTO = Session["fixedDepositDTO"]as FixedDepositDTO;
+                fixedDepositDTO = Session["fixedDepositDTO"] as FixedDepositDTO;
             }
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
 
-            
+
 
             if (id.HasValue && id != Guid.Empty)
             {
@@ -120,19 +123,20 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 // Retrieve customer account details
                 var customer = await _channelService.FindCustomerAccountAsync(
                     parseId,
-                    includeBalances: false,
-                    includeProductDescription: false,
-                    includeInterestBalanceForLoanAccounts: false,
-                    considerMaturityPeriodForInvestmentAccounts: false,
+                    includeBalances: true,
+                    includeProductDescription: true,
+                    includeInterestBalanceForLoanAccounts: true,
+                    considerMaturityPeriodForInvestmentAccounts: true,
                     GetServiceHeader()
                 );
+
 
                 if (customer != null)
                 {
                     // Populate the DTO with customer details
                     fixedDepositDTO.CustomerAccountCustomerNonIndividualDescription = customer.FullAccountNumber;
                     fixedDepositDTO.CustomerAccountCustomerIndividualLastName = customer.StatusDescription;
-                    fixedDepositDTO.TotalExpected = customer.AvailableBalance;
+                    fixedDepositDTO.AvailableBalance = customer.AvailableBalance;
                     fixedDepositDTO.CustomerAccountCustomerIndividualFirstName = customer.CustomerFullName;
                     fixedDepositDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                     fixedDepositDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIndividualIdentityCardNumber;
@@ -175,29 +179,29 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
             }
 
-            return View("Create",fixedDepositDTO);
+            return View("Create", fixedDepositDTO);
         }
 
 
         [HttpPost]
         public async Task<ActionResult> Create(FixedDepositDTO fixedDepositDTO)
         {
-            
+
             // Validate the expensePayableDTO
             fixedDepositDTO.ValidateAll();
 
             if (!fixedDepositDTO.HasErrors)
             {
-               
-                    // Call the service to add the expense payable
-                    await _channelService.InvokeFixedDepositAsync(fixedDepositDTO, GetServiceHeader());
+
+                // Call the service to add the expense payable
+                await _channelService.InvokeFixedDepositAsync(fixedDepositDTO, GetServiceHeader());
 
 
-                    
-                        
-                        // Set success message in TempData
-                        TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
-                        
+
+
+                // Set success message in TempData
+                TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
+
 
 
                 //TempData["ErrorMessage"] = "An error occurred while processing your request.";
@@ -277,11 +281,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
-            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id,GetServiceHeader());
+            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
 
 
             return View(fixedDepositDTO);
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -406,7 +411,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (selectedFixedDepositIds == null || selectedFixedDepositIds.Length == 0)
             {
                 TempData["ErrorMessage"] = "No fixed deposit selected for termination.";
-                return RedirectToAction("Terminate"); 
+                return RedirectToAction("Terminate");
             }
 
             // Fetch the fixed deposits using the selected IDs
@@ -593,4 +598,3 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
     }
 }
-
