@@ -172,7 +172,7 @@
 
 
                                     <div class="col-md-4 form-group">
-                                        @Html.LabelFor(model => model.BatchAuthOption, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.WireTransferTypeDescription, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
                                             @Html.TextBoxFor(model => model.WireTransferTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "" })
                                             @Html.HiddenFor(model => model.WireTransferTypeId)
@@ -187,7 +187,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                                 @Html.DropDownListFor(model => model.Priority, priority, new { @class = "form-control input-md" })
-                                                @Html.HiddenFor(model => model.Priority)
+                                                
                                                 @Html.ValidationMessageFor(model => model.PriorityDescription)
                                             </div>
                                         </div>
@@ -195,11 +195,11 @@
 
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.TypeDescription, batchType, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.TypeDescription)
+                                                @Html.DropDownListFor(model => model.Type, batchType, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Type)
                                             </div>
                                         </div>
                                     </div>

@@ -88,7 +88,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
         public async Task<ActionResult> WireTransferTypeLookup(Guid? id, WireTransferBatchDTO wireTransferBatchDTO)
         {
-
+            await ServeNavigationMenus();
             // Check if the id is null or an empty Guid
             if (id == null || id == Guid.Empty)
             {
@@ -221,12 +221,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             TempData["WireTransferBatchDTO"] = wireTransferBatchDTO;
             Session["WireTransferBatchDTO"] = wireTransferBatchDTO;
 
-
+            wireTransferBatchDTO.WireTransferEntries=null;
             Session["debitBatchDTO2"] = null;
 
             ViewBag.WireTransferEntryDTOs = WireTransferEntryDTOs;
 
-            return View("Create", wireTransferBatchDTO);
+            return View("Create");
         }
 
 
@@ -324,7 +324,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
             var wireTransferBatchDTO = await _channelService.FindWireTransferBatchAsync(id, GetServiceHeader());
 
             TempData["wireTransferBatchDTO"] = wireTransferBatchDTO;
@@ -349,6 +349,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.AuditWireTransferBatchAsync(wireTransferBatchDTO, Auth, GetServiceHeader());
 
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.WireTransferTypeDescription.ToString());
                 ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
 
@@ -357,7 +358,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = wireTransferBatchDTO.ErrorMessages;
-
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
                 ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
 
@@ -365,12 +366,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
         }
 
+
+
         public async Task<ActionResult> Authorize(Guid id)
         {
             await ServeNavigationMenus();
 
             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             var wireTranferBatchDTO = await _channelService.FindWireTransferBatchAsync(id, GetServiceHeader());
 
@@ -381,15 +385,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Authorize(Guid id, WireTransferBatchDTO wireTransferBatchDTO)
         {
-            /*var batchAuthOption = wireTransferBatchDTO.batch*/;
+            var Auth = wireTransferBatchDTO.BatchAuthOption;
             wireTransferBatchDTO.ValidateAll();
 
 
 
             if (!wireTransferBatchDTO.HasErrors)
             {
-                await _channelService.AuthorizeWireTransferBatchAsync(wireTransferBatchDTO, 1, 1, GetServiceHeader());
+                await _channelService.AuthorizeWireTransferBatchAsync(wireTransferBatchDTO, Auth, 1, GetServiceHeader());
 
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
                 ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
 
@@ -398,7 +403,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = wireTransferBatchDTO.ErrorMessages;
-
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
                 ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
 
@@ -408,13 +413,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        //[HttpGet]
-        //public async Task<JsonResult> GetDebitBatchesAsync()
-        //{
-        //    var debitBatchDTOs = await _channelService.FindDebitBatchesAsync(GetServiceHeader());
+        /*[HttpGet]
+        public async Task<JsonResult> GetWireTransferBatchesAsync()
+        {
+            var debitBatchDTOs = await _channelService.FindDebitBatchesAsync(GetServiceHeader());
 
-        //    return Json(debitBatchDTOs, JsonRequestBehavior.AllowGet);
-        //}
+            return Json(debitBatchDTOs, JsonRequestBehavior.AllowGet);
+        }*/
     }
 
 }

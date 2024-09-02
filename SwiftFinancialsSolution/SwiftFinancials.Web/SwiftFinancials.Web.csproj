@@ -1191,6 +1191,8 @@
     <Content Include="libman.json" />
     <Content Include="Areas\Loaning\Views\GuarantorSubstitution\_GuarantorsTable.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorManagement\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
