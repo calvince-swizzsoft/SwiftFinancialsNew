@@ -6,6 +6,9 @@
     ViewBag.Title = "Create Customer Receipt";
     var apportionToType = ViewBag.ApportionToSelectList as List<SelectListItem>;
 
+    var apportionToTypeDictionary = apportionToType.ToDictionary(item => item.Value, item => item.Text);
+
+
 
 }
 
@@ -602,6 +605,9 @@
     <script>
         $(document).ready(function () {
 
+            
+
+
             function updateHiddenField() {
                 $('#apportionmentsData').val(JSON.stringify(apportionments));
             }
@@ -652,16 +658,36 @@
                 var principal = parseFloat($('input[name="ApportionmentWrapper.Principal"]').val()) || 0;
                 var interest = parseFloat($('input[name="ApportionmentWrapper.Interest"]').val()) || 0;
 
+                var apportionToType = {
+                    1: "Customer Account",
+                    2: "G/L Account"
+                };
+
+                // Get the numeric value
+                apportionTo = $('select[name="ApportionmentWrapper.ApportionTo"]').val();
+
+
+                console.log("apportionTo is: ", apportionTo);
+
+                // Map the numeric value to the description
+                var apportionToDescription = apportionToType[apportionTo];
+
+                console.log("apportionToDescription is: ", apportionToDescription);
+
+                // Create the item object with the mapped description
                 var item = {
-                    apportionTo: $('input[name="ApportionmentWrapper.ApportionTo"]').val(),
+                    apportionTo: apportionTo, // Store the numeric value
+                    apportionToDescription: apportionToDescription, // Get the description using the numeric value
                     fullAccountNumber: $('input[name="ApportionmentWrapper.FullAccountNumber"]').val(),
                     productDescription: $('input[name="ApportionmentWrapper.ProductDescription"]').val(),
-                    principal: principal,
-                    interest: interest,
+                    principal: $('input[name="ApportionmentWrapper.Principal"]').val(),
+                    interest: $('input[name="ApportionmentWrapper.Interest"]').val(),
                     primaryDescription: $('input[name="ApportionmentWrapper.PrimaryDescription"]').val(),
                     secondaryDescription: '', // Add any other fields you need here
                     reference: '' // Add any other fields you need here
                 };
+
+
 
                 apportionments.push(item);
                 sessionStorage.setItem('apportionments', JSON.stringify(apportionments)); // Store in session
@@ -679,31 +705,32 @@
                     var interest = parseFloat(item.interest) || 0;
 
                     $tableBody.append(`
-                                 <tr>
-                <td>${item.apportionTo || ''}</td>
-                <td>${item.fullAccountNumber || ''}</td>
-                <td>${item.productDescription || ''}</td>
-                <td>${principal.toFixed(2)}</td>
-                <td>${interest.toFixed(2)}</td>
-                <td>${item.primaryDescription || ''}</td>
-                <td>${item.secondaryDescription || ''}</td>
-                <td>${item.reference || ''}</td>
-                <td>
-                    <button type="button" class="btn btn-danger remove-btn" data-index="${index}">
-                        <i class="fas fa-times"></i>
-                    </button>
-                </td>
-                <!-- Hidden inputs for binding to ApportionmentWrapper -->
-                <input type="hidden" name="Apportionments[${index}].ApportionTo" value="${item.apportionTo || ''}" />
-                <input type="hidden" name="Apportionments[${index}].FullAccountNumber" value="${item.fullAccountNumber || ''}" />
-                <input type="hidden" name="Apportionments[${index}].ProductDescription" value="${item.productDescription || ''}" />
-                <input type="hidden" name="Apportionments[${index}].Principal" value="${principal.toFixed(2)}" />
-                <input type="hidden" name="Apportionments[${index}].Interest" value="${interest.toFixed(2)}" />
-                <input type="hidden" name="Apportionments[${index}].PrimaryDescription" value="${item.primaryDescription || ''}" />
-                <input type="hidden" name="Apportionments[${index}].SecondaryDescription" value="${item.secondaryDescription || ''}" />
-                <input type="hidden" name="Apportionments[${index}].Reference" value="${item.reference || ''}" />
-            </tr>
-                    `);
+                                         <tr>
+                        <td>${item.apportionToDescription || ''}</td>
+                        <td>${item.fullAccountNumber || ''}</td>
+                        <td>${item.productDescription || ''}</td>
+                        <td>${principal.toFixed(2)}</td>
+                        <td>${interest.toFixed(2)}</td>
+                        <td>${item.primaryDescription || ''}</td>
+                        <td>${item.secondaryDescription || ''}</td>
+                        <td>${item.reference || ''}</td>
+                        <td>
+                            <button type="button" class="btn btn-danger remove-btn" data-index="${index}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </td>
+                        <!-- Hidden inputs for binding to ApportionmentWrapper -->
+                        <input type="hidden" name="Apportionments[${index}].ApportionTo" value="${item.apportionTo || ''}" />
+                        <input type="hidden" name="Apportionments[${index}].FullAccountNumber" value="${item.fullAccountNumber || ''}" />
+                        <input type="hidden" name="Apportionments[${index}].ProductDescription" value="${item.productDescription || ''}" />
+                        <input type="hidden" name="Apportionments[${index}].Principal" value="${principal.toFixed(2)}" />
+                        <input type="hidden" name="Apportionments[${index}].Interest" value="${interest.toFixed(2)}" />
+                        <input type="hidden" name="Apportionments[${index}].PrimaryDescription" value="${item.primaryDescription || ''}" />
+                        <input type="hidden" name="Apportionments[${index}].SecondaryDescription" value="${item.secondaryDescription || ''}" />
+                        <input type="hidden" name="Apportionments[${index}].Reference" value="${item.reference || ''}" />
+                        
+                    </tr>
+                            `);
                 });
             }
 
@@ -732,5 +759,9 @@
             updateHiddenField();
         });
     </script>
+
+    
+
+
 
 }

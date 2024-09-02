@@ -1,5 +1,98 @@
 ﻿@model Application.MainBoundedContext.DTO.FrontOfficeModule.FixedDepositDTO
 
+<head>
+    <style>
+        .tab-content > .tab-pane {
+            display: none;
+        }
+
+            .tab-content > .tab-pane.active {
+                display: block;
+            }
+
+        .secondary-tab-content > .secondary-tab-pane {
+            display: none;
+        }
+
+            .secondary-tab-content > .secondary-tab-pane.active {
+                display: block;
+            }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            // Function to handle the fixed deposit type selection
+            $('#fixedDepositTypeLookupButton').on('click', function () {
+                $('#fixedDepositTypeLookupModal').modal('show');
+            });
+
+            // Function to handle the customer lookup
+            $('#customerLookupButton').on('click', function () {
+                $('#customerLookupModal').modal('show');
+            });
+
+            // Event listener for selection from the Fixed Deposit Type lookup
+            $('#FixedDepositTypeGrid').on('click', 'tr', function () {
+                var selectedTypeId = $(this).data('id');
+                var selectedTypeDescription = $(this).data('description');
+                $('#fixedDepositTypeId').val(selectedTypeId);
+                $('#FixedDepositTypeDescription').val(selectedTypeDescription);
+                $('#fixedDepositTypeLookupModal').modal('hide');
+                // Auto-populate other fields (e.g., Value, Rate) based on selected type
+                // Example: populateFieldsBasedOnType(selectedTypeId);
+            });
+
+            // Event listener for customer selection
+            $('#CustomerAccountsGrid').on('click', 'tr', function () {
+                var selectedCustomerId = $(this).data('id');
+                var selectedCustomerDescription = $(this).data('description');
+                $('#customerId').val(selectedCustomerId);
+                $('#CustomerAccountCustomerNonIndividualDescription').val(selectedCustomerDescription);
+                $('#customerLookupModal').modal('hide');
+            });
+
+            // Handle the Add button functionality
+            $('#addEntryButton').on('click', function () {
+                var $template = $('#fixedDepositTemplate').html();
+                $('#fixedDepositEntries').append($template);
+            });
+
+            // Handle the Remove button functionality
+            $('#fixedDepositEntries').on('click', '.remove-entry-button', function () {
+                $(this).closest('.fixed-deposit-entry').remove();
+            });
+        });
+    </script>
+</head>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h2>Verify Fixed Deposit</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "FixedDeposit", new { Area = "FrontOffice" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Verify</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
 @using (Html.BeginForm("Liquidation", "FixedDeposit", FormMethod.Post))
 {
     @Html.AntiForgeryToken()
@@ -17,7 +110,7 @@
                     <th style="border: 1px solid #ddd; padding: 8px;">Category</th>
                     <th style="border: 1px solid #ddd; padding: 8px;">Branch</th>
                     <th style="border: 1px solid #ddd; padding: 8px;">Full Account Number</th>
-                    <th style="border: 1px solid #ddd; padding: 8px;">Product Name</th>
+                    <th style="border: 1px solid #ddd; padding: 8px;">Remarks</th>
                     <th style="border: 1px solid #ddd; padding: 8px;">Customer Name</th>
                     <th style="border: 1px solid #ddd; padding: 8px;">Value</th>
                     <th style="border: 1px solid #ddd; padding: 8px;">Term (months)</th>
@@ -48,7 +141,7 @@
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.CategoryDescription</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.BranchDescription</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.CustomerAccountFullAccountNumber</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.ProductDescription</td>
+                        <td style="border: 1px solid #ddd; padding: 8px;">@Model.Remarks</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.CustomerAccountCustomerFullName</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.Value</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">@Model.Term</td>
@@ -77,68 +170,70 @@
             </tbody>
         </table>
     </div>
+    <div class="text-right">
 
-    <button type="submit" class="btn btn-danger">Liquidate Selected</button>
-}
+        <button type="submit" class="btn btn-danger">Liquidate/Pay</button>
+     </div>
+        }
 
-<script src="~/Scripts/jquery.min.js"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const refreshButton = document.getElementById('refreshButton');
-        const tableBody = document.getElementById('fixedDepositTableBody');
-        const startDate = document.getElementById('startDate');
-        const endDate = document.getElementById('endDate');
-        const searchText = document.getElementById('searchText');
+        <script src="~/Scripts/jquery.min.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const refreshButton = document.getElementById('refreshButton');
+                const tableBody = document.getElementById('fixedDepositTableBody');
+                const startDate = document.getElementById('startDate');
+                const endDate = document.getElementById('endDate');
+                const searchText = document.getElementById('searchText');
 
-        refreshButton.addEventListener('click', function () {
-            const queryParams = new URLSearchParams({
-                startDate: startDate.value,
-                endDate: endDate.value,
-                searchText: searchText.value
-            }).toString();
+                refreshButton.addEventListener('click', function () {
+                    const queryParams = new URLSearchParams({
+                        startDate: startDate.value,
+                        endDate: endDate.value,
+                        searchText: searchText.value
+                    }).toString();
 
-            fetch(`/FrontOffice/FixedDeposit/Liquidation?${queryParams}`, {
-                method: 'GET',
-                headers: { 'Accept': 'application/json' }
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Clear existing rows
-                    tableBody.innerHTML = '';
+                    fetch(`/FrontOffice/FixedDeposit/Liquidation?${queryParams}`, {
+                        method: 'GET',
+                        headers: { 'Accept': 'application/json' }
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // Clear existing rows
+                            tableBody.innerHTML = '';
 
-                    // Populate table with new data
-                    if (data && Array.isArray(data)) {
-                        data.forEach(deposit => {
-                            const row = document.createElement('tr');
-                            row.innerHTML = `
-                            <td><input type="checkbox" name="selectedFixedDepositIds" value="${deposit.id}" /></td>
-                            <td>${deposit.statusDescription}</td>
-                            <td>${deposit.fixedDepositTypeDescription}</td>
-                            <td>${deposit.categoryDescription}</td>
-                            <td>${deposit.branchDescription}</td>
-                            <td>${deposit.customerAccountFullAccountNumber}</td>
-                            <td>${deposit.productDescription}</td>
-                            <td>${deposit.customerAccountCustomerFullName}</td>
-                            <td>${deposit.value}</td>
-                            <td>${deposit.term}</td>
-                            <td>${deposit.rate}</td>
-                            <td>${deposit.maturityAction}</td>
-                        `;
-                            tableBody.appendChild(row);
+                            // Populate table with new data
+                            if (data && Array.isArray(data)) {
+                                data.forEach(deposit => {
+                                    const row = document.createElement('tr');
+                                    row.innerHTML = `
+                                    <td><input type="checkbox" name="selectedFixedDepositIds" value="${deposit.id}" /></td>
+                                    <td>${deposit.statusDescription}</td>
+                                    <td>${deposit.fixedDepositTypeDescription}</td>
+                                    <td>${deposit.categoryDescription}</td>
+                                    <td>${deposit.branchDescription}</td>
+                                    <td>${deposit.customerAccountFullAccountNumber}</td>
+                                    <td>${deposit.remarks}</td>
+                                    <td>${deposit.customerAccountCustomerFullName}</td>
+                                    <td>${deposit.value}</td>
+                                    <td>${deposit.term}</td>
+                                    <td>${deposit.rate}</td>
+                                    <td>${deposit.maturityAction}</td>
+                                `;
+                                    tableBody.appendChild(row);
+                                });
+                            } else {
+                                tableBody.innerHTML = '<tr><td colspan="12">No records found.</td></tr>';
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error fetching data:', error);
+                            alert('An error occurred while retrieving the data. Please try again.');
                         });
-                    } else {
-                        tableBody.innerHTML = '<tr><td colspan="12">No records found.</td></tr>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                    alert('An error occurred while retrieving the data. Please try again.');
                 });
-        });
-    });
-</script>
+            });
+        </script>
