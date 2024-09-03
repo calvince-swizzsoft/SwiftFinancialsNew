@@ -367,7 +367,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "CreditAccount Full Account Number")]
         public string CreditCustomerAccountFullAccountNumber { get; set; }
 
-        [Display(Name = "Credit Customer Id")]
+        [Display(Name = "Identification Number")]
         public string CreditCustomerAccountIdentificationNumber { get; set; }
 
 

@@ -18,21 +18,21 @@
         margin-top:5px;
     }
     h2{
-        color:#333; 
+        color:#333;
         font-weight:bold;
-        
-        
+
+
     }
 
     .bottom-button {
         border: 2px solid gray; /* Border color set to gray */
         padding: 10px; /* Padding inside the border */
         border-radius: 5px; /* Rounded corners (optional) */
-        
+
         margin: 20px;
         font-size: 18px;
         font-weight: bold;
-        
+
         background-color: #00e0ff;
     }
     .content {
@@ -49,7 +49,7 @@
     .btn-primary{
         border-radius:10px;
     }
-    @*Styling for Entries*@ 
+    @*Styling for Entries*@
     .journal-voucher-container {
         border: 1px solid #333;
         margin: 20px;
@@ -58,7 +58,7 @@
         border-radius: 8px;
         position: relative;
         padding: 40px; /* Space for the h2 */
-        
+
     }
 
     .journal-voucher-container h2 {
@@ -178,13 +178,13 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                   
-                        
-                    
+
+
+
                     <div class="main">
 
 
-                        @using (Html.BeginForm("Add", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Add", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "addDebitBatchForm" }))
                         {
                             @Html.AntiForgeryToken()
                             <div class="content">
@@ -193,14 +193,13 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitTypeId, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.DebitTypeId)
-                                                @Html.TextBoxFor(model => model.DebitTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.HiddenFor(model => model.DebitTypeId, new { @id = "DebitTypeId" })
+                                                @Html.TextBoxFor(model => model.DebitTypeDescription, new { @id = "DebitTypeDescription", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
                                         </div>
-
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
@@ -244,11 +243,9 @@
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @* @Html.HiddenFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber)*@
-                                                @Html.TextBoxFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.TextBoxFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly",@id= "DebitCustomerAccountFullAccountNumber" })
                                                 <span class="input-group-addon">
-                                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
-                                                        <span class="fa fa-search"></span>
-                                                    </a>
+                                                    <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
                                         </div>
@@ -259,14 +256,14 @@
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
 
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly" ,@id = "DebitCustomerAccountStatusDescription" } })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountId, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                            @Html.HiddenFor(model => model.DebitBatchEntries[0].CustomerAccountId)
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @readonly = "readonly",@id = "DebitCustomerAccountFullName" } })
+                                            @Html.HiddenFor(model => model.DebitBatchEntries[0].CustomerAccountId,new { @id = "CustomerAccountId" })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -275,7 +272,7 @@
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
 
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].ProductDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly",@id = "ProductDescription" } })
                                         </div>
                                     </div>
 
@@ -289,7 +286,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly",@id = "CustomerAccountCustomerIndividualPayrollNumbers" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -297,22 +294,22 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly",@id = "DebitCustomerAccountCustomerReference2" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly",@id= "DebitCustomerAccountCustomerReference3" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].DebitCustomerAccountStatusDescription, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].StatusDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].StatusDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly",@id = "StatusDescription" } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].StatusDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
@@ -323,32 +320,41 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Reference, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].Multiplier, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Multiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "Principal" } })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].Multiplier, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "Principal" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].Multiplier, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.DebitBatchEntries[0].FullAccountNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.DebitBatchEntries[0].FullAccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", } })
-                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].FullAccountNumber, "", new { @class = "text-danger" })
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
-                                        <div style="text-align: right; margin: 20px 20px;">
-                                            <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.DebitBatchEntries[0].BasisValue, htmlAttributes: new { @class = "control-label" })
+                                            @Html.EditorFor(model => model.DebitBatchEntries[0].BasisValue, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", } })
+                                            @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].BasisValue, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div style="text-align:left; margin: 20px 20px;">
+                                            <input type="submit" value="Add" id="addEntryBtn" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
                                         </div>
                                     </div>
                                 </div>
-
 
 
 
@@ -363,25 +369,11 @@
                                                 <th style="width: 15%;">Debit Customer</th>
                                                 <th style="width: 10%;">Debit Account</th>
                                                 <th style="width: 5%;">Multiplier</th>
-                                                
+
 
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.DebitBatchEntryDTOs != null)
-                                            {
-                                                foreach (var DebitBatchEntries in ViewBag.DebitBatchEntryDTOs)
-                                                {
-                                                    <tr data-id="@DebitBatchEntries.Id">
-                                                        <td>@DebitBatchEntries.DebitCustomerAccountFullName</td>
-                                                        <td>@DebitBatchEntries.DebitCustomerAccountFullAccountNumber</td>
-                                                        <td>@DebitBatchEntries.Multiplier</td>
-                                                        
-
-
-                                                    </tr>
-                                                }
-                                            }
                                         </tbody>
                                     </table>
                                 </row>
@@ -421,7 +413,7 @@
 
                     </div>
                 </div>
-                    
+
             </div>
         </div>
     </div>
@@ -517,7 +509,57 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
+
+
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
+
+            var formData = $('#addDebitBatchForm').serialize();
+
+            $.ajax({
+                url: '@Url.Action("Add", "BatchOrigination_Debit", new { Area = "Accounts" })',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        var newRows = '';
+                        $.each(response.entries, function (index, entry) {
+                            newRows += '<tr data-id="' + entry.Id + '">';
+                            newRows += '<td>' + entry.DebitCustomerAccountFullName + '</td>';
+                            newRows += '<td>' + entry.DebitCustomerAccountFullAccountNumber + '</td>';
+                            newRows += '<td>' + entry.Multiplier + '</td>';
+                            newRows += '</tr>';
+                        });
+
+                        $('#ChargeSplits tbody').html(newRows);
+
+                        // Clear the form fields with the specific class (e.g., .entry-field)
+                        $('.entry-field').val('');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        });
+    });
+    </script>
+
+
+
+
+
+    <script>
+
+
+
+
+
 
 
     $(document).ready(function () {
@@ -541,125 +583,69 @@
      });
 
 
-    function handleSearchClick() {
-        // Store form data in SessionStorage
-        let formData = {
-            Reference: document.querySelector('[name="Reference"]').value,
-            Priority: document.querySelector('[name="Priority"]').value,
-            BranchDescription: document.querySelector('[name="BranchDescription"]').value,
-            BranchId: document.querySelector('[name="BranchId"]').value,
-            DebitTypeDescription: document.querySelector('[name="DebitTypeDescription"]').value,
-            DebitTypeId: document.querySelector('[name="DebitTypeId"]').value,
-        };
 
-        // Save the form data to SessionStorage
-        sessionStorage.setItem('formData', JSON.stringify(formData));
 
-        // Send the form data to the server
-        $.ajax({
-            type: 'POST',
-            url: '/BatchOrigination_Debit/BatchOrigination_Debit',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            headers: {
-                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
+
+
+     //DebitType Lookup starts here
+            $('#BenefactorCustomerAccountsGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "DebitType", new { Area = "Accounts" }))",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var h = ("0" + createdDate.getHours()).slice(-2);
+                var m = ("0" + createdDate.getMinutes()).slice(-2);
+                var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                aData.CreatedDate = dt_Created;
+
+                var selectButton = '<a href="#" data-id="' + aData.Id + '" class="btn btn-outline-info select-link">Select</a>';
+
+                $('td:eq(4)', nRow).html(dt_Created);
+                $('td:eq(5)', nRow).html(selectButton);
+
+                return nRow;
             },
-            success: function (response) {
-                // Trigger the modal after saving
-                $('#DebitcustomerAccountLookupModal').modal('show');
-            },
-            error: function (error) {
-                console.error('Error saving form data:', error);
-                // Handle the error if needed
-            }
+            "aoColumns": [
+                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
+                { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
+                { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "5%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "6%", "bSortable": false }
+            ],
+            "aaSorting": [[0, "desc"]]
         });
-    }
 
-     $('#BenefactorCustomerAccountsGrid').DataTable({
-       // Ajax settings
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "DebitType", new { Area = "Accounts"}))",
-        "sServerMethod": "POST",
-        // Callback settings
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
-
-            // var selectButton = '<button type="button" data-id="' + aData.Id + '" class="btn btn-outline-info select-btn">Select</button>';
-            var selectButton = '<a href="/Accounts/BatchOrigination_Debit/Create/' + aData.Id + '" class="btn btn-outline-info select-link">' + 'Select</a>';
-
-            // Assuming you are using jQuery
-            $(document).ready(function () {
-                // Attach click event handler to the link
-                $('.select-link').click(function (event) {
-                    // Prevent default action (page reload)
-                    event.preventDefault();
-                    // You can add additional logic here if needed
-
-                    // Optionally, if you want to navigate programmatically after preventing default action:
-                    window.location.href = $(this).attr('href');
-                });
-            });
-
-            $('td:eq(4)', nRow).html(dt_Created);
-            $('td:eq(5)', nRow).html(selectButton);
-
-            return nRow;
-        },
-         // Display settings
-         "aoColumns": [
-             { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-             { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Code", "sWidth": "10%" },
-             { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "15%" },
-             { "mDataProp": "IsLocked", "sTitle": "IsLocked", "sWidth": "5%" },
-             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-             { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "6%", "bSortable": false }],
-         "aaSorting": [[0, "desc"]]
-    });
-
-     //DebitType typehead starts here
-            $('.DebitTypesLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetDebitTypesAsync", "BatchOrigination_Debit", new { Area = "Accounts" })',
-                        { query: query },
-                        function (DebitTypes) {
-                            var newDebitTypesData = [];
-                            DebitTypesMap = {};
-                            $.each(DebitTypes, function (i, DebitType) {
-                                newDebitTypesData.push(DebitType.Description);
-                                DebitTypesMap[DebitType.Description] = DebitType;
-                            });
-                            process(newDebitTypesData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
+        // Handle the click event for the select link
+                $(document).on('click', '.select-link', function (event) {
+            event.preventDefault();
+            var id = $(this).data('id');
+            $.ajax({
+                url: '@Url.Action("GetDebitTypeDetails", "BatchOrigination_Debit")',
+                type: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    console.log(data); // Log the response data
+                    if (data.success) {
+                        $('#DebitTypeDescription').val(data.data.DebitTypeDescription);
+                        $('#DebitTypeId').val(data.data.DebitTypeId);
+                        $('#BenefactorcustomerLookupModal').modal('hide');
+                    } else {
+                        alert(data.message || 'Error retrieving data');
                     }
                 },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var debitTypeId = "";
-                    DebitTypeId = DebitTypesMap[item].Id;
-                    $('#DebitTypeId').val(DebitTypeId);
-                    //console.log(DebitTypeId)
-                    return item;
+                error: function (xhr, status, error) {
+                    console.error("Error selecting debit type:", error);
                 }
             });
+        });
+
+
 
 
 
@@ -704,43 +690,68 @@
             });
 
         ////////// Debit customer accounts lookup modol/////////
-        $('#DebitCustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+           $('#DebitCustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            var selectUrl = '<a href="#" onclick="selectCustomerAccount(\'' + aData.Id + '\'); return false;" class="btn btn-outline-info">Select</a>';
 
-                    var selectUrl = '<a onclick="sendFormData()" href="/Accounts/BatchOrigination_Debit/DebitCustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
 
-
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
+            return nRow;
+        },
         "aoColumns": [
-
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+        ],
         "aaSorting": [[0, "desc"]]
-             });
+    });
 
-</script>
+
+
+        function selectCustomerAccount(id) {
+    $.ajax({
+        url: '@Url.Action("DebitCustomerAccountLookUp", "BatchOrigination_Debit")',
+        type: 'POST',
+        data: { id: id },
+        success: function (data) {
+            // Assuming data contains the details needed to update the form
+            $('#DebitCustomerAccountFullName').val(data.CustomerFullName);
+            $('#DebitCustomerAccountFullAccountNumber').val(data.FullAccountNumber);
+            $('#DebitCustomerAccountCustomerReference2').val(data.CustomerReference2);
+            $('#DebitCustomerAccountCustomerReference3').val(data.CustomerReference3);
+            $('#DebitCustomerAccountIdentificationNumber').val(data.IdentificationNumber);
+            $('#StatusDescription').val(data.StatusDescription);
+            $('#DebitCustomerAccountRemarks').val(data.Remarks);
+            $('#ProductDescription').val(data.ProductDescription);
+            $('#CustomerAccountId').val(data.CustomerId);
+            $('#DebitCustomerAccountTypeDescription').val(data.TypeDescription);
+            $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
+
+            // Close the modal
+            $('#DebitcustomerAccountLookupModal').modal('hide');
+        },
+        error: function (xhr, status, error) {
+            console.error("Error selecting customer account:", error);
+        }
+    });
+}
+
+
+    </script>
 }

@@ -358,6 +358,7 @@
                                                 <th style="width: 5%;">Debit Product Description</th>
                                                 <th style="width: 5%;">Principal</th>
                                                 <th style="width: 5%;">Interest</th>
+                                                <th style="width: 5%;">Action</th>
 
                                             </tr>
                                         </thead>
@@ -504,10 +505,6 @@
     @Scripts.Render("~/plugins/duallist")
 <script>
 
-
-    
-
-
     $(document).ready(function () {
     // Handle form submission with AJAX
     $("#formAddBatch").submit(function (e) {
@@ -532,6 +529,32 @@
         });
     });
 
+        //Remove Entry
+            function removeEntry(entryId) {
+                console.log("Remove entry clicked with ID:", entryId); // Debugging
+
+                $.ajax({
+                    url: '@Url.Action("RemoveEntry", "BatchOrigination_Refund", new { area = "Accounts" })',
+                    type: 'POST',
+                    data: { id: entryId },
+                    success: function (response) {
+                        console.log("Response from server:", response); // Debugging
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                        } else {
+                            alert("Failed to remove the entry.");
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error occurred: ", status, error); // Debugging
+                        alert("An error occurred while processing your request.");
+                    }
+                });
+            }
+
+
+
+
     // Update table with new entries
     function updateEntriesTable(entries) {
         var tableBody = $("#RefundBatchEntry tbody");
@@ -545,19 +568,29 @@
                            <td>${entry.DebitProductDescription}</td>
                            <td>${entry.Principal}</td>
                            <td>${entry.Interest}</td>
+                           <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
                        </tr>`;
             tableBody.append(row);
         });
-    }
+        }
+        // Attach click event to remove buttons
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault(); // Prevent default behavior
+            var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+            removeEntry(entryId);
+        });
+
+
+
         function clearEntryForm() {
             // Reset only the fields with the 'entry-field' class
             $('#formAddBatch').find('.entry-field').val('');
         }
 
-    // Handle final submission
+    @*// Handle final submission
     $("#submitAll").click(function () {
         window.location.href = '@Url.Action("Create", "BatchOrigination_Refund", new { area = "Accounts" })';
-    });
+    });*@
 });
 
 
@@ -616,7 +649,7 @@
 
 
 
-    
+
 
     ////////// Credit customer accounts lookup modal/////////
     $('#CreditCustomerAccountsGrid').DataTable({

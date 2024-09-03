@@ -267,6 +267,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
+        [HttpPost]
+        public JsonResult RemoveEntry(Guid id)
+        {
+            var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
+            if (overDeductionBatchEntryDTOs != null)
+            {
+                var entryToRemove = overDeductionBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    overDeductionBatchEntryDTOs.Remove(entryToRemove);
+                    Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
+                }
+            }
+
+            // Return updated entries as JSON
+            return Json(new { success = true, data = overDeductionBatchEntryDTOs });
+        }
+
+
+
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
