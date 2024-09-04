@@ -69,114 +69,151 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        
+
+
+        /* [HttpPost]
+         public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
+         {
+             await ServeNavigationMenus();
+             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+
+
+
+             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
+
+
+             JournalVoucherEntryDTO jvE = new JournalVoucherEntryDTO();
+
+             decimal sumAmount = 0;
+
+             jvE.rowId = 0;
+
+             JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
+
+             if (JournalVoucherEntryDTOs == null)
+                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
+
+             var glAccount = journalVoucherDTO.JournalVoucherEntry;
+
+
+
+
+
+
+             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
+             {
+
+                 journalVoucherEntryDTO.BranchId = journalVoucherDTO.BranchId;
+                 journalVoucherEntryDTO.BranchDescription = journalVoucherDTO.BranchDescription;
+                 journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
+                 journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryDTO.ChartOfAccountId;//Temporary
+                 journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
+                 journalVoucherEntryDTO.PrimaryDescription = journalVoucherDTO.PrimaryDescription;
+                 journalVoucherEntryDTO.SecondaryDescription = journalVoucherDTO.SecondaryDescription;
+                 journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
+                 journalVoucherEntryDTO.Amount = journalVoucherEntryDTO.Amount;
+                 journalVoucherEntryDTO.Remarks = journalVoucherEntryDTO.Remarks;
+                 journalVoucherEntryDTO.rowId = journalVoucherEntryDTO.rowId;
+
+
+
+
+
+
+                 if (journalVoucherEntryDTO.PrimaryDescription == null || journalVoucherEntryDTO.SecondaryDescription == null || journalVoucherEntryDTO.Amount == 0)
+                 {
+                     TempData["tPercentage"] = "Could not add Journal Voucher Entry. Ensure all required fields are enterd.";
+                 }
+                 else
+                 {
+                     JournalVoucherEntryDTOs.Add(journalVoucherEntryDTO);
+                     jvE.rowId++;
+
+                     sumAmount = JournalVoucherEntryDTOs.Sum(cs => cs.Amount);
+
+                     Session["journalVoucherEntries"] = JournalVoucherEntryDTOs;
+                     Session["ChartOfAccountId"] = journalVoucherEntryDTO.ChartOfAccountId;
+
+                     if (sumAmount > journalVoucherDTO.TotalValue)
+                     {
+                         TempData["tPercentage"] = "Failed to add  Journal Voucher Entry Total Amount exceeded Total Value.";
+
+                         JournalVoucherEntryDTOs.Remove(journalVoucherEntryDTO);
+
+
+                     }
+
+                 }
+
+             };
+
+             TempData["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
+             Session["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
+             TempData["JournalVoucherDTO"] = journalVoucherDTO;
+
+             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
+
+             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
+             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
+
+             TempData["EntryAdded"] = "Successfully Added an Entry";
+
+             return View("Create");
+         }*/
 
         [HttpPost]
-        public async Task<ActionResult> Add(Guid? id,JournalVoucherDTO journalVoucherDTO)
+        public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
         {
             await ServeNavigationMenus();
-            Guid parseId;
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                TempData["tPercentage"] = "Could not add charge split. Choose G/L Account.";
 
-                await ServeNavigationMenus();
-
-
-                var Myid = journalVoucherDTO.Id;
-
-                return View("Create", journalVoucherDTO);
-            }
-
-            ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-
-            JournalVoucherEntryDTO jvE = new JournalVoucherEntryDTO();
-
-            decimal sumAmount = 0;
-
-            jvE.rowId = 0;
-
-            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
-
+            var JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
             if (JournalVoucherEntryDTOs == null)
                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
 
-            var glAccount = journalVoucherDTO.JournalVoucherEntry;
-
-
-
-
-
+            decimal sumAmount = JournalVoucherEntryDTOs.Sum(cs => cs.Amount);
+            var addedEntries = new List<JournalVoucherEntryDTO>();
 
             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
             {
+                if (journalVoucherEntryDTO.ChartOfAccountName == null ||
+                    journalVoucherEntryDTO.Reference == null ||
+                    journalVoucherEntryDTO.Amount == 0)
+                {
+                    return Json(new { success = false, message = "Could not add Journal Voucher Entry. Ensure all required fields are entered." });
+                }
 
                 journalVoucherEntryDTO.BranchId = journalVoucherDTO.BranchId;
                 journalVoucherEntryDTO.BranchDescription = journalVoucherDTO.BranchDescription;
-                journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
-                journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryDTO.ChartOfAccountId;//Temporary
-                journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
                 journalVoucherEntryDTO.PrimaryDescription = journalVoucherDTO.PrimaryDescription;
                 journalVoucherEntryDTO.SecondaryDescription = journalVoucherDTO.SecondaryDescription;
-                journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
-                journalVoucherEntryDTO.Amount = journalVoucherEntryDTO.Amount;
-                journalVoucherEntryDTO.Remarks = journalVoucherEntryDTO.Remarks;
-                journalVoucherEntryDTO.rowId = journalVoucherEntryDTO.rowId;
+                JournalVoucherEntryDTOs.Add(journalVoucherEntryDTO);
+                addedEntries.Add(journalVoucherEntryDTO);
 
-
-
-                
-
-
-                if (journalVoucherEntryDTO.PrimaryDescription == null || journalVoucherEntryDTO.SecondaryDescription == null || journalVoucherEntryDTO.Amount == 0)
+                sumAmount += journalVoucherEntryDTO.Amount;
+                if (sumAmount > journalVoucherDTO.TotalValue)
                 {
-                    TempData["tPercentage"] = "Could not add Journal Voucher Entry. Ensure all required fields are enterd.";
+                    JournalVoucherEntryDTOs.Remove(journalVoucherEntryDTO);
+                    return Json(new { success = false, message = "Failed to add Journal Voucher Entry. Total Amount exceeded Total Value." });
                 }
-                else
-                {
-                    JournalVoucherEntryDTOs.Add(journalVoucherEntryDTO);
-                    jvE.rowId++;
+            }
 
-                    sumAmount = JournalVoucherEntryDTOs.Sum(cs => cs.Amount);
+            Session["JournalVoucherEntryDTOs"] = JournalVoucherEntryDTOs;
+            TempData["JournalVoucherEntryDTOs"] = JournalVoucherEntryDTOs;
+            Session["journalVoucherEntries"] = JournalVoucherEntryDTOs;
 
-                    Session["journalVoucherEntries"] = JournalVoucherEntryDTOs;
-                    Session["ChartOfAccountId"] = journalVoucherEntryDTO.ChartOfAccountId;
+            Session["journalVoucherDTO"] = journalVoucherDTO;
+            TempData["journalVoucherDTO"] = journalVoucherDTO;
 
-                    if (sumAmount > journalVoucherDTO.TotalValue)
-                    {
-                        TempData["tPercentage"] = "Failed to add  Journal Voucher Entry Total Amount exceeded Total Value.";
-
-                        JournalVoucherEntryDTOs.Remove(journalVoucherEntryDTO);
-
-
-                    }
-
-                }
-
-            };
-
-            TempData["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
-            Session["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
-            TempData["JournalVoucherDTO"] = journalVoucherDTO;
-
-            ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
-
-            ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-            ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-
-            TempData["EntryAdded"] = "Successfully Added an Entry";
-
-            return View("Create");
+            return Json(new { success = true, entries = addedEntries });
         }
-
 
 
 
         [HttpPost]
         public async Task<ActionResult> removeChargeSplit(JournalVoucherDTO journalVoucherDTO)
         {
+            await ServeNavigationMenus();
             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
             journalVoucherDTO = TempData["JournalVoucherDTO"] as JournalVoucherDTO;
 
@@ -260,12 +297,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
-            journalVoucherDTO = TempData["JournalVoucherDTO"] as JournalVoucherDTO;
-            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            journalVoucherDTO = Session["journalVoucherDTO"] as JournalVoucherDTO;
+            JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
 
-            if (TempData["JournalVoucherEntryDTO"] != null)
+            if (JournalVoucherEntryDTOs != null)
             {
-                journalVoucherDTO.JournalVoucherEntries = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
+                journalVoucherDTO.JournalVoucherEntries = JournalVoucherEntryDTOs;
             }
 
             journalVoucherDTO.ValidateAll();
@@ -276,17 +313,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
                 {
-                    journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
-                    journalVoucherEntryDTO.ChartOfAccountId = journalVoucherDTO.ChartOfAccountId;
-                    journalVoucherEntryDTO.ChartOfAccountCostCenterDescription = journalVoucherEntryDTO.ChartOfAccountCostCenterDescription;
-
-
-                    journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
-                    journalVoucherEntryDTO.PrimaryDescription = journalVoucherDTO.PrimaryDescription;
-                    journalVoucherEntryDTO.SecondaryDescription = journalVoucherDTO.SecondaryDescription;
-                    journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
-                    journalVoucherEntryDTO.Amount = journalVoucherEntryDTO.Amount;
-                    journalVoucherEntryDTO.Remarks = journalVoucherDTO.Remarks;
+                    
 
                     journalVoucherEntries.Add(journalVoucherEntryDTO);
                 };
