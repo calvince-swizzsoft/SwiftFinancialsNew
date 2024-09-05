@@ -12,6 +12,7 @@ namespace Application.MainBoundedContext.DTO
     {
         public ApportionmentWrapper()
         {
+            CreditCustomerAccount = new CustomerAccountDTO();
             AddAllAttributeValidators();
         }
 

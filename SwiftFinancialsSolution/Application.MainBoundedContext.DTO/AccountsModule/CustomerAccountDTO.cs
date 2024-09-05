@@ -722,5 +722,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Reference")]
         public string Reference { get; set; }
+
+        public CashDepositRequestDTO CashDeposit { get; set; }
     }
 }

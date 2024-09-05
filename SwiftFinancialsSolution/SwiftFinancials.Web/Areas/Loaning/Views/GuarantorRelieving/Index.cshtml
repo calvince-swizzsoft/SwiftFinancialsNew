@@ -1,9 +1,7 @@
-﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanCaseDTO
+﻿@model Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
 
 @{
-    ViewBag.Title = "Loan Cases";
-
-    var LoanCaseFilter = ViewBag.LoanCaseFilterSelectList as List<SelectListItem>;
+    ViewBag.Title = "Guarantor Relieving";
 }
 
 
@@ -64,12 +62,11 @@
 
 <div id="tabs-container">
     <ul class="nav-tabs">
-        <li>@Html.ActionLink("Loan Registration", "Index", "LoanRegistration")</li>
-        <li>@Html.ActionLink("Loan Appraisal", "Index", "AppraiseLoan")</li>
-        <li>@Html.ActionLink("Loan Approval", "Index", "ApproveLoan")</li>
-        <li>@Html.ActionLink("Loan Verification", "Index", "LoanVerification")</li>
-        <li>@Html.ActionLink("Loan Cancellation", "Index", "LoanCancellation")</li>
-
+        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
+        <li>@Html.ActionLink("Guarantor Attachment", "create", "Attachment")</li>
+        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
+        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
+        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
     </ul>
 </div>
 
@@ -80,33 +77,34 @@
             <div class="ibox">
                 <div class="ibox-title">
                     <h2>Loan Cases</h2>
-
-                    @if (TempData["Edit"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["Edit"]
-                        </div>
-                    }
-
-                    @if (TempData["AlertMessage"] != null)
-                    {
-                        <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AlertMessage"]
-                        </div>
-                    }
-
-                    @if (TempData["LoanCaseStatusInvalid"] != null)
-                    {
-                        <div class="alert alert-danger"><strong>Attempt Failed !</strong> @TempData["LoanCaseStatusInvalid"]</div>
-                    }
-
                     <hr />
-                    @Html.ActionLink("Register Loan", "Create", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
 
+                    <div class="row">
+                        <div class="col-lg-2">
+                            <select>
+                                <option>Attached</option>
+                                <option>Released</option>
+                            </select>
+                        </div>
 
-                    <a href="#" class="btn btn-secondary" data-toggle="modal" data-target="#loanCasesModal">
-                        Export Loan Cases
-                    </a>
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.StartDate, "")
+                                @Html.TextBoxFor(m => m.StartDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @id = "datepicker" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-2">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.EndDate, "Select Date:")
+                                @Html.TextBoxFor(m => m.EndDate, "{0:yyyy-MM-dd}", new { @class = "form-control", @id = "datepicker" })
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4"></div>
+
+                        <div class="col-lg-2"></div>
+                    </div>
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -123,7 +121,7 @@
                         <div class="sk-double-bounce2"></div>
                     </div>
                     <div class="table-responsive">
-                        <table id="LoanRegistrationsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="guarantorsGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -139,60 +137,9 @@
     </div>
 </div>
 
-
-
-
-
-<!-- Modal Structure -->
-<div class="modal fade" id="loanCasesModal" tabindex="-1" role="dialog" aria-labelledby="loanCasesModalLabel" aria-hidden="true" style="width: 100%;">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loanCasesModalLabel">Loan Cases Export</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <table id="LoanCasesExportGrid" class="table table-striped table-bordered" width="50%">
-                    <thead>
-                        <tr>
-                            <th>Loan Number</th>
-                            <th>Customer</th>
-                            <th>Amount Applied</th>
-                            <th>Loan Product</th>
-                            <th>Loan Purpose</th>
-                            <th>Branch</th>
-                            <th>Savings Product</th>
-                            <th>Status</th>
-                            <th>Created Date</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @* Data will be loaded via DataTables AJAX *@
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-
-@*<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.3.7/css/buttons.dataTables.min.css">*@
-@*<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">*@
-
-<!--<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/2.3.7/js/dataTables.buttons.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>-->
-@*<script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.3.7/js/buttons.print.min.js"></script>*@
-<!--<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>-->
-
-
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
 
 
 @section Styles {
@@ -203,14 +150,13 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
         $(document).ready(function () {
-            $('#LoanRegistrationsGrid').DataTable({
+            $('#guarantorsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "LoanRegistration", new { Area = "Loaning"}))",
+                "sAjaxSource": "@(Url.Action("Index", "GuarantorRelieving", new { Area = "Loaning"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -240,70 +186,30 @@
                     var attachGuarantorUrl = '<a  href="/loaning/AttachGuarantor/Index/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Attach Guarantor</a>';
 
 
-                    //var dropdownHtml = `
-                    //    <div class="dropdown">
-                    //        <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    //            Action
-                    //        </button>
-                    //        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    //            <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
-                    //            <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
-                    //        </div>
-                    //    </div>`;
-
-
-                    //$('td:eq(8)', nRow).html(dt_Created);
-                    //$('td:eq(9)', nRow).html(dropdownHtml);
-
-
-
-                    // Generate dropdown HTML with conditional logic based on status
                     var dropdownHtml = `
-                <div class="dropdown">
-                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        Actions
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>
+                                <a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>
+                            </div>
+                        </div>`;
 
-                    // Buttons to be included
-                    var viewButton = `<a class="dropdown-item" href="/loaning/loanregistration/details/${aData.Id}">View</a>`;
-                    var AttachGuarantor = `<a class="dropdown-item" href="/loaning/attachguarantor/create/${aData.Id}">Attach Guarantor</a>`;
-
-                    // Conditional logic for button enabling/disabling based on status
-                    switch (aData.Status) {
-                        case 48826: // Registered
-                            dropdownHtml += viewButton + AttachGuarantor;
-                            break;
-                        // If the status is 48828 (Approved) or any other status, only "View" button will be enabled
-                        default:
-                            dropdownHtml += viewButton;
-                            break;
-                    }
-
-                    dropdownHtml += `</div></div>`;
 
                     $('td:eq(8)', nRow).html(dt_Created);
                     $('td:eq(9)', nRow).html(dropdownHtml);
-
-                    // Prevent default action for disabled links
-                    $('.dropdown-item.disabled').on('click', function (e) {
-                        e.preventDefault();
-                        e.stopPropagation();
-                    });
 
                     return nRow;
                 },
 
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CaseNumber", "sTitle": "Loan Number", "sWidth": "2%" },
+                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "2%" },
+                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Full Account Number", "sWidth": "2%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Customer","sWidth": "20%" },
-                    { "mDataProp": "AmountApplied", "sTitle": "Amount Applied", "sWidth": "10%"},
-                    { "mDataProp": "LoanProductDescription", "sTitle": "Loan Product", "sWidth": "10%"},
-                    { "mDataProp": "LoanPurposeDescription", "sTitle": "Loan Purpose", "sWidth": "5%"},
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%"},
-                    { "mDataProp": "SavingsProductDescription", "sTitle": "Savings Product", "sWidth": "15%"},
-                    { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "5%" },
+                    { "mDataProp": "CustomerReference3", "sTitle": "Personal File Number", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]],
@@ -317,5 +223,15 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
+
+
+
+
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd" // Format the date as yyyy-MM-dd
+            });
+            });
     </script>
 }

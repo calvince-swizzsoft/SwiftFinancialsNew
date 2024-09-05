@@ -22,7 +22,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public Guid Id { get; set; }
       
         [DataMember]
-        [Display(Name = "Branch Name")]
+        [Display(Name = "Branch Id")]
         [ValidGuid]
         public Guid BranchId { get; set; }
 
@@ -36,7 +36,7 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public string PostingPeriodDescription { get; set; }
 
 
-        [Display(Name = "Branch Id")]
+        [Display(Name = "Branch Name")]
 
         public string BranchDescription { get; set; }
 

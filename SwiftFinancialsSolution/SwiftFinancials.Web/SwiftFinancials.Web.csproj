@@ -55,16 +55,16 @@
       <HintPath>..\packages\BouncyCastle.1.8.9\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
@@ -409,7 +409,10 @@
     <Compile Include="Areas\Loaning\Controllers\ClosingController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataCaptureController.cs" />
     <Compile Include="Areas\Loaning\Controllers\DataProcessingController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\GuarantorAttachmentController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\GuarantorManagementController.cs" />
     <Compile Include="Areas\Loaning\Controllers\GuarantorRelievingController.cs" />
+    <Compile Include="Areas\Loaning\Controllers\GuarantorSubstitutionController.cs" />
     <Compile Include="Areas\Loaning\Controllers\IncomeAdjustmentsController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanCancellationController.cs" />
     <Compile Include="Areas\Loaning\Controllers\LoanGuarantorController.cs" />
@@ -501,6 +504,9 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="PDF\CreatePdf.cs" />
+    <Compile Include="PDF\PdfHeaderFooter.cs" />
+    <Compile Include="PDF\RegisteredLoans.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reports\Report.aspx.cs">
       <DependentUpon>Report.aspx</DependentUpon>
@@ -657,6 +663,13 @@
     <Content Include="Images\passportDemo.jpg" />
     <Content Include="Images\signatureDemo.jpg" />
     <Content Include="Images\table.png" />
+    <Content Include="loaning\Images\bank.jpg" />
+    <Content Include="loaning\Images\idDemo_Front.jpg" />
+    <Content Include="loaning\Images\MIA.JPG" />
+    <Content Include="loaning\Images\padlock.jpg" />
+    <Content Include="loaning\Images\passportDemo.jpg" />
+    <Content Include="loaning\Images\signatureDemo.jpg" />
+    <Content Include="loaning\Images\table.png" />
     <Content Include="Reports\Report.aspx" />
     <Content Include="Reports\ReportViewer.aspx" />
     <Content Include="Scripts\app\inspinia.js" />
@@ -1155,7 +1168,6 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Liquidation.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Catalogue.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
@@ -1174,6 +1186,13 @@
     <Content Include="Areas\Admin\Views\SystemTransactiontypes\Edit.cshtml" />
     <Content Include="Areas\Accounts\Views\AlternatePeriods\Clos.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Edit.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorAttachment\Create.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorSubstitution\Create.cshtml" />
+    <Content Include="libman.json" />
+    <Content Include="Areas\Loaning\Views\GuarantorSubstitution\_GuarantorsTable.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorManagement\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
@@ -1664,6 +1683,7 @@
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
+    <Folder Include="Areas\Reports\Controllers\" />
     <Folder Include="File\" />
     <Folder Include="NewFolder1\" />
     <Folder Include="Views\Lookup\" />

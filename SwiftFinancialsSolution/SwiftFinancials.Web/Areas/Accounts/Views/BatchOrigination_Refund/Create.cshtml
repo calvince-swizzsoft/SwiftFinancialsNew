@@ -24,14 +24,14 @@
     .control-label{
 
         color:#333;
-        
+
     }
     .main {
         border: 1px solid #333;
         border-radius: 12px;
         font-weight: bold;
         background-color: #f1f1f1;
-        padding:20px;
+
     }
     .form-cotrol {
         color: #007bff;
@@ -39,6 +39,7 @@
     .create-batch {
         border: 4px solid #00ffff;
         padding:10px;
+        margin:10px;
         border-radius:12px;
     }
 
@@ -48,6 +49,19 @@
         padding: 15px;
         margin:20px;
     }
+
+    @*footer Styling*@
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
     /* Table Styles */
     #RefundBatchEntry {
         width: 100%;
@@ -83,6 +97,7 @@
         border: 2px solid green; /* Green border around the divs */
         border-radius: 10px; /* Rounded corners */
         padding: 20px; /* Padding inside the border */
+        margin:20px;
         position: relative; /* Ensures the title is positioned relative to this container */
         margin-top: 20px; /* Margin above the container */
     }
@@ -120,6 +135,8 @@
     }
 </style>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -153,36 +170,38 @@
                         </a>
                     </div>
                 </div>
-             
 
-                  
+
+
                 <div class="ibox-content bg-white text-info">
 
                     <div class="main">
-                        @using (Html.BeginForm("AddBatch", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+
+                        @using (Html.BeginForm("Add", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { id = "formAddBatch" }))
                         {
 
+                            @Html.AntiForgeryToken()
                             <div class="create-batch">
                                 <div class="row large-font">
 
-                                    <div class="col-lg-5">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label " })
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
                                             @*@Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })*@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label col-md-2" })
-                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
+                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label " })
+                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
@@ -191,11 +210,6 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-1" style="text-align:right">
-                                        <input type="submit" value="Add Batch" class="btn btn-primary" style="width:100px; border-radius: 4px; margin:20px;" />
-                                    </div>
-
-
 
 
 
@@ -204,219 +218,202 @@
 
 
                             </div>
-                        }
+
+                            @*<span class="input-group-addon">
+                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                        <span class="fa fa-search"></span>
+                                    </a>
+                                </span>*@
 
 
-
-
-                        @using (Html.BeginForm("Add", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                        {
-
-
-                            <div class="main10">
-
-                                <div class="batch-entries-container">
-                                    <h2 class="batch-title">Batch Entries</h2>
-                                    <div class="enter-batch">
-                                        <div class="row large-font">
-                                            <div class="col-lg-6">
-                                                <div class="col-md-13 form-group">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber)
-                                                        @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-6">
-                                                <div class="col-md-13 form-group">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @*@Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber)*@
-                                                        @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
-                                                    </div>
+                            <div class="batch-entries-container">
+                                <h2 class="batch-title">Batch Entries</h2>
+                                <div class="enter-batch">
+                                    <div class="row large-font">
+                                        <div class="col-lg-3">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, new { @class = "entry-field", @id = "CreditCustomerAccountId" })
+                                                    @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullAccountNumber" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="row large-font">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                    @*@Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)*@
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, "", new { @class = "text-danger" })
-                                                </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, htmlAttributes: new { @class = "control-label" })
+                                                @*@Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)*@
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CreditProductDescription" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, "", new { @class = "text-danger" })
                                             </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, htmlAttributes: new { @class = "control-label col-md-2" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, "", new { @class = "text-danger" })
-
-                                                </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditCustomerIdentificationNumber)
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CreditCustomerIdentificationNumber" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
 
-                                        <div class="row large-font">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, "", new { @class = "text-danger" })
-                                                </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CreditCustomerAccountFullName" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, "", new { @class = "text-danger" })
                                             </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, htmlAttributes: new { @class = "control-label col-md-2" })
-                                                    @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, "", new { @class = "text-danger" })
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-                                        <div class="row large-font">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, htmlAttributes: new { @class = "control-label col-md-2" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, htmlAttributes: new { @class = "control-label col-md-2" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row large-font">
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label col-md-2" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Principal, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-
-                                            <div class="col-lg-6">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.overDeductionBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label col-md-2" })
-
-                                                    @Html.EditorFor(model => model.overDeductionBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
-                                                    @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Interest, "", new { @class = "text-danger" })
-
-                                                </div>
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="row">
-                                            <!-- Center the Submit button -->
-                                            <div style="text-align: right; margin: 20px 20px;">
-                                                <input type="submit" value="Add" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
-                                            </div>
-
                                         </div>
 
                                     </div>
+
+
+                                    <div class="row large-font">
+                                        <div class="col-lg-3">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountId, new { @id = "DebitCustomerAccountId" })
+                                                    @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "DebitCustomerAccountFullAccountNumber" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, htmlAttributes: new { @class = "control-label " })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "DebitProductDescription" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitProductDescription, "", new { @class = "text-danger" })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.overDeductionBatchEntry.DebitCustomerIdentificationNumber)
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "DebitCustomerIdentificationNumber" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerIdentificationNumber, "", new { @class = "text-danger" })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "DebitCustomerAccountFullName" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].DebitCustomerAccountFullName, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row large-font">
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Principal, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.overDeductionBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].Interest, "", new { @class = "text-danger" })
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="row">
+                                        <!-- Center the Submit button -->
+                                        <div style="text-align: right; margin: 20px 20px;">
+                                            <input type="submit" value="Add" class="btn btn-primary" onclick="submitForm()" style="width: 100px; border-radius: 4px;" />
+                                        </div>
+
+                                    </div>
+
                                 </div>
+
+
+                                <br />
+                                <row>
+                                    <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 5%;">Credit Customer Name</th>
+                                                <th style="width: 5%;">Debit Customer Name </th>
+                                                <th style="width: 5%;">Credit Product Description</th>
+                                                <th style="width: 5%;">Debit Product Description</th>
+                                                <th style="width: 5%;">Principal</th>
+                                                <th style="width: 5%;">Interest</th>
+                                                <th style="width: 5%;">Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+
+
+                                </row>
+
                             </div>
 
 
 
 
-                            <br /> <br />
-                            <row>
-                                <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                        <tr>
-                                            <th style="width: 5%;">Credit Customer Name</th>
-                                            <th style="width: 5%;">Debit Customer Name </th>
-                                            <th style="width: 5%;">Credit Product Description</th>
-                                            <th style="width: 5%;">Debit Product Description</th>
-                                            <th style="width: 5%;">Principal</th>
-                                            <th style="width: 5%;">Interest</th>
-                                            <th style="width:  5%;">Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.OverDeductionBatchEntryDTOs != null)
-                                        {
-                                            foreach (var refundBatchEntry in ViewBag.OverDeductionBatchEntryDTOs)
-                                            {
-                                                <tr data-id="@refundBatchEntry.Id">
-                                                    <td>@refundBatchEntry.CreditCustomerAccountFullName</td>
-                                                    <td>@refundBatchEntry.DebitCustomerAccountFullName</td>
-                                                    <td>@refundBatchEntry.CreditProductDescription</td>
-                                                    <td>@refundBatchEntry.DebitProductDescription</td>
-                                                    <td>@refundBatchEntry.Principal</td>
-                                                    <td>@refundBatchEntry.Interest</td>
-                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                </tr>
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
 
-                                @if (TempData["tPercentage"] != null)
-                                {
-                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["tPercentage"]</strong></p>
-                                }
-                            </row>
+
 
 
                         }
-
-
 
 
 
                         @using (Html.BeginForm("Create", "BatchOrigination_Refund", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                         {
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div class="form-group" style="text-align:right;">
-                                        <input type="submit" value="Create" class="btn btn-primary" style="width: 150px; border-radius: 4px;" />
+                            <div class="bottom-button">
+                                <div class="row">
+                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                        <div class="form-group form-group-sm">
+                                            <input type = "submit" value="Create" class="btn btn-primary" />
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
 
                         }
 
+
+
                     </div>
 
 
-                        
-                       
+
+
 
                 </div>
-                
+
 
 
             </div>
-            
-                
+
+
         </div>
     </div>
 </div>
@@ -508,7 +505,141 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+
 <script>
+        //Confirm SumAmount is Equal to Total Value before submission
+    $(document).ready(function () {
+        $("#form").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Perform your AJAX call to check conditions
+            $.ajax({
+                url: '@Url.Action("CheckSumAmount", "BatchOrigination_Refund", new { Area = "Accounts" })',
+                type: 'POST',
+                data: $(this).serialize(), // Serialize the form data
+                success: function (response) {
+                    if (response.success) {
+                        // If validation is successful, submit the form
+                        $("#form").off('submit').submit();
+                    } else {
+                        // If validation fails, show an error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            timer: 10000,
+                            showConfirmButton: false
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred:", error);
+                }
+            });
+        });
+    });
+</script>
+
+    <script>
+
+    $(document).ready(function () {
+        // Handle form submission with AJAX
+        $("#formAddBatch").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Entry added successfully.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                        clearEntryForm();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            timer: 10000,
+                            showConfirmButton: false
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred:", error);
+                }
+            });
+        });
+    });
+
+
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#RefundBatchEntry tbody");
+            tableBody.empty(); // Clear existing entries
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Id}">
+                       <td>${entry.CreditCustomerAccountFullName}</td>
+                       <td>${entry.DebitCustomerAccountFullName}</td>
+                       <td>${entry.CreditProductDescription}</td>
+                       <td>${entry.DebitProductDescription}</td>
+                       <td>${entry.Principal}</td>
+                       <td>${entry.Interest}</td>
+                       <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                   </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+        // Attach click event to remove buttons
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault(); // Prevent default behavior
+            var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+            removeEntry(entryId);
+        });
+
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "BatchOrigination_Refund")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+
+
+        function clearEntryForm() {
+            // Reset only the fields with the 'entry-field' class
+            $('#formAddBatch').find('.entry-field').val('');
+        }
+
+    // Handle final submission
+    $("#submitAll").click(function () {
+        window.location.href = '@Url.Action("Create", "BatchOrigination_Refund", new { area = "Accounts" })';
+    });
+
+
+
 
 
     //Branch typehead starts here
@@ -549,102 +680,146 @@
             });
 
 
-    $(document).ready(function () {
-        $('#data_3 .input-group.date').datepicker({
-            startView: 2,
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
-        });
-    });
-
-    //////////Credit customer accounts lookup modol/////////
-        $('#CreditCustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/BatchOrigination_Refund/CreditCustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
 
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
 
-                    return nRow;
-                },
-        // Display settings
+
+            $(document).ready(function () {
+                $('#data_3 .input-group.date').datepicker({
+                    startView: 2,
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    autoclose: true,
+                });
+            });
+
+
+
+
+
+
+
+
+    ////////// Credit customer accounts lookup modal/////////
+    $('#CreditCustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
+
+            return nRow;
+        },
         "aoColumns": [
-
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
-             });
+    });
 
 
 
+    function selectCustomerAccounts(id) {
+        $.ajax({
+            url: '/Accounts/BatchOrigination_Refund/CreditCustomerAccountLookup',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate fields with the returned data
+                    $('#CreditCustomerAccountFullAccountNumber').val(response.data.CreditCustomerAccountFullAccountNumber);
+                    $('#CreditProductDescription').val(response.data.CreditProductDescription);
+                    $('#CreditCustomerAccountFullName').val(response.data.CreditCustomerAccountFullName);
+                    $('#CreditCustomerIdentificationNumber').val(response.data.CreditCustomerIdentificationNumber);
+                    $('#CreditCustomerAccountId').val(response.data.CreditCustomerAccountId);
+                    // Close the modal
+                    $('#CreditcustomerAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
 
 
     ////////// Debit customer accounts lookup modol/////////
         $('#DebitCustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccount(\'' + aData.Id + '\')">Select</button>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/BatchOrigination_Refund/DebitCustomerAccountLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
+            return nRow;
+        },
         "aoColumns": [
-
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
-             });
+    });
+
+    function selectCustomerAccount(id) {
+        $.ajax({
+            url: '/Accounts/BatchOrigination_Refund/DebitCustomerAccountLookup',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate fields with the returned data
+                    $('#DebitCustomerAccountFullAccountNumber').val(response.data.DebitCustomerAccountFullAccountNumber);
+                    $('#DebitProductDescription').val(response.data.DebitProductDescription);
+                    $('#DebitCustomerAccountFullName').val(response.data.DebitCustomerAccountFullName);
+                    $('#DebitCustomerIdentificationNumber').val(response.data.DebitCustomerIdentificationNumber);
+                    $('#DebitCustomerAccountId').val(response.data.DebitCustomerAccountId);
+                    // Close the modal
+                    $('#DebitcustomerAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
+
+    </script>
 
 
-
-</script>
-
-    
 
 }
+
+
+

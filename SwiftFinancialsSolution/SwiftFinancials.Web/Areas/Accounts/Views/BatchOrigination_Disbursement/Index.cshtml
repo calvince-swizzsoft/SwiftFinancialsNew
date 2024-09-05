@@ -120,11 +120,26 @@
                 <div class="ibox-title">
                     @Html.ActionLink("Create BatchOrigination_Disbursement", "Create", "BatchOrigination_Disbursement", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
+                    @if (TempData["Verification"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Verification"]
+                        </div>
+                    }
+
+                    @if (TempData["Authorization"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Authorization"]
+                        </div>
+                    }
+
                     @if (TempData["SuccessMessage"] != null)
                     {
                         <div class="alert alert-success">
                             @TempData["SuccessMessage"]
-                        </div>}
+                        </div>
+                    }
 
                     <div class="ibox-tools">
                         <a class="collapse-link">
@@ -238,17 +253,17 @@
                     // Conditional logic for button enabling/disabling based on status
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + verifyButton + authorizeButton;
+                            dropdownHtml += verifyButton;
                             break;
                         case 8: // Audited
-                            dropdownHtml += viewButton + authorizeButton;
+                            dropdownHtml += verifyButton ;
                             break;
                         case 2: // Posted
-                            dropdownHtml += viewButton;
+                            dropdownHtml += verifyButton;
                             break;
                         // If the status is 4 (Rejected) or any other status, only "View" button will be enabled
                         default:
-                            dropdownHtml += viewButton;
+                            dropdownHtml += verifyButton;
                             break;
                     }
 

@@ -44,6 +44,7 @@ namespace SwiftFinancials.Web.Controllers
 
         public ObservableCollection<CreditBatchEntryDTO> CreditBatchEntryDTOs;
         public ObservableCollection<DebitBatchEntryDTO> DebitBatchEntryDTOs;
+        public ObservableCollection<WireTransferBatchEntryDTO> WireTransferEntryDTOs;
 
         public ObservableCollection<StandingOrderDTO> StandingOrderDTOs;
 
@@ -56,7 +57,6 @@ namespace SwiftFinancials.Web.Controllers
         public ObservableCollection<JournalVoucherEntryDTO> JournalVoucherEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> ExpensePayableEntryDTOs;
         public ObservableCollection<ExpensePayableEntryDTO> RecouringBatchDTOs;
-
         public ObservableCollection<TransactionModel> TransactionModels;
 
         public ObservableCollection<SalaryGroupEntryDTO> SalaryGroupEntryDTOs;
@@ -258,6 +258,24 @@ namespace SwiftFinancials.Web.Controllers
             recordStatusSelectList.AddRange(items);
 
             return recordStatusSelectList;
+        }
+
+
+        [NonAction]
+        protected List<SelectListItem> GetApportionToSelectList(string selectedValue)
+        {
+            List<SelectListItem> apportionToSelectList = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ApportionTo)).Cast<ApportionTo>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            apportionToSelectList.AddRange(items);
+
+            return apportionToSelectList;
         }
 
 
@@ -1771,5 +1789,7 @@ namespace SwiftFinancials.Web.Controllers
 
             return imageSource;
         }
+
+     
     }
 }

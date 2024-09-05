@@ -155,19 +155,6 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#IndividualParticulars" data-toggle="tab">Individual-Particulars</a>
                             </li>
-
-                            <li class="nav-item">
-                                <a class="nav-link" href="#Partnership" data-toggle="tab">Partnership-Particulars</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#Corporation" data-toggle="tab">Corporation-Particulars</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#MicroCredit" data-toggle="tab">Micro-credit-Particulars</a>
-                            </li>
-
-
-
                             <li class="nav-item">
                                 <a class="nav-link" href="#address" data-toggle="tab">Address</a>
                             </li>
@@ -403,6 +390,79 @@
                             </div>
 
 
+                            <!--Specimen Capture-->
+                            <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
+
+                                <div class="container">
+                                    <!-- Capture Passport from Webcam or File System -->
+                                    <div>
+                                        <h3>Passport</h3>
+                                        <div class="image-placeholder" id="passportImagePlaceholder">
+                                            <video id="webcam" autoplay style="display:none;"></video>
+                                        </div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="captureWebcamImage()" style="width: 100px;">
+                                                <i class="fa fa-camera" aria-hidden="true"></i> Capture
+                                            </button>
+                                            <button class="button" onclick="browseImage('passportInput', 'passportImagePlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('passportImagePlaceholder', 'passportInput', 'webcam')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.PassportPhoto, new { type = "file", id = "passportInput", style = "display:none;", accept = "image/*", onchange = "showImage('passportInput', 'passportImagePlaceholder')" })
+                                        <canvas id="canvas" style="display:none;"></canvas>
+                                    </div>
+
+                                    <!-- Capture Signature from File System -->
+                                    <div>
+                                        <h3>Signature</h3>
+                                        <div class="image-placeholder" id="signaturePlaceholder"></div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="browseImage('signatureInput', 'signaturePlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('signaturePlaceholder', 'signatureInput')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.SignaturePhoto, new { type = "file", id = "signatureInput", style = "display:none;", accept = "image/*", onchange = "showImage('signatureInput', 'signaturePlaceholder')" })
+                                    </div>
+
+                                    <!-- Capture Identity Card (Front) from File System -->
+                                    <div>
+                                        <h3>Identity Card (Front)</h3>
+                                        <div class="image-placeholder" id="idFrontPlaceholder"></div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="browseImage('idFrontInput', 'idFrontPlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('idFrontPlaceholder', 'idFrontInput')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.IDCardFrontPhoto, new { type = "file", id = "idFrontInput", style = "display:none;", accept = "image/*", onchange = "showImage('idFrontInput', 'idFrontPlaceholder')" })
+                                    </div>
+
+                                    <!-- Capture Identity Card (Back) from File System -->
+                                    <div>
+                                        <h3>Identity Card (Back)</h3>
+                                        <div class="image-placeholder" id="idBackPlaceholder"></div>
+                                        <div style="text-align: center;">
+                                            <button class="button" onclick="browseImage('idBackInput', 'idBackPlaceholder')" style="width: 100px;">
+                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
+                                            </button>
+                                            <button class="button" onclick="removeImage('idBackPlaceholder', 'idBackInput')" style="background-color: red; width: 40px;">
+                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
+                                            </button>
+                                        </div>
+                                        @Html.TextBoxFor(model => model.IDCardBackPhoto, new { type = "file", id = "idBackInput", style = "display:none;", accept = "image/*", onchange = "showImage('idBackInput', 'idBackPlaceholder')" })
+                                    </div>
+
+                                </div>
+
+                            </div>
 
                             <div id="CreditTypes" class="tab-pane" role="tabpanel">
 
@@ -614,129 +674,8 @@
 
                             </div>
 
-                            <div id="MicroCredit" class="tab-pane" role="tabpanel">
-                                <div class="row">
-                                    <div class="col-lg-6">
 
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.NonIndividualDescription, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.NonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Name", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.NonIndividualDescription, "", new { @class = "text-danger" })
-                                        </div>
 
-                                        <div class="form-group" id="data_3">
-                                            @Html.LabelFor(model => model.NonIndividualDateEstablished, htmlAttributes: new { @class = "" })
-                                            <div class="input-group date">
-                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                <input type="text" name="birthdate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
-                                            </div>
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.NonIndividualRegistrationNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.NonIndividualRegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identification Number ", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.NonIndividualRegistrationNumber, "", new { @class = "text-danger" })
-                                        </div>
-
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Personal ID  ", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-
-                            <div id="Corporation" class="tab-pane" role="tabpanel">
-
-                            </div>
-
-                            <div id="Partnership" class="tab-pane" role="tabpanel">
-
-                            </div>
-
-                            <!--Specimen Capture-->
-                            <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
-
-                                <div class="container">
-                                    <!-- Capture Passport from Webcam or File System -->
-                                    <div>
-                                        <h3>Passport</h3>
-                                        <div class="image-placeholder" id="passportImagePlaceholder">
-                                            <video id="webcam" autoplay style="display:none;"></video>
-                                        </div>
-                                        <div style="text-align: center;">
-                                            <button class="button" onclick="captureWebcamImage()" style="width: 100px;">
-                                                <i class="fa fa-camera" aria-hidden="true"></i> Capture
-                                            </button>
-                                            <button class="button" onclick="browseImage('passportInput', 'passportImagePlaceholder')" style="width: 100px;">
-                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
-                                            </button>
-                                            <button class="button" onclick="removeImage('passportImagePlaceholder', 'passportInput', 'webcam')" style="background-color: red; width: 40px;">
-                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                        @Html.TextBoxFor(model => model.PassportPhoto, new { type = "file", id = "passportInput", style = "display:none;", accept = "image/*", onchange = "showImage('passportInput', 'passportImagePlaceholder')" })
-                                        <canvas id="canvas" style="display:none;"></canvas>
-                                    </div>
-
-                                    <!-- Capture Signature from File System -->
-                                    <div>
-                                        <h3>Signature</h3>
-                                        <div class="image-placeholder" id="signaturePlaceholder"></div>
-                                        <div style="text-align: center;">
-                                            <button class="button" onclick="browseImage('signatureInput', 'signaturePlaceholder')" style="width: 100px;">
-                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
-                                            </button>
-                                            <button class="button" onclick="removeImage('signaturePlaceholder', 'signatureInput')" style="background-color: red; width: 40px;">
-                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                        @Html.TextBoxFor(model => model.SignaturePhoto, new { type = "file", id = "signatureInput", style = "display:none;", accept = "image/*", onchange = "showImage('signatureInput', 'signaturePlaceholder')" })
-                                    </div>
-
-                                    <!-- Capture Identity Card (Front) from File System -->
-                                    <div>
-                                        <h3>Identity Card (Front)</h3>
-                                        <div class="image-placeholder" id="idFrontPlaceholder"></div>
-                                        <div style="text-align: center;">
-                                            <button class="button" onclick="browseImage('idFrontInput', 'idFrontPlaceholder')" style="width: 100px;">
-                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
-                                            </button>
-                                            <button class="button" onclick="removeImage('idFrontPlaceholder', 'idFrontInput')" style="background-color: red; width: 40px;">
-                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                        @Html.TextBoxFor(model => model.IDCardFrontPhoto, new { type = "file", id = "idFrontInput", style = "display:none;", accept = "image/*", onchange = "showImage('idFrontInput', 'idFrontPlaceholder')" })
-                                    </div>
-
-                                    <!-- Capture Identity Card (Back) from File System -->
-                                    <div>
-                                        <h3>Identity Card (Back)</h3>
-                                        <div class="image-placeholder" id="idBackPlaceholder"></div>
-                                        <div style="text-align: center;">
-                                            <button class="button" onclick="browseImage('idBackInput', 'idBackPlaceholder')" style="width: 100px;">
-                                                <i class="fa fa-upload" aria-hidden="true"></i> Upload...
-                                            </button>
-                                            <button class="button" onclick="removeImage('idBackPlaceholder', 'idBackInput')" style="background-color: red; width: 40px;">
-                                                <i class="fa fa-trash-o" aria-hidden="true"></i>
-                                            </button>
-                                        </div>
-                                        @Html.TextBoxFor(model => model.IDCardBackPhoto, new { type = "file", id = "idBackInput", style = "display:none;", accept = "image/*", onchange = "showImage('idBackInput', 'idBackPlaceholder')" })
-                                    </div>
-
-                                </div>
-
-                            </div>
                         </div>
 
                         <div class="row">
@@ -954,3 +893,137 @@
         });
     </script>
 }
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var index = 0;
+
+        $('#addButton').click(function () {
+            var name = $('#MemberName').val();
+            var gender = $('#MemberGender').val();
+            var idCardType = $('#IdentityCardType').val();
+            var idCardNumber = $('#IdentityCardNumber').val();
+            var addressLine1 = $('#AddressLine1').val();
+            var addressLine2 = $('#AddressLine2').val();
+            var street = $('#Street').val();
+            var postalCode = $('#PostalCode').val();
+            var city = $('#City').val();
+            var email = $('#Email').val();
+            var landLine = $('#LandLine').val();
+            var mobileLine = $('#MobileLine').val();
+            var isSignatory = $('#IsSignatory').is(':checked');
+            var remarks = $('#MemberRemarks').val();
+
+            var row = '<tr>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Name" value="' + name + '" />' + name + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Gender" value="' + gender + '" />' + gender + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardType" value="' + idCardType + '" />' + idCardType + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardNumber" value="' + idCardNumber + '" />' + idCardNumber + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine1" value="' + addressLine1 + '" />' + addressLine1 + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine2" value="' + addressLine2 + '" />' + addressLine2 + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Street" value="' + street + '" />' + street + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].PostalCode" value="' + postalCode + '" />' + postalCode + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].City" value="' + city + '" />' + city + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Email" value="' + email + '" />' + email + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].LandLine" value="' + landLine + '" />' + landLine + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].MobileLine" value="' + mobileLine + '" />' + mobileLine + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].IsSignatory" value="' + isSignatory + '" />' + (isSignatory ? "Yes" : "No") + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Remarks" value="' + remarks + '" />' + remarks + '</td>' +
+                '<td><button type="button" class="removeButton">Remove</button></td>' +
+                '</tr>';
+
+            $('#memberTable tbody').append(row);
+
+            $('.removeButton').click(function () {
+                $(this).closest('tr').remove();
+            });
+
+            index++;
+
+            // Clear input fields after adding
+            $('#MemberName').val('');
+            $('#MemberGender').val('');
+            $('#IdentityCardType').val('');
+            $('#IdentityCardNumber').val('');
+            $('#AddressLine1').val('');
+            $('#AddressLine2').val('');
+            $('#Street').val('');
+            $('#PostalCode').val('');
+            $('#City').val('');
+            $('#Email').val('');
+            $('#LandLine').val('');
+            $('#MobileLine').val('');
+            $('#IsSignatory').prop('checked', false);
+            $('#MemberRemarks').val('');
+        });
+    });
+</script>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var index = 0;
+
+        $('#Button').click(function () {
+            var name = $('#MemberName').val();
+            var gender = $('#MemberGender').val();
+            var idCardType = $('#IdentityCardType').val();
+            var idCardNumber = $('#IdentityCardNumber').val();
+            var addressLine1 = $('#AddressLine1').val();
+            var addressLine2 = $('#AddressLine2').val();
+            var street = $('#Street').val();
+            var postalCode = $('#PostalCode').val();
+            var city = $('#City').val();
+            var email = $('#Email').val();
+            var landLine = $('#LandLine').val();
+            var mobileLine = $('#MobileLine').val();
+            var isSignatory = $('#IsSignatory').is(':checked');
+            var remarks = $('#MemberRemarks').val();
+
+            var row = '<tr>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Name" value="' + name + '" />' + name + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Gender" value="' + gender + '" />' + gender + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardType" value="' + idCardType + '" />' + idCardType + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardNumber" value="' + idCardNumber + '" />' + idCardNumber + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine1" value="' + addressLine1 + '" />' + addressLine1 + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine2" value="' + addressLine2 + '" />' + addressLine2 + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Street" value="' + street + '" />' + street + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].PostalCode" value="' + postalCode + '" />' + postalCode + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].City" value="' + city + '" />' + city + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Email" value="' + email + '" />' + email + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].LandLine" value="' + landLine + '" />' + landLine + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].MobileLine" value="' + mobileLine + '" />' + mobileLine + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].IsSignatory" value="' + isSignatory + '" />' + (isSignatory ? "Yes" : "No") + '</td>' +
+                '<td><input type="hidden" name="MemberDetails[' + index + '].Remarks" value="' + remarks + '" />' + remarks + '</td>' +
+                '<td><button type="button" class="removeButton">Remove</button></td>' +
+                '</tr>';
+
+            $('#memberTable tbody').append(row);
+
+            $('.removeButton').click(function () {
+                $(this).closest('tr').remove(); s
+            });
+
+            index++;
+
+            // Clear input fields after adding
+            $('#MemberName').val('');
+            $('#MemberGender').val('');
+            $('#IdentityCardType').val('');
+            $('#IdentityCardNumber').val('');
+            $('#AddressLine1').val('');
+            $('#AddressLine2').val('');
+            $('#Street').val('');
+            $('#PostalCode').val('');
+            $('#City').val('');
+            $('#Email').val('');
+            $('#LandLine').val('');
+            $('#MobileLine').val('');
+            $('#IsSignatory').prop('checked', false);
+            $('#MemberRemarks').val('');
+        });
+    });
+</script>

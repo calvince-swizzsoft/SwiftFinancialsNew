@@ -1,7 +1,0 @@
-﻿################################################################################
-# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
-################################################################################
-
-/.vs/slnx.sqlite
-/SwiftFinancialsSolution/SwiftFinancials.Web/Areas/Accounts/Views/IndefiniteCharges/Create.cshtml
-/SwiftFinancialsSolution/SwiftFinancials.Web/Areas/Accounts/Views/IndefiniteCharges

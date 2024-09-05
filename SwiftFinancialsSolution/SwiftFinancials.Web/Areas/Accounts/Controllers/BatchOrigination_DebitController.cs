@@ -48,6 +48,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<DebitBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+
+        public void BatchOrigination_Debit(DebitBatchDTO  debitBatchDTO)
+        {
+
+            Session["HeaderDetails"] = debitBatchDTO;
+
+        }
+
+
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -64,221 +76,167 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             await ServeNavigationMenus();
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            var customer = await _channelService.FindDebitTypeAsync(parseId, GetServiceHeader());
-
-            DebitBatchDTO customerAccountDTO = new DebitBatchDTO();
-
-            if (customer != null)
-            {
-
-                customerAccountDTO.DebitTypeDescription = customer.Description;
-                customerAccountDTO.DebitTypeId = customer.Id;
-            }
-
-            return View(customerAccountDTO);
-        }
-
-
-
-        public async Task<ActionResult> DebitCustomerAccountLookUp(Guid? id, DebitBatchDTO  debitBatchDTO)
-        {
-
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
-
-            Guid parseId;
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                await ServeNavigationMenus();
-
-                return View("Create", debitBatchDTO);
-            }
-
             
-            
-
-            if (Session["debitBatchDTO1"] != null)
-            {
-                debitBatchDTO = Session["debitBatchDTO1"] as DebitBatchDTO;
-            }
-
-            DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
-
-
-            ViewBag.DebitBatchEntryDTOs = DebitBatchEntryDTOs;
-
-            if (debitBatchDTO != null && debitBatchDTO.DebitBatchEntries == null)
-            {
-                debitBatchDTO.DebitBatchEntries = new ObservableCollection<DebitBatchEntryDTO>();
-            }
-
-            // Ensure at least one entry exists before trying to access it by index
-            if (debitBatchDTO.DebitBatchEntries.Count == 0)
-            {
-                debitBatchDTO.DebitBatchEntries.Add(new DebitBatchEntryDTO());
-            }
-
-            var debitcustomerAccount = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, false, GetServiceHeader());
-
-            if (debitcustomerAccount != null)
-            {
-                debitBatchDTO.DebitBatchEntries[0].DebitCustomerAccountFullName = debitcustomerAccount.CustomerFullName;
-                debitBatchDTO.DebitBatchEntries[0].DebitCustomerAccountFullAccountNumber = debitcustomerAccount.FullAccountNumber;
-                debitBatchDTO.DebitBatchEntries[0].CustomerAccountCustomerReference2 = debitcustomerAccount.CustomerReference2;
-                debitBatchDTO.DebitBatchEntries[0].CustomerAccountCustomerReference3 = debitcustomerAccount.CustomerReference3;
-                debitBatchDTO.DebitBatchEntries[0].DebitCustomerAccountIdentificationNumber = debitcustomerAccount.CustomerIndividualIdentityCardNumber;
-                debitBatchDTO.DebitBatchEntries[0].DebitCustomerAccountStatusDescription = debitcustomerAccount.StatusDescription;
-                debitBatchDTO.DebitBatchEntries[0].DebitCustomerAccountRemarks = debitcustomerAccount.Remarks;
-                debitBatchDTO.DebitBatchEntries[0].ProductDescription = debitcustomerAccount.CustomerAccountTypeProductCodeDescription;
-                debitBatchDTO.DebitBatchEntries[0].CustomerAccountCustomerId = debitcustomerAccount.Id;
-                debitBatchDTO.DebitBatchEntries[0].DebitCustomerAccountTypeDescription = debitcustomerAccount.TypeDescription;
-                debitBatchDTO.DebitBatchEntries[0].CustomerAccountCustomerIndividualPayrollNumbers = debitcustomerAccount.CustomerIndividualPayrollNumbers;
-                debitBatchDTO.DebitBatchEntries[0].CustomerAccountId = debitcustomerAccount.Id;
-                Session["k"] = debitcustomerAccount.Id;
-
-            }
-
-            Session["creditBatchDTO2"] = debitBatchDTO;
-
-            return View("Create", debitBatchDTO);
+            return View();
         }
-
 
         [HttpPost]
-        public async Task<ActionResult> AddBatch(DebitBatchDTO  debitBatchDTO)
+        public async Task<JsonResult> GetDebitTypeDetails(Guid id)
         {
             await ServeNavigationMenus();
+            var customer = await _channelService.FindDebitTypeAsync(id, GetServiceHeader());
 
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+            if (customer == null)
+            {
+                return Json(new { success = false, message = "Debit type not found" });
+            }
 
-            Session["debitBatchDTO1"] = debitBatchDTO;
-
-            Session["DebitTypeId"] = debitBatchDTO.DebitTypeId;
-            Session["DebitTypeDescription"] = debitBatchDTO.DebitTypeDescription;
-            Session["BranchId"] = debitBatchDTO.BranchId;
-            Session["BranchDescription"] = debitBatchDTO.BranchDescription;
-            Session["PriorityDescription"] = debitBatchDTO.PriorityDescription;
-            Session["Reference"] = debitBatchDTO.Reference;
-
-
-
-             TempData["BatchSuccess"] = "Partial Batch Saved Successifully";
-
-
-            return View("Create");
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    DebitTypeDescription = customer.Description,
+                    DebitTypeId = customer.Id
+                }
+            });
         }
 
 
 
 
         [HttpPost]
-        public async Task<ActionResult> Add(DebitBatchDTO  debitBatchDTO)
+        public async Task<JsonResult> DebitCustomerAccountLookUp(Guid id)
         {
-
             await ServeNavigationMenus();
-            ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+            var debitcustomerAccount = await _channelService.FindCustomerAccountAsync(id, true, true, true, false, GetServiceHeader());
 
-            DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
-
-
-            
-
-            if (Session["DebitTypeId"] != null)
+            if (debitcustomerAccount == null)
             {
-                debitBatchDTO.DebitTypeId = (Guid)Session["DebitTypeId"];
-            }
-            if (Session["DebitTypeDescription"] != null)
-            {
-                debitBatchDTO.DebitTypeDescription = (string)Session["DebitTypeDescription"];
-            }
-            if (Session["BranchId"] != null)
-            {
-                debitBatchDTO.BranchId = (Guid)Session["BranchId"];
-            }
-            if (Session["DebitTypeId"] != null)
-            {
-                debitBatchDTO.DebitTypeId = (Guid)Session["DebitTypeId"];
-            }
-            if (Session["BranchDescription"] != null)
-            {
-                debitBatchDTO.BranchDescription = (string)Session["BranchDescription"];
-            }
-            if (Session["Priority"] != null)
-            {
-                debitBatchDTO.Priority = (int)Session["Priority"];
-            }
-            if (Session["Reference"] != null)
-            {
-                debitBatchDTO.Reference = (string)Session["Reference"];
+                return Json(new { success = false, message = "Customer account not found" });
             }
 
-
-            ViewBag.DebitBatchEntryDTOs = DebitBatchEntryDTOs;
-
-
-
-            if (DebitBatchEntryDTOs == null)
+            var result = new
             {
-                DebitBatchEntryDTOs = new ObservableCollection<DebitBatchEntryDTO>();
-            }
-
-
-
-            foreach (var debitBatchEntry in debitBatchDTO.DebitBatchEntries)
-            {
-                debitBatchEntry.DebitCustomerAccountFullName = debitBatchEntry.DebitCustomerAccountFullName;
-                debitBatchEntry.DebitCustomerAccountFullAccountNumber = debitBatchEntry.DebitCustomerAccountFullAccountNumber;
-                debitBatchEntry.CustomerAccountCustomerReference2 = debitBatchEntry.CustomerAccountCustomerReference2;
-                debitBatchEntry.CustomerAccountCustomerReference3 = debitBatchEntry.CustomerAccountCustomerReference3;
-                debitBatchEntry.DebitCustomerAccountIdentificationNumber = debitBatchEntry.DebitCustomerAccountIdentificationNumber;
-                debitBatchEntry.DebitCustomerAccountStatusDescription = debitBatchEntry.DebitCustomerAccountStatusDescription;
-                debitBatchEntry.DebitCustomerAccountRemarks = debitBatchEntry.DebitCustomerAccountRemarks;
-                debitBatchEntry.ProductDescription = debitBatchEntry.ProductDescription;
-                debitBatchEntry.CustomerAccountCustomerId = debitBatchEntry.CustomerAccountCustomerId;
-                debitBatchEntry.DebitCustomerAccountTypeDescription = debitBatchEntry.DebitCustomerAccountTypeDescription;
-                debitBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers = debitBatchEntry.CustomerAccountCustomerIndividualPayrollNumbers;
-                debitBatchEntry.Multiplier = debitBatchEntry.Multiplier;
-                debitBatchEntry.ProductDescription = debitBatchEntry.ProductDescription;
-                debitBatchEntry.DebitCustomerAccountStatusDescription = debitBatchEntry.StatusDescription;
-                debitBatchEntry.Reference = debitBatchEntry.Reference;
-                debitBatchEntry.CustomerAccountId = debitBatchEntry.CustomerAccountId;
-
-                DebitBatchEntryDTOs.Add(debitBatchEntry);
-
-
-
-
-                Session["debitBatchEntries"] = DebitBatchEntryDTOs;
-
+                CustomerFullName = debitcustomerAccount.CustomerFullName,
+                FullAccountNumber = debitcustomerAccount.FullAccountNumber,
+                CustomerReference2 = debitcustomerAccount.CustomerReference2,
+                CustomerReference3 = debitcustomerAccount.CustomerReference3,
+                IdentificationNumber = debitcustomerAccount.CustomerIndividualIdentityCardNumber,
+                StatusDescription = debitcustomerAccount.StatusDescription,
+                Remarks = debitcustomerAccount.Remarks,
+                ProductDescription = debitcustomerAccount.CustomerAccountTypeProductCodeDescription,
+                CustomerId = debitcustomerAccount.Id,
+                TypeDescription = debitcustomerAccount.TypeDescription,
+                IndividualPayrollNumbers = debitcustomerAccount.CustomerIndividualPayrollNumbers
             };
+
+            return Json(result);
+        }
+
+
+        /*[HttpPost]
+        public async Task<ActionResult> Add(DebitBatchDTO debitBatchDTO)
+        {
+            await ServeNavigationMenus();
             
+            if(debitBatchDTO.DebitBatchEntries == null)
+            {
+                TempData["EntryRequired"] = "Please fill the entries dat";
+                return View(debitBatchDTO);
+            }
+            // Retrieve or initialize the collection of debit batch entries from the session
+            var debitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
+            if (debitBatchEntryDTOs == null)
+            {
+                debitBatchEntryDTOs = new ObservableCollection<DebitBatchEntryDTO>();
+            }
 
-            debitBatchDTO.DebitBatchEntries = DebitBatchEntryDTOs;
+            // Add new entries to the collection
+            foreach (var debitBatchEntryDTO in debitBatchDTO.DebitBatchEntries)
+            {
+                debitBatchEntryDTOs.Add(debitBatchEntryDTO);
+            }
 
-            
-
-
-
-            ViewBag.DebitBatchEntryDTOs = DebitBatchEntryDTOs;
-
-            TempData["DebitBatchEntryDTO"] = DebitBatchEntryDTOs;
-            Session["DebitBatchEntryDTO"] = DebitBatchEntryDTOs;
-            TempData["DebitBatchDTO"] = debitBatchDTO;
+            // Update session values
+            Session["DebitBatchEntryDTO"] = debitBatchEntryDTOs;
             Session["DebitBatchDTO"] = debitBatchDTO;
 
-            
-            Session["debitBatchDTO2"] = null;
+            // Return JSON response with the updated entries
+            return Json(new { success = true, entries = debitBatchEntryDTOs });
+        }*/
 
+        [HttpPost]
+        public async Task<ActionResult> Add(DebitBatchDTO debitBatchDTO)
+        {
+            await ServeNavigationMenus();
 
+            // Retrieve or initialize the collection of debit batch entries from the session
+            var debitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
+            if (debitBatchEntryDTOs == null)
+            {
+                debitBatchEntryDTOs = new ObservableCollection<DebitBatchEntryDTO>();
+            }
 
-            return View("Create", debitBatchDTO);
+            // Loop through the new entries
+            foreach (var newEntry in debitBatchDTO.DebitBatchEntries)
+            {
+                // Check if the DebitCustomerAccountFullAccountNumber already exists in the session entries
+                var existingEntry = debitBatchEntryDTOs.FirstOrDefault(e => e.DebitCustomerAccountFullAccountNumber == newEntry.DebitCustomerAccountFullAccountNumber);
+
+                if (existingEntry != null)
+                {
+                    // If found, return a message indicating the account already exists
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"A debit entry with account number {newEntry.DebitCustomerAccountFullAccountNumber} already exists."
+                    });
+                }
+
+                if (newEntry.Id == Guid.Empty)
+                {
+                    newEntry.Id = Guid.NewGuid();
+                }
+
+                // Add new entries to the collection if not already present
+                debitBatchEntryDTOs.Add(newEntry);
+            }
+
+            // Update session values
+            Session["DebitBatchEntryDTO"] = debitBatchEntryDTOs;
+            Session["DebitBatchDTO"] = debitBatchDTO;
+
+            // Return JSON response with the updated entries
+            return Json(new { success = true, entries = debitBatchEntryDTOs });
         }
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var debitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
+
+            if (debitBatchEntryDTOs != null)
+            {
+                var entryToRemove = debitBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    debitBatchEntryDTOs.Remove(entryToRemove);
+
+                    
+
+                    Session["DebitBatchEntryDTO"] = debitBatchEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = debitBatchEntryDTOs });
+        }
+
 
 
         [HttpPost]
@@ -319,8 +277,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["SuccessMessage"] = "Successfully Created Debit Batch";
                 TempData["OverDeductionBatchDTO"] = "";
+                Session["DebitBatchEntryDTO"] = null;
+                Session["DebitBatchDTO"] = null;
 
-                
                 return RedirectToAction("Index");
             }
             else
@@ -330,6 +289,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(debitBatchDTO);
             }
         }
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -350,7 +311,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 await _channelService.UpdateDebitBatchAsync(debitBatchDTO, GetServiceHeader());
 
-                TempData["edit"] = "Successfully edited Loan Purpose";
+                TempData["edit"] = "Successfully edited ";
 
                 return RedirectToAction("Index");
             }
@@ -442,6 +403,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 await _channelService.AuthorizeDebitBatchAsync(debitBatchDTO, 1, batchAuthOption, GetServiceHeader());
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(debitBatchDTO.BatchAuthOption.ToString());
                 ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(debitBatchDTO.Priority.ToString());
+                TempData["AuthorizeSuccess"] = "Authorization Successiful";
+
                 return RedirectToAction("Index");
             }
             else
