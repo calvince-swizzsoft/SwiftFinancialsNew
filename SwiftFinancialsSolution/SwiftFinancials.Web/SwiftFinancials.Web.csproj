@@ -402,6 +402,8 @@
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
+    <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
+    <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashManagementController.cs" />
@@ -508,7 +510,6 @@
     <Compile Include="Areas\Reports\Controllers\spDynamicReportingController.cs" />
     <Compile Include="Areas\Reports\Controllers\StoredProcedureController.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportController.cs" />
-    <Compile Include="Areas\Reports\Models\ReportModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureViewModel.cs" />
@@ -1238,6 +1239,8 @@
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
+    <Content Include="Areas\Admin\Views\ReportSetting\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1714,7 +1717,6 @@
     <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
-    <Folder Include="Areas\Admin\Views\ReportSetting\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
@@ -1728,7 +1730,6 @@
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
-    <Folder Include="Areas\Reports\Controllers\" />
     <Folder Include="File\" />
     <Folder Include="NewFolder1\" />
     <Folder Include="Views\Lookup\" />
