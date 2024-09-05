@@ -12,46 +12,92 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title> Locked</title>
+    <title>Locked</title>
 
     <!-- Primary Inspinia style -->
     @Styles.Render("~/font-awesome/css")
     @Styles.Render("~/Content/css")
 
+    <style>
+        #padlockOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.5s ease;
+            font-size: 100px; 
+            color: white;
+            cursor: pointer; 
+        }
+
+        .blurred {
+            filter: blur(10px);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+
+    </style>
 </head>
 
 <body class="gray-bg">
 
-    <div class="lock-word animated fadeInDown">
+    <!-- Padlock Overlay -->
+    <div id="padlockOverlay">
+        <i class="fa fa-lock" aria-hidden="true" id="padlockIcon"> Click anywhere to unlock</i>
+    </div>
+
+    <div class="lock-word animated fadeInDown blurred">
         <span class="first-word">LOCKED</span><span>SCREEN</span>
     </div>
-    <div class="middle-box text-center lockscreen animated fadeInDown">
-        <div>
+    <div class="middle-box text-center lockscreen animated fadeInDown blurred">
+        <div style="width: 100%;">
             <div class="m-b-md">
-                <img alt="padlock" class="rounded-circle circle-border" src="~/Images/mia.jpg" width="128" height="128">
+                <img alt="padlock" class="rounded-circle circle-border" src="~/Images/mia.jpg" width="130" height="130">
             </div>
             <h3>@ViewBag.Name</h3>
-            <p>Your are in lock screen.</p>
+            <p>You are in lock screen.</p>
             <p>Main app timed out</p>
             <a href="@Url.Action("Login", "Account")"><i class="fa fa-sign-out"></i> Click here to log in again</a>
         </div>
     </div>
 
-    <!-- Section for main scripts render -->
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @Scripts.Render("~/plugins/slimScroll")
     @Scripts.Render("~/bundles/inspinia")
 
-    <!-- Skin config script - only for demo purpose-->
+
     @Scripts.Render("~/bundles/skinConfig")
 
+    <link href="~/Scripts/css/Marquee.css" rel="stylesheet" />
     <script type="text/javascript">
         $(document).ready(function () {
             history.pushState({ page: 1 }, "title 1", "#nbb");
             window.onhashchange = function (event) {
                 window.location.hash = "nbb";
             };
+
+
+            $('#padlockOverlay').on('click', function () {
+
+                $('#padlockIcon').removeClass('fa-lock').addClass('fa-unlock').text(' Unlocked');
+
+
+                setTimeout(function () {
+                    $('#padlockOverlay').fadeOut(500);
+                    $('.blurred').removeClass('blurred');
+                }, 2000);
+            });
         });
     </script>
 </body>

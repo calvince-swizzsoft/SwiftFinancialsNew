@@ -38,6 +38,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Reports", Icon="fa fa-calculator", ControllerName="Report", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 7},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Locations", Icon="fa fa-low-vision", ControllerName="Location", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 8},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Permission", Icon="fa fa-users", ControllerName="SystemTransactiontypes", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 9},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Reports", Icon="fa fa-file-code-o", ControllerName="DynamicReporting", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 10},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Report Setting", Icon="fa fa-clipboard", ControllerName="spDynamicReporting", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 11},
 
 
                 //Registry - area 21,000
@@ -283,6 +285,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //reports - area 28,000
                 new NavigationMenu{Description = "Reporting", IsArea = true, Code = 0x00006D60},
                 new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Reports", Icon="fa fa-bars", ControllerName="Report", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 1},
+                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Report", Icon="fa fa-spinner", ControllerName="DynamicReporting", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
              
             /*
                 //test - area 62,000

@@ -78,6 +78,10 @@
                             <button type="button" id="generateReport" class="btn btn-dark" style="width: 150px;">
                                 Generate Report
                             </button>
+
+
+                            <button type="submit" id="exportToEXCEL" class="btn btn-primary">Export to Excel</button>
+
                         </div>
                     </fieldset>
                 </div>
@@ -101,6 +105,12 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
+    <script>
+        $(function () {
+            $("#datepicker").datepicker({
+                dateFormat: "yy-mm-dd" // Format the date as yyyy-MM-dd
+            });
+        });</script>
 
     <script>
     $(document).ready(function () {
@@ -240,14 +250,147 @@
             }
         });
     });
-
-
-
-        $(function () {
-            $("#datepicker").datepicker({
-                dateFormat: "yy-mm-dd" // Format the date as yyyy-MM-dd
-            });
-        });
     </script>
 
+
+
+    <script>
+    $(document).ready(function () {
+        $('#exportToEXCEL').on('click', function () {
+            var selectedValue = $('#reportType').val();
+
+            if (selectedValue == 0) {
+                // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("ExportLoansByStatusToExcel", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            } else if (selectedValue == 1) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetAppraisedLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else if (selectedValue == 2) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetApprovedLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else if (selectedValue == 3) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetVerifiedLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else if (selectedValue == 4) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetDeferredLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else if (selectedValue == 5) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetRejectedLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else if (selectedValue == 6) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetDisbursedLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else if (selectedValue == 7) {
+                  // Registered Loans selected, send AJAX request
+                $.ajax({
+                    url: '@Url.Action("GetRestructuredLoans", "Reports", new { Area = "Loaning" })',
+                    type: 'POST',
+                    data: { /* Any data you want to send */ },
+                    success: function (data) {
+                        // Handle the response data
+                        console.log("Report generated:", data);
+                        // Update the UI with the returned data (e.g., populate a table)
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            }
+            else {
+                // Handle other report types or show a message
+                alert("Selected report type not supported yet.");
+            }
+        });
+    });
+    </script>
 }
