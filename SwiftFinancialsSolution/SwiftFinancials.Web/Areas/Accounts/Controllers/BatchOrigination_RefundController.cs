@@ -182,7 +182,23 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+        [HttpPost]
+        public JsonResult CheckSumAmount()
+        {
+            var storedOverDeductionBatchDTO = Session["overDeductionBatchDTO"] as OverDeductionBatchDTO;
+            var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
 
+            decimal totalPrincipalAndInterest = overDeductionBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+            decimal totalValue = storedOverDeductionBatchDTO?.TotalValue ?? 0;
+
+            if (totalPrincipalAndInterest != totalValue)
+            {
+                var balance = totalValue - totalPrincipalAndInterest;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({totalPrincipalAndInterest}). Balance: {balance}" });
+            }
+
+            return Json(new { success = true });
+        }
 
         [HttpPost]
         public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
@@ -237,7 +253,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return RedirectToAction("Index");
         }
 
-       
+
+
+
+
 
 
         [HttpPost]
@@ -245,6 +264,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            // Retrieve the batch entries from the session
             var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
             if (overDeductionBatchEntryDTOs == null)
             {
@@ -253,14 +273,49 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             foreach (var entry in overDeductionBatchDTO.overDeductionBatchEntries)
             {
+                // Check if an entry with the same Debit and Credit account numbers already exists
+                var existingEntry = overDeductionBatchEntryDTOs
+                    .FirstOrDefault(e => e.DebitCustomerAccountFullAccountNumber == entry.DebitCustomerAccountFullAccountNumber
+                                      && e.CreditCustomerAccountFullAccountNumber == entry.CreditCustomerAccountFullAccountNumber);
+
+                if (existingEntry != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "A refund with the same Debit and Credit account numbers already exists."
+                    });
+                }
+
+                if (entry.Id == Guid.Empty)
+                {
+                    entry.Id = Guid.NewGuid();
+                }
                 overDeductionBatchEntryDTOs.Add(entry);
+
+                // Calculate the sum of Principal and Interest
+                decimal totalPrincipalAndInterest = overDeductionBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+
+                // Check if the total value is exceeded
+                if (totalPrincipalAndInterest > overDeductionBatchDTO.TotalValue)
+                {
+                    overDeductionBatchEntryDTOs.Remove(entry);
+                    decimal exceededAmount = totalPrincipalAndInterest - overDeductionBatchDTO.TotalValue;
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"The total of principal and interest has exceeded the total value by {exceededAmount}."
+                    });
+                }
             }
 
+            // Save the updated entries back to the session
             Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
             Session["overDeductionBatchDTO"] = overDeductionBatchDTO;
-
+            
             return Json(new { success = true, data = overDeductionBatchEntryDTOs });
         }
+
 
 
 
@@ -271,17 +326,24 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
-            if (overDeductionBatchEntryDTOs == null)
+
+
+            decimal totalPrincipalAndInterest = overDeductionBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+
+            if (overDeductionBatchEntryDTOs != null)
             {
-                overDeductionBatchEntryDTOs = new ObservableCollection<OverDeductionBatchEntryDTO>();
+                var entryToRemove = overDeductionBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    overDeductionBatchEntryDTOs.Remove(entryToRemove);
+
+                    totalPrincipalAndInterest -= entryToRemove.Principal + entryToRemove.Interest;
+
+                    Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
+                }
             }
 
-            var entryToRemove = overDeductionBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
-            if (entryToRemove != null)
-            {
-                overDeductionBatchEntryDTOs.Remove(entryToRemove);
-                Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
-            }
+           
 
             return Json(new { success = true, data = overDeductionBatchEntryDTOs });
         }

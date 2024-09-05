@@ -135,6 +135,8 @@
     }
 </style>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -218,10 +220,10 @@
                             </div>
 
                             @*<span class="input-group-addon">
-                                <a href="javascript:void(0);" onclick="handleSearchClick()">
-                                    <span class="fa fa-search"></span>
-                                </a>
-                            </span>*@
+                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                        <span class="fa fa-search"></span>
+                                    </a>
+                                </span>*@
 
 
                             <div class="batch-entries-container">
@@ -232,8 +234,8 @@
                                             <div class="col-md-13 form-group">
                                                 @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                                 <div class="input-group" data-autoclose="true">
-                                                    @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId,new { @class="entry-field" ,@id = "CreditCustomerAccountId" })
-                                                    @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new {  @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly" ,@id = "CreditCustomerAccountFullAccountNumber" })
+                                                    @Html.HiddenFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountId, new { @class = "entry-field", @id = "CreditCustomerAccountId" })
+                                                    @Html.TextBoxFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullAccountNumber" })
                                                     <span class="input-group-addon">
                                                         <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
                                                     </span>
@@ -244,7 +246,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, htmlAttributes: new { @class = "control-label" })
                                                 @*@Html.HiddenFor(model => model.overDeductionBatchEntry.CreditProductDescription)*@
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly" ,@id = "CreditProductDescription" } })
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CreditProductDescription" } })
                                                 @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditProductDescription, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -252,7 +254,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.overDeductionBatchEntry.CreditCustomerIdentificationNumber)
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly",@id= "CreditCustomerIdentificationNumber" } })
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CreditCustomerIdentificationNumber" } })
                                                 @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerIdentificationNumber, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -261,7 +263,7 @@
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
 
-                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly",@id = "CreditCustomerAccountFullName" } })
+                                                @Html.EditorFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "CreditCustomerAccountFullName" } })
                                                 @Html.ValidationMessageFor(model => model.overDeductionBatchEntries[0].CreditCustomerAccountFullName, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
@@ -388,7 +390,7 @@
                                 <div class="row">
                                     <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
                                         <div class="form-group form-group-sm">
-                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                            <input type = "submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
 
@@ -505,11 +507,41 @@
     @Scripts.Render("~/plugins/duallist")
 
 
-    <script>
-
-    </script>
-
 <script>
+        //Confirm SumAmount is Equal to Total Value before submission
+    $(document).ready(function () {
+        $("#form").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Perform your AJAX call to check conditions
+            $.ajax({
+                url: '@Url.Action("CheckSumAmount", "BatchOrigination_Refund", new { Area = "Accounts" })',
+                type: 'POST',
+                data: $(this).serialize(), // Serialize the form data
+                success: function (response) {
+                    if (response.success) {
+                        // If validation is successful, submit the form
+                        $("#form").off('submit').submit();
+                    } else {
+                        // If validation fails, show an error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            timer: 10000,
+                            showConfirmButton: false
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred:", error);
+                }
+            });
+        });
+    });
+</script>
+
+    <script>
 
     $(document).ready(function () {
         // Handle form submission with AJAX
@@ -523,10 +555,22 @@
                 success: function (response) {
                     if (response.success) {
                         updateEntriesTable(response.data);
-
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: 'Entry added successfully.',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
                         clearEntryForm();
                     } else {
-                        alert('Error adding entry.');
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            timer: 10000,
+                            showConfirmButton: false
+                        });
                     }
                 },
                 error: function (xhr, status, error) {
@@ -593,7 +637,7 @@
     $("#submitAll").click(function () {
         window.location.href = '@Url.Action("Create", "BatchOrigination_Refund", new { area = "Accounts" })';
     });
-    
+
 
 
 
@@ -771,9 +815,9 @@
         });
     }
 
-</script>
+    </script>
 
-    
+
 
 }
 
