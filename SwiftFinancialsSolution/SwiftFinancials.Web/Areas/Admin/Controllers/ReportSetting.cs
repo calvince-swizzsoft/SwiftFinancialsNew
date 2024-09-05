@@ -10,7 +10,7 @@ using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
-    public class ReportController : MasterController
+    public class ReportSettingController : MasterController
     {
         public async Task<ActionResult> Index()
         {
