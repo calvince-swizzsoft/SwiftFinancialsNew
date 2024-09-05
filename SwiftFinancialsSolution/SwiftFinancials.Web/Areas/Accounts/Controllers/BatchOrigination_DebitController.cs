@@ -135,7 +135,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult> Add(DebitBatchDTO debitBatchDTO)
         {
             await ServeNavigationMenus();
@@ -164,11 +164,80 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             // Return JSON response with the updated entries
             return Json(new { success = true, entries = debitBatchEntryDTOs });
+        }*/
+
+        [HttpPost]
+        public async Task<ActionResult> Add(DebitBatchDTO debitBatchDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve or initialize the collection of debit batch entries from the session
+            var debitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
+            if (debitBatchEntryDTOs == null)
+            {
+                debitBatchEntryDTOs = new ObservableCollection<DebitBatchEntryDTO>();
+            }
+
+            // Loop through the new entries
+            foreach (var newEntry in debitBatchDTO.DebitBatchEntries)
+            {
+                // Check if the DebitCustomerAccountFullAccountNumber already exists in the session entries
+                var existingEntry = debitBatchEntryDTOs.FirstOrDefault(e => e.DebitCustomerAccountFullAccountNumber == newEntry.DebitCustomerAccountFullAccountNumber);
+
+                if (existingEntry != null)
+                {
+                    // If found, return a message indicating the account already exists
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"A debit entry with account number {newEntry.DebitCustomerAccountFullAccountNumber} already exists."
+                    });
+                }
+
+                if (newEntry.Id == Guid.Empty)
+                {
+                    newEntry.Id = Guid.NewGuid();
+                }
+
+                // Add new entries to the collection if not already present
+                debitBatchEntryDTOs.Add(newEntry);
+            }
+
+            // Update session values
+            Session["DebitBatchEntryDTO"] = debitBatchEntryDTOs;
+            Session["DebitBatchDTO"] = debitBatchDTO;
+
+            // Return JSON response with the updated entries
+            return Json(new { success = true, entries = debitBatchEntryDTOs });
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
 
-       
+            var debitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
+
+            if (debitBatchEntryDTOs != null)
+            {
+                var entryToRemove = debitBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    debitBatchEntryDTOs.Remove(entryToRemove);
+
+                    
+
+                    Session["DebitBatchEntryDTO"] = debitBatchEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = debitBatchEntryDTOs });
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult> Create(DebitBatchDTO debitBatchDTO)
