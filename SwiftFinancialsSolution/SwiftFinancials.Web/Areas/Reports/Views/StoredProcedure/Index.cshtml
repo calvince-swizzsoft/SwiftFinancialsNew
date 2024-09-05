@@ -1,0 +1,51 @@
+﻿@model IEnumerable<SwiftFinancials.Web.Areas.Reports.Models.StoredProcedureInfo> 
+
+@{
+    ViewBag.Title = "Stored Procedures List";
+}
+
+<h2>Stored Procedures</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Procedure Name</th>
+            <th>Definition</th>
+            <th>Created Date</th>
+            <th>Modified Date</th>
+            <th>Parameters</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var procedure in Model)
+        {
+            <tr>
+                <td>@procedure.ProcedureName</td>
+                <td><pre>@procedure.ProcedureDefinition</pre></td>
+                <td>@procedure.CreatedDate.ToString("yyyy-MM-dd")</td>
+                <td>@procedure.ModifiedDate.ToString("yyyy-MM-dd")</td>
+                <td>
+                    @if (procedure.Parameters.Any())
+                    {
+                        <ul>
+                            @foreach (var param in procedure.Parameters)
+                            {
+                                <li>
+                                    <strong>@param.ParameterName</strong> 
+                                    (@param.ParameterType, Length: @param.ParameterLength, 
+                                    Output: @param.IsOutputParameter)
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <em>No parameters</em>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="@Url.Action("Create", "StoredProcedure")" class="btn btn-primary">Create New Stored Procedure</a>
