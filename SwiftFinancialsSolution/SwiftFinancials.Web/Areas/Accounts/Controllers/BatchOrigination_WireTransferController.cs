@@ -34,7 +34,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindWireTransferBatchesByStatusAndFilterInPageAsync(1, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindWireTransferBatchesByStatusAndFilterInPageAsync(8, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -50,15 +50,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        public void BatchOrigination_WireTransfer(WireTransferBatchDTO  wireTransferBatchDTO)
-        {
-
-            Session["HeaderDetails"] = wireTransferBatchDTO;
-
-        }
-
-
-
+        
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -111,39 +103,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        /* public async Task<ActionResult> WireTransferTypeLookup(Guid? id, WireTransferBatchDTO wireTransferBatchDTO)
-         {
-             await ServeNavigationMenus();
-             // Check if the id is null or an empty Guid
-             if (id == null || id == Guid.Empty)
-             {
-                 await ServeNavigationMenus();
-                 return View("Create", wireTransferBatchDTO);
-             }
-
-             // Fetch all wire transfer types and filter by the provided id
-             var wireTransferTypes = await _channelService.FindWireTransferTypesAsync(GetServiceHeader());
-             var wireTransferType = wireTransferTypes.FirstOrDefault(wt => wt.Id == id);
-
-             // If the wire transfer type with the specified id is not found, you can handle it accordingly
-             if (wireTransferType == null)
-             {
-
-                 return View("Create", wireTransferBatchDTO);
-             }
-
-             wireTransferBatchDTO.WireTransferTypeDescription = wireTransferType.Description;
-             wireTransferBatchDTO.WireTransferTypeId = wireTransferType.Id;
-
-             ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-             ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-
-             return View("Create", wireTransferBatchDTO);
-         }*/
-
-
-
-
+        
 
         public async Task<JsonResult> WireTransferCustomerAccountLookUp(Guid id)
         {
@@ -208,86 +168,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        /*[HttpPost]
-        public async Task<ActionResult> Add(WireTransferBatchDTO wireTransferBatchDTO)
-        {
-
-            await ServeNavigationMenus();
-            ViewBag.BatchType = GetWireTransferBatchTypeSelectList(string.Empty);
-            ViewBag.Priority = GetQueuePriorityAsync(string.Empty);
-
-
-           
-
-            WireTransferEntryDTOs = TempData["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO>;
-
-
-            ViewBag.WireTransferEntryDTOs = WireTransferEntryDTOs;
-
-
-
-            if (WireTransferEntryDTOs == null)
-            {
-                WireTransferEntryDTOs = new ObservableCollection<WireTransferBatchEntryDTO>();
-            }
-
-
-
-            foreach (var wireTransferBatchEntry in wireTransferBatchDTO.WireTransferEntries)
-            {
-                WireTransferEntryDTOs.Add(wireTransferBatchEntry);
-
-                Session["WireTransferEntries"] = WireTransferEntryDTOs;
-
-            };
-
-
-            wireTransferBatchDTO.WireTransferEntries = WireTransferEntryDTOs;
-
-            TempData["WireTransferEntryDTOs"] = WireTransferEntryDTOs;
-            Session["WireTransferEntryDTOs"] = WireTransferEntryDTOs;
-            TempData["WireTransferBatchDTO"] = wireTransferBatchDTO;
-            Session["WireTransferBatchDTO"] = wireTransferBatchDTO;
-
-            wireTransferBatchDTO.WireTransferEntries=null;
-            Session["debitBatchDTO2"] = null;
-
-            ViewBag.WireTransferEntryDTOs = WireTransferEntryDTOs;
-
-            return View("Create");
-        }
-*/
-        /*
-                [HttpPost]
-                public JsonResult Add(WireTransferBatchDTO  wireTransferBatchDTO)
-                {
-                    var wireTransferEntryDTOs = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO> ?? new ObservableCollection<WireTransferBatchEntryDTO>();
-
-                    decimal sumAmount = wireTransferEntryDTOs.Sum(cs => cs.Amount);
-
-                    foreach (var entry in wireTransferBatchDTO.WireTransferEntries)
-                    {
-                        if (entry.Id == Guid.Empty)
-                        {
-                            entry.Id = Guid.NewGuid();
-                        }
-                        wireTransferEntryDTOs.Add(entry);
-
-                        sumAmount += entry.Amount;
-                        if (sumAmount > wireTransferBatchDTO.TotalValue)
-                        {
-                            wireTransferEntryDTOs.Remove(entry);
-                            return Json(new { success = false, message = "Failed to add Wire Transfer Entry. Total Amount exceeded Total Value." });
-                        }
-
-                    }
-
-                    TempData["WireTransferEntryDTOs"] = wireTransferEntryDTOs;
-                    Session["WireTransferEntryDTOs"] = wireTransferEntryDTOs;
-                    Session["wireTransferBatchDTO"] = wireTransferBatchDTO;
-
-                    return Json(new { success = true, entries = wireTransferEntryDTOs });
-                }*/
+       
 
 
         [HttpPost]
@@ -436,80 +317,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-
-        
-
-
-
-
-
-        /*[HttpPost]
-        public async Task<ActionResult> Create(WireTransferBatchDTO wireTransferBatchDTO)
-        {
-            // Retrieve WireTransferBatchDTO and WireTransferEntryDTOs from Session
-            wireTransferBatchDTO = Session["WireTransferBatchDTO"] as WireTransferBatchDTO;
-            var wireTransferEntryDTOs = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO>;
-
-            // Check if there are any entries
-            if (wireTransferEntryDTOs != null)
-            {
-                wireTransferBatchDTO.WireTransferEntries = wireTransferEntryDTOs;
-
-                // Calculate the sum of the amounts in the entries
-                decimal sumAmount = wireTransferEntryDTOs.Sum(entry => entry.Amount);
-
-                // Check if the total sum of the entries matches the total value
-                if (sumAmount != wireTransferBatchDTO.TotalValue)
-                {
-                    // Calculate the balance
-                    decimal balance = wireTransferBatchDTO.TotalValue - sumAmount;
-
-                    // Return error message and balance to the view
-                    ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-                    ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-                    TempData["validation"]  = $"The total value ({wireTransferBatchDTO.TotalValue}) should be equal to the sum of the entries ({sumAmount}). Balance: {balance}";
-
-                    // Return the current batch DTO back to the view
-                    return View("Create",wireTransferBatchDTO);
-                }
-            }
-
-            // Validate the DTO
-            wireTransferBatchDTO.ValidateAll();
-
-            if (!wireTransferBatchDTO.HasErrors)
-            {
-                // Proceed with creating the batch and entries
-                var wireTransferBatch = await _channelService.AddWireTransferBatchAsync(wireTransferBatchDTO, GetServiceHeader());
-
-                foreach (var wireTransferBatchEntry in wireTransferEntryDTOs)
-                {
-                    wireTransferBatchEntry.WireTransferBatchId = wireTransferBatch.Id;
-                    await _channelService.AddWireTransferBatchEntryAsync(wireTransferBatchEntry, GetServiceHeader());
-                }
-
-                // Clear the session
-                Session["WireTransferEntryDTOs"] = null;
-                Session["WireTransferBatchDTO"] = null;
-
-                TempData["SuccessMessage"] = "Successfully Created WireTransfer Batch";
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                // Handle validation errors
-                var errorMessages = wireTransferBatchDTO.ErrorMessages;
-                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-                ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-                return View(wireTransferBatchDTO);
-            }
-        }
-*/
-
-
-
-
-
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
@@ -580,6 +387,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.WireTransferTypeDescription.ToString());
                 ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
 
+                TempData["VerifySuccess"] = "Verification Successful";
+
                 return RedirectToAction("Index");
             }
             else
@@ -604,6 +413,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
             var wireTranferBatchDTO = await _channelService.FindWireTransferBatchAsync(id, GetServiceHeader());
+            var wireTransferEntries = await _channelService.FindWireTransferBatchEntriesByWireTransferBatchIdAsync(id, true, GetServiceHeader());
+
+
+            ViewBag.WireTransferEntryDTOs = wireTransferEntries;
+
 
             return View(wireTranferBatchDTO);
         }
@@ -624,6 +438,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(wireTransferBatchDTO.BatchAuthOption.ToString());
                 ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
                 ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
+
+                TempData["Authorize"] = "Authorization Successful";
 
                 return RedirectToAction("Index");
             }

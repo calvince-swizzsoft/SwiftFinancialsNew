@@ -637,66 +637,7 @@ function removeEntry(id) {
 
 
 
-   @* $(document).ready(function () {
-        // Function to add entries
-        $('#addEntryForm').on('submit', function (event) {
-            event.preventDefault();
-            var formData = $(this).serialize(); // Serialize the form data
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("AddWireTransferEntry", "BatchOrigination_WireTransfer")',
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        // Clear form fields
-                        $('.addEntryForm')[0].reset();
-
-                        // Update the entries table
-                        updateEntriesTable(response.data);
-                    } else {
-                        alert('Error adding entry');
-                    }
-                }
-            });
-        });
-
-        // Function to remove entries
-        $(document).on('click', '.remove-btn', function () {
-            var entryId = $(this).data('id'); // Get the entry ID from the button's data-id
-
-            $.ajax({
-                type: 'POST',
-                url: '@Url.Action("RemoveWireTransferEntry", "BatchOrigination_WireTransfer")',
-                data: { id: entryId },
-                success: function (response) {
-                    if (response.success) {
-                        // Update the entries table
-                        updateEntriesTable(response.data);
-                    } else {
-                        alert('Error removing entry');
-                    }
-                }
-            });
-        });
-
-        // Function to update the entries table
-        function updateEntriesTable(entries) {
-            var tableBody = $("#ChargeSplits tbody");
-            tableBody.empty(); // Clear existing entries
-
-            $.each(entries, function (index, entry) {
-                var row = `<tr data-id="${entry.Id}">
-                               <td>${entry.WiretransferCustomerAccountFullAccountNumber}</td>
-                               <td>${entry.ProductDescription}</td>
-                               <td>${entry.Amount}</td>
-                               <td><button type="button" class="btn btn-danger remove-btn" data-id="${entry.Id}">Remove</button></td>
-                           </tr>`;
-                tableBody.append(row);
-            });
-        }
-    });*@
-
+  
 
     $('#WireTransferAccountsGrid').DataTable({
                 // Ajax settings
