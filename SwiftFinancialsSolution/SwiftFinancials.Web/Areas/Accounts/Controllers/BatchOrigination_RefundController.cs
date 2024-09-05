@@ -237,16 +237,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return RedirectToAction("Index");
         }
 
+       
+
+
         [HttpPost]
         public async Task<JsonResult> Add(OverDeductionBatchDTO overDeductionBatchDTO)
         {
             await ServeNavigationMenus();
-
-            /*if (Session["HeaderDetails"] != null)
-            {
-                overDeductionBatchDTO = Session["HeaderDetails"] as OverDeductionBatchDTO;
-            }*/
-
 
             var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
             if (overDeductionBatchEntryDTOs == null)
@@ -254,37 +251,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 overDeductionBatchEntryDTOs = new ObservableCollection<OverDeductionBatchEntryDTO>();
             }
 
-            foreach (var overDeductionBatchEntryDTO in overDeductionBatchDTO.overDeductionBatchEntries)
+            foreach (var entry in overDeductionBatchDTO.overDeductionBatchEntries)
             {
-                overDeductionBatchEntryDTOs.Add(overDeductionBatchEntryDTO);
+                overDeductionBatchEntryDTOs.Add(entry);
             }
 
             Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
             Session["overDeductionBatchDTO"] = overDeductionBatchDTO;
 
-            // Return updated entries as JSON
             return Json(new { success = true, data = overDeductionBatchEntryDTOs });
         }
+
+
 
 
         [HttpPost]
-        public JsonResult RemoveEntry(Guid id)
+        public async Task<JsonResult> Remove(Guid id)
         {
+            await ServeNavigationMenus();
+
             var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
-            if (overDeductionBatchEntryDTOs != null)
+            if (overDeductionBatchEntryDTOs == null)
             {
-                var entryToRemove = overDeductionBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
-                if (entryToRemove != null)
-                {
-                    overDeductionBatchEntryDTOs.Remove(entryToRemove);
-                    Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
-                }
+                overDeductionBatchEntryDTOs = new ObservableCollection<OverDeductionBatchEntryDTO>();
             }
 
-            // Return updated entries as JSON
+            var entryToRemove = overDeductionBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+            if (entryToRemove != null)
+            {
+                overDeductionBatchEntryDTOs.Remove(entryToRemove);
+                Session["OverDeductionBatchEntryDTO"] = overDeductionBatchEntryDTOs;
+            }
+
             return Json(new { success = true, data = overDeductionBatchEntryDTOs });
         }
-
 
 
 

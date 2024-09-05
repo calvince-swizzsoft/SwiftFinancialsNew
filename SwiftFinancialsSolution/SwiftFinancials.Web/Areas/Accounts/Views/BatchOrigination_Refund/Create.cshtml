@@ -503,76 +503,59 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
+
+
+    <script>
+
+    </script>
+
 <script>
 
     $(document).ready(function () {
-    // Handle form submission with AJAX
-    $("#formAddBatch").submit(function (e) {
-        e.preventDefault(); // Prevent default form submission
+        // Handle form submission with AJAX
+        $("#formAddBatch").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
 
-        $.ajax({
-            url: $(this).attr('action'),
-            type: 'POST',
-            data: $(this).serialize(),
-            success: function (response) {
-                if (response.success) {
-                    updateEntriesTable(response.data);
+            $.ajax({
+                url: $(this).attr('action'),
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
 
-                    clearEntryForm();
-                } else {
-                    alert('Error adding entry.');
+                        clearEntryForm();
+                    } else {
+                        alert('Error adding entry.');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred:", error);
                 }
-            },
-            error: function (xhr, status, error) {
-                console.error("An error occurred:", error);
-            }
+            });
         });
     });
 
-        //Remove Entry
-            function removeEntry(entryId) {
-                console.log("Remove entry clicked with ID:", entryId); // Debugging
-
-                $.ajax({
-                    url: '@Url.Action("RemoveEntry", "BatchOrigination_Refund", new { area = "Accounts" })',
-                    type: 'POST',
-                    data: { id: entryId },
-                    success: function (response) {
-                        console.log("Response from server:", response); // Debugging
-                        if (response.success) {
-                            updateEntriesTable(response.data);
-                        } else {
-                            alert("Failed to remove the entry.");
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Error occurred: ", status, error); // Debugging
-                        alert("An error occurred while processing your request.");
-                    }
-                });
-            }
 
 
+        function updateEntriesTable(entries) {
+            var tableBody = $("#RefundBatchEntry tbody");
+            tableBody.empty(); // Clear existing entries
 
-
-    // Update table with new entries
-    function updateEntriesTable(entries) {
-        var tableBody = $("#RefundBatchEntry tbody");
-        tableBody.empty(); // Clear existing entries
-
-        $.each(entries, function (index, entry) {
-            var row = `<tr data-id="${entry.Id}">
-                           <td>${entry.CreditCustomerAccountFullName}</td>
-                           <td>${entry.DebitCustomerAccountFullName}</td>
-                           <td>${entry.CreditProductDescription}</td>
-                           <td>${entry.DebitProductDescription}</td>
-                           <td>${entry.Principal}</td>
-                           <td>${entry.Interest}</td>
-                           <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
-                       </tr>`;
-            tableBody.append(row);
-        });
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Id}">
+                       <td>${entry.CreditCustomerAccountFullName}</td>
+                       <td>${entry.DebitCustomerAccountFullName}</td>
+                       <td>${entry.CreditProductDescription}</td>
+                       <td>${entry.DebitProductDescription}</td>
+                       <td>${entry.Principal}</td>
+                       <td>${entry.Interest}</td>
+                       <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                   </tr>`;
+                tableBody.append(row);
+            });
         }
+
         // Attach click event to remove buttons
         $(document).on("click", ".remove-entry", function (event) {
             event.preventDefault(); // Prevent default behavior
@@ -582,16 +565,35 @@
 
 
 
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "BatchOrigination_Refund")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+
+
         function clearEntryForm() {
             // Reset only the fields with the 'entry-field' class
             $('#formAddBatch').find('.entry-field').val('');
         }
 
-    @*// Handle final submission
+    // Handle final submission
     $("#submitAll").click(function () {
         window.location.href = '@Url.Action("Create", "BatchOrigination_Refund", new { area = "Accounts" })';
-    });*@
-});
+    });
+    
 
 
 
@@ -634,15 +636,20 @@
             });
 
 
-    $(document).ready(function () {
-        $('#data_3 .input-group.date').datepicker({
-            startView: 2,
-            todayBtn: "linked",
-            keyboardNavigation: false,
-            forceParse: false,
-            autoclose: true,
-        });
-    });
+
+
+
+
+
+            $(document).ready(function () {
+                $('#data_3 .input-group.date').datepicker({
+                    startView: 2,
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    autoclose: true,
+                });
+            });
 
 
 
@@ -681,30 +688,32 @@
         "aaSorting": [[0, "desc"]]
     });
 
+
+
     function selectCustomerAccounts(id) {
-    $.ajax({
-        url: '/Accounts/BatchOrigination_Refund/CreditCustomerAccountLookup',
-        type: 'POST',
-        data: { Id: id },
-        success: function (response) {
-            if (response.success) {
-                // Populate fields with the returned data
-                $('#CreditCustomerAccountFullAccountNumber').val(response.data.CreditCustomerAccountFullAccountNumber);
-                $('#CreditProductDescription').val(response.data.CreditProductDescription);
-                $('#CreditCustomerAccountFullName').val(response.data.CreditCustomerAccountFullName);
-                $('#CreditCustomerIdentificationNumber').val(response.data.CreditCustomerIdentificationNumber);
-                $('#CreditCustomerAccountId').val(response.data.CreditCustomerAccountId);
-                // Close the modal
-                $('#CreditcustomerAccountLookupModal').modal('hide');
-            } else {
-                alert(response.message);
+        $.ajax({
+            url: '/Accounts/BatchOrigination_Refund/CreditCustomerAccountLookup',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate fields with the returned data
+                    $('#CreditCustomerAccountFullAccountNumber').val(response.data.CreditCustomerAccountFullAccountNumber);
+                    $('#CreditProductDescription').val(response.data.CreditProductDescription);
+                    $('#CreditCustomerAccountFullName').val(response.data.CreditCustomerAccountFullName);
+                    $('#CreditCustomerIdentificationNumber').val(response.data.CreditCustomerIdentificationNumber);
+                    $('#CreditCustomerAccountId').val(response.data.CreditCustomerAccountId);
+                    // Close the modal
+                    $('#CreditcustomerAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
             }
-        },
-        error: function () {
-            alert('An error occurred while processing your request.');
-        }
-    });
-}
+        });
+    }
 
 
     ////////// Debit customer accounts lookup modol/////////

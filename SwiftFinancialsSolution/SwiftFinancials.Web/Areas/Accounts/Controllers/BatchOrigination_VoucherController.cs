@@ -71,97 +71,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        /* [HttpPost]
-         public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
-         {
-             await ServeNavigationMenus();
-             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-
-
-
-             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
-
-
-             JournalVoucherEntryDTO jvE = new JournalVoucherEntryDTO();
-
-             decimal sumAmount = 0;
-
-             jvE.rowId = 0;
-
-             JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTO"] as ObservableCollection<JournalVoucherEntryDTO>;
-
-             if (JournalVoucherEntryDTOs == null)
-                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
-
-             var glAccount = journalVoucherDTO.JournalVoucherEntry;
-
-
-
-
-
-
-             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
-             {
-
-                 journalVoucherEntryDTO.BranchId = journalVoucherDTO.BranchId;
-                 journalVoucherEntryDTO.BranchDescription = journalVoucherDTO.BranchDescription;
-                 journalVoucherEntryDTO.EntryType = journalVoucherEntryDTO.EntryType;
-                 journalVoucherEntryDTO.ChartOfAccountId = journalVoucherEntryDTO.ChartOfAccountId;//Temporary
-                 journalVoucherEntryDTO.ChartOfAccountAccountName = journalVoucherEntryDTO.ChartOfAccountAccountName;
-                 journalVoucherEntryDTO.PrimaryDescription = journalVoucherDTO.PrimaryDescription;
-                 journalVoucherEntryDTO.SecondaryDescription = journalVoucherDTO.SecondaryDescription;
-                 journalVoucherEntryDTO.Reference = journalVoucherEntryDTO.Reference;
-                 journalVoucherEntryDTO.Amount = journalVoucherEntryDTO.Amount;
-                 journalVoucherEntryDTO.Remarks = journalVoucherEntryDTO.Remarks;
-                 journalVoucherEntryDTO.rowId = journalVoucherEntryDTO.rowId;
-
-
-
-
-
-
-                 if (journalVoucherEntryDTO.PrimaryDescription == null || journalVoucherEntryDTO.SecondaryDescription == null || journalVoucherEntryDTO.Amount == 0)
-                 {
-                     TempData["tPercentage"] = "Could not add Journal Voucher Entry. Ensure all required fields are enterd.";
-                 }
-                 else
-                 {
-                     JournalVoucherEntryDTOs.Add(journalVoucherEntryDTO);
-                     jvE.rowId++;
-
-                     sumAmount = JournalVoucherEntryDTOs.Sum(cs => cs.Amount);
-
-                     Session["journalVoucherEntries"] = JournalVoucherEntryDTOs;
-                     Session["ChartOfAccountId"] = journalVoucherEntryDTO.ChartOfAccountId;
-
-                     if (sumAmount > journalVoucherDTO.TotalValue)
-                     {
-                         TempData["tPercentage"] = "Failed to add  Journal Voucher Entry Total Amount exceeded Total Value.";
-
-                         JournalVoucherEntryDTOs.Remove(journalVoucherEntryDTO);
-
-
-                     }
-
-                 }
-
-             };
-
-             TempData["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
-             Session["JournalVoucherEntryDTO"] = JournalVoucherEntryDTOs;
-             TempData["JournalVoucherDTO"] = journalVoucherDTO;
-
-             ViewBag.JournalVoucherEntryDTOs = JournalVoucherEntryDTOs;
-
-             ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
-             ViewBag.JournalVoucherEntryTypeSelectList = GetJournalVoucherEntryTypeSelectList(journalVoucherDTO.EntryType.ToString());
-
-             TempData["EntryAdded"] = "Successfully Added an Entry";
-
-             return View("Create");
-         }*/
-
+        
         [HttpPost]
         public async Task<ActionResult> Add(JournalVoucherDTO journalVoucherDTO)
         {
@@ -635,6 +545,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 ViewBag.JournalVoucherTypeSelectList = GetJournalVoucherTypeSelectList(journalVoucherDTO.Type.ToString());
 
                 ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(journalVoucherDTO.AuthOption.ToString());
+
+                TempData["AuthSucess"] = "Authorization Successiful";
 
                 return RedirectToAction("Index");
             }
