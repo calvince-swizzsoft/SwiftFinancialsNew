@@ -1683,7 +1683,6 @@
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
-    <Folder Include="Areas\Reports\Controllers\" />
     <Folder Include="File\" />
     <Folder Include="NewFolder1\" />
     <Folder Include="Views\Lookup\" />
