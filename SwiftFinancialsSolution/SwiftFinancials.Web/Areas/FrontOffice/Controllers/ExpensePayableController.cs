@@ -61,13 +61,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var expensePayableEntries = await _channelService.FindExpensePayableEntriesByExpensePayableIdAsync(id, GetServiceHeader());
 
             ViewBag.ExpensePaybleTypeSelectList = GetExpensePayableAuthOptionSelectList(string.Empty);
-            
+
 
 
             ViewBag.ExpensePayableEntryDTOs = expensePayableEntries;
             return View(expensePayableDTO);
         }
-
 
 
         public async Task<ActionResult> Create()
@@ -89,11 +88,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO, ObservableCollection<ExpensePayableEntryDTO>expensePayableEntries)
+        public async Task<ActionResult> Create(ExpensePayableDTO expensePayableDTO, ObservableCollection<ExpensePayableEntryDTO> expensePayableEntries)
         {
             // Retrieve ExpensePayableDTO and ExpensePayableEntryDTOs from TempData
             expensePayableDTO = TempData["ExpensePayableDTO"] as ExpensePayableDTO ?? expensePayableDTO;
-           
+
             // Check if individual ExpensePayableEntryDTO is present in TempData and assign it to ExpensePayableEntries
             if (TempData["ExpensePayableEntryDTOs"] != null)
             {
@@ -137,7 +136,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 //if (expensePayableEntries.Any())
                 //{
-                    await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, ExpensePayableEntryDTOs, GetServiceHeader());
+                await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(expensePayable.Id, ExpensePayableEntryDTOs, GetServiceHeader());
                 //}
 
                 TempData["ExpensePayableEntryDTO"] = "";
@@ -153,78 +152,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return RedirectToAction("Create");
         }
 
-        //[httppost]
-        //public async task<actionresult> create(expensepayabledto expensepayabledto)
-        //{
-        //    // retrieve expensepayabledto and expensepayableentrydtos from tempdata if available
-        //    expensepayabledto = tempdata["expensepayabledto"] as expensepayabledto ?? expensepayabledto;
-        //expensepayableentrydtos = tempdata["expensepayableentrydtos"] as observablecollection<expensepayableentrydto> ?? new observablecollection<expensepayableentrydto>();
-
-        //    // initialize expensepayableentries if available in tempdata
-        //    if (tempdata["expensepayableentrydto"] != null)
-        //    {
-        //        var expensepayableentrycollection = tempdata["expensepayableentrydto"] as observablecollection<expensepayableentrydto>;
-        //        expensepayableentrydtos = expensepayableentrycollection;
-        //        if (expensepayableentrycollection != null)
-        //        {
-        //            // ensure expensepayableentries is initialized before assignment
-        //            if (expensepayabledto.expensepayableentries == null)
-        //            {
-        //                // initialize to the correct collection type (e.g., list or observablecollection)
-        //                expensepayabledto.expensepayableentries = new list<expensepayableentrydto>();
-        //            }
-
-        //            // assign values from tempdata collection
-        //            foreach (var entry in expensepayableentrycollection)
-        //            {
-        //                expensepayabledto.expensepayableentries.add(entry);
-        //            }
-        //        }
-        //    }
-
-        //    // validate the expensepayabledto
-        //    expensepayabledto.validateall();
-
-        //    if (!expensepayabledto.haserrors)
-        //    {
-        //        try
-        //        {
-        //            // call the service to add the expense payable
-        //            var expensepayable = await _channelservice.addexpensepayableasync(expensepayabledto, getserviceheader());
-
-        //            if (expensepayable != null)
-        //            {
-        //                if (expensepayableentrydtos.any())
-        //                {
-        //                    await _channelservice.updateexpensepayableentriesbyexpensepayableidasync(expensepayable.id, expensepayableentrydtos, getserviceheader());
-        //                }
-
-        //                // set success message in tempdata
-        //                tempdata["successmessage"] = "expense payable created successfully!";
-        //                return redirecttoaction("index"); // redirect to index view
-        //            }
-        //            else
-        //            {
-        //                tempdata["errormessage"] = "failed to create expense payable.";
-        //                return redirecttoaction("create"); // redirect back to create view
-        //            }
-        //        }
-        //        catch (exception)
-        //        {
-        //            tempdata["errormessage"] = "an error occurred while processing your request.";
-        //            return redirecttoaction("create"); // redirect back to create view
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // handle validation errors
-        //        tempdata["errormessage"] = string.join(", ", expensepayabledto.errormessages);
-        //        return redirecttoaction("create"); // redirect back to create view
-        //    }
-        //}
+        
 
 
-       
         [HttpPost]
         public async Task<ActionResult> Add(ExpensePayableDTO expensePayableDTO)
         {
@@ -241,9 +171,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (newEntry != null)
             {
                 // Assign values to newEntry from the provided expensePayableDTO
-                newEntry.BranchId = expensePayableDTO.BranchId;
                 newEntry.BranchDescription = expensePayableDTO.BranchDescription;
                 newEntry.ChartOfAccountAccountName = expensePayableDTO.ChartOfAccountAccountName;
+                newEntry.ChartOfAccountId = expensePayableDTO.ChartOfAccountId;
                 newEntry.Reference = expensePayableDTO.ExpensePayableEntry.Reference;
                 newEntry.SecondaryDescription = expensePayableDTO.ExpensePayableEntry.SecondaryDescription;
                 newEntry.PrimaryDescription = expensePayableDTO.ExpensePayableEntry.PrimaryDescription;

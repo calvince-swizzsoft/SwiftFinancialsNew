@@ -65,5 +65,14 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         public List<SystemPermissionTypeInRoleDTO> systemPermissionTypeInRoles { get; set; }
 
         public List<BranchDTO> systemPermissionTypeInBranchDTOs { get; set; }
+
+        // List of roles that can be associated with the selected SystemPermissionType
+        public ObservableCollection<string> Roles;
+
+        // List of branches that can be associated with the selected SystemPermissionType
+        public ObservableCollection<string> Branches;
+
+
     }
+
 }

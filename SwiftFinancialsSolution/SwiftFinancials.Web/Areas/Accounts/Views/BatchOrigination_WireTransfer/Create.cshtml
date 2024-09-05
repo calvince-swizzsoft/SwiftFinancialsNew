@@ -10,7 +10,7 @@
 
 }
 <style>
-    @*css for the journal entries *@ 
+    @*css for the journal entries *@
     #ChargeSplits {
         width: 100%;
         border-collapse: collapse;
@@ -44,7 +44,7 @@
     .main1 {
         border: 1px solid black;
         border-radius: 12px;
-        
+
         background-color: #f1f1f1;
     }
 
@@ -112,6 +112,10 @@
     }
 </style>
 
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -128,7 +132,16 @@
         </ol>
     </div>
 </div>
-
+@if (TempData["validation"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["validation"]
+    </div>
+}
 @if (TempData["Error"] != null)
 {
     <div class="alert alert-danger fade in">
@@ -145,7 +158,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -156,15 +169,14 @@
                     </div>
                 </div>
 
-                
+
 
 
 
                 <div class="ibox-content bg-white text-info">
                     <div class="main1">
 
-                        @using (Html.BeginForm("Add", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
-
+                        @using (Html.BeginForm("Add", "BatchOrigination_WireTransfer", FormMethod.Post, new { @class = "addEntryForm", @id = "formAddBatch" }))
                         {
                             @Html.AntiForgeryToken()
                             <div class="combined-container">
@@ -172,10 +184,10 @@
 
 
                                     <div class="col-md-4 form-group">
-                                        @Html.LabelFor(model => model.BatchAuthOption, new { @class = "control-label" })
+                                        @Html.LabelFor(model => model.WireTransferTypeDescription, new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.TextBoxFor(model => model.WireTransferTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "" })
-                                            @Html.HiddenFor(model => model.WireTransferTypeId)
+                                            @Html.TextBoxFor(model => model.WireTransferTypeDescription, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", placeholder = "", @id = "WireTransferTypeDescription" })
+                                            @Html.HiddenFor(model => model.WireTransferTypeId, new { @id = "WireTransferTypeId" })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#wireTransferTypeLookupModal"><span class="fa fa-search"></span></a>
                                             </span>
@@ -187,7 +199,7 @@
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                                 @Html.DropDownListFor(model => model.Priority, priority, new { @class = "form-control input-md" })
-                                                @Html.HiddenFor(model => model.Priority)
+
                                                 @Html.ValidationMessageFor(model => model.PriorityDescription)
                                             </div>
                                         </div>
@@ -195,11 +207,11 @@
 
                                     <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.Type, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.TypeDescription, batchType, new { @class = "form-control input-md" })
-                                                @Html.ValidationMessageFor(model => model.TypeDescription)
+                                                @Html.DropDownListFor(model => model.Type, batchType, new { @class = "form-control input-md" })
+                                                @Html.ValidationMessageFor(model => model.Type)
                                             </div>
                                         </div>
                                     </div>
@@ -228,7 +240,7 @@
                                             @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.BranchId)
                                             @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Description.." } })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter Space to autofill....." } })
                                         </div>
                                     </div>
                                 </div>
@@ -243,11 +255,9 @@
                                         <div class="col-md-13 form-group">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber, new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                @Html.TextBoxFor(model => model.WireTransferEntries[0].WiretransferCustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required addEntryForm", @readonly = "readonly", @id = "WiretransferCustomerAccountFullAccountNumber" })
                                                 <span class="input-group-addon">
-                                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
-                                                        <span class="fa fa-search"></span>
-                                                    </a>
+                                                    <a data-toggle="modal" data-target="#WireTransferAccountLookupModal"><span class="fa fa-search"></span></a>
                                                 </span>
                                             </div>
                                         </div>
@@ -257,7 +267,7 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].ProductDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].ProductDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].ProductDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required addEntryForm", placeholder = "", @readonly = "readonly", @id = "ProductDescription" } })
                                         </div>
                                     </div>
 
@@ -265,14 +275,14 @@
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, "", new { @class = "text-danger" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTransferAccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required addEntryForm", placeholder = "", @readonly = "readonly", @id = "WireTransferAccountStatusDescription" } })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.WireTransferEntries[0].CustomerAccountId)
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                            @Html.HiddenFor(model => model.WireTransferEntries[0].CustomerAccountId, new { @id = "CustomerAccountId" })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @readonly = "readonly", @id = "WireTranferCustomerAccountFullName" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].WireTranferCustomerAccountFullName, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -287,7 +297,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerIndividualPayrollNumbers" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -295,14 +305,14 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference1" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference2" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -310,7 +320,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @required = "", @readonly = "readonly", @id = "CustomerAccountCustomerReference3" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -320,7 +330,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].Payee, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].Payee, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].Payee, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].Payee, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -329,7 +339,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].AccountNumber, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].AccountNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].AccountNumber, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].AccountNumber, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -337,7 +347,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].Reference, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].Reference, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -346,7 +356,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.WireTransferEntries[0].Amount, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferEntries[0].Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                            @Html.EditorFor(model => model.WireTransferEntries[0].Amount, new { htmlAttributes = new { @class = "form-control addEntryForm", @placeholder = "", @required = "" } })
                                             @Html.ValidationMessageFor(model => model.WireTransferEntries[0].Amount, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
@@ -357,9 +367,8 @@
                                 <div class="row">
                                     <!-- Center the Submit button -->
                                     <div style="text-align: right; margin: 20px 20px;">
-                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                        <button type="submit" id="SubmitButton" class="btn btn-primary" style="width: 100px; border-radius: 4px;">Add</button>
                                     </div>
-
                                 </div>
 
                                 <br />
@@ -373,24 +382,10 @@
                                                 <th style="width: 10%;">Product Description</th>
                                                 <th style="width: 5%;">Amount</th>
                                                 <th style="width: 5%;">Action</th>
-
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            @if (ViewBag.WireTransferEntryDTOs != null)
-                                            {
-                                                foreach (var WireTransferEntries in ViewBag.WireTransferEntryDTOs)
-                                                {
-                                                    <tr data-id="@WireTransferEntries.Id">
-                                                        <td>@WireTransferEntries.WiretransferCustomerAccountFullAccountNumber</td>
-                                                        <td>@WireTransferEntries.ProductDescription</td>
-                                                        <td>@WireTransferEntries.Amount</td>
-                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-
-
-                                                    </tr>
-                                                }
-                                            }
+                                            <!-- Entries will be populated dynamically -->
                                         </tbody>
                                     </table>
                                 </row>
@@ -418,7 +413,7 @@
 
                     </div>
 
-                    
+
                 </div>
             </div>
         </div>
@@ -517,47 +512,132 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+    
+    <script>
+        //Confirm SumAmount is Equal to Total Value before submission
+    $(document).ready(function () {
+        $("#form").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
 
-<script>
+            // Perform your AJAX call to check conditions
+            $.ajax({
+                url: '@Url.Action("CheckSumAmount", "BatchOrigination_WireTransfer", new { Area = "Accounts" })',
+                type: 'POST',
+                data: $(this).serialize(), // Serialize the form data
+                success: function (response) {
+                    if (response.success) {
+                        // If validation is successful, submit the form
+                        $("#form").off('submit').submit();
+                    } else {
+                        // If validation fails, show an error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            timer: 10000,
+                            showConfirmButton: false
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred:", error);
+                }
+            });
+        });
+    });
+    </script>
 
-    function handleSearchClick() {
-        // Store form data in SessionStorage
-        let formData = {
-            WireTransferTypeDescription: document.querySelector('[name="WireTransferTypeDescription"]').value,
-            WireTransferTypeId: document.querySelector('[name="WireTransferTypeId"]').value,
-            Priority: document.querySelector('[name="Priority"]').value,
-            TypeDescription: document.querySelector('[name="TypeDescription"]').value,
-            TotalValue: document.querySelector('[name="TotalValue"]').value,
-            Reference: document.querySelector('[name="Reference"]').value,
-            BranchDescription: document.querySelector('[name="BranchDescription"]').value,
-            BranchId: document.querySelector('[name="BranchId"]').value
 
-        };
 
-        // Save the form data to SessionStorage
-        sessionStorage.setItem('formData', JSON.stringify(formData));
+    <script>
 
-        // Send the form data to the server
+  $(document).ready(function () {
+    // Handle form submission with AJAX
+    $("#formAddBatch").submit(function (e) {
+        e.preventDefault(); // Prevent default form submission
+
         $.ajax({
+            url: $(this).attr('action'), // Use the action attribute of the form
             type: 'POST',
-            url: '/BatchOrigination_WireTransfer/BatchOrigination_WireTransfer',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            headers: {
-                'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value
-            },
+            data: $(this).serialize(), // Serialize the form data
             success: function (response) {
-                // Trigger the modal after saving
-                $('#WireTransferAccountLookupModal').modal('show');
+                if (response.success) {
+                    updateEntriesTable(response.entries); // Update the table with the new data
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Entry added successfully.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                    clearEntryForm(); // Clear the form after successful submission
+                } else {
+                    alert(response.message);
+                }
             },
-            error: function (error) {
-                console.error('Error saving form data:', error);
-                // Handle the error if needed
+            error: function (xhr, status, error) {
+                console.error("An error occurred:", error); // Log any errors for debugging
             }
         });
-    }
+    });
+});
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#ChargeSplits tbody");
+            tableBody.empty(); // Clear existing entries
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Id}">
+                           <td>${entry.WiretransferCustomerAccountFullAccountNumber}</td>
+                           <td>${entry.ProductDescription}</td>
+                           <td>${entry.Amount}</td>
+                           <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                       </tr>`;
+                tableBody.append(row); // Append the new row to the table
+            });
+        }
 
 
+
+
+    // Attach click event to remove buttons
+    $(document).on("click", ".remove-entry", function (event) {
+        event.preventDefault(); // Prevent default behavior
+        var entryId = $(this).data("id"); // Get the ID from the button's data-id
+        removeEntry(entryId); // Call the function to remove the entry
+    });
+
+
+
+
+function clearEntryForm() {
+
+
+    $('#formAddBatch').find('.addEntryForm').val('');
+}
+
+function removeEntry(id) {
+    $.ajax({
+        url: '@Url.Action("Remove", "BatchOrigination_WireTransfer")',
+        type: 'POST',
+        data: { id: id },
+        success: function (response) {
+            if (response.success) {
+                updateEntriesTable(response.entries); // Update the table after removal
+            } else {
+                alert("An error occurred while removing the entry.");
+            }
+        },
+        error: function () {
+            alert("An error occurred while processing the request.");
+        }
+    });
+}
+
+
+
+
+  
 
     $('#WireTransferAccountsGrid').DataTable({
                 // Ajax settings
@@ -577,7 +657,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a onclick="sendFormData()" href="/Accounts/BatchOrigination_WireTransfer/WireTransferCustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectWireTransferCustomerAccount(\'' + aData.Id + '\')">Select</button>';
 
 
 
@@ -602,41 +682,101 @@
 
 
 
-            $('#wireTransferTypeGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "WireTransferType", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        function selectWireTransferCustomerAccount(id) {
+            $.ajax({
+                url: '/Accounts/BatchOrigination_WireTransfer/WireTransferCustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        // Populate fields with the returned data
+                        $('#WiretransferCustomerAccountFullAccountNumber').val(response.data.WiretransferCustomerAccountFullAccountNumber);
+                        $('#ProductDescription').val(response.data.ProductDescription);
+                        $('#WireTranferCustomerAccountFullName').val(response.data.WireTranferCustomerAccountFullName);
+                        $('#WireTransferCustomerIdentificationNumber').val(response.data.WireTransferAccountIdentificationNumber);
+                        $('#CustomerAccountId').val(response.data.CustomerAccountId);
+                        $('#CustomerAccountCustomerReference1').val(response.data.CustomerAccountCustomerReference1);
+                        $('#CustomerAccountCustomerReference2').val(response.data.CustomerAccountCustomerReference2);
+                        $('#CustomerAccountCustomerReference3').val(response.data.CustomerAccountCustomerReference3);
+                        $('#WireTransferAccountStatusDescription').val(response.data.WireTransferAccountStatusDescription);
+                        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(response.data.CustomerAccountCustomerIndividualPayrollNumbers);
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/Accounts/BatchOrigination_WireTransfer/WireTransferTypeLookup/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
-
-                    return nRow;
+                        // Close the modal
+                        $('#WireTransferAccountLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
                 },
-        // Display settings
-        "aoColumns": [
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
 
-            { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "20%" },
-            { "mDataProp": "Description", "sTitle": "Description", "sWidth": "20%" },
-            { "mDataProp": "TransactionOwnershipDescription", "sTitle": "Transaction Ownership", "sWidth": "20%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "20%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-             });
+
+
+
+
+
+
+
+
+
+            $('#wireTransferTypeGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "WireTransferType", new { Area = "Accounts"}))",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var h = ("0" + createdDate.getHours()).slice(-2);
+                var m = ("0" + createdDate.getMinutes()).slice(-2);
+                var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                aData.CreatedDate = dt_Created;
+
+                var selectUrl = '<button class="btn btn-outline-info" onclick="selectWireTransferType(\'' + aData.Id + '\')">Select</button>';
+                $('td:eq(3)', nRow).html(dt_Created);
+                $('td:eq(4)', nRow).html(selectUrl);
+
+                return nRow;
+            },
+            "aoColumns": [
+                { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "20%" },
+                { "mDataProp": "Description", "sTitle": "Description", "sWidth": "20%" },
+                { "mDataProp": "TransactionOwnershipDescription", "sTitle": "Transaction Ownership", "sWidth": "20%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "20%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
+            ],
+            "aaSorting": [[0, "desc"]]
+        });
+
+        function selectWireTransferType(id) {
+            $.ajax({
+                url: '@Url.Action("WireTransferTypeLookup", "BatchOrigination_WireTransfer", new { Area = "Accounts" })',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        // Populate fields with the returned data
+                        $('#WireTransferTypeDescription').val(response.data.WireTransferTypeDescription);
+                        $('#WireTransferTypeId').val(response.data.WireTransferTypeId);
+                        // Close the modal
+                        $('#wireTransferTypeLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+
+
+
 
     $("#s tbody").on("click", "tr", function () {
         var data = wireTransferTypeGrid.row(this).data();
@@ -695,6 +835,6 @@
 
             });
 
-</script>
+    </script>
 }
 

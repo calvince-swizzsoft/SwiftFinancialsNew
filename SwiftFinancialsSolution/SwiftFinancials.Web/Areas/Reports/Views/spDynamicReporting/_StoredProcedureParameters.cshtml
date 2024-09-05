@@ -1,0 +1,54 @@
+﻿@model List<SwiftFinancials.Web.Areas.Reports.Models.StoredProcedureParameter>
+
+@if (Model.Any())
+{
+    <h3>Parameters:</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Parameter Name</th>
+                <th>Data Type</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var param in Model)
+            {
+                <tr>
+                    <td>@param.Name</td>
+                    <td>@param.DataType</td>
+                    <td>
+                        @{
+                            string inputType = "text";
+                            string stepValue = null;
+
+                            if (param.DataType.Contains("Date"))
+                            {
+                                inputType = "date";
+                            }
+                            else if (param.DataType.Contains("Int"))
+                            {
+                                inputType = "number";
+                            }
+                            else if (param.DataType.Contains("Decimal") || param.DataType.Contains("Float") || param.DataType.Contains("Money"))
+                            {
+                                inputType = "number";
+                                stepValue = "0.01";
+                            }
+                            else if (param.DataType.Contains("Bit"))
+                            {
+                                inputType = "checkbox";
+                            }
+                        }
+
+                        <input type="@inputType" name="paramValues[@param.Name]" class="form-control" step="@stepValue" />
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p class="text-danger">No parameters available for this stored procedure.</p>
+}

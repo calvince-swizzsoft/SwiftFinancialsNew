@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
+using OfficeOpenXml;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using SwiftFinancials.Web.PDF;
@@ -46,11 +48,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var page = pageCollectionInfo.PageCollection;
 
-            // Call createpdf class
-            var createpdf = new CreatePdf();
-            string fpath = Request.ServerVariables["REMOTE_ADDR"];
-            var addres = Path.Combine(Server.MapPath("~/Files/"));
-            createpdf.WritePdf(fpath, addres, page);
+            //// Call createpdf class
+            //var createpdf = new CreatePdf();
+            //string fpath = Request.ServerVariables["REMOTE_ADDR"];
+            //var addres = Path.Combine(Server.MapPath("~/Files/"));
+            //createpdf.WritePdf(fpath, addres, page);
+
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -66,7 +69,96 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
-      // GetAllLoanCases Transferred to ReportsController
+
+        [HttpPost]
+        public async Task<ActionResult> ExportToExcel(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            if (jQueryDataTablesModel.sEcho <= 0)
+            {
+                throw new InvalidOperationException("Expected the request to have a sEcho value greater than 0");
+            }
+
+            // Retrieve the data using the same service call as in the Index action
+            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(
+                jQueryDataTablesModel.sSearch,
+                10,
+                jQueryDataTablesModel.iDisplayStart,
+                jQueryDataTablesModel.iDisplayLength,
+                true,
+                GetServiceHeader()
+            );
+
+            var page = pageCollectionInfo.PageCollection;
+
+            // Generate the Excel file from the pageCollection
+            byte[] fileContent = GenerateExcelFile(page);
+
+            // Return the Excel file as a downloadable file
+            return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "LoanCases.xlsx");
+        }
+
+
+
+        private byte[] GenerateExcelFile(IEnumerable<LoanCaseDTO> loanCases)
+        {
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Registered Loans");
+
+                // Load the logo image
+                var logoPath = Server.MapPath("~/Images/MIA.JPG");
+                var logo = Image.FromFile(logoPath);
+
+                // Adjust the height of the first row to create space for the logo
+                worksheet.Row(1).Height = 150; // Adjust the row height to fit the logo size
+
+                // Insert the logo into the worksheet
+                var picture = worksheet.Drawings.AddPicture("Flow Finance", logo);
+                picture.SetPosition(0, 0, 0, 0); // Position the image in the top-left corner (row 1, column 1)
+
+                // Start the headers after the logo
+                int headerRowStart = 5; // Adjust this if the logo is larger or smaller
+
+                
+                var headers = new[] { "CASE NUMBER", "CUSTOMER NAME", "AMOUNT APPLIED", "BRANCH", "PAYMENT PER PERIOD", "RECEIVED DATE", "CREATED DATE" };
+                for (int i = 0; i < headers.Length; i++)
+                {
+                    var cell = worksheet.Cells[headerRowStart, i + 1];
+                    cell.Value = headers[i];
+
+                    cell.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
+                    cell.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                    cell.Style.Fill.BackgroundColor.SetColor(System.Drawing.Color.Blue);
+                    cell.Style.Font.Color.SetColor(System.Drawing.Color.White);
+
+                    cell.Style.Font.Bold = true;
+                }
+
+                int row = headerRowStart + 1;
+                foreach (var loanCase in loanCases)
+                {
+                    worksheet.Cells[row, 1].Value = loanCase.CaseNumber;
+                    worksheet.Cells[row, 2].Value = loanCase.CustomerName;
+                    worksheet.Cells[row, 3].Value = loanCase.AmountApplied;
+                    worksheet.Cells[row, 4].Value = loanCase.BranchDescription;
+                    worksheet.Cells[row, 5].Value = loanCase.PaymentPerPeriod;
+                    worksheet.Cells[row, 6].Value = loanCase.ReceivedDate.ToString("yyyy-MM-dd");
+                    worksheet.Cells[row, 7].Value = loanCase.CreatedDate.ToString("yyyy-MM-dd");
+                    // Add more fields as needed
+
+                    row++;
+                }
+
+                // Auto-fit columns
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                return package.GetAsByteArray();
+            }
+        }
+
+
+        // GetAllLoanCases Transferred to ReportsController
 
 
         public async Task<ActionResult> Details(Guid id)
@@ -1066,9 +1158,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            //var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
+            //loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
+
+            var takeBranchId = Guid.Empty;
+
+            var findBranch = await _channelService.FindBranchesAsync(GetServiceHeader());
+            foreach(var id in findBranch)
+            {
+                takeBranchId = id.Id;
+            }
+
+            loanCaseDTO.BranchId = takeBranchId;
 
             loanCaseDTO.ReceivedDate = DateTime.Today;
 
