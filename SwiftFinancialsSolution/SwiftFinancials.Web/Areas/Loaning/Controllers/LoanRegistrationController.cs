@@ -1158,9 +1158,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 return View();
             }
 
-            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            //var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
+            //loanCaseDTO.BranchId = (Guid)userDTO.BranchId;
+
+            var takeBranchId = Guid.Empty;
+
+            var findBranch = await _channelService.FindBranchesAsync(GetServiceHeader());
+            foreach(var id in findBranch)
+            {
+                takeBranchId = id.Id;
+            }
+
+            loanCaseDTO.BranchId = takeBranchId;
 
             loanCaseDTO.ReceivedDate = DateTime.Today;
 

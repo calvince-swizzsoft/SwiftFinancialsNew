@@ -134,10 +134,10 @@
                         </div>
                     }
 
-                    @if (TempData["AuthorizeSuccess"] != null)
+                    @if (TempData["Authorize"] != null)
                     {
                         <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AuthorizeSuccess"]
+                            <strong>Success !</strong> @TempData["Authorize"]
                         </div>
                     }
 
@@ -245,7 +245,7 @@
 
                     switch (aData.Status) {
                         case 1:
-                            dropdownHtml += viewButton + editButton + verifyButton + authorizeButton;
+                            dropdownHtml += viewButton + editButton + verifyButton ;
                             break;
                         case 8:
                             dropdownHtml += viewButton + authorizeButton;

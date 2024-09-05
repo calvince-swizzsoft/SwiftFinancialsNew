@@ -15,6 +15,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
     {
         public CustomerTransactionModel()
         {
+            ApportionmentWrapper = new ApportionmentWrapper();
             CustomerAccount = new CustomerAccountDTO();
             CashDepositRequest = new CashDepositRequestDTO();
             Teller = new TellerDTO();
@@ -284,6 +285,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         public List<CustomerAccountSignatoryDTO> CustomerAccountSignatories { get; set; }
 
         public List<ElectronicStatementOrderDTO> CustomerAccountMiniStatement { get; set; }
+
+        public List<ApportionmentWrapper> Apportionments { get; set; }
+
+        public ApportionmentWrapper ApportionmentWrapper { get; set; }
 
 
     }

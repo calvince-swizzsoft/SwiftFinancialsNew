@@ -129,13 +129,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     // Fetch loan accounts for the customer based on customer ID and product type ID
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
-                        customer.CustomerId, 
-                        customer.CustomerAccountTypeTargetProductId, 
-                        includeBalances: true, 
+                        customer.CustomerId,
+                        customer.CustomerAccountTypeTargetProductId,
+                        includeBalances: true,
                         includeProductDescription: true,
                         includeInterestBalanceForLoanAccounts: true,
                         considerMaturityPeriodForInvestmentAccounts: true,
-                        serviceHeader: GetServiceHeader() 
+                        serviceHeader: GetServiceHeader()
                     );
 
                     var investmentAccounts = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(
@@ -330,7 +330,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return View(accountClosureRequestDTO);
 
-      
+
         }
 
         [HttpPost]
@@ -369,8 +369,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
-        
 
-        
+
+
     }
 }

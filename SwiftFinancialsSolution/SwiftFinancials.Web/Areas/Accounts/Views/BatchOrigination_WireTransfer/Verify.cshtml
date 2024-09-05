@@ -1,0 +1,590 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.WireTransferBatchDTO
+
+@{
+    ViewBag.Title = "Verify WireTransfer Batch";
+   
+    var priority = ViewBag.Priority as List<SelectListItem>;
+    var batchType = ViewBag.BatchType as List<SelectListItem>;
+    var batchAuth = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+}
+
+<style>
+
+    .big-box {
+        border: 1px solid gray;
+        border-radius: 12px;
+        background-color: #f1f1f1
+    }
+    .row{
+        margin:20px;
+    }
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+    h2 {
+        font-weight: bold;
+        margin-left: 40px;
+    }
+    .custom-container {
+        border: 2px solid gray; /* Border color set to gray */
+
+        border-radius: 12px; /* Rounded corners (optional) */
+
+        display: flex; /* Enable Flexbox */
+        align-items: center; /* Center content vertically */
+        justify-content: center; /* Center content horizontally */
+        font-size: 15px; /* Set font size to 15px */
+        text-align: center; /* Center text within elements */
+        margin: 20px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    /* Ensure that any child elements that need to be centered don't affect the container alignment */
+        .custom-container .row {
+             width: 100%; /* Make sure row takes full width */
+            font-size: 16px;
+        }
+
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+
+    .row {
+        margin-bottom: 20px; /* Space between rows */
+    }
+
+    .form-group {
+        margin-bottom: 15px; /* Space between form groups */
+    }
+
+    .input-group-addon {
+        padding: 10px; /* Padding inside the input group addon */
+    }
+
+    .form-control {
+        margin-top: 5px; /* Space above input controls */
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+    }
+
+    @*#policies {
+        color: black;
+        align-content: center;
+        justify-content: center;
+        align-items: center;
+    }*@
+
+    .main1 {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 10px;
+        margin-top: 20px;
+        background-color: #f1f1f1;
+    }
+
+    @*css form status dropdown*@
+    .button-container {
+        display: inline-block;
+        position: relative;
+    }
+
+    .custom-dropdown {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc; /* Border around the button */
+        border-radius: 4px;
+        padding: 5px 10px;
+        background-color: #f9f9f9; /* Background color of the button */
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: 16px;
+        position: relative;
+        min-width: 150px; /* Minimum width to prevent overlap */
+        width: auto; /* Adjust width based on content */
+    }
+
+    .custom-select {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+        width: 100%; /* Make the dropdown take full width of the container */
+        -webkit-appearance: none; /* Remove default dropdown styles in WebKit browsers */
+        -moz-appearance: none; /* Remove default dropdown styles in Firefox */
+        font-weight: bold;
+        text-align: left;
+        line-height: 1.5; /* Adjust line height for better vertical alignment */
+        color: #007bff; /* Blue color for the text */
+    }
+
+    .custom-dropdown::after {
+        content: '\f078'; /* Unicode for down arrow */
+        font-family: FontAwesome; /* FontAwesome for the down arrow */
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* Allow clicks to pass through the arrow */
+    }
+
+    @* css form Authorization remarks*@ .form-group-container {
+        display: flex;
+        align-items: center;
+        gap: 10px; /* Space between label and input field */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+    .input-md {
+        color: #007bff; /* Replace with your desired color */
+    }
+    h2 {
+        font-weight: bold;
+    }
+
+        .form-control {
+        flex: 1; /* Allow input field to take up remaining space */
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Verify</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Verify", "BatchOrigination_WireTransfer", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="main1">
+                                <div class="combined-container">
+                                    <div class="row">
+
+
+                                        <div class="col-md-4 form-group">
+                                            @Html.LabelFor(model => model.WireTransferTypeDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.WireTransferTypeId)
+                                            @Html.EditorFor(model => model.WireTransferTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" }, @readonly = "readonly" })
+                                        </div>
+                                        <div class="col-md-4 form-group">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.PriorityDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            </div>
+                                            
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+                                            </div>
+                                            
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+
+
+                                        <div class="col-lg-4">
+                                            <div class="form-group form-group-sm">
+                                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00", @required = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <div class="form-group form-group-sm">
+                                                @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
+
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.BranchId)
+                                                @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <br />
+                                <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Wire Transfer Batch Entries</h2>
+
+                                    <row>
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                <tr>
+                                                    <th style="width: 1%;"></th> <!-- New ID column -->
+                                                    <th style="width: 5%;">Batch NO</th>
+                                                    <th style="width: 15%;">Name</th>
+                                                    <th style="width: 15%;">Account No</th>
+                                                    <th style="width: 10%;">Amount</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.WireTransferEntryDTOs != null)
+                                                {
+                                                    int id = 1;
+                                                    foreach (var wireTransferBatchEntries in ViewBag.WireTransferEntryDTOs)
+                                                    {
+                                                        <tr data-id="@wireTransferBatchEntries.Id">
+                                                            <td style="color: black;">@id</td> <!-- Display the current ID -->
+                                                            <td>@wireTransferBatchEntries.WireTransferBatchBatchNumber</td>
+                                                            <td>@wireTransferBatchEntries.CustomerFullName</td>
+                                                            <td>@wireTransferBatchEntries.FullAccountNumber</td>
+                                                            <td>@wireTransferBatchEntries.Amount</td>
+                                                        </tr>
+                                                        id++; // Increment the ID for the next entry
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </row>
+                                </div>
+                                
+
+                                <div class="custom-container">
+                                    <div class="row" id="policies">
+                                        <div class="col-lg-10">
+                                            <div class="row">
+                                                <div class="col-lg-8">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="form-group-container">
+                                                            Remarks:
+                                                            @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "" } })
+                                                        </div>
+                                                        @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-lg-4">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="button-container">
+                                                            <div class="custom-dropdown">
+                                                                @Html.DropDownListFor(model => model.BatchAuthOption, batchAuth, new { @class = "custom-select" })
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-2">
+                                            <div class="row">
+
+                                                <div class="col-lg-12">
+                                                    <div class="style-button" style="text-align: right;">
+                                                        <input type="submit" value="Verify" style="width: 150px;" class="btn btn-primary" />
+                                                    </div>
+
+
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            
+                            </div>
+                        </div>
+                        
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <script>
+
+        $(document).ready(function () {
+            $("#wizard").steps();
+            $("#form").steps({
+                bodyTag: "fieldset",
+                onStepChanging: function (event, currentIndex, newIndex) {
+                    // Always allow going backward even if the current step contains invalid fields!
+                    if (currentIndex > newIndex) {
+                        return true;
+                    }
+
+                    // Forbid suppressing "Warning" step if the user is to young
+                    if (newIndex === 3 && Number($("#age").val()) < 18) {
+                        return false;
+                    }
+
+                    var form = $(this);
+
+                    // Clean up if user went backward before
+                    if (currentIndex < newIndex) {
+                        // To remove error styles
+                        $(".body:eq(" + newIndex + ") label.error", form).remove();
+                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
+                    }
+
+                    // Disable validation on fields that are disabled or hidden.
+                    form.validate().settings.ignore = ":disabled,:hidden";
+
+                    // Start validation; Prevent going forward if false
+                    return form.valid();
+                },
+                onStepChanged: function (event, currentIndex, priorIndex) {
+                    // Suppress (skip) "Warning" step if the user is old enough.
+                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
+                        $(this).steps("next");
+                    }
+
+                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
+                    if (currentIndex === 2 && priorIndex === 3) {
+                        $(this).steps("previous");
+                    }
+                },
+                onFinishing: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Disable validation on fields that are disabled.
+                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
+                    form.validate().settings.ignore = ":disabled";
+
+                    // Start validation; Prevent form submission if false
+                    return form.valid();
+                },
+                onFinished: function (event, currentIndex) {
+                    var form = $(this);
+
+                    // Submit form input
+                    form.submit();
+                }
+            }).validate({
+                errorPlacement: function (error, element) {
+                    element.before(error);
+                },
+                rules: {
+                    confirm: {
+                        equalTo: "#password"
+                    }
+                }
+            });
+
+     //DebitType typehead starts here
+            $('.DebitTypesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetDebitTypesAsync", "DebitType", new { Area = "Accounts" })',
+                        { query: query },
+                        function (DebitTypes) {
+                            var newDebitTypesData = [];
+                            DebitTypesMap = {};
+                            $.each(DebitTypes, function (i, DebitType) {
+                                newDebitTypesData.push(DebitType.Description);
+                                DebitTypesMap[DebitType.Description] = DebitType;
+                            });
+                            process(newDebitTypesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var debitTypeId = "";
+                    DebitTypeId = DebitTypesMap[item].Id;
+                    $('#DebitTypeId').val(DebitTypeId);
+                    //console.log(DebitTypeId)
+                    return item;
+                }
+            });
+
+         //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var branchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+            $(document).ready(function () {
+                $('#data_3 .input-group.date').datepicker({
+                    startView: 2,
+                    todayBtn: "linked",
+                    keyboardNavigation: false,
+                    forceParse: false,
+                    autoclose: true,
+                });
+            });
+            }); </script>
+}
+
+

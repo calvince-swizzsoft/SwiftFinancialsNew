@@ -460,7 +460,7 @@
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\LocationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ModuleController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ReportSetting.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
@@ -507,6 +507,8 @@
     <Compile Include="Areas\Reports\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Reports\Controllers\spDynamicReportingController.cs" />
     <Compile Include="Areas\Reports\Controllers\StoredProcedureController.cs" />
+    <Compile Include="Areas\Reports\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Reports\Models\ReportModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureViewModel.cs" />
@@ -1201,7 +1203,6 @@
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Liquidation.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Catalogue.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Processing.cshtml" />
     <Content Include="Areas\Accounts\Views\BankReconciliation_Periods\Closing.cshtml" />
@@ -1234,6 +1235,9 @@
     <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Reports\Views\spDynamicReporting\Index.cshtml" />
     <Content Include="Areas\Reports\Views\spDynamicReporting\_StoredProcedureParameters.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1710,6 +1714,7 @@
     <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
+    <Folder Include="Areas\Admin\Views\ReportSetting\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
@@ -1723,6 +1728,9 @@
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
+    <Folder Include="Areas\Reports\Controllers\" />
+    <Folder Include="File\" />
+    <Folder Include="NewFolder1\" />
     <Folder Include="Views\Lookup\" />
     <Folder Include="Views\Reporting\" />
   </ItemGroup>

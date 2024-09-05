@@ -236,5 +236,6 @@ namespace Application.MainBoundedContext.DTO.AdministrationModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+        public bool IsChecked { get; set; }
     }
 }
