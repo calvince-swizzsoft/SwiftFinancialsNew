@@ -135,7 +135,7 @@
                 <div class="ibox-content bg-white text-info">
                     @*@using (Html.BeginForm("Create", "CustomerAccounts", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
 
-        @Html.AntiForgeryToken()*@
+                        @Html.AntiForgeryToken()*@
 
                     <div class="form-horizontal">
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -256,7 +256,7 @@
                         }
 
                             .tab-button.active {
-                                background-color:darkgrey; /* Dark grey */
+                                background-color: darkgrey; /* Dark grey */
                                 color: white;
                                 border-radius: 5px 5px 0 0;
                             }
@@ -305,13 +305,13 @@
                                         </div>
                                     </div>
                                     @*<div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.savingsProducts[0].Code, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.savingsProducts[0].Code, new { htmlAttributes = new { @class = "form-control percentage-input" } })
-                                @Html.ValidationMessageFor(model => model.savingsProducts[0].Code, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback" style="display: none; color:red;"></div>
-                            </div>
-                        </div>*@
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.savingsProducts[0].Code, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.savingsProducts[0].Code, new { htmlAttributes = new { @class = "form-control percentage-input" } })
+                                                @Html.ValidationMessageFor(model => model.savingsProducts[0].Code, "", new { @class = "text-danger" })
+                                                <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                            </div>
+                                        </div>*@
                                     <div class="col-lg-4" style="margin-top: 29px;">
                                         <input type="submit" value="Add savings" class="btn btn-primary" />
                                     </div>
@@ -381,13 +381,13 @@
                                         </div>
                                     </div>
                                     @*<div class="col-lg-4">
-                            <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.investmentProducts[0].Code, htmlAttributes: new { @class = "" })
-                                @Html.EditorFor(model => model.investmentProducts[0].Code, new { htmlAttributes = new { @class = "form-control percentage-input", @id = "code_investment" } })
-                                @Html.ValidationMessageFor(model => model.investmentProducts[0].Code, "", new { @class = "text-danger" })
-                                <div class="invalid-feedback" style="display: none; color:red;"></div>
-                            </div>
-                        </div>*@
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.investmentProducts[0].Code, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.investmentProducts[0].Code, new { htmlAttributes = new { @class = "form-control percentage-input", @id = "code_investment" } })
+                                                @Html.ValidationMessageFor(model => model.investmentProducts[0].Code, "", new { @class = "text-danger" })
+                                                <div class="invalid-feedback" style="display: none; color:red;"></div>
+                                            </div>
+                                        </div>*@
                                     <div class="col-lg-4" style="margin-top: 29px;">
                                         <input type="submit" value="Add investments" class="btn btn-primary" />
                                     </div>

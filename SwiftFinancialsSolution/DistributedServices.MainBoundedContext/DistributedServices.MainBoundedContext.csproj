@@ -467,6 +467,8 @@
     <Compile Include="Contracts\AccountsModule\IUnPayReasonService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferBatchService.cs" />
     <Compile Include="Contracts\AccountsModule\IWireTransferTypeService.cs" />
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Migrations\MigrationsContextFactory.cs" />
     <Compile Include="SystemGeneralLedgerAccountMappingService.svc.cs">
       <DependentUpon>SystemGeneralLedgerAccountMappingService.svc</DependentUpon>
     </Compile>
@@ -749,8 +751,6 @@
     <Compile Include="MicroCreditOfficerService.svc.cs">
       <DependentUpon>MicroCreditOfficerService.svc</DependentUpon>
     </Compile>
-    <Compile Include="Migrations\Configuration.cs" />
-    <Compile Include="Migrations\MigrationsContextFactory.cs" />
     <Compile Include="MobileToBankRequestService.svc.cs">
       <DependentUpon>MobileToBankRequestService.svc</DependentUpon>
     </Compile>
@@ -848,7 +848,6 @@
       <DependentUpon>ZoneService.svc</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Content Include="App_Data\AccountAlertTemplates\CustomerRegistration_TextTemplate.cshtml" />
     <Content Include="App_Data\AccountAlertTemplates\MembershipAccountRegistration_EmailTemplate.cshtml" />

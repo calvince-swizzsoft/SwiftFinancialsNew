@@ -769,6 +769,24 @@ namespace SwiftFinancials.Web.Controllers
             return ChargeType;
         }
 
+
+
+        [NonAction]
+        protected List<SelectListItem> GetreportTemplateCategorySelectList(string selectedValue)
+        {
+            List<SelectListItem> reportTemplateCategory = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(ReportTemplateCategory)).Cast<ReportTemplateCategory>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            reportTemplateCategory.AddRange(items);
+
+            return reportTemplateCategory;
+        }
         [NonAction]
         protected List<SelectListItem> GetDynamicChargeRecoveryModeSelectList(string selectedValue)
         {

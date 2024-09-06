@@ -7,6 +7,7 @@ using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
@@ -15,7 +16,9 @@ using Application.MainBoundedContext.DTO.BackOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
+using OfficeOpenXml;
 using SwiftFinancials.Web.Controllers;
+using SwiftFinancials.Web.EXCEL;
 using SwiftFinancials.Web.Helpers;
 using SwiftFinancials.Web.PDF;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -31,45 +34,6 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View();
         }
 
-
-        [HttpPost]
-        public async Task<JsonResult> GetRegisteredLoans()
-        {
-            DateTime startDate = new DateTime(2024, 01, 01);
-            DateTime endDate = new DateTime(2024, 12, 31);
-            int statusCode = 48829; // Example status code
-
-            // Call the stored procedure and get the list of LoanCaseDTO
-            var loanCases = await GetLoansByStatusAsync(startDate, endDate, statusCode);
-
-            // Debugging: Check if loanCases is populated
-            if (loanCases == null || loanCases.Count == 0)
-            {
-                // Log or breakpoint here
-                Console.WriteLine("No loan cases retrieved.");
-                return Json(new { success = false, message = "No data to generate PDF." });
-            }
-
-            // Call createpdf class
-            var createpdf = new RegisteredLoans();
-            string fpath = Request.ServerVariables["REMOTE_ADDR"];
-            var address = Path.Combine(Server.MapPath("~/Files/"));
-
-            // Debugging: Check if address is correct
-            Console.WriteLine($"File path: {address}");
-
-            bool pdfCreated = createpdf.WritePdf(fpath, address, loanCases);
-
-            // Debugging: Check if WritePdf was successful
-            if (!pdfCreated)
-            {
-                // Log or breakpoint here
-                Console.WriteLine("Failed to create PDF.");
-                return Json(new { success = false, message = "Failed to create PDF." });
-            }
-
-            return Json(loanCases);
-        }
         private async Task<List<LoanCaseDTO>> GetLoansByStatusAsync(DateTime startDate, DateTime endDate, int statusCode)
         {
             var loanCases = new List<LoanCaseDTO>();
@@ -138,7 +102,107 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> GetRegisteredLoans()
+        {
+            DateTime startDate = new DateTime(2024, 01, 01);
+            DateTime endDate = new DateTime(2024, 12, 31);
+            int statusCode = 48829; // Example status code
 
+            // Call the stored procedure and get the list of LoanCaseDTO
+            var loanCases = await GetLoansByStatusAsync(startDate, endDate, statusCode);
+
+            // Debugging: Check if loanCases is populated
+            if (loanCases == null || loanCases.Count == 0)
+            {
+                // Log or breakpoint here
+                Console.WriteLine("No loan cases retrieved.");
+                return Json(new { success = false, message = "No data to generate PDF." });
+            }
+
+            // Call createpdf class
+            var createpdf = new RegisteredLoans();
+            string fpath = Request.ServerVariables["REMOTE_ADDR"];
+            var address = Path.Combine(Server.MapPath("~/Files/"));
+
+            // Debugging: Check if address is correct
+            Console.WriteLine($"File path: {address}");
+
+            bool pdfCreated = createpdf.WritePdf(fpath, address, loanCases);
+
+            // Debugging: Check if WritePdf was successful
+            if (!pdfCreated)
+            {
+                // Log or breakpoint here
+                Console.WriteLine("Failed to create PDF.");
+                return Json(new { success = false, message = "Failed to create PDF." });
+            }
+
+            return Json(loanCases);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ExportLoansByStatusToExcel()
+        {
+            try
+            {
+                DateTime startDate = new DateTime(2024, 01, 01);
+                DateTime endDate = new DateTime(2024, 12, 31);
+                int statusCode = 48829;
+
+
+                var loanCases = await GetLoansByStatusAsync(startDate, endDate, statusCode);
+
+                var createexcel = new createExcel();
+
+
+                byte[] fileContent = GenerateExcelFile(loanCases);
+
+                return File(fileContent, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "LoanCasesByStatus.xlsx");
+            }
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+
+        private byte[] GenerateExcelFile(IEnumerable<LoanCaseDTO> loanCases)
+        {
+            using (var package = new ExcelPackage())
+            {
+                var worksheet = package.Workbook.Worksheets.Add("Loan Cases");
+
+                // Add headers
+                worksheet.Cells[1, 1].Value = "Case Number";
+                worksheet.Cells[1, 2].Value = "Customer Name";
+                worksheet.Cells[1, 3].Value = "Amount Applied";
+                worksheet.Cells[1, 4].Value = "Created By";
+                worksheet.Cells[1, 5].Value = "Created Date";
+
+
+
+                int row = 2;
+                foreach (var loanCase in loanCases)
+                {
+                    worksheet.Cells[row, 1].Value = loanCase.CaseNumber;
+                    worksheet.Cells[row, 2].Value = loanCase.CustomerIndividualFirstName;
+                    worksheet.Cells[row, 3].Value = loanCase.AmountApplied;
+                    worksheet.Cells[row, 4].Value = loanCase.CreatedBy;
+                    worksheet.Cells[row, 5].Value = loanCase.CreatedDate.ToString("yyyy-MM-dd");
+                    // Map more fields as necessary
+
+                    row++;
+                }
+
+
+                worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
+
+                return package.GetAsByteArray();
+            }
+        }
+
+        // ....................... Registered Loans
 
 
 

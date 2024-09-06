@@ -1,0 +1,103 @@
+﻿@model Application.MainBoundedContext.DTO.AdministrationModule.ReportDTO
+
+@{
+    ViewBag.Title = "Report Setting";
+    var chargeTypes = ViewBag.ReportSelectList as List<SelectListItem>;
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Administrator</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "ReportSetting", new { Area = "Admin" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Approve</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Report Setting</h2>
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white">
+                    @using (Html.BeginForm("Create", "ReportSetting", FormMethod.Post, new { id = "spForm" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        <fieldset>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    @Html.Label("Select Stored Procedure: ")
+                                    @Html.HiddenFor(model => model.ReportQuery, new { id = "ReportQuery" })
+                                    @Html.DropDownList("StoredProcedure", (SelectList)ViewBag.StoredProcedures, "Select a Stored Procedure", new { id = "spDropdown", @class = "form-control" })
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    @Html.LabelFor(model => model.ReportName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.ReportName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ReportName, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-6 mb-3">
+                                    @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Category, chargeTypes, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.Category)
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;" />
+                            </div>
+                        </fieldset>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#spDropdown").change(function () {
+                var selectedSP = $(this).val();
+
+                $('#ReportQuery').val(selectedSP);
+
+                if (selectedSP) {
+                    $.ajax({
+                        url: '@Url.Action("FetchParameters", "StoredProcedure")',
+                        type: 'POST',
+                        data: { storedProcedureName: selectedSP },
+                        success: function (data) {
+                            $('#parameterList').html(data);
+                        }
+                    });
+                } else {
+                    $('#parameterList').html('');
+                }
+            });
+        });
+    </script>
+}
