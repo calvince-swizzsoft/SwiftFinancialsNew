@@ -54,8 +54,10 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
             var existingRequests = FindAccountClosureRequestsByCustomerAccountId(accountClosureRequestDTO.CustomerAccountId, serviceHeader);
 
             if (existingRequests != null && existingRequests.Any(x => x.Status.In((int)AccountClosureRequestStatus.Registered, (int)AccountClosureRequestStatus.Audited, (int)AccountClosureRequestStatus.Approved, (int)AccountClosureRequestStatus.Deferred)))
-                throw new InvalidOperationException("Sorry, but a closure request for the selected customer account is currently undergoing processing!");
-
+            {
+                accountClosureRequestDTO.errormassage = string.Format(("Sorry, but a closure request for the selected customer account is currently undergoing processing!"));
+                return accountClosureRequestDTO;
+            }
             using (var dbContextScope = _dbContextScopeFactory.Create())
             {
                 var accountClosureRequest = AccountClosureRequestFactory.CreateAccountClosureRequest(accountClosureRequestDTO.CustomerAccountId, accountClosureRequestDTO.BranchId, accountClosureRequestDTO.Reason, serviceHeader);

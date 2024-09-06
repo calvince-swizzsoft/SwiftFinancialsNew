@@ -31,17 +31,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
             var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            // Define the page size and index
+            
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-            // Fetch data with the provided filter and pagination parameters
+           
             var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                0,  // Assuming customerFilter is not used, or set it as needed
+                0,  
                 pageIndex,
                 pageSize,
-                false, // Assuming includeProductDescription is not used, or set it as needed
+                false, 
                 GetServiceHeader()
             );
 
@@ -49,12 +49,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                // Sort the collection based on the sorting criteria
+               
                 var sortedData = pageCollectionInfo.PageCollection
-                    .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime)) // Adjust sorting as needed
+                    .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime)) 
                     .ToList();
 
-                // Determine the count of records matching the search criteria
+               
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
                 return this.DataTablesJson(
@@ -81,10 +81,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
 
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+
+
+
             return View(accountClosureRequestDTO);
         }
 
-        // GET: FrontOffice/AccountClosureRequest/Create
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -97,11 +99,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 var parseId = id.Value;
 
-                // Retrieve customer account details
                 var customer = await _channelService.FindCustomerAccountAsync(
                     parseId,
                     includeBalances: false,
-                    includeProductDescription: false,
+                    includeProductDescription:true,
                     includeInterestBalanceForLoanAccounts: false,
                     considerMaturityPeriodForInvestmentAccounts: false,
                     GetServiceHeader()
@@ -109,7 +110,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 if (customer != null)
                 {
-                    // Populate the DTO with customer details
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualPayrollNumbers = customer.CustomerIndividualPayrollNumbers;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                     accountClosureRequestDTO.CustomerAccountRemarks = customer.Remarks;
@@ -125,9 +125,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     accountClosureRequestDTO.BranchId = customer.BranchId;
                     accountClosureRequestDTO.CustomerAccountId = customer.Id;
                     accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerIndividualLastName = customer.FullAccountNumber;
 
 
-                    // Fetch loan accounts for the customer based on customer ID and product type ID
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
                         customer.CustomerId,
                         customer.CustomerAccountTypeTargetProductId,
@@ -138,24 +138,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         serviceHeader: GetServiceHeader()
                     );
 
-                    var investmentAccounts = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(
-                        productCode: 12345, // Example product code for Investment Accounts
-                        text: string.Empty,
-                        customerFilter: 1 /* Customer Filter */,
-                        pageIndex: 0,
-                        pageSize: 100, // Adjust page size as needed
+                    var investmentAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
+                         customer.CustomerId,
+                        customer.CustomerAccountTypeTargetProductId,
                         includeBalances: true,
                         includeProductDescription: true,
-                        includeInterestBalanceForLoanAccounts: false,
+                        includeInterestBalanceForLoanAccounts: true,
                         considerMaturityPeriodForInvestmentAccounts: true,
                         serviceHeader: GetServiceHeader()
                     );
 
                     var loansGuaranteed = await _channelService.FindCustomerAccountsByFilterInPageAsync(
-                        text: "Guaranteed", // Filter text to match guaranteed loans
-                        customerFilter: 2, // Example value for guaranteed loans
+                        text: "Guaranteed", 
+                        customerFilter: 2, 
                         pageIndex: 0,
-                        pageSize: 10, // Adjust page size as needed
+                        pageSize: 10, 
                         includeBalances: true,
                         includeProductDescription: true,
                         includeInterestBalanceForLoanAccounts: false,
@@ -164,12 +161,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     );
 
 
-                    // Check for null and set ViewBag.LoanAccounts
                     var loanAccountsList = loanAccounts.Take(3).ToList();
                     var investmentAccountsList = investmentAccounts;
                     var loansGuaranteedList = loansGuaranteed;
 
-                    // Pass the limited list to the view
                     ViewBag.LoanAccounts = loanAccountsList;
                     ViewBag.InvestmentAccounts = investmentAccountsList;
                     ViewBag.LoansGuaranteed = loansGuaranteedList;
@@ -189,23 +184,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            // Handle unexpected null DTO
             if (accountClosureRequestDTO == null)
             {
                 TempData["ErrorMessage"] = "An unexpected error occurred. Please try again.";
                 return View("Error");
             }
 
-            // Access the hidden fields
             var branchId = accountClosureRequestDTO.BranchId;
             var customerAccountId = accountClosureRequestDTO.CustomerAccountId;
 
-            // Validate the DTO
             accountClosureRequestDTO.ValidateAll();
 
             if (!accountClosureRequestDTO.HasErrors)
             {
-                // Process the account closure request
                 await _channelService.AddAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
 
                 TempData["SuccessMessage"] = "Account closure request successfully created.";
@@ -213,7 +204,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
             else
             {
-                // Log errors and return view with validation messages
                 foreach (var error in accountClosureRequestDTO.ErrorMessages)
                 {
                     Debug.WriteLine($"- {error}");
@@ -247,51 +237,48 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestAsync, GetServiceHeader());
 
-                    // Set a success message in TempData
                     TempData["SuccessMessage"] = "Account closure request Edited successfully.";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception if needed
                     Debug.WriteLine($"Error verifying account closure request: {ex.Message}");
 
-                    // Set an error message in TempData
                     TempData["ErrorMessage"] = "An error occurred while  the account closure request. Please try again.";
                 }
             }
             else
             {
-                // Set an error message if there are validation errors
                 TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
             }
 
-            // Repopulate the view bags and return the view with the model
             return View(accountClosureRequestDTO);
         }
 
 
 
-        // Method to determine the audit option (provide your implementation)
         private int GetAuditOption(AccountClosureRequestDTO dto)
         {
-            // Your logic to determine the audit option
-            return 0; // Example placeholder value
+            return 0;
         }
 
 
-        public async Task<ActionResult> Approval(Guid id)
+        public async Task<ActionResult> Approve(Guid id)
         {
             await ServeNavigationMenus();
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
+
+
             return View(accountClosureRequestDTO);
+
+
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approval(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
+        public async Task<ActionResult> Approve(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            int accountClosureApprovalOption = 0;
+            int accountClosureApprovalOption = (int)AccountClosureApprovalOption.Approve;
 
             if (ModelState.IsValid)
             {
@@ -299,28 +286,27 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureApprovalOption, GetServiceHeader());
 
-                    // Set a success message in TempData
                     TempData["SuccessMessage"] = "Account closure request approved successfully.";
                     return RedirectToAction("Index");
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception if needed
                     Debug.WriteLine($"Error approving account closure request: {ex.Message}");
 
-                    // Set an error message in TempData
                     TempData["ErrorMessage"] = "An error occurred while approving the account closure request. Please try again.";
                 }
             }
             else
             {
-                // Set an error message if the model state is not valid
                 TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
             }
 
-            // Repopulate the view bags and return the view with the model
             return View(accountClosureRequestDTO);
         }
+
+
+
+
 
         public async Task<ActionResult> Verify(Guid id)
         {
@@ -333,39 +319,46 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
+        
+
+
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Verify(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
         {
-            int auditAccountClosureRequestAsync = 1;
+            int auditAccountClosureRequestOption = (int)AccountClosureAuditOption.Audit;
 
-            if (!accountClosureRequestDTO.HasErrors)
+            if (ModelState.IsValid)
             {
                 try
                 {
-                    await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestAsync, GetServiceHeader());
+                    var result = await _channelService.AuditAccountClosureRequestAsync(accountClosureRequestDTO, auditAccountClosureRequestOption, GetServiceHeader());
 
-                    // Set a success message in TempData
-                    TempData["SuccessMessage"] = "Account closure request verified successfully.";
-                    return RedirectToAction("Index");
+                    if (result)
+                    {
+                        TempData["SuccessMessage"] = "Account closure request verified successfully.";
+                        return RedirectToAction("Index"); 
+                    }
+                    else
+                    {
+                        TempData["ErrorMessage"] = "Failed to verify the account closure request. Please try again.";
+                    }
                 }
                 catch (Exception ex)
                 {
-                    // Log the exception if needed
                     Debug.WriteLine($"Error verifying account closure request: {ex.Message}");
 
-                    // Set an error message in TempData
                     TempData["ErrorMessage"] = "An error occurred while verifying the account closure request. Please try again.";
                 }
             }
             else
             {
-                // Set an error message if there are validation errors
                 TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
             }
 
-            // Repopulate the view bags and return the view with the model
-            return View(accountClosureRequestDTO);
+            return View(accountClosureRequestDTO); 
         }
 
 
