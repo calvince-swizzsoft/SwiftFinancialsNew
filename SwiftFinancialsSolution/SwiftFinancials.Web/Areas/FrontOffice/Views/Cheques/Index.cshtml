@@ -1,11 +1,10 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Cheques";
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>Cheques</h2>
+        <h2>Cheque Banking</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -17,12 +16,29 @@
     </div>
 </div>
 
+
+
 <div class="wrapper wrapper-content">
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @Html.ActionLink("Create Cheques", "Create", " Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Create Cheques", "Banking", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Catalogue", "Catalogue", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @{ ViewBag.Title = "Cheques"; }
+
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    @if (TempData["ErrorMessage"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorMessage"]
+                        </div>}
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -54,60 +70,151 @@
     </div>
 </div>
 
+
+
 @section Styles {
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section scripts {
+@section Scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
 
     <script type="text/javascript">
-
         $(document).ready(function () {
             $('#ChequesGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", " Cheques", new { Area = "FrontOffice"}))",
+                "sAjaxSource": "@(Url.Action("Index", "Cheques", new { Area = "FrontOffice"}))",
                 "sServerMethod": "POST",
-                // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
-
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var editUrl = '<a  href="/frontOffice/ Cheques/Edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/frontOffice/ Cheques/Details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
 
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl);
+                    // Format MaturityDate
+                    if (aData.MaturityDate) {
+                        var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
+                        var dt_Maturity = $.datepicker.formatDate('dd/mm/yy', maturityDate);
+                        $('td:eq(8)', nRow).html(dt_Maturity); // Assuming MaturityDate is in the 12th column
+                    }
+
+
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Action
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
+
+
+                    var verifyButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/verify/${aData.Id}">Verify</a>`;
+                    var terminateButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/terminate/${aData.Id}">Terminate</a>`;
+                    var liquidationButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/liquidation/${aData.Id}">Liquidation</a>`;
+
+
+                    $('td:eq(10)', nRow).html(dt_Created);
+
+
+                    switch (aData.Status) {
+                        case 8:
+                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                            break;
+
+                        case 1:
+                            dropdownHtml += terminateButton + liquidationButton;
+                            break;
+                        case 2:
+                            dropdownHtml += liquidationButton;
+                            break;
+                        case 4:
+                            dropdownHtml += terminateButton;
+                            break;
+
+                        default:
+                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                            break;
+                    }
+
+                    dropdownHtml += `</div></div>`;
+
+                    $('td:eq(11)', nRow).html(dropdownHtml);
+
 
                     return nRow;
                 },
+
                 // Display settings
                 "aoColumns": [
-                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "CustomerAccountFullAccountNumber", "sWidth": "15%" },
-                    { "mDataProp": "Amount", "sTitle": "Amount", "sWidth": "10%" },
-                    { "mDataProp": "TellerDescription", "sTitle": "TellerDescription", "sWidth": "10%" },
-                    { "mDataProp": "Drawer", "sTitle": "Drawer", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+                    { "mDataProp": "TellerDescription", "sTitle": "Teller Name", "sWidth": "20%" },
+                    { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "20%" },
+                    { "mDataProp": "PaddedNumber", "sTitle": "Cheque Number", "sWidth": "20%" },
+                    { "mDataProp": "Amount", "sTitle": "Amount", "sWidth": "20%" },
+                    { "mDataProp": "Drawer", "sTitle": "Drawer", "sWidth": "20%" },
+                    { "mDataProp": "DrawerBank", "sTitle": "Drawer Bank", "sWidth": "20%" },
+                    { "mDataProp": "DrawerBankBranch", "sTitle": "Drawer Bank Branch", "sWidth": "20%" },
+                    { "mDataProp": "ChequeTypeDescription", "sTitle": "Cheque Type", "sWidth": "20%" },
+                    { "mDataProp": "MaturityDate", "sTitle": "Maturity Date", "sWidth": "20%" },
+                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Full Account Number", "sWidth": "20%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
         });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
+
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
     </script>
-
 }
+
+
+
+
+

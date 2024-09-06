@@ -114,7 +114,12 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
                     }
                     else return false;
                 }
-                else throw new InvalidOperationException("Sorry, but the persisted entity could not be identified!");
+                else
+                { 
+                    expensePayableDTO.errormassage = string.Format("Sorry, but the persisted entity could not be identified!");
+
+                    return true;
+                }
             }
         }
 
@@ -280,7 +285,8 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
                             persisted.AuthorizedBy = serviceHeader.ApplicationUserName;
                             persisted.AuthorizedDate = DateTime.Now;
                         }
-                        else throw new InvalidOperationException("Sorry, but requisite minimum requirements have not been satisfied viz. (batch total/posting period/journal voucher control account)");
+                        else
+                            expensePayableDTO.errormassage = string.Format(("Sorry, but requisite minimum requirements have not been satisfied viz. (batch total/posting period/journal voucher control account)"));
 
                         break;
                     case ExpensePayableAuthOption.Reject:
