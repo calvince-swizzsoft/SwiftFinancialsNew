@@ -66,6 +66,9 @@
     <Reference Include="CrystalDecisions.Web">
       <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.1.35\lib\net461\Dapper.dll</HintPath>
+    </Reference>
     <Reference Include="Elasticsearch.Net, Version=6.0.0.0, Culture=neutral, PublicKeyToken=96c599bbe3e70f5d, processorArchitecture=MSIL">
       <HintPath>..\packages\Elasticsearch.Net.6.0.0\lib\net46\Elasticsearch.Net.dll</HintPath>
     </Reference>
@@ -74,6 +77,9 @@
     </Reference>
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <HintPath>..\packages\EntityFramework.6.2.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="EPPlus, Version=4.5.3.3, Culture=neutral, PublicKeyToken=ea159fdaa78159a1, processorArchitecture=MSIL">
+      <HintPath>..\packages\EPPlus.4.5.3.3\lib\net40\EPPlus.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp, Version=5.5.13.3, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <HintPath>..\packages\iTextSharp.5.5.13.3\lib\itextsharp.dll</HintPath>
@@ -90,6 +96,18 @@
     <Reference Include="Microsoft.AspNet.Identity.Owin, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.2\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Http.Features, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Http.Features.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Http.Features.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Mvc.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Mvc.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Mvc.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNetCore.Routing.Abstractions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNetCore.Routing.Abstractions.2.2.0\lib\netstandard2.0\Microsoft.AspNetCore.Routing.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Extensions.Caching.Abstractions, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Caching.Abstractions.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Caching.Abstractions.dll</HintPath>
@@ -103,8 +121,11 @@
     <Reference Include="Microsoft.Extensions.Options, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Extensions.Options.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Options.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives, Version=2.1.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.1.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.2.2.0\lib\netstandard2.0\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Net.Http.Headers, Version=2.2.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Net.Http.Headers.2.2.0\lib\netstandard2.0\Microsoft.Net.Http.Headers.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=4.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.4.2.2\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -121,6 +142,7 @@
     <Reference Include="Polly, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c8a3ffc3f8f825cc, processorArchitecture=MSIL">
       <HintPath>..\packages\Polly.6.1.2\lib\netstandard2.0\Polly.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
     <Reference Include="RazorEngine, Version=3.10.0.0, Culture=neutral, PublicKeyToken=9ee697374c7e744a, processorArchitecture=MSIL">
       <HintPath>..\packages\RazorEngine.3.10.0\lib\net45\RazorEngine.dll</HintPath>
     </Reference>
@@ -184,6 +206,9 @@
     </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.ServiceProcess" />
+    <Reference Include="System.Text.Encodings.Web, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.4.5.0\lib\netstandard2.0\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.2\lib\netstandard2.0\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -373,7 +398,12 @@
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
+    <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
+    <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
+    <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
+    <Compile Include="Areas\Admin\Models\StoredProcedureParameter.cs" />
+    <Compile Include="Areas\Admin\Models\StoredProcedureViewModel.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\AccountClosureController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashDepositController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\CashManagementController.cs" />
@@ -432,7 +462,7 @@
     <Compile Include="Areas\Admin\Controllers\CompanyController.cs" />
     <Compile Include="Areas\Admin\Controllers\LocationController.cs" />
     <Compile Include="Areas\Admin\Controllers\ModuleController.cs" />
-    <Compile Include="Areas\Admin\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Admin\Controllers\ReportSetting.cs" />
     <Compile Include="Areas\Admin\Controllers\RoleController.cs" />
     <Compile Include="Areas\Admin\Controllers\MembershipController.cs" />
     <Compile Include="Areas\Admin\Models\ModuleNavigationItemToRoleViewModel.cs" />
@@ -476,8 +506,13 @@
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
-    <Compile Include="Areas\Reports\Models\ReportModel.cs" />
+    <Compile Include="Areas\Reports\Controllers\DynamicReportingController.cs" />
+    <Compile Include="Areas\Reports\Controllers\spDynamicReportingController.cs" />
+    <Compile Include="Areas\Reports\Controllers\StoredProcedureController.cs" />
+    <Compile Include="Areas\Reports\Controllers\ReportController.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
+    <Compile Include="Areas\Reports\Models\StoredProcedureParameter.cs" />
+    <Compile Include="Areas\Reports\Models\StoredProcedureViewModel.cs" />
     <Compile Include="Areas\Reports\ReportsAreaRegistration.cs" />
     <Compile Include="Attributes\CustomErrorHandlingAttribute.cs" />
     <Compile Include="Attributes\MessageLoggingHandler.cs" />
@@ -490,6 +525,7 @@
     <Compile Include="Controllers\LookupController.cs" />
     <Compile Include="Controllers\ManageController.cs" />
     <Compile Include="Controllers\MasterController.cs" />
+    <Compile Include="EXCEL\createExcel.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -530,6 +566,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Areas\HumanResource\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Reports\Views\Report\Create.cshtml" />
+    <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
+    <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
+    <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -657,6 +697,7 @@
     <Content Include="Global.asax" />
     <Content Include="Images\bank.jpg" />
     <Content Include="Images\idDemo_Front.jpg" />
+    <Content Include="Images\lockscreenPadlock.png" />
     <Content Include="Images\MIA.JPG" />
     <Content Include="Images\padlock.jpg" />
     <Content Include="Images\passportDemo.jpg" />
@@ -738,7 +779,6 @@
     <Content Include="Areas\Messaging\Views\web.config" />
     <Content Include="Areas\Messaging\Views\TextAlert\Index.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailAlert\Index.cshtml" />
-    <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Create.cshtml" />
     <Content Include="Areas\Messaging\Views\EmailBatch\Index.cshtml" />
     <Content Include="Content\summernote\font\summernote.woff" />
@@ -753,12 +793,8 @@
     <Content Include="Areas\Messaging\Views\TextAlert\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\web.config" />
     <Content Include="Areas\Registry\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
-    <Content Include="Areas\Reports\Views\Report\Create.cshtml" />
-    <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
     <Content Include="Areas\Admin\Views\Membership\_Companies.cshtml" />
     <Content Include="Areas\Reports\Views\Shared\_Layout.cshtml" />
-    <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Create.cshtml" />
     <Content Include="Areas\Admin\Views\Branch\Index.cshtml" />
@@ -1191,12 +1227,28 @@
     <Content Include="libman.json" />
     <Content Include="Areas\Loaning\Views\GuarantorSubstitution\_GuarantorsTable.cshtml" />
     <Content Include="Areas\Loaning\Views\GuarantorManagement\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\DynamicReporting\Index.cshtml" />
+    <Content Include="Areas\Reports\Views\DynamicReporting\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\DynamicReporting\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\DynamicReporting\Delete.cshtml" />
+    <Content Include="Areas\Reports\Views\StoredProcedure\Index.cshtml" />
+    <Content Include="Areas\Reports\Views\StoredProcedure\Create.cshtml" />
+    <Content Include="Areas\Reports\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Reports\Views\spDynamicReporting\Index.cshtml" />
+    <Content Include="Areas\Reports\Views\spDynamicReporting\_StoredProcedureParameters.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\BatchOrigination_WireTransfer\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
+    <Content Include="Areas\Admin\Views\ReportSetting\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ReportSetting\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\login.css" />
+    <Content Include="Scripts\css\Marquee.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\css\_layout.css" />
@@ -1680,8 +1732,10 @@
     <Folder Include="Areas\Loaning\Views\RepaymentSchedule\" />
     <Folder Include="Areas\Messaging\Views\Shared\" />
     <Folder Include="Areas\Registry\Models\" />
-    <Folder Include="Areas\Reports\Controllers\" />
+    <Folder Include="File\" />
+    <Folder Include="NewFolder1\" />
     <Folder Include="Views\Lookup\" />
+    <Folder Include="Views\Reporting\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff2" />

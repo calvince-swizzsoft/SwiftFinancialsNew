@@ -3,17 +3,12 @@
 @{
     ViewBag.Title = "Verify WireTransfer Batch";
    
-
-   
     var priority = ViewBag.Priority as List<SelectListItem>;
     var batchType = ViewBag.BatchType as List<SelectListItem>;
-    var batchAuth = ViewBag.BatchAuthOption as List<SelectListItem>;
+    var batchAuth = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
 }
 
 <style>
-
-
-
 
     .big-box {
         border: 1px solid gray;
@@ -77,7 +72,9 @@
             font-size: 16px;
         }
 
-
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
 
     .row {
         margin-bottom: 20px; /* Space between rows */
@@ -244,14 +241,15 @@
 
                                         <div class="col-md-4 form-group">
                                             @Html.LabelFor(model => model.WireTransferTypeDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.WireTransferTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" },@readonly = "readonly" })
+                                            @Html.HiddenFor(model => model.WireTransferTypeId)
+                                            @Html.EditorFor(model => model.WireTransferTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" }, @readonly = "readonly" })
                                         </div>
                                         <div class="col-md-4 form-group">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.PriorityDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.PriorityDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             </div>
-                                            </div>
+                                            
                                         </div>
 
                                         <div class="col-lg-4">
@@ -259,7 +257,7 @@
                                                 @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "control-label" })
                                                 @Html.EditorFor(model => model.TypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "", @readonly = "readonly" } })
                                             </div>
-                                            </div>
+                                            
                                         </div>
 
                                     </div>
@@ -294,46 +292,42 @@
 
                                 </div>
                                 <br />
-                                <br />
-
-
                                 <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
-                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Debit Batch Entries</h2>
+                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Wire Transfer Batch Entries</h2>
 
                                     <row>
-                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 80%; margin: 30px;">
-                                            <thead style="font-style: italic; color: #333; text-align: center;">
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
                                                     <th style="width: 1%;"></th> <!-- New ID column -->
-                                                    <th style="width: 5%;">Reference</th>
-                                                    <th style="width: 10%;">Multiplier</th>
-                                                    <th style="width: 10%;">Status</th>
+                                                    <th style="width: 5%;">Batch NO</th>
+                                                    <th style="width: 15%;">Name</th>
+                                                    <th style="width: 15%;">Account No</th>
+                                                    <th style="width: 10%;">Amount</th>
+
                                                 </tr>
                                             </thead>
-                                            <tbody style="color: #007bff;">
+                                            <tbody>
                                                 @if (ViewBag.WireTransferEntryDTOs != null)
                                                 {
-                                                    int id = 1; // Initialize an ID counter
+                                                    int id = 1;
                                                     foreach (var wireTransferBatchEntries in ViewBag.WireTransferEntryDTOs)
                                                     {
                                                         <tr data-id="@wireTransferBatchEntries.Id">
                                                             <td style="color: black;">@id</td> <!-- Display the current ID -->
-                                                            <td>@wireTransferBatchEntries.Reference</td>
-                                                            <td>@wireTransferBatchEntries.Multiplier</td>
-                                                            <td>@wireTransferBatchEntries.Status</td>
+                                                            <td>@wireTransferBatchEntries.WireTransferBatchBatchNumber</td>
+                                                            <td>@wireTransferBatchEntries.CustomerFullName</td>
+                                                            <td>@wireTransferBatchEntries.FullAccountNumber</td>
+                                                            <td>@wireTransferBatchEntries.Amount</td>
                                                         </tr>
                                                         id++; // Increment the ID for the next entry
                                                     }
                                                 }
                                             </tbody>
                                         </table>
-
                                     </row>
                                 </div>
-
-
-
-
+                                
 
                                 <div class="custom-container">
                                     <div class="row" id="policies">
@@ -381,9 +375,10 @@
 
                                     </div>
                                 </div>
+                            
                             </div>
-
                         </div>
+                        
                     }
                 </div>
             </div>

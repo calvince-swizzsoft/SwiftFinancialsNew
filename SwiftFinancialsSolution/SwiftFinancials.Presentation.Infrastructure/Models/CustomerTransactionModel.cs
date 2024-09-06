@@ -4,6 +4,7 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -290,6 +291,20 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
 
         public ApportionmentWrapper ApportionmentWrapper { get; set; }
 
+        public string DebitCustomerAccountJson
+        {
 
+            get
+            {
+                
+                return JsonConvert.SerializeObject(DebitCustomerAccount);
+            }
+
+            set
+            {
+                
+                DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
+            }
+        }
     }
 }

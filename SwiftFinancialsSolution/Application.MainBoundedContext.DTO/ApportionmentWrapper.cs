@@ -5,6 +5,7 @@ using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.ComponentModel.DataAnnotations;
 using Application.MainBoundedContext.DTO.AccountsModule;
+using Newtonsoft.Json;
 
 namespace Application.MainBoundedContext.DTO
 {
@@ -13,6 +14,7 @@ namespace Application.MainBoundedContext.DTO
         public ApportionmentWrapper()
         {
             CreditCustomerAccount = new CustomerAccountDTO();
+            DebitCustomerAccount = new CustomerAccountDTO();
             AddAllAttributeValidators();
         }
 
@@ -38,7 +40,7 @@ namespace Application.MainBoundedContext.DTO
 
         [Display(Name = "Credit Customer Account")]
         public CustomerAccountDTO CreditCustomerAccount { get; set; }
-        
+
         [Display(Name = "Customer Name")]
         public string CustomerFullName { get; set; }
                     
@@ -91,5 +93,39 @@ namespace Application.MainBoundedContext.DTO
 
         [Display(Name = "Recover Carry Forwards?")]
         public bool RecoverCarryForwards { get; set; }
+
+        public string CreditCustomerAccountJson
+        {
+
+            get
+            {
+                // Serialize the DebitCustomerAccount back to JSON when needed
+                return JsonConvert.SerializeObject(CreditCustomerAccount);
+            }
+
+            set
+            {
+                // Deserialize the JSON string to set CreditCustomerAccount when provided
+                CreditCustomerAccount = !string.IsNullOrEmpty(value)
+                    ? JsonConvert.DeserializeObject<CustomerAccountDTO>(value)
+                    : null;
+            }
+        }
+
+        public string DebitCustomerAccountJson
+        {
+
+            get
+            {
+                
+                return JsonConvert.SerializeObject(DebitCustomerAccount);
+            }
+
+            set
+            {
+
+                DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
+            }
+        }
     }
 }
