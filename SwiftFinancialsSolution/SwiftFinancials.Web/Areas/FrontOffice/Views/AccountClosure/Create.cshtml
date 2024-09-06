@@ -114,6 +114,8 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductChartOfAccountId)
+
                                         @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "Product Name", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
                                     </div>
@@ -417,7 +419,7 @@
                 { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
                 { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
                 { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15" },
-                { "mDataProp": "CustomerIndividualFirstName", "sTitle": "First Name", "sWidth": "15%" },
+                { "mDataProp": "CustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
                 { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],

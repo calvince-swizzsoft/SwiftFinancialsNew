@@ -1,9 +1,179 @@
-﻿
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.AdministrationModule.ReportDTO>
+
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>System Reports</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
 
-@Html.ActionLink("Create Report", "Create", "ReportSetting", new { Area = "Admin" }, new { @class = "btn btn-primary" })
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @Html.ActionLink("Create Report Setting", "Create", "ReportSetting", new { Area = "Admin" }, new { @class = "btn btn-primary" })
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="sk-spinner sk-spinner-double-bounce">
+                        <div class="sk-double-bounce1"></div>
+                        <div class="sk-double-bounce2"></div>
+                    </div>
+                    <div class="table-responsive">
+                        <div class="panel-body">
+                            <!-- Search input for filtering the table -->
+                            <input type="text" id="roleSearch" placeholder="Search reports..." class="form-control mb-3">
 
+                            <table class="table table-hover" id="rolesTableBody">
+                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                    <tr>
+                                        <th style="display: none">Id</th>
+                                        <th>Report Name</th>
+                                        <th>Parent</th>
+                                        <th>Report Path</th>
+                                        <th>Report Query</th>
+                                        <th>SSRS Host</th>
+                                        <th>SSRS Port</th>
+                                        <th>Report URL</th>
+                                        <th>Category</th>
+                                        <th>Depth</th>
+                                        <th>Created Date</th>
+                                        <th>Map</th>
+                                        <th>Edit</th> <!-- New column for Edit button -->
+                                    </tr>
+                                </thead>
+                                <tbody id="rolesTableBody">
+                                    @*Roles are loaded here*@
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Hidden input to store the serialized list 'k' -->
+<input type="hidden" id="kList" name="k" />
+
+@section Styles {
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+}
+
+@section scripts {
+    @Scripts.Render("~/plugins/dataTables")
+
+    <script>
+    $(document).ready(function () {
+        // Load reports into the table
+        function loadReports() {
+            $.ajax({
+                url: '@Url.Action("GetReportsAsync", "ReportSetting", new { Area = "Admin" })',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    var reportsTableBody = $('#rolesTableBody');
+                    reportsTableBody.empty(); // Clear existing rows
+
+                    // Loop through the reports and append them to the table
+                    $.each(data, function (index, report) {
+                        var row = $('<tr></tr>');
+                        row.append($('<td style="display: none"></td>').text(report.Id));
+                        row.append($('<td></td>').text(report.ReportName));
+                        row.append($('<td></td>').text(report.Parent?.ReportName ?? "N/A"));
+
+                        // Update ReportPath to create a download link
+                        var reportPath = report.ReportPath;
+                        var downloadPath = '@Url.Action("DownloadFile", "ReportSetting", new { Area = "Admin" })' + '?path=' + encodeURIComponent(reportPath);
+                        row.append($('<td></td>').html('<a href="' + downloadPath + '" download>Download ' + report.ReportPath + '</a>'));
+
+                        row.append($('<td></td>').text(report.ReportQuery));
+                        row.append($('<td></td>').text(report.ReportHost));
+                        row.append($('<td></td>').text(report.ReportPort));
+
+                        // Update ReportURL to create a download link
+                        var reportUrl = report.ReportURL;
+                        var downloadUrl = '@Url.Action("DownloadFile", "ReportSetting", new { Area = "Admin" })' + '?path=' + encodeURIComponent(reportUrl);
+                        row.append($('<td></td>').html('<a href="' + downloadUrl + '" download>Download ' + report.ReportURL + '</a>'));
+
+                        row.append($('<td></td>').text(report.CategoryDescription));
+                        row.append($('<td></td>').text(report.Depth));
+                        row.append($('<td></td>').text(new Date(report.CreatedDate).toLocaleDateString()));
+                        row.append($('<td></td>').html('<input type="checkbox" class="report-checkbox" data-report-id="' + report.Id + '" data-report-name="' + report.ReportName + '" />'));
+
+                        // Add Edit button with AJAX trigger
+                        row.append($('<td></td>').html('<button class="btn btn-sm btn-warning edit-btn" data-report-id="' + report.Id + '">Edit</button>'));
+
+                        reportsTableBody.append(row);
+                    });
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error loading reports: ", error);
+                }
+            });
+        }
+
+        // Call the function to load reports when the page is ready
+        loadReports();
+
+        // Typeahead filtering
+        $('#roleSearch').on('keyup', function () {
+            var value = $(this).val().toLowerCase();
+            $('#rolesTableBody tr').filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+            });
+        });
+
+        // Handle Edit button click
+        $(document).on('click', '.edit-btn', function () {
+            var reportId = $(this).data('report-id');
+            $.ajax({
+                url: '@Url.Action("GetReportById", "ReportSetting", new { Area = "Admin" })',
+                type: 'GET',
+                data: { id: reportId },
+                success: function () {
+                    // Redirect to the edit page
+                    window.location.href = '@Url.Action("Edit", "ReportSetting", new { id = "__id__" })'.replace('__id__', reportId);
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching report: ", error);
+                }
+            });
+        });
+
+        // Capture selected reports on form submit
+        $('form').on('submit', function () {
+            var selectedReports = [];
+            $('.report-checkbox:checked').each(function () {
+                selectedReports.push({
+                    Id: $(this).data('report-id'),
+                    Name: $(this).data('report-name')
+                });
+            });
+            $('#SelectedReports').val(JSON.stringify(selectedReports)); // Store selected reports in hidden input
+        });
+    });
+    </script>
+
+
+}

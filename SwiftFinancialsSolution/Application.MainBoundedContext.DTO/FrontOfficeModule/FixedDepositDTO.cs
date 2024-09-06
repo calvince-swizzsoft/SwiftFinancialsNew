@@ -395,8 +395,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public List<FixedDepositDTO> FixedDeposits { get; set; } = new List<FixedDepositDTO>();
         public List<Guid> SelectedFixedDeposits { get; set; }
 
-       
 
+        public string errormassage;
 
 
     }

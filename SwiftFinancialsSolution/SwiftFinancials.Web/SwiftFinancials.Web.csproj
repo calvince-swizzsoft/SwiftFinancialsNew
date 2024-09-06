@@ -1023,10 +1023,10 @@
     <Content Include="Areas\Accounts\Views\BudgetEntry\Index.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Details.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Edit.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\AccountClosure\Approval.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\AccountClosure\Approve.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\verify.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\Cheques\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Banking.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\CustomerAccounts\CustomerManagement.cshtml" />
@@ -1241,6 +1241,7 @@
     <Content Include="Areas\Accounts\Views\CustomerAccounts\Report.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Create.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\ReportSetting\Edit.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1721,6 +1722,7 @@
     <Folder Include="Areas\Dashboard\Views\Shared\" />
     <Folder Include="Areas\FrontOffice\Data\" />
     <Folder Include="Areas\FrontOffice\Views\Cheque\" />
+    <Folder Include="Areas\FrontOffice\Views\FixedDepositReport\" />
     <Folder Include="Areas\HumanResource\Data\" />
     <Folder Include="Areas\HumanResource\Views\Document\" />
     <Folder Include="Areas\HumanResource\Views\Leave\" />
