@@ -7,7 +7,6 @@
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h1>Administrator</h1>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -16,7 +15,7 @@
                 @Html.ActionLink("Home", "Index", "ReportSetting", new { Area = "Admin" }, null)
             </li>
             <li class="breadcrumb-item active">
-                <strong>Approve</strong>
+                <strong>Edit</strong>
             </li>
         </ol>
     </div>
@@ -38,7 +37,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "ReportSetting", FormMethod.Post, new { id = "spForm" }))
+                    @using (Html.BeginForm("Edit", "ReportSetting", FormMethod.Post, new { id = "spForm" }))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
@@ -66,7 +65,7 @@
 
                             </div>
                             <div class="col-lg-4 mb-3">
-                                <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;" />
+                                <input type="submit" class="btn btn-primary" value="Edit" style="width: 150px;" />
                             </div>
                         </fieldset>
                     }
