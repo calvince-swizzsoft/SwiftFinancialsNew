@@ -16,27 +16,40 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-
     <style>
-
         /* Primary Tabs */
         .nav-tabs .nav-link {
             background-color: transparent;
+            color: #8a949e; /* Slightly lighter grey */
+            border: 1px solid transparent;
         }
+
+            .nav-tabs .nav-link:hover {
+                border-color: #e9ecef #e9ecef #dee2e6;
+            }
 
             .nav-tabs .nav-link.active {
-                background-color: #f8f9fa; /* light grey */
+                background-color: #8a949e; /* Lighter grey for active tab */
+                color: white;
+                border-color: #8a949e;
             }
 
-        /* inner Tabs */
+        /* Secondary Tabs */
         .inner-nav-tabs .inner-nav-link {
             background-color: transparent;
+            color: #8a949e; /* Slightly lighter grey */
+            border: 1px solid transparent;
         }
 
-            .inner-nav-tabs .inner-nav-link.active {
-                background-color: #f8f9fa; /* light grey */
+            .inner-nav-tabs .inner-nav-link:hover {
+                border-color: #e9ecef #e9ecef #dee2e6;
             }
 
+            .inner-nav-tabs .inner-nav-link.active {
+                background-color: #8a949e; /* Lighter grey for active secondary tab */
+                color: white;
+                border-color: #8a949e;
+            }
 
         /* Tab Content */
         .tab-content > .tab-pane,
@@ -49,6 +62,7 @@
                 display: block;
             }
 
+        /* Existing styles for upload containers and boxes */
         .upload-container {
             display: flex;
             justify-content: space-between;
@@ -85,6 +99,8 @@
                 color: #888;
                 font-size: 14px;
             }
+
+
     </style>
 </head>
 
@@ -121,7 +137,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
-                    @using (Html.BeginForm("Create", "CustomerReceipts", new { Area = "FrontOffice" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "CustomerReceipts", new { Area = "FrontOffice" }, FormMethod.Post, new { id = "customerReceiptsForm" }))
                     {
                         @Html.AntiForgeryToken()
                         <div class="form-horizontal">
@@ -147,14 +163,14 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.StatusDescription, "Account Status:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.StatusDescription, new { @class = "form-control", @id= "DebitStatusDescription" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.StatusDescription, new { @class = "form-control", @readonly = "readonly", @id= "DebitStatusDescription" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.Remarks, "Account Remarks:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.Remarks, new { @class = "form-control", @id= "DebitRemarks" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.Remarks, new { @class = "form-control", @readonly = "readonly", @id = "DebitRemarks" })
                                         </div>
                                     </div>
 
@@ -162,7 +178,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.CustomerAccountTypeTargetProductId, "Product Name:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerAccountTypeTargetProductDescription, new { @class = "form-control", @id="DebitCustomerAccountTypeTargetProductDescription" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerAccountTypeTargetProductDescription, new { @class = "form-control", @readonly = "readonly", @id ="DebitCustomerAccountTypeTargetProductDescription" })
                                         </div>
                                     </div>
                                 </div>
@@ -175,21 +191,21 @@
                                             @Html.HiddenFor(model => model.DebitCustomerAccountId, new { @id = "DebitCustomerAccountId" })
                                             @Html.HiddenFor(model => model.DebitCustomerAccountJson, new { @id = "DebitCustomerAccountJson" })
                                             @Html.LabelFor(model => model.CustomerAccount.CustomerFullName, "Customer:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.CustomerAccount.CustomerFullName, new { @class = "form-control", @id = "DebitCustomerFullName" })
+                                            @Html.TextBoxFor(model => model.CustomerAccount.CustomerFullName, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerFullName" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerTypeDescription, "Type:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerTypeDescription, new { @class = "form-control", @id="DebitCustomerTypeDescription"})
+                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerType, "Type:", new { @class = "control-label", @id = "DebitCustomerType" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerTypeDescription, new { @class = "form-control", @readonly = "readonly", @id ="DebitCustomerTypeDescription"})
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.CustomerIndividualPayrollNumbers, "Payroll Numbers:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerIndividualPayrollNumbers, new { @class = "form-control", @id = "DebitCustomerIndividualPayrollNumbers" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerIndividualPayrollNumbers, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerIndividualPayrollNumbers" })
                                         </div>
                                     </div>
 
@@ -209,28 +225,28 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.CustomerIdentificationNumber, new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerIdentificationNumber, new { @class = "form-control", @id = "DebitCustomerIdentificationNumber" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerIdentificationNumber, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerIdentificationNumber" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.CustomerReference1, "Account Number:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference1, new { @class = "form-control", @id = "DebitCustomerReference1" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference1, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerReference1" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.CustomerAccount.CustomerReference2, "Membership Number:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.CustomerAccount.CustomerReference2, new { @class = "form-control", @id = "DebitCustomerReference2" })
+                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerReference2, "Membership Number:", new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference2, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerReference2" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.DebitCustomerAccount.CustomerReference3, "Personal File Number:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference3, new { @class = "form-control", @id = "DebitCustomerReference3" })
+                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference3, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerReference3" })
                                         </div>
                                     </div>
                                 </div>
@@ -296,20 +312,24 @@
                                                     <div class="col-md-12">
                                                         <div class="form-group">
                                                             @Html.LabelFor(model => model.ApportionmentWrapper.ApportionTo, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.DropDownListFor(model => model.ApportionmentWrapper.ApportionTo, apportionToType, new { @id = "ApportionToType", @class = "form-control input.md" })
+                                                            @Html.DropDownListFor(
+                                                                model => model.ApportionmentWrapper.ApportionTo,
+                                                                apportionToType,
+                                                                new { @id = "ApportionToType", @class = "form-control input.md" }
+                                                            )
                                                             @Html.ValidationMessageFor(model => model.ApportionmentWrapper.ApportionTo)
-                                                          
                                                         </div>
                                                     </div>
                                                 </div>
+
+
                                                 <div class="row">
                                                     <div class="col-md-6">
-                                                        @Html.HiddenFor(model => model.ApportionmentWrapper.CreditCustomerAccountId, new { @id = "CreditCustomerAccountId" })
-                                                        @Html.HiddenFor(model => model.ApportionmentWrapper.CreditChartOfAccountId, new { @id = "CreditChartOfAccountId" })
-                                                        @Html.LabelFor(model => model.ApportionmentWrapper.FullAccountNumber, "Full Account Number:", new { @class = "control-label" })
+                                                        <input type="hidden" id="CreditCustomerAccountId" name="ApportionmentWrapper.CreditCustomerAccountId" />
+                                                        <input type="hidden" id="CreditChartOfAccountId" name="ApportionmentWrapper.CreditChartOfAccountId" />
+                                                        <label class="control-label" for="CreditFullAccountNumber">Full Account Number:</label>
                                                         <div class="input-group" data-autoclose="true">
-
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.FullAccountNumber, new { @class = "form-control", @readonly = "readonly", @id = "CreditFullAccountNumber" })
+                                                            <input type="text" id="CreditFullAccountNumber" name="ApportionmentWrapper.FullAccountNumber" class="form-control" readonly />
                                                             <span class="input-group-addon">
                                                                 <a data-toggle="modal" data-target="#CustomerLookupModal" id="creditCustomerRequest">
                                                                     <span class="fa fa-search"></span>
@@ -321,9 +341,8 @@
                                                     <div class="col-md-6">
                                                         <div class="form-group">
                                                             <input type="hidden" id="CreditCustomerAccount" name="ApportionmentWrapper.CreditCustomerAccount" />
-
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.CustomerFullName, "Customer:", new { @class = "control-label" })
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.CustomerFullName, new { @class = "form-control", @readonly = "readonly", @id = "CreditCustomerFullName" })
+                                                            <label class="control-label" for="CreditCustomerFullName">Customer:</label>
+                                                            <input type="text" id="CreditCustomerFullName" name="ApportionmentWrapper.CustomerFullName" class="form-control" readonly />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -331,36 +350,35 @@
                                                 <div class="row">
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.CustomerReference1, "Account Number:", new { @class = "control-label" })
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.CustomerReference1, new { @class = "form-control", @readonly = "readonly", @id = "CreditCustomerReference1" })
+                                                            <label class="control-label" for="CreditCustomerReference1">Account Number:</label>
+                                                            <input type="text" id="CreditCustomerReference1" name="ApportionmentWrapper.CustomerReference1" class="form-control" readonly />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="form-group">
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.CreditCustomerAccount.CustomerReference2, "Membership Number:", new { @class = "control-label" })
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.CreditCustomerAccount.CustomerReference2, new { @class = "form-control", @readonly = "readonly", @id = "CreditCustomerReference2" })
+                                                            <label class="control-label" for="CreditCustomerReference2">Membership Number:</label>
+                                                            <input type="text" id="CreditCustomerReference2" name="ApportionmentWrapper.CustomerReference2" class="form-control" readonly />
                                                         </div>
                                                     </div>
                                                 </div>
 
-
                                                 <div class="row">
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.Principal, "Principal:", new { @class = "control-label" })
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.Principal, new { @class = "form-control" })
+                                                            <label class="control-label" for="Principal">Principal:</label>
+                                                            <input type="text" id="Principal" name="ApportionmentWrapper.Principal" class="form-control" />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.Interest, "Interest:", new { @class = "control-label" })
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.Interest, new { @class = "form-control" })
+                                                            <label class="control-label" for="Interest">Interest:</label>
+                                                            <input type="text" id="Interest" name="ApportionmentWrapper.Interest" class="form-control" />
                                                         </div>
                                                     </div>
                                                     <div class="col-md-4">
                                                         <div class="form-group">
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.PrimaryDescription, "Primary Description:", new { @class = "control-label" })
-                                                            @Html.TextBoxFor(model => model.ApportionmentWrapper.PrimaryDescription, new { @class = "form-control" })
+                                                            <label class="control-label" for="PrimaryDescription">Primary Description:</label>
+                                                            <input type="text" id="PrimaryDescription" name="ApportionmentWrapper.PrimaryDescription" class="form-control" />
                                                         </div>
                                                     </div>
                                                 </div>
@@ -382,12 +400,12 @@
                                                                     <th>Principal</th>
                                                                     <th>Interest</th>
                                                                     <th>Primary Description</th>
-                                                                    <th>Secondary Description</th>
-                                                                    <th>Reference</th>
+                                                                    @*<th>Secondary Description</th>
+                                                                    <th>Reference</th>*@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <!----dyanmic rows-->
+                                                                <!-- Dynamic rows -->
                                                             </tbody>
                                                         </table>
                                                     </div>
@@ -407,14 +425,15 @@
                                                         </div>
                                                     </div>
                                                 </div>
-
                                             </div>
+
+
                                         </div>
                                     </div>
 
 
                                     <div class="form-group" style="margin-top: 20px; text-align: right;">
-                                        <button type="submit" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
+                                        <button type="submit" id="submitButton" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
                                     </div>
 
                                 </div>
@@ -576,8 +595,6 @@
                                                                 </tr>
                                                             }
 
-
-
                                                         </tbody>
                                                     </table>
                                                 }
@@ -674,7 +691,7 @@
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CashDeposit", new { Area = "FrontOffice"}))",
+        "sAjaxSource": "@(Url.Action("Index", "CustomerReceipts", new { Area = "FrontOffice"}))",
         "sServerMethod": "POST",
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -803,6 +820,8 @@ $(document).ready(function () {
                                     $('#DebitRemarks').val(data.Remarks);
                                     $('#DebitCustomerIndividualPayrollNumbers').val(data.CustomerIndividualPayrollNumbers);
                                     $('#DebitStatusDescription').val(data.StatusDescription);
+                                    $('#DebitCustomerType').val(data.CustomerType);
+                                    $('#DebitCustomerType').val(data.CustomerTypeDescription);
 
                                     break;
                                 case 'CreditCustomerRequest':
@@ -816,7 +835,7 @@ $(document).ready(function () {
                                     $('#CreditBranchDescription').val(data.BranchDescription);
                                     $('#CreditBranchId').val(data.BranchId);
                                     $('#CreditProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
-                                    $('#CreditAvailableBalance').val(data.AvailableBalance); // Format balance if needed
+                                    $('#CreditAvailableBalance').val(data.AvailableBalance);
                                     break;
                                 default:
                                     console.error("Unknown role:", role);
@@ -847,61 +866,115 @@ $(document).ready(function () {
             }
 
 
-            function saveTotalValue(value) {
-                sessionStorage.setItem('totalValue', value);
+        //    function saveTotalValue(value) {
+        //        sessionStorage.setItem('totalValue', value);
+        //}
+
+
+        function isApportionmentValid() {
+            var totalValue = getTotalValue();
+            var apportioned = parseFloat($('#apportioned').val()) || 0;
+            var shortage = parseFloat($('#shortage').val()) || 0;
+
+            return Math.abs(shortage) < 0.01; // Allow for small floating point discrepancies
+        }
+
+        function calculateApportionmentTotals() {
+            totalValue = getTotalValue(); // Get the value from the form input
+
+            var apportioned = apportionments.reduce(function (total, item) {
+            var principal = parseFloat(item.principal) || 0;
+            var interest = parseFloat(item.interest) || 0;
+             return total + principal + interest;
+            }, 0);
+
+            var shortage = totalValue - apportioned;
+
+
+            $('#apportioned').val(apportioned.toFixed(2));
+            $('#shortage').val(shortage.toFixed(2));
+
+            if (shortage < 0) {
+                alert("Total apportioned value exceeds the total available value!");
+            } else if (shortage > 0) {
+                $('#shortage').css("color", "red"); // Highlight shortage in red if the total hasn't been fully apportioned
+            } else {
+                $('#shortage').css("color", "green"); // Make it green when apportioned amount equals total
             }
 
-            function calculateApportionmentTotals() {
-
-                totalValue = getTotalValue();
-                var apportioned = apportionments.reduce(function (total, item) {
-                    var principal = parseFloat(item.principal) || 0;
-                    var interest = parseFloat(item.interest) || 0;
-                    return total + principal + interest;
-                }, 0);
-
-                var shortage = totalValue - apportioned;
-
-                $('#apportioned').val(apportioned.toFixed(2));
-                $('#shortage').val(shortage.toFixed(2));
-
-                saveTotalValue(totalValue);
+            // Update submit button state
+            if (isApportionmentValid()) {
+                $('#submitButton').prop('disabled', false);
+            } else {
+                $('#submitButton').prop('disabled', true);
             }
+
+            //saveTotalValue(totalValue); // Store the total value
+        }
+
 
             $('#addButton').click(function () {
                 addItemToApportionmentsTable();
             });
 
-            function addItemToApportionmentsTable() {
-                var principal = parseFloat($('input[name="ApportionmentWrapper.Principal"]').val()) || 0;
-                var interest = parseFloat($('input[name="ApportionmentWrapper.Interest"]').val()) || 0;
+           function addItemToApportionmentsTable() {
+            var principal = parseFloat($('input[name="ApportionmentWrapper.Principal"]').val()) || 0;
+            var interest =  parseFloat($('input[name="ApportionmentWrapper.Interest"]').val()) || 0;
 
-                var apportionToType = {
-                    1: "Customer Account",
-                    2: "G/L Account"
-                };
+            var totalCurrent = apportionments.reduce(function (total, item) {
+                return total + (parseFloat(item.principal) || 0) + (parseFloat(item.interest) || 0);
+            }, 0);
 
-                apportionTo = $('select[name="ApportionmentWrapper.ApportionTo"]').val();
-                var apportionToDescription = apportionToType[apportionTo];
+            var newTotal = totalCurrent + principal + interest;
 
-                var item = {
-                    apportionTo: apportionTo,
-                    apportionToDescription: apportionToDescription,
-                    fullAccountNumber: $('input[name="ApportionmentWrapper.FullAccountNumber"]').val(),
-                    productDescription: $('input[name="ApportionmentWrapper.ProductDescription"]').val(),
-                    principal: $('input[name="ApportionmentWrapper.Principal"]').val(),
-                    interest: $('input[name="ApportionmentWrapper.Interest"]').val(),
-                    primaryDescription: $('input[name="ApportionmentWrapper.PrimaryDescription"]').val(),
-                    creditChartOfAccountId: $('input[name="ApportionmentWrapper.CreditChartOfAccountId"]').val(),
-                    secondaryDescription: '',
-                    reference: '',
-                };
+            if (newTotal > totalValue) {
+                alert("Adding this apportionment exceeds the total value! Please adjust the amounts.");
+                return;
+            }
+
+            var apportionToType = {
+                1: "Customer Account",
+                2: "G/L Account"
+            };
+
+            var apportionTo = $('select[name="ApportionmentWrapper.ApportionTo"]').val();
+            var apportionToDescription = apportionToType[apportionTo];
+
+            var item = {
+                apportionTo: apportionTo,
+                apportionToDescription: apportionToDescription,
+                fullAccountNumber: $('input[name="ApportionmentWrapper.FullAccountNumber"]').val(),
+                productDescription: $('input[name="ApportionmentWrapper.ProductDescription"]').val(),
+                principal: principal.toFixed(2),
+                interest: interest.toFixed(2),
+                primaryDescription: $('input[name="ApportionmentWrapper.PrimaryDescription"]').val(),
+                creditChartOfAccountId: $('input[name="ApportionmentWrapper.CreditChartOfAccountId"]').val(),
+                secondaryDescription: '',
+                reference: '',
+            };
 
                 apportionments.push(item);
                 sessionStorage.setItem('apportionments', JSON.stringify(apportionments));
                 updateApportionmentsTable();
                 calculateApportionmentTotals();
                 updateApportionmentsHiddenField();
+
+                clearApportionmentForm();
+        }
+
+        // Add this new function to clear the form inputs
+        function clearApportionmentForm() {
+/*            $('select[name="ApportionmentWrapper.ApportionTo"]').val('');*/
+            $('input[name="ApportionmentWrapper.FullAccountNumber"]').val('');
+            $('input[name="ApportionmentWrapper.ProductDescription"]').val('');
+            $('input[name="ApportionmentWrapper.Principal"]').val('');
+            $('input[name="ApportionmentWrapper.Interest"]').val('');
+            $('input[name="ApportionmentWrapper.PrimaryDescription"]').val('');
+            $('input[name="ApportionmentWrapper.CreditChartOfAccountId"]').val('');
+            $('input[name="ApportionmentWrapper.CustomerReference1"]').val('');
+            $('input[name="ApportionmentWrapper.CustomerReference2"]').val('');
+            $('input[name="ApportionmentWrapper.CustomerReference3"]').val('');
+            $('input[name="ApportionmentWrapper.CustomerFullName"]').val('');
         }
 
         function escapeHtml(text) {
@@ -939,8 +1012,7 @@ $(document).ready(function () {
                             <td>${principal.toFixed(2)}</td>
                             <td>${interest.toFixed(2)}</td>
                             <td>${item.primaryDescription || ''}</td>
-                            <td>${item.secondaryDescription || ''}</td>
-                            <td>${item.reference || ''}</td>
+                       
                             <td>
                                 <button type="button" class="btn btn-danger remove-btn" data-index="${index}">
                                     <i class="fas fa-times"></i>
@@ -956,7 +1028,7 @@ $(document).ready(function () {
                             <input type="hidden" name="Apportionments[${index}].Reference" value="${item.reference || ''}" />
                             <input type="hidden" name="Apportionments[${index}].CreditCustomerAccountJson" value="${escapeJson(creditCustomerAccountJson)}" />
                             <input type="hidden" name="Apportionments[${index}].DebitCustomerAccountJson" value="${escapeJson(debitCustomerAccountJson)}" />
-                        
+ 
                             <input type="hidden" name="Apportionments[${index}].CreditCustomerAccountId" value="${creditCustomerAccount.Id || ''}" />
                            <input type="hidden" name="Apportionments[${index}].DebitCustomerAccountId" value="${debitCustomerAccount.Id || ''}" />
                             <input type="hidden" name="Apportionments[${index}].CreditChartOfAccountId" value="${item.creditChartOfAccountId || ''}" />
@@ -981,7 +1053,80 @@ $(document).ready(function () {
             updateApportionmentsTable();
             calculateApportionmentTotals();
             updateApportionmentsHiddenField();
-       
-    </script>
 
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+                if (!isApportionmentValid()) {
+                    e.preventDefault(); // Prevent form submission
+                    alert("The total value must be fully apportioned before submitting. Please adjust the apportionments.");
+                }
+            });
+        });
+
+
+        function resetAllFields() {
+            // Clear customer account fields
+            $('#DebitCustomerAccountId, #DebitCustomerAccountJson, #DebitFullAccountNumber, #DebitCustomerFullName, #DebitCustomerReference1, #DebitCustomerReference2, #DebitCustomerReference3, #DebitBranchDescription, #DebitCustomerAccountBranchId, #DebitProductDescription, #DebitCustomerIdentificationNumber, #DebitRemarks, #DebitCustomerIndividualPayrollNumbers, #DebitStatusDescription').val('');
+
+            $('#CreditCustomerAccount, #CreditCustomerAccountId, #CreditChartOfAccountId, #CreditFullAccountNumber, #CreditCustomerFullName, #CreditCustomerReference1, #CreditCustomerReference2, #CreditBranchDescription, #CreditBranchId, #CreditProductDescription, #CreditAvailableBalance').val('');
+
+            // Clear apportionment fields
+            clearApportionmentForm();
+
+            // Clear total values
+            $('#TotalValue, #apportioned, #shortage').val('');
+
+            // Reset apportionments array and table
+            apportionments = [];
+            sessionStorage.removeItem('apportionments');
+            updateApportionmentsTable();
+
+            // Reset total value in session storage
+            saveTotalValue(0);
+
+            // Disable submit button
+            $('#submitButton').prop('disabled', true);
+        }
+
+
+        $(document).ready(function () {
+            $('#submitButton').click(function (e) {
+
+                e.preventDefault();
+
+                if (!isApportionmentValid()) {
+                    alert("The total value must be fully apportioned before submitting. Please adjust the apportionments.");
+                    return;
+                }
+
+                $.ajax({
+                    url: $('#customerReceiptsForm').attr('action'),
+                    type: 'POST',
+                    data: $('#customerReceiptsForm').serialize(),
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.redirect) {
+
+                            resetAllFields();
+                        } else if (response.success) {
+                         
+                            //alert('Customer Receipts: Operation Success');
+                            resetAllFields();
+                        } else {
+                       
+                            //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
+                            resetAllFields();
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                    
+                        //alert('An error occurred while submitting the form. Please try again.');
+                        resetAllFields();
+                        console.error(error);
+                    }
+                });
+            });
+        });
+
+    </script>
 }
