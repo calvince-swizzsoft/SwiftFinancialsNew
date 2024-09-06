@@ -186,6 +186,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public JsonResult CheckSumAmount()
         {
             var storedOverDeductionBatchDTO = Session["overDeductionBatchDTO"] as OverDeductionBatchDTO;
+            if (storedOverDeductionBatchDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
             var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
 
             decimal totalPrincipalAndInterest = overDeductionBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
@@ -203,16 +211,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(OverDeductionBatchDTO overDeductionBatchDTO)
         {
-            // Retrieve the DTO stored in session, this will contain your batch data
+            // Retrieve the DTO stored in session
             var storedOverDeductionBatchDTO = Session["overDeductionBatchDTO"] as OverDeductionBatchDTO;
 
-            // If there's no stored batch data, initialize a new DTO
             if (storedOverDeductionBatchDTO == null)
             {
-                storedOverDeductionBatchDTO = new OverDeductionBatchDTO();
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
             }
 
-            // Ensure the entries are retrieved from the session
+            // If there are no entries, initialize a new list
             var overDeductionBatchEntryDTOs = Session["OverDeductionBatchEntryDTO"] as ObservableCollection<OverDeductionBatchEntryDTO>;
 
             if (overDeductionBatchEntryDTOs != null)
@@ -220,22 +231,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 storedOverDeductionBatchDTO.overDeductionBatchEntries = overDeductionBatchEntryDTOs;
             }
 
-            // Perform validation
+            // Validate the DTO
             storedOverDeductionBatchDTO.ValidateAll();
             if (storedOverDeductionBatchDTO.ErrorMessageResult != null)
             {
-                await ServeNavigationMenus();
-                TempData["ErrorMsg"] = storedOverDeductionBatchDTO.ErrorMessageResult;
-                return View(storedOverDeductionBatchDTO);
+                return Json(new
+                {
+                    success = false,
+                    message = storedOverDeductionBatchDTO.ErrorMessageResult
+                });
             }
 
             // Save the batch data
             var refundBatch = await _channelService.AddOverDeductionBatchAsync(storedOverDeductionBatchDTO, GetServiceHeader());
             if (refundBatch.HasErrors)
             {
-                await ServeNavigationMenus();
-                TempData["ErrorMsg"] = refundBatch.ErrorMessages;
-                return View(storedOverDeductionBatchDTO);
+                return Json(new
+                {
+                    success = false,
+                    message = refundBatch.ErrorMessages
+                });
             }
 
             // Save each batch entry
@@ -249,9 +264,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             Session["OverDeductionBatchDTO"] = null;
             Session["OverDeductionBatchEntryDTO"] = null;
 
-            TempData["SuccessMessage"] = "Successfully Created Refund Batch";
-            return RedirectToAction("Index");
+            // Return success message in JSON
+            return Json(new
+            {
+                success = true,
+                message = "Successfully created refund batch."
+            });
         }
+
 
 
 

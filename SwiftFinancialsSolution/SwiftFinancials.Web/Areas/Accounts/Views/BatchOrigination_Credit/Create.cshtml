@@ -519,11 +519,10 @@
 
 
 
-                        @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @id = "creditForm" }))
                         {
                             <div class="custom-container">
                                 <div class="row" id="policies">
-
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
@@ -557,7 +556,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-lg-2">
                                         <div class="form-group" style="text-align:right;">
                                             <input type="submit" value="Create" class="btn btn-primary" style="width: 100px; margin-left: 20px; border-radius: 4px; background-color: dodgerblue;" />
@@ -566,6 +564,9 @@
                                 </div>
                             </div>
                         }
+
+
+
                     </div>
 
 
@@ -646,39 +647,58 @@
 
 
 
-    <script>
-        //Confirm SumAmount is Equal to Total Value before submission
-    $(document).ready(function () {
-        $("#form").submit(function (e) {
-            e.preventDefault(); // Prevent default form submission
 
-            // Perform your AJAX call to check conditions
+    <script>
+    $(document).ready(function () {
+        $('#creditForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Serialize the form data
+            var formData = $(this).serialize();
+
             $.ajax({
-                url: '@Url.Action("CheckSumAmount", "BatchOrigination_Credit", new { Area = "Accounts" })',
+                url: '@Url.Action("Create", "BatchOrigination_Credit", new { Area = "Accounts" })',
                 type: 'POST',
-                data: $(this).serialize(), // Serialize the form data
+                data: formData,
                 success: function (response) {
                     if (response.success) {
-                        // If validation is successful, submit the form
-                        $("#form").off('submit').submit();
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Batch Created!',
+                            text: response.message,
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(function () {
+                            // Redirect to the Index action of the same controller
+                            window.location.href = '@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })';
+                        });
                     } else {
-                        // If validation fails, show an error message
+                        // Handle failure, show error message
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: response.message,
-                            timer: 8000,
-                            showConfirmButton: true
+                            text: response.message
                         });
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error("An error occurred:", error);
+                    // Handle AJAX errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
                 }
             });
         });
     });
     </script>
+
+
+
+
+    
 
 
 

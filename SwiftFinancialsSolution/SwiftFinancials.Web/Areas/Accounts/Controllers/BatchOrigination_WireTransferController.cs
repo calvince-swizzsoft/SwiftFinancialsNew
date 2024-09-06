@@ -248,7 +248,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             var wireTransferBatchDTO = Session["WireTransferBatchDTO"] as WireTransferBatchDTO;
             var wireTransferEntryDTOs = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO> ?? new ObservableCollection<WireTransferBatchEntryDTO>();
-
+            if (wireTransferBatchDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
             decimal sumAmount = wireTransferEntryDTOs.Sum(e => e.Amount);
             decimal totalValue = wireTransferBatchDTO?.TotalValue ?? 0;
 

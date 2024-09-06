@@ -403,7 +403,7 @@
 
 
 
-                        @using (Html.BeginForm("Create", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Create", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "debitForm" }))
                         {
                             <div class="bottom-button">
                                 <div class="row">
@@ -412,11 +412,10 @@
                                             <input type="submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-
                         }
+
 
 
 
@@ -520,6 +519,56 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
+
+
+
+
+    <script>
+    $(document).ready(function () {
+        $('#debitForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Serialize the form data
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: '@Url.Action("Create", "BatchOrigination_Debit", new { Area = "Accounts" })',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Batch Created!',
+                            text: response.message,
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(function () {
+                            // Redirect to the Index action of the same controller
+                            window.location.href = '@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })';
+                        });
+                    } else {
+                        // Handle failure, show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
+                }
+            });
+        });
+    });
+</script>
 
 
 

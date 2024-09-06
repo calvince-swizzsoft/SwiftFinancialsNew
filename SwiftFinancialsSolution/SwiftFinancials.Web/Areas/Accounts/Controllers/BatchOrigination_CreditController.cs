@@ -236,23 +236,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
 
-        [HttpPost]
-        public JsonResult CheckSumAmount()
-        {
-            var creditBatchDTO = Session["CreditBatchDTO"] as CreditBatchDTO;
-            var creditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
-
-            decimal totalPrincipalAndInterest = creditBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
-            decimal totalValue = creditBatchDTO?.TotalValue ?? 0;
-
-            if (totalPrincipalAndInterest != totalValue)
-            {
-                var balance = totalValue - totalPrincipalAndInterest;
-                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({totalPrincipalAndInterest}). Balance: {balance}" });
-            }
-
-            return Json(new { success = true });
-        }
+        
 
 
 
@@ -260,119 +244,122 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
         {
-            // Cheat: In case header details do not hit Add Action
-            //if (Session["HeaderDetails"] != null)
-            //{
-            //    creditBatchDTO = Session["HeaderDetails"] as CreditBatchDTO;
-            //}
-
-            Session["RecoverCarryForwards"] = creditBatchDTO.RecoverCarryForwards;
-            Session["PreserveAccountBalance"] = creditBatchDTO.PreserveAccountBalance;
-            Session["RecoverIndefiniteCharges"] = creditBatchDTO.RecoverIndefiniteCharges;
-            Session["RecoverArrearages"] = creditBatchDTO.RecoverArrearages;
-
-
-            creditBatchDTO = Session["creditBatchDTO"] as CreditBatchDTO;
-
-            if(creditBatchDTO == null)
+            try
             {
-                TempData["Error"] = "Batch details are required";
-                return View("Verify", creditBatchDTO);
-            }
+                // Cheat: In case header details do not hit Add Action
+                // Session handling code remains as-is
+                Session["RecoverCarryForwards"] = creditBatchDTO.RecoverCarryForwards;
+                Session["PreserveAccountBalance"] = creditBatchDTO.PreserveAccountBalance;
+                Session["RecoverIndefiniteCharges"] = creditBatchDTO.RecoverIndefiniteCharges;
+                Session["RecoverArrearages"] = creditBatchDTO.RecoverArrearages;
 
-            CreditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+                // Retrieve DTO from session
+                creditBatchDTO = Session["creditBatchDTO"] as CreditBatchDTO;
+                var creditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+                if (creditBatchDTO == null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Batch cannot be null."
+                    });
+                }
 
-
-
-            if (CreditBatchEntryDTOs != null)
-            {
-                creditBatchDTO.CreditBatchEntries = CreditBatchEntryDTOs;
-            }
-
-
-            if (Session["RecoverCarryForwards"] != null)
-            {
-                creditBatchDTO.RecoverCarryForwards = (bool)Session["RecoverCarryForwards"];
-            }
-
-            if (Session["PreserveAccountBalance"] != null)
-            {
-                creditBatchDTO.PreserveAccountBalance = (bool)Session["PreserveAccountBalance"];
-            }
-            if (Session["RecoverIndefiniteCharges"] != null)
-            {
-                creditBatchDTO.RecoverIndefiniteCharges = (bool)Session["RecoverIndefiniteCharges"];
-            }
-
-            if (Session["RecoverArrearages"] != null)
-            {
-                creditBatchDTO.RecoverArrearages = (bool)Session["RecoverArrearages"];
-            }
-
-
-            creditBatchDTO.ValidateAll();
-
-            if (!creditBatchDTO.HasErrors)
-            {
+                // Retrieve CreditBatchEntries from session
                 
 
-                var creditBatch = await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
-                if (creditBatch.HasErrors)
+                if (creditBatchEntryDTOs != null)
                 {
-                    await ServeNavigationMenus();
+                    decimal totalPrincipalAndInterest = creditBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+                    decimal totalValue = creditBatchDTO?.TotalValue ?? 0;
 
-                    TempData["ErrorMsg"] = creditBatchDTO.ErrorMessages;
-                    ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                    ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
-                    ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                    ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
-                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
-                    return View();
+                    if (totalPrincipalAndInterest != totalValue)
+                    {
+                        var balance = totalValue - totalPrincipalAndInterest;
+                        return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({totalPrincipalAndInterest}). Balance: {balance}" });
+                    }
+
+                    creditBatchDTO.CreditBatchEntries = creditBatchEntryDTOs;
                 }
 
-                foreach (var creditBatchEntry in CreditBatchEntryDTOs)
+                // Set additional batch properties from session
+                if (Session["RecoverCarryForwards"] != null)
                 {
-                    creditBatchEntry.CreditBatchId = creditBatch.Id;
-                    await _channelService.AddCreditBatchEntryAsync(creditBatchEntry, GetServiceHeader());
+                    creditBatchDTO.RecoverCarryForwards = (bool)Session["RecoverCarryForwards"];
                 }
 
+                if (Session["PreserveAccountBalance"] != null)
+                {
+                    creditBatchDTO.PreserveAccountBalance = (bool)Session["PreserveAccountBalance"];
+                }
 
+                if (Session["RecoverIndefiniteCharges"] != null)
+                {
+                    creditBatchDTO.RecoverIndefiniteCharges = (bool)Session["RecoverIndefiniteCharges"];
+                }
 
+                if (Session["RecoverArrearages"] != null)
+                {
+                    creditBatchDTO.RecoverArrearages = (bool)Session["RecoverArrearages"];
+                }
 
-                TempData["CreditBatchCreated"] = "Successfully Created Credit Batch";
-                Session["CreditBatchEntryDTO"] = null;
-                Session["CreditBatchDTO"] = null;
-                Session["sumAmount"] = null;
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
-                return RedirectToAction("Index");
+                // Validate the batch DTO
+                creditBatchDTO.ValidateAll();
+
+                // If no errors, proceed with batch creation
+                if (!creditBatchDTO.HasErrors)
+                {
+                    var creditBatch = await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
+
+                    // Check if the service returned any errors
+                    if (creditBatch.HasErrors)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "Error creating the batch: " + string.Join(", ", creditBatchDTO.ErrorMessages)
+                        });
+                    }
+
+                    // Save each batch entry
+                    foreach (var creditBatchEntry in creditBatchEntryDTOs)
+                    {
+                        creditBatchEntry.CreditBatchId = creditBatch.Id;
+                        await _channelService.AddCreditBatchEntryAsync(creditBatchEntry, GetServiceHeader());
+                    }
+
+                    // Clear session after success
+                    Session["CreditBatchEntryDTO"] = null;
+                    Session["CreditBatchDTO"] = null;
+                    Session["sumAmount"] = null;
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully Created Credit Batch"
+                    });
+                }
+                else
+                {
+                    // If validation errors exist, return them in JSON format
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Validation errors: " + string.Join(", ", creditBatchDTO.ErrorMessages)
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var errorMessages = creditBatchDTO.ErrorMessages;
-                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
-                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
-                return View(creditBatchDTO);
+                // Handle any exceptions and return a failure response
+                return Json(new
+                {
+                    success = false,
+                    message = "An unexpected error occurred: " + ex.Message
+                });
             }
         }
 
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-            var creditBatchDTO = await _channelService.FindCreditBatchAsync(id, GetServiceHeader());
-            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-            ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(string.Empty);
-            ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(string.Empty);
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            return View(creditBatchDTO);
-        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]

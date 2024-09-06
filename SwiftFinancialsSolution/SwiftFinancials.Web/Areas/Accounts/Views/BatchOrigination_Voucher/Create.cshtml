@@ -363,7 +363,7 @@
                         }
 
 
-                        @using (Html.BeginForm("Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "voucherForm" }))
                         {
                             <div class="bottom-button">
                                 <div class="row">
@@ -372,11 +372,10 @@
                                             <input type="submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-
                         }
+
 
                     </div>
 
@@ -434,38 +433,49 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-
-
-
-
     <script>
-        //Confirm SumAmount is Equal to Total Value before submission
-    $(document).ready(function () {
-        $("#form").submit(function (e) {
-            e.preventDefault(); // Prevent default form submission
+         //Create form submission
 
-            // Perform your AJAX call to check conditions
+    $(document).ready(function () {
+        $('#voucherForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Serialize the form data
+            var formData = $(this).serialize();
+
             $.ajax({
-                url: '@Url.Action("CheckSumAmount", "BatchOrigination_Voucher", new { Area = "Accounts" })',
+                url: '@Url.Action("Create", "BatchOrigination_Voucher", new { Area = "Accounts" })',
                 type: 'POST',
-                data: $(this).serialize(), // Serialize the form data
+                data: formData,
                 success: function (response) {
                     if (response.success) {
-                        // If validation is successful, submit the form
-                        $("#form").off('submit').submit();
+                        // Show success message and redirect
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: response.message,
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(function () {
+                            // Redirect to the Index page of the same controller
+                            window.location.href = '@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })';
+                        });
                     } else {
-                        // If validation fails, show an error message
+                        // Show error message
                         Swal.fire({
                             icon: 'error',
                             title: 'Error!',
-                            text: response.message,
-                            timer: 10000,
-                            showConfirmButton: false
+                            text: response.message
                         });
                     }
                 },
                 error: function (xhr, status, error) {
-                    console.error("An error occurred:", error);
+                    // Handle AJAX errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
                 }
             });
         });
@@ -475,8 +485,15 @@
 
 
 
+    
+
+
+
+
 
     <script>
+
+       
     $(document).ready(function () {
         $('#Addform').submit(function (event) {
             event.preventDefault(); // Prevent the form from submitting normally
