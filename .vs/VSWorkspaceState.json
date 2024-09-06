@@ -2,15 +2,17 @@
   "ExpandedNodes": [
     "",
     "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\Application.MainBoundedContext",
+    "\\SwiftFinancialsSolution\\Application.MainBoundedContext\\AccountsModule",
+    "\\SwiftFinancialsSolution\\Application.MainBoundedContext\\AccountsModule\\Services",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Debit",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_WireTransfer",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning\\Controllers"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Debit\\Details.cshtml",
+  "SelectedNode": "\\SwiftFinancialsSolution\\Application.MainBoundedContext\\AccountsModule\\Services\\CreditBatchAppService.cs",
   "PreviewInSolutionExplorer": false
 }

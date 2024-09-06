@@ -77,7 +77,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            var JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
             if (JournalVoucherEntryDTOs == null)
                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
 
@@ -86,6 +86,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
             {
+                if (journalVoucherEntryDTO.Id == Guid.Empty)
+                {
+                    journalVoucherEntryDTO.Id = Guid.NewGuid();
+                }
+
+
                 if (journalVoucherEntryDTO.ChartOfAccountName == null ||
                     journalVoucherEntryDTO.Reference == null ||
                     journalVoucherEntryDTO.Amount == 0)
@@ -115,10 +121,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             Session["journalVoucherDTO"] = journalVoucherDTO;
             TempData["journalVoucherDTO"] = journalVoucherDTO;
 
-            return Json(new { success = true, entries = addedEntries });
+            return Json(new { success = true, entries = JournalVoucherEntryDTOs });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
 
+            var JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            decimal sumAmount = JournalVoucherEntryDTOs.Sum(cs => cs.Amount);
+            if (JournalVoucherEntryDTOs != null)
+            {
+                var entryToRemove = JournalVoucherEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    JournalVoucherEntryDTOs.Remove(entryToRemove);
+
+                    sumAmount -= entryToRemove.Amount;
+
+                    Session["JournalVoucherEntryDTOs"] = JournalVoucherEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = JournalVoucherEntryDTOs });
+        }
 
         [HttpPost]
         public async Task<ActionResult> removeChargeSplit(JournalVoucherDTO journalVoucherDTO)
@@ -204,6 +233,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public JsonResult CheckSumAmount()
+        {
+            var journalVoucherDTO = Session["journalVoucherDTO"] as JournalVoucherDTO;
+            var JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+
+            decimal sumAmount = JournalVoucherEntryDTOs.Sum(e => e.Amount);
+            decimal totalValue = journalVoucherDTO?.TotalValue ?? 0;
+
+            if (sumAmount != totalValue)
+            {
+                var balance = totalValue - sumAmount;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({sumAmount}). Balance: {balance}" });
+            }
+
+            return Json(new { success = true });
+        }
+
+
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
@@ -256,6 +305,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             journalVoucherDTO = TempData["JournalVoucherDTO"] as JournalVoucherDTO;
             JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+
+
+
+            Session["JournalVoucherEntryDTOs"] = null;
+            Session["journalVoucherDTO"] = null;
+
 
             return RedirectToAction("view");
         }

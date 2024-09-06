@@ -124,6 +124,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 CustomerReference3 = debitcustomerAccount.CustomerReference3,
                 IdentificationNumber = debitcustomerAccount.CustomerIndividualIdentityCardNumber,
                 StatusDescription = debitcustomerAccount.StatusDescription,
+                Status = debitcustomerAccount.Status,
                 Remarks = debitcustomerAccount.Remarks,
                 ProductDescription = debitcustomerAccount.CustomerAccountTypeProductCodeDescription,
                 CustomerId = debitcustomerAccount.Id,
