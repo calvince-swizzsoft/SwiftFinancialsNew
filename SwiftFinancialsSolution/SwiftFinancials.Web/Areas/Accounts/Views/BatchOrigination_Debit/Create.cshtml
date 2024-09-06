@@ -627,35 +627,6 @@
 
 
 
-
-
-
-
-    $(document).ready(function () {
-            $('.remove-btn').click(function () {
-                var row = $(this).closest('tr');
-                var id = row.data('id');
-
-
-                $.ajax({
-                    url: '@Url.Action("removeChargeSplit", "BatchOrigination_Voucher")',
-                    type: 'POST',
-                    data: { id: id },
-                    success: function () {
-                        row.remove();
-                    },
-                    error: function () {
-                        alert('Error removing row.');
-                    }
-                });
-            });
-     });
-
-
-
-
-
-
      //DebitType Lookup starts here
             $('#BenefactorCustomerAccountsGrid').DataTable({
             "sPaginationType": "full_numbers",

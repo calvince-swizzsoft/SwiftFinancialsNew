@@ -152,7 +152,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Add(CreditBatchDTO creditBatchDTO)
         {
             await ServeNavigationMenus();
-            // Simulating asynchronous behavior for consistency. In practice, this should be async if you have async operations.
+
             var creditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
 
             if (creditBatchEntryDTOs == null)
@@ -161,9 +161,27 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
 
             decimal sumAmount = creditBatchEntryDTOs.Sum(cs => cs.Principal + cs.Interest);
+
             foreach (var creditBatchEntryDTO in creditBatchDTO.CreditBatchEntries)
             {
+                var existingEntry = creditBatchEntryDTOs.FirstOrDefault(e => e.CreditCustomerAccountFullAccountNumber == creditBatchEntryDTO.CreditCustomerAccountFullAccountNumber);
+
+                if (existingEntry != null)
+                {
+                    // If found, return a message indicating the account already exists
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"A credit entry with account number {creditBatchEntryDTO.CreditCustomerAccountFullAccountNumber} already exists."
+                    });
+                }
+
                 sumAmount += creditBatchEntryDTO.Principal + creditBatchEntryDTO.Interest;
+
+                if (creditBatchEntryDTO.Id == Guid.Empty)
+                {
+                    creditBatchEntryDTO.Id = Guid.NewGuid();
+                }
 
                 if (sumAmount > creditBatchDTO.TotalValue)
                 {
@@ -173,15 +191,39 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 creditBatchEntryDTOs.Add(creditBatchEntryDTO);
             }
 
-            // Update the session values
-            Session["sumAmount"] = sumAmount;
+            // Update session values
             Session["CreditBatchEntryDTO"] = creditBatchEntryDTOs;
-            Session["creditBatchDTO"] = creditBatchDTO;
+            Session["CreditBatchDTO"] = creditBatchDTO;
 
-            return Json(new { success = true, entries = creditBatchEntryDTOs, sumAmount });
+            // Return updated entries to the client
+            return Json(new { success = true, entries = creditBatchEntryDTOs });
         }
 
-          
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var creditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+            decimal sumAmount = creditBatchEntryDTOs.Sum(cs => cs.Principal + cs.Interest);
+            if (creditBatchEntryDTOs != null)
+            {
+                var entryToRemove = creditBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    creditBatchEntryDTOs.Remove(entryToRemove);
+
+                    sumAmount -= entryToRemove.Principal + entryToRemove.Interest;
+
+                    Session["CreditBatchEntryDTO"] = creditBatchEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = creditBatchEntryDTOs });
+        }
 
         public async Task<ActionResult> Create()
         {
@@ -192,6 +234,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
             return View();
         }
+
+
+        [HttpPost]
+        public JsonResult CheckSumAmount()
+        {
+            var creditBatchDTO = Session["CreditBatchDTO"] as CreditBatchDTO;
+            var creditBatchEntryDTOs = Session["CreditBatchEntryDTO"] as ObservableCollection<CreditBatchEntryDTO>;
+
+            decimal totalPrincipalAndInterest = creditBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+            decimal totalValue = creditBatchDTO?.TotalValue ?? 0;
+
+            if (totalPrincipalAndInterest != totalValue)
+            {
+                var balance = totalValue - totalPrincipalAndInterest;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({totalPrincipalAndInterest}). Balance: {balance}" });
+            }
+
+            return Json(new { success = true });
+        }
+
+
+
 
         [HttpPost]
         public async Task<ActionResult> Create(CreditBatchDTO creditBatchDTO)
@@ -250,19 +314,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!creditBatchDTO.HasErrors)
             {
-                decimal sumAmount = Convert.ToDecimal(Session["sumAmount"].ToString());
-
-                if (sumAmount != creditBatchDTO.TotalValue)
-                {
-                    TempData["LessSumAmount"] = "Amount and Interest should be equal to Total Value";
-                    ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                    ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
-                    ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
-                    ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
-                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
-                    ViewBag.CreditBatchEntryDTOs = CreditBatchEntryDTOs;
-                    return View(creditBatchDTO);
-                }
+                
 
                 var creditBatch = await _channelService.AddCreditBatchAsync(creditBatchDTO, GetServiceHeader());
                 if (creditBatch.HasErrors)
@@ -270,7 +322,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     await ServeNavigationMenus();
 
                     TempData["ErrorMsg"] = creditBatchDTO.ErrorMessages;
-
+                    ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                    ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
+                    ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                    ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
+                    ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
                     return View();
                 }
 
@@ -297,7 +353,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = creditBatchDTO.ErrorMessages;
-
+                ViewBag.CreditBatchTypeTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.MonthsSelectList = GetMonthsAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetCreditBatchesAsync(creditBatchDTO.Type.ToString());
+                ViewBag.QueuePriorityTypeSelectList = GetQueuePriorityAsync(creditBatchDTO.Priority.ToString());
+                ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(creditBatchDTO.ConcessionType.ToString());
                 return View(creditBatchDTO);
             }
         }

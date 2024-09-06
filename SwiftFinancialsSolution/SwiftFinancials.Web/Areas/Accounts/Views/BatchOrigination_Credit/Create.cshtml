@@ -160,6 +160,12 @@
     }
 </style>
 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -476,7 +482,7 @@
                                     </div>
                                     <div class="col-lg-9">
                                         <div style="text-align: right; margin: 20px 20px;">
-                                            <button type="button" id="addEntryBtn" class="btn btn-primary">Add Entry</button>
+                                            <button type="submit" id="addEntryBtn" class="btn btn-primary">Add Entry</button>
                                         </div>
                                     </div>
 
@@ -496,7 +502,7 @@
                                                 <th style="width: 10%;">Product Description</th>
                                                 <th style="width: 10%;">Principal</th>
                                                 <th style="width: 10%;">Interest</th>
-                                                <th style="width: 10%;">Total</th>
+                                                <th style="width: 5%;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -638,44 +644,137 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script type="text/javascript">
-    $(document).ready(function () {
-        $('#addEntryBtn').click(function () {
-            var formData = $('#addCreditBatchForm').serialize();
 
+
+    <script>
+        //Confirm SumAmount is Equal to Total Value before submission
+    $(document).ready(function () {
+        $("#form").submit(function (e) {
+            e.preventDefault(); // Prevent default form submission
+
+            // Perform your AJAX call to check conditions
             $.ajax({
-                url: '@Url.Action("Add", "BatchOrigination_Credit", new { Area = "Accounts" })',
+                url: '@Url.Action("CheckSumAmount", "BatchOrigination_Credit", new { Area = "Accounts" })',
                 type: 'POST',
-                data: formData,
+                data: $(this).serialize(), // Serialize the form data
                 success: function (response) {
                     if (response.success) {
-                        // Add new entries to the table
-                        var newRow = '';
-                        $.each(response.entries, function (index, entry) {
-                            newRow += '<tr>';
-                            newRow += '<td>' + entry.CreditCustomerAccountFullAccountNumber + '</td>';
-                            newRow += '<td>' + entry.CreditCustomerAccountStatusDescription + '</td>';
-                            newRow += '<td>' + entry.ProductDescription + '</td>';
-                            newRow += '<td>' + entry.Principal + '</td>';
-                            newRow += '<td>' + entry.Interest + '</td>';
-                            newRow += '<td>' + (entry.Principal + entry.Interest) + '</td>';
-                            newRow += '</tr>';
-                        });
-
-                        $('#ChargeSplits tbody').html(newRow);
-
-                        // Clear the form fields with the specific class (e.g., .entry-field)
-                        $('.entry-field').val('');
+                        // If validation is successful, submit the form
+                        $("#form").off('submit').submit();
                     } else {
-                        alert(response.message);
+                        // If validation fails, show an error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message,
+                            timer: 10000,
+                            showConfirmButton: false
+                        });
                     }
                 },
-                error: function () {
-                    alert('An error occurred while processing your request.');
+                error: function (xhr, status, error) {
+                    console.error("An error occurred:", error);
                 }
             });
         });
     });
+    </script>
+
+
+
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
+
+        var formData = $('#addCreditBatchForm').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Add", "BatchOrigination_Credit", new { Area = "Accounts" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    // Add new entries to the table
+                    updateEntriesTable(response.entries);
+
+                    // Display success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Entry added successfully.',
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+
+                    // Clear the form fields with the specific class (e.g., .entry-field)
+                    $('.entry-field').val('');
+                } else {
+                    // Display error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    });
+});
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#ChargeSplits tbody");
+            tableBody.empty(); // Clear existing entries
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Id}">
+                               <td>${entry.CreditCustomerAccountFullAccountNumber}</td>
+                               <td>${entry.CreditCustomerAccountStatusDescription}</td>
+                               <td>${entry.ProductDescription}</td>
+                               <td>${entry.Principal}</td>
+                               <td>${entry.Interest}</td>
+                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+
+
+        // Attach click event to remove buttons
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault(); // Prevent default behavior
+            var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+            removeEntry(entryId);
+        });
+
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "BatchOrigination_Credit")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+
+
     </script>
 
 
