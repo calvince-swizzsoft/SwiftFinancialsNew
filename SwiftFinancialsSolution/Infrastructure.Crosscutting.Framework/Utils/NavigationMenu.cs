@@ -282,7 +282,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //reports - area 28,000
                 new NavigationMenu{Description = "Reporting", IsArea = true, Code = 0x00006D60},
                 new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Reports", Icon="fa fa-bars", ControllerName="Report", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 1},
-                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Report", Icon="fa fa-spinner", ControllerName="DynamicReporting", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
+                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Reports", Icon="fa fa-clipboard", ControllerName="ReportSetting", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
              
             /*
                 //test - area 62,000

@@ -34,6 +34,67 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+            var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            DateTime startDate = DateTime.Now;
+
+            DateTime endDate = DateTime.Now;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+            if (currentTeller != null)
+            {
+                var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
+                    pageIndex,
+                    jQueryDataTablesModel.iDisplayLength,
+                    (Guid)currentTeller.ChartOfAccountId,
+                    currentPostingPeriod.DurationStartDate,
+                    currentPostingPeriod.DurationEndDate,
+                    jQueryDataTablesModel.sSearch,
+                    20,
+                    1,
+                    true,
+                    GetServiceHeader()
+                );
+
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
+
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+                else return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+            }
+
+            return this.DataTablesJson(items: new List<GeneralLedgerTransaction> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
+
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -153,6 +214,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                        MessageBoxDefaultButton.Button1,
                                                        MessageBoxOptions.ServiceNotification
                                                    );
+
+                    return Json(new { success = true, message = "Operation Success" });
                 }
 
                 else
@@ -166,21 +229,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                                        MessageBoxDefaultButton.Button1,
                                                        MessageBoxOptions.ServiceNotification
                                                    );
+
+                    return Json(new { success = false, message = "Operation Failed" });
                 }
 
                 //service.BeginAddJournalWithApportionments(transactionModel.BranchId, transactionModel.AlternateChannelLogId, transactionModel.TotalValue, transactionModel.PrimaryDescription, transactionModel.SecondaryDescription, transactionModel.Reference, transactionModel.ModuleNavigationItemCode, transactionModel.TransactionCode, transactionModel.ValueDate, transactionModel.DebitChartOfAccountId, transactionModel.CreditCustomerAccount, transactionModel.DebitCustomerAccount, apportionments.ExtendedToList(), tariffs.ExtendedToList(), dynamicCharges.ExtendedToList(), asyncCallback, service);
 
-                ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+                //ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
+
                 
-                return RedirectToAction("Create");
             }
             else
             {
                 var errorMessages = model.ErrorMessages;
     
                 ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
-                
-                return View(model);
+
+                return Json(new { success = false, errorMessages = errorMessages });
             }
         }
 

@@ -1,0 +1,315 @@
+﻿@model IEnumerable<Application.MainBoundedContext.DTO.AdministrationModule.ReportDTO>
+
+@{
+    ViewBag.Title = "Reports";
+    var reports = ViewBag.Reports;
+    var reportsCount = ViewBag.ReportsCount;
+}
+
+<style>
+    .search-container {
+        margin-bottom: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .search-box {
+        width: 50%;
+        padding: 12px;
+        border: 2px solid #007bff;
+        border-radius: 30px;
+        font-size: 18px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        transition: box-shadow 0.3s ease;
+    }
+
+        .search-box:focus {
+            outline: none;
+            box-shadow: 0 8px 16px rgba(0, 123, 255, 0.5);
+        }
+
+    .report-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 30px;
+        padding: 20px;
+        grid-auto-flow: row;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .report-item {
+        padding: 30px;
+        border-radius: 20px;
+        background: linear-gradient(145deg, #e6e6e6, #ffffff);
+        box-shadow: 10px 10px 30px #d1d1d1, -10px -10px 30px #ffffff;
+        transition: transform 0.5s ease, box-shadow 0.5s ease;
+        transform: translateZ(0);
+        transform-style: preserve-3d;
+        cursor: pointer;
+    }
+
+        .report-item:hover {
+            transform: scale(1.08) rotateY(5deg) rotateX(5deg);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3), 0 25px 45px rgba(0, 0, 0, 0.4);
+        }
+
+        .report-item p {
+            margin: 0 0 10px;
+            font-size: 18px;
+            color: #333;
+            text-align: center;
+            font-weight: bold;
+        }
+
+    .breadcrumb-item.active {
+        color: #333;
+    }
+
+    .modal-footer {
+        justify-content: center;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h1>Reports</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h2>Generate Reports</h2>
+
+                    @if (TempData["sp_Empty"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed!</strong> @TempData["sp_Empty"]
+                        </div>
+                    }
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content">
+                    <div class="search-container">
+                        <input type="text" id="searchBox" placeholder="Search reports..." class="search-box" />
+                    </div>
+                    <p style="text-align: center; font-size: medium; font-weight: bold;">Total reports: @reportsCount</p>
+                    <div id="reportList" class="report-container">
+                        @if (reports != null)
+                        {
+                            int colorIndex = 0;
+                            var colors = new[] { "#ffdbdb", "#d0f0c0", "#f3e5ab", "#bcd4e6", "#d3d3d3", "#e0bbf5", "#b2d7e8", "#ffd5cd", "#e1ffc7", "#ffd6f6", "#c5d8a4" };
+
+                            foreach (var report in reports)
+                            {
+                                <div class="report-item" style="background-color:@colors[colorIndex];" onclick="showReportModal('@report.ReportQuery')">
+                                    <p>@report.ReportName</p>
+                                </div> colorIndex = (colorIndex + 1) % colors.Length;
+                            }
+                        }
+                        else
+                        {
+                            <p class="text-danger">No reports found.</p>
+                        }
+                    </div>
+                </div>
+                <div class="marquee-container">
+                    <div class="marquee">
+                        <span>
+                            Hello there 😄. The above grid is a list of all created reports. To search for a specific report enter its name in the search bar and click on it to access
+                            the available report options(<label style="color: red;">PDF</label>, <label style="color: green;">EXCEL</label> and
+                            <label style="color: lightslategrey;">CSV</label>) with preferred filters
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="reportModal" tabindex="-1" role="dialog" aria-labelledby="reportModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="reportModalLabel">Report Filters</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="color: red;">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="reportParametersForm" method="post">
+                    <input type="hidden" id="reportQueryInput" name="reportQuery" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- PDF button -->
+                <button type="button" class="btn btn-outline" id="pdfReport" data-format="pdf" disabled>
+                    <i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF
+                </button>
+                <!-- Excel button -->
+                <button type="button" class="btn btn-primary" id="excelReport" data-format="excel" disabled>
+                    <i class="fa fa-table" aria-hidden="true"></i> Excel
+                </button>
+                <!-- CSV button -->
+                <button type="button" class="btn btn-primary" id="csvReport" data-format="csv" disabled>
+                    <i class="fa fa-file-o" aria-hidden="true"></i> CSV
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/Scripts/js/MarqueeTransform.js"></script>
+    <link href="~/Scripts/css/Marquee.css" rel="stylesheet" />
+
+
+    <script>
+      function showReportModal(reportQuery) {
+    $('#reportModal').modal('show');
+
+          // Debugging - Check if reportQuery is passed correctly
+          console.log('Report Query:', reportQuery);
+
+    // Set the reportQuery value in the hidden input field
+    $('#reportQueryInput').val(reportQuery);
+
+          // Debugging - Check if the hidden input is set correctly
+          console.log('Hidden Input Value:', $('#reportQueryInput').val());
+
+
+    // Fetch report parameters and populate the form (if necessary)
+    $.ajax({
+        url: '@Url.Action("GetReportParameters", "ReportSetting")',
+        type: 'GET',
+        data: { reportQuery: reportQuery },
+        success: function (data) {
+            var form = $('#reportParametersForm');
+            form.empty();  // Clear previous content
+
+            // Add dynamic form elements if needed
+            if (data && data.length > 0) {
+                var tableHtml = `
+                    <h3>Filter By:</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Filter</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+                data.forEach(function (param) {
+                    var inputType = 'text';
+                    var stepValue = '';
+
+                    if (param.DataType.includes("Date")) {
+                        inputType = 'date';
+                    } else if (param.DataType.includes("Int")) {
+                        inputType = 'number';
+                    } else if (param.DataType.includes("Decimal") || param.DataType.includes("Float") || param.DataType.includes("Money")) {
+                        inputType = 'number';
+                        stepValue = '0.01';
+                    } else if (param.DataType.includes("Bit")) {
+                        inputType = 'checkbox';
+                    }
+
+                    tableHtml += `
+                        <tr>
+                            <td>${param.Name}</td>
+                            <td>
+                                <input type="${inputType}" name="paramValues[${param.Name}]" class="form-control" step="${stepValue}" />
+                            </td>
+                        </tr>
+                    `;
+                });
+
+                tableHtml += `
+                        </tbody>
+                    </table>
+
+                    <a href="@Url.Action("ExportToPdf", "ReportSetting")" class="btn btn-primary">Download PDF Report</a>
+                `;
+
+                form.append(tableHtml);
+            } else {
+                form.append('<p style="color: red; text-align: center;">No filters available for this report.</p>');
+            }
+        },
+        error: function () {
+            alert('Error fetching parameters.');
+        }
+    });
+}
+
+
+        $('.modal-footer button').on('click', function () {
+    var format = $(this).data('format'); // Get format (pdf, excel, csv)
+    var reportQuery = $('#reportQueryInput').val(); // Get reportQuery from hidden input
+
+    // Collect form data
+    var formData = new FormData($('#reportParametersForm')[0]);
+    formData.append("format", format);  // Append the format to the form data
+    formData.append("reportQuery", reportQuery); // Append report query
+
+    // Submit form via AJAX to generate the report
+    $.ajax({
+        url: '@Url.Action("ExportToPdf", "ReportSetting")',
+        type: 'POST',
+        data: formData,
+        processData: false,  // Don't process the data
+        contentType: false,  // Don't set content-type header
+        success: function (response) {
+            if (format === 'pdf') {
+                // Open PDF in a new tab
+                var pdfWindow = window.open("", "_blank");
+                pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + encodeURI(response) + "'></iframe>");
+            } else {
+                // For Excel or CSV, trigger download
+                var link = document.createElement('a');
+                link.href = window.URL.createObjectURL(new Blob([response]));
+                link.download = "Report." + format;
+                link.click();
+            }
+        },
+        error: function () {
+            alert('Error generating report.');
+        }
+        });
+    });
+    </script>
+
+    <script>
+        document.getElementById("searchBox").addEventListener("input", function () {
+            var searchText = this.value.toLowerCase();
+            var reports = document.querySelectorAll('.report-item');
+
+            reports.forEach(function (report) {
+                var title = report.querySelector('p').innerText.toLowerCase();
+                report.style.display = title.includes(searchText) ? 'block' : 'none';
+            });
+        });
+    </script>
+}
