@@ -220,10 +220,10 @@
                             </div>
 
                             @*<span class="input-group-addon">
-                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
-                                        <span class="fa fa-search"></span>
-                                    </a>
-                                </span>*@
+                <a href="javascript:void(0);" onclick="handleSearchClick()">
+                    <span class="fa fa-search"></span>
+                </a>
+            </span>*@
 
 
                             <div class="batch-entries-container">
@@ -390,14 +390,13 @@
                                 <div class="row">
                                     <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
                                         <div class="form-group form-group-sm">
-                                            <input type = "submit" value="Create" class="btn btn-primary" />
+                                            <input type="submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-
                         }
+
 
 
 
@@ -507,6 +506,59 @@
     @Scripts.Render("~/plugins/duallist")
 
 
+
+    <script>
+        $(document).ready(function () {
+            $('#form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Serialize the form data
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'), // Form action URL
+                    type: 'POST',                 // Form method (POST)
+                    data: formData,               // Form data
+                    success: function (response) {
+                        // Handle the success response (using SweetAlert for messages)
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/Accounts/BatchOrigination_Refund/Index'; // Redirect to index
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle errors in the AJAX request
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            timer: 8000,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+
+
+
 <script>
         //Confirm SumAmount is Equal to Total Value before submission
     $(document).ready(function () {
@@ -528,8 +580,8 @@
                             icon: 'error',
                             title: 'Error!',
                             text: response.message,
-                            timer: 10000,
-                            showConfirmButton: false
+                            timer: 8000,
+                            showConfirmButton: true
                         });
                     }
                 },
@@ -559,7 +611,7 @@
                             icon: 'success',
                             title: 'Success!',
                             text: 'Entry added successfully.',
-                            timer: 2000,
+                            timer: 1000,
                             showConfirmButton: false
                         });
                         clearEntryForm();
@@ -568,8 +620,8 @@
                             icon: 'error',
                             title: 'Error!',
                             text: response.message,
-                            timer: 10000,
-                            showConfirmButton: false
+                            timer: 8000,
+                            showConfirmButton: true
                         });
                     }
                 },

@@ -148,8 +148,12 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
 
                         fixedDepositChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode((int)SystemGeneralLedgerAccountCode.FixedDeposit, serviceHeader);
 
+
                         if (fixedDepositChartOfAccountId == Guid.Empty)
-                            throw new InvalidOperationException("Sorry, but the requisite fixed deposit control account has not been setup!");
+                        {
+                            fixedDepositDTO.errormassage = string.Format(("Sorry, but the requisite fixed deposit control account has not been set up!"));
+                            return result;
+                        }
 
                         persisted.Status = (int)FixedDepositStatus.Running;
                         persisted.AuditRemarks = fixedDepositDTO.AuditRemarks;
@@ -179,8 +183,12 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
 
                 _customerAccountAppService.FetchCustomerAccountBalances(new List<CustomerAccountDTO> { customerAccount }, serviceHeader);
 
+                
                 if (!suppressBalanceCheck && fixedDepositDTO.Value > customerAccount.AvailableBalance)
-                    throw new InvalidOperationException("Sorry, but the customer account has insufficient cash!");
+                {
+                    fixedDepositDTO.errormassage = string.Format(("Sorry, but the customer account has insufficient cash!"));
+                    return result;
+                }
 
                 _customerAccountAppService.FetchCustomerAccountsProductDescription(new List<CustomerAccountDTO> { customerAccount }, serviceHeader);
 
@@ -202,8 +210,13 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
             {
                 var fixedDepositChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode((int)SystemGeneralLedgerAccountCode.FixedDeposit, serviceHeader);
 
+               
                 if (fixedDepositChartOfAccountId == Guid.Empty)
-                    throw new InvalidOperationException("Sorry, but the requisite fixed deposit control account has not been setup!");
+                {
+                    fixedDepositDTOs.ForEach(dto => dto.errormassage=string.Format("Sorry, but the requisite fixed deposit control account has not been set up!"));
+                    return false;
+                }
+
 
                 using (var dbContextScope = _dbContextScopeFactory.Create())
                 {
@@ -249,14 +262,24 @@ namespace Application.MainBoundedContext.FrontOfficeModule.Services
 
                 var fixedDepositInterestChartOfAccountId = _chartOfAccountAppService.GetChartOfAccountMappingForSystemGeneralLedgerAccountCode((int)SystemGeneralLedgerAccountCode.FixedDepositInterest, serviceHeader);
 
+                
                 if (fixedDepositChartOfAccountId == Guid.Empty || fixedDepositInterestChartOfAccountId == Guid.Empty)
-                    throw new InvalidOperationException("Sorry, but the requisite fixed deposit control and/or fixed deposit interest control account has not been setup!");
+                {
+                    fixedDepositDTO.errormassage = string.Format("Sorry, but the requisite fixed deposit control and/or fixed deposit interest control account has not been setup!");
+                    return result;
+                }
+
 
                 var postingPeriodDTO = _postingPeriodAppService.FindCurrentPostingPeriod(serviceHeader);
+                
                 if (postingPeriodDTO == null)
-                    throw new InvalidOperationException("Sorry, but the current posting period could not be determined!");
+                {
+                    fixedDepositDTO.errormassage = string.Format("Sorry, but the current posting period could not be determined!");
+                    return result;
+                }
 
-                var journals = new List<Journal>();
+
+                    var journals = new List<Journal>();
 
                 var fixedDepositPayables = new List<FixedDepositPayableDTO>();
 

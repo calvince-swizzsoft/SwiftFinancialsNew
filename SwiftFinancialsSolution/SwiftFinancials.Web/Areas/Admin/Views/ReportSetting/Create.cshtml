@@ -2,7 +2,9 @@
 
 @{
     ViewBag.Title = "Report Setting";
+    var chargeTypes = ViewBag.ReportSelectList as List<SelectListItem>;
 }
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Administrator</h1>
@@ -41,27 +43,38 @@
                         @Html.AntiForgeryToken()
                         <fieldset>
                             <div class="row">
-                                <div class="col-lg-6">
+                                <div class="col-lg-6 mb-3">
                                     @Html.Label("Select Stored Procedure: ")
-                                    @Html.DropDownList("storedProcedureName", (SelectList)ViewBag.StoredProcedures, "Select a Stored Procedure", new { id = "spDropdown" })
+                                    @Html.HiddenFor(model => model.ReportQuery, new { id = "ReportQuery" })
+                                    @Html.DropDownList("StoredProcedure", (SelectList)ViewBag.StoredProcedures, "Select a Stored Procedure", new { id = "spDropdown", @class = "form-control" })
+                                </div>
+                                <div class="col-lg-6 mb-3">
+                                    @Html.LabelFor(model => model.ReportName, htmlAttributes: new { @class = "" })
+                                    @Html.EditorFor(model => model.ReportName, new { htmlAttributes = new { @class = "form-control" } })
+                                    @Html.ValidationMessageFor(model => model.ReportName, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-
                             <div class="row">
-                                <div class="col-lg-4">
-                                    <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;" />
+                                <div class="col-lg-6 mb-3">
+                                    @Html.LabelFor(model => model.Category, new { @class = "control-label" })
+                                    <div class="input-group">
+                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                        @Html.DropDownListFor(model => model.Category, chargeTypes, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(model => model.Category)
+                                    </div>
                                 </div>
+
+                            </div>
+                            <div class="col-lg-4 mb-3">
+                                <input type="submit" class="btn btn-primary" value="Update" style="width: 150px;" />
                             </div>
                         </fieldset>
                     }
-
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-
 
 @section scripts {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -69,6 +82,9 @@
         $(document).ready(function () {
             $("#spDropdown").change(function () {
                 var selectedSP = $(this).val();
+
+                $('#ReportQuery').val(selectedSP);
+
                 if (selectedSP) {
                     $.ajax({
                         url: '@Url.Action("FetchParameters", "StoredProcedure")',

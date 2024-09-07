@@ -2,7 +2,7 @@
 
 @{
     ViewBag.Title = "Create Expense Payable";
-    ViewBag.DebitCreditOptions = new List<SelectListItem>
+    ViewBag.TypeDescription = new List<SelectListItem>
 {
         new SelectListItem { Value = "Debit", Text = "Debit" },
         new SelectListItem { Value = "Credit", Text = "Credit" }
@@ -12,105 +12,6 @@
 }
 
 
-<style>
-    .main {
-        border: 1px solid gray;
-        border-radius: 12px;
-        padding: 40px;
-        font-weight: bold;
-        color: #4d4e4f;
-        background-color: #f1f1f1;
-    }
-
-    .custom-style {
-        border: 4px solid #00ffff;
-        border-radius: 12px;
-        padding: 15px;
-        margin: 10px 0;
-        font-size: 15px;
-    }
-
-    .journal-voucher-container {
-        border: 1px solid #ddd;
-        margin-top: 20px;
-        padding: 20px;
-        font-size: 15px;
-        border-radius: 8px;
-        position: relative;
-        padding: 40px; /* Space for the h2 */
-        margin-bottom: 30px;
-    }
-
-        .journal-voucher-container h2 {
-            position: absolute;
-            top: -20px;
-            left: 20px;
-            background: #fff;
-            padding: 0 10px;
-            margin: 0;
-        }
-
-
-
-    /* Ensure that lookups and date pickers retain their normal styles */
-    .JournalVoucherEntryChartOfAccountsLookup,
-    .BranchesLookup {
-        font-weight: normal;
-    }
-
-    .btn.btn-success {
-        padding: 10px;
-        margin-left: 20px;
-        margin-bottom: 10px;
-    }
-
-    /* CSS for the journal entries */
-    #ChargeSplits {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: Arial, sans-serif;
-    }
-
-        #ChargeSplits thead {
-            background-color: white;
-            color: #333;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        #ChargeSplits th, #ChargeSplits td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        #ChargeSplits th {
-            font-weight: bold;
-        }
-
-        #ChargeSplits tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        #ChargeSplits tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-
-    .spacing-form-group {
-        margin-bottom: 40px; /* Adjust the value to increase or decrease spacing */
-    }
-
-    h2 {
-        font-weight: bold;
-    }
-
-    .form-control {
-        color: #007bff;
-    }
-
-    input.form-control {
-        color: #007bff; /* Replace with your desired color */
-    }
-</style>
 
 
 
@@ -194,238 +95,246 @@
                     </div>
                 </div>
 
-                <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Add", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
-                    {
-                        @Html.AntiForgeryToken()
+                <div class="card">
+                    <div class="card-body">
+                        @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
 
-                        <!-- Expense Payables -->
-                        <fieldset>
-                            <div class="ibox-content bg-white text-info">
-                                <h1>Expense Payable Details</h1>
+                            <!-- Expense Payables -->
+                            <fieldset>
+                                <div class="card mb-4">
+                                    <div class="card-body text-info">
+                                        <h1>Expense Payable Details</h1>
 
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableAuthOptionDescription, new { @class = "control-label", @for = "ExpensePayableAuthOption_1" })
-                                            <div class="input-group">
-                                                <span class="input-group-addon">
-                                                    <i class="fa fa-bars fa-fw"></i>
-                                                </span>
-                                                @Html.DropDownListFor(model => model.ExpensePayableAuthOptionDescription,
-                                                    new SelectList(ViewBag.DebitCreditOptions, "Value", "Text"),
-                                                    "Select",
-                                                    new { @class = "form-control", @id = "ExpensePayableAuthOption_1" })
-                                                @Html.ValidationMessageFor(model => model.ExpensePayableAuthOptionDescription)
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.TypeDescription, new { @class = "control-label", @for = "TypeDescription" })
+                                                    <div class="input-group">
+                                                        <span class="input-group-addon">
+                                                            <i class="fa fa-bars fa-fw"></i>
+                                                        </span>
+                                                        @Html.DropDownListFor(model => model.TypeDescription,
+                                                            new SelectList(ViewBag.TypeDescription, "Value", "Text"),
+                                                            "Select",
+                                                            new { @class = "form-control", @id = "TypeDescription" })
+                                                        @Html.ValidationMessageFor(model => model.TypeDescription)
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ChartOfAccounts, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.ChartOfAccountId, new { id = "ChartOfAccountId" })
+                                                    @Html.EditorFor(model => model.ChartOfAccounts, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill....", id = "ChartOfAccounts" } })
+                                                    @Html.ValidationMessageFor(model => model.ChartOfAccounts, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill...", id = "PostingPeriodDescription" } })
+                                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control", @placeholder = "Enter amount....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "ValueDate", required = "required" } })
+                                                    <span id="ValueDateError" class="text-danger" style="display:none;"></span>
+                                                    @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
+                                                </div>
+
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter text....", @required = "" })
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+                                        <h1>Expense Payable Entries</h1>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId, new { id = "ExpensePayableEntry_ChartOfAccountId" })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account...", id = "ExpensePayableEntry_ChartOfAccountAccountName" } })
+                                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ExpensePayableEntry.Reference, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.Reference, new { htmlAttributes = new { @id = "mainReference", @class = "form-control required", @placeholder = "Enter text....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Reference, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ExpensePayableEntry.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.SecondaryDescription, new { htmlAttributes = new { @id = "mainSecondaryDescription", @class = "form-control", @placeholder = "Enter text....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.SecondaryDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ExpensePayableEntry.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.PrimaryDescription, new { htmlAttributes = new { @id = "mainPrimaryDescription", @class = "form-control", @placeholder = "Enter text......", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.PrimaryDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.ExpensePayableEntry.Value, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.Value, new { htmlAttributes = new { @id = "mainValue", @class = "form-control", @placeholder = "Enter Value....", @required = "" } })
+                                                    @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Value, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.HiddenFor(model => model.BranchId, new { id = "BranchId" })
+                                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Enter space to autofill...." } })
+                                                    @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <br />
+
+                                        <div class="row d-flex justify-content-end">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-sm">
+                                                    <button id="addEntryButton" style="width: 100px;" class="btn btn-primary">Add</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Container with Tabs -->
+                                        <div class="row mt-4">
+
+                                            <!-- Tab Navigation -->
+                                            <ul class="nav nav-tabs" role="tablist">
+                                                <li class="nav-item">
+                                                    <a class="nav-link active" id="entries-tab" data-toggle="tab" href="#entries" role="tab" aria-controls="entries" aria-selected="true">Expense Payable Entry Details</a>
+                                                </li>
+                                            </ul>
+
+                                            <!-- Tab Content -->
+                                            <div class="tab-content mt-2">
+                                                <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
+                                                    <table id="ExpensePayableEntries" class="table table-bordered table-striped mt-2">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Branch</th>
+                                                                <th>G/L Account Name</th>
+                                                                <th>Reference</th>
+                                                                <th>Primary Description</th>
+                                                                <th>Secondary Description</th>
+                                                                <th>Value</th>
+                                                                <th>Action</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            @if (ViewBag.ExpensePayableEntryDTOs != null)
+                                                            {
+                                                                foreach (var entry in ViewBag.ExpensePayableEntryDTOs)
+                                                                {
+                                                                    <tr id="row-@entry.Id">
+                                                                        <td style="border: 1px solid #ddd;">@entry.BranchDescription</td>
+                                                                        <td style="border: 1px solid #ddd;">@entry.ChartOfAccountName</td>
+                                                                        <td style="border: 1px solid #ddd;">@entry.Reference</td>
+                                                                        <td style="border: 1px solid #ddd;">@entry.PrimaryDescription</td>
+                                                                        <td style="border: 1px solid #ddd;">@entry.SecondaryDescription</td>
+                                                                        <td style="border: 1px solid #ddd;">@String.Format("{0:C}", entry.Value)</td>
+                                                                        <td style="border: 1px solid #ddd;">
+                                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="removeEntry('@entry.Id')">Remove</button>
+                                                                        </td>
+                                                                    </tr>
+                                                                }
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+
+                                            <div class="container1">
+                                                <h1>Account Summary</h1>
+                                                <table class="summary-table">
+                                                    <tr>
+                                                        <td>
+                                                            <label for="Appropotioned">Appropotioned Amount:</label>
+                                                            <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
+                                                        </td>
+                                                        <td>
+                                                            <label for="Shortage">Shortage Amount:</label>
+                                                            <input type="text" id="Shortage" placeholder="Shortage" readonly>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+
+                                        <div class="row d-flex justify-content-end mt-4">
+                                            <div class="col-lg-3">
+                                                <div class="form-group form-group-sm">
+                                                    <button type="submit" class="btn btn-success">Create</button>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ChartOfAccounts, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ChartOfAccountId, new { id = "ChartOfAccountId" })
-                                            @Html.EditorFor(model => model.ChartOfAccounts, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill....", id = "ChartOfAccounts" } })
-                                            @Html.ValidationMessageFor(model => model.ChartOfAccounts, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
-                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill...", id = "PostingPeriodDescription" } })
-                                            @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
                                 </div>
-
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @id = "TotalValue", @class = "form-control", @placeholder = "Enter amount....", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ValueDate, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ValueDate, new { htmlAttributes = new { @class = "form-control datepicker", placeholder = "Enter Date.....", id = "ValueDate", required = "required" } })
-                                            <span id="ValueDateError" class="text-danger" style="display:none;"></span>
-                                            @Html.ValidationMessageFor(model => model.ValueDate, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
-                                            @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter text....", @required = "" })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-
-                                        </div>
-                                    </div>
-                                </div>
-                                <br />
-                                <h1>Expense Payable Entries</h1>
-
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableEntry.ChartOfAccountName, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.ExpensePayableEntry.ChartOfAccountId, new { id = "ExpensePayableEntry_ChartOfAccountId" })
-                                            @Html.EditorFor(model => model.ExpensePayableEntry.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "Enter space to autofill G/L Account...", id = "ExpensePayableEntry_ChartOfAccountAccountName" } })
-                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.ChartOfAccountName, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableEntry.Reference, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ExpensePayableEntry.Reference, new { htmlAttributes = new { @id = "mainReference", @class = "form-control required", @placeholder = "Enter text....", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Reference, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableEntry.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ExpensePayableEntry.SecondaryDescription, new { htmlAttributes = new { @id = "mainSecondaryDescription", @class = "form-control", @placeholder = "Enter text....", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.SecondaryDescription, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row">
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableEntry.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ExpensePayableEntry.PrimaryDescription, new { htmlAttributes = new { @id = "mainPrimaryDescription", @class = "form-control", @placeholder = "Enter text......", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.PrimaryDescription, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.ExpensePayableEntry.Value, htmlAttributes: new { @class = "control-label" })
-                                            @Html.EditorFor(model => model.ExpensePayableEntry.Value, new { htmlAttributes = new { @id = "mainValue", @class = "form-control", @placeholder = "Value", @required = "" } })
-                                            @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Value, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
-                                            @Html.HiddenFor(model => model.BranchId, new { id = "BranchId" })
-                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @id = "BranchDescription", @class = "ExpensePayableEntryBranchesLookup form-control required", placeholder = "Enter space to autofill...." } })
-                                            @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                                <br />
-
-
-                                <div class="row d-flex justify-content-end">
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-sm">
-                                            <button id="addEntryButton" style="width: 100px;" class="btn btn-primary">Add</button>
-                                        </div>
-                                    </div>
-                                </div>
-
-
-                                <!-- Container with Tabs -->
-                                <div class="row">
-
-                                    <!-- Tab Navigation -->
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li class="nav-item">
-                                            <a class="nav-link active" id="entries-tab" data-toggle="tab" href="#entries" role="tab" aria-controls="entries" aria-selected="true"><h1>Payable Entry Details</h1></a>
-                                        </li>
-                                    </ul>
-
-                                    <!-- Tab Content -->
-                                    <div class="tab-content mt-3">
-                                        <div class="tab-pane fade show active" id="entries" role="tabpanel" aria-labelledby="entries-tab">
-                                            <table id="ExpensePayableEntries" class="footable table table-striped toggle-arrow-tiny grey-table" style="color: black; width: 100%; margin-bottom: 50px; border-collapse: collapse;">
-                                                <thead style="font-style: italic; color: cadetblue; text-align: left;">
-                                                    <tr>
-                                                        <th style="width: 15%; border: 1px solid #ddd;">Branch</th>
-                                                        <th style="width: 15%; border: 1px solid #ddd;">G/L Account Name</th>
-                                                        <th style="width: 10%; border: 1px solid #ddd;">Reference</th>
-                                                        <th style="width: 20%; border: 1px solid #ddd;">Primary description</th>
-                                                        <th style="width: 20%; border: 1px solid #ddd;">Secondary description</th>
-                                                        <th style="width: 10%; border: 1px solid #ddd;">Value</th>
-                                                        <th style="width: 5%; border: 1px solid #ddd;">Action</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    @if (ViewBag.ExpensePayableEntryDTOs != null)
-                                                    {
-                                                        foreach (var entry in ViewBag.ExpensePayableEntryDTOs)
-                                                        {
-                                                            <tr id="row-@entry.Id">
-                                                                <td style="border: 1px solid #ddd;">@entry.BranchDescription</td>
-                                                                <td style="border: 1px solid #ddd;">@entry.ChartOfAccountName</td>
-                                                                <td style="border: 1px solid #ddd;">@entry.Reference</td>
-                                                                <td style="border: 1px solid #ddd;">@entry.PrimaryDescription</td>
-                                                                <td style="border: 1px solid #ddd;">@entry.SecondaryDescription</td>
-                                                                <td style="border: 1px solid #ddd;">@String.Format("{0:C}", entry.Value)</td>
-                                                                <td style="border: 1px solid #ddd;">
-                                                                    <button type="button" class="btn btn-danger btn-sm" onclick="removeEntry('@entry.Id')">Remove</button>
-                                                                </td>
-                                                            </tr>
-                                                        }
-                                                    }
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-                                <div class="container1">
-                                    <h1>ACCOUNT SUMMARY</h1>
-                                    <table class="summary-table">
-                                        <tr>
-                                            <td>
-                                                <label for="Appropotioned">Appropotioned Amount:</label>
-                                                <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
-                                            </td>
-                                            <td>
-                                                <label for="Shortage">Shortage Amount:</label>
-                                                <input type="text" id="Shortage" placeholder="Shortage" readonly>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-
-
-
-
-
-                            </div>
-                        </fieldset>
-
-
-
-                    }
-
-                    @using (Html.BeginForm("Create", "ExpensePayable", new { Area = "FrontOffice" }, FormMethod.Post))
-                    {
-                        <div class="ibox-content bg-white text-info">
-                            <div class="col-lg-3" style="float: right;">
-                                <input type="submit" style="width: 100px;" value="Create" class="btn btn-primary" />
-                            </div>
-                        </div>
-                    }
-
+                            </fieldset>
+                        }
+                    </div>
                 </div>
+
+                <!-- Custom CSS -->
+                <style>
+                    .card {
+                        margin-bottom: 20px;
+                    }
+
+                    .nav-tabs .nav-link.active {
+                        background-color: #007bff;
+                        color: white;
+                    }
+
+                    .form-group-lg {
+                        margin-bottom: 1.5rem;
+                    }
+
+                    .form-control {
+                        border-radius: .25rem;
+                    }
+                </style>
+
 
 
             </div>
@@ -485,6 +394,8 @@
     @Scripts.Render("~/plugins/jqueryValidateUnobtrusive")
 
 
+
+    
 
     <script>
 $(document).ready(function () {
@@ -625,70 +536,70 @@ $(document).ready(function () {
                 e.preventDefault();
 
                 // Capture data from form fields
-                var branchDescription = $('#BranchDescription').val();
-                var chartOfAccount = $('#ExpensePayableEntry_ChartOfAccountAccountName').val();
-                var reference = $('#mainReference').val();
-                var primaryDescription = $('#mainPrimaryDescription').val();
-                var secondaryDescription = $('#mainSecondaryDescription').val();
-                var value = $('#mainValue').val();
-                var ExpensePayableAuthOptionDescription = $('#ExpensePayableAuthOptionDescription').val();
-                var ChartOfAccounts = $('#ChartOfAccounts').val();
-                var ChartOfAccountId = $('#ChartOfAccountId').val();
-                var PostingPeriodDescription = $('#PostingPeriodDescription').val();
-                var PostingPeriodId = $('#PostingPeriodId').val();
-                var TotalValue = $('#TotalValue').val();
-                var Remarks = $('#Remarks').val();
-                var ValueDate = $('#ValueDate').val();
-
-
-
-
-
-
-
+                var entryData = {
+                    BranchDescription: $('#BranchDescription').val(),
+                    BranchId: $('#BranchId').val(),
+                    ChartOfAccountAccountName: $('#ExpensePayableEntry_ChartOfAccountAccountName').val(),
+                    ChartOfAccountId: $('#ExpensePayableEntry_ChartOfAccountId').val(),
+                    Reference: $('#mainReference').val(),
+                    PrimaryDescription: $('#mainPrimaryDescription').val(),
+                    SecondaryDescription: $('#mainSecondaryDescription').val(),
+                    Value: parseFloat($('#mainValue').val()).toFixed(2),
+                    TypeDescription: $('#TypeDescription').val(),
+                    ChartOfAccounts: $('#ChartOfAccounts').val(),
+                    ChartOfAccountId: $('#ChartOfAccountId').val(),
+                    PostingPeriodDescription: $('#PostingPeriodDescription').val(),
+                    PostingPeriodId: $('#PostingPeriodId').val(),
+                    TotalValue: $('#TotalValue').val(),
+                    Remarks: $('#Remarks').val(),
+                    ValueDate: $('#ValueDate').val()
+                };
 
                 // Ensure all required fields have values
-                if (!branchDescription || !chartOfAccount || !reference || !primaryDescription || !value) {
+                if (!entryData.BranchDescription || !entryData.ChartOfAccountAccountName || !entryData.Reference || !entryData.PrimaryDescription || !entryData.Value ) {
                     alert("Please fill in all required fields.");
                     return;
                 }
 
-                // Format value as currency
-                var formattedValue = parseFloat(value).toFixed(2);
+                // AJAX request to send data to the controller
+                $.ajax({
+                    url: '/ExpensePayable/AddEntry', // Replace with your controller's action URL
+                    type: 'POST',
+                    data: JSON.stringify(entryData),
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (response) {
+                        if (response.success) {
+                            // Add the entry to the table
+                            var newRow = '<tr data-entry-id="' + entryData.Id + '">' +
+                                '<td>' + entryData.BranchDescription + '</td>' +
+                                '<td>' + entryData.ChartOfAccountAccountName + '</td>' +
+                                '<td>' + entryData.Reference + '</td>' +
+                                '<td>' + entryData.PrimaryDescription + '</td>' +
+                                '<td>' + entryData.SecondaryDescription + '</td>' +
+                                '<td class="amount">' + entryData.Value + '</td>' +
+                                '<td class="text-center">' +
+                                '<button type="button" class="btn btn-danger remove-entry">' +
+                                '<i class="fa fa-times"></i>' +
+                                '</button>' +
+                                '</td>' +
+                                '</tr>';
 
-                // Check for duplicate entries
-                if (isDuplicateEntry(branchDescription, chartOfAccount, reference, primaryDescription, secondaryDescription, formattedValue)) {
-                    alert("This entry already exists in the table.");
-                    return;
-                }
 
-                // Create new row
-                var newRow = '<tr>' +
-                    '<td>' + branchDescription + '</td>' +
-                    '<td>' + chartOfAccount + '</td>' +
-                    '<td>' + reference + '</td>' +
-                    '<td>' + primaryDescription + '</td>' +
-                    '<td>' + secondaryDescription + '</td>' +
-                    '<td class="amount">' + formattedValue + '</td>' +
-                    '<td class="text-center">' +
-                    '<button type="button" class="btn btn-danger remove-entry">' +
-                    '<i class="fa fa-times"></i>' +
-                    '</button>' +
-                    '</td>' +
-                    '</tr>';
+                            // Append the new row to the table
+                            $('#ExpensePayableEntries tbody').append(newRow);
 
-                // Append the new row to the table
-                $('#ExpensePayableEntries tbody').append(newRow);
+                            // Update amounts after adding the entry
+                            updateAmounts();
 
-                // Update amounts after adding the entry
-                updateAmounts();
-            });
-
-            // Delegate event handler for dynamically added remove buttons
-            $('#ExpensePayableEntries').on('click', '.remove-entry', function () {
-                var row = $(this).closest('tr');
-                row.remove();
-                updateAmounts();
+                            alert("Entry added successfully.");
+                        } else {
+                            alert("Failed to add entry: " + response.message);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        alert("An error occurred while adding the entry: " + error);
+                    }
+                });
             });
 
 
@@ -737,25 +648,20 @@ $(document).ready(function () {
     </script>
 
     <script>
-        $.ajax({
-            type: "POST",
-            url: '@Url.Action("Create", "ExpensePayable")',
-            data: { id: id },
-            success: function (response) {
-        if (response.success) {
-            // Redirect to the index page
-            window.location.href = response.redirectUrl;
-        } else {
-            // Display the error message
-            alert(response.message);
-        }
-    },
-    error: function () {
-        alert("An error occurred while processing your request.");
-    }
-});
+        // Function to handle row removal
+        $(document).on('click', '.remove-entry', function () {
+            if (confirm('Are you sure you want to remove this entry?')) {
+                $(this).closest('tr').remove();
+
+                // Update amounts after adding the entry
+                updateAmounts();
+            }
+        });
+
 
     </script>
+
+
 
     //ajax form submisstion
     <script>
@@ -780,46 +686,25 @@ $(document).ready(function () {
             }
         });
     });
-});
+       });
+
+
+
 
 
     </script>
 
 
 
-    <script>
-        $(document).ready(function () {
-            // Fetch the posting period start and end dates
-            var postingPeriodStartDate = new Date($("#DurationStartDate").val());
-            var postingPeriodEndDate = new Date($("#DurationEndDate").val());
 
-            // Monitor changes in the ValueDate input field
-            $("#ValueDate").on("change", function () {
-                // Parse the selected date
-                var selectedDate = new Date($(this).val());
 
-                // Validate the selected date against the posting period dates
-                if (selectedDate < postingPeriodStartDate || selectedDate > postingPeriodEndDate || selectedDate > new Date()) {
-                    $("#ValueDateError").text("Sorry, but the value date is out of the posting period range!").show();
-                    $(this).addClass("is-invalid");
-                } else {
-                    $("#ValueDateError").text("").hide();
-                    $(this).removeClass("is-invalid");
-                }
-            });
-
-            // Optionally, you can update the posting period dates if they change dynamically
-            $("#PostingPeriodStartDate, #PostingPeriodEndDate").on("change", function () {
-                postingPeriodStartDate = new Date($("#PostingPeriodStartDate").val());
-                postingPeriodEndDate = new Date($("#PostingPeriodEndDate").val());
-            });
-        });
-    </script>
 
 
 
 
     <script type="text/javascript">
+
+
 
         // Function to update amounts
         function updateAmounts() {

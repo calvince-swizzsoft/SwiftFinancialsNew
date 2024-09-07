@@ -49,7 +49,12 @@
                             <div class="row">
                                 <div class="col-lg-4">
 
-
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.PostingPeriodDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.PostingPeriodId, new { id = "PostingPeriodId" })
+                                        @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill...", id = "PostingPeriodDescription" } })
+                                        @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                    </div>
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks", disabled = "disabled" } })
@@ -76,9 +81,9 @@
                                     </div>
 
                                     <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Audit remarks" } })
-                                        @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                        @Html.LabelFor(model => model.AuthorizationRemarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.AuthorizationRemarks, new { htmlAttributes = new { @class = "form-control", placeholder = "Authorization Remarks" } })
+                                        @Html.ValidationMessageFor(model => model.AuthorizationRemarks, "", new { @class = "text-danger" })
                                     </div>
                                     <div class="form-group" id="data_3">
                                         @Html.LabelFor(model => model.AuditedDate, htmlAttributes: new { @class = "" })
@@ -88,7 +93,7 @@
                                         </div>
                                     </div>
 
-                                    
+
 
 
                                 </div>
@@ -229,6 +234,7 @@
     @Scripts.Render("~/plugins/duallist")
 
 
+   
     <script>
         $(document).ready(function () {
 

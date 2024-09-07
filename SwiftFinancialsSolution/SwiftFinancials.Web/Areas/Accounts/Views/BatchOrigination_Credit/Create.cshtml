@@ -160,6 +160,12 @@
     }
 </style>
 
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Accounts</h1>
@@ -476,7 +482,7 @@
                                     </div>
                                     <div class="col-lg-9">
                                         <div style="text-align: right; margin: 20px 20px;">
-                                            <button type="button" id="addEntryBtn" class="btn btn-primary">Add Entry</button>
+                                            <button type="submit" id="addEntryBtn" class="btn btn-primary">Add Entry</button>
                                         </div>
                                     </div>
 
@@ -496,7 +502,7 @@
                                                 <th style="width: 10%;">Product Description</th>
                                                 <th style="width: 10%;">Principal</th>
                                                 <th style="width: 10%;">Interest</th>
-                                                <th style="width: 10%;">Total</th>
+                                                <th style="width: 5%;">Action</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -513,11 +519,10 @@
 
 
 
-                        @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @id = "creditForm" }))
                         {
                             <div class="custom-container">
                                 <div class="row" id="policies">
-
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
@@ -551,7 +556,6 @@
                                         </div>
                                     </div>
 
-
                                     <div class="col-lg-2">
                                         <div class="form-group" style="text-align:right;">
                                             <input type="submit" value="Create" class="btn btn-primary" style="width: 100px; margin-left: 20px; border-radius: 4px; background-color: dodgerblue;" />
@@ -560,6 +564,9 @@
                                 </div>
                             </div>
                         }
+
+
+
                     </div>
 
 
@@ -638,44 +645,156 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-    <script type="text/javascript">
+
+
+
+    <script>
     $(document).ready(function () {
-        $('#addEntryBtn').click(function () {
-            var formData = $('#addCreditBatchForm').serialize();
+        $('#creditForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent form submission
+
+            // Serialize the form data
+            var formData = $(this).serialize();
 
             $.ajax({
-                url: '@Url.Action("Add", "BatchOrigination_Credit", new { Area = "Accounts" })',
+                url: '@Url.Action("Create", "BatchOrigination_Credit", new { Area = "Accounts" })',
                 type: 'POST',
                 data: formData,
                 success: function (response) {
                     if (response.success) {
-                        // Add new entries to the table
-                        var newRow = '';
-                        $.each(response.entries, function (index, entry) {
-                            newRow += '<tr>';
-                            newRow += '<td>' + entry.CreditCustomerAccountFullAccountNumber + '</td>';
-                            newRow += '<td>' + entry.CreditCustomerAccountStatusDescription + '</td>';
-                            newRow += '<td>' + entry.ProductDescription + '</td>';
-                            newRow += '<td>' + entry.Principal + '</td>';
-                            newRow += '<td>' + entry.Interest + '</td>';
-                            newRow += '<td>' + (entry.Principal + entry.Interest) + '</td>';
-                            newRow += '</tr>';
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Batch Created!',
+                            text: response.message,
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(function () {
+                            // Redirect to the Index action of the same controller
+                            window.location.href = '@Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts" })';
                         });
-
-                        $('#ChargeSplits tbody').html(newRow);
-
-                        // Clear the form fields with the specific class (e.g., .entry-field)
-                        $('.entry-field').val('');
                     } else {
-                        alert(response.message);
+                        // Handle failure, show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message
+                        });
                     }
                 },
-                error: function () {
-                    alert('An error occurred while processing your request.');
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
                 }
             });
         });
     });
+    </script>
+
+
+
+
+    
+
+
+
+
+    <script type="text/javascript">
+    $(document).ready(function () {
+        $('#addEntryBtn').click(function (event) {
+            event.preventDefault();
+
+        var formData = $('#addCreditBatchForm').serialize();
+
+        $.ajax({
+            url: '@Url.Action("Add", "BatchOrigination_Credit", new { Area = "Accounts" })',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    // Add new entries to the table
+                    updateEntriesTable(response.entries);
+
+                    // Display success message
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Success!',
+                        text: 'Entry added successfully.',
+                        timer: 1000,
+                        showConfirmButton: false
+                    });
+
+                    // Clear the form fields with the specific class (e.g., .entry-field)
+                    $('.entry-field').val('');
+                } else {
+                    // Display error message
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: response.message,
+                        timer: 8000,
+                        showConfirmButton: true
+                    });
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    });
+});
+
+        function updateEntriesTable(entries) {
+            var tableBody = $("#ChargeSplits tbody");
+            tableBody.empty(); // Clear existing entries
+
+            $.each(entries, function (index, entry) {
+                var row = `<tr data-id="${entry.Id}">
+                               <td>${entry.CreditCustomerAccountFullAccountNumber}</td>
+                               <td>${entry.CreditCustomerAccountStatusDescription}</td>
+                               <td>${entry.ProductDescription}</td>
+                               <td>${entry.Principal}</td>
+                               <td>${entry.Interest}</td>
+                               <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                           </tr>`;
+                tableBody.append(row);
+            });
+        }
+
+
+
+        // Attach click event to remove buttons
+        $(document).on("click", ".remove-entry", function (event) {
+            event.preventDefault(); // Prevent default behavior
+            var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+            removeEntry(entryId);
+        });
+
+
+
+        function removeEntry(id) {
+            $.ajax({
+                url: '@Url.Action("Remove", "BatchOrigination_Credit")',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.success) {
+                        updateEntriesTable(response.data);
+                    } else {
+                        alert("An error occurred while removing the entry.");
+                    }
+                },
+                error: function () {
+                    alert("An error occurred while processing the request.");
+                }
+            });
+        }
+
+
     </script>
 
 

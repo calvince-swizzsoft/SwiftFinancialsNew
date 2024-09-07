@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -24,9 +25,16 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             return View();
         }
+        [HttpGet]
+        public async Task<JsonResult> GetRoles()
+        {
+            //fetch all roles
+            var result = await _channelService.FindReportsAsync(GetServiceHeader());
 
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
         [HttpPost]
-      public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
@@ -66,13 +74,15 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var storedProcedures = GetStoredProcedures();
             ViewBag.StoredProcedures = new SelectList(storedProcedures);
             ViewBag.StoredProcedureCount = storedProcedures.Count;
+            ViewBag.ReportSelectList = GetreportTemplateCategorySelectList(string.Empty);
+
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(ReportDTO reportDTO)
         {
-            reportDTO.ValidateAll();
+           
 
             if (!reportDTO.HasErrors)
             {
@@ -83,7 +93,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             else
             {
                 var errorMessages = reportDTO.ErrorMessages;
-
+                ViewBag.ReportSelectList = GetreportTemplateCategorySelectList(string.Empty);
+                var storedProcedures = GetStoredProcedures();
+                ViewBag.StoredProcedures = new SelectList(storedProcedures);
                 return View(reportDTO);
             }
         }
@@ -93,7 +105,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             await ServeNavigationMenus();
 
             var reportDTO = await _channelService.FindReportAsync(id, GetServiceHeader());
-
+            ViewBag.ReportSelectList = GetreportTemplateCategorySelectList(string.Empty);
+            var storedProcedures = GetStoredProcedures();
+            ViewBag.StoredProcedures = new SelectList(storedProcedures);
             return View(reportDTO);
         }
 
@@ -101,7 +115,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(Guid id, ReportDTO reportBindingModel)
         {
-            reportBindingModel.ValidateAll();
 
             if (!reportBindingModel.HasErrors)
             {
@@ -111,6 +124,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
             else
             {
+                ViewBag.ReportSelectList = GetreportTemplateCategorySelectList(string.Empty);
+                var storedProcedures = GetStoredProcedures();
+                ViewBag.StoredProcedures = new SelectList(storedProcedures);
                 return View(reportBindingModel);
             }
         }
@@ -118,11 +134,19 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpGet]
         public async Task<JsonResult> GetReportsAsync()
         {
-            var reportsDTOs = await _channelService.FindReportsAsync(false);
+            //fetch all roles
+            var result = await _channelService.FindReportsAsync(GetServiceHeader());
 
-            return Json(reportsDTOs, JsonRequestBehavior.AllowGet);
+            return Json(result, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpGet]
+public async Task<JsonResult> GetReportById(Guid id)
+{
+    // This is a placeholder for any necessary operation or validation before redirecting
+    var reportDTO = await _channelService.FindReportAsync(id, GetServiceHeader());
+    return Json(reportDTO, JsonRequestBehavior.AllowGet);
+}
 
 
         /// <summary>
@@ -130,7 +154,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         /// </summary>
         /// <param name="storedProcedureName"></param>
         /// <returns></returns>
-       
+
         private List<string> GetStoredProcedures()
         {
             var storedProcedures = new List<string>();

@@ -124,6 +124,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 CustomerReference3 = debitcustomerAccount.CustomerReference3,
                 IdentificationNumber = debitcustomerAccount.CustomerIndividualIdentityCardNumber,
                 StatusDescription = debitcustomerAccount.StatusDescription,
+                Status = debitcustomerAccount.Status,
                 Remarks = debitcustomerAccount.Remarks,
                 ProductDescription = debitcustomerAccount.CustomerAccountTypeProductCodeDescription,
                 CustomerId = debitcustomerAccount.Id,
@@ -246,8 +247,16 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             debitBatchDTO = Session["DebitBatchDTO"] as DebitBatchDTO;
 
-            DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
+            if (debitBatchDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
 
+            DebitBatchEntryDTOs = Session["DebitBatchEntryDTO"] as ObservableCollection<DebitBatchEntryDTO>;
 
             if (Session["DebitBatchEntryDTO"] != null)
             {
@@ -258,37 +267,49 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (!debitBatchDTO.HasErrors)
             {
-                var debitBatch = await _channelService.AddDebitBatchAsync(debitBatchDTO, GetServiceHeader());
-
-                foreach (var debitBatchEntry in DebitBatchEntryDTOs)
+                try
                 {
-                    debitBatchEntry.DebitBatchId =debitBatch.Id;
-                    await _channelService.AddDebitBatchEntryAsync(debitBatchEntry, GetServiceHeader());
+                    var debitBatch = await _channelService.AddDebitBatchAsync(debitBatchDTO, GetServiceHeader());
+
+                    foreach (var debitBatchEntry in DebitBatchEntryDTOs)
+                    {
+                        debitBatchEntry.DebitBatchId = debitBatch.Id;
+                        await _channelService.AddDebitBatchEntryAsync(debitBatchEntry, GetServiceHeader());
+                    }
+
+                    
+
+                    // Clear Session and TempData
+                    TempData["OverDeductionBatchDTO"] = "";
+                    Session["DebitBatchEntryDTO"] = null;
+                    Session["DebitBatchDTO"] = null;
+
+                    return Json(new
+                    {
+                        success = true,
+                        message = "Successfully created debit batch."
+                    });
                 }
-            
-
-
-
-
-            //  OverDeductionBatchEntryDTO overDeductionBatch = new OverDeductionBatchEntryDTO();
-
-
-
-
-                TempData["SuccessMessage"] = "Successfully Created Debit Batch";
-                TempData["OverDeductionBatchDTO"] = "";
-                Session["DebitBatchEntryDTO"] = null;
-                Session["DebitBatchDTO"] = null;
-
-                return RedirectToAction("Index");
+                catch (Exception ex)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "An error occurred while creating the batch: " + ex.Message
+                    });
+                }
             }
             else
             {
-                var errorMessages = debitBatchDTO.ErrorMessages;
-
-                return View(debitBatchDTO);
+                var errorMessages = string.Join(" ", debitBatchDTO.ErrorMessages);
+                return Json(new
+                {
+                    success = false,
+                    message = "Validation errors: " + errorMessages
+                });
             }
         }
+
 
 
 

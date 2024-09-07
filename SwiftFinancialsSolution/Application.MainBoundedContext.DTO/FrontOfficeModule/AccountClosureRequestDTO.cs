@@ -350,6 +350,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         }
 
         public LoanCaseDTO loanCaseDTO { get; set; }
-       
+        public string errormassage;
+
+
     }
 }
