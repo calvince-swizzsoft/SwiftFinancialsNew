@@ -154,7 +154,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             if (loanDTO.AppraisedAmount == 0 || loanDTO.SystemAppraisalRemarks == string.Empty || loanDTO.AppraisalRemarks == string.Empty)
             {
                 TempData["AppraisedAmount"] = "Appraised amount, System Appraisal Remarks and Appraisal Remarks required to appraise loan.";
-
+                ViewBag.LoanAppraisalOptionSelectList = GetLoanAppraisalOptionSelectList(loanCaseDTO.LoanAppraisalOption.ToString());
                 return View();
             }
 
