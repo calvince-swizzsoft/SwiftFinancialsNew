@@ -289,8 +289,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 wireTransferBatchDTO.WireTransferEntries = WireTransferEntryDTOs;
             }
-
+                
             wireTransferBatchDTO.ValidateAll();
+
+
+            decimal sumAmount = WireTransferEntryDTOs.Sum(e => e.Amount);
+            decimal totalValue = wireTransferBatchDTO?.TotalValue ?? 0;
+
+
+            if (sumAmount != totalValue)
+            {
+                var balance = totalValue - sumAmount;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({sumAmount}). Balance: {balance}" });
+            }
 
             if (!wireTransferBatchDTO.HasErrors)
             {

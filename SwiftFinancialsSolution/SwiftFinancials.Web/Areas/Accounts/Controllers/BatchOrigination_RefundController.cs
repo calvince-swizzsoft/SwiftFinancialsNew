@@ -230,7 +230,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 storedOverDeductionBatchDTO.overDeductionBatchEntries = overDeductionBatchEntryDTOs;
             }
+            decimal totalPrincipalAndInterest = overDeductionBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+            decimal totalValue = storedOverDeductionBatchDTO?.TotalValue ?? 0;
 
+            if (totalPrincipalAndInterest != totalValue)
+            {
+                var balance = totalValue - totalPrincipalAndInterest;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({totalPrincipalAndInterest}). Balance: {balance}" });
+            }
             // Validate the DTO
             storedOverDeductionBatchDTO.ValidateAll();
             if (storedOverDeductionBatchDTO.ErrorMessageResult != null)
