@@ -3,7 +3,174 @@
 @{
     ViewBag.Title = "AddGeneralLedger";
     var k = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
+
+    var generalLedgerEntryTypes = ViewBag.GeneralLedgerEntryTypeSelectList as List<SelectListItem>;
 }
+
+<style>
+    .main {
+        border: 1px solid gray;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+    }
+    .row{
+        margin-top:5px;
+    }
+    h2{
+        color:#333;
+        font-weight:bold;
+
+
+    }
+
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+
+        background-color: #00e0ff;
+    }
+    .content {
+        border: 4px solid #00ffff;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        justify-content: center;
+        align-content: baseline;
+        margin: 10px;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 10px;
+    }
+    .btn-primary{
+        border-radius:10px;
+    }
+    @*Styling for Entries*@
+    .journal-voucher-container {
+        border: 1px solid #333;
+        margin: 20px;
+        padding: 20px;
+        font-size: 15px;
+        border-radius: 8px;
+        position: relative;
+        padding: 40px; /* Space for the h2 */
+
+    }
+
+    .journal-voucher-container h2 {
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background: #fff;
+        padding: 0 10px;
+        margin: 0;
+    }
+
+    .journal-voucher-container .form-control,
+    .journal-voucher-container .input-group-addon {
+        font-weight: normal; /* Retain normal weight for controls */
+    }
+
+    @*css for the journal entries*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .form-control {
+        color: #007bff;
+    }
+
+</style>
+
+<!-- CSS Styling -->
+<style>
+    .bordered-container {
+        border: 2px solid gray;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 30px;
+        position: relative;
+    }
+
+    .bordered-heading {
+        position: absolute;
+        top: -20px;
+        left: 15px;
+        background-color: white;
+        padding: 0 10px;
+        font-size: 18px;
+    }
+
+    /* Table Styles */
+    #RefundBatchEntry {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #RefundBatchEntry thead {
+            background-color: white;
+            color: #333;
+        }
+
+        #RefundBatchEntry th, #RefundBatchEntry td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #RefundBatchEntry th {
+            font-weight: bold;
+        }
+
+        #RefundBatchEntry tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #RefundBatchEntry tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
 
@@ -48,313 +215,833 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-info">
-                    @using (Html.BeginForm("Create", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        @Html.AntiForgeryToken()
 
+                    <div class="main">
+                        @using (Html.BeginForm("Add", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post, new { id = "formAddBatch" }))
+                        {
+                            @Html.AntiForgeryToken()
 
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-lg-3">
 
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Remarks" } })
-                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.PostingPeriodId)
-                                    @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Posting Period" } })
-                                    @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                            <div class="col-lg-6">
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BudgetEntries[0].LoanProductId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BudgetEntries[0].LoanProductId)
-                                        @Html.EditorFor(model => model.BudgetEntries[0].LoanProductId, new { htmlAttributes = new { @class = "LoanProductsLookup form-control required", placeholder = "LoanProduct Name" } })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].LoanProductDescription, "", new { @class = "text-danger" })
-                                    </div>*@
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.BranchId)
-                                    @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Description" } })
-                                    @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                </div>
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Total Value" } })
-                                    @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <h1>Ledger Details</h1>
-
-                        <div class="row">
-                            <div class="col-lg-6">
-
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                            @Html.DropDownListFor(model => model.Status, k, new { @class = "form-control input-md" })
-                                            @Html.ValidationMessageFor(model => model.Status)
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Enter space to autofill..." } })
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
                                         </div>
-                                    </div>*@
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.PostingPeriodId)
+                                            @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "Enter space to autofill..." } })
+                                            @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
 
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LedgerDTO.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
-                                    @Html.HiddenFor(model => model.LedgerDTO.PostingPeriodId)
-                                    @Html.EditorFor(model => model.LedgerDTO.PostingPeriodId, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", placeholder = "COA Name" } })
-                                    @Html.ValidationMessageFor(model => model.LedgerDTO.PostingPeriodId, "", new { @class = "text-danger" })
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                        </div>
+
+                                    </div>
+                                    <div class="col-lg-3">
+
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ksh.." } })
+                                            @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="journal-voucher-container">
+                                <h2>Ledger Entries</h2>
+
+
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="bordered-container">
+                                            <h3 class="bordered-heading">Debit</h3>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].EntryType, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.GeneralLedgerEntries[0].EntryType, generalLedgerEntryTypes,
+                                                            new { @class = "form-control input-md", @id = "entryTypeDropdown1" })
+                                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].EntryType)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="chartFields1" class="col-lg-6" style="display:none;">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, htmlAttributes: new { @class = "" })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit" })
+                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookupDebit form-control required", @placeholder = "Enter space to autofill" } })
+                                                        @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div id="customerFields11" class="col-lg-6" style="display:none;">
+                                                    <div class="col-md-13 form-group">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @class = "control-label" })
+                                                        <div class="input-group" data-autoclose="true">
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @id = "DebitCustomerAccountId" })
+                                                            @Html.TextBoxFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "ContraCustomerAccountCustomerFullName" })
+                                                            <span class="input-group-addon">
+                                                                <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="customerFields12" class="col-lg-6" style="display:none;">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "" })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerAccountTypeTargetProductId, new { @id = "ContraCustomerAccountCustomerAccountTypeTargetProductId" })
+
+                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "ContraCustomerAccountAccountTypeTargetProductDescription", @readonly = "readonly" } })
+                                                        @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div id="customerFields13" class="col-lg-6" style="display:none;">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, htmlAttributes: new { @class = "" })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountId, new { @id = "DebitContraCustomerAccountId" })
+                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "ContraCustomerAccountFullAccountNumber", @readonly = "readonly" } })
+                                                        @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="col-lg-6">
+                                        <div class="bordered-container">
+                                            <h3 class="bordered-heading">Credit</h3>
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].EntryType, new { @class = "control-label" })
+
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.GeneralLedgerEntries[0].EntryType, generalLedgerEntryTypes,
+                                                            new { @class = "form-control input-md", @id = "entryTypeDropdown" })
+                                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].EntryType)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="chartFields" class="col-lg-6" style="display:none;">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, new { @id = "ChartOfAccountId" })
+                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill" } })
+                                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div id="customerFields1" class="col-lg-6" style="display:none;">
+                                                    <div class="col-md-13 form-group">
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerId, new { @class = "control-label" })
+                                                        <div class="input-group" data-autoclose="true">
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerId, new { @class = "entry-field", @id = "CreditCustomerAccountId" })
+                                                            @Html.TextBoxFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullName" })
+                                                            <span class="input-group-addon">
+                                                                <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="customerFields2" class="col-lg-6" style="display:none;">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountId, new { @id = "CreditCustomerAccountId" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, new { @id = "CustomerAccountCustomerAccountTypeTargetProductId" })
+                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].CustomerAccountAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "CustomerAccountAccountTypeTargetProductDescription", @readonly = "readonly" } })
+                                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].CustomerAccountAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div id="customerFields3" class="col-lg-6" style="display:none;">
+                                                    <div class="form-group form-group-lg">
+                                                        <div class="form-group form-group-lg">
+                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, htmlAttributes: new { @class = "" })
+                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "CustomerAccountFullAccountNumber", @readonly = "readonly" } })
+                                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, "", new { @class = "text-danger" })
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <br />
+                                <div class="row">
+
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].Amount, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].Amount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].Amount, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group spacing-form-group" id="data_3">
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].ValueDate, htmlAttributes: new { @class = "" })
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].Reference, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                            @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].Reference, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+
+                                </div>
+                                @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit2" })
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                    </div>
+
                                 </div>
 
 
-                            </div>
-                            <div class="col-lg-6">
+                                <br />
+                                <row>
+                                    <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 5%;">Credit Chart of Account</th>
+                                                <th style="width: 5%;">Credit Customer Name </th>
+                                                <th style="width: 5%;">Credit Product Description</th>
+                                                <th style="width: 5%;">Credit Account Number</th>
+                                                <th style="width: 5%;">Debit Chart of Account</th>
+                                                <th style="width: 5%;">Debit Customer Name </th>
+                                                <th style="width: 5%;">Debit Product Description</th>
+                                                <th style="width: 5%;">Debit Account Number</th>
+                                                <th style="width: 5%;">Amount</th>
+                                                <th style="width: 5%;">Action</th>
 
-                                <div class="form-group form-group-lg">
-                                    @Html.LabelFor(model => model.LedgerDTO.PostedEntries, htmlAttributes: new { @class = "" })
-                                    @Html.EditorFor(model => model.LedgerDTO.PostedEntries, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "" } })
-                                    @Html.ValidationMessageFor(model => model.LedgerDTO.PostedEntries, "", new { @class = "text-danger" })
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+
+
+                                </row>
+                            </div>
+
+                        }
+
+
+                        @using (Html.BeginForm("Create", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="bottom-button">
+                                <div class="row">
+                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
                                 </div>
-                                @*<div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model., htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.BudgetEntries[0].Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "Reference" } })
-                                        @Html.ValidationMessageFor(model => model.BudgetEntries[0].Reference, "", new { @class = "text-danger" })
-                                    </div>*@
-
                             </div>
-                        </div>
+                        }
+                    </div>
 
-
-                        <style>
-                            .container1 {
-                                border: 1px solid #ddd;
-                                border-radius: 5px;
-                                padding: 20px;
-                                margin-bottom: 20px;
-                                background-color: mintcream
-                            }
-
-                            .container {
-                                border: 1px solid #ddd;
-                                border-radius: 5px;
-                                padding: 20px;
-                                margin-bottom: 20px;
-                                background-color: darkgray
-                            }
-
-                            table {
-                                width: 100%;
-                                border-collapse: collapse;
-                            }
-
-                            td {
-                                padding: 10px;
-                                border: none; /* Remove border */
-                            }
-
-                            h2 {
-                                font-size: 20px; /* smaller font size */
-                                color: blue
-                            }
-
-                            h3 {
-                                font-size: medium;
-                                color: black
-                            }
-
-                            input[type="text"] {
-                                width: calc(100% - 20px); /* Adjust width to accommodate borders and padding */
-                                padding: 8px;
-                                box-sizing: border-box;
-                                border: 1px solid #ddd; /* Add border */
-                                background-color: #f7f7f7; /* Add shade */
-                            }
-
-                            label {
-                                font-weight: bold;
-                            }
-                        </style>
-
-                        <div class="container1">
-                            <h2>ACCOUNT SUMMARY</h2>
-                            <table>
-                                <tr>
-                                    <td>
-                                        <label for="Appropotioned">Appropotioned Amount:</label><br>
-                                        <input type="text" id="Appropotioned" placeholder="Appropotioned" readonly>
-                                    </td>
-                                    <td>
-                                        <label for="Shortage">Shortage Amount:</label><br>
-                                        <input type="text" id="Shortage" placeholder="Shortage" readonly>
-                                    </td>
-                                </tr>
-
-                            </table>
-                            <h3>   Appropotioned Amount should not exceed the total Amount</h3>
-                        </div>
-                        <div class="col-sm-1">
-                            <div class="form-group">
-                                <input type="submit" value="Add Ledgers Entries" class="btn btn-success" />
-                            </div>
-                        </div>
-
-
-                    }
 
                 </div>
-                <div class="ibox-content m-b-sm border-bottom">
-                    @using (Html.BeginForm("Create", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
-                    {
-                        <div class="row">
-                            <div class="col-sm-2">
-                                @*<div class="form-group">
-                                        <input type="submit" value="Post" class="btn btn-success" />
-                                    </div>*@
-                            </div>
-                        </div>
-                    }
-                </div>
+
 
             </div>
         </div>
     </div>
 </div>
+<div class="modal  fade" id="CreditcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Credit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="CreditCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="DebitcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Debit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="DebitCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
-
-
-    <script>
-$(document).ready(function () {
-    $('.remove-btn').click(function () {
-        var row = $(this).closest('tr');
-        var id = row.data('id');
-
-        $.ajax({
-            url: '@Url.Action("Remove", "Budget")',
-            type: 'POST',
-            data: { id: id },
-            success: function () {
-                row.remove();
-                updateAmounts(); // Update amounts after successful removal
-            },
-            error: function () {
-                alert('Error: Failed to remove row.');
-            }
-        });
-    });
-});
-    </script>
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script>
-        function updateAmounts() {
-            var totalAmount = 0;
-            var amountCells = document.getElementsByClassName('amount-cell');
+        $(document).ready(function () {
+            $('#form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
 
-            for (var i = 0; i < amountCells.length; i++) {
-                var amount = parseFloat(amountCells[i].innerText);
-                if (!isNaN(amount)) {
-                    totalAmount += amount;
-                }
-            }
+                // Serialize the form data
+                var formData = $(this).serialize();
 
-            var totalValueElement = document.querySelector('[name="TotalValue"]');
-            var appropotionedElement = document.getElementById('Appropotioned');
-            var shortageElement = document.getElementById('Shortage');
-
-            // Get the current total value
-            var totalValue = parseFloat(totalValueElement.value);
-            if (isNaN(totalValue)) {
-                totalValue = 0;
-            }
-
-            // Check if the apportioned amount exceeds the total value and alert
-            if (totalAmount > totalValue) {
-                alert('Appropotioned amount exceeds the total value!');
-                return; // Stop further execution
-            }
-
-            // Update the Appropotioned textbox with the total amount
-            appropotionedElement.value = totalAmount.toFixed(2);
-
-            // Calculate the shortage if the total value is greater than the total amount
-            if (totalValue > totalAmount) {
-                var shortage = totalValue - totalAmount;
-                shortageElement.value = shortage.toFixed(2);
-            } else {
-                shortageElement.value = '0.00';
-            }
-        }
-
-        // Call the function on page load and when the Total Value changes
-        document.addEventListener('DOMContentLoaded', function () {
-            updateAmounts();
-
-            // Add event listener to Total Value input to update on change
-            var totalValueElement = document.querySelector('[name="TotalValue"]');
-            totalValueElement.addEventListener('input', updateAmounts);
-        });
-    </script>
-
-
-
-    @*function updateAmounts() {
-                var totalAmount = 0;
-                var amountCells = document.getElementsByClassName('amount-cell');
-
-                for (var i = 0; i < amountCells.length; i++) {
-                    var amount = parseFloat(amountCells[i].innerText.trim().replace(',', '')); // Trim spaces and remove commas if present
-                    if (!isNaN(amount)) {
-                        totalAmount += amount;
+                $.ajax({
+                    url: $(this).attr('action'), // Form action URL
+                    type: 'POST',                 // Form method (POST)
+                    data: formData,               // Form data
+                    success: function (response) {
+                        // Handle the success response (using SweetAlert for messages)
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/Accounts/AddGeneralLedger/Index'; // Redirect to index
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle errors in the AJAX request
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            timer: 8000,
+                            showConfirmButton: true
+                        });
                     }
-                }
-
-                var totalValueElement = document.querySelector('[name="TotalValue"]');
-                var appropriatedElement = document.getElementById('Appropriated');
-                var shortageElement = document.getElementById('Shortage');
-
-                var totalValue = parseFloat(totalValueElement.value) || 0;
-
-                if (totalAmount > totalValue) {
-                    alert('Appropriated amount exceeds the total value!');
-                    return;
-                }
-
-                appropriatedElement.value = totalAmount.toFixed(2); // Ensure 'Appropriated' is a <input> or <textarea> element
-
-                if (totalValue > totalAmount) {
-                    var shortage = totalValue - totalAmount;
-                    shortageElement.value = shortage.toFixed(2); // Ensure 'Shortage' is a <input> or <textarea> element
-                } else {
-                    shortageElement.value = '0.00'; // Ensure 'Shortage' is set to a default value when totalValue === totalAmount
-                }
-            }
-            // Call updateAmounts on page load and when TotalValue changes
-            document.addEventListener('DOMContentLoaded', function () {
-                updateAmounts();
-
-                var totalValueElement = document.querySelector('[name="TotalValue"]');
-                totalValueElement.addEventListener('input', updateAmounts);
+                });
             });
         });
 
-            </script>*@
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Handle the form submission event
+            $('#formAddBatch').submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Entry added successfully.',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            clearEntryForm();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            });
+        });
+
+
+
+            function updateEntriesTable(entries) {
+                var tableBody = $("#RefundBatchEntry tbody");
+                tableBody.empty(); // Clear existing entries
+
+                $.each(entries, function (index, entry) {
+                    var row = `<tr data-id="${entry.Id}">
+                           <td>${entry.ContraChartOfAccountName}</td>
+                           <td>${entry.ContraCustomerAccountCustomerIndividualFirstName}</td>
+                           <td>${entry.ContraCustomerAccountAccountTypeTargetProductDescription}</td>
+                           <td>${entry.DebitFullAccountNumber}</td>
+                           <td>${entry.ChartOfAccountName}</td>
+                           <td>${entry.CustomerAccountCustomerIndividualFirstName}</td>
+                           <td>${entry.CustomerAccountAccountTypeTargetProductDescription}</td>
+                           <td>${entry.CreditFullAccountNumber}</td>
+                           <td>${entry.Amount}</td>
+                           <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                       </tr>`;
+                    tableBody.append(row);
+                });
+            }
+
+            // Attach click event to remove buttons
+            $(document).on("click", ".remove-entry", function (event) {
+                event.preventDefault(); // Prevent default behavior
+                var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+                removeEntry(entryId);
+            });
+
+
+
+            function removeEntry(id) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "AddGeneralLedger")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                        } else {
+                            alert("An error occurred while removing the entry.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while processing the request.");
+                    }
+                });
+            }
+
+
+            function clearEntryForm() {
+                // Reset only the fields with the 'entry-field' class
+                $('#formAddBatch').find('.entry-field').val('');
+            }
+    </script>
+
+
+
+
+
+
+    @*<script>
+
+
+
+
+
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the dropdown element
+                var entryTypeDropdown = document.getElementById('entryTypeDropdown');
+
+                // Add event listener to the dropdown
+                entryTypeDropdown.addEventListener('change', function () {
+                    var selectedValue = entryTypeDropdown.value;
+
+                    // Hide all fields initially
+                    document.getElementById('chartFields').style.display = 'none';
+                    document.getElementById('customerFields1').style.display = 'none';
+                    document.getElementById('customerFields2').style.display = 'none';
+                    document.getElementById('customerFields3').style.display = 'none';
+
+                    // Show relevant fields based on selection
+                    if (selectedValue == 1) {  // Replace with actual value from dropdown
+                        document.getElementById('chartFields').style.display = 'block';
+                    } else if (selectedValue == 2) {  // Replace with actual value from dropdown
+                        document.getElementById('customerFields1').style.display = 'block';
+                        document.getElementById('customerFields2').style.display = 'block';
+                        document.getElementById('customerFields3').style.display = 'block';
+                    }
+                });
+
+                // Trigger the change event on page load (in case the dropdown already has a selected value)
+                entryTypeDropdown.dispatchEvent(new Event('change'));
+            });
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the dropdown element
+                var entryTypeDropdown = document.getElementById('entryTypeDropdown1');
+
+                // Add event listener to the dropdown
+                entryTypeDropdown.addEventListener('change', function () {
+                    var selectedValue = entryTypeDropdown.value;
+
+                    // Hide all fields initially
+                    document.getElementById('chartFields1').style.display = 'none';
+                    document.getElementById('customerFields11').style.display = 'none';
+                    document.getElementById('customerFields12').style.display = 'none';
+                    document.getElementById('customerFields13').style.display = 'none';
+
+                    // Show relevant fields based on selection
+                    if (selectedValue == 1) {  // Replace with actual value from dropdown
+                        document.getElementById('chartFields1').style.display = 'block';
+                    } else if (selectedValue == 2) {  // Replace with actual value from dropdown
+                        document.getElementById('customerFields11').style.display = 'block';
+                        document.getElementById('customerFields12').style.display = 'block';
+                        document.getElementById('customerFields13').style.display = 'block';
+                    }
+                });
+
+                // Trigger the change event on page load (in case the dropdown already has a selected value)
+                entryTypeDropdown.dispatchEvent(new Event('change'));
+            });
+
+
+
+
+
+
+        </script>*@
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the dropdown element
+            var entryTypeDropdown = document.getElementById('entryTypeDropdown');
+
+            // Add event listener to the dropdown
+            entryTypeDropdown.addEventListener('change', function () {
+                var selectedValue = entryTypeDropdown.value;
+
+                // Hide and clear all fields initially
+                hideAndClear('chartFields');
+                hideAndClear('customerFields1');
+                hideAndClear('customerFields2');
+                hideAndClear('customerFields3');
+
+                // Show relevant fields based on selection
+                if (selectedValue == 1) {
+                    show('chartFields');
+                } else if (selectedValue == 2) {
+                    show('customerFields1');
+                    show('customerFields2');
+                    show('customerFields3');
+                }
+            });
+
+            // Trigger the change event on page load (in case the dropdown already has a selected value)
+            entryTypeDropdown.dispatchEvent(new Event('change'));
+
+            // Helper function to hide and clear (set to null/empty) the fields
+            function hideAndClear(fieldId) {
+                var field = document.getElementById(fieldId);
+                field.style.display = 'none';
+
+                // Set all input elements inside this field to empty values
+                Array.from(field.querySelectorAll('input, select, textarea')).forEach(function (input) {
+                    if (input.id === 'ChartOfAccountId') {
+                        // Set ChartOfAccountId to null to avoid the default GUID
+                        input.value = '';
+                    } else {
+                        input.value = ''; // Clear the value of other inputs
+                    }
+                });
+            }
+
+            // Helper function to show a field
+            function show(fieldId) {
+                var field = document.getElementById(fieldId);
+                field.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the second dropdown element
+            var entryTypeDropdown = document.getElementById('entryTypeDropdown1');
+
+            // Add event listener to the second dropdown
+            entryTypeDropdown.addEventListener('change', function () {
+                var selectedValue = entryTypeDropdown.value;
+
+                // Hide and clear all fields initially
+                hideAndClear('chartFields1');
+                hideAndClear('customerFields11');
+                hideAndClear('customerFields12');
+                hideAndClear('customerFields13');
+
+                // Show relevant fields based on selection
+                if (selectedValue == 1) {
+                    show('chartFields1');
+                } else if (selectedValue == 2) {
+                    show('customerFields11');
+                    show('customerFields12');
+                    show('customerFields13');
+                }
+            });
+
+            // Trigger the change event on page load
+            entryTypeDropdown.dispatchEvent(new Event('change'));
+
+            // Reuse the hide and clear, and show functions
+            function hideAndClear(fieldId) {
+                var field = document.getElementById(fieldId);
+                field.style.display = 'none';
+
+                // Set all input elements inside this field to empty values
+                Array.from(field.querySelectorAll('input, select, textarea')).forEach(function (input) {
+                    if (input.id == 'ChartOfAccountId1') {
+                        // Set ChartOfAccountId1 to null to avoid the default GUID
+                        input.value = '';
+                    } else {
+                        input.value = ''; // Clear the value of other inputs
+                    }
+                });
+            }
+
+            function show(fieldId) {
+                var field = document.getElementById(fieldId);
+                field.style.display = 'block';
+            }
+        });
+    </script>
+
 
 
 
     <script>
+
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+
+
+        ////////// Credit customer accounts lookup modal/////////
+    $('#CreditCustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
+
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+
+
+    function selectCustomerAccounts(id) {
+        $.ajax({
+            url: '/Accounts/AddGeneralLedger/CreditCustomerAccountLookup',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate fields with the returned data
+                    $('#CustomerAccountFullAccountNumber').val(response.data.CreditFullAccountNumber);
+                    $('#CustomerAccountAccountTypeTargetProductDescription').val(response.data.CustomerAccountAccountTypeTargetProductDescription);
+                    $('#CustomerAccountCustomerAccountTypeTargetProductId').val(response.data.CustomerAccountCustomerAccountTypeTargetProductId);
+                    $('#CreditCustomerAccountFullName').val(response.data.CustomerAccountCustomerIndividualFirstName);
+                    $('#CreditCustomerAccountId').val(response.data.CustomerAccountCustomerId);
+                    $('#CreditCustomerAccountId').val(response.data.CustomerAccountId);
+                    $('#ChartOfAccountId2').val(response.data.ChartOfAccountId);
+                    // Close the modal
+                    $('#CreditcustomerAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
+
+    ////////// Debit customer accounts lookup modol/////////
+        $('#DebitCustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccount(\'' + aData.Id + '\')">Select</button>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
+
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    function selectCustomerAccount(id) {
+        $.ajax({
+            url: '/Accounts/AddGeneralLedger/DebitCustomerAccountLookup',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate fields with the returned data
+                    $('#ContraCustomerAccountFullAccountNumber').val(response.data.DebitFullAccountNumber);
+                    $('#ContraCustomerAccountAccountTypeTargetProductDescription').val(response.data.ContraCustomerAccountAccountTypeTargetProductDescription);
+                    $('#ContraCustomerAccountCustomerAccountTypeTargetProductId').val(response.data.ContraCustomerAccountCustomerAccountTypeTargetProductId);
+                    $('#ContraCustomerAccountCustomerFullName').val(response.data.ContraCustomerAccountCustomerIndividualFirstName);
+                    $('#DebitCustomerAccountId').val(response.data.ContraCustomerAccountCustomerId);
+                    $('#DebitContraCustomerAccountId').val(response.data.ContraCustomerAccountId);
+                    $('#ChartOfAccountIdDebit2').val(response.data.ContraChartOfAccountId);
+                    // Close the modal
+                    $('#DebitcustomerAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
+
 
 
 
@@ -394,6 +1081,49 @@ $(document).ready(function () {
                     return item;
                 }
             });
+
+
+
+
+         //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookupDebit').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartOfAccountIdDebit').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+            });
+
+
+
 
             //PostingPeriod typehead starts here
             $('.PostingPeriodsLookup').typeahead({

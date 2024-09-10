@@ -106,7 +106,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchOrigination_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
                 new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchOrigination_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 13},
                 new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchOrigination_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 14},
-                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchOrigination_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="AddGeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
 
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Chart of Accounts", Icon="fa fa-usb", ControllerName="ChartOfAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
