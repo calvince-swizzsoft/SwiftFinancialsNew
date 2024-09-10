@@ -335,6 +335,10 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "G/L Account")]
         public string ChartOfAccountAccountName { get; set; }
+        
+        [DataMember]
+        [Display(Name ="Bank")]
+        public string BankName { get; set; }
 
         public static ValidationResult ValidateWriteDate(object value, ValidationContext context)
         {
