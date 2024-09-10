@@ -98,6 +98,13 @@
                         <div class="alert alert-danger">
                             <strong>Failed!</strong> @TempData["sp_Empty"]
                         </div>
+                    }  
+                    
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed!</strong> @TempData["Error"]
+                        </div>
                     }
                     <div class="ibox-tools">
                         <a class="collapse-link">
