@@ -141,50 +141,6 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
         }
 
 
-        public ActionResult GeneratePDFReport(string reportQuery, Dictionary<string, string> paramValues)
-        {
-            DataTable reportData = FetchReportData(reportQuery, paramValues);
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 30);
-                PdfWriter.GetInstance(pdfDoc, stream);
-                pdfDoc.Open();
-
-                // Add a logo image in the header
-                string logoPath = Server.MapPath("~/Images/MIA.JPG");
-                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
-                logo.ScaleToFit(300f, 300f);
-                logo.Alignment = Element.ALIGN_CENTER;
-                pdfDoc.Add(logo);
-
-                // Add report data to the PDF
-                PdfPTable table = new PdfPTable(reportData.Columns.Count);
-
-                // Add table header
-                foreach (DataColumn column in reportData.Columns)
-                {
-                    PdfPCell header = new PdfPCell(new Phrase(column.ColumnName));
-                    header.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.AddCell(header);
-                }
-
-                // Add table rows
-                foreach (DataRow row in reportData.Rows)
-                {
-                    foreach (DataColumn column in reportData.Columns)
-                    {
-                        table.AddCell(row[column].ToString());
-                    }
-                }
-
-                pdfDoc.Add(table);
-                pdfDoc.Close();
-
-                // Return the PDF as a downloadable file
-                return File(stream.ToArray(), "application/pdf", "Report.pdf");
-            }
-        }
 
         // Action to generate the Excel report
         public ActionResult GenerateExcelReport(string reportQuery, Dictionary<string, string> paramValues)
@@ -220,6 +176,102 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
                 }
             }
+        }
+
+
+
+
+        public ActionResult GeneratePDFReport(string reportQuery, Dictionary<string, string> paramValues)
+        {
+            DataTable reportData = FetchReportData(reportQuery, paramValues);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 50);
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+                writer.PageEvent = new PDFPageEventHelper(); 
+
+                pdfDoc.Open();
+
+                
+                string logoPath = Server.MapPath("~/Images/MIA.JPG");
+                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
+                logo.ScaleToFit(200f, 80f);  
+                logo.Alignment = Element.ALIGN_CENTER;
+                pdfDoc.Add(logo);
+
+                
+                pdfDoc.Add(new Paragraph("\n"));
+
+                
+                PdfPTable table = new PdfPTable(reportData.Columns.Count)
+                {
+                    WidthPercentage = 100,  
+                    SpacingBefore = 10f,
+                    SpacingAfter = 10f,
+                    HorizontalAlignment = Element.ALIGN_CENTER
+                };
+
+                BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                Font headerFont = new Font(bf, 12, Font.BOLD, BaseColor.WHITE);
+                Font cellFont = new Font(bf, 10, Font.NORMAL, BaseColor.BLACK);
+
+                foreach (DataColumn column in reportData.Columns)
+                {
+                    PdfPCell header = new PdfPCell(new Phrase(column.ColumnName, headerFont))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        BackgroundColor = new BaseColor(0, 51, 102),
+                        Padding = 5
+                    };
+                    table.AddCell(header);
+                }
+
+                foreach (DataRow row in reportData.Rows)
+                {
+                    foreach (DataColumn column in reportData.Columns)
+                    {
+                        PdfPCell cell = new PdfPCell(new Phrase(row[column].ToString(), cellFont))
+                        {
+                            HorizontalAlignment = Element.ALIGN_CENTER,
+                            Padding = 5,
+                            BorderColor = new BaseColor(200, 200, 200)
+                        };
+                        table.AddCell(cell);
+                    }
+                }
+
+                pdfDoc.Add(table);
+                pdfDoc.Close();
+
+                return File(stream.ToArray(), "application/pdf", "Report.pdf");
+            }
+        }
+    }
+
+
+    public class PDFPageEventHelper : PdfPageEventHelper
+    {
+        private readonly Font _footerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.GRAY);
+
+        public override void OnEndPage(PdfWriter writer, Document document)
+        {
+            PdfContentByte cb = writer.DirectContent;
+            Rectangle pageSize = document.PageSize;
+
+            BaseColor faintGray = new BaseColor(200, 200, 200); 
+
+            cb.SetLineWidth(0.5f); 
+            cb.SetColorStroke(faintGray); 
+            cb.MoveTo(pageSize.GetLeft(40), pageSize.GetBottom(40));
+            cb.LineTo(pageSize.GetRight(40), pageSize.GetBottom(40));
+            cb.Stroke();
+
+            cb.BeginText();
+            cb.SetFontAndSize(BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED), 10);
+            cb.SetTextMatrix(pageSize.GetRight(60), pageSize.GetBottom(30));
+            cb.ShowText($"Page {writer.PageNumber}");
+            cb.EndText();
         }
     }
 }
