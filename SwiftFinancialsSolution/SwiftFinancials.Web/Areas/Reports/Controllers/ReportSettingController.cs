@@ -39,6 +39,7 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
 
         public JsonResult GetReportParameters(string reportQuery)
         {
+            TempData["sp"] = reportQuery;
             var parameters = new List<StoredProcedureParameter>();
 
             using (SqlConnection conn = new SqlConnection(connectionString))
@@ -82,22 +83,37 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
         [HttpPost]
         public ActionResult GenerateReport(string reportQuery, string format, Dictionary<string, string> paramValues)
         {
-            reportQuery = "sp_LoansByStatus";
+            var sp = TempData["sp"];
 
-            DataTable reportData = FetchReportData(reportQuery, paramValues);
-
-            switch (format.ToLower())
+            reportQuery = sp.ToString();
+            try
             {
-                case "pdf":
-                    return GeneratePdfReport(reportData);
-                case "excel":
-                    return GenerateExcelReport(reportData);
-                //case "csv":
-                //    return GenerateCsvReport(reportData);
-                default:
-                    return new HttpStatusCodeResult(400, "Invalid format");
+                if (string.IsNullOrEmpty(format))
+                {
+                    TempData["Error"] = "Report type is not specified.";
+                    return RedirectToAction("Index");
+                }
+
+                switch (format.ToLower())
+                {
+                    case "pdf":
+                        return GeneratePDFReport(reportQuery, paramValues);
+
+                    case "excel":
+                        return GenerateExcelReport(reportQuery, paramValues);
+
+                    default:
+                        TempData["Error"] = "Invalid report type specified.";
+                        return RedirectToAction("Index");
+                }
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error generating report: {ex.Message}";
+                return RedirectToAction("Index");
             }
         }
+
 
         private DataTable FetchReportData(string reportQuery, Dictionary<string, string> paramValues)
         {
@@ -124,143 +140,85 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
             return dt;
         }
 
-        private ActionResult GeneratePdfReport(DataTable reportData)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Document doc = new Document(PageSize.A4);
-                PdfWriter writer = PdfWriter.GetInstance(doc, ms);
-                doc.Open();
 
+        public ActionResult GeneratePDFReport(string reportQuery, Dictionary<string, string> paramValues)
+        {
+            DataTable reportData = FetchReportData(reportQuery, paramValues);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 30);
+                PdfWriter.GetInstance(pdfDoc, stream);
+                pdfDoc.Open();
+
+                // Add a logo image in the header
+                string logoPath = Server.MapPath("~/Images/MIA.JPG");
+                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
+                logo.ScaleToFit(300f, 300f);
+                logo.Alignment = Element.ALIGN_CENTER;
+                pdfDoc.Add(logo);
+
+                // Add report data to the PDF
                 PdfPTable table = new PdfPTable(reportData.Columns.Count);
 
+                // Add table header
                 foreach (DataColumn column in reportData.Columns)
                 {
-                    PdfPCell cell = new PdfPCell(new Phrase(column.ColumnName));
-                    cell.BackgroundColor = new BaseColor(0, 150, 136);
-                    table.AddCell(cell);
+                    PdfPCell header = new PdfPCell(new Phrase(column.ColumnName));
+                    header.HorizontalAlignment = Element.ALIGN_CENTER;
+                    table.AddCell(header);
                 }
 
+                // Add table rows
                 foreach (DataRow row in reportData.Rows)
                 {
-                    foreach (var item in row.ItemArray)
+                    foreach (DataColumn column in reportData.Columns)
                     {
-                        table.AddCell(item.ToString());
+                        table.AddCell(row[column].ToString());
                     }
                 }
 
-                doc.Add(table);
-                doc.Close();
+                pdfDoc.Add(table);
+                pdfDoc.Close();
 
-                return File(ms.ToArray(), "application/pdf", "Report.pdf");
+                // Return the PDF as a downloadable file
+                return File(stream.ToArray(), "application/pdf", "Report.pdf");
             }
         }
 
-        private ActionResult GenerateExcelReport(DataTable data)
+        // Action to generate the Excel report
+        public ActionResult GenerateExcelReport(string reportQuery, Dictionary<string, string> paramValues)
         {
-            if (data == null || data.Rows.Count == 0)
-            {
-                return new HttpStatusCodeResult(204, "No data to generate the report");
-            }
+            DataTable reportData = FetchReportData(reportQuery, paramValues);
 
-            try
+            using (XLWorkbook workbook = new XLWorkbook())
             {
-                using (var package = new ExcelPackage())
+                var worksheet = workbook.Worksheets.Add("Report");
+
+                // Add report data to the Excel sheet
+                for (int i = 0; i < reportData.Columns.Count; i++)
                 {
-                    var worksheet = package.Workbook.Worksheets.Add("Report");
-
-                    worksheet.Cells["A1"].LoadFromDataTable(data, true);
-
-                    worksheet.Cells[worksheet.Dimension.Address].AutoFitColumns();
-
-                    var excelData = package.GetAsByteArray();
-
-                    // Set up content-disposition for downloading the file
-                    Response.Headers.Add("Content-Disposition", "attachment; filename=Report.xlsx");
-
-                    // Return the file with correct content type
-                    return File(excelData, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                }
-            }
-            catch (Exception ex)
-            {
-                return new HttpStatusCodeResult(500, "Error generating the Excel report");
-            }
-        }
-
-
-
-        public ActionResult ExportToPdf()
-        {
-            // Create a DataTable
-            DataTable dataTable = new DataTable();
-
-            // Define the columns
-            dataTable.Columns.Add("CaseNumber", typeof(int));
-            dataTable.Columns.Add("AmountApplied", typeof(decimal));
-
-            // Fetch data from database and fill the DataTable
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                string query = "SELECT CaseNumber, AmountApplied FROM swiftFin_LoanCases";
-
-                using (SqlCommand command = new SqlCommand(query, connection))
-                {
-                    connection.Open();
-                    using (SqlDataReader reader = command.ExecuteReader())
-                    {
-                        dataTable.Load(reader);
-                    }
-                }
-            }
-
-            // Create a new PDF document
-            using (var memoryStream = new MemoryStream())
-            {
-                using (var document = new Document(PageSize.A4))
-                {
-                    PdfWriter.GetInstance(document, memoryStream);
-                    document.Open();
-
-                    // Add a title
-                    document.Add(new Paragraph("Loan Cases Report")
-                    {
-                        Alignment = Element.ALIGN_CENTER,
-                        Font = FontFactory.GetFont(FontFactory.HELVETICA_BOLD, 18)
-                    });
-
-                    // Create a table with columns based on DataTable
-                    var pdfTable = new PdfPTable(dataTable.Columns.Count)
-                    {
-                        WidthPercentage = 100
-                    };
-
-                    // Add header row
-                    foreach (DataColumn column in dataTable.Columns)
-                    {
-                        pdfTable.AddCell(new PdfPCell(new Phrase(column.ColumnName, FontFactory.GetFont(FontFactory.HELVETICA_BOLD)))
-                        {
-                            BackgroundColor = BaseColor.LIGHT_GRAY
-                        });
-                    }
-
-                    // Add data rows
-                    foreach (DataRow row in dataTable.Rows)
-                    {
-                        foreach (var cell in row.ItemArray)
-                        {
-                            pdfTable.AddCell(new PdfPCell(new Phrase(cell.ToString())));
-                        }
-                    }
-
-                    document.Add(pdfTable);
-                    document.Close();
+                    worksheet.Cell(1, i + 1).Value = reportData.Columns[i].ColumnName;
                 }
 
-                byte[] content = memoryStream.ToArray();
+                for (int i = 0; i < reportData.Rows.Count; i++)
+                {
+                    for (int j = 0; j < reportData.Columns.Count; j++)
+                    {
+                        worksheet.Cell(i + 2, j + 1).Value = reportData.Rows[i][j].ToString();
+                    }
+                }
 
-                // Return the file as a download
-                return File(content, "application/pdf", "Report.pdf");
+                // Format Excel sheet (autofit columns, bold headers, etc.)
+                worksheet.Columns().AdjustToContents();
+                worksheet.Row(1).Style.Font.Bold = true;
+
+                // Return the Excel as a downloadable file
+                using (MemoryStream stream = new MemoryStream())
+                {
+                    workbook.SaveAs(stream);
+                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
+                }
             }
         }
     }

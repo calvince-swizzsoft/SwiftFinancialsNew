@@ -161,20 +161,14 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <!-- PDF button -->
-                <button type="button" class="btn btn-outline" id="pdfReport" data-format="pdf" disabled>
+                <button type="button" class="btn btn-outline" id="pdfReport" data-format="pdf">
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF
                 </button>
-                <!-- Excel button -->
-                <button type="button" class="btn btn-primary" id="excelReport" data-format="excel" disabled>
+
+                <button type="button" class="btn btn-primary" id="excelReport" data-format="excel">
                     <i class="fa fa-table" aria-hidden="true"></i> Excel
                 </button>
-                <!-- CSV button -->
-                <button type="button" class="btn btn-primary" id="csvReport" data-format="csv" disabled>
-                    <i class="fa fa-file-o" aria-hidden="true"></i> CSV
-                </button>
             </div>
-
         </div>
     </div>
 </div>
@@ -249,8 +243,6 @@
                 tableHtml += `
                         </tbody>
                     </table>
-
-                    <a href="@Url.Action("ExportToPdf", "ReportSetting")" class="btn btn-primary">Download PDF Report</a>
                 `;
 
                 form.append(tableHtml);
@@ -265,40 +257,40 @@
 }
 
 
-        $('.modal-footer button').on('click', function () {
+     $('.modal-footer button').on('click', function () {
     var format = $(this).data('format'); // Get format (pdf, excel, csv)
     var reportQuery = $('#reportQueryInput').val(); // Get reportQuery from hidden input
 
-    // Collect form data
-    var formData = new FormData($('#reportParametersForm')[0]);
-    formData.append("format", format);  // Append the format to the form data
-    formData.append("reportQuery", reportQuery); // Append report query
-
-    // Submit form via AJAX to generate the report
-    $.ajax({
-        url: '@Url.Action("ExportToPdf", "ReportSetting")',
-        type: 'POST',
-        data: formData,
-        processData: false,  // Don't process the data
-        contentType: false,  // Don't set content-type header
-        success: function (response) {
-            if (format === 'pdf') {
-                // Open PDF in a new tab
-                var pdfWindow = window.open("", "_blank");
-                pdfWindow.document.write("<iframe width='100%' height='100%' src='data:application/pdf;base64, " + encodeURI(response) + "'></iframe>");
-            } else {
-                // For Excel or CSV, trigger download
-                var link = document.createElement('a');
-                link.href = window.URL.createObjectURL(new Blob([response]));
-                link.download = "Report." + format;
-                link.click();
-            }
-        },
-        error: function () {
-            alert('Error generating report.');
-        }
-        });
+    // Create a form element
+    var form = $('<form/>', {
+        action: '@Url.Action("GenerateReport", "ReportSetting")',
+        method: 'post'
     });
+
+    // Append the report query input
+    form.append($('<input/>', {
+        type: 'hidden',
+        name: 'reportQuery',
+        value: reportQuery
+    }));
+
+    // Append the format input
+    form.append($('<input/>', {
+        type: 'hidden',
+        name: 'format',
+        value: format
+    }));
+
+    // Append the filter parameters
+    $('#reportParametersForm').find('input').each(function () {
+        var input = $(this).clone();
+        form.append(input);
+    });
+
+    // Append the form to the body and submit it
+    form.appendTo('body').submit();
+});
+
     </script>
 
     <script>
