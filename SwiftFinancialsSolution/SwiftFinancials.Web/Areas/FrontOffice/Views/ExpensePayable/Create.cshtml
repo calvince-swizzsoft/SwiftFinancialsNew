@@ -186,7 +186,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ExpensePayableEntry.Reference, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.ExpensePayableEntry.Reference, new { htmlAttributes = new { @id = "mainReference", @class = "form-control required", @placeholder = "Enter text....", @required = "" } })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.Reference, new { htmlAttributes = new { @id = "mainReference", @class = "form-control required", @placeholder = "Enter text...." } })
                                                     @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Reference, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -194,7 +194,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ExpensePayableEntry.SecondaryDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.ExpensePayableEntry.SecondaryDescription, new { htmlAttributes = new { @id = "mainSecondaryDescription", @class = "form-control", @placeholder = "Enter text....", @required = "" } })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.SecondaryDescription, new { htmlAttributes = new { @id = "mainSecondaryDescription", @class = "form-control", @placeholder = "Enter text...." } })
                                                     @Html.ValidationMessageFor(model => model.ExpensePayableEntry.SecondaryDescription, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -204,7 +204,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ExpensePayableEntry.PrimaryDescription, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.ExpensePayableEntry.PrimaryDescription, new { htmlAttributes = new { @id = "mainPrimaryDescription", @class = "form-control", @placeholder = "Enter text......", @required = "" } })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.PrimaryDescription, new { htmlAttributes = new { @id = "mainPrimaryDescription", @class = "form-control", @placeholder = "Enter text......" } })
                                                     @Html.ValidationMessageFor(model => model.ExpensePayableEntry.PrimaryDescription, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -212,7 +212,7 @@
                                             <div class="col-lg-4">
                                                 <div class="form-group form-group-lg">
                                                     @Html.LabelFor(model => model.ExpensePayableEntry.Value, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.ExpensePayableEntry.Value, new { htmlAttributes = new { @id = "mainValue", @class = "form-control", @placeholder = "Enter Value....", @required = "" } })
+                                                    @Html.EditorFor(model => model.ExpensePayableEntry.Value, new { htmlAttributes = new { @id = "mainValue", @class = "form-control", @placeholder = "Enter Value...." } })
                                                     @Html.ValidationMessageFor(model => model.ExpensePayableEntry.Value, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
@@ -395,7 +395,7 @@
 
 
 
-    
+
 
     <script>
 $(document).ready(function () {
@@ -556,14 +556,27 @@ $(document).ready(function () {
                 };
 
                 // Ensure all required fields have values
-                if (!entryData.BranchDescription || !entryData.ChartOfAccountAccountName || !entryData.Reference || !entryData.PrimaryDescription || !entryData.Value ) {
+                if (!entryData.BranchDescription || !entryData.ChartOfAccountAccountName || !entryData.Reference || !entryData.PrimaryDescription || !entryData.Value) {
                     alert("Please fill in all required fields.");
+                    return;
+                }
+
+                // Update the amounts before checking
+                updateAmounts();
+
+                // Get the current Appropotioned Amount and Total Value
+                var appropotionedAmount = parseFloat($('#Appropotioned').val()) || 0;
+                var totalValue = parseFloat($('#TotalValue').val()) || 0;
+
+                // Check if adding this entry would exceed the Total Value
+                if (appropotionedAmount + parseFloat(entryData.Value) > totalValue) {
+                    alert("Cannot add this entry. The Appropotioned Amount would exceed the Total Value.");
                     return;
                 }
 
                 // AJAX request to send data to the controller
                 $.ajax({
-                    url: '/ExpensePayable/AddEntry', // Replace with your controller's action URL
+                    url: '/ExpensePayable/AddEntry',
                     type: 'POST',
                     data: JSON.stringify(entryData),
                     contentType: 'application/json; charset=utf-8',
@@ -584,12 +597,20 @@ $(document).ready(function () {
                                 '</td>' +
                                 '</tr>';
 
-
                             // Append the new row to the table
                             $('#ExpensePayableEntries tbody').append(newRow);
 
                             // Update amounts after adding the entry
                             updateAmounts();
+
+                            // Clear the form fields
+                            $('#BranchDescription').val('');
+                            $('#ExpensePayableEntry_ChartOfAccountAccountName').val('');
+                            $('#mainReference').val('');
+                            $('#mainPrimaryDescription').val('');
+                            $('#mainSecondaryDescription').val('');
+                            $('#mainValue').val('');
+
 
                             alert("Entry added successfully.");
                         } else {
@@ -601,6 +622,8 @@ $(document).ready(function () {
                     }
                 });
             });
+
+
 
 
 
@@ -648,12 +671,10 @@ $(document).ready(function () {
     </script>
 
     <script>
-        // Function to handle row removal
         $(document).on('click', '.remove-entry', function () {
             if (confirm('Are you sure you want to remove this entry?')) {
                 $(this).closest('tr').remove();
 
-                // Update amounts after adding the entry
                 updateAmounts();
             }
         });
@@ -675,7 +696,6 @@ $(document).ready(function () {
             data: $(this).serialize(),
             success: function (response) {
                 if (response.success) {
-                    // Redirect to the Index page of the ExpensePayable controller
                     window.location.href = '@Url.Action("Index", "ExpensePayable")';
                 } else {
                     alert(response.message);
@@ -689,29 +709,14 @@ $(document).ready(function () {
        });
 
 
-
-
-
     </script>
 
 
-
-
-
-
-
-
-
     <script type="text/javascript">
-
-
-
-        // Function to update amounts
         function updateAmounts() {
             var totalAmount = 0;
             var amountCells = $('#ExpensePayableEntries tbody tr td:nth-child(6)');
 
-            // Calculate the total amount from the entries
             amountCells.each(function () {
                 var text = $(this).text();
                 var amount = parseFloat(text.replace(/[^0-9.-]/g, ''));
@@ -720,18 +725,14 @@ $(document).ready(function () {
                 }
             });
 
-            // Get the elements for Total Value, Appropotioned, and Shortage
             var totalValueElement = $('[name="TotalValue"]');
             var appropotionedElement = $('#Appropotioned');
             var shortageElement = $('#Shortage');
 
-            // Get the total value input by the user
             var totalValue = parseFloat(totalValueElement.val()) || 0;
 
-            // Update the Appropotioned field
             appropotionedElement.val(totalAmount.toFixed(2));
 
-            // Calculate and update the Shortage field
             var shortage = totalValue - totalAmount;
             if (shortage < 0) {
                 shortage = 0;
@@ -740,23 +741,20 @@ $(document).ready(function () {
             shortageElement.val(shortage.toFixed(2));
         }
 
-        // Function to add a new entry
         function addEntry(entryData) {
-            updateAmounts();
-
             var appropotionedAmount = parseFloat($('#Appropotioned').val()) || 0;
             var totalValue = parseFloat($('[name="TotalValue"]').val()) || 0;
+            var entryValue = parseFloat(entryData.value) || 0;
 
-            // Check if adding this entry would exceed the Total Value
-            if (appropotionedAmount + entryData.value > totalValue) {
+            if (appropotionedAmount + entryValue > totalValue) {
                 alert("Cannot add this entry. The Appropotioned Amount would exceed the Total Value.");
                 return false;
             }
 
-
             updateAmounts();
-        }
 
+            
+        }
 
         $(document).ready(function () {
             updateAmounts();
@@ -768,24 +766,22 @@ $(document).ready(function () {
             $('#addEntryButton').on('click', function () {
                 var entryData = {
                     value: parseFloat($('#newEntryValue').val()) || 0,
-
                 };
 
                 addEntry(entryData);
             });
 
-
             $('#ExpensePayableEntries').on('DOMNodeInserted', 'tr', function () {
                 updateAmounts();
             });
 
-            // Update amounts when a row is removed using the AJAX removeEntry function
             $('#ExpensePayableEntries').on('click', '.remove-entry', function () {
                 var id = $(this).data('id');
-                removeEntry(id);
+                removeEntry(id); 
             });
         });
     </script>
+
 
 
     <style>

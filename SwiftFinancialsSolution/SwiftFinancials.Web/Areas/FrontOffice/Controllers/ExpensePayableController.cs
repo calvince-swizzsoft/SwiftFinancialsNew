@@ -126,7 +126,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return View(expensePayableDTO);
             }
 
-            // Update the ExpensePayableEntries in a single call
             await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(resultDTO.Id, expensePayableEntries, GetServiceHeader());
 
             // Success message and clear TempData
