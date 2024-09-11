@@ -16,6 +16,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ClosedXML;
 
 namespace SwiftFinancials.Web.Areas.Reports.Controllers
 {
@@ -151,25 +152,47 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
             {
                 var worksheet = workbook.Worksheets.Add("Report");
 
-                // Add report data to the Excel sheet
+                string imagePath = Server.MapPath("~/Images/MIA.JPG"); 
+                var picture = worksheet.AddPicture(imagePath)
+                                       .MoveTo(worksheet.Cell(1, 1)); 
+
+                int startRow = 13;
+                int startColumn = 1; 
+
+                
                 for (int i = 0; i < reportData.Columns.Count; i++)
                 {
-                    worksheet.Cell(1, i + 1).Value = reportData.Columns[i].ColumnName;
+                    var headerCell = worksheet.Cell(startRow, startColumn + i);
+                    headerCell.Value = reportData.Columns[i].ColumnName;
+                    headerCell.Style.Font.Bold = true;
+                    headerCell.Style.Fill.BackgroundColor = XLColor.FromArgb(0, 51, 102); 
+                    headerCell.Style.Font.FontColor = XLColor.White;
+                    headerCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    headerCell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 }
 
+                
                 for (int i = 0; i < reportData.Rows.Count; i++)
                 {
                     for (int j = 0; j < reportData.Columns.Count; j++)
                     {
-                        worksheet.Cell(i + 2, j + 1).Value = reportData.Rows[i][j].ToString();
+                        var cell = worksheet.Cell(startRow + 1 + i, startColumn + j); 
+                        cell.Value = reportData.Rows[i][j].ToString();
+                        cell.Style.Fill.BackgroundColor = (i % 2 == 0) ? XLColor.FromArgb(242, 242, 242) : XLColor.White; 
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                     }
                 }
 
-                // Format Excel sheet (autofit columns, bold headers, etc.)
-                worksheet.Columns().AdjustToContents();
-                worksheet.Row(1).Style.Font.Bold = true;
+                int tableWidth = reportData.Columns.Count;
+                int logoColumnStart = (tableWidth / 2) - 1; 
+                if (logoColumnStart < 1) logoColumnStart = 1; 
+                picture.MoveTo(worksheet.Cell(1, logoColumnStart)); 
 
-                // Return the Excel as a downloadable file
+                worksheet.Columns().AdjustToContents();
+                worksheet.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
@@ -177,6 +200,7 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
                 }
             }
         }
+
 
 
 

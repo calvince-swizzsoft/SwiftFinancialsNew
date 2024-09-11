@@ -637,6 +637,7 @@
     <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
+    <Compile Include="Areas\Registry\DocumentsModel\Document.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportSettingController.cs" />
@@ -1375,6 +1376,9 @@
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\ReportSetting\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1384,6 +1388,7 @@
     <Content Include="Scripts\css\Marquee.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
+    <Content Include="Scripts\css\WebCam.css" />
     <Content Include="Scripts\css\_layout.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
