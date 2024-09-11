@@ -57,9 +57,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
 
             var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-
+            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+            ViewBag.GeneralLedgerEntries = batchentries;
             return View(generalLedgerDTO);
-        }  
+        }
 
 
         
@@ -357,6 +358,94 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(generalLedgerDTO);
             }
         }
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+
+            ViewBag.GeneralLedgerEntries = batchentries;
+            return View(generalLedgerDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, GeneralLedgerDTO  generalLedgerDTO)
+        {
+            generalLedgerDTO.ValidateAll();
+
+
+            var auth = generalLedgerDTO.GeneralLedgerAuthOption;
+
+
+            if (!generalLedgerDTO.HasErrors)
+            {
+                await _channelService.AuditGeneralLedgerAsync(generalLedgerDTO, auth, GetServiceHeader());
+
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+
+                TempData["VerifySuccess"] = "Verification Successiful";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["VerificationFail"] = "Verification Failed!. Review all conditions.";
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+                var errorMessages = generalLedgerDTO.ErrorMessages;
+
+                return View(generalLedgerDTO);
+            }
+        }
+
+        public async Task<ActionResult> Authorize(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+            ViewBag.GeneralLedgerEntries = batchentries;
+            return View(generalLedgerDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Authorize(Guid id, GeneralLedgerDTO  generalLedgerDTO)
+        {
+            var batchAuthOption = generalLedgerDTO.GeneralLedgerAuthOption;
+            generalLedgerDTO.ValidateAll();
+
+            if (!generalLedgerDTO.HasErrors)
+            {
+                await _channelService.AuthorizeGeneralLedgerAsync(generalLedgerDTO, batchAuthOption, 1, GetServiceHeader());
+
+
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+
+
+
+                TempData["AuthorizationSuccess"] = "Authorization Successiful";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = generalLedgerDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+                TempData["AuthorizationFail"] = "Authorization Failed!. Review all conditions.";
+
+                return View(generalLedgerDTO);
+            }
+        }
+
+
+
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetPostingPeriodsAsync()

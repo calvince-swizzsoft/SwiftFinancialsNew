@@ -1376,6 +1376,9 @@
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\ReportSetting\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

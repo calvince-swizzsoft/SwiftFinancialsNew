@@ -119,6 +119,23 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         public ObservableCollection<GeneralLedgerEntryDTO> GeneralLedgerEntries { get; set; }
 
-        
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public byte GeneralLedgerAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public string RefundAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)GeneralLedgerAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)GeneralLedgerAuthOption) : string.Empty;
+            }
+        }
+
+
     }
 }
