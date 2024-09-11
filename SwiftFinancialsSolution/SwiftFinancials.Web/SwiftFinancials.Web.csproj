@@ -1389,6 +1389,13 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\js\CaptureSpecimenDetails.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\apportionments.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\apportionTypeHandler.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\chartOfAccounts.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\customerAccountsGrid.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\customersGrid.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\formSubmission.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\tellerGlTable.js" />
     <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
     <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
     <Content Include="Scripts\js\MarqueeTransform.js" />
