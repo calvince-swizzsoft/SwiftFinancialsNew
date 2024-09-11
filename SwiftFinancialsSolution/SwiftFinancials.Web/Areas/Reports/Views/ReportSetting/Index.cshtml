@@ -98,8 +98,8 @@
                         <div class="alert alert-danger">
                             <strong>Failed!</strong> @TempData["sp_Empty"]
                         </div>
-                    }  
-                    
+                    }
+
                     @if (TempData["Error"] != null)
                     {
                         <div class="alert alert-danger">
@@ -171,7 +171,6 @@
                 <button type="button" class="btn btn-outline" id="pdfReport" data-format="pdf">
                     <i class="fa fa-file-pdf-o" aria-hidden="true"></i> PDF
                 </button>
-
                 <button type="button" class="btn btn-primary" id="excelReport" data-format="excel">
                     <i class="fa fa-table" aria-hidden="true"></i> Excel
                 </button>
@@ -181,12 +180,15 @@
 </div>
 
 
-@section Scripts {
-    <script src="~/Scripts/js/MarqueeTransform.js"></script>
-    <link href="~/Scripts/css/Marquee.css" rel="stylesheet" />
 
 
-    <script>
+
+
+<script src="~/Scripts/js/MarqueeTransform.js"></script>
+<link href="~/Scripts/css/Marquee.css" rel="stylesheet" />
+
+
+<script>
       function showReportModal(reportQuery) {
     $('#reportModal').modal('show');
 
@@ -298,17 +300,26 @@
     form.appendTo('body').submit();
 });
 
-    </script>
+</script>
 
-    <script>
-        document.getElementById("searchBox").addEventListener("input", function () {
-            var searchText = this.value.toLowerCase();
-            var reports = document.querySelectorAll('.report-item');
+<script>
+    document.getElementById("searchBox").addEventListener("input", function () {
+        var searchText = this.value.toLowerCase();
+        var reports = document.querySelectorAll('.report-item');
 
-            reports.forEach(function (report) {
-                var title = report.querySelector('p').innerText.toLowerCase();
-                report.style.display = title.includes(searchText) ? 'block' : 'none';
-            });
+        reports.forEach(function (report) {
+            var title = report.querySelector('p').innerText.toLowerCase();
+            report.style.display = title.includes(searchText) ? 'block' : 'none';
         });
-    </script>
+    });
+</script>
+
+<script>
+    $(document).ready(function () {
+        // Ensure that the close button triggers the correct Bootstrap modal close action
+        $('#reportModal .close').on('click', function () {
+            $('#reportModal').modal('hide');
+        });
+    });
+</script>
 }
