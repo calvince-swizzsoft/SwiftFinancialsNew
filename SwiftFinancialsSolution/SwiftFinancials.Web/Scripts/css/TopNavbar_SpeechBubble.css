@@ -1,0 +1,43 @@
+﻿.stunning-3d-speech-bubble {
+    display: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 100px;
+    width: 300px;
+    padding: 10px;
+    background: #ffeb3b;
+    color: #333;
+    font-family: 'Comic Sans MS', sans-serif;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    border: 5px solid #333;
+    border-radius: 25px;
+    box-shadow: 5px 5px 0px #333, -5px -5px 0px #333;
+    animation: cartoon-pop 0.5s ease-in-out;
+}
+
+    .stunning-3d-speech-bubble:before {
+        content: "";
+        position: absolute;
+        bottom: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border-width: 0 20px 20px 20px;
+        border-style: solid;
+        border-color: transparent transparent #ffeb3b transparent;
+        filter: drop-shadow(2px 2px 0 #333);
+    }
+
+@keyframes cartoon-pop {
+    0% {
+        transform: translateX(-50%) scale(0.5);
+        opacity: 0;
+    }
+
+    100% {
+        transform: translateX(-50%) scale(1);
+        opacity: 1;
+    }
+}

@@ -36,6 +36,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        
         {
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
@@ -100,7 +101,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             await ServeNavigationMenus();
             Guid parseId;
 
-            CustomerTransactionModel model = new CustomerTransactionModel();
+            TransactionModel model = new TransactionModel();
 
             if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
             {
@@ -139,12 +140,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return Json(null, JsonRequestBehavior.AllowGet);
             }
 
-            bool includeBalances = true;
-            bool includeProductDescription = true;
-            bool includeInterestBalanceForLoanAccounts = true;
-            bool considerMaturityPeriodForInvestmentAccounts = true;
-
-            var customer = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+            var customer = await _channelService.FindCustomerAsync(parseId, GetServiceHeader());
 
             if (customer == null)
             {
@@ -155,52 +151,66 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        public async Task<JsonResult> GetCustomerAccountDetailsJson(Guid? id)
+        {
+            Guid parseId;
+
+            if (!Guid.TryParse(id.ToString(), out parseId))
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+
+            bool includeBalances = true;
+            bool includeProductDescription = true;
+            bool includeInterestBalanceForLoanAccounts = true;
+            bool considerMaturityPeriodForInvestmentAccounts = true;
+
+            var customerAccount = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
+
+            if (customerAccount == null)
+            {
+                return Json(null, JsonRequestBehavior.AllowGet);
+            }
+
+            return Json(customerAccount, JsonRequestBehavior.AllowGet);
+        }
+
+
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerTransactionModel model)
+        public async Task<ActionResult> Create(TransactionModel model)
         {
 
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
-            model.PostingPeriodId = currentPostingPeriod.Id;
-            model.DebitChartOfAccountId = model.DebitCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-            model.CreditCustomerAccount = model.DebitCustomerAccount;
-            model.CreditCustomerAccountId = model.CreditCustomerAccount.Id;
-            model.CreditChartOfAccountId = model.CreditCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+            var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
+            
+            model.BranchId = currentTeller.EmployeeBranchId;
 
             var selectedBranch = await _channelService.FindBranchAsync(model.BranchId, GetServiceHeader());
-            var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");       
-            var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
-            
+
+            model.PostingPeriodId = currentPostingPeriod.Id;
+
+ 
+            model.DebitChartOfAccountId = (Guid)currentTeller.ChartOfAccountId;
+            model.CreditChartOfAccountId = (Guid)currentTeller.ChartOfAccountId;
+
             model.PrimaryDescription = "ok";
             model.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", selectedBranch.Code, currentTeller.Code, currentTeller.ItemsCount);
 
+        
             model.ValidateAll();
     
              if (!model.HasErrors)
              {
-                
-                
-                decimal totalValue = model.CustomerAccount.TotalValue;
-
-                var transactionModel = new TransactionModel();
-
-                transactionModel.TotalValue = model.TotalValue;
-                transactionModel.DebitCustomerAccount = model.DebitCustomerAccount;
-                transactionModel.DebitChartOfAccountId = model.DebitCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-              
-                transactionModel.BranchId = model.BranchId;
-                transactionModel.PrimaryDescription = model.PrimaryDescription;
-                transactionModel.SecondaryDescription = model.SecondaryDescription; 
-                transactionModel.Reference = model.Reference;
-                transactionModel.PostingPeriodId = currentPostingPeriod.Id;
-
-                var tariffs = await _channelService.ComputeTellerCashTariffsAsync(model.DebitCustomerAccount, totalValue, 2, GetServiceHeader());
+              //# TODO refer tariffs with amos
+                //var tariffs = await _channelService.ComputeTellerCashTariffsAsync(model.DebitCustomerAccount, model.TotalValue, 2, GetServiceHeader());
                 var dynamicCharges = await _channelService.FindDynamicChargesAsync(GetServiceHeader());
                 ObservableCollection<ApportionmentWrapper> apportionmentsObservableCollection = new ObservableCollection<ApportionmentWrapper>(model.Apportionments);
 
-                var journal = _channelService.AddJournalWithApportionmentsAsync(transactionModel, apportionmentsObservableCollection, tariffs, dynamicCharges, GetServiceHeader());
+                var journal = _channelService.AddJournalWithApportionmentsAsync(model, apportionmentsObservableCollection, null, dynamicCharges, GetServiceHeader());
 
 
                 if (journal != null && journal.Exception == null)
@@ -234,10 +244,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 }
 
                 //service.BeginAddJournalWithApportionments(transactionModel.BranchId, transactionModel.AlternateChannelLogId, transactionModel.TotalValue, transactionModel.PrimaryDescription, transactionModel.SecondaryDescription, transactionModel.Reference, transactionModel.ModuleNavigationItemCode, transactionModel.TransactionCode, transactionModel.ValueDate, transactionModel.DebitChartOfAccountId, transactionModel.CreditCustomerAccount, transactionModel.DebitCustomerAccount, apportionments.ExtendedToList(), tariffs.ExtendedToList(), dynamicCharges.ExtendedToList(), asyncCallback, service);
-
+                //journal.PostDoubleEntries(debitChartOfAccountId, creditChartOfAccountId, creditCustomerAccountDTO.Id, debitCustomerAccountDTO.Id, serviceHeader);
                 //ViewBag.ApportionToSelectList = GetApportionToSelectList(string.Empty);
 
-                
+
             }
             else
             {
