@@ -151,15 +151,19 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 // Check if an entry with the same Debit and Credit account numbers already exists
                 var existingEntry = generalLedgerBatchEntryDTOs
-                    .FirstOrDefault(e => e.DebitFullAccountNumber == entry.DebitFullAccountNumber
-                                      && e.CreditFullAccountNumber == entry.CreditFullAccountNumber);
+                .FirstOrDefault(e =>
+                    (e.DebitFullAccountNumber == entry.DebitFullAccountNumber && e.CreditFullAccountNumber == entry.CreditFullAccountNumber) ||
+                    (e.DebitFullAccountNumber == entry.DebitFullAccountNumber && e.ChartOfAccountId == entry.ChartOfAccountId) ||
+                    (e.ContraChartOfAccountId == entry.ContraChartOfAccountId && e.DebitFullAccountNumber == entry.DebitFullAccountNumber) ||
+                    (e.ContraChartOfAccountId == entry.ContraChartOfAccountId && e.ChartOfAccountId == entry.ChartOfAccountId));
+
 
                 if (existingEntry != null)
                 {
                     return Json(new
                     {
                         success = false,
-                        message = "A general Ledger with the same Debit and Credit account numbers already exists."
+                        message = "A general Ledger with the same Debit and Credit transaction already exists."
                     });
                 }
 
