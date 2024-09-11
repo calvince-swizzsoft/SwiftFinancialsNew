@@ -1379,6 +1379,8 @@
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1856,7 +1858,6 @@
     <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
-    <Folder Include="Areas\Accounts\Views\InterAccountTransfer\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />

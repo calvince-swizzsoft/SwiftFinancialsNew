@@ -1,0 +1,1200 @@
+﻿@model Application.MainBoundedContext.DTO.AccountsModule.InterAccountTransferBatchDTO
+
+@{
+    ViewBag.Title = "Inter Account Transfer Batch";
+    var k = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
+
+    var generalLedgerEntryTypes = ViewBag.GeneralLedgerEntryTypeSelectList as List<SelectListItem>;
+}
+
+<style>
+    .main {
+        border: 1px solid gray;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+    }
+    .row{
+        margin-top:5px;
+    }
+    h2{
+        color:#333;
+        font-weight:bold;
+
+
+    }
+
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+        margin: 10px;
+        font-size: 18px;
+        font-weight: bold;
+
+        background-color: #00e0ff;
+    }
+    .content {
+        border: 4px solid #00ffff;
+        border-radius: 12px;
+        margin-bottom: 30px;
+        justify-content: center;
+        align-content: baseline;
+        margin: 10px;
+        font-size: 15px;
+        font-weight: bold;
+        padding: 10px;
+    }
+    .btn-primary{
+        border-radius:10px;
+    }
+    @*Styling for Entries*@
+    .journal-voucher-container {
+        border: 1px solid #333;
+        margin: 20px;
+        padding: 20px;
+        font-size: 15px;
+        border-radius: 8px;
+        position: relative;
+        padding: 40px; /* Space for the h2 */
+
+    }
+
+    .journal-voucher-container h2 {
+        position: absolute;
+        top: -20px;
+        left: 20px;
+        background: #fff;
+        padding: 0 10px;
+        margin: 0;
+    }
+
+    .journal-voucher-container .form-control,
+    .journal-voucher-container .input-group-addon {
+        font-weight: normal; /* Retain normal weight for controls */
+    }
+
+    @*css for the journal entries*@ #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+    #ChargeSplits thead {
+        background-color: white;
+        color: #333;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #ChargeSplits th, #ChargeSplits td {
+        padding: 12px;
+        text-align: left;
+        border: 1px solid #ddd;
+    }
+
+    #ChargeSplits th {
+        font-weight: bold;
+    }
+
+    #ChargeSplits tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    #ChargeSplits tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .control-label {
+        flex: 0 0 150px; /* Adjust width as needed */
+        font-weight: bold; /* Optional: make the label text bold */
+        color: #333; /* Set a different color for the labels */
+    }
+
+    input.form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .form-control {
+        color: #007bff;
+    }
+
+</style>
+
+<!-- CSS Styling -->
+<style>
+    .bordered-container {
+        border: 2px solid gray;
+        border-radius: 12px;
+        padding: 15px;
+        margin-top: 10px;
+        position: relative;
+    }
+
+    .bordered-heading {
+        position: absolute;
+        top: -20px;
+        left: 15px;
+        background-color: white;
+        color: black;
+        font-weight: bold;
+        padding: 0 10px;
+        font-size: 18px;
+    }
+
+    /* Table Styles */
+    #RefundBatchEntry {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #RefundBatchEntry thead {
+            background-color: white;
+            color: #333;
+        }
+
+        #RefundBatchEntry th, #RefundBatchEntry td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #RefundBatchEntry th {
+            font-weight: bold;
+        }
+
+        #RefundBatchEntry tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #RefundBatchEntry tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="row wrapper border-bottom bg-white page-heading">
+    <div class="col-lg-10">
+
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "InterAccountTransfer", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content white-bg">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox ">
+                <div class="ibox-title">
+                    <div class="ibox-tools">
+                        @if (TempData["ErrorMsg"] != null)
+                        {
+                            <div class="alert alert-success">
+                                <strong>Error!</strong> @TempData["ErrorMsg"]
+
+                                <button type="button" class="close" data-dismiss="alert">
+                                    <span>
+                                        &times;
+                                    </span>
+                                </button>
+                            </div>
+                        }
+
+
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                    <h2 style="font-style: italic; margin-bottom: 0;">Inter Account Transfer Batch</h2>
+
+                </div>
+                <div class="ibox-content bg-white text-info">
+
+                    <div class="main">
+                        @using (Html.BeginForm("Add", "InterAccountTransfer", new { Area = "Accounts" }, FormMethod.Post, new { id = "formAddBatch" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                            <div class="content">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="col-md-13 form-group">
+                                            @Html.LabelFor(model => model.AccountNumber, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber)*@
+                                                @Html.TextBoxFor(model => model.AccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullAccountNumber" })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#customerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AccountStatus, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AccountStatusDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AvailableBalance, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AvailableBalance, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerTypeDescription, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CustomerTypeDescription, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.AccountNumber, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.AccountNumber, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+
+                                            @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CreditCustomerAccountStatusDescription" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+
+                            <div class="journal-voucher-container">
+                                <h2>Ledger Entries</h2>
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.interAccountBatchEntries[0].ApportionTo, new { @class = "control-label" })
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                @Html.DropDownListFor(model => model.interAccountBatchEntries[0].ApportionTo, generalLedgerEntryTypes,
+                                                new { @class = "form-control input-md", @id = "entryTypeDropdown1" })
+                                                @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].ApportionTo)
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div id="chartFields1" class="col-lg-6" style="display:none;">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.interAccountBatchEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.interAccountBatchEntries[0].ChartOfAccountId, new { @id = "ChartOfAccountIdDebit", @class = "entry-field" })
+                                            @Html.EditorFor(model => model.interAccountBatchEntries[0].ChartOfAccountName, new { htmlAttributes = new { @id = "ChartOfAccountNameDebit", @class = "ChartOfAccountsLookupDebit form-control required entry-field", @placeholder = "Enter space to autofill" } })
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div id="customerFields11" class="col-lg-12" style="display:none;">
+                                    <div class="row">
+
+                                        <div class="col-lg-3">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.AccountNumber, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @*@Html.HiddenFor(model => model.CreditBatchEntries[0].CreditCustomerAccountFullAccountNumber)*@
+                                                    @Html.TextBoxFor(model => model.AccountNumber, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullAccountNumber" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerAccountLookupModal"><span class="fa fa-search"></span></a>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].AccountStatus, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].AccountStatus, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "AccountStatus" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].Remarks, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].Remarks, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "Remarks" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].AvailableBalance, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].AvailableBalance, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "AvailableBalance" } })
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerId, htmlAttributes: new { @class = "control-label", @id = "CustomerId" })
+                                                @Html.HiddenFor(model => model.interAccountBatchEntries[0].CustomerId, new { @id = "CustomerId", @class = "entry-field" })
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerFullName, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerFullName" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerTypeDescription, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerTypeDescription, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerTypeDescription" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerIndividualPayrollNumbers" } })
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerPersonalIdentificationNumber, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerPersonalIdentificationNumber, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerPersonalIdentificationNumber" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].AccountNumber, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].AccountNumber, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "AccountNumber" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference2" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference3" } })
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                    <div class="row">
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].Principal, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].Principal, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].Principal, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].Interest, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].Interest, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].Interest, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-12">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.interAccountBatchEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
+                                                @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].Reference, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+
+                                    
+                                </div>
+
+                                <div class="row">
+                                    <!-- Center the Submit button -->
+                                    <div style="text-align: right; margin: 20px 20px;">
+                                        <input type="submit" value="Add" class="btn btn-primary" style="width: 100px; border-radius: 4px;" />
+                                    </div>
+
+                                </div>
+
+
+                                <br />
+                                <row>
+                                    <table id="RefundBatchEntry" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
+                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                            <tr>
+                                                <th style="width: 5%;">Credit Chart of Account</th>
+                                                <th style="width: 5%;">Credit Customer Name </th>
+                                                <th style="width: 5%;">Credit Product Description</th>
+                                                <th style="width: 5%;">Credit Account Number</th>
+                                                <th style="width: 5%;">Debit Chart of Account</th>
+                                                <th style="width: 5%;">Debit Customer Name </th>
+                                                <th style="width: 5%;">Debit Product Description</th>
+                                                <th style="width: 5%;">Debit Account Number</th>
+                                                <th style="width: 5%;">Amount</th>
+                                                <th style="width: 5%;">Action</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+
+
+                                </row>
+                            </div>
+
+                        }
+
+
+                        @using (Html.BeginForm("Create", "InterAccountTransfer", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        {
+                            <div class="bottom-button">
+                                <div class="row">
+                                    <div class="col-lg-12" style="display: flex; justify-content: flex-end;">
+                                        <div class="form-group form-group-sm">
+                                            <input type="submit" value="Create" class="btn btn-primary" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+
+
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="CreditcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Credit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="CreditCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal  fade" id="DebitcustomerAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Debit Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="DebitCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal  fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+        $(document).ready(function () {
+            $('#form').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
+
+                // Serialize the form data
+                var formData = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).attr('action'), // Form action URL
+                    type: 'POST',                 // Form method (POST)
+                    data: formData,               // Form data
+                    success: function (response) {
+                        // Handle the success response (using SweetAlert for messages)
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                window.location.href = '/Accounts/AddGeneralLedger/Index'; // Redirect to index
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function () {
+                        // Handle errors in the AJAX request
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: 'An error occurred while processing your request.',
+                            timer: 8000,
+                            showConfirmButton: true
+                        });
+                    }
+                });
+            });
+        });
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Handle the form submission event
+            $('#formAddBatch').submit(function (event) {
+                event.preventDefault(); // Prevent the default form submission
+                $.ajax({
+                    url: $(this).attr('action'),
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: 'Entry added successfully.',
+                                timer: 1000,
+                                showConfirmButton: false
+                            });
+                            clearEntryForm();
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message,
+                                timer: 8000,
+                                showConfirmButton: true
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("An error occurred:", error);
+                    }
+                });
+            });
+        });
+
+
+
+            function updateEntriesTable(entries) {
+                var tableBody = $("#RefundBatchEntry tbody");
+                tableBody.empty(); // Clear existing entries
+
+                $.each(entries, function (index, entry) {
+                    var row = `<tr data-id="${entry.Id}">
+                           <td>${entry.ContraChartOfAccountName}</td>
+                           <td>${entry.ContraCustomerAccountCustomerIndividualFirstName}</td>
+                           <td>${entry.ContraCustomerAccountAccountTypeTargetProductDescription}</td>
+                           <td>${entry.DebitFullAccountNumber}</td>
+                           <td>${entry.ChartOfAccountName}</td>
+                           <td>${entry.CustomerAccountCustomerIndividualFirstName}</td>
+                           <td>${entry.CustomerAccountAccountTypeTargetProductDescription}</td>
+                           <td>${entry.CreditFullAccountNumber}</td>
+                           <td>${entry.Amount}</td>
+                           <td><button type="button" class="btn btn-danger remove-entry" data-id="${entry.Id}">Remove</button></td>
+                       </tr>`;
+                    tableBody.append(row);
+                });
+            }
+
+            // Attach click event to remove buttons
+            $(document).on("click", ".remove-entry", function (event) {
+                event.preventDefault(); // Prevent default behavior
+                var entryId = $(this).data("id"); // Get the GUID from the button's data-id
+                removeEntry(entryId);
+            });
+
+
+
+            function removeEntry(id) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "AddGeneralLedger")',
+                    type: 'POST',
+                    data: { id: id },
+                    success: function (response) {
+                        if (response.success) {
+                            updateEntriesTable(response.data);
+                        } else {
+                            alert("An error occurred while removing the entry.");
+                        }
+                    },
+                    error: function () {
+                        alert("An error occurred while processing the request.");
+                    }
+                });
+            }
+
+
+            function clearEntryForm() {
+                // Reset only the fields with the 'entry-field' class
+                $('#formAddBatch').find('.entry-field').val('');
+            }
+    </script>
+
+
+
+
+
+
+    <script>
+
+            document.addEventListener('DOMContentLoaded', function () {
+                // Get the dropdown element
+                var entryTypeDropdown = document.getElementById('entryTypeDropdown1');
+
+                // Add event listener to the dropdown
+                entryTypeDropdown.addEventListener('change', function () {
+                    var selectedValue = entryTypeDropdown1.value;
+
+                    // Hide all fields initially
+                    document.getElementById('chartFields1').style.display = 'none';
+                    document.getElementById('customerFields11').style.display = 'none';
+                    
+
+                    // Show relevant fields based on selection
+                    if (selectedValue == 1) {
+                        document.getElementById('chartFields1').style.display = 'block';
+                    } else if (selectedValue == 2) {  
+                        document.getElementById('customerFields11').style.display = 'block';
+                    }
+                });
+
+                // Trigger the change event on page load (in case the dropdown already has a selected value)
+                entryTypeDropdown.dispatchEvent(new Event('change'));
+            });
+
+    </script>
+
+
+
+
+
+
+
+    <script>
+
+        $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+            });
+        });
+
+
+
+
+       ////////// customer accounts lookup modal/////////
+    $('#CustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
+
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    function selectCustomerAccounts(id) {
+    $.ajax({
+        url: '/Accounts/InterAccountTransfer/CreditCustomerAccountLookUp',
+        type: 'POST',
+        data: { Id: id },
+        success: function (response) {
+            if (response.success) {
+                // Populate fields with the returned data
+                $('#CustomerFullName').val(response.data.CustomerFullName);
+                $('#AccountNumber').val(response.data.AccountNumber);
+                $('#CustomerAccountCustomerReference2').val(response.data.CustomerAccountCustomerReference2);
+                $('#CustomerAccountCustomerReference3').val(response.data.CustomerAccountCustomerReference3);
+                $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
+                $('#AvailableBalance').val(response.data.AvailableBalance);
+                $('#AccountStatus').val(response.data.AccountStatus);
+                $('#Remarks').val(response.data.Remarks);
+                $('#CustomerAccountId').val(response.data.CustomerAccountId);
+                $('#CustomerType').val(response.data.CustomerType);
+                $('#CustomerIndividualPayrollNumbers').val(response.data.CustomerIndividualPayrollNumbers);
+
+                // Close the modal
+                $('#CreditcustomerAccountLookupModal').modal('hide');
+            } else {
+                alert(response.message);
+            }
+        },
+        error: function () {
+            alert('An error occurred while processing your request.');
+        }
+    });
+}
+
+    ////////// Debit customer accounts lookup modol/////////
+        $('#DebitCustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccount(\'' + aData.Id + '\')">Select</button>';
+            $('td:eq(3)', nRow).html(dt_Created);
+            $('td:eq(4)', nRow).html(selectUrl);
+
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
+
+    function selectCustomerAccount(id) {
+        $.ajax({
+            url: '/Accounts/AddGeneralLedger/DebitCustomerAccountLookup',
+            type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.success) {
+                    // Populate fields with the returned data
+                    $('#ContraCustomerAccountFullAccountNumber').val(response.data.DebitFullAccountNumber);
+                    $('#ContraCustomerAccountAccountTypeTargetProductDescription').val(response.data.ContraCustomerAccountAccountTypeTargetProductDescription);
+                    $('#ContraCustomerAccountCustomerAccountTypeTargetProductId').val(response.data.ContraCustomerAccountCustomerAccountTypeTargetProductId);
+                    $('#ContraCustomerAccountCustomerFullName').val(response.data.ContraCustomerAccountCustomerIndividualFirstName);
+                    $('#DebitCustomerAccountId').val(response.data.ContraCustomerAccountCustomerId);
+                    $('#DebitContraCustomerAccountId').val(response.data.ContraCustomerAccountId);
+                    $('#ChartOfAccountIdDebit').val(response.data.ContraChartOfAccountId);
+                    // Close the modal
+                    $('#DebitcustomerAccountLookupModal').modal('hide');
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
+
+
+
+
+             //ChartOfAccount typehead starts here
+            $('.ChartOfAccountsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccount = ChartOfAccountsMap[item];
+                    var chartOfAccountId = chartOfAccount.Id;
+                    var chartOfAccountName = chartOfAccount.AccountName;
+
+                    // Set ChartOfAccountId (hidden input or other element)
+                    $('#ChartOfAccountId').val(chartOfAccountId);
+
+                    // Set ChartOfAccountName (input or other element)
+                    $('#ChartOfAccountName').val(chartOfAccountName);  // Assuming there's a field for the name
+
+                    return item;
+                }
+            });
+
+
+
+
+
+         //ChartOfAccount typehead starts here
+        $('.ChartOfAccountsLookupDebit').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData); return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccount = ChartOfAccountsMap[item];
+                var chartOfAccountId = chartOfAccount.Id;
+                var chartOfAccountName = chartOfAccount.AccountName;
+
+                // Set ChartOfAccountIdDebit
+                $('#ChartOfAccountIdDebit').val(chartOfAccountId);
+
+                // Set ChartOfAccountNameDebit
+                $('#ChartOfAccountNameDebit').val(chartOfAccountName);
+
+                return item;
+            }
+        });
+
+
+
+
+
+
+
+
+            //PostingPeriod typehead starts here
+            $('.PostingPeriodsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetPostingPeriodsAsync", "PostingPeriod", new { Area = "Accounts" })',
+                        { query: query },
+                        function (PostingPeriods) {
+                            var newPostingPeriodsData = [];
+                            PostingPeriodsMap = {};
+                            $.each(PostingPeriods, function (i, PostingPeriod) {
+                                newPostingPeriodsData.push(PostingPeriod.Description);
+                                PostingPeriodsMap[PostingPeriod.Description] = PostingPeriod;
+                            });
+                            process(newPostingPeriodsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var postingPeriodId = "";
+                    PostingPeriodId = PostingPeriodsMap[item].Id;
+                    $('#PostingPeriodId').val(PostingPeriodId);
+                    //console.log(PostingPeriodId)
+                    return item;
+                }
+            });
+
+
+            //Branch typehead starts here
+            $('.BranchesLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetBranchesAsync", "Branch", new { Area = "Admin" })',
+                        { query: query },
+                        function (Branches) {
+                            var newBranchesData = [];
+                            BranchesMap = {};
+                            $.each(Branches, function (i, Branch) {
+                                newBranchesData.push(Branch.Description);
+                                BranchesMap[Branch.Description] = Branch;
+                            });
+                            process(newBranchesData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var BranchId = "";
+                    BranchId = BranchesMap[item].Id;
+                    $('#BranchId').val(BranchId);
+                    //console.log(BranchId)
+                    return item;
+                }
+            });
+
+            //LoanProduct typehead starts here
+            $('.LoanProductsLookup').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetLoanProductsAsync", "LoanProduct", new { Area = "Accounts" })',
+                        { query: query },
+                        function (LoanProducts) {
+                            var newLoanProductsData = [];
+                            LoanProductsMap = {};
+                            $.each(LoanProducts, function (i, LoanProduct) {
+                                newLoanProductsData.push(LoanProduct.Description);
+                                LoanProductsMap[LoanProduct.Description] = LoanProduct;
+                            });
+                            process(newLoanProductsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var LoanProductId = "";
+                    LoanProductId = LoanProductsMap[item].Id;
+                    $('#BudgetEntries[0].LoanProductId').val(LoanProductId);
+                    //console.log(LoanProductId)
+                    return item;
+                }
+            });
+    </script>
+}
