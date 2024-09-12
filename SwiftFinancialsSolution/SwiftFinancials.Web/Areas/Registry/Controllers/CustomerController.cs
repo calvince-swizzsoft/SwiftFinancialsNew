@@ -71,11 +71,18 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            //var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+
+            //return View(customerDTO.ProjectedAs<CustomerDTO>());
 
             var documents = await GetDocumentsAsync(id);
 
-            return View(customerDTO);
+            if (documents == null || documents.Count == 0)
+            {
+                return View();
+            }
+
+            return View(documents);
         }
 
 
