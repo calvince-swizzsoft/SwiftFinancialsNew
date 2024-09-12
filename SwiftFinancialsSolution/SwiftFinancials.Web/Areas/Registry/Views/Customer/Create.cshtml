@@ -50,7 +50,7 @@
                 <div class="ibox-title">
 
                     <h2>Customers</h2>
-                    
+
                     @if (TempData["DefaultError"] != null)
                     {
                         <div class="alert alert-danger">
@@ -78,7 +78,16 @@
                                     @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "" })
                                     <div class="input-group">
                                         <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                        @Html.DropDownListFor(model => model.TypeDescription, customerTypes, new { @class = "form-control input-md" })
+                                        @Html.DropDownListFor(model => model.TypeDescription,
+                                            new SelectList(new List<SelectListItem>
+                                            {
+                                                new SelectListItem { Text = "Select Type", Value = "" },
+                                                new SelectListItem { Text = "Individual-Particulars", Value = "IndividualParticulars" },
+                                                new SelectListItem { Text = "Partnership-Particulars", Value = "Partnership" },
+                                                new SelectListItem { Text = "Corporation-Particulars", Value = "Corporation" },
+                                                new SelectListItem { Text = "Micro-credit-Particulars", Value = "MicroCredit" }
+                                            }, "Value", "Text"),
+                                            new { @class = "form-control input-md", @id = "customerTypeDropdown", onchange = "onCustomerTypeChange(this)" })
                                         @Html.ValidationMessageFor(model => model.TypeDescription)
                                     </div>
                                 </div>
@@ -98,7 +107,6 @@
                             </div>
 
                             <div class="col-4">
-
 
                                 <div class="form-group" id="data_3">
                                     @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
@@ -159,21 +167,6 @@
                                 <a class="nav-link" href="#address" data-toggle="tab">Address</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="#Referees" data-toggle="tab">Referees</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#CreditTypes" data-toggle="tab">Credit Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#DebitTypes" data-toggle="tab">Debit Types</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#SavingsProducts" data-toggle="tab"> Savings Products</a>
-                            </li>
-                            <li class="nav-item">
                                 <a class="nav-link" href="#Specimen" data-toggle="tab">Specimen</a>
                             </li>
                             <li class="nav-item">
@@ -181,8 +174,8 @@
                             </li>
                         </ul>
 
-
                         <div class="tab-content">
+
                             <div id="address" class="tab-pane" role="tabpanel">
                                 <div class="tab-content">
                                     <fieldset>
@@ -359,241 +352,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-
-                            <div id="Referees" class="tab-pane" role="tabpanel">
-                                <h2>Referees</h2>
-
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.Id)
-                                                @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-
-                            <div id="CreditTypes" class="tab-pane" role="tabpanel">
-
-                                <row>
-                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
-                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
-                                            <thead>
-                                                <tr>
-                                                    <th data-hide="phone">Description </th>
-                                                    <th data-hide="phone">ChartOfAccountAccountName </th>
-                                                    <th data-hide="phone">ChartOfAccountAccountType</th>
-                                                    <th data-hide="phone">ChartOfAccountName </th>
-                                                    <th data-hide="phone">ChartOfAccountAccountCode </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.credit != null)
-                                                {
-                                                    foreach (var levySplit in ViewBag.credit)
-                                                    {
-                                                        <tr>
-                                                            <td>
-                                                                @levySplit.Description
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.ChartOfAccountAccountName
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.ChartOfAccountAccountType
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.ChartOfAccountName
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.ChartOfAccountAccountCode
-                                                            </td>
-
-                                                        </tr>
-                                                    }
-                                                }
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </row>
-                            </div>
-
-                            <div id="DebitTypes" class="tab-pane" role="tabpanel">
-
-                                <row>
-                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
-                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
-                                            <thead>
-                                                <tr>
-                                                    <th data-toggle="true">Description</th>
-                                                    <th data-toggle="true">CustomerAccountTypeProductCode</th>
-                                                    <th data-toggle="true">ProductCode</th>
-                                                    <th data-toggle="true">CustomerAccountTypeProductCodeDescription</th>
-                                                    <th data-toggle="true">IsLocked</th>
-
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.debit != null)
-                                                {
-                                                    foreach (var levySplit in ViewBag.debit)
-                                                    {
-                                                        <tr>
-                                                            <td>
-                                                                @levySplit.Description
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.CustomerAccountTypeProductCode
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.ProductCode
-                                                            </td>
-                                                            <td>
-                                                                @levySplit.CustomerAccountTypeProductCodeDescription
-                                                            </td>
-                                                            <td>
-                                                                @levySplit.IsLocked
-                                                            </td>
-
-                                                        </tr>
-                                                    }
-                                                }
-
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </row>
-
-                            </div>
-
-                            <div id="InvestmentProducts" class="tab-pane" role="tabpanel">
-
-                                <row>
-                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
-                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
-                                            <thead>
-                                                <tr>
-                                                    <th data-toggle="true">Description</th>
-                                                    <th data-hide="phone">MinimumBalance</th>
-                                                    <th data-hide="phone">PoolAmount </th>
-                                                    <th data-hide="phone">Priority </th>
-                                                    <th data-hide="phone">MaturityPeriod </th>
-                                                    <th data-hide="phone">AnnualPercentageYield </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.investment != null)
-                                                {
-                                                    foreach (var levySplit in ViewBag.investment)
-                                                    {
-                                                        <tr>
-                                                            <td>
-                                                                @levySplit.Description
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.MinimumBalance
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.PoolAmount
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.Priority
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.MaturityPeriod
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.AnnualPercentageYield
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </row>
-                            </div>
-
-                            <div id="SavingsProducts" class="tab-pane" role="tabpanel">
-                                <row>
-                                    <div class="ibox-content m-b-sm border-bottom  text-dark">
-                                        <table class="footable table table-stripped toggle-arrow-tiny grey-table">
-                                            <thead>
-                                                <tr>
-                                                    <th data-toggle="true">Description</th>
-                                                    <th data-hide="phone">MaximumAllowedWithdrawal</th>
-                                                    <th data-hide="phone">MaximumAllowedDeposit </th>
-
-                                                    <th data-hide="phone">MinimumBalance </th>
-                                                    <th data-hide="phone">OperatingBalance </th>
-                                                    <th data-hide="phone">AnnualPercentageYield </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                @if (ViewBag.savings != null)
-                                                {
-                                                    foreach (var levySplit in ViewBag.savings)
-                                                    {
-                                                        <tr>
-                                                            <td>
-                                                                @levySplit.Description
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.MaximumAllowedWithdrawal
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.MaximumAllowedDeposit
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.MinimumBalance
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.OperatingBalance
-                                                            </td>
-
-                                                            <td>
-                                                                @levySplit.AnnualPercentageYield
-                                                            </td>
-                                                        </tr>
-                                                    }
-                                                }
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </row>
                             </div>
 
                             <div id="Specimen" class="tab-pane" role="tabpanel">
@@ -850,141 +608,6 @@
         });
     </script>
 }
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var index = 0;
-
-        $('#addButton').click(function () {
-            var name = $('#MemberName').val();
-            var gender = $('#MemberGender').val();
-            var idCardType = $('#IdentityCardType').val();
-            var idCardNumber = $('#IdentityCardNumber').val();
-            var addressLine1 = $('#AddressLine1').val();
-            var addressLine2 = $('#AddressLine2').val();
-            var street = $('#Street').val();
-            var postalCode = $('#PostalCode').val();
-            var city = $('#City').val();
-            var email = $('#Email').val();
-            var landLine = $('#LandLine').val();
-            var mobileLine = $('#MobileLine').val();
-            var isSignatory = $('#IsSignatory').is(':checked');
-            var remarks = $('#MemberRemarks').val();
-
-            var row = '<tr>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Name" value="' + name + '" />' + name + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Gender" value="' + gender + '" />' + gender + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardType" value="' + idCardType + '" />' + idCardType + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardNumber" value="' + idCardNumber + '" />' + idCardNumber + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine1" value="' + addressLine1 + '" />' + addressLine1 + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine2" value="' + addressLine2 + '" />' + addressLine2 + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Street" value="' + street + '" />' + street + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].PostalCode" value="' + postalCode + '" />' + postalCode + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].City" value="' + city + '" />' + city + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Email" value="' + email + '" />' + email + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].LandLine" value="' + landLine + '" />' + landLine + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].MobileLine" value="' + mobileLine + '" />' + mobileLine + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].IsSignatory" value="' + isSignatory + '" />' + (isSignatory ? "Yes" : "No") + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Remarks" value="' + remarks + '" />' + remarks + '</td>' +
-                '<td><button type="button" class="removeButton">Remove</button></td>' +
-                '</tr>';
-
-            $('#memberTable tbody').append(row);
-
-            $('.removeButton').click(function () {
-                $(this).closest('tr').remove();
-            });
-
-            index++;
-
-            // Clear input fields after adding
-            $('#MemberName').val('');
-            $('#MemberGender').val('');
-            $('#IdentityCardType').val('');
-            $('#IdentityCardNumber').val('');
-            $('#AddressLine1').val('');
-            $('#AddressLine2').val('');
-            $('#Street').val('');
-            $('#PostalCode').val('');
-            $('#City').val('');
-            $('#Email').val('');
-            $('#LandLine').val('');
-            $('#MobileLine').val('');
-            $('#IsSignatory').prop('checked', false);
-            $('#MemberRemarks').val('');
-        });
-    });
-</script>
-
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        var index = 0;
-
-        $('#Button').click(function () {
-            var name = $('#MemberName').val();
-            var gender = $('#MemberGender').val();
-            var idCardType = $('#IdentityCardType').val();
-            var idCardNumber = $('#IdentityCardNumber').val();
-            var addressLine1 = $('#AddressLine1').val();
-            var addressLine2 = $('#AddressLine2').val();
-            var street = $('#Street').val();
-            var postalCode = $('#PostalCode').val();
-            var city = $('#City').val();
-            var email = $('#Email').val();
-            var landLine = $('#LandLine').val();
-            var mobileLine = $('#MobileLine').val();
-            var isSignatory = $('#IsSignatory').is(':checked');
-            var remarks = $('#MemberRemarks').val();
-
-            var row = '<tr>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Name" value="' + name + '" />' + name + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Gender" value="' + gender + '" />' + gender + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardType" value="' + idCardType + '" />' + idCardType + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].IdentityCardNumber" value="' + idCardNumber + '" />' + idCardNumber + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine1" value="' + addressLine1 + '" />' + addressLine1 + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].AddressLine2" value="' + addressLine2 + '" />' + addressLine2 + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Street" value="' + street + '" />' + street + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].PostalCode" value="' + postalCode + '" />' + postalCode + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].City" value="' + city + '" />' + city + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Email" value="' + email + '" />' + email + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].LandLine" value="' + landLine + '" />' + landLine + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].MobileLine" value="' + mobileLine + '" />' + mobileLine + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].IsSignatory" value="' + isSignatory + '" />' + (isSignatory ? "Yes" : "No") + '</td>' +
-                '<td><input type="hidden" name="MemberDetails[' + index + '].Remarks" value="' + remarks + '" />' + remarks + '</td>' +
-                '<td><button type="button" class="removeButton">Remove</button></td>' +
-                '</tr>';
-
-            $('#memberTable tbody').append(row);
-
-            $('.removeButton').click(function () {
-                $(this).closest('tr').remove(); s
-            });
-
-            index++;
-
-            // Clear input fields after adding
-            $('#MemberName').val('');
-            $('#MemberGender').val('');
-            $('#IdentityCardType').val('');
-            $('#IdentityCardNumber').val('');
-            $('#AddressLine1').val('');
-            $('#AddressLine2').val('');
-            $('#Street').val('');
-            $('#PostalCode').val('');
-            $('#City').val('');
-            $('#Email').val('');
-            $('#LandLine').val('');
-            $('#MobileLine').val('');
-            $('#IsSignatory').prop('checked', false);
-            $('#MemberRemarks').val('');
-        });
-    });
-</script>
-
 
 
 

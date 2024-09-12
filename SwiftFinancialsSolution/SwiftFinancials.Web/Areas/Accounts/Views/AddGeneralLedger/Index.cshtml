@@ -1,4 +1,4 @@
-﻿@model  Application.MainBoundedContext.DTO.AccountsModule.SystemGeneralLedgerAccountMappingDTO
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerDTO
 
 @{
     ViewBag.Title = "General Ledger";
@@ -109,7 +109,7 @@
                     <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> Reversal Batch
                     </a>
-                    <a href="#" class="nav-link disabled">
+                    <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> Inter Account Transfer Batch
                     </a>
 
@@ -144,7 +144,7 @@
                             <strong>Success !</strong> @TempData["AuthorizeSuccess"]
                         </div>
                     }
-                    @Html.ActionLink("General Ledger Account", "Create", "AddGeneralLedger", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("General Ledger", "Create", "AddGeneralLedger", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
 
 
@@ -293,7 +293,7 @@
                     { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
                     { "mDataProp": "LedgerNumber", "sTitle": "LedgerNumber", "sWidth": "15%" },
                     { "mDataProp": "TotalValue", "sTitle": "TotalValue", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
@@ -336,7 +336,7 @@
         e.preventDefault(); // Prevent the default form submission
         // Perform AJAX request
         $.ajax({
-            url: '@Url.Action("Index", "AddGeneralLedger")', // Specify the URL of the controller action
+            url: '@Url.Action("Index", "InterAccountTransfer")', // Specify the URL of the controller action
             type: 'POST',
             data: {}, // You can pass any data you need here
             success: function(result) {

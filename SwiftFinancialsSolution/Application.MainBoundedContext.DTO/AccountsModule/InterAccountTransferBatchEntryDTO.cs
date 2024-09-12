@@ -221,13 +221,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Status")]
-        public string StatusDescription
-        {
-            get
-            {
-                return Enum.IsDefined(typeof(BatchEntryStatus), Status) ? EnumHelper.GetDescription((BatchEntryStatus)Status) : string.Empty;
-            }
-        }
+        public string StatusDescription { get; set; }
+        
 
         [DataMember]
         [Display(Name = "Created By")]
@@ -236,5 +231,61 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+
+
+        //Additional DTOS
+
+        [DataMember]
+        [Display(Name = "Account Status")]
+        public int AccountStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Status")]
+        public string AccountStatusDescription { get; set; }
+       
+
+        [DataMember]
+        [Display(Name = "Remarks")]
+        public string Remarks { get; set; }
+
+        [DataMember]
+        [Display(Name = "Available Balance")]
+        public decimal AvailableBalance { get; set; }
+
+        [DataMember]
+        [Display(Name = "Book Balance")]
+        public decimal BookBalance { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Account Number")]
+        public String AccountNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Type")]
+        public byte CustomerType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Type")]
+        public string CustomerTypeDescription { get; set; }
+        
+        [DataMember]
+        [Display(Name = "Customer")]
+        [ValidGuid]
+        public Guid CustomerId { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Name")]
+        public string CustomerFullName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Customer Payroll Numbers")]
+        public string CustomerIndividualPayrollNumbers { get; set; }
+
+        [DataMember]
+        [Display(Name = "Personal Identification Number")]
+        public string CustomerPersonalIdentificationNumber { get; set; }
     }
 }
