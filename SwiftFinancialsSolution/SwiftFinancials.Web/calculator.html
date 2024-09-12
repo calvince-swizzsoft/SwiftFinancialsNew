@@ -1,0 +1,235 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SwiftFinancials - 3D Professional Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        /* General Styling */
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #1e1e1e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .calculator-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        /* Calculator Styles */
+        .calculator {
+            background: linear-gradient(145deg, #2c2c2c, #1a1a1a);
+            border-radius: 20px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+            transform-style: preserve-3d;
+            padding: 30px;
+            perspective: 1000px;
+            max-width: 400px;
+        }
+
+        .display {
+            background: #111;
+            color: #00ff88;
+            font-size: 2.5em;
+            padding: 20px;
+            text-align: right;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: inset 0px 0px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(145deg, #333, #222);
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.5em;
+            padding: 20px;
+            cursor: pointer;
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.6);
+            transition: transform 0.1s ease-in-out, box-shadow 0.1s ease-in-out;
+        }
+
+            .btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 8px 12px rgba(0, 255, 136, 0.6);
+            }
+
+            .btn:active {
+                transform: scale(1);
+                box-shadow: 0 5px 8px rgba(0, 255, 136, 0.4);
+            }
+
+        .btn-special {
+            background: #ff3b3b;
+        }
+
+        /* Side Menu Styles */
+        .side-menu {
+            background: linear-gradient(145deg, #222, #111);
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.5);
+        }
+
+            .side-menu h3 {
+                color: #fff;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+
+            .side-menu button {
+                display: block;
+                background: #333;
+                color: #fff;
+                border: none;
+                padding: 15px;
+                margin-bottom: 10px;
+                border-radius: 10px;
+                width: 100%;
+                font-size: 1.2em;
+                cursor: pointer;
+                transition: background 0.3s ease-in-out;
+            }
+
+                .side-menu button:hover {
+                    background: #444;
+                }
+
+                .side-menu button:active {
+                    background: #555;
+                }
+    </style>
+</head>
+<body>
+    <div class="calculator-container">
+        <div class="calculator">
+            <div class="display">
+                <input type="text" id="display" style="width: 100%; height: 100px; font-size: 70px;" disabled />
+            </div>
+            <div class="buttons">
+                <button class="btn" id="clear">C</button>
+                <button class="btn btn-special" id="delete">Del</button>
+                <button class="btn">/</button>
+                <button class="btn">*</button>
+                <button class="btn">7</button>
+                <button class="btn">8</button>
+                <button class="btn">9</button>
+                <button class="btn">-</button>
+                <button class="btn">4</button>
+                <button class="btn">5</button>
+                <button class="btn">6</button>
+                <button class="btn">+</button>
+                <button class="btn">1</button>
+                <button class="btn">2</button>
+                <button class="btn">3</button>
+                <button class="btn" id="equals">=</button>
+                <button class="btn">0</button>
+                <button class="btn">.</button>
+                <!-- Hidden Scientific Buttons -->
+                <button class="btn" id="sci-toggle">Sci</button>
+            </div>
+        </div>
+
+        <!-- Side Menu for Scientific Functions -->
+        <div class="side-menu">
+            <h3>Scientific</h3>
+            <button id="sqrt">√ (sqrt)</button>
+            <button id="pow">x^y</button>
+            <button id="sin">sin(x)</button>
+            <button id="cos">cos(x)</button>
+            <button id="tan">tan(x)</button>
+            <button id="log">log(x)</button>
+            <button id="ln">ln(x)</button>
+            <button id="pi">π</button>
+            <button id="exp">e^x</button>
+            <button id="factorial">x!</button>
+        </div>
+    </div>
+
+    <script>
+        // Calculator logic
+        document.addEventListener('DOMContentLoaded', function () {
+            const display = document.getElementById('display');
+            const buttons = Array.from(document.querySelectorAll('.btn'));
+            const scientificButtons = Array.from(document.querySelectorAll('#sqrt, #pow, #sin, #cos, #tan, #log, #ln, #pi, #exp, #factorial'));
+
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+                    if (button.id === 'clear') {
+                        display.value = '';
+                    } else if (button.id === 'delete') {
+                        display.value = display.value.slice(0, -1);
+                    } else if (button.id === 'equals') {
+                        try {
+                            display.value = eval(display.value);
+                        } catch {
+                            display.value = 'Error';
+                        }
+                    } else {
+                        display.value += button.innerText;
+                    }
+                });
+            });
+
+            // Scientific Buttons functionality
+            document.getElementById('sqrt').addEventListener('click', () => {
+                display.value = Math.sqrt(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('pow').addEventListener('click', () => {
+                display.value += '**';
+            });
+
+            document.getElementById('sin').addEventListener('click', () => {
+                display.value = Math.sin(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('cos').addEventListener('click', () => {
+                display.value = Math.cos(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('tan').addEventListener('click', () => {
+                display.value = Math.tan(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('log').addEventListener('click', () => {
+                display.value = Math.log10(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('ln').addEventListener('click', () => {
+                display.value = Math.log(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('pi').addEventListener('click', () => {
+                display.value += Math.PI;
+            });
+
+            document.getElementById('exp').addEventListener('click', () => {
+                display.value = Math.exp(parseFloat(display.value)).toFixed(4);
+            });
+
+            document.getElementById('factorial').addEventListener('click', () => {
+                let num = parseInt(display.value);
+                let result = 1;
+                for (let i = 1; i <= num; i++) {
+                    result *= i;
+                }
+                display.value = result;
+            });
+        });
+    </script>
+</body>
+</html>
