@@ -1381,6 +1381,9 @@
     <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Create.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

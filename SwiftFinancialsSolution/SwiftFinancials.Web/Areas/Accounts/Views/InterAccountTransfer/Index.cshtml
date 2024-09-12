@@ -259,10 +259,10 @@
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                var viewButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/details/${aData.Id}">View</a>`;
+                    var viewButton = `<a class="dropdown-item" href="/Accounts/InterAccountTransfer/details/${aData.Id}">View</a>`;
                     @*var editButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/edit/${aData.Id}">Edit</a>`;*@
-                var verifyButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Verify/${aData.Id}">Verify</a>`;
-                var authorizeButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Authorize/${aData.Id}">Authorize</a>`;
+                    var verifyButton = `<a class="dropdown-item" href="/Accounts/InterAccountTransfer/Verify/${aData.Id}">Verify</a>`;
+                    var authorizeButton = `<a class="dropdown-item" href="/Accounts/InterAccountTransfer/Authorize/${aData.Id}">Authorize</a>`;
 
                     switch (aData.Status) {
                         case 1:

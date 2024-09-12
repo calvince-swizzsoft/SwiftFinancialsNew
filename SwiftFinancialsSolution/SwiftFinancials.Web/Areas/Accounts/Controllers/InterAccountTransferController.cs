@@ -56,10 +56,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
-            ViewBag.GeneralLedgerEntries = batchentries;
-            return View(generalLedgerDTO);
+            var WireTransferBatch = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
+            ViewBag.InterAccountTransferEntries = batchentries;
+            return View(WireTransferBatch);
         }
 
 
@@ -259,7 +259,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
-            ViewBag.GeneralLedgerEntryTypeSelectList = GetGeneralLedgerEntryTypeSelectList(string.Empty);
+            ViewBag.GetApportionToSelectList = GetApportionToSelectList(string.Empty);
             return View();
         }
 
@@ -375,28 +375,28 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+            var interAccountTransferBatchDTO = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
 
-            ViewBag.GeneralLedgerEntries = batchentries;
-            return View(generalLedgerDTO);
+            ViewBag.InterAccountTransferEntries = batchentries;
+            return View(interAccountTransferBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, GeneralLedgerDTO generalLedgerDTO)
+        public async Task<ActionResult> Verify(Guid id, InterAccountTransferBatchDTO  interAccountTransferBatchDTO)
         {
-            generalLedgerDTO.ValidateAll();
+            interAccountTransferBatchDTO.ValidateAll();
 
 
-            var auth = generalLedgerDTO.GeneralLedgerAuthOption;
+            var auth = interAccountTransferBatchDTO.WireTransferAuthOption;
 
 
-            if (!generalLedgerDTO.HasErrors)
+            if (!interAccountTransferBatchDTO.HasErrors)
             {
-                await _channelService.AuditGeneralLedgerAsync(generalLedgerDTO, auth, GetServiceHeader());
+                await _channelService.AuditInterAccountTransferBatchAsync(interAccountTransferBatchDTO, auth, GetServiceHeader());
 
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
 
                 TempData["VerifySuccess"] = "Verification Successiful";
 
@@ -406,9 +406,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             {
                 TempData["VerificationFail"] = "Verification Failed!. Review all conditions.";
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
-                var errorMessages = generalLedgerDTO.ErrorMessages;
+                var errorMessages = interAccountTransferBatchDTO.ErrorMessages;
 
-                return View(generalLedgerDTO);
+                return View(interAccountTransferBatchDTO);
             }
         }
 
@@ -418,25 +418,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
 
 
-            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
-            ViewBag.GeneralLedgerEntries = batchentries;
-            return View(generalLedgerDTO);
+            var interAccountTransferBatchDTO = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
+
+            ViewBag.InterAccountTransferEntries = batchentries;
+            return View(interAccountTransferBatchDTO);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Authorize(Guid id, GeneralLedgerDTO generalLedgerDTO)
+        public async Task<ActionResult> Authorize(Guid id, InterAccountTransferBatchDTO  interAccountTransferBatchDTO)
         {
-            var batchAuthOption = generalLedgerDTO.GeneralLedgerAuthOption;
-            generalLedgerDTO.ValidateAll();
+            var batchAuthOption = interAccountTransferBatchDTO.WireTransferAuthOption;
+            interAccountTransferBatchDTO.ValidateAll();
 
-            if (!generalLedgerDTO.HasErrors)
+            if (!interAccountTransferBatchDTO.HasErrors)
             {
-                await _channelService.AuthorizeGeneralLedgerAsync(generalLedgerDTO, batchAuthOption, 1, GetServiceHeader());
+                await _channelService.AuthorizeInterAccountTransferBatchAsync(interAccountTransferBatchDTO, batchAuthOption, 1, GetServiceHeader());
 
 
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
 
 
 
@@ -445,25 +446,15 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
-                var errorMessages = generalLedgerDTO.ErrorMessages;
-                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+                var errorMessages = interAccountTransferBatchDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
                 TempData["AuthorizationFail"] = "Authorization Failed!. Review all conditions.";
 
-                return View(generalLedgerDTO);
+                return View(interAccountTransferBatchDTO);
             }
         }
 
 
-
-
-
-
-        [HttpGet]
-        public async Task<JsonResult> GetPostingPeriodsAsync()
-        {
-            var postingPeriodsDTOs = await _channelService.FindPostingPeriodsAsync(GetServiceHeader());
-
-            return Json(postingPeriodsDTOs, JsonRequestBehavior.AllowGet);
-        }
+        
     }
 }
