@@ -1,16 +1,8 @@
 {
   "ExpandedNodes": [
     "",
-    "\\SwiftFinancialsSolution",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\AddGeneralLedger",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_WireTransfer",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Loaning\\Controllers"
+    "\\SwiftFinancialsSolution"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\AddGeneralLedger\\Index.cshtml",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancialsSolution.sln",
   "PreviewInSolutionExplorer": false
 }

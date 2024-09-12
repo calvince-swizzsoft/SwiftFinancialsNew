@@ -252,14 +252,14 @@
                                         <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
-
+                                                @Html.HiddenFor(model => model.CustomerId, new { @id = "CustomerAccountId1" })
                                                 @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = " form-control required ", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference11" } })
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-
+                                                @Html.HiddenFor(model => model.BranchId, new { @id = "CustomerAccountId1" })
                                                 @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required ", placeholder = "", @readonly = "readonly", id = "CustomerAccountCustomerReference21" } })
                                             </div>
                                         </div>
@@ -349,29 +349,30 @@
                                         <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
                                             <thead style="font-style: italic; color: cadetblue; text-align: center;">
                                                 <tr>
-                                                    <th style="width: 5%;">Credit Chart of Account</th>
-                                                    <th style="width: 5%;">Credit Customer Name </th>
-                                                    <th style="width: 5%;">Credit Account Number</th>
-                                                    <th style="width: 5%;">Debit Chart of Account</th>
-                                                    <th style="width: 5%;">Debit Customer Name </th>
-                                                    <th style="width: 5%;">Debit Account Number</th>
-                                                    <th style="width: 5%;">Amount</th>
+                                                    <th style="width: 5%;"> Chart of Account</th>
+                                                    <th style="width: 5%;">Customer Name </th>
+                                                    <th style="width: 5%;">Customer Account Number</th>
+                                                    <th style="width: 5%;">ApportionTo </th>
+                                                    <th style="width: 5%;">Principal</th>
+                                                    <th style="width: 5%;">Interest</th>
 
                                                 </tr>
+
+
                                             </thead>
                                             <tbody>
-                                                @if (ViewBag.GeneralLedgerEntries != null)
+                                                @if (ViewBag.InterAccountTransferEntries != null)
                                                 {
-                                                    foreach (var LedgerEntries in ViewBag.GeneralLedgerEntries)
+                                                    foreach (var WireTransferEntries in ViewBag.InterAccountTransferEntries)
                                                     {
-                                                        <tr data-id="@LedgerEntries.Id">
-                                                            <td>@LedgerEntries.ChartOfAccountAccountName</td>
-                                                            <td>@LedgerEntries.CustomerAccountCustomerFullName</td>
-                                                            <td>@LedgerEntries.CustomerAccountFullAccountNumber</td>
-                                                            <td>@LedgerEntries.ContraChartOfAccountAccountName</td>
-                                                            <td>@LedgerEntries.ContraCustomerAccountCustomerFullName</td>
-                                                            <td>@LedgerEntries.ContraCustomerAccountFullAccountNumber</td>
-                                                            <td>@LedgerEntries.Amount</td>
+                                                        <tr data-id="@WireTransferEntries.Id">
+                                                            <td>@WireTransferEntries.ChartOfAccountAccountName</td>
+                                                            <td>@WireTransferEntries.CustomerAccountCustomerFullName</td>
+                                                            <td>@WireTransferEntries.CustomerAccountFullAccountNumber</td>
+                                                            <td>@WireTransferEntries.ApportionToDescription</td>
+                                                            <td>@WireTransferEntries.Principal</td>
+                                                            <td>@WireTransferEntries.Interest</td>
+
 
 
 

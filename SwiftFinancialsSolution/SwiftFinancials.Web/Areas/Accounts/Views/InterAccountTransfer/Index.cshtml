@@ -138,10 +138,10 @@
                         </div>
                     }
 
-                    @if (TempData["AuthorizeSuccess"] != null)
+                    @if (TempData["AuthorizationSuccess"] != null)
                     {
                         <div class="alert alert-success">
-                            <strong>Success !</strong> @TempData["AuthorizeSuccess"]
+                            <strong>Success !</strong> @TempData["AuthorizationSuccess"]
                         </div>
                     }
                     @Html.ActionLink("Inter Account Transfer", "Create", "InterAccountTransfer", new { Area = "Accounts" }, new { @class = "btn btn-primary" })

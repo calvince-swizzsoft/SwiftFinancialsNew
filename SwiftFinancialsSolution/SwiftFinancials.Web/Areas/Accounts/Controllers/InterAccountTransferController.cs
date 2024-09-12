@@ -376,6 +376,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
             var interAccountTransferBatchDTO = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+
+            CustomerAccountDTO customerAcc= await _channelService.FindCustomerAccountAsync(interAccountTransferBatchDTO.CustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            interAccountTransferBatchDTO.CustomerId = customerAcc.CustomerId;
+            
             var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
 
             ViewBag.InterAccountTransferEntries = batchentries;
@@ -421,6 +426,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             var interAccountTransferBatchDTO = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
             var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
 
+            CustomerAccountDTO customerAcc = await _channelService.FindCustomerAccountAsync(interAccountTransferBatchDTO.CustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            interAccountTransferBatchDTO.CustomerId = customerAcc.CustomerId;
+
             ViewBag.InterAccountTransferEntries = batchentries;
             return View(interAccountTransferBatchDTO);
         }
@@ -446,6 +455,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else
             {
+
                 var errorMessages = interAccountTransferBatchDTO.ErrorMessages;
                 ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
                 TempData["AuthorizationFail"] = "Authorization Failed!. Review all conditions.";
