@@ -109,7 +109,7 @@
                     <a href="@Url.Action("Index", "BatchOrigination_Reversal", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> Reversal Batch
                     </a>
-                    <a href="@Url.Action("Create", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
+                    <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> Inter Account Transfer Batch
                     </a>
 
@@ -144,7 +144,7 @@
                             <strong>Success !</strong> @TempData["AuthorizeSuccess"]
                         </div>
                     }
-                    @Html.ActionLink("General Ledger Account", "Create", "AddGeneralLedger", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Inter Account Transfer", "Create", "InterAccountTransfer", new { Area = "Accounts" }, new { @class = "btn btn-primary" })
 
 
 
@@ -169,7 +169,7 @@
 
 
                     <div class="table-responsive">
-                        <table id="GeneralLedgerAccountMappingsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                        <table id="InterAccountTransferGrid" class="table table-striped table-bordered table-hover" width="100%">
                             <tbody>
                                 <tr>
                                     <td colspan="7" class="dataTables_empty">
@@ -233,12 +233,12 @@
 
 
         $(document).ready(function () {
-            $('#GeneralLedgerAccountMappingsGrid').DataTable({
+            $('#InterAccountTransferGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
@@ -290,10 +290,10 @@
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%" },
-                    { "mDataProp": "PostingPeriodDescription", "sTitle": "Posting Period", "sWidth": "15%" },
-                    { "mDataProp": "LedgerNumber", "sTitle": "LedgerNumber", "sWidth": "15%" },
-                    { "mDataProp": "TotalValue", "sTitle": "TotalValue", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
+                    { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Posting Period", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "LedgerNumber", "sWidth": "15%" },
+                    { "mDataProp": "Reference", "sTitle": "TotalValue", "sWidth": "15%" },
+                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
@@ -327,7 +327,7 @@
 
                 // Insert the data into the table
                 var newRow = '<tr><td>' + inputValue + '</td><td>New data</td></tr>';
-                $('#GeneralLedgerAccountMappingsGrid tbody').html(newRow);
+                $('#InterAccountTransferGrid tbody').html(newRow);
             });
         });
 
