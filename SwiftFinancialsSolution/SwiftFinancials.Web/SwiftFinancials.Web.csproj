@@ -1812,6 +1812,8 @@
     <Content Include="Scripts\summernote\summernote-lite.js" />
     <Content Include="Scripts\summernote\summernote.js" />
     <Content Include="Scripts\summernote\summernote.min.js" />
+    <Content Include="calculator.html" />
+    <Content Include="loan-calculator.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
