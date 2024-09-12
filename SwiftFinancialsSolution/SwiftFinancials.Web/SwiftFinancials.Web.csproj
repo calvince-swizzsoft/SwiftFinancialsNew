@@ -1376,6 +1376,11 @@
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\ReportSetting\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1391,6 +1396,13 @@
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\js\CaptureSpecimenDetails.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\apportionments.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\apportionTypeHandler.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\chartOfAccounts.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\customerAccountsGrid.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\customersGrid.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\formSubmission.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\tellerGlTable.js" />
     <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
     <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
     <Content Include="Scripts\js\MarqueeTransform.js" />
@@ -1853,7 +1865,6 @@
     <Folder Include="Areas\Accounts\Views\Credit\" />
     <Folder Include="Areas\Accounts\Views\Default1\" />
     <Folder Include="Areas\Accounts\Views\Default\" />
-    <Folder Include="Areas\Accounts\Views\InterAccountTransfer\" />
     <Folder Include="Areas\Accounts\Views\periods\" />
     <Folder Include="Areas\Dashboard\Models\" />
     <Folder Include="Areas\Dashboard\Views\Shared\" />

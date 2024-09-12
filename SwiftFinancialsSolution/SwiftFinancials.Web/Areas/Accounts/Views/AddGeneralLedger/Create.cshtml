@@ -125,7 +125,7 @@
         border: 2px solid gray;
         border-radius: 12px;
         padding: 15px;
-        margin-top: 30px;
+        margin-top: 10px;
         position: relative;
     }
 
@@ -134,6 +134,8 @@
         top: -20px;
         left: 15px;
         background-color: white;
+        color:black;
+        font-weight:bold;
         padding: 0 10px;
         font-size: 18px;
     }
@@ -243,7 +245,7 @@
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                         </div>
@@ -252,7 +254,7 @@
                                     <div class="col-lg-3">
 
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ksh.." } })
                                             @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
                                         </div>
@@ -286,17 +288,16 @@
                                                 </div>
                                                 <div id="chartFields1" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, htmlAttributes: new { @class = "" })
-                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit" })
-                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookupDebit form-control required", @placeholder = "Enter space to autofill" } })
-                                                        @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, "", new { @class = "text-danger" })
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit" ,@class = "entry-field" })
+                                                        @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountName, new { htmlAttributes = new {@id = "ChartOfAccountNameDebit", @class = "ChartOfAccountsLookupDebit form-control required entry-field", @placeholder = "Enter space to autofill" } })
                                                     </div>
                                                 </div>
                                                 <div id="customerFields11" class="col-lg-6" style="display:none;">
                                                     <div class="col-md-13 form-group">
                                                         @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @class = "control-label" })
                                                         <div class="input-group" data-autoclose="true">
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @id = "DebitCustomerAccountId" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerId, new { @id = "DebitCustomerAccountId" ,@class = "entry-field" })
                                                             @Html.TextBoxFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "ContraCustomerAccountCustomerFullName" })
                                                             <span class="input-group-addon">
                                                                 <a data-toggle="modal" data-target="#DebitcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
@@ -307,17 +308,15 @@
 
                                                 <div id="customerFields12" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "" })
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
                                                         @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountCustomerAccountTypeTargetProductId, new { @id = "ContraCustomerAccountCustomerAccountTypeTargetProductId" })
-
                                                         @Html.EditorFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "ContraCustomerAccountAccountTypeTargetProductDescription", @readonly = "readonly" } })
-                                                        @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
                                                 <div id="customerFields13" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
-                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, htmlAttributes: new { @class = "" })
-                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountId, new { @id = "DebitContraCustomerAccountId" })
+                                                        @Html.LabelFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraCustomerAccountId, new { @id = "DebitContraCustomerAccountId",@class = "entry-field" })
                                                         @Html.EditorFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "ContraCustomerAccountFullAccountNumber", @readonly = "readonly" } })
                                                         @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].DebitFullAccountNumber, "", new { @class = "text-danger" })
                                                     </div>
@@ -346,9 +345,9 @@
                                                 <div id="chartFields" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
                                                         <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "" })
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, new { @id = "ChartOfAccountId" })
-                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, new { htmlAttributes = new { @class = "ChartOfAccountsLookup form-control required", @placeholder = "Enter space to autofill" } })
+                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ChartOfAccountId, new {@class= "entry-field", @id = "ChartOfAccountId" })
+                                                            @Html.EditorFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, new { htmlAttributes = new { @id = "ChartOfAccountName"  , @class = "ChartOfAccountsLookup form-control required entry-field ", @placeholder = "Enter space to autofill" } })
                                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].ChartOfAccountName, "", new { @class = "text-danger" })
                                                         </div>
                                                     </div>
@@ -358,7 +357,7 @@
                                                     <div class="col-md-13 form-group">
                                                         @Html.LabelFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerId, new { @class = "control-label" })
                                                         <div class="input-group" data-autoclose="true">
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerId, new { @class = "entry-field", @id = "CreditCustomerAccountId" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerId, new { @class = "entry-field", @id = "CustomerAccountCustomerId" })
                                                             @Html.TextBoxFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerIndividualFirstName, new { @class = "form-control input-md alpha alphaspace required entry-field", @readonly = "readonly", @id = "CreditCustomerAccountFullName" })
                                                             <span class="input-group-addon">
                                                                 <a data-toggle="modal" data-target="#CreditcustomerAccountLookupModal"><span class="fa fa-search"></span></a>
@@ -369,8 +368,8 @@
                                                 <div id="customerFields2" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
                                                         <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "" })
-                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountId, new { @id = "CreditCustomerAccountId" })
+                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, htmlAttributes: new { @class = "control-label" })
+                                                            @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountId, new { @id = "CreditCustomerAccountId",@class = "entry-field" })
                                                             @Html.HiddenFor(model => model.GeneralLedgerEntries[0].CustomerAccountCustomerAccountTypeTargetProductId, new { @id = "CustomerAccountCustomerAccountTypeTargetProductId" })
                                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].CustomerAccountAccountTypeTargetProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "CustomerAccountAccountTypeTargetProductDescription", @readonly = "readonly" } })
                                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].CustomerAccountAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
@@ -380,7 +379,7 @@
                                                 <div id="customerFields3" class="col-lg-6" style="display:none;">
                                                     <div class="form-group form-group-lg">
                                                         <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, htmlAttributes: new { @class = "" })
+                                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, htmlAttributes: new { @class = "control-label" })
                                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @id = "CustomerAccountFullAccountNumber", @readonly = "readonly" } })
                                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].CreditFullAccountNumber, "", new { @class = "text-danger" })
                                                         </div>
@@ -396,28 +395,28 @@
 
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].Amount, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].Amount, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].Amount, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].Amount, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].PrimaryDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].SecondaryDescription, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
                                     <div class="col-lg-3">
                                         <div class="form-group spacing-form-group" id="data_3">
-                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].ValueDate, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].ValueDate, htmlAttributes: new { @class = "control-label" })
                                             <div class="input-group date">
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                                 <input type="text" name="valuedate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
@@ -427,14 +426,14 @@
 
                                     <div class="col-lg-12">
                                         <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].Reference, htmlAttributes: new { @class = "" })
+                                            @Html.LabelFor(model => model.GeneralLedgerEntries[0].Reference, htmlAttributes: new { @class = "control-label" })
                                             @Html.EditorFor(model => model.GeneralLedgerEntries[0].Reference, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "" } })
                                             @Html.ValidationMessageFor(model => model.GeneralLedgerEntries[0].Reference, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
                                 </div>
-                                @Html.HiddenFor(model => model.GeneralLedgerEntries[0].ContraChartOfAccountId, new { @id = "ChartOfAccountIdDebit2" })
+                                
                                 <div class="row">
                                     <!-- Center the Submit button -->
                                     <div style="text-align: right; margin: 20px 20px;">
@@ -734,7 +733,7 @@
 
 
 
-    @*<script>
+    <script>
 
 
 
@@ -757,7 +756,7 @@
                     document.getElementById('customerFields3').style.display = 'none';
 
                     // Show relevant fields based on selection
-                    if (selectedValue == 1) {  // Replace with actual value from dropdown
+                    if (selectedValue == 1) { 
                         document.getElementById('chartFields').style.display = 'block';
                     } else if (selectedValue == 2) {  // Replace with actual value from dropdown
                         document.getElementById('customerFields1').style.display = 'block';
@@ -804,109 +803,10 @@
 
 
 
-        </script>*@
+        </script>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get the dropdown element
-            var entryTypeDropdown = document.getElementById('entryTypeDropdown');
-
-            // Add event listener to the dropdown
-            entryTypeDropdown.addEventListener('change', function () {
-                var selectedValue = entryTypeDropdown.value;
-
-                // Hide and clear all fields initially
-                hideAndClear('chartFields');
-                hideAndClear('customerFields1');
-                hideAndClear('customerFields2');
-                hideAndClear('customerFields3');
-
-                // Show relevant fields based on selection
-                if (selectedValue == 1) {
-                    show('chartFields');
-                } else if (selectedValue == 2) {
-                    show('customerFields1');
-                    show('customerFields2');
-                    show('customerFields3');
-                }
-            });
-
-            // Trigger the change event on page load (in case the dropdown already has a selected value)
-            entryTypeDropdown.dispatchEvent(new Event('change'));
-
-            // Helper function to hide and clear (set to null/empty) the fields
-            function hideAndClear(fieldId) {
-                var field = document.getElementById(fieldId);
-                field.style.display = 'none';
-
-                // Set all input elements inside this field to empty values
-                Array.from(field.querySelectorAll('input, select, textarea')).forEach(function (input) {
-                    if (input.id === 'ChartOfAccountId') {
-                        // Set ChartOfAccountId to null to avoid the default GUID
-                        input.value = '';
-                    } else {
-                        input.value = ''; // Clear the value of other inputs
-                    }
-                });
-            }
-
-            // Helper function to show a field
-            function show(fieldId) {
-                var field = document.getElementById(fieldId);
-                field.style.display = 'block';
-            }
-        });
-
-        document.addEventListener('DOMContentLoaded', function () {
-            // Get the second dropdown element
-            var entryTypeDropdown = document.getElementById('entryTypeDropdown1');
-
-            // Add event listener to the second dropdown
-            entryTypeDropdown.addEventListener('change', function () {
-                var selectedValue = entryTypeDropdown.value;
-
-                // Hide and clear all fields initially
-                hideAndClear('chartFields1');
-                hideAndClear('customerFields11');
-                hideAndClear('customerFields12');
-                hideAndClear('customerFields13');
-
-                // Show relevant fields based on selection
-                if (selectedValue == 1) {
-                    show('chartFields1');
-                } else if (selectedValue == 2) {
-                    show('customerFields11');
-                    show('customerFields12');
-                    show('customerFields13');
-                }
-            });
-
-            // Trigger the change event on page load
-            entryTypeDropdown.dispatchEvent(new Event('change'));
-
-            // Reuse the hide and clear, and show functions
-            function hideAndClear(fieldId) {
-                var field = document.getElementById(fieldId);
-                field.style.display = 'none';
-
-                // Set all input elements inside this field to empty values
-                Array.from(field.querySelectorAll('input, select, textarea')).forEach(function (input) {
-                    if (input.id == 'ChartOfAccountId1') {
-                        // Set ChartOfAccountId1 to null to avoid the default GUID
-                        input.value = '';
-                    } else {
-                        input.value = ''; // Clear the value of other inputs
-                    }
-                });
-            }
-
-            function show(fieldId) {
-                var field = document.getElementById(fieldId);
-                field.style.display = 'block';
-            }
-        });
-    </script>
+   
 
 
 
@@ -970,9 +870,9 @@
                     $('#CustomerAccountAccountTypeTargetProductDescription').val(response.data.CustomerAccountAccountTypeTargetProductDescription);
                     $('#CustomerAccountCustomerAccountTypeTargetProductId').val(response.data.CustomerAccountCustomerAccountTypeTargetProductId);
                     $('#CreditCustomerAccountFullName').val(response.data.CustomerAccountCustomerIndividualFirstName);
-                    $('#CreditCustomerAccountId').val(response.data.CustomerAccountCustomerId);
+                    $('#CustomerAccountCustomerId').val(response.data.CustomerAccountCustomerId);
                     $('#CreditCustomerAccountId').val(response.data.CustomerAccountId);
-                    $('#ChartOfAccountId2').val(response.data.ChartOfAccountId);
+                    $('#ChartOfAccountId').val(response.data.ChartOfAccountId);
                     // Close the modal
                     $('#CreditcustomerAccountLookupModal').modal('hide');
                 } else {
@@ -1029,7 +929,7 @@
                     $('#ContraCustomerAccountCustomerFullName').val(response.data.ContraCustomerAccountCustomerIndividualFirstName);
                     $('#DebitCustomerAccountId').val(response.data.ContraCustomerAccountCustomerId);
                     $('#DebitContraCustomerAccountId').val(response.data.ContraCustomerAccountId);
-                    $('#ChartOfAccountIdDebit2').val(response.data.ContraChartOfAccountId);
+                    $('#ChartOfAccountIdDebit').val(response.data.ContraChartOfAccountId);
                     // Close the modal
                     $('#DebitcustomerAccountLookupModal').modal('hide');
                 } else {
@@ -1074,10 +974,16 @@
                     return item.replace(regex, "<strong>$1</strong>");
                 },
                 updater: function (item) {
-                    var chartOfAccountId = "";
-                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
-                    $('#ChartOfAccountId').val(ChartOfAccountId);
-                    //console.log(ChartOfAccountId)
+                    var chartOfAccount = ChartOfAccountsMap[item];
+                    var chartOfAccountId = chartOfAccount.Id;
+                    var chartOfAccountName = chartOfAccount.AccountName;
+
+                    // Set ChartOfAccountId (hidden input or other element)
+                    $('#ChartOfAccountId').val(chartOfAccountId);
+
+                    // Set ChartOfAccountName (input or other element)
+                    $('#ChartOfAccountName').val(chartOfAccountName);  // Assuming there's a field for the name
+
                     return item;
                 }
             });
@@ -1085,8 +991,53 @@
 
 
 
+
          //ChartOfAccount typehead starts here
-            $('.ChartOfAccountsLookupDebit').typeahead({
+        $('.ChartOfAccountsLookupDebit').typeahead({
+            source: function (query, process) {
+                return $.getJSON(
+                    '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                    { query: query },
+                    function (ChartOfAccounts) {
+                        var newChartOfAccountsData = [];
+                        ChartOfAccountsMap = {};
+                        $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                            newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                            ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                        });
+                        process(newChartOfAccountsData); return;
+                    });
+            },
+            matcher: function (item) {
+                if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                    return true;
+                }
+            },
+            sorter: function (items) {
+                return items.sort();
+            },
+            highlighter: function (item) {
+                var regex = new RegExp('(' + this.query + ')', 'gi');
+                return item.replace(regex, "<strong>$1</strong>");
+            },
+            updater: function (item) {
+                var chartOfAccount = ChartOfAccountsMap[item];
+                var chartOfAccountId = chartOfAccount.Id;
+                var chartOfAccountName = chartOfAccount.AccountName;
+
+                // Set ChartOfAccountIdDebit
+                $('#ChartOfAccountIdDebit').val(chartOfAccountId);
+
+                // Set ChartOfAccountNameDebit
+                $('#ChartOfAccountNameDebit').val(chartOfAccountName);
+
+                return item;
+            }
+        });
+
+
+
+            @*$('.ChartOfAccountsLookupDebit').typeahead({
                 source: function (query, process) {
                     return $.getJSON(
                         '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
@@ -1120,7 +1071,7 @@
                     //console.log(ChartOfAccountId)
                     return item;
                 }
-            });
+            });*@
 
 
 
