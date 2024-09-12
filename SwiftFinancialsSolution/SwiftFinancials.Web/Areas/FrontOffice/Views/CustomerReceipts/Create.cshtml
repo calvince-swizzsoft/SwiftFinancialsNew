@@ -698,6 +698,9 @@
 
 <input type='hidden' id='h' name='h' />
 
+
+
+
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
@@ -720,7 +723,7 @@
 }
 
 @section Scripts{
-  
+
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
@@ -729,7 +732,7 @@
     @Scripts.Render("~/plugins/dataPicker")
     @Scripts.Render("~/plugins/ionRange")
     @Scripts.Render("~/plugins/nouiSlider")
-   @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
     @Scripts.Render("~/plugins/switchery")
     @Scripts.Render("~/plugins/chosen")
     @Scripts.Render("~/plugins/knob")
@@ -741,13 +744,13 @@
     @Scripts.Render("~/plugins/touchSpin")
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/apportionTypeHandler.js")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/chartOfAccounts.js")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/customersGrid.js")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/tellerGlTable.js")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/customerAccountsGrid.js")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/apportionments.js")
-    @Scripts.Render("~/Scripts/js/frontoffice/customerreceipts/formSubmission.js")
 
+    <script>
+        var customerAccountsUrl = '@Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" })';
+        var customerReceiptsUrl = '@Url.Action("Index", "CustomerReceipts", new { Area = "FrontOffice" })';
+        var customersUrl = '@Url.Action("Index", "Customer", new { Area = "Registry" })';
+        var chartOfAccountsUrl = '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })';
+    </script>
 
+    @Scripts.Render("~/plugins/customerReceiptsFunctions")
 }

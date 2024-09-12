@@ -147,10 +147,9 @@ function updateApportionmentsTable() {
         var interest = parseFloat(item.interest) || 0;
 
         var creditCustomerAccountJson = $('input[name="ApportionmentWrapper.CreditCustomerAccount"]').val();
-        console.log("credit customer account json before problem area is ", creditCustomerAccountJson);
-        var creditCustomerAccount = JSON.parse(creditCustomerAccountJson);
         var debitCustomerAccountJson = creditCustomerAccountJson;
-        var debitCustomerAccount = JSON.parse(debitCustomerAccountJson);
+      
+       
 
         $tableBody.append(`
                         <tr>
@@ -176,11 +175,18 @@ function updateApportionmentsTable() {
 <input type="hidden" name="Apportionments[${index}].CreditCustomerAccountJson" value="${escapeJson(creditCustomerAccountJson)}" />
 <input type="hidden" name="Apportionments[${index}].DebitCustomerAccountJson" value="${escapeJson(debitCustomerAccountJson)}" />
 
-<input type="hidden" name="Apportionments[${index}].CreditCustomerAccountId" value="${creditCustomerAccount.Id || ''}" />
-<input type="hidden" name="Apportionments[${index}].DebitCustomerAccountId" value="${debitCustomerAccount.Id || ''}" />
+<!-- Parse and set CreditCustomerAccountId only if creditCustomerAccountJson is not null -->
+<input type="hidden" name="Apportionments[${index}].CreditCustomerAccountId" 
+       value="${creditCustomerAccountJson ? JSON.parse(creditCustomerAccountJson).Id || '' : ''}" />
+
+<!-- Parse and set DebitCustomerAccountId only if debitCustomerAccountJson is not null -->
+<input type="hidden" name="Apportionments[${index}].DebitCustomerAccountId" 
+       value="${debitCustomerAccountJson ? JSON.parse(debitCustomerAccountJson).Id || '' : ''}" />
 
 <!-- Conditional setting of CreditChartOfAccountId -->
-<input type="hidden" name="Apportionments[${index}].CreditChartOfAccountId" value="${item.creditChartOfAccountIdGl ? item.creditChartOfAccountIdGl : (item.creditChartOfAccountId || '')}" />
+<input type="hidden" name="Apportionments[${index}].CreditChartOfAccountId" 
+       value="${item.creditChartOfAccountIdGl ? item.creditChartOfAccountIdGl : (item.creditChartOfAccountId || '')}" />
+
 
                     `);
     });

@@ -1,7 +1,7 @@
 ﻿$('.ChartOfAccountsLookup').typeahead({
     source: function (query, process) {
         return $.getJSON(
-            //chartOfAccountsUrl,
+            chartOfAccountsUrl,
             { query: query },
             function (ChartOfAccounts) {
                 var newChartOfAccountsData = [];

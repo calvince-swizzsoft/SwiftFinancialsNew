@@ -205,13 +205,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Status")]
-        public string AccountStatusDescription
-        {
-            get
-            {
-                return Enum.IsDefined(typeof(CustomerAccountStatus), AccountStatus) ? EnumHelper.GetDescription((CustomerAccountStatus)AccountStatus) : string.Empty;
-            }
-        }
+        public string AccountStatusDescription { get; set; }
+        
 
         [DataMember]
         [Display(Name = "Remarks")]
@@ -222,7 +217,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public decimal AvailableBalance { get; set; }
 
         [DataMember]
-        [Display(Name = "Available Balance")]
+        [Display(Name = "Account Number")]
         public String AccountNumber { get; set; }
 
         [DataMember]
@@ -231,13 +226,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Customer Type")]
-        public string CustomerTypeDescription
-        {
-            get
-            {
-                return EnumHelper.GetDescription((CustomerType)CustomerType);
-            }
-        }
+        public string CustomerTypeDescription { get; set; }
+       
         [DataMember]
         [Display(Name = "Customer")]
         [ValidGuid]
@@ -257,5 +247,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
         public ObservableCollection<InterAccountTransferBatchEntryDTO> interAccountBatchEntries { get; set; }
+
+        
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public byte WireTransferAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "WireTransfer Batch AuthOption")]
+        public string WireTransferAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)WireTransferAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)WireTransferAuthOption) : string.Empty;
+            }
+        }
     }
 }

@@ -221,13 +221,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Status")]
-        public string StatusDescription
-        {
-            get
-            {
-                return Enum.IsDefined(typeof(BatchEntryStatus), Status) ? EnumHelper.GetDescription((BatchEntryStatus)Status) : string.Empty;
-            }
-        }
+        public string StatusDescription { get; set; }
+        
 
         [DataMember]
         [Display(Name = "Created By")]
@@ -248,13 +243,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Status")]
-        public string AccountStatusDescription
-        {
-            get
-            {
-                return Enum.IsDefined(typeof(CustomerAccountStatus), AccountStatus) ? EnumHelper.GetDescription((CustomerAccountStatus)AccountStatus) : string.Empty;
-            }
-        }
+        public string AccountStatusDescription { get; set; }
+       
 
         [DataMember]
         [Display(Name = "Remarks")]
@@ -265,7 +255,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public decimal AvailableBalance { get; set; }
 
         [DataMember]
-        [Display(Name = "Available Balance")]
+        [Display(Name = "Book Balance")]
+        public decimal BookBalance { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Account Number")]
         public String AccountNumber { get; set; }
 
         [DataMember]
@@ -274,13 +269,8 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Customer Type")]
-        public string CustomerTypeDescription
-        {
-            get
-            {
-                return EnumHelper.GetDescription((CustomerType)CustomerType);
-            }
-        }
+        public string CustomerTypeDescription { get; set; }
+        
         [DataMember]
         [Display(Name = "Customer")]
         [ValidGuid]
