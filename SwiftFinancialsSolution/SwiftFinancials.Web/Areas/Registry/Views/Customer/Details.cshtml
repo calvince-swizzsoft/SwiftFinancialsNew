@@ -1,4 +1,6 @@
-﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerDTO
+﻿@*@model SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document*@
+
+@model List<SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document>
 
 @{
     ViewBag.Title = "Customer Details";
@@ -11,7 +13,65 @@
     var nationalities = ViewBag.IndividualNationalitySelectList as List<SelectListItem>;
     var termsOfServices = ViewBag.IndividualEmploymentTermsOfServiceSelectList as List<SelectListItem>;
     var individualClassifications = ViewBag.IndividualClassificationSelectList as List<SelectListItem>;
+
+
+    var documents = ViewBag.Documents as List<SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document>;
 }
+
+
+@*<style>
+        .document-gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .document-card {
+            position: relative;
+            width: 250px;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            background: #f9f9f9;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+
+            .document-card:hover {
+                transform: scale(1.05) rotateY(5deg);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+            }
+
+        .document-image {
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+            .document-image img {
+                width: 100%; /* Adjust as needed */
+                height: auto;
+                border-radius: 8px;
+                transition: transform 0.3s ease;
+                display: block; /* Ensures the image is displayed */
+                opacity: 1; /* Ensures full visibility */
+            }
+
+            .document-image p {
+                margin-top: 5px;
+                font-weight: bold;
+                color: #333;
+            }
+
+        .document-card:hover .document-image img {
+            transform: scale(1.05);
+        }
+    </style>*@
+
+
+
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
         <h2>Customer Details</h2>
@@ -48,72 +108,72 @@
                     {
                         @Html.AntiForgeryToken()
 
-                        <fieldset>
-                            <div class="row">
-                                <div class="col-lg-3">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.StationId)
-                                        @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description..", disabled = "disabled" } })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
-                                        @Html.HiddenFor(model => model.BranchId)
-                                        @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
-                                        @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name", disabled = "disabled" } })
-                                    </div>
-                                </div>
-                                <div class="col-lg-3">
-                                    <div class="form-group" id="data_3">
-                                        @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
-                                        <div class="input-group date">
-                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                            <input type="text" name="registrationdate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                        @*<fieldset>
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.TypeDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.TypeDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.StationId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.StationId)
+                                            @Html.ValidationMessageFor(model => model.StationId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.StationDescription, new { htmlAttributes = new { @class = "StationsLookup form-control required", placeholder = "Description..", disabled = "disabled" } })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.BranchId)
+                                            @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "Branch Name", disabled = "disabled" } })
                                         </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
+                                    <div class="col-lg-3">
+                                        <div class="form-group" id="data_3">
+                                            @Html.LabelFor(model => model.RegistrationDate, htmlAttributes: new { @class = "" })
+                                            <div class="input-group date">
+                                                <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                <input type="text" name="registrationdate" class="form-control" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                            </div>
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.StationZoneDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.StationZoneDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Zone", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.StationZoneDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.RecordStatus, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.RecordStatusDescription, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.RecordStatusDescription, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.RecordStatus, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.RecordStatusDescription, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.RecordStatusDescription, "", new { @class = "text-danger" })
+                                    <div class="col-lg">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.StationZoneDivisionDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
+                                        </div>
+                                    </div>
+                                    <div class="col-lg">
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
+                                        </div>
+                                        <div class="form-group form-group-lg">
+                                            @Html.LabelFor(model => model.StationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
+                                            @Html.EditorFor(model => model.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employer", disabled = "disabled" } })
+                                            @Html.ValidationMessageFor(model => model.StationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="col-lg">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.IndividualPayrollNumbers, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.IndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control col-md-12", @placeholder = "Individual Payroll Numbers", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.IndividualPayrollNumbers, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationZoneDivisionDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.StationZoneDivisionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Division", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.StationZoneDivisionDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                                <div class="col-lg">
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "PIN", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
-                                    </div>
-                                    <div class="form-group form-group-lg">
-                                        @Html.LabelFor(model => model.StationZoneDivisionEmployerDescription, htmlAttributes: new { @class = "" })
-                                        @Html.EditorFor(model => model.StationZoneDivisionEmployerDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Employer", disabled = "disabled" } })
-                                        @Html.ValidationMessageFor(model => model.StationZoneDivisionEmployerDescription, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </fieldset>
+                            </fieldset>*@
 
                         <ul class="nav nav-tabs flex-nowrap" style="margin-bottom: 20px; overflow-x: auto; white-space: nowrap;" id="myTab">
                             <li class="nav-item">
@@ -125,285 +185,368 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="#Referees" data-toggle="tab">Referees</a>
                             </li>
-                            @* <li class="nav-item">
-                                    <a class="nav-link" href="#CreditTypes" data-toggle="tab">Credit Types</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#DebitTypes" data-toggle="tab">Debit Types</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#SavingsProducts" data-toggle="tab"> Savings Products</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#Specimen" data-toggle="tab">Specimen</a>
-                                </li>*@
-
+                            <li class="nav-item">
+                                <a class="nav-link" href="#CreditTypes" data-toggle="tab">Credit Types</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#DebitTypes" data-toggle="tab">Debit Types</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#InvestmentProducts" data-toggle="tab">Investment Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#SavingsProducts" data-toggle="tab"> Savings Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#Specimen" data-toggle="tab">Specimen</a>
+                            </li>
                         </ul>
 
 
                         <div class="tab-content">
-                            <div id="address" class="tab-pane " role="tabpanel">
-                                <fieldset>
+                            @*<div id="address" class="tab-pane " role="tabpanel">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+
+                                            <div class="col-lg-6">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Addres line", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </fieldset>
+                                </div>
+
+                                <div id="IndividualParticulars" class="tab-pane" role="tabpanel">
+                                    <fieldset>
+                                        <div class="row">
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualSalutationDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualSalutationDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualNationalityDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualNationalityDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualEmploymentDesignation, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualEmploymentDesignation, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualEmploymentDesignation, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualTypeDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualTypeDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualGenderDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualGenderDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualFirstName, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualFirstName, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identity Card Number", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
+                                                </div>
+
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualEmploymentDate, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualEmploymentDate, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualEmploymentDate, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualIdentityCardSerialNumber, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualIdentityCardSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Identity Card Serial Number", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualIdentityCardSerialNumber, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualMaritalStatusDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualLastName, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualLastName, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualLastName, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualBirthDate, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualBirthDate, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualBirthDate, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.IndividualEmploymentTermsOfServiceDescription, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.IndividualEmploymentTermsOfServiceDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Last Name", @required = "", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.IndividualEmploymentTermsOfServiceDescription, "", new { @class = "text-danger" })
+                                                </div>
+                                                <div class="form-group form-group-lg">
+                                                    @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
+                                                    @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "", disabled = "disabled" } })
+                                                    @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </fieldset>
+                                </div>
+
+                                <div id="Referees" class="tab-pane fade" role="tabpanel">
+
+                                    <h2>Referees</h2>
+
+
                                     <div class="row">
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressAddressLine1, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressAddressLine1, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 1", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressAddressLine1, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressAddressLine2, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressAddressLine2, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address line 2", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressAddressLine2, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressCity, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressCity, new { htmlAttributes = new { @class = "form-control", @placeholder = "Address city", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressCity, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressStreet, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressStreet, new { htmlAttributes = new { @class = "form-control", @placeholder = "Street", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressStreet, "", new { @class = "text-danger" })
+                                        <div class="col-6">
+                                            <div class="col-md-13 form-group">
+                                                @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
+                                                <div class="input-group" data-autoclose="true">
+                                                    @Html.HiddenFor(model => model.Id)
+                                                    @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                    <span class="input-group-addon">
+                                                        <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
+
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <div class="col-lg-6">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressEmail, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressEmail, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email", @required = "", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressEmail, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressMobileLine, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressMobileLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Mobile line", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressMobileLine, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressLandLine, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressLandLine, new { htmlAttributes = new { @class = "form-control", @placeholder = "Addres line", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressLandLine, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.AddressPostalCode, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.AddressPostalCode, new { htmlAttributes = new { @class = "form-control", @placeholder = "Postal code", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.AddressPostalCode, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                            </div>
-
-                            <div id="IndividualParticulars" class="tab-pane" role="tabpanel">
-                                <fieldset>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualSalutationDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualSalutationDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualSalutationDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualNationalityDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualNationalityDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualNationalityDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualIdentityCardTypeDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualIdentityCardTypeDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualIdentityCardTypeDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualEmploymentDesignation, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualEmploymentDesignation, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualEmploymentDesignation, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualTypeDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualTypeDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualTypeDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualGenderDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualGenderDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualGenderDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualFirstName, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualFirstName, new { htmlAttributes = new { @class = "form-control", @placeholder = "First Name", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualFirstName, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualIdentityCardNumber, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualIdentityCardNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Identity Card Number", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualIdentityCardNumber, "", new { @class = "text-danger" })
-                                            </div>
-
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualEmploymentDate, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualEmploymentDate, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualEmploymentDate, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualIdentityCardSerialNumber, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualIdentityCardSerialNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Individual Identity Card Serial Number", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualIdentityCardSerialNumber, "", new { @class = "text-danger" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualMaritalStatusDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualMaritalStatusDescription, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualMaritalStatusDescription, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualLastName, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualLastName, new { htmlAttributes = new { @class = "form-control", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualLastName, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualBirthDate, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualBirthDate, new { htmlAttributes = new { @class = "form-control col-md-12", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualBirthDate, "", new { @class = "text-danger" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.IndividualEmploymentTermsOfServiceDescription, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.IndividualEmploymentTermsOfServiceDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Last Name", @required = "", disabled = "disabled" } })
-                                                @Html.ValidationMessageFor(model => model.IndividualEmploymentTermsOfServiceDescription, "", new { @class = "text-danger" })
-                                            </div>
+                                        <div class="col-6">
                                             <div class="form-group form-group-lg">
                                                 @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "Remarks", @required = "", disabled = "disabled" } })
+                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
                                                 @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
                                             </div>
                                         </div>
                                     </div>
 
-                                </fieldset>
-                            </div>
-
-                            <div id="Referees" class="tab-pane fade" role="tabpanel">
-
-                                <h2>Referees</h2>
-
-
-                                <div class="row">
-                                    <div class="col-6">
-                                        <div class="col-md-13 form-group">
-                                            @Html.LabelFor(model => model.FullName, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.Id)
-                                                @Html.TextBoxFor(model => model.IndividualFirstName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#customerLookupModal"><span class="fa fa-search"></span></a>
-
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-6">
-                                        <div class="form-group form-group-lg">
-                                            @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "" })
-                                            @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
-                                            @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
                                 </div>
 
-                            </div>
-
-                            <div id="CreditTypes" class="tab-pane fade" role="tabpanel">
+                                <div id="CreditTypes" class="tab-pane fade" role="tabpanel">
 
 
-                            </div>
+                                </div>
 
-                            <div id="DebitTypes" class="tab-pane fade" role="tabpanel">
-
-
-                            </div>
-
-                            <div id="InvestmentProducts" class="tab-pane fade" role="tabpanel">
+                                <div id="DebitTypes" class="tab-pane fade" role="tabpanel">
 
 
-                            </div>
+                                </div>
 
-                            <div id="SavingsProducts" class="tab-pane fade" role="tabpanel">
+                                <div id="InvestmentProducts" class="tab-pane fade" role="tabpanel">
 
 
-                            </div>
+                                </div>
+
+                                <div id="SavingsProducts" class="tab-pane fade" role="tabpanel">
+
+
+                                </div>*@
 
                             <div id="Specimen" class="tab-pane fade" role="tabpanel">
 
+                                @foreach (var document in Model)
+                                {
+                                    <div class="document-section card shadow-sm mb-4">
+                                        <div class="card-body">
+                                            <h4 class="card-title text-secondary">Document Set</h4>
+                                            <div class="row">
+                                                @if (document.PassportPhoto != null)
+                                                {
+                                                    <div class="col-md-3 text-center">
+                                                        <h5>Passport Photo</h5>
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.PassportPhoto)" alt="Passport Photo" class="img-thumbnail mb-2" width="200" />
+                                                    </div>
+                                                }
 
+                                                @if (document.SignaturePhoto != null)
+                                                {
+                                                    <div class="col-md-3 text-center">
+                                                        <h5>Signature Photo</h5>
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.SignaturePhoto)" alt="Signature Photo" class="img-thumbnail mb-2" width="200" />
+                                                    </div>
+                                                }
+
+                                                @if (document.IDCardFrontPhoto != null)
+                                                {
+                                                    <div class="col-md-3 text-center">
+                                                        <h5>ID Card Front</h5>
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardFrontPhoto)" alt="ID Card Front" class="img-thumbnail mb-2" width="200" />
+                                                    </div>
+                                                }
+
+                                                @if (document.IDCardBackPhoto != null)
+                                                {
+                                                    <div class="col-md-3 text-center">
+                                                        <h5>ID Card Back</h5>
+                                                        <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardBackPhoto)" alt="ID Card Back" class="img-thumbnail mb-2" width="200" />
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+
+                                <style>
+                                    body {
+                                        background-color: #f4f6f9;
+                                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                    }
+
+                                    h2 {
+                                        margin-bottom: 30px;
+                                    }
+
+                                    .card {
+                                        border-radius: 10px;
+                                        background-color: white;
+                                        transition: all 0.3s ease;
+                                    }
+
+                                        .card:hover {
+                                            transform: translateY(-10px);
+                                            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+                                        }
+
+                                    .card-title {
+                                        font-size: 1.25rem;
+                                        font-weight: 600;
+                                    }
+
+                                    h5 {
+                                        margin-top: 10px;
+                                        color: #007bff;
+                                    }
+
+                                    img {
+                                        border: 2px solid #007bff;
+                                        border-radius: 10px;
+                                        transition: transform 0.3s ease;
+                                    }
+
+                                        img:hover {
+                                            transform: scale(1.05);
+                                        }
+
+                                    .row {
+                                        margin-bottom: 10px;
+                                    }
+                                </style>
                             </div>
                         </div>
                     }
                 </div>
-
             </div>
         </div>
     </div>
-</div>
 
 
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/js/navlink.js"></script>
+
+    @section Styles{
+        @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+        @Styles.Render("~/plugins/wizardStepsStyles")
+        @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+        @Styles.Render("~/plugins/awesomeCheckboxStyles")
+        @Styles.Render("~/plugins/clockpickerStyles")
+        @Styles.Render("~/plugins/dateRangeStyles")
+        @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+        @Styles.Render("~/plugins/switcheryStyles")
+        @Styles.Render("~/plugins/jasnyBootstrapStyles")
+        @Styles.Render("~/plugins/nouiSliderStyles")
+        @Styles.Render("~/plugins/dataPickerStyles")
+        @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+        @Styles.Render("~/plugins/imagecropperStyles")
+        @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+        @Styles.Render("~/plugins/select2Styles")
+        @Styles.Render("~/plugins/touchSpinStyles")
+        @Styles.Render("~/plugins/tagInputsStyles")
+        @Styles.Render("~/plugins/duallistStyles")
+    }
+
+    @section Scripts{
+        @Scripts.Render("~/plugins/wizardSteps")
+        @Scripts.Render("~/plugins/validate")
+        @Scripts.Render("~/plugins/typehead")
+        @Scripts.Render("~/plugins/dataTables")
+        @Scripts.Render("~/plugins/iCheck")
+        @Scripts.Render("~/plugins/dataPicker")
+        @Scripts.Render("~/plugins/ionRange")
+        @Scripts.Render("~/plugins/nouiSlider")
+        @Scripts.Render("~/plugins/jasnyBootstrap")
+        @Scripts.Render("~/plugins/switchery")
+        @Scripts.Render("~/plugins/chosen")
+        @Scripts.Render("~/plugins/knob")
+        @Scripts.Render("~/plugins/imagecropper")
+        @Scripts.Render("~/plugins/colorpicker")
+        @Scripts.Render("~/plugins/clockpicker")
+        @Scripts.Render("~/plugins/dateRange")
+        @Scripts.Render("~/plugins/select2")
+        @Scripts.Render("~/plugins/touchSpin")
+        @Scripts.Render("~/plugins/tagInputs")
+        @Scripts.Render("~/plugins/duallist")
 
 
-@section Styles{
-    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-    @Styles.Render("~/plugins/wizardStepsStyles")
-    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-    @Styles.Render("~/plugins/clockpickerStyles")
-    @Styles.Render("~/plugins/dateRangeStyles")
-    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-    @Styles.Render("~/plugins/switcheryStyles")
-    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-    @Styles.Render("~/plugins/nouiSliderStyles")
-    @Styles.Render("~/plugins/dataPickerStyles")
-    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-    @Styles.Render("~/plugins/imagecropperStyles")
-    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-    @Styles.Render("~/plugins/select2Styles")
-    @Styles.Render("~/plugins/touchSpinStyles")
-    @Styles.Render("~/plugins/tagInputsStyles")
-    @Styles.Render("~/plugins/duallistStyles")
-}
-
-@section Scripts{
-    @Scripts.Render("~/plugins/wizardSteps")
-    @Scripts.Render("~/plugins/validate")
-    @Scripts.Render("~/plugins/typehead")
-    @Scripts.Render("~/plugins/dataTables")
-    @Scripts.Render("~/plugins/iCheck")
-    @Scripts.Render("~/plugins/dataPicker")
-    @Scripts.Render("~/plugins/ionRange")
-    @Scripts.Render("~/plugins/nouiSlider")
-    @Scripts.Render("~/plugins/jasnyBootstrap")
-    @Scripts.Render("~/plugins/switchery")
-    @Scripts.Render("~/plugins/chosen")
-    @Scripts.Render("~/plugins/knob")
-    @Scripts.Render("~/plugins/imagecropper")
-    @Scripts.Render("~/plugins/colorpicker")
-    @Scripts.Render("~/plugins/clockpicker")
-    @Scripts.Render("~/plugins/dateRange")
-    @Scripts.Render("~/plugins/select2")
-    @Scripts.Render("~/plugins/touchSpin")
-    @Scripts.Render("~/plugins/tagInputs")
-    @Scripts.Render("~/plugins/duallist")
-
-
-    <script>
+        <script>
                 $(document).ready(function () {
 
                     $("#wizard").steps();
@@ -595,5 +738,5 @@
                     });
                 });
 
-    </script>
-}
+        </script>
+    }
