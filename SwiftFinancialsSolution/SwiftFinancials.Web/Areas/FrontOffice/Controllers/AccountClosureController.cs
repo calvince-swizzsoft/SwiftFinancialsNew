@@ -114,7 +114,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualIdentityCardNumber = customer.CustomerIdentificationNumber;
                     accountClosureRequestDTO.CustomerAccountRemarks = customer.Remarks;
                     accountClosureRequestDTO.CustomerAccountTypeTargetProductDescription = customer.CustomerAccountTypeTargetProductDescription;
-                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.TypeDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.CustomerTypeDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerNonIndividualRegistrationNumber = customer.RecordStatusDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
                     accountClosureRequestDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
@@ -126,7 +126,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     accountClosureRequestDTO.CustomerAccountId = customer.Id;
                     accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualLastName = customer.FullAccountNumber;
-
+                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer. CustomerTypeDescription;
 
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
                         customer.CustomerId,
@@ -138,36 +138,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         serviceHeader: GetServiceHeader()
                     );
 
-                    var investmentAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
-                         customer.CustomerId,
-                        customer.CustomerAccountTypeTargetProductId,
-                        includeBalances: true,
-                        includeProductDescription: true,
-                        includeInterestBalanceForLoanAccounts: true,
-                        considerMaturityPeriodForInvestmentAccounts: true,
-                        serviceHeader: GetServiceHeader()
-                    );
 
-                    var loansGuaranteed = await _channelService.FindCustomerAccountsByFilterInPageAsync(
-                        text: "Guaranteed", 
-                        customerFilter: 2, 
-                        pageIndex: 0,
-                        pageSize: 10, 
-                        includeBalances: true,
-                        includeProductDescription: true,
-                        includeInterestBalanceForLoanAccounts: false,
-                        considerMaturityPeriodForInvestmentAccounts: false,
-                        serviceHeader: GetServiceHeader()
-                    );
+                    var investmentAccounts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+
+
+                    var loanGuarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(
+                                   customer.CustomerId,
+                                   GetServiceHeader()
+                               );
 
 
                     var loanAccountsList = loanAccounts.Take(3).ToList();
-                    var investmentAccountsList = investmentAccounts;
-                    var loansGuaranteedList = loansGuaranteed;
+                    var investmentAccountsList = investmentAccounts.Take(3).ToList();
+                    var loanGuarantorsList = loanGuarantors.Take(3).ToList();
 
                     ViewBag.LoanAccounts = loanAccountsList;
                     ViewBag.InvestmentAccounts = investmentAccountsList;
-                    ViewBag.LoansGuaranteed = loansGuaranteedList;
+                    ViewBag.LoanGuarantors = loanGuarantorsList;
                 }
                 else
                 {
@@ -311,15 +298,56 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         public async Task<ActionResult> Verify(Guid id)
         {
             await ServeNavigationMenus();
+
+            // Retrieve account closure request details
             var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
 
+            if (accountClosureRequestDTO == null)
+            {
+                TempData["ErrorMessage"] = "Account closure request not found.";
+                return RedirectToAction("Index");
+            }
+
+            // Assuming the accountClosureRequestDTO contains the necessary customer ID
+            var customerId = accountClosureRequestDTO.Id;
+
+            // Fetch loan accounts
+            var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
+                customerId,
+                accountClosureRequestDTO.CustomerAccountCustomerAccountTypeTargetProductId,
+                includeBalances: true,
+                includeProductDescription: true,
+                includeInterestBalanceForLoanAccounts: true,
+                considerMaturityPeriodForInvestmentAccounts: true,
+                serviceHeader: GetServiceHeader()
+            );
+
+            // Fetch investment products
+            var investmentProducts = await _channelService.FindInvestmentProductsAsync(
+                GetServiceHeader()
+            );
+
+            // Fetch loan guarantors
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(
+                customerId,
+                GetServiceHeader()
+            );
+
+            // Convert collections to list if needed
+            var loanAccountsList = loanAccounts.Take(3).ToList();
+            var investmentProductsList = investmentProducts.Take(3).ToList();
+            var loanGuarantorsList = loanGuarantors.Take(3).ToList();
+
+            // Add data to ViewBag
+            ViewBag.LoanAccounts = loanAccountsList;
+            ViewBag.InvestmentAccounts = investmentProductsList;
+            ViewBag.LoanGuarantors = loanGuarantorsList;
 
             return View(accountClosureRequestDTO);
-
-
         }
 
-        
+
+
 
 
 
