@@ -49,21 +49,21 @@ namespace SwiftFinancials.SavingsProductLedgerFeeProcessor.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<SavingsProductLedgerFeeProcessingJob>()
-                        .WithIdentity("SavingsProductLedgerFeeProcessingJob", "VFIN")
+                        .WithIdentity("SavingsProductLedgerFeeProcessingJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("SavingsProductLedgerFeeProcessingJob", "VFIN")
+                        .WithIdentity("SavingsProductLedgerFeeProcessingJob", "SWIFTFIN")
                         .WithCronSchedule(savingsProductLedgerFeeProcessingConfigSection.SavingsProductLedgerFeeProcessingSettingsItems.SavingsProductLedgerFeeProcessingJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("SavingsProductLedgerFeeProcessingJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("SavingsProductLedgerFeeProcessingJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("SavingsProductLedgerFeeProcessingJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("SavingsProductLedgerFeeProcessingJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 

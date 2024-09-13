@@ -363,7 +363,7 @@
                         }
 
 
-                        @using (Html.BeginForm("Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "voucherForm" }))
+                        @using (Html.BeginForm("Create", "BatchOrigination_Voucher", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", id = "voucherForm" }))
                         {
                             <div class="bottom-button">
                                 <div class="row">
@@ -436,50 +436,50 @@
     <script>
          //Create form submission
 
-    $(document).ready(function () {
-        $('#voucherForm').on('submit', function (e) {
-            e.preventDefault(); // Prevent the default form submission
+        $(document).ready(function () {
+            $('#voucherForm').on('submit', function (e) {
+                e.preventDefault(); // Prevent the default form submission
 
-            // Serialize the form data
-            var formData = $(this).serialize();
+                // Serialize the form data
+                var formData = $(this).serialize();
 
-            $.ajax({
-                url: '@Url.Action("Create", "BatchOrigination_Voucher", new { Area = "Accounts" })',
-                type: 'POST',
-                data: formData,
-                success: function (response) {
-                    if (response.success) {
-                        // Show success message and redirect
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Success!',
-                            text: response.message,
-                            timer: 1000,
-                            showConfirmButton: false
-                        }).then(function () {
-                            // Redirect to the Index page of the same controller
-                            window.location.href = '@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })';
-                        });
-                    } else {
-                        // Show error message
+                $.ajax({
+                    url: '@Url.Action("Create", "BatchOrigination_Voucher", new { Area = "Accounts" })',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.success) {
+                            // Show success message and redirect
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Success!',
+                                text: response.message,
+                                timer: 1000,
+                                showConfirmButton: false
+                            }).then(function () {
+                                // Redirect to the Index page of the same controller
+                                window.location.href = '@Url.Action("Index", "BatchOrigination_Voucher", new { Area = "Accounts" })';
+                            });
+                        } else {
+                            // Show error message
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error!',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle AJAX errors
                         Swal.fire({
                             icon: 'error',
-                            title: 'Error!',
-                            text: response.message
+                            title: 'Oops...',
+                            text: 'Something went wrong!'
                         });
                     }
-                },
-                error: function (xhr, status, error) {
-                    // Handle AJAX errors
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Oops...',
-                        text: 'Something went wrong!'
-                    });
-                }
+                });
             });
         });
-    });
     </script>
 
 
