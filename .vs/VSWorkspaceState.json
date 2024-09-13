@@ -1,8 +1,14 @@
 {
   "ExpandedNodes": [
     "",
-    "\\SwiftFinancialsSolution"
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Scripts"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancialsSolution.sln",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Scripts\\bootstrap.js.map",
   "PreviewInSolutionExplorer": false
 }
