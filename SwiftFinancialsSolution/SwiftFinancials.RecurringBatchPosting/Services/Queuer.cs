@@ -49,21 +49,21 @@ namespace SwiftFinancials.RecurringBatchPosting.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<QueueingJob>()
-                        .WithIdentity("RecurringBatchPostingQueueingJob", "VFIN")
+                        .WithIdentity("RecurringBatchPostingQueueingJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("RecurringBatchPostingQueueingJob", "VFIN")
+                        .WithIdentity("RecurringBatchPostingQueueingJob", "SWIFTFIN")
                         .WithCronSchedule(recurringBatchPostingConfigSection.RecurringBatchPostingSettingsItems.QueueingJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("RecurringBatchPostingQueueingJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("RecurringBatchPostingQueueingJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("RecurringBatchPostingQueueingJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("RecurringBatchPostingQueueingJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 

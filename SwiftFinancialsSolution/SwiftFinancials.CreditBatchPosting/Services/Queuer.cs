@@ -49,21 +49,21 @@ namespace SwiftFinancials.CreditBatchPosting.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<QueueingJob>()
-                        .WithIdentity("CreditBatchPostingQueueingJob", "VFIN")
+                        .WithIdentity("CreditBatchPostingQueueingJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("CreditBatchPostingQueueingJob", "VFIN")
+                        .WithIdentity("CreditBatchPostingQueueingJob", "SWIFTFIN")
                         .WithCronSchedule(creditBatchPostingConfigSection.CreditBatchPostingSettingsItems.QueueingJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("CreditBatchPostingQueueingJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("CreditBatchPostingQueueingJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("CreditBatchPostingQueueingJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("CreditBatchPostingQueueingJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 
