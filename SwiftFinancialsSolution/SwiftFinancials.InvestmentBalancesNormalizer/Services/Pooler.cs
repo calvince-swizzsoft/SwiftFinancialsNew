@@ -48,21 +48,21 @@ namespace SwiftFinancials.InvestmentBalancesNormalizer.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<PoolingJob>()
-                        .WithIdentity("PoolingJob", "VFIN")
+                        .WithIdentity("PoolingJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("PoolingJob", "VFIN")
+                        .WithIdentity("PoolingJob", "SWIFTFIN")
                         .WithCronSchedule(investmentBalancesNormalizerConfigSection.InvestmentBalancesNormalizerSettingsItems.PoolingJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("PoolingJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("PoolingJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("PoolingJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("PoolingJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 

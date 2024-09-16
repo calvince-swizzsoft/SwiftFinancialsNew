@@ -247,5 +247,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
 
         public ObservableCollection<InterAccountTransferBatchEntryDTO> interAccountBatchEntries { get; set; }
+
+        
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public byte WireTransferAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "WireTransfer Batch AuthOption")]
+        public string WireTransferAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)WireTransferAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)WireTransferAuthOption) : string.Empty;
+            }
+        }
     }
 }

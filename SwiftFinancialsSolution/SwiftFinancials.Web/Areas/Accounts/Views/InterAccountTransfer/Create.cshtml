@@ -4,7 +4,7 @@
     ViewBag.Title = "Inter Account Transfer Batch";
     var k = ViewBag.BudgetEntryTypeSelectList as List<SelectListItem>;
 
-    var generalLedgerEntryTypes = ViewBag.GeneralLedgerEntryTypeSelectList as List<SelectListItem>;
+    var apportionTo = ViewBag.GetApportionToSelectList as List<SelectListItem>;
 }
 
 <style>
@@ -270,7 +270,7 @@
                                             @Html.LabelFor(model => model.CustomerId, htmlAttributes: new { @class = "control-label", @id = "" })
                                             @Html.HiddenFor(model => model.CustomerId, new { @id = "CustomerId1" })
                                             @Html.HiddenFor(model => model.BranchId, new { @id = "BranchId1" })
-                                           @* @Html.HiddenFor(model => model.CustomerId, new { @id = "CustomerId1" })*@
+                                          
                                             @Html.EditorFor(model => model.CustomerFullName, new { htmlAttributes = new { @class = "JournalVoucherEntryChartOfAccountsLookup form-control required ", placeholder = "", @readonly = "readonly", id = "CustomerFullName1" } })
                                         </div>
                                     </div>
@@ -345,7 +345,7 @@
                                             @Html.LabelFor(model => model.interAccountBatchEntries[0].ApportionTo, new { @class = "control-label" })
                                             <div class="input-group">
                                                 <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                @Html.DropDownListFor(model => model.interAccountBatchEntries[0].ApportionTo, generalLedgerEntryTypes,
+                                                @Html.DropDownListFor(model => model.interAccountBatchEntries[0].ApportionTo, apportionTo,
                                                 new { @class = "form-control input-md", @id = "entryTypeDropdown1" })
                                                 @Html.ValidationMessageFor(model => model.interAccountBatchEntries[0].ApportionTo)
                                             </div>
@@ -403,7 +403,7 @@
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <div class="form-group form-group-lg">
-                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerId, htmlAttributes: new { @class = "control-label", @id = "CustomerId" })
+                                                @Html.LabelFor(model => model.interAccountBatchEntries[0].CustomerId, htmlAttributes: new { @class = "control-label" })
                                                 @Html.HiddenFor(model => model.interAccountBatchEntries[0].CustomerId, new { @id = "CustomerId", @class = "entry-field" })
                                                 @Html.HiddenFor(model => model.interAccountBatchEntries[0].InterAccountTransferBatchBranchId, new { @id = "InterAccountTransferBatchBranchId", @class = "entry-field" })
                                                 @Html.EditorFor(model => model.interAccountBatchEntries[0].CustomerFullName, new { htmlAttributes = new { @class = " form-control required entry-field", placeholder = "", @readonly = "readonly", id = "CustomerFullName" } })
@@ -562,7 +562,7 @@
 </div>
 
 
-<div class="modal  fade" id="customerAccountLookupModal1" role="dialog" aria-hidden="true">
+<div class="modal fade" id="customerAccountLookupModal1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
@@ -584,7 +584,7 @@
         </div>
     </div>
 </div>
-<div class="modal  fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
+<div class="modal fade" id="customerAccountLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
@@ -811,10 +811,10 @@
 
 
                 // Show relevant fields based on selection
-                if (selectedValue == 2) {
-                    document.getElementById('chartFields1').style.display = 'block';
-                } else if (selectedValue == 1) {
+                if (selectedValue ==1) {
                     document.getElementById('customerFields11').style.display = 'block';
+                } else if (selectedValue ==2) {
+                    document.getElementById('chartFields1').style.display = 'block';
                 }
             });
 
@@ -965,7 +965,7 @@
                 $('#CustomerAccountCustomerReference11').val(response.data.CustomerAccountCustomerReference1);
 
                 // Close the modal
-                $('#customerAccountLookupModal1').modal('hide');
+                $('#customerAccountLookupModal1').modal('hide')
             } else {
                 alert(response.message);
             }
