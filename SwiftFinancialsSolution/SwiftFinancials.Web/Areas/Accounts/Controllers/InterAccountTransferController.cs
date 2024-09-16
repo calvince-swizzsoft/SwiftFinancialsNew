@@ -23,7 +23,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
-        /*[HttpPost]
+        [HttpPost]
         public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
@@ -34,12 +34,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             DateTime startDate = DateTime.Now.AddDays(-30);
             DateTime endDate = DateTime.Now.AddDays(+30);
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindInterAccountTransferBatchesByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindInterAccountTransferBatchesByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -50,44 +52,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<InterAccountTransferBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }*/
-
-
-        [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, string batchNumber)
-        {
-            int totalRecordCount = 0;
-            int searchRecordCount = 0;
-
-            DateTime startDate = DateTime.Now.AddDays(-30);
-            DateTime endDate = DateTime.Now.AddDays(+30);
-
-            // Fetch the data, searching for batchNumber and sorting by CreatedDate in descending order
-            var pageCollectionInfo = await _channelService.FindInterAccountTransferBatchesByDateRangeAndFilterInPageAsync(
-                startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                // Apply default sorting by CreatedDate in descending order
-                var sortedCollection = pageCollectionInfo.PageCollection.OrderByDescending(c => c.CreatedDate);
-
-                // Apply search filter for BatchNumber if provided
-                if (!string.IsNullOrEmpty(batchNumber))
-                {
-                    sortedCollection = sortedCollection.Where(c => c.BatchNumber.ToString().Contains(batchNumber)).OrderByDescending(c => c.CreatedDate);
-                }
-
-                // Set total record count
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedCollection.Count() : totalRecordCount;
-
-                // Return sorted and filtered data
-                return this.DataTablesJson(items: sortedCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-
-            // Return empty data if no results
-            return this.DataTablesJson(items: new List<InterAccountTransferBatchDTO>(), totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+
 
 
 
