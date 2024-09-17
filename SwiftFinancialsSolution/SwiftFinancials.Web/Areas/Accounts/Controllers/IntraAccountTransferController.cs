@@ -85,7 +85,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (Session["Customers"] != null)
             {
-                standingOrderDTO = Session["Customers"] as InterAccountTransferBatchDTO;
+                standingOrderDTO.Customers = Session["Customers"] as CustomerAccountDTO;
             }
 
             if (Session["benefactorAccounts"] != null)
@@ -100,14 +100,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             if (beneficiaryAccounts != null)
             {
 
-                standingOrderDTO.CustomerAccountId = beneficiaryAccounts.Id;
                 standingOrderDTO.interAccountTransferBatch = beneficiaryAccounts;
+               
                 //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
                 standingOrderDTO.CustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerFullName;
 
 
             }
-            Session["interAccountTransferBatch"] = standingOrderDTO.interAccountTransferBatch;
+            Session["Customers"] = standingOrderDTO.interAccountTransferBatch;
             return View("Create", standingOrderDTO);
         }
 
@@ -116,9 +116,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             await ServeNavigationMenus();
             if (Session["interAccountTransferBatch"] != null)
             {
-                standingOrderDTO = Session["interAccountTransferBatch"] as InterAccountTransferBatchDTO;
+                standingOrderDTO.Customers = Session["interAccountTransferBatch"] as CustomerAccountDTO;
             }
-
+            if(Session["Customers"]!=null)
+            {
+                standingOrderDTO.interAccountTransferBatch = Session["Customers"] as CustomerAccountDTO;
+            }
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
             ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
@@ -148,15 +151,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             if (beneficiaryAccounts != null)
             {
-
                 standingOrderDTO.Customers = beneficiaryAccounts;
-                standingOrderDTO.interAccountTransferBatch = beneficiaryAccounts;
                 //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
                 standingOrderDTO.CustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerFullName;
 
 
             }
-            Session["interAccountTransferBatch"] = standingOrderDTO.interAccountTransferBatch;
+            Session["interAccountTransferBatch"] = standingOrderDTO.Customers;
             return View("Create", standingOrderDTO);
         }
         //[HttpPost]

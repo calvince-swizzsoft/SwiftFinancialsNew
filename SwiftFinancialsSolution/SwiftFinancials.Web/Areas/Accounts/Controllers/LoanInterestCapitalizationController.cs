@@ -123,7 +123,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 foreach (var selectedRow in selectedRows)
                 {
                     var savingsProductDTO = await _channelService.FindSavingsProductAsync(selectedRow.Id, GetServiceHeader());
-                    
+
                     await _channelService.UpdateSavingsProductAsync(savingsProductDTO, GetServiceHeader());
 
                 }
