@@ -235,6 +235,11 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        <!-- Popup container -->
+                                        <div id="popupMessage" style="display: none; position: fixed; top: 20px; right: 20px; background: #4CAF50; color: white; padding: 10px; border-radius: 5px; z-index: 1000;">
+                                            <span id="popupMessageText"></span>
+                                        </div>
+
 
                                         <!-- Container with Tabs -->
                                         <div class="row mt-4">
@@ -246,7 +251,7 @@
                                                 </li>
                                             </ul>
 
-                                           
+
 
                                             <!-- Tab Content -->
                                             <div class="tab-content mt-2">
@@ -533,6 +538,12 @@ $(document).ready(function () {
                 return isDuplicate;
             }
 
+            // Function to show popup message
+            function showPopupMessage(message) {
+                $('#popupMessageText').text(message);
+                $('#popupMessage').fadeIn(400).delay(2000).fadeOut(400);
+            }
+
             // Add Entry
             $('#addEntryButton').click(function (e) {
                 e.preventDefault();
@@ -559,7 +570,25 @@ $(document).ready(function () {
 
                 // Ensure all required fields have values
                 if (!entryData.BranchDescription || !entryData.ChartOfAccountAccountName || !entryData.Reference || !entryData.PrimaryDescription || !entryData.Value) {
-                    alert("Please fill in all required fields.");
+                    showPopupMessage("Please fill in all required fields.");
+                    return;
+                }
+
+                // Check if the same entry already exists in the table
+                var entryExists = false;
+                $('#ExpensePayableEntries tbody tr').each(function () {
+                    var branchDescription = $(this).find('td:eq(0)').text();
+                    var accountName = $(this).find('td:eq(1)').text();
+
+                    if (branchDescription === entryData.BranchDescription &&
+                        accountName === entryData.ChartOfAccountAccountName) {
+                        entryExists = true;
+                        return false;
+                    }
+                });
+
+                if (entryExists) {
+                    showPopupMessage("This entry already exists and cannot be added again.");
                     return;
                 }
 
@@ -572,7 +601,7 @@ $(document).ready(function () {
 
                 // Check if adding this entry would exceed the Total Value
                 if (appropotionedAmount + parseFloat(entryData.Value) > totalValue) {
-                    alert("Cannot add this entry. The Appropotioned Amount would exceed the Total Value.");
+                    showPopupMessage("Cannot add this entry. The Appropotioned Amount would exceed the Total Value.");
                     return;
                 }
 
@@ -613,17 +642,18 @@ $(document).ready(function () {
                             $('#mainSecondaryDescription').val('');
                             $('#mainValue').val('');
 
-
-                            alert("Entry added successfully.");
+                            showPopupMessage("Entry added successfully.");
                         } else {
-                            alert("Failed to add entry: " + response.message);
+                            showPopupMessage("Failed to add entry: " + response.message);
                         }
                     },
                     error: function (xhr, status, error) {
-                        alert("An error occurred while adding the entry: " + error);
+                        showPopupMessage("An error occurred while adding the entry: " + error);
                     }
                 });
             });
+
+
 
 
 
