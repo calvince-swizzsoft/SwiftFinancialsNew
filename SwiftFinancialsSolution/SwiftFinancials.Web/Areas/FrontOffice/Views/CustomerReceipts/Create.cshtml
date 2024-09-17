@@ -1,4 +1,4 @@
-﻿@model SwiftFinancials.Presentation.Infrastructure.Models.CustomerTransactionModel
+﻿@model SwiftFinancials.Presentation.Infrastructure.Models.TransactionModel
 
 @{
     /**/
@@ -51,14 +51,32 @@
                 border-color: #8a949e;
             }
 
+        .apportionment-nav-tabs .apportionment-nav-link {
+            background-color: transparent;
+            color: #8a949e; /* Slightly lighter grey */
+            border: 1px solid transparent;
+        }
+
+            .apportionment-nav-tabs .apportionment-nav-link:hover {
+                border-color: #e9ecef #e9ecef #dee2e6;
+            }
+
+            .apportionment-nav-tabs .apportionment-nav-link.active {
+                background-color: #8a949e; /* Lighter grey for active secondary tab */
+                color: white;
+                border-color: #8a949e;
+            }
+
         /* Tab Content */
         .tab-content > .tab-pane,
-        .inner-tab-content > .inner-tab-pane {
+        .inner-tab-content > .inner-tab-pane,
+        .apportionment-tab-content > .apportionment-tab-pane {
             display: none;
         }
 
             .tab-content > .tab-pane.active,
-            .inner-tab-content > .inner-tab-pane.active {
+            .inner-tab-content > .inner-tab-pane.active,
+            .apportionment-tab-content > .apportionment-tab-pane.active {
                 display: block;
             }
 
@@ -99,8 +117,6 @@
                 color: #888;
                 font-size: 14px;
             }
-
-
     </style>
 </head>
 
@@ -148,11 +164,11 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.FullAccountNumber, "Full Account Number:", new { @class = "control-label" })
+                                            @Html.LabelFor(model => model.CustomerDTO.FullName, "Customer:", new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.DebitCustomerAccount.FullAccountNumber, new { @class = "form-control", @readonly = "readonly", @id = "DebitFullAccountNumber" })
+                                                @Html.TextBoxFor(model => model.CustomerDTO.FullName, new { @class = "form-control", @readonly = "readonly", @id = "FullName" })
                                                 <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#CustomerLookupModal" id="debitCustomerRequest">
+                                                    <a data-toggle="modal" data-target="#CustomerLookupModal">
                                                         <span class="fa fa-search"></span>
                                                     </a>
                                                 </span>
@@ -162,23 +178,23 @@
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.StatusDescription, "Account Status:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.StatusDescription, new { @class = "form-control", @readonly = "readonly", @id= "DebitStatusDescription" })
+                                            @Html.LabelFor(model => model.CustomerDTO.Type, "Type:", new { @class = "control-label", @id = "Type" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.TypeDescription, new { @class = "form-control", @readonly = "readonly", @id = "TypeDescription" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.Remarks, "Account Remarks:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.Remarks, new { @class = "form-control", @readonly = "readonly", @id = "DebitRemarks" })
+                                            @Html.LabelFor(model => model.CustomerDTO.StationZoneDivisionEmployerId, "Employer:", new { @class = "control-label", @id = "StationZoneDivisionEmployerId" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.StationZoneDivisionEmployerDescription, new { @class = "form-control", @readonly = "readonly", @id = "StationZoneDivisionEmployerDescription" })
                                         </div>
                                     </div>
 
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerAccountTypeTargetProductId, "Product Name:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerAccountTypeTargetProductDescription, new { @class = "form-control", @readonly = "readonly", @id ="DebitCustomerAccountTypeTargetProductDescription" })
+                                            @Html.LabelFor(model => model.CustomerDTO.StationId, "Station:", new { @class = "control-label", @id = "StationId" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.StationDescription, new { @class = "form-control", @readonly = "readonly", @id = "StationDescription" })
                                         </div>
                                     </div>
                                 </div>
@@ -188,32 +204,24 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.HiddenFor(model => model.DebitCustomerAccountId, new { @id = "DebitCustomerAccountId" })
-                                            @Html.HiddenFor(model => model.DebitCustomerAccountJson, new { @id = "DebitCustomerAccountJson" })
-                                            @Html.LabelFor(model => model.CustomerAccount.CustomerFullName, "Customer:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.CustomerAccount.CustomerFullName, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerFullName" })
+                                            @*@Html.HiddenFor(model => model.DebitCustomerAccountId, new { @id = "DebitCustomerAccountId" })
+                                                @Html.HiddenFor(model => model.DebitCustomerAccountJson, new { @id = "DebitCustomerAccountJson" })*@
+                                            @Html.LabelFor(model => model.CustomerDTO.RegistrationDate, "Registration Date:", new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.RegistrationDate, new { @class = "form-control", @readonly = "readonly", @id = "RegistrationDate" })
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            @Html.LabelFor(model => model.CustomerDTO.IndividualPayrollNumbers, "Payroll Numbers:", new { @class = "control-label", })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.IndividualPayrollNumbers, new { @class = "form-control", @readonly = "readonly", @id = "IndividualPayrollNumbers" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerType, "Type:", new { @class = "control-label", @id = "DebitCustomerType" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerTypeDescription, new { @class = "form-control", @readonly = "readonly", @id ="DebitCustomerTypeDescription"})
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerIndividualPayrollNumbers, "Payroll Numbers:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerIndividualPayrollNumbers, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerIndividualPayrollNumbers" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-3">
-                                        <div class="form-group">
-                                            @Html.HiddenFor(model => model.BranchId, new {@id = "DebitCustomerAccountBranchId" })
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.BranchDescription, new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.BranchDescription, new { @class = "form-control", @readonly = "readonly", @id = "DebitBranchDescription" })
+                                            @Html.LabelFor(model => model.CustomerDTO.Remarks, "Remarks:", new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.Remarks, new { @class = "form-control", @readonly = "readonly", @id = "Remarks" })
                                         </div>
                                     </div>
 
@@ -224,29 +232,29 @@
                                 <div class="row">
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerIdentificationNumber, new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerIdentificationNumber, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerIdentificationNumber" })
+                                            @Html.LabelFor(model => model.CustomerDTO.IdentificationNumber, new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.IdentificationNumber, new { @class = "form-control", @readonly = "readonly", @id = "IdentificationNumber" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerReference1, "Account Number:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference1, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerReference1" })
+                                            @Html.LabelFor(model => model.CustomerDTO.Reference1, "Account Number:", new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.Reference1, new { @class = "form-control", @readonly = "readonly", @id = "Reference1" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerReference2, "Membership Number:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference2, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerReference2" })
+                                            @Html.LabelFor(model => model.CustomerDTO.Reference2, "Membership Number:", new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.Reference2, new { @class = "form-control", @readonly = "readonly", @id = "Reference2" })
                                         </div>
                                     </div>
 
                                     <div class="col-md-3">
                                         <div class="form-group">
-                                            @Html.LabelFor(model => model.DebitCustomerAccount.CustomerReference3, "Personal File Number:", new { @class = "control-label" })
-                                            @Html.TextBoxFor(model => model.DebitCustomerAccount.CustomerReference3, new { @class = "form-control", @readonly = "readonly", @id = "DebitCustomerReference3" })
+                                            @Html.LabelFor(model => model.CustomerDTO.Reference3, "Personal File Number:", new { @class = "control-label" })
+                                            @Html.TextBoxFor(model => model.CustomerDTO.Reference3, new { @class = "form-control", @readonly = "readonly", @id = "Reference3" })
                                         </div>
                                     </div>
                                 </div>
@@ -274,10 +282,10 @@
                                             <li class="inner-nav-item">
                                                 <a class="inner-nav-link active" data-toggle="tab" href="#cashReceipt">Cash Receipt</a>
                                             </li>
-                                            <li class="nav-item">
+                                            <li class="inner-nav-item">
                                                 <a class="inner-nav-link" data-toggle="tab" href="#apportionment">Apportionment (Loan / Investment / Savings / GL Account)</a>
                                             </li>
-                                            <li class="nav-item">
+                                            <li class="inner-nav-item">
                                                 <a class="inner-nav-link" data-toggle="tab" href="#specimen">Specimen</a>
                                             </li>
                                         </ul>
@@ -306,60 +314,85 @@
 
                                             <!-- Apportionment Tab -->
                                             <div id="apportionment" class="inner-tab-pane">
-                                                <input type="hidden" id="apportionmentsData" name="ApportionmentsData" />
-
-                                                <div class="row">
-                                                    <div class="col-md-12">
-                                                        <div class="form-group">
-                                                            @Html.LabelFor(model => model.ApportionmentWrapper.ApportionTo, htmlAttributes: new { @class = "control-label" })
-                                                            @Html.DropDownListFor(
-                                                                model => model.ApportionmentWrapper.ApportionTo,
-                                                                apportionToType,
-                                                                new { @id = "ApportionToType", @class = "form-control input.md" }
-                                                            )
-                                                            @Html.ValidationMessageFor(model => model.ApportionmentWrapper.ApportionTo)
-                                                        </div>
-                                                    </div>
-                                                </div>
 
 
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <input type="hidden" id="CreditCustomerAccountId" name="ApportionmentWrapper.CreditCustomerAccountId" />
-                                                        <input type="hidden" id="CreditChartOfAccountId" name="ApportionmentWrapper.CreditChartOfAccountId" />
-                                                        <label class="control-label" for="CreditFullAccountNumber">Full Account Number:</label>
-                                                        <div class="input-group" data-autoclose="true">
-                                                            <input type="text" id="CreditFullAccountNumber" name="ApportionmentWrapper.FullAccountNumber" class="form-control" readonly />
-                                                            <span class="input-group-addon">
-                                                                <a data-toggle="modal" data-target="#CustomerLookupModal" id="creditCustomerRequest">
-                                                                    <span class="fa fa-search"></span>
-                                                                </a>
-                                                            </span>
+                                                <ul class="nav apportionment-nav-tabs" style="margin-bottom: 20px;">
+                                                    <li class="apportionment-nav-item">
+                                                        <a class="apportionment-nav-link active" data-toggle="tab" href="#apportionToCustomerAccount">Customer Account</a>
+                                                    </li>
+                                                    <li class="apportionment-nav-item">
+                                                        <a class="apportionment-nav-link" data-toggle="tab" href="#apportionToGlAccount">GL Account</a>
+                                                    </li>
+                                                </ul>
+
+
+
+                                                @Html.HiddenFor(model => model.ApportionmentWrapper.ApportionTo, new { @id = "ApportionToType" })
+
+
+
+                                                <div class="apportionment-tab-content">
+
+                                                    <input type="hidden" id="apportionmentsData" name="ApportionmentsData" />
+
+                                                    <div id="apportionToCustomerAccount" class="apportionment-tab-pane active">
+
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <input type="hidden" id="CreditCustomerAccountId" name="ApportionmentWrapper.CreditCustomerAccountId" />
+                                                                <input type="hidden" id="CreditChartOfAccountId" name="ApportionmentWrapper.CreditChartOfAccountId" />
+                                                                <input type="hidden" id="CreditProductDescription" name="ApportionmentWrapper.ProductDescription" />
+                                                                <label class="control-label" for="CreditFullAccountNumber">Full Account Number:</label>
+                                                                <div class="input-group" data-autoclose="true">
+                                                                    <input type="text" id="CreditFullAccountNumber" name="ApportionmentWrapper.FullAccountNumber" class="form-control" readonly />
+                                                                    <span class="input-group-addon">
+                                                                        <a data-toggle="modal" data-target="#CustomerAccountLookupModal" id="creditCustomerRequest">
+                                                                            <span class="fa fa-search"></span>
+                                                                        </a>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <input type="hidden" id="CreditCustomerAccount" name="ApportionmentWrapper.CreditCustomerAccount" />
+                                                                    <label class="control-label" for="CreditCustomerFullName">Customer:</label>
+                                                                    <input type="text" id="CreditCustomerFullName" name="ApportionmentWrapper.CustomerFullName" class="form-control" readonly />
+                                                                </div>
+                                                            </div>
                                                         </div>
+
+                                                        <div class="row">
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label" for="CreditCustomerReference1">Account Number:</label>
+                                                                    <input type="text" id="CreditCustomerReference1" name="ApportionmentWrapper.CustomerReference1" class="form-control" readonly />
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    <label class="control-label" for="CreditCustomerReference2">Membership Number:</label>
+                                                                    <input type="text" id="CreditCustomerReference2" name="ApportionmentWrapper.CustomerReference2" class="form-control" readonly />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
                                                     </div>
 
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <input type="hidden" id="CreditCustomerAccount" name="ApportionmentWrapper.CreditCustomerAccount" />
-                                                            <label class="control-label" for="CreditCustomerFullName">Customer:</label>
-                                                            <input type="text" id="CreditCustomerFullName" name="ApportionmentWrapper.CustomerFullName" class="form-control" readonly />
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                    <div id="apportionToGlAccount" class="apportionment-tab-pane">
 
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="control-label" for="CreditCustomerReference1">Account Number:</label>
-                                                            <input type="text" id="CreditCustomerReference1" name="ApportionmentWrapper.CustomerReference1" class="form-control" readonly />
+                                                        <div class="col-md-6">
+
+                                                            <div class="form-group form-group-lg">
+                                                                <input type="hidden" id="CreditChartOfAccountIdGl" />
+                                                                <label class="control-label">Gl:</label>
+                                                                <input type="text" id="CreditChartOfAccountNameGl" class="ChartOfAccountsLookup form-control " />
+                                                            </div>
                                                         </div>
+
                                                     </div>
-                                                    <div class="col-md-6">
-                                                        <div class="form-group">
-                                                            <label class="control-label" for="CreditCustomerReference2">Membership Number:</label>
-                                                            <input type="text" id="CreditCustomerReference2" name="ApportionmentWrapper.CustomerReference2" class="form-control" readonly />
-                                                        </div>
-                                                    </div>
+
                                                 </div>
 
                                                 <div class="row">
@@ -401,7 +434,7 @@
                                                                     <th>Interest</th>
                                                                     <th>Primary Description</th>
                                                                     @*<th>Secondary Description</th>
-                                                                    <th>Reference</th>*@
+                                                                        <th>Reference</th>*@
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
@@ -616,12 +649,11 @@
     </div>
 </div>
 
-
-<div class="modal  fade" id="CustomerLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="CustomerAccountLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header  bg-primary">
-                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
             <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
@@ -640,7 +672,34 @@
     </div>
 </div>
 
+
+<div class="modal  fade" id="CustomerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Customers Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="CustomersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <input type='hidden' id='h' name='h' />
+
+
+
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -664,6 +723,7 @@
 }
 
 @section Scripts{
+
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
@@ -686,447 +746,11 @@
     @Scripts.Render("~/plugins/duallist")
 
     <script>
-
-    $('#tellerGlTableCustomerReceipts').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CustomerReceipts", new { Area = "FrontOffice"}))",
-        "sServerMethod": "POST",
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-            var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.JournalCreatedDate = dt_Created;
-
-             $('td:eq(1)', nRow).html(dt_Created);
-            return nRow;
-        },
-        "aoColumns": [
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-            { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-            { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
-            { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
-            { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
-            { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
-            { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
-        ],
-        "aaSorting": [[1, "desc"]] // Default sorting, adjust index as needed
-    });
-    
+        var customerAccountsUrl = '@Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" })';
+        var customerReceiptsUrl = '@Url.Action("Index", "CustomerReceipts", new { Area = "FrontOffice" })';
+        var customersUrl = '@Url.Action("Index", "Customer", new { Area = "Registry" })';
+        var chartOfAccountsUrl = '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })';
     </script>
 
-
-    <script>
-
-
-        // Declare role globally
-var role;
-
-$(document).ready(function () {
-
-    // Set the role when the modal is about to be shown
-    $('#CustomerLookupModal').on('show.bs.modal', function (event) {
-        var buttonId = $(event.relatedTarget).attr('id'); // Get the id of the clicked element
-
-        // Determine the role based on the button that triggered the modal
-        if (buttonId === 'debitCustomerRequest') {
-            role = 'DebitCustomerRequest';
-        } else if (buttonId === 'creditCustomerRequest') {
-            role = 'CreditCustomerRequest';
-        } else {
-            role = 'UnknownRole'; // Default or fallback role
-        }
-
-        console.log("Role set to: " + role);
-
-        // Reinitialize or reload the DataTable with the correct role
-        $('#CustomerAccountsGrid').DataTable().ajax.reload();
-    });
-
-    // Initialize the DataTable
-    var table = $('#CustomerAccountsGrid').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
-        "sServerMethod": "POST",
-
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            // Ensure the correct role is logged
-            console.log("Role in DataTable fnRowCallback: ", role);
-
-            // Format CreatedDate
-            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.CreatedDate = dt_Created;
-
-            var selectUrl = '<button class="btn btn-outline-info" onclick="fetchCustomerAccountDetails(\'' + String(aData.Id) + '\', \'' + role + '\')">Select</button>';
-
-            $('td:eq(5)', nRow).html(dt_Created);
-            $('td:eq(6)', nRow).html(selectUrl);
-
-            return nRow;
-        },
-
-        "aoColumns": [
-            { "mDataProp": "CustomerFullName", "sTitle": "Customer Full Name", "sWidth": "3%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CustomerReference1", "sTitle": "Customer Reference 1", "sWidth": "2%" },
-            { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
-            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "2%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
-            { "mDataProp": null, "sTitle": "", "sWidth": "10%", "bSortable": false }
-        ],
-        "aaSorting": [[0, "desc"]]
-    });
-});
-
-
-            function fetchCustomerAccountDetails(customerId, role) {
-
-                console.log("entered fetchcustomerdetails");
-
-                $.ajax({
-                    url: '/FrontOffice/CustomerReceipts/GetCustomerDetailsJson',
-                    type: 'GET',
-                    data: { id: customerId },
-                    success: function (data) {
-                        if (data) {
-                            console.log(data);
-                            console.log(JSON.stringify(data));
-
-                            // Determine which fields to populate based on the role
-                            switch (role) {
-                                case 'DebitCustomerRequest':
-                                    $('#DebitCustomerAccountId').val(data.Id);
-                                    $('#DebitCustomerAccountJson').val(JSON.stringify(data));
-                                    $('#DebitFullAccountNumber').val(data.FullAccountNumber);
-                                    $('#DebitCustomerFullName').val(data.CustomerFullName);
-                                    $('#DebitCustomerReference1').val(data.CustomerReference1);
-                                    $('#DebitCustomerReference2').val(data.CustomerReference2);
-                                    $('#DebitCustomerReference3').val(data.CustomerReference3);
-                                    $('#DebitBranchDescription').val(data.BranchDescription);
-                                    $('#DebitCustomerAccountBranchId').val(data.BranchId);
-                                    $('#DebitProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
-                                    $('#DebitCustomerIdentificationNumber').val(data.CustomerIdentificationNumber);
-                                    $('#DebitRemarks').val(data.Remarks);
-                                    $('#DebitCustomerIndividualPayrollNumbers').val(data.CustomerIndividualPayrollNumbers);
-                                    $('#DebitStatusDescription').val(data.StatusDescription);
-                                    $('#DebitCustomerType').val(data.CustomerType);
-                                    $('#DebitCustomerType').val(data.CustomerTypeDescription);
-
-                                    break;
-                                case 'CreditCustomerRequest':
-                                    $('#CreditCustomerAccount').val(JSON.stringify(data));
-                                    $('#CreditCustomerAccountId').val(data.Id);
-                                    $('#CreditChartOfAccountId').val(data.CustomerAccountTypeTargetProductChartOfAccountId);
-                                    $('#CreditFullAccountNumber').val(data.FullAccountNumber);
-                                    $('#CreditCustomerFullName').val(data.CustomerFullName);
-                                    $('#CreditCustomerReference1').val(data.CustomerReference1);
-                                    $('#CreditCustomerReference2').val(data.CustomerReference2);
-                                    $('#CreditBranchDescription').val(data.BranchDescription);
-                                    $('#CreditBranchId').val(data.BranchId);
-                                    $('#CreditProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
-                                    $('#CreditAvailableBalance').val(data.AvailableBalance);
-                                    break;
-                                default:
-                                    console.error("Unknown role:", role);
-                                    break;
-                            }
-
-                            $('#CustomerLookupModal').modal('hide');
-                        } else {
-                            console.error("No customer details found.");
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                        console.error("Failed to fetch customer details:", error);
-                    }
-                });
-
-            }
-
-            function updateApportionmentsHiddenField() {
-                $('#apportionmentsData').val(JSON.stringify(apportionments));
-            }
-
-            var apportionments = JSON.parse(sessionStorage.getItem('apportionments')) || [];
-            var totalValue = parseFloat(sessionStorage.getItem('totalValue')) || 0;
-
-            function getTotalValue() {
-                return parseFloat($('#TotalValue').val()) || 0;
-            }
-
-
-        //    function saveTotalValue(value) {
-        //        sessionStorage.setItem('totalValue', value);
-        //}
-
-
-        function isApportionmentValid() {
-            var totalValue = getTotalValue();
-            var apportioned = parseFloat($('#apportioned').val()) || 0;
-            var shortage = parseFloat($('#shortage').val()) || 0;
-
-            return Math.abs(shortage) < 0.01; // Allow for small floating point discrepancies
-        }
-
-        function calculateApportionmentTotals() {
-            totalValue = getTotalValue(); // Get the value from the form input
-
-            var apportioned = apportionments.reduce(function (total, item) {
-            var principal = parseFloat(item.principal) || 0;
-            var interest = parseFloat(item.interest) || 0;
-             return total + principal + interest;
-            }, 0);
-
-            var shortage = totalValue - apportioned;
-
-
-            $('#apportioned').val(apportioned.toFixed(2));
-            $('#shortage').val(shortage.toFixed(2));
-
-            if (shortage < 0) {
-                alert("Total apportioned value exceeds the total available value!");
-            } else if (shortage > 0) {
-                $('#shortage').css("color", "red"); // Highlight shortage in red if the total hasn't been fully apportioned
-            } else {
-                $('#shortage').css("color", "green"); // Make it green when apportioned amount equals total
-            }
-
-            // Update submit button state
-            if (isApportionmentValid()) {
-                $('#submitButton').prop('disabled', false);
-            } else {
-                $('#submitButton').prop('disabled', true);
-            }
-
-            //saveTotalValue(totalValue); // Store the total value
-        }
-
-
-            $('#addButton').click(function () {
-                addItemToApportionmentsTable();
-            });
-
-           function addItemToApportionmentsTable() {
-            var principal = parseFloat($('input[name="ApportionmentWrapper.Principal"]').val()) || 0;
-            var interest =  parseFloat($('input[name="ApportionmentWrapper.Interest"]').val()) || 0;
-
-            var totalCurrent = apportionments.reduce(function (total, item) {
-                return total + (parseFloat(item.principal) || 0) + (parseFloat(item.interest) || 0);
-            }, 0);
-
-            var newTotal = totalCurrent + principal + interest;
-
-            if (newTotal > totalValue) {
-                alert("Adding this apportionment exceeds the total value! Please adjust the amounts.");
-                return;
-            }
-
-            var apportionToType = {
-                1: "Customer Account",
-                2: "G/L Account"
-            };
-
-            var apportionTo = $('select[name="ApportionmentWrapper.ApportionTo"]').val();
-            var apportionToDescription = apportionToType[apportionTo];
-
-            var item = {
-                apportionTo: apportionTo,
-                apportionToDescription: apportionToDescription,
-                fullAccountNumber: $('input[name="ApportionmentWrapper.FullAccountNumber"]').val(),
-                productDescription: $('input[name="ApportionmentWrapper.ProductDescription"]').val(),
-                principal: principal.toFixed(2),
-                interest: interest.toFixed(2),
-                primaryDescription: $('input[name="ApportionmentWrapper.PrimaryDescription"]').val(),
-                creditChartOfAccountId: $('input[name="ApportionmentWrapper.CreditChartOfAccountId"]').val(),
-                secondaryDescription: '',
-                reference: '',
-            };
-
-                apportionments.push(item);
-                sessionStorage.setItem('apportionments', JSON.stringify(apportionments));
-                updateApportionmentsTable();
-                calculateApportionmentTotals();
-                updateApportionmentsHiddenField();
-
-                clearApportionmentForm();
-        }
-
-        // Add this new function to clear the form inputs
-        function clearApportionmentForm() {
-/*            $('select[name="ApportionmentWrapper.ApportionTo"]').val('');*/
-            $('input[name="ApportionmentWrapper.FullAccountNumber"]').val('');
-            $('input[name="ApportionmentWrapper.ProductDescription"]').val('');
-            $('input[name="ApportionmentWrapper.Principal"]').val('');
-            $('input[name="ApportionmentWrapper.Interest"]').val('');
-            $('input[name="ApportionmentWrapper.PrimaryDescription"]').val('');
-            $('input[name="ApportionmentWrapper.CreditChartOfAccountId"]').val('');
-            $('input[name="ApportionmentWrapper.CustomerReference1"]').val('');
-            $('input[name="ApportionmentWrapper.CustomerReference2"]').val('');
-            $('input[name="ApportionmentWrapper.CustomerReference3"]').val('');
-            $('input[name="ApportionmentWrapper.CustomerFullName"]').val('');
-        }
-
-        function escapeHtml(text) {
-            return text
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
-
-        function escapeJson(jsonString) {
-            return escapeHtml(jsonString).replace(/\n/g, '\\n').replace(/\r/g, '\\r').replace(/\t/g, '\\t');
-        }
-
-            function updateApportionmentsTable() {
-                var $tableBody = $('#apportionmentTable tbody');
-                $tableBody.empty();
-
-                $.each(apportionments, function (index, item) {
-
-                    var principal = parseFloat(item.principal) || 0;
-                    var interest = parseFloat(item.interest) || 0;
-
-                    var creditCustomerAccountJson = $('input[name="ApportionmentWrapper.CreditCustomerAccount"]').val();
-                    var creditCustomerAccount = JSON.parse(creditCustomerAccountJson);
-                    var debitCustomerAccountJson = $('input[id="DebitCustomerAccountJson"]').val();
-                    var debitCustomerAccount = JSON.parse(debitCustomerAccountJson);
-
-                    $tableBody.append(`
-                        <tr>
-                            <td>${item.apportionToDescription || ''}</td>
-                            <td>${item.fullAccountNumber || ''}</td>
-                            <td>${item.productDescription || ''}</td>
-                            <td>${principal.toFixed(2)}</td>
-                            <td>${interest.toFixed(2)}</td>
-                            <td>${item.primaryDescription || ''}</td>
-                       
-                            <td>
-                                <button type="button" class="btn btn-danger remove-btn" data-index="${index}">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </td>
-                            <input type="hidden" name="Apportionments[${index}].ApportionTo" value="${item.apportionTo || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].FullAccountNumber" value="${item.fullAccountNumber || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].ProductDescription" value="${item.productDescription || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].Principal" value="${principal.toFixed(2)}" />
-                            <input type="hidden" name="Apportionments[${index}].Interest" value="${interest.toFixed(2)}" />
-                            <input type="hidden" name="Apportionments[${index}].PrimaryDescription" value="${item.primaryDescription || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].SecondaryDescription" value="${item.secondaryDescription || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].Reference" value="${item.reference || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].CreditCustomerAccountJson" value="${escapeJson(creditCustomerAccountJson)}" />
-                            <input type="hidden" name="Apportionments[${index}].DebitCustomerAccountJson" value="${escapeJson(debitCustomerAccountJson)}" />
- 
-                            <input type="hidden" name="Apportionments[${index}].CreditCustomerAccountId" value="${creditCustomerAccount.Id || ''}" />
-                           <input type="hidden" name="Apportionments[${index}].DebitCustomerAccountId" value="${debitCustomerAccount.Id || ''}" />
-                            <input type="hidden" name="Apportionments[${index}].CreditChartOfAccountId" value="${item.creditChartOfAccountId || ''}" />
-                        </tr>
-                    `);
-                });
-            }
-
-            $('#apportionmentTable').on('click', '.remove-btn', function () {
-                var index = $(this).data('index');
-                apportionments.splice(index, 1);
-                sessionStorage.setItem('apportionments', JSON.stringify(apportionments));
-                updateApportionmentsTable();
-                calculateApportionmentTotals();
-                updateApportionmentsHiddenField();
-            });
-
-            $('#TotalValue').on('input', calculateApportionmentTotals);
-            $('input[name="ApportionmentWrapper.Principal"]').on('input', calculateApportionmentTotals);
-            $('input[name="ApportionmentWrapper.Interest"]').on('input', calculateApportionmentTotals);
-
-            updateApportionmentsTable();
-            calculateApportionmentTotals();
-            updateApportionmentsHiddenField();
-
-        $(document).ready(function () {
-            $('#submitButton').click(function (e) {
-                if (!isApportionmentValid()) {
-                    e.preventDefault(); // Prevent form submission
-                    alert("The total value must be fully apportioned before submitting. Please adjust the apportionments.");
-                }
-            });
-        });
-
-
-        function resetAllFields() {
-            // Clear customer account fields
-            $('#DebitCustomerAccountId, #DebitCustomerAccountJson, #DebitFullAccountNumber, #DebitCustomerFullName, #DebitCustomerReference1, #DebitCustomerReference2, #DebitCustomerReference3, #DebitBranchDescription, #DebitCustomerAccountBranchId, #DebitProductDescription, #DebitCustomerIdentificationNumber, #DebitRemarks, #DebitCustomerIndividualPayrollNumbers, #DebitStatusDescription').val('');
-
-            $('#CreditCustomerAccount, #CreditCustomerAccountId, #CreditChartOfAccountId, #CreditFullAccountNumber, #CreditCustomerFullName, #CreditCustomerReference1, #CreditCustomerReference2, #CreditBranchDescription, #CreditBranchId, #CreditProductDescription, #CreditAvailableBalance').val('');
-
-            // Clear apportionment fields
-            clearApportionmentForm();
-
-            // Clear total values
-            $('#TotalValue, #apportioned, #shortage').val('');
-
-            // Reset apportionments array and table
-            apportionments = [];
-            sessionStorage.removeItem('apportionments');
-            updateApportionmentsTable();
-
-            // Reset total value in session storage
-            saveTotalValue(0);
-
-            // Disable submit button
-            $('#submitButton').prop('disabled', true);
-        }
-
-
-        $(document).ready(function () {
-            $('#submitButton').click(function (e) {
-
-                e.preventDefault();
-
-                if (!isApportionmentValid()) {
-                    alert("The total value must be fully apportioned before submitting. Please adjust the apportionments.");
-                    return;
-                }
-
-                $.ajax({
-                    url: $('#customerReceiptsForm').attr('action'),
-                    type: 'POST',
-                    data: $('#customerReceiptsForm').serialize(),
-                    dataType: 'json',
-                    success: function (response) {
-                        if (response.redirect) {
-
-                            resetAllFields();
-                        } else if (response.success) {
-                         
-                            //alert('Customer Receipts: Operation Success');
-                            resetAllFields();
-                        } else {
-                       
-                            //alert('Customer Receipts: Operation Failed\n\n' + (response.errorMessages ? response.errorMessages.join('\n') : 'Unknown error'));
-                            resetAllFields();
-                        }
-                    },
-                    error: function (xhr, status, error) {
-                    
-                        //alert('An error occurred while submitting the form. Please try again.');
-                        resetAllFields();
-                        console.error(error);
-                    }
-                });
-            });
-        });
-
-    </script>
+    @Scripts.Render("~/plugins/customerReceiptsFunctions")
 }

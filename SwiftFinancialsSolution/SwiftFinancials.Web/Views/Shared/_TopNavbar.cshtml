@@ -1,10 +1,21 @@
 ﻿<div class="row border-bottom">
     <nav class="navbar navbar-static-top white-bg" role="navigation" style="margin-bottom: 0">
         <div class="navbar-header">
-            <a class="navbar-minimalize minimalize-styl-2 btn btn-outline-info " href="#"><i class="fa fa-bars"></i> </a>
-      
+            <a class="navbar-minimalize minimalize-styl-2 btn btn-outline-info" href="#"><i class="fa fa-bars"></i> </a>
         </div>
-        <ul class="nav navbar-top-links navbar-right">            
+        <ul class="nav navbar-top-links navbar-right">
+            <li style="margin-right: 40px;">
+                <div class="dropdown hyper-realistic-dropdown">
+                    <button class="btn btn-outline-info dropdown-toggle stunning-3d-button" type="button" id="dropdownMenuButton" style="color: black;">
+                        <span>--- Tools ---</span>
+                    </button>
+                    <div id="toolDropdown" class="dropdown-menu stunning-3d-dropdown" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="~/calculator.html" target="_blank">Calculator</a>
+                        <a class="dropdown-item" href="#" target="_blank">To-Do List</a>
+                        <a class="dropdown-item" href="~/loan-calculator.html" target="_blank">Loan Calculator</a>
+                    </div>
+                </div>
+            </li>
             <li>
                 <form id="logoutForm" method="post" action="@Url.Action("LogOff", "Account", new { Area = ""})">
                     <a href='#' onclick='this.parentNode.submit(); return false;'><i class="fa fa-sign-out"></i>Log out</a>
@@ -13,3 +24,42 @@
         </ul>
     </nav>
 </div>
+
+
+<style>
+    .stunning-3d-button {
+        background: linear-gradient(145deg, #e6e6e6, #ffffff);
+        box-shadow: 4px 4px 8px #b8b8b8, -4px -4px 8px #ffffff;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .stunning-3d-button:hover {
+            transform: scale(1.05);
+            box-shadow: 6px 6px 12px #b8b8b8, -6px -6px 12px #ffffff;
+        }
+
+    .hyper-realistic-dropdown:hover .stunning-3d-dropdown {
+        display: block;
+    }
+
+    .stunning-3d-dropdown {
+        display: none;
+        background: linear-gradient(145deg, #e6e6e6, #ffffff);
+        box-shadow: 6px 6px 12px #b8b8b8, -6px -6px 12px #ffffff;
+        border-radius: 12px;
+        padding: 10px;
+        transition: all 0.3s ease;
+    }
+
+        .stunning-3d-dropdown .dropdown-item {
+            padding: 10px;
+            color: #007bff;
+        }
+
+            .stunning-3d-dropdown .dropdown-item:hover {
+                background: #007bff;
+                color: white;
+                border-radius: 8px;
+            }
+</style>

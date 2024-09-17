@@ -145,7 +145,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h2>Create Refund Batch</h2>
+                    
                     @if (TempData["BatchSuccess"] != null)
                     {
                         <div class="alert alert-success">
@@ -169,6 +169,7 @@
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
+                    <h2 style="font-style: italic; margin-bottom: 0;">Refund Batch</h2>
                 </div>
 
 
@@ -559,39 +560,6 @@
 
 
 
-@*<script>
-        //Confirm SumAmount is Equal to Total Value before submission
-    $(document).ready(function () {
-        $("#form").submit(function (e) {
-            e.preventDefault(); // Prevent default form submission
-
-            // Perform your AJAX call to check conditions
-            $.ajax({
-                url: '@Url.Action("CheckSumAmount", "BatchOrigination_Refund", new { Area = "Accounts" })',
-                type: 'POST',
-                data: $(this).serialize(), // Serialize the form data
-                success: function (response) {
-                    if (response.success) {
-                        // If validation is successful, submit the form
-                        $("#form").off('submit').submit();
-                    } else {
-                        // If validation fails, show an error message
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error!',
-                            text: response.message,
-                            timer: 8000,
-                            showConfirmButton: true
-                        });
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("An error occurred:", error);
-                }
-            });
-        });
-    });
-</script>*@
 
     <script>
 

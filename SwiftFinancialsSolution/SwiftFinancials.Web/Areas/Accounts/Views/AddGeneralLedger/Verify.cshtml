@@ -1,0 +1,394 @@
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.GeneralLedgerDTO
+
+@{
+    /**/
+    ViewBag.Title = "Verify General Ledger Batch ";
+
+        var batchAuthOptions = ViewBag.BatchAuthOptionSelectList as List<SelectListItem>;
+
+}
+
+<style>
+    .custom-container {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 10px; /* Rounded corners (optional) */
+
+        display: flex; /* Enable Flexbox */
+        align-items: center; /* Center content vertically */
+        @*justify-content: center; /* Center content horizontally */*@
+        font-size: 15px; /* Set font size to 15px */
+       @* text-align: center;*@ /* Center text within elements */
+        margin-top: 20px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+   @* Batch Entries table Styling*@
+
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+    /* Ensure that any child elements that need to be centered don't affect the container alignment */
+    .row {
+        width: 100%; /* Make sure row takes full width */
+        font-size: 16px;
+    }
+
+    .combined-container {
+        padding: 20px; /* Padding inside the container */
+        border-radius: 5px; /* Rounded corners (optional) */
+        margin: 20px 0; /* Margin above and below the container */
+        font-size: 15px; /* Set font size to 15px */
+        display: flex; /* Enable Flexbox for alignment */
+        flex-direction: column; /* Stack rows vertically */
+        font-weight: bold;
+        border: 2px solid #00ffff;
+    }
+
+    .row {
+        margin-bottom: 20px; /* Space between rows */
+    }
+
+    .form-group {
+        margin-bottom: 15px; /* Space between form groups */
+    }
+
+    .input-group-addon {
+        padding: 10px; /* Padding inside the input group addon */
+    }
+
+    .form-control {
+        margin-top: 5px; /* Space above input controls */
+    }
+
+    .btn-primary {
+        border-radius: 10px;
+    }
+
+    #policies {
+        color: black;
+    }
+
+    .main1 {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 10px;
+        background-color: #f1f1f1;
+    }
+    .control-label {
+        color: #333; /* Replace with your desired color */
+    }
+    .checkbox-label{
+        color:#333;
+    }
+
+    .form-control {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .style1 {
+        color: #007bff; /* Replace with your desired color */
+    }
+    .button-container {
+        display: inline-block;
+        position: relative;
+    }
+
+    .custom-dropdown {
+        display: flex;
+        align-items: center;
+        border: 1px solid #ccc; /* Border around the button */
+        border-radius: 4px;
+        padding: 5px 10px;
+        background-color: #f9f9f9; /* Background color of the button */
+        cursor: pointer;
+        white-space: nowrap;
+        font-size: 16px;
+        position: relative;
+        min-width: 150px; /* Minimum width to prevent overlap */
+        width: auto; /* Adjust width based on content */
+        margin-top:10px;
+    }
+
+    .custom-select {
+        border: none;
+        background: transparent;
+        cursor: pointer;
+        font-size: 16px;
+        padding: 0; /* Remove default padding */
+        margin: 0; /* Remove default margin */
+        width: 100%; /* Make the dropdown take full width of the container */
+        -webkit-appearance: none; /* Remove default dropdown styles in WebKit browsers */
+        -moz-appearance: none; /* Remove default dropdown styles in Firefox */
+        font-weight: bold;
+        text-align: left;
+        line-height: 1.5; /* Adjust line height for better vertical alignment */
+        color: #007bff; /* Blue color for the text */
+    }
+
+    .custom-dropdown::after {
+        content: '\f078'; /* Unicode for down arrow */
+        font-family: FontAwesome; /* FontAwesome for the down arrow */
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        pointer-events: none; /* Allow clicks to pass through the arrow */
+    }
+
+
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Accounts</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "AddGeneralLedger", new { Area = "Accounts" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Verify</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger fade in">
+        <button class="close" data-dismiss="alert">
+            ×
+        </button>
+        <i class="fa-fw fa fa-times"></i>
+        <strong>Error!</strong> @TempData["Error"]
+    </div>
+}
+
+<div class="wrapper wrapper-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    @if (TempData["VerificationFail"] != null)
+                    {
+                        <div class="alert alert-danger fade in">
+                            <button class="close" data-dismiss="alert">
+                                ×
+                            </button>
+                            <i class="fa-fw fa fa-times"></i>
+                            <strong>Error!</strong> @TempData["VerificationFail"]
+                        </div>
+                    }
+
+                    <div class="ibox-tools">
+                        <a class="collapse-link">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("Verify", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+
+                        <div class="form-horizontal">
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                            <div class="main1">
+                                <div class="combined-container">
+                                    <div class="row">
+                                        <div class="col-lg-3">
+
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.BranchId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.BranchId)
+                                                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.BranchId, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.PostingPeriodId, htmlAttributes: new { @class = "control-label" })
+                                                @Html.HiddenFor(model => model.PostingPeriodId)
+                                                @Html.EditorFor(model => model.PostingPeriodDescription, new { htmlAttributes = new { @class = "PostingPeriodsLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.PostingPeriodDescription, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.Remarks, "", new { @class = "text-danger" })
+                                            </div>
+
+                                        </div>
+                                        <div class="col-lg-3">
+
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.TotalValue, htmlAttributes: new { @class = "control-label" })
+                                                @Html.EditorFor(model => model.TotalValue, new { htmlAttributes = new { @class = "form-control", @placeholder = "Ksh..", @readonly = "readonly" } })
+                                                @Html.ValidationMessageFor(model => model.TotalValue, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+
+                                        <div class="col-lg-3">
+
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.CreatedBy, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.CreatedDate, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.EditorFor(model => model.CreatedDate, new { htmlAttributes = new { @class = "BranchesLookup form-control required", placeholder = "", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+
+                                        
+                                        <div class="col-lg-3">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.Status, htmlAttributes: new { @class = "control-label" })
+
+                                                @Html.ValidationMessageFor(model => model.StatusDescription, "", new { @class = "text-danger" })
+                                                @Html.EditorFor(model => model.StatusDescription, new { htmlAttributes = new { @class = "form-control ", placeholder = "", @readonly = "readonly" } })
+                                            </div>
+                                        </div>
+
+
+                                    </div>
+                                </div>
+
+                                <div style="border: 1px solid gray; padding: 20px; margin: 20px; position: relative; border-radius:12px;">
+                                    <h2 style="position: absolute; top: -20px; left: 20px; background: white; padding: 0 10px; color: #333;font-weight:bold;">Credit Batch Entries</h2>
+
+                                    <row>
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                            <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                <tr>
+                                                    <th style="width: 5%;">Credit Chart of Account</th>
+                                                    <th style="width: 5%;">Credit Customer Name </th>
+                                                    <th style="width: 5%;">Credit Account Number</th>
+                                                    <th style="width: 5%;">Debit Chart of Account</th>
+                                                    <th style="width: 5%;">Debit Customer Name </th>
+                                                    <th style="width: 5%;">Debit Account Number</th>
+                                                    <th style="width: 5%;">Amount</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.GeneralLedgerEntries != null)
+                                                {
+                                                    foreach (var LedgerEntries in ViewBag.GeneralLedgerEntries)
+                                                    {
+                                                        <tr data-id="@LedgerEntries.Id">
+                                                            <td>@LedgerEntries.ChartOfAccountAccountName</td>
+                                                            <td>@LedgerEntries.CustomerAccountCustomerFullName</td>
+                                                            <td>@LedgerEntries.CustomerAccountFullAccountNumber</td>
+                                                            <td>@LedgerEntries.ContraChartOfAccountAccountName</td>
+                                                            <td>@LedgerEntries.ContraCustomerAccountCustomerFullName</td>
+                                                            <td>@LedgerEntries.ContraCustomerAccountFullAccountNumber</td>
+                                                            <td>@LedgerEntries.Amount</td>
+
+
+
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+
+
+                                        </table>
+                                    </row>
+                                </div>
+
+                                <div class="custom-container">
+                                    <div class="row" id="policies">
+
+
+                                        <div class="col-lg-6">
+                                            <div class="form-group form-group-lg">
+                                                @Html.LabelFor(model => model.AuditRemarks, htmlAttributes: new { @class = "" })
+                                                @Html.EditorFor(model => model.AuditRemarks, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
+                                                @Html.ValidationMessageFor(model => model.AuditRemarks, "", new { @class = "text-danger" })
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-3">
+
+                                            <div class="form-group form-group-lg" style="text-align: right;">
+                                                <div class="button-container">
+                                                    <div class="custom-dropdown" style="text-align:center;">
+                                                        @Html.DropDownListFor(model => model.GeneralLedgerAuthOption, batchAuthOptions, new { @class = "custom-select" })
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-lg-3">
+
+                                            <div class="style-button" style="text-align: right;">
+                                                <input type="submit" value="Verify" style="width: 150px; margin-top:20px;" class="btn btn-primary" />
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+
+
+                        </div>
+
+
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

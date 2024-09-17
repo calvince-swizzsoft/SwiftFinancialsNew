@@ -274,7 +274,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         
         public TellerDTO Teller { get; set; }
 
-        
+     
         public ExternalChequeDTO ChequeDeposit { get; set; }
 
         public PageCollectionInfo<GeneralLedgerTransaction> TellerStatements { get; set; }

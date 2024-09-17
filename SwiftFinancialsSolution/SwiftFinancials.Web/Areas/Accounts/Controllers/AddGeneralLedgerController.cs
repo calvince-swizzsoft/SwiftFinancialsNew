@@ -29,18 +29,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-            GeneralLedgerDTO generalLedgerDTO = new GeneralLedgerDTO();
 
-            DateTime startDate = generalLedgerDTO.CreatedDate;
 
-            DateTime endDate = startDate;
+            DateTime startDate = DateTime.Now.AddDays(-30);
+            DateTime endDate = DateTime.Now.AddDays(+30);
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindGeneralLedgersByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -53,91 +53,291 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else return this.DataTablesJson(items: new List<GeneralLedgerDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+       
+
+
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
 
             var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
-
+            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+            ViewBag.GeneralLedgerEntries = batchentries;
             return View(generalLedgerDTO);
         }
+
+
+        
+
+
+
+
+
         [HttpPost]
-        public async Task<ActionResult> Add(Guid? id, GeneralLedgerDTO generalLedgerDTO)
+        public async Task<JsonResult> CreditCustomerAccountLookUp(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid ID" });
+            }
+
+            
+
+            // Find customer account
+            var creditCustomerAccount = await _channelService.FindCustomerAccountAsync(id, true, true, true, false, GetServiceHeader());
+
+            if (creditCustomerAccount != null)
+            {
+                var creditEntry = new GeneralLedgerEntryDTO
+                {
+                    CreditFullAccountNumber = creditCustomerAccount.FullAccountNumber,
+                    CustomerAccountId = creditCustomerAccount.Id,
+                    CustomerAccountCustomerId = creditCustomerAccount.CustomerId,
+                    CustomerAccountAccountTypeTargetProductDescription = creditCustomerAccount.CustomerAccountTypeProductCodeDescription,
+                    CustomerAccountCustomerAccountTypeTargetProductId = creditCustomerAccount.CustomerAccountTypeTargetProductId,
+                    ChartOfAccountId = creditCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId,
+                    CustomerAccountCustomerIndividualFirstName = creditCustomerAccount.CustomerFullName,
+
+                };
+
+                return Json(new { success = true, data = creditEntry });
+            }
+
+            return Json(new { success = false, message = "Customer account not found" });
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> DebitCustomerAccountLookup(Guid id)
+        {
+            if (id == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid ID" });
+            }
+
+            
+
+            // Fetch data based on ID
+            var debitCustomerAccount = await _channelService.FindCustomerAccountAsync(id, true, true, true, false, GetServiceHeader());
+
+            if (debitCustomerAccount != null)
+            {
+                var debitEntry = new GeneralLedgerEntryDTO
+                {
+                    DebitFullAccountNumber = debitCustomerAccount.FullAccountNumber,
+                    ContraCustomerAccountId = debitCustomerAccount.Id,
+                    ContraCustomerAccountCustomerId = debitCustomerAccount.CustomerId,
+                    ContraCustomerAccountAccountTypeTargetProductDescription = debitCustomerAccount.CustomerAccountTypeProductCodeDescription,
+                    ContraCustomerAccountCustomerAccountTypeTargetProductId = debitCustomerAccount.CustomerAccountTypeTargetProductId,
+                    ContraChartOfAccountId = debitCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId,
+                    ContraCustomerAccountCustomerIndividualFirstName = debitCustomerAccount.CustomerFullName,
+                    
+                };
+
+                return Json(new { success = true, data = debitEntry });
+            }
+
+            return Json(new { success = false, message = "Customer account not found" });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Add(GeneralLedgerDTO  generalLedgerDTO)
         {
             await ServeNavigationMenus();
 
-            ViewBag.BudgetEntryTypeSelectList = GetBudgetEntryTypeSelectList(generalLedgerDTO.Status.ToString());
-
-            GeneralLedgerDTOs = TempData["GeneralLedgerDTOs"] as ObservableCollection<GeneralLedgerDTO>;
-
-            if (GeneralLedgerDTOs == null)
-                GeneralLedgerDTOs = new ObservableCollection<GeneralLedgerDTO>();
-
-            foreach (var ledger in generalLedgerDTO.generalLedgerDTOs)
+            // Retrieve the batch entries from the session
+            var generalLedgerBatchEntryDTOs = Session["generalLedgerBatchEntryDTOs"] as ObservableCollection<GeneralLedgerEntryDTO>;
+            if (generalLedgerBatchEntryDTOs == null)
             {
-                ledger.LedgerNumber = ledger.LedgerNumber;
-                ledger.PostingPeriodId = ledger.PostingPeriodId;
-                ledger.TotalValue = ledger.TotalValue;
+                generalLedgerBatchEntryDTOs = new ObservableCollection<GeneralLedgerEntryDTO>();
+            }
 
-                ledger.Remarks = ledger.Remarks;
-                ledger.CreatedBy = ledger.CreatedBy;
+            foreach (var entry in generalLedgerDTO.GeneralLedgerEntries)
+            {
+                // Check if an entry with the same Debit and Credit account numbers already exists
+                var existingEntry = generalLedgerBatchEntryDTOs
+                .FirstOrDefault(e =>
+                    (e.DebitFullAccountNumber == entry.DebitFullAccountNumber && e.CreditFullAccountNumber == entry.CreditFullAccountNumber) ||
+                    (e.DebitFullAccountNumber == entry.DebitFullAccountNumber && e.ChartOfAccountId == entry.ChartOfAccountId) ||
+                    (e.ContraChartOfAccountId == entry.ContraChartOfAccountId && e.DebitFullAccountNumber == entry.DebitFullAccountNumber) ||
+                    (e.ContraChartOfAccountId == entry.ContraChartOfAccountId && e.ChartOfAccountId == entry.ChartOfAccountId));
 
-                Session["chargeSplit"] = generalLedgerDTO.generalLedgerDTOs;
 
-
-                if (ledger.TotalValue > generalLedgerDTO.TotalValue)
+                if (existingEntry != null)
                 {
-                    TempData["tPercentage"] = "Amount cannot exceed the total value. The last added Entry has been removed.";
-
-                    GeneralLedgerDTOs.Remove(ledger);
-
-                    Session["chargeSplit"] = GeneralLedgerDTOs;
+                    return Json(new
+                    {
+                        success = false,
+                        message = "A general Ledger with the same Debit and Credit transaction already exists."
+                    });
                 }
-                else if (ledger.TotalValue <= generalLedgerDTO.TotalValue)
+
+                if (entry.Id == Guid.Empty)
                 {
-                    TempData["tPercentage"] = "Amount must be Equal to Total Amount.";
-                    GeneralLedgerDTOs.Add(ledger);
+                    entry.Id = Guid.NewGuid();
                 }
+                if (entry.ChartOfAccountId == Guid.Empty)
+                {
+                    entry.ChartOfAccountId = (Guid)entry.CustomerAccountCustomerAccountTypeTargetProductId;
+                }
+                if (entry.ContraChartOfAccountId == Guid.Empty)
+                {
+                    entry.ContraChartOfAccountId = (Guid)entry.ContraCustomerAccountCustomerAccountTypeTargetProductId;
+                }
+               
+                generalLedgerBatchEntryDTOs.Add(entry);
 
-            };
+                // Calculate the sum of Principal and Interest
+                decimal sumAmount = generalLedgerBatchEntryDTOs.Sum(e => e.Amount);
 
+                // Check if the total value is exceeded
+                if (sumAmount > generalLedgerDTO.TotalValue)
+                {
+                    generalLedgerBatchEntryDTOs.Remove(entry);
+                    decimal exceededAmount = sumAmount - generalLedgerDTO.TotalValue;
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"The total of principal and interest has exceeded the total value by {exceededAmount}."
+                    });
+                }
+            }
 
-            TempData["GeneralLedgerDTOs"] = GeneralLedgerDTOs;
+            // Save the updated entries back to the session
+            Session["generalLedgerBatchEntryDTOs"] = generalLedgerBatchEntryDTOs;
+            Session["generalLedgerDTO"] = generalLedgerDTO;
 
-            TempData["generalLedgerDTO"] = generalLedgerDTO;
-
-            ViewBag.budgetEntryDTOs = budgetEntryDTOs;
-
-            return View("Create", generalLedgerDTO);
+            return Json(new { success = true, data = generalLedgerBatchEntryDTOs });
         }
+
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var generalLedgerBatchEntryDTOs = Session["generalLedgerBatchEntryDTOs"] as ObservableCollection<GeneralLedgerEntryDTO>;
+
+
+            decimal sumAmount = generalLedgerBatchEntryDTOs.Sum(e => e.Amount);
+
+            if (generalLedgerBatchEntryDTOs != null)
+            {
+                var entryToRemove = generalLedgerBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    generalLedgerBatchEntryDTOs.Remove(entryToRemove);
+
+                    sumAmount -= entryToRemove.Amount;
+
+                    Session["generalLedgerBatchEntryDTOs"] = generalLedgerBatchEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = generalLedgerBatchEntryDTOs });
+        }
+
+
+
+
+
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
             ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
-
+            ViewBag.GeneralLedgerEntryTypeSelectList = GetGeneralLedgerEntryTypeSelectList(string.Empty);
             return View();
         }
 
+
+
         [HttpPost]
-        public async Task<ActionResult> Create(GeneralLedgerDTO generalLedgerDTO)
+        public async Task<ActionResult> Create(GeneralLedgerDTO  generalLedgerDTO)
         {
+            // Retrieve the DTO stored in session
+             generalLedgerDTO = Session["generalLedgerDTO"] as GeneralLedgerDTO;
 
+            if (generalLedgerDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
+
+
+
+            // If there are no entries, initialize a new list
+            var generalLedgerBatchEntryDTOs = Session["generalLedgerBatchEntryDTOs"] as ObservableCollection<GeneralLedgerEntryDTO>;
+
+            if (generalLedgerBatchEntryDTOs != null)
+            {
+                generalLedgerDTO.GeneralLedgerEntries = generalLedgerBatchEntryDTOs;
+            }
+
+            decimal SumAmount = generalLedgerBatchEntryDTOs.Sum(e => e.Amount);
+            decimal totalValue = generalLedgerDTO?.TotalValue ?? 0;
+
+            if (SumAmount != totalValue)
+            {
+                var balance = totalValue - SumAmount;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({SumAmount}). Balance: {balance}" });
+            }
+
+            // Validate the DTO
             generalLedgerDTO.ValidateAll();
-
-            if (!generalLedgerDTO.HasErrors)
+            if (generalLedgerDTO.ErrorMessages.Count != 0)
             {
-                await _channelService.AddGeneralLedgerAsync(generalLedgerDTO.MapTo<GeneralLedgerDTO>(), GetServiceHeader());
-                ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(generalLedgerDTO.Status.ToString());
-                TempData["SuccessMessage"] = "Create successful.";
-                return RedirectToAction("Index");
+                return Json(new
+                {
+                    success = false,
+                    message = generalLedgerDTO.ErrorMessages
+                });
             }
-            else
-            {
-                var errorMessages = generalLedgerDTO.ErrorMessages;
 
-                return View(generalLedgerDTO);
+            // Save the batch data
+            var generalLedgerdBatch = await _channelService.AddGeneralLedgerAsync(generalLedgerDTO, GetServiceHeader());
+            if (generalLedgerdBatch.HasErrors)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = generalLedgerdBatch.ErrorMessages
+                });
             }
+
+            // Save each batch entry
+            foreach (var generalLedgerBatchEntry in generalLedgerBatchEntryDTOs)
+            {
+                generalLedgerBatchEntry.GeneralLedgerId = generalLedgerdBatch.Id;
+                generalLedgerBatchEntry.BranchId = generalLedgerdBatch.BranchId;
+                generalLedgerBatchEntry.BranchDescription = generalLedgerdBatch.BranchDescription;
+                await _channelService.AddGeneralLedgerEntryAsync(generalLedgerBatchEntry, GetServiceHeader());
+            }
+
+            // Clear session data after successful creation
+            Session["generalLedgerBatchEntryDTOs"] = null;
+            Session["generalLedgerDTO"] = null;
+
+            // Return success message in JSON
+            return Json(new
+            {
+                success = true,
+                message = "Successfully created refund batch."
+            });
         }
+
+
+        
+
+
 
         public async Task<ActionResult> Edit(Guid id)
         {
@@ -163,6 +363,94 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(generalLedgerDTO);
             }
         }
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+
+            ViewBag.GeneralLedgerEntries = batchentries;
+            return View(generalLedgerDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, GeneralLedgerDTO  generalLedgerDTO)
+        {
+            generalLedgerDTO.ValidateAll();
+
+
+            var auth = generalLedgerDTO.GeneralLedgerAuthOption;
+
+
+            if (!generalLedgerDTO.HasErrors)
+            {
+                await _channelService.AuditGeneralLedgerAsync(generalLedgerDTO, auth, GetServiceHeader());
+
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+
+                TempData["VerifySuccess"] = "Verification Successiful";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["VerificationFail"] = "Verification Failed!. Review all conditions.";
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+                var errorMessages = generalLedgerDTO.ErrorMessages;
+
+                return View(generalLedgerDTO);
+            }
+        }
+
+        public async Task<ActionResult> Authorize(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var generalLedgerDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindGeneralLedgerEntriesByGeneralLedgerIdAsync(id, GetServiceHeader());
+            ViewBag.GeneralLedgerEntries = batchentries;
+            return View(generalLedgerDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Authorize(Guid id, GeneralLedgerDTO  generalLedgerDTO)
+        {
+            var batchAuthOption = generalLedgerDTO.GeneralLedgerAuthOption;
+            generalLedgerDTO.ValidateAll();
+
+            if (!generalLedgerDTO.HasErrors)
+            {
+                await _channelService.AuthorizeGeneralLedgerAsync(generalLedgerDTO, batchAuthOption, 1, GetServiceHeader());
+
+
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+
+
+
+                TempData["AuthorizationSuccess"] = "Authorization Successiful";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                var errorMessages = generalLedgerDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(generalLedgerDTO.GeneralLedgerAuthOption.ToString());
+                TempData["AuthorizationFail"] = "Authorization Failed!. Review all conditions.";
+
+                return View(generalLedgerDTO);
+            }
+        }
+
+
+
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetPostingPeriodsAsync()

@@ -1,17 +1,24 @@
 ﻿using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Util;
+using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
 using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
+using System.Web.Configuration;
 using System.Web.Mvc;
 
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
@@ -19,6 +26,14 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
     [RoleBasedAccessControl]
     public class CustomerController : MasterController
     {
+        private readonly string _connectionString;
+
+        public CustomerController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
+
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -39,7 +54,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -56,15 +73,60 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         {
             await ServeNavigationMenus();
 
-            var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
+            //var customerDTO = await _channelService.FindCustomerAsync(id, GetServiceHeader());
 
-            return View(customerDTO);
+            //return View(customerDTO.ProjectedAs<CustomerDTO>());
+
+            var documents = await GetDocumentsAsync(id);
+
+            if (documents == null || documents.Count == 0)
+            {
+                return View();
+            }
+
+            return View(documents);
         }
+
+
+        // Get Documents ...........................
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
+
 
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
-           
+
 
             ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
             ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
@@ -91,11 +153,24 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel)
+        public async Task<ActionResult> Create(CustomerBindingModel customerBindingModel, HttpPostedFileBase signaturePhoto, HttpPostedFileBase idCardFrontPhoto, HttpPostedFileBase idCardBackPhoto, string passportPhotoDataUrl)
         {
             var registrationdate = Request["registrationdate"];
             var birthdate = Request["birthdate"];
             var employmentdate = Request["employmentdate"];
+
+
+            var filesCount = Request.Files.Count;
+            var signatureFile = Request.Files["signaturePhoto"];
+            var idFrontFile = Request.Files["idCardFrontPhoto"];
+            var idBackFile = Request.Files["idCardBackPhoto"];
+
+            if (signaturePhoto == null || idCardFrontPhoto == null || idCardBackPhoto == null)
+            {
+                var errorMsg = $"Missing files: {nameof(signaturePhoto)} is null: {signaturePhoto == null}, {nameof(idCardFrontPhoto)} is null: {idCardFrontPhoto == null}, {nameof(idCardBackPhoto)} is null: {idCardBackPhoto == null}.";
+                throw new Exception(errorMsg);
+            }
+
 
             customerBindingModel.IndividualBirthDate = DateTime.ParseExact((Request["birthdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
@@ -131,25 +206,76 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             if (!customerBindingModel.HasErrors)
             {
                 var result = await _channelService.AddCustomerAsync(customerBindingModel.MapTo<CustomerDTO>(), debitTypes.ToList(), investmentProducts.ToList(), savingsProducts.ToList(), mandatoryProducts, 1, GetServiceHeader());
+
                 if (result.ErrorMessageResult != null)
                 {
-                    TempData["Error"] = result.ErrorMessageResult + result.ErrorMessages;
-                    await ServeNavigationMenus();
-                    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.TypeDescription.ToString());
-                    ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
-                    ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
-                    ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
-                    ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
-                    ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
-                    ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
-                    ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
-                    ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
+                    TempData["DefaultError"] = result.ErrorMessageResult.ToString();
 
-                   // await _channelService.UpdateRefereeCollectionByCustomerIdAsync(result.Id,)
-
-                    return View("create", customerBindingModel);
+                    return View();
                 }
+
+                // Handle Document Upload to DB.......
+                var document = new Document
+                {
+                    Id = Guid.NewGuid(),
+                    CustomerId = result.Id
+                };
+
+                // Process the passport photo from the data URL
+                if (!string.IsNullOrEmpty(passportPhotoDataUrl))
+                {
+                    var base64Data = passportPhotoDataUrl.Split(',')[1];
+                    var imageBytes = Convert.FromBase64String(base64Data);
+                    document.PassportPhoto = imageBytes;
+                }
+
+                // Process other uploaded files
+                if (signaturePhoto != null && signaturePhoto.ContentLength > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        signaturePhoto.InputStream.CopyTo(memoryStream);
+                        document.SignaturePhoto = memoryStream.ToArray();
+                    }
+                }
+
+                if (idCardFrontPhoto != null && idCardFrontPhoto.ContentLength > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        idCardFrontPhoto.InputStream.CopyTo(memoryStream);
+                        document.IDCardFrontPhoto = memoryStream.ToArray();
+                    }
+                }
+
+                if (idCardBackPhoto != null && idCardBackPhoto.ContentLength > 0)
+                {
+                    using (var memoryStream = new MemoryStream())
+                    {
+                        idCardBackPhoto.InputStream.CopyTo(memoryStream);
+                        document.IDCardBackPhoto = memoryStream.ToArray();
+                    }
+                }
+
+                await SaveDocumentAsync(document);
+
+                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.TypeDescription.ToString());
+                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.IndividualType.ToString());
+                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.IndividualIdentityCardType.ToString());
+                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.IndividualSalutation.ToString());
+                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.IndividualGender.ToString());
+                ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(customerBindingModel.IndividualMaritalStatus.ToString());
+                ViewBag.IndividualNationalitySelectList = GetNationalitySelectList(customerBindingModel.IndividualNationality.ToString());
+                ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
+                ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
+
+                // await _channelService.UpdateRefereeCollectionByCustomerIdAsync(result.Id,)
+
                 TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
+
+                //return View("Index");
+
+                //TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
                 return RedirectToAction("Index");
             }
             else
@@ -170,6 +296,30 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
 
                 return View("Create", customerBindingModel);
+            }
+        }
+
+
+
+        // Save Documents ......................
+        private async Task SaveDocumentAsync(Document document)
+        {
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "INSERT INTO swiftFin_SpecimenCapture (Id, CustomerId, PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto, CreatedDate) " +
+                            "VALUES (@Id, @CustomerId, @PassportPhoto, @SignaturePhoto, @IDCardFrontPhoto, @IDCardBackPhoto, @CreatedDate)";
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@Id", document.Id);
+                    command.Parameters.AddWithValue("@CustomerId", document.CustomerId);
+                    command.Parameters.AddWithValue("@PassportPhoto", document.PassportPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@SignaturePhoto", document.SignaturePhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IDCardFrontPhoto", document.IDCardFrontPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@IDCardBackPhoto", document.IDCardBackPhoto ?? (object)DBNull.Value);
+                    command.Parameters.AddWithValue("@CreatedDate", document.CreatedDate);
+                    await command.ExecuteNonQueryAsync();
+                }
             }
         }
 

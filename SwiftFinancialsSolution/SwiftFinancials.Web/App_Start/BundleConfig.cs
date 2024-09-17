@@ -467,6 +467,17 @@ namespace SwiftFinancials.Web
             bundles.Add(new ScriptBundle("~/plugins/jqueryValidateUnobtrusive").Include(
                         "~/Scripts/jquery.validate.unobtrusive*"));
 
+            bundles.Add(new ScriptBundle("~/plugins/customerReceiptsFunctions").Include(
+
+                          "~/Scripts/js/frontoffice/customerreceipts/chartOfAccounts.js",
+                         "~/Scripts/js/frontoffice/customerreceipts/tellerGlTable.js",
+                         "~/Scripts/js/frontoffice/customerreceipts/customersGrid.js",
+                         "~/Scripts/js/frontoffice/customerreceipts/customerAccountsGrid.js",
+                        "~/Scripts/js/frontoffice/customerreceipts/apportionments.js",
+                        "~/Scripts/js/frontoffice/customerreceipts/apportionTypeHandler.js",  
+                        "~/Scripts/js/frontoffice/customerreceipts/formSubmission.js"
+             ));
+
 
 
             ////Scripts for Grid MVC

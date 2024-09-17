@@ -3,6 +3,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -114,5 +115,27 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool CanSuppressMakerCheckerValidation { get; set; }
         public List<GeneralLedgerDTO> generalLedgerDTOs;
         public GeneralLedgerDTO LedgerDTO { get; set; }
+
+
+        public ObservableCollection<GeneralLedgerEntryDTO> GeneralLedgerEntries { get; set; }
+
+
+
+        // Additional DTOs
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public byte GeneralLedgerAuthOption { get; set; }
+
+        [DataMember]
+        [Display(Name = "Refund Batch Auth Option")]
+        public string RefundAuthOptionDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(BatchAuthOption), (int)GeneralLedgerAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)GeneralLedgerAuthOption) : string.Empty;
+            }
+        }
+
+
     }
 }

@@ -99,33 +99,40 @@ namespace Application.MainBoundedContext.DTO
 
             get
             {
-                // Serialize the DebitCustomerAccount back to JSON when needed
-                return JsonConvert.SerializeObject(CreditCustomerAccount);
+                return CreditCustomerAccount == null ? null : JsonConvert.SerializeObject(CreditCustomerAccount);
             }
-
             set
             {
-                // Deserialize the JSON string to set CreditCustomerAccount when provided
-                CreditCustomerAccount = !string.IsNullOrEmpty(value)
-                    ? JsonConvert.DeserializeObject<CustomerAccountDTO>(value)
-                    : null;
+                if (string.IsNullOrEmpty(value))
+                {
+                    CreditCustomerAccount = null;
+                }
+                else 
+                {
+                    CreditCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
+                }
             }
         }
 
         public string DebitCustomerAccountJson
         {
-
             get
             {
-                
-                return JsonConvert.SerializeObject(DebitCustomerAccount);
+                return DebitCustomerAccount == null ? null : JsonConvert.SerializeObject(DebitCustomerAccount);
             }
-
             set
             {
-
-                DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
+                if (string.IsNullOrEmpty(value))
+                {
+                    DebitCustomerAccount = null;
+                }
+                else
+                {
+                    DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
+                }
             }
         }
+
+
     }
 }

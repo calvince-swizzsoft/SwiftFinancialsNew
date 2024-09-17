@@ -16,6 +16,7 @@ using System.Net;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using ClosedXML;
 
 namespace SwiftFinancials.Web.Areas.Reports.Controllers
 {
@@ -141,50 +142,6 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
         }
 
 
-        public ActionResult GeneratePDFReport(string reportQuery, Dictionary<string, string> paramValues)
-        {
-            DataTable reportData = FetchReportData(reportQuery, paramValues);
-
-            using (MemoryStream stream = new MemoryStream())
-            {
-                Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 30);
-                PdfWriter.GetInstance(pdfDoc, stream);
-                pdfDoc.Open();
-
-                // Add a logo image in the header
-                string logoPath = Server.MapPath("~/Images/MIA.JPG");
-                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
-                logo.ScaleToFit(300f, 300f);
-                logo.Alignment = Element.ALIGN_CENTER;
-                pdfDoc.Add(logo);
-
-                // Add report data to the PDF
-                PdfPTable table = new PdfPTable(reportData.Columns.Count);
-
-                // Add table header
-                foreach (DataColumn column in reportData.Columns)
-                {
-                    PdfPCell header = new PdfPCell(new Phrase(column.ColumnName));
-                    header.HorizontalAlignment = Element.ALIGN_CENTER;
-                    table.AddCell(header);
-                }
-
-                // Add table rows
-                foreach (DataRow row in reportData.Rows)
-                {
-                    foreach (DataColumn column in reportData.Columns)
-                    {
-                        table.AddCell(row[column].ToString());
-                    }
-                }
-
-                pdfDoc.Add(table);
-                pdfDoc.Close();
-
-                // Return the PDF as a downloadable file
-                return File(stream.ToArray(), "application/pdf", "Report.pdf");
-            }
-        }
 
         // Action to generate the Excel report
         public ActionResult GenerateExcelReport(string reportQuery, Dictionary<string, string> paramValues)
@@ -195,31 +152,150 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
             {
                 var worksheet = workbook.Worksheets.Add("Report");
 
-                // Add report data to the Excel sheet
+                string imagePath = Server.MapPath("~/Images/MIA.JPG"); 
+                var picture = worksheet.AddPicture(imagePath)
+                                       .MoveTo(worksheet.Cell(1, 1)); 
+
+                int startRow = 13;
+                int startColumn = 1; 
+
+                
                 for (int i = 0; i < reportData.Columns.Count; i++)
                 {
-                    worksheet.Cell(1, i + 1).Value = reportData.Columns[i].ColumnName;
+                    var headerCell = worksheet.Cell(startRow, startColumn + i);
+                    headerCell.Value = reportData.Columns[i].ColumnName;
+                    headerCell.Style.Font.Bold = true;
+                    headerCell.Style.Fill.BackgroundColor = XLColor.FromArgb(0, 51, 102); 
+                    headerCell.Style.Font.FontColor = XLColor.White;
+                    headerCell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                    headerCell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                 }
 
+                
                 for (int i = 0; i < reportData.Rows.Count; i++)
                 {
                     for (int j = 0; j < reportData.Columns.Count; j++)
                     {
-                        worksheet.Cell(i + 2, j + 1).Value = reportData.Rows[i][j].ToString();
+                        var cell = worksheet.Cell(startRow + 1 + i, startColumn + j); 
+                        cell.Value = reportData.Rows[i][j].ToString();
+                        cell.Style.Fill.BackgroundColor = (i % 2 == 0) ? XLColor.FromArgb(242, 242, 242) : XLColor.White; 
+                        cell.Style.Alignment.Horizontal = XLAlignmentHorizontalValues.Center;
+                        cell.Style.Alignment.Vertical = XLAlignmentVerticalValues.Center;
                     }
                 }
 
-                // Format Excel sheet (autofit columns, bold headers, etc.)
-                worksheet.Columns().AdjustToContents();
-                worksheet.Row(1).Style.Font.Bold = true;
+                int tableWidth = reportData.Columns.Count;
+                int logoColumnStart = (tableWidth / 2) - 1; 
+                if (logoColumnStart < 1) logoColumnStart = 1; 
+                picture.MoveTo(worksheet.Cell(1, logoColumnStart)); 
 
-                // Return the Excel as a downloadable file
+                worksheet.Columns().AdjustToContents();
+                worksheet.Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+                worksheet.Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+
                 using (MemoryStream stream = new MemoryStream())
                 {
                     workbook.SaveAs(stream);
                     return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Report.xlsx");
                 }
             }
+        }
+
+
+
+
+
+        public ActionResult GeneratePDFReport(string reportQuery, Dictionary<string, string> paramValues)
+        {
+            DataTable reportData = FetchReportData(reportQuery, paramValues);
+
+            using (MemoryStream stream = new MemoryStream())
+            {
+                Document pdfDoc = new Document(PageSize.A4, 25, 25, 30, 50);
+                PdfWriter writer = PdfWriter.GetInstance(pdfDoc, stream);
+                writer.PageEvent = new PDFPageEventHelper(); 
+
+                pdfDoc.Open();
+
+                
+                string logoPath = Server.MapPath("~/Images/MIA.JPG");
+                iTextSharp.text.Image logo = iTextSharp.text.Image.GetInstance(logoPath);
+                logo.ScaleToFit(200f, 80f);  
+                logo.Alignment = Element.ALIGN_CENTER;
+                pdfDoc.Add(logo);
+
+                
+                pdfDoc.Add(new Paragraph("\n"));
+
+                
+                PdfPTable table = new PdfPTable(reportData.Columns.Count)
+                {
+                    WidthPercentage = 100,  
+                    SpacingBefore = 10f,
+                    SpacingAfter = 10f,
+                    HorizontalAlignment = Element.ALIGN_CENTER
+                };
+
+                BaseFont bf = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+                Font headerFont = new Font(bf, 12, Font.BOLD, BaseColor.WHITE);
+                Font cellFont = new Font(bf, 10, Font.NORMAL, BaseColor.BLACK);
+
+                foreach (DataColumn column in reportData.Columns)
+                {
+                    PdfPCell header = new PdfPCell(new Phrase(column.ColumnName, headerFont))
+                    {
+                        HorizontalAlignment = Element.ALIGN_CENTER,
+                        BackgroundColor = new BaseColor(0, 51, 102),
+                        Padding = 5
+                    };
+                    table.AddCell(header);
+                }
+
+                foreach (DataRow row in reportData.Rows)
+                {
+                    foreach (DataColumn column in reportData.Columns)
+                    {
+                        PdfPCell cell = new PdfPCell(new Phrase(row[column].ToString(), cellFont))
+                        {
+                            HorizontalAlignment = Element.ALIGN_CENTER,
+                            Padding = 5,
+                            BorderColor = new BaseColor(200, 200, 200)
+                        };
+                        table.AddCell(cell);
+                    }
+                }
+
+                pdfDoc.Add(table);
+                pdfDoc.Close();
+
+                return File(stream.ToArray(), "application/pdf", "Report.pdf");
+            }
+        }
+    }
+
+
+    public class PDFPageEventHelper : PdfPageEventHelper
+    {
+        private readonly Font _footerFont = new Font(Font.FontFamily.HELVETICA, 10, Font.NORMAL, BaseColor.GRAY);
+
+        public override void OnEndPage(PdfWriter writer, Document document)
+        {
+            PdfContentByte cb = writer.DirectContent;
+            Rectangle pageSize = document.PageSize;
+
+            BaseColor faintGray = new BaseColor(200, 200, 200); 
+
+            cb.SetLineWidth(0.5f); 
+            cb.SetColorStroke(faintGray); 
+            cb.MoveTo(pageSize.GetLeft(40), pageSize.GetBottom(40));
+            cb.LineTo(pageSize.GetRight(40), pageSize.GetBottom(40));
+            cb.Stroke();
+
+            cb.BeginText();
+            cb.SetFontAndSize(BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED), 10);
+            cb.SetTextMatrix(pageSize.GetRight(60), pageSize.GetBottom(30));
+            cb.ShowText($"Page {writer.PageNumber}");
+            cb.EndText();
         }
     }
 }

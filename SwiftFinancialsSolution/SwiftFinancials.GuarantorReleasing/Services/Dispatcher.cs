@@ -48,21 +48,21 @@ namespace SwiftFinancials.GuarantorReleasing.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<GuarantorReleasingJob>()
-                        .WithIdentity("GuarantorReleasingJob", "VFIN")
+                        .WithIdentity("GuarantorReleasingJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("GuarantorReleasingJob", "VFIN")
+                        .WithIdentity("GuarantorReleasingJob", "SWIFTFIN")
                         .WithCronSchedule(guarantorReleasingConfigSection.GuarantorReleasingSettingsItems.GuarantorReleasingJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("GuarantorReleasingJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("GuarantorReleasingJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("GuarantorReleasingJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("GuarantorReleasingJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 
