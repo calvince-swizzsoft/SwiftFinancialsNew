@@ -1,4 +1,13 @@
-﻿@{
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO
+
+
+
+@{
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+
+
+
     ViewBag.Title = "Register";
 }
 
@@ -42,6 +51,17 @@
             outline: none;
             box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
         }
+
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
 </style>
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -104,29 +124,120 @@
                             </tbody>
                         </table>
                     </div>
+                    @using (Html.BeginForm("Index", "CoA_Register", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        <div class="bottom-button">
+
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeProductCode, new { @class = "control-label" })
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCode,
+                                            new { @class = "form-control input-md", @id = "productCode" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecordStatus, new { @class = "control-label" })
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                            new { @class = "form-control input-md", @id = "recordStatus" })
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" class="btn btn-primary" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Styles {
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section scripts {
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
 
     <script type="text/javascript">
 
-        $(document).ready(function () {
-            $('#customerAccountsGrid').DataTable({
+            $(document).ready(function () {
+
+
+                var defaultProductCode = $('#productCode').val();
+                var defaultRecordStatus = $('#recordStatus').val();
+
+
+                $('#customerAccountsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index","CoA_Register", new { Area ="Accounts"}))",
                 "sServerMethod": "POST",
+
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+
+                    );
+                },
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -174,7 +285,14 @@
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%"},
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
+
+                $('#form').on('submit', function (e) {
+                    e.preventDefault();
+                    $('#customerAccountsGrid').DataTable().ajax.reload();
+                });
+
+
         });
 
         $(document).ajaxStart(function () {
