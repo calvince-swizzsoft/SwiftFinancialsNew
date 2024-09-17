@@ -2096,6 +2096,8 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChequeTypeDTO
 
+        Task<ObservableCollection<ChequeTypeDTO>> FindChequeTypesAsync(ServiceHeader serviceHeader = null);
+
         Task<PageCollectionInfo<ChequeTypeDTO>> FindChequeTypesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<PageCollectionInfo<ChequeTypeDTO>> FindChequeTypesInPageAsync(int pageIndex, int pageSize, ServiceHeader serviceHeader = null);

@@ -27389,6 +27389,45 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         #region ChequeTypeDTO
 
+        //public List<ChequeTypeDTO> FindChequeTypes()
+        //{
+        //    var serviceHeader = CustomHeaderUtility.ReadHeader(OperationContext.Current);
+
+        //    return _chequeTypeAppService.FindChequeTypes(serviceHeader);
+        //}
+
+        public Task<ObservableCollection<ChequeTypeDTO>> FindChequeTypesAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<ChequeTypeDTO>>();
+
+            IChequeTypeService service = GetService<IChequeTypeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<ChequeTypeDTO> response = ((IChequeTypeService)result.AsyncState).EndFindChequeTypes(result);
+
+                    tcs.TrySetResult(new ObservableCollection<ChequeTypeDTO>(response ?? new List<ChequeTypeDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindChequeTypes(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<PageCollectionInfo<ChequeTypeDTO>> FindChequeTypesByFilterInPageAsync(string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<ChequeTypeDTO>>();

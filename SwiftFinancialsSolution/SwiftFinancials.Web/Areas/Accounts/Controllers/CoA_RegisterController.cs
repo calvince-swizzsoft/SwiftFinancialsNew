@@ -326,7 +326,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 TempData["Edit"] = "Edited Customer Account successfully";
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "CustomerAccounts");
             }
             else
             {

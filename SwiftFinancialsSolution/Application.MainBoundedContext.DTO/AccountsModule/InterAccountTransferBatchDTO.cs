@@ -250,7 +250,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         
         [DataMember]
-        [Display(Name = "Refund Batch Auth Option")]
+        [Display(Name = "Wire Transfer Auth Option")]
         public byte WireTransferAuthOption { get; set; }
 
         [DataMember]

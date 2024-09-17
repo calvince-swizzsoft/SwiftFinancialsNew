@@ -82,13 +82,13 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(ReportDTO reportDTO)
         {
-           
 
+            await ServeNavigationMenus();
             if (!reportDTO.HasErrors)
             {
                 await _channelService.AddReportAsync(reportDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
+                TempData["SuccessMessage"] = "Successfully Created Report";
+                return View("Index");
             }
             else
             {

@@ -172,12 +172,12 @@
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
                     var viewButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/details/${aData.Id}">View</a>`;
-                    var verifyButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/verify/${aData.Id}">Verify</a>`;
                     var approveButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/Approve/${aData.Id}">Approve</a>`;
+                    var verifyButton = `<a class="dropdown-item" href="/FrontOffice/AccountClosure/verify/${aData.Id}">Verify</a>`;
 
                     switch (aData.Status) {
                         case 1: // Pending
-                            dropdownHtml += viewButton + verifyButton + approveButton;
+                            dropdownHtml += viewButton + approveButton + verifyButton;
                             break;
                         case 2: // Audited
                             dropdownHtml += viewButton + verifyButton;
