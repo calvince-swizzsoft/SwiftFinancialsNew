@@ -106,7 +106,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Disbursement", Icon="fa fa-cog", ControllerName="BatchOrigination_Disbursement", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 12},
                 new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Reversal", Icon="fa fa-cog", ControllerName="BatchOrigination_Reversal", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 13},
                 new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "Inter Account Transfer", Icon="fa fa-cog", ControllerName="BatchOrigination_InterAcctTransfer", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 14},
-                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="BatchOrigination_GeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
+                new NavigationMenu{AreaCode = 0x000059D8 + 1, IsArea = false, Description = "General Ledger", Icon="fa fa-cog", ControllerName="AddGeneralLedger", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 15},
 
 
                 new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Chart of Accounts", Icon="fa fa-usb", ControllerName="ChartOfAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 16},
@@ -282,7 +282,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //reports - area 28,000
                 new NavigationMenu{Description = "Reporting", IsArea = true, Code = 0x00006D60},
                 new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Reports", Icon="fa fa-bars", ControllerName="Report", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 1},
-                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Report", Icon="fa fa-spinner", ControllerName="DynamicReporting", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
+                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Reports", Icon="fa fa-clipboard", ControllerName="ReportSetting", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
              
             /*
                 //test - area 62,000

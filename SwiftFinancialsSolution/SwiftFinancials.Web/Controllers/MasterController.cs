@@ -1524,6 +1524,22 @@ namespace SwiftFinancials.Web.Controllers
 
             return journalVoucherEntryTypes;
         }
+        [NonAction]
+        protected List<SelectListItem> GetGeneralLedgerEntryTypeSelectList(string selectedValue)
+        {
+            List<SelectListItem> generalLedgerEntryTypes = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(GeneralLedgerEntryType)).Cast<GeneralLedgerEntryType>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            generalLedgerEntryTypes.AddRange(items);
+
+            return generalLedgerEntryTypes;
+        }
 
         [NonAction]
         protected List<SelectListItem> GetJournalVoucherAuthOptionSelectList(string selectedValue)

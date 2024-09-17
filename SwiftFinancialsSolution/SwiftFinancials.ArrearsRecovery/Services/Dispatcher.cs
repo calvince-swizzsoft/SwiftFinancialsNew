@@ -49,21 +49,21 @@ namespace SwiftFinancials.ArrearsRecovery.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<ArrearsRecoveryJob>()
-                        .WithIdentity("ArrearsRecoveryJob", "VFIN")
+                        .WithIdentity("ArrearsRecoveryJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("ArrearsRecoveryJob", "VFIN")
+                        .WithIdentity("ArrearsRecoveryJob", "SWIFTFIN")
                         .WithCronSchedule(arrearsRecoveryConfigSection.ArrearsRecoverySettingsItems.ArrearsRecoveryJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("ArrearsRecoveryJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("ArrearsRecoveryJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("ArrearsRecoveryJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("ArrearsRecoveryJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 

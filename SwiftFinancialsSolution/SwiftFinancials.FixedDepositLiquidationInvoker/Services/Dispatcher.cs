@@ -48,21 +48,21 @@ namespace SwiftFinancials.FixedDepositLiquidationInvoker.Services
 
                     // Define the Job to be scheduled
                     var jobDetail = JobBuilder.Create<FixedDepositLiquidationJob>()
-                        .WithIdentity("FixedDepositLiquidationJob", "VFIN")
+                        .WithIdentity("FixedDepositLiquidationJob", "SWIFTFIN")
                         .RequestRecovery()
                         .Build();
 
                     // Associate a trigger with the Job
                     var trigger = (ICronTrigger)TriggerBuilder.Create()
-                        .WithIdentity("FixedDepositLiquidationJob", "VFIN")
+                        .WithIdentity("FixedDepositLiquidationJob", "SWIFTFIN")
                         .WithCronSchedule(fixedDepositLiquidationInvokerConfigSection.FixedDepositLiquidationInvokerSettingsItems.FixedDepositLiquidationJobCronExpression)
                         .StartAt(DateTime.UtcNow)
                         .WithPriority(1)
                         .Build();
 
                     // Validate that the job doesn't already exists
-                    if (await scheduler.CheckExists(new JobKey("FixedDepositLiquidationJob", "VFIN")))
-                        await scheduler.DeleteJob(new JobKey("FixedDepositLiquidationJob", "VFIN"));
+                    if (await scheduler.CheckExists(new JobKey("FixedDepositLiquidationJob", "SWIFTFIN")))
+                        await scheduler.DeleteJob(new JobKey("FixedDepositLiquidationJob", "SWIFTFIN"));
 
                     var schedule = await scheduler.ScheduleJob(jobDetail, trigger);
 

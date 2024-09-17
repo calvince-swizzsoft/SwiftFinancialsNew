@@ -1,5 +1,7 @@
-﻿using Application.MainBoundedContext.DTO.AccountsModule;
+﻿using Application.MainBoundedContext.DTO;
+using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
+using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
 using System;
@@ -272,26 +274,25 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         //public List<TransactionModel> TransactionModels { get; set; }
         public FiscalCountDTO fiscalCountDTO { get; set; }
 
-        //added on Thursday 8/2/24
-
 
         [DataMember]
         public CustomerAccountDTO CustomerAccount { get; set; }
 
-        [DataMember]
-        public CashDepositRequestDTO CashDepositRequest { get; set; }
-
-        [DataMember]
-        public CashWithdrawalRequestDTO CashWithdrawal { get; set; }
-
-        [DataMember]
-        public PaymentVoucherDTO PaymentVoucher { get; set; }
-
+  
         [DataMember]
         public TellerDTO Teller { get; set; }
 
-        [DataMember]
-        public ExternalChequeDTO ChequeDeposit { get; set; }
+        public ApportionmentWrapper ApportionmentWrapper { get; set; }
+
+        public List<ApportionmentWrapper> Apportionments { get; set; }
+
+        public CustomerDTO CustomerDTO { get; set; }
+
+        public List<ExternalChequeDTO> CustomerAccountUnclearedCheques { get; set; }
+
+        public List<CustomerAccountSignatoryDTO> CustomerAccountSignatories { get; set; }
+
+        public List<ElectronicStatementOrderDTO> CustomerAccountMiniStatement { get; set; }
 
 
     }

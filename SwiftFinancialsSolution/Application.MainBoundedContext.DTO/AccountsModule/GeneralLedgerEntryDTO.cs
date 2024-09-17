@@ -34,7 +34,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Credit G/L Account")]
-        [ValidGuid]
+       [ValidGuid]
         public Guid ChartOfAccountId { get; set; }
 
         [DataMember]
@@ -68,7 +68,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string ChartOfAccountCostCenterDescription { get; set; }
 
         [DataMember]
-        [Display(Name = "Credit Debit G/L Account")]
+        [Display(Name = "Debit G/L Account")]
         [ValidGuid]
         public Guid ContraChartOfAccountId { get; set; }
 
@@ -125,6 +125,19 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [Display(Name = "Credit Customer Account TargetProductDescription")]
         public string CustomerAccountAccountTypeTargetProductDescription { get; set; }
 
+        [DataMember]
+        [Display(Name = "Type")]
+        public byte EntryType { get; set; }
+
+        [DataMember]
+        [Display(Name = "Type")]
+        public string EntryTypeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(GeneralLedgerEntryType), (int)EntryType) ? EnumHelper.GetDescription((GeneralLedgerEntryType)EntryType) : string.Empty;
+            }
+        }
         [DataMember]
         [Display(Name = "Credit Full Account Number")]
         public string CustomerAccountFullAccountNumber
@@ -439,5 +452,14 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Credit Account Number")]
+        public string CreditFullAccountNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Debit Account Number")]
+        public string DebitFullAccountNumber { get; set; }
     }
 }

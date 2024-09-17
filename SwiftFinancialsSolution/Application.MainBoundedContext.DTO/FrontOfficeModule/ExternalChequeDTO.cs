@@ -328,6 +328,18 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
 
+        [DataMember]
+        [Display(Name = "Bank Branch")]
+        public string BranchDescription { get; set; }
+
+        [DataMember]
+        [Display(Name = "G/L Account")]
+        public string ChartOfAccountAccountName { get; set; }
+        
+        [DataMember]
+        [Display(Name ="Bank")]
+        public string BankName { get; set; }
+
         public static ValidationResult ValidateWriteDate(object value, ValidationContext context)
         {
             var bindingModel = context.ObjectInstance as ExternalChequeDTO;

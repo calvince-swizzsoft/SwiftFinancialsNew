@@ -60,12 +60,11 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
-                <div class="ibox-content bg-white text-info" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
+                <div class="ibox-content bg-white text-dark" style="border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 20px;">
                     @using (Html.BeginForm("Create", "FixedDeposit", new { Area = "FrontOffice" }, FormMethod.Post))
                     {
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.BranchId)
-                        @Html.HiddenFor(model => model.FixedDepositTypeId)
                         @Html.HiddenFor(model => model.CustomerAccountId)
 
 
@@ -82,7 +81,8 @@
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number", new { @class = "control-label" })
                                         <div class="input-group" data-autoclose="true">
-                                            @Html.TextBoxFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountCustomerNonIndividualDescription" }) <!-- Unique ID here -->
+
+                                            @Html.EditorFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
                                             <span class="input-group-addon">
                                                 <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
                                                     <span class="fa fa-search"></span>
@@ -119,7 +119,9 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerFullName, new { htmlAttributes = new { @id = "CustomerAccountCustomerId", @class = "form-control", @placeholder = "EnterText..", @required = "" } })
+                                        @Html.HiddenFor(model => model.CustomerAccountCustomerId)
+
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualFirstName", @class = "form-control", @placeholder = "EnterText..", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerFullName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -177,6 +179,29 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="form-group">
+                                        @Html.LabelFor(model => model.FixedDepositTypeDescription, new { @class = "control-label" })
+                                        <div class="input-group">
+                                            @Html.EditorFor(model => model.FixedDepositTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Space to Aoutofill....", @readonly = "readonly" } })
+                                            <span class="input-group-addon">
+                                                <a data-toggle="modal" data-target="#fixedDepositTypeLookupModal">
+                                                    <span class="fa fa-search"></span>
+                                                </a>
+                                            </span>
+                                        </div>
+                                        @Html.ValidationMessageFor(model => model.FixedDepositTypeDescription, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <input type="hidden" id="fixedDepositTypeId" name="FixedDepositTypeId" />
+
+
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        @Html.LabelFor(model => model.Value, new { @class = "control-label" })
+                                        @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @id = "Value", @class = "form-control", @placeholder = "Enter value" } })
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
                                         <label for="CategoryDescription">Category</label>
                                         <select id="CategoryDescription" class="form-control">
                                             <option value="CallDeposit">Call Deposit</option>
@@ -185,19 +210,6 @@
                                     </div>
                                 </div>
 
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.Value, new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Value, new { htmlAttributes = new { @id = "Value", @class = "form-control", @placeholder = "Enter value" } })
-                                    </div>
-                                </div>
-
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.Remarks, new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.Remarks, new { htmlAttributes = new { @id = "Remarks", @class = "form-control", @placeholder = "EnterText.." } })
-                                    </div>
-                                </div>
 
                             </div>
 
@@ -228,21 +240,14 @@
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.FixedDepositTypeDescription, new { @class = "control-label" })
-                                        <div class="input-group">
-                                            @Html.EditorFor(model => model.FixedDepositTypeDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Space to Aoutofill....", @readonly = "readonly" } })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#fixedDepositTypeLookupModal">
-                                                    <span class="fa fa-search"></span>
-                                                </a>
-                                            </span>
-                                        </div>
-                                        @Html.ValidationMessageFor(model => model.FixedDepositTypeDescription, "", new { @class = "text-danger" })
+
+
+                                <div class="col-lg-12">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Remarks, htmlAttributes: new { @class = "control-label" })
+                                        @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @required = "" })
                                     </div>
                                 </div>
-                                <input type="hidden" id="fixedDepositTypeId" name="FixedDepositTypeId" />
 
                             </div>
 
@@ -278,6 +283,8 @@
                                                         <tr>
                                                             <td>@account.FullAccountNumber</td>
                                                             <td>@account.CustomerAccountTypeTargetProductDescription</td>
+                                                            <td>@account.CustomerAccountTypeTargetProductId</td>
+
                                                             <td>@account.BookBalance</td>
                                                             <td>@account.AvailableBalance</td>
                                                             <td>@account.PrincipalBalance</td>
@@ -286,6 +293,7 @@
                                                                 <input type="checkbox" name="selectedAccounts" value="@account.FullAccountNumber" />
                                                                 <input type="hidden" name="accountDetails" data-account="@account.FullAccountNumber"
                                                                        data-product="@account.CustomerAccountTypeTargetProductDescription"
+                                                                       data-productid="@account.CustomerAccountTypeTargetProductId"
                                                                        data-bookbalance="@account.BookBalance"
                                                                        data-availablebalance="@account.AvailableBalance"
                                                                        data-principalbalance="@account.PrincipalBalance"
@@ -516,7 +524,7 @@
                 { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
                 { "mDataProp": "CustomerReference1", "sTitle": "Customer Account Number", "sWidth": "2%" },
                 { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
-                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "2%" },
+                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Name", "sWidth": "2%" },
                 { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
             "aaSorting": [[0, "desc"]]
@@ -573,7 +581,10 @@
     </script>
 
 
+    
+
     <script>
+    // Initialize DataTable for FixedDepositType lookup
     $('#FixedDepositTypeGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
@@ -581,7 +592,10 @@
         "sAjaxSource": "@(Url.Action("Index", "FixedDepositType", new { Area = "Accounts"}))",
         "sServerMethod": "POST",
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-            var selectUrl = '<a  href="/FrontOffice/FixedDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+            var selectUrl = '<button type="button" class="btn btn-outline-info select-fixed-deposit-type" ' +
+                'data-description="' + aData.Description + '" ' +
+                'data-id="' + aData.Id + '">' +
+                'Select</button>';
             $('td:eq(1)', nRow).html(selectUrl);
             return nRow;
         },
@@ -596,8 +610,12 @@
     $('#FixedDepositTypeGrid tbody').on('click', '.select-fixed-deposit-type', function () {
         var description = $(this).data('description');
         var id = $(this).data('id');
+
+        // Update the Fixed Deposit Type fields in the form
         $('#FixedDepositTypeDescription').val(description);
         $('#fixedDepositTypeId').val(id);
+
+        // Close the modal
         $('#fixedDepositTypeLookupModal').modal('hide');
     });
     </script>

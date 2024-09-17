@@ -33,9 +33,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindJournalVouchersByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindJournalVouchersByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -77,7 +79,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
-            var JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            var JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
             if (JournalVoucherEntryDTOs == null)
                 JournalVoucherEntryDTOs = new ObservableCollection<JournalVoucherEntryDTO>();
 
@@ -86,6 +88,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
             {
+                if (journalVoucherEntryDTO.Id == Guid.Empty)
+                {
+                    journalVoucherEntryDTO.Id = Guid.NewGuid();
+                }
+
+
                 if (journalVoucherEntryDTO.ChartOfAccountName == null ||
                     journalVoucherEntryDTO.Reference == null ||
                     journalVoucherEntryDTO.Amount == 0)
@@ -115,10 +123,33 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             Session["journalVoucherDTO"] = journalVoucherDTO;
             TempData["journalVoucherDTO"] = journalVoucherDTO;
 
-            return Json(new { success = true, entries = addedEntries });
+            return Json(new { success = true, entries = JournalVoucherEntryDTOs });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
 
+            var JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            decimal sumAmount = JournalVoucherEntryDTOs.Sum(cs => cs.Amount);
+            if (JournalVoucherEntryDTOs != null)
+            {
+                var entryToRemove = JournalVoucherEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    JournalVoucherEntryDTOs.Remove(entryToRemove);
+
+                    sumAmount -= entryToRemove.Amount;
+
+                    Session["JournalVoucherEntryDTOs"] = JournalVoucherEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = JournalVoucherEntryDTOs });
+        }
 
         [HttpPost]
         public async Task<ActionResult> removeChargeSplit(JournalVoucherDTO journalVoucherDTO)
@@ -204,16 +235,40 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View();
         }
 
+
+        
+
+
         [HttpPost]
         public async Task<ActionResult> Create(JournalVoucherDTO journalVoucherDTO)
         {
             journalVoucherDTO = Session["journalVoucherDTO"] as JournalVoucherDTO;
             JournalVoucherEntryDTOs = Session["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
+            if (journalVoucherDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
+
+            decimal sumAmount = JournalVoucherEntryDTOs.Sum(e => e.Amount);
+            decimal totalValue = journalVoucherDTO?.TotalValue ?? 0;
 
             if (JournalVoucherEntryDTOs != null)
             {
                 journalVoucherDTO.JournalVoucherEntries = JournalVoucherEntryDTOs;
+
+                if (sumAmount != totalValue)
+                {
+                    var balance = totalValue - sumAmount;
+                    return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({sumAmount}). Balance: {balance}" });
+                }
+
             }
+
+            
 
             journalVoucherDTO.ValidateAll();
 
@@ -223,42 +278,46 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
                 foreach (var journalVoucherEntryDTO in journalVoucherDTO.JournalVoucherEntries)
                 {
-                    
-
                     journalVoucherEntries.Add(journalVoucherEntryDTO);
-                };
+                }
 
                 var journalVoucher = await _channelService.AddJournalVoucherAsync(journalVoucherDTO, GetServiceHeader());
 
                 if (journalVoucher.ErrorMessageResult != null)
                 {
-                    await ServeNavigationMenus();
-
-                    TempData["ErrorMsg"] = journalVoucher.ErrorMessageResult;
-
-                    return View();
+                    return Json(new
+                    {
+                        success = false,
+                        message = journalVoucher.ErrorMessageResult
+                    });
                 }
 
-                TempData["SuccessMessage"] = "Successfully Created voucher Batch";
-                TempData["JournalVoucherDTO"] = "";
-
-
-
                 if (journalVoucherEntries.Any())
+                {
                     await _channelService.UpdateJournalVoucherEntryCollectionAsync(journalVoucher.Id, journalVoucherEntries, GetServiceHeader());
+                }
 
-                TempData["JournalVoucherEntryDTO"] = "";
-                TempData["Success"] = "journal and voucher have been created successifully";
+               
+                Session["JournalVoucherEntryDTOs"] = null;
+                Session["journalVoucherDTO"] = null;
 
-
-                return RedirectToAction("Index");
+                return Json(new
+                {
+                    success = true,
+                    message = "Journal and voucher created successfully."
+                });
             }
-
-            journalVoucherDTO = TempData["JournalVoucherDTO"] as JournalVoucherDTO;
-            JournalVoucherEntryDTOs = TempData["JournalVoucherEntryDTOs"] as ObservableCollection<JournalVoucherEntryDTO>;
-
-            return RedirectToAction("view");
+            else
+            {
+                // Return validation errors
+                return Json(new
+                {
+                    success = false,
+                    message = "Validation failed. Please check the data."
+                });
+            }
         }
+
 
 
 

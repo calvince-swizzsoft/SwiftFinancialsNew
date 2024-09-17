@@ -98,7 +98,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Status", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductChartOfAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -106,7 +106,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountRemarks, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @id = "CustomerAccountRemarks", @class = "form-control", @placeholder = "Account Remarks", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountRemarks, new { htmlAttributes = new { @id = "CustomerAccountRemarks", @class = "form-control", @placeholder = "", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountRemarks, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -114,7 +114,9 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountTypeTargetProductDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "Product Name", @required = "" } })
+                                        @Html.HiddenFor(model => model.CustomerAccountTypeTargetProductChartOfAccountId)
+
+                                        @Html.EditorFor(model => model.CustomerAccountTypeTargetProductDescription, new { htmlAttributes = new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control", @placeholder = "", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountTypeTargetProductDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -125,7 +127,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerFullName, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualFirstName", @class = "form-control", @placeholder = "Customer", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualFirstName, new { htmlAttributes = new { @id = "CustomerAccountCustomerIndividualFirstName", @class = "form-control", @placeholder = "", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerFullName, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -133,7 +135,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerTypeDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerTypeDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Type", @id = "CustomerAccountCustomerTypeDescription", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerTypeDescription", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerTypeDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -141,7 +143,7 @@
                                 <div class="col-lg-6">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Payroll Number", @id = "CustomerAccountCustomerIndividualPayrollNumbers", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerIndividualPayrollNumbers", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIndividualPayrollNumbers, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -152,7 +154,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerIdentificationNumber, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Identification Number", @id = "CustomerAccountCustomerIdentificationNumber", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerIdentificationNumber, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerIdentificationNumber", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerIdentificationNumber, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -160,7 +162,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference1, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Account Number", @id = "CustomerAccountCustomerReference1", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference1, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference1", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference1, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -168,7 +170,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference2, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "Membership Number", @id = "CustomerAccountCustomerReference2", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference2, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference2", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference2, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -176,7 +178,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerReference3, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "PersonalFile Number", @id = "CustomerAccountCustomerReference3", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerReference3, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerReference3", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerReference3, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -256,6 +258,99 @@
                                         <p>No loan accounts found for this customer.</p>
                                     }
                                 </div>
+
+                                <!-- Investment Accounts Tab Content -->
+                                <div id="investmentAccounts" class="tab-pane fade">
+                                    <h3>Customer Investment Accounts</h3>
+
+                                    @if (ViewBag.InvestmentAccounts != null && ViewBag.InvestmentAccounts.Count > 0)
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Parent Chart of Account Name</th>
+                                                    <th>Description</th>
+                                                    <th>Minimum Balance</th>
+                                                    <th>Maximum Balance</th>
+                                                    <th>Pool Amount</th>
+                                                    <th>Annual Percentage Yield</th>
+                                                    <th>Transfer Balance on Termination</th>
+                                                    <th>Account Name</th>
+                                                    <th>Chart of Account Name</th>
+                                                    <th>Cost Center</th>
+                                                    <th>Product Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var investmentAccount in ViewBag.InvestmentAccounts)
+                                                {
+                                                    <tr>
+                                                        <td>@investmentAccount.ParentChartOfAccountNameDescription</td>
+                                                        <td>@investmentAccount.Description</td>
+                                                        <td>@investmentAccount.MinimumBalance</td>
+                                                        <td>@investmentAccount.MaximumBalance</td>
+                                                        <td>@investmentAccount.PoolAmount</td>
+                                                        <td>@investmentAccount.AnnualPercentageYield</td>
+                                                        <td>@investmentAccount.TransferBalanceToParentOnMembershipTermination</td>
+                                                        <td>@investmentAccount.ChartOfAccountAccountName</td>
+                                                        <td>@investmentAccount.ChartOfAccountName</td>
+                                                        <td>@investmentAccount.ChartOfAccountCostCenterDescription</td>
+                                                        <td>@investmentAccount.ProductName</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>No investment accounts found for this customer.</p>
+                                    }
+                                </div>
+
+
+                                <!-- Loans Guaranteed Tab Content -->
+                                <div id="loansGuaranteed" class="tab-pane fade">
+                                    <h3>Loans Guaranteed</h3>
+                                    <!-- Add your content for loans guaranteed here -->
+
+                                    @if (ViewBag.LoanGuarantors != null && ViewBag.LoanGuarantors.Count > 0)
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Customer FullName</th>
+                                                    <th>Guarantor Customer FullName</th>
+                                                    <th>Loanee Customer FullName</th>
+                                                    <th>LoanProduct Description</th>
+                                                    <th>LoanCaseStatus Description</th>
+                                                    <th>CustomerType Description</th>
+                                                    <th>CustomerAddress MobileLine</th>
+                                                    <th>AmountGuaranteed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var guarantor in ViewBag.LoanGuarantors)
+                                                {
+                                                    <tr>
+                                                        <td>@guarantor.CustomerFullName</td>
+                                                        <td>@guarantor.GuarantorCustomerFullName</td>
+                                                        <td>@guarantor.LoaneeCustomerFullName</td>
+                                                        <td>@guarantor.LoanProductDescription</td>
+                                                        <td>@guarantor.LoanCaseStatusDescription</td>
+                                                        <td>@guarantor.CustomerTypeDescription</td>
+                                                        <td>@guarantor.CustomerAddressMobileLine</td>
+                                                        <td>@guarantor.AmountGuaranteed</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>No loan guarantors found for this customer.</p>
+                                    }
+                                </div>
+
 
 
 
@@ -417,7 +512,7 @@
                 { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "15%" },
                 { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
                 { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15" },
-                { "mDataProp": "CustomerIndividualFirstName", "sTitle": "First Name", "sWidth": "15%" },
+                { "mDataProp": "CustomerFullName", "sTitle": "Customer FullName", "sWidth": "15%" },
                 { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                 { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }],

@@ -10,6 +10,8 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Infrastructure.Crosscutting.Framework.Utils;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
+using System.Collections.ObjectModel;
+
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -59,124 +61,76 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(externalChequeDTO);
         }
 
+        
 
-        public async Task<ActionResult> Create(Guid? id)
+        public async Task<ActionResult> Banking(Guid? id)
         {
             await ServeNavigationMenus();
 
+            var externalChequeDTO = new ExternalChequeDTO();
 
+            if (id.HasValue && id != Guid.Empty)
+            {
+                var parseId = id.Value;
+
+                // Fetch bank linkage data using service
+                var bankLinkageDTO = await _channelService.FindBankLinkageAsync(parseId, GetServiceHeader());
+
+                if (bankLinkageDTO != null)
+                {
+                    // Populate the externalChequeDTO with details from bankLinkageDTO
+                    externalChequeDTO.BankName = bankLinkageDTO.BankName;
+                    externalChequeDTO.BranchDescription = bankLinkageDTO.BankBranchName;
+                    externalChequeDTO.ChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountAccountName;
+
+                    // Return the data as JSON for AJAX
+                    return View(externalChequeDTO);
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Bank details could not be found.";
+                    return Json(new { Error = "Bank details could not be found." });
+                }
+            }
 
             return View();
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(ExternalChequeDTO externalChequeDTO)
+        public async Task<JsonResult> BankCheques(JQueryDataTablesModel jQueryDataTablesModel)
         {
-            externalChequeDTO.ValidateAll();
+            int totalRecordCount = 0;
 
-            if (!externalChequeDTO.HasErrors)
+            int searchRecordCount = 0;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindUnBankedExternalChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
-                await _channelService.AddExternalChequeAsync(externalChequeDTO, GetServiceHeader());
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(externalChequeDTO.CustomerAccountCustomerType.ToString());
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
 
-                return RedirectToAction("Index");
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else
-            {
-                var errorMessages = externalChequeDTO.ErrorMessages;
-
-                return View(externalChequeDTO);
-            }
-        }
-
-        public async Task<ActionResult> Edit(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
-            return View(accountClosureRequestDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
-        {
-            if (ModelState.IsValid)
-            {
-                await _channelService.UpdateAccountClosureRequestAsync(accountClosureRequestDTO, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
-        }
-
-
-
-        public async Task<ActionResult> Approval(Guid id)
-        {
-            await ServeNavigationMenus();
-
-            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
-
-            return View(accountClosureRequestDTO);
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Approval(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
-        {
-            int accountClosureApprovalOption = 0;
-
-            if (ModelState.IsValid)
-
-            {
-                await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, accountClosureApprovalOption, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
+            else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
 
 
 
 
-        public async Task<ActionResult> verify(Guid id)
-        {
-            await ServeNavigationMenus();
 
-            var accountClosureRequestDTO = await _channelService.FindAccountClosureRequestAsync(id, true);
 
-            return View(accountClosureRequestDTO);
-        }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<ActionResult> verify(Guid id, AccountClosureRequestDTO accountClosureRequestDTO)
-        {
-            int AuditAccountClosureRequestAsync = 0;
-
-            if (ModelState.IsValid)
-
-            {
-                await _channelService.ApproveAccountClosureRequestAsync(accountClosureRequestDTO, AuditAccountClosureRequestAsync, GetServiceHeader());
-
-                return RedirectToAction("Index");
-            }
-            else
-            {
-                return View(accountClosureRequestDTO);
-            }
-        }
 
 
 
@@ -184,3 +138,21 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

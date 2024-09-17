@@ -143,16 +143,22 @@
                     var liquidationButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/liquidation/${aData.Id}">Liquidation</a>`;
 
 
-                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(dt_Created);
 
 
                     switch (aData.Status) {
-                        case 1: // Pending
-                            dropdownHtml += terminateButton + liquidationButton;
+                        case 8: 
+                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
                             break;
 
-                        case 8: // Audited
-                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                        case 1:
+                            dropdownHtml += terminateButton + liquidationButton;
+                            break;
+                        case 2:
+                            dropdownHtml += liquidationButton;
+                            break;
+                        case 4:
+                            dropdownHtml += terminateButton;
                             break;
                         
                         default:
@@ -162,7 +168,7 @@
 
                     dropdownHtml += `</div></div>`;
 
-                    $('td:eq(8)', nRow).html(dropdownHtml);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
 
                     return nRow;
@@ -172,6 +178,7 @@
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+                    { "mDataProp": "Value", "sTitle": "Value", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Account Number", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerReference2", "sTitle": "Membership Number", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerReference3", "sTitle": "Personal File", "sWidth": "15%" },

@@ -34,7 +34,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindWireTransferBatchesByStatusAndFilterInPageAsync(8, startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindWireTransferBatchesByStatusAndFilterInPageAsync(1, startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -248,7 +250,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             var wireTransferBatchDTO = Session["WireTransferBatchDTO"] as WireTransferBatchDTO;
             var wireTransferEntryDTOs = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO> ?? new ObservableCollection<WireTransferBatchEntryDTO>();
-
+            if (wireTransferBatchDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
             decimal sumAmount = wireTransferEntryDTOs.Sum(e => e.Amount);
             decimal totalValue = wireTransferBatchDTO?.TotalValue ?? 0;
 
@@ -265,20 +274,36 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(WireTransferBatchDTO wireTransferBatchDTO)
         {
-
-
             wireTransferBatchDTO = Session["WireTransferBatchDTO"] as WireTransferBatchDTO;
 
-            WireTransferEntryDTOs = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO>;
+            if (wireTransferBatchDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
 
-
+            var WireTransferEntryDTOs = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO>;
 
             if (Session["WireTransferEntryDTOs"] != null)
             {
-                wireTransferBatchDTO.WireTransferEntries = Session["WireTransferEntryDTOs"] as ObservableCollection<WireTransferBatchEntryDTO>;
+                wireTransferBatchDTO.WireTransferEntries = WireTransferEntryDTOs;
             }
-
+                
             wireTransferBatchDTO.ValidateAll();
+
+
+            decimal sumAmount = WireTransferEntryDTOs.Sum(e => e.Amount);
+            decimal totalValue = wireTransferBatchDTO?.TotalValue ?? 0;
+
+
+            if (sumAmount != totalValue)
+            {
+                var balance = totalValue - sumAmount;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({sumAmount}). Balance: {balance}" });
+            }
 
             if (!wireTransferBatchDTO.HasErrors)
             {
@@ -290,30 +315,26 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                     await _channelService.AddWireTransferBatchEntryAsync(wireTransferBatchEntry, GetServiceHeader());
                 }
 
-
-
-
-
-                //  OverDeductionBatchEntryDTO overDeductionBatch = new OverDeductionBatchEntryDTO();
-
                 Session["WireTransferEntryDTOs"] = null;
                 Session["WireTransferBatchDTO"] = null;
 
-
-                TempData["SuccessMessage"] = "Successfully Created WireTransfer Batch";
-
-
-
-                return RedirectToAction("Index");
+                return Json(new
+                {
+                    success = true,
+                    message = "Successfully created WireTransfer Batch."
+                });
             }
             else
             {
-                var errorMessages = wireTransferBatchDTO.ErrorMessages;
-                ViewBag.BatchType = GetWireTransferBatchTypeSelectList(wireTransferBatchDTO.Priority.ToString());
-                ViewBag.Priority = GetQueuePriorityAsync(wireTransferBatchDTO.Priority.ToString());
-                return View(wireTransferBatchDTO);
+                var errorMessages = string.Join("\n", wireTransferBatchDTO.ErrorMessages);
+                return Json(new
+                {
+                    success = false,
+                    message = errorMessages
+                });
             }
         }
+
 
 
 

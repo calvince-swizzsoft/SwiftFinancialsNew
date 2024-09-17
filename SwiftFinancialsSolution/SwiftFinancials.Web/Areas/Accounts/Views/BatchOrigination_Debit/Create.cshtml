@@ -316,6 +316,7 @@
                                     <div class="col-lg-3">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.DebitBatchEntries[0].StatusDescription, htmlAttributes: new { @class = "control-label" })
+                                            @Html.HiddenFor(model => model.DebitBatchEntries[0].Status, new { @id = "Status" })
                                             @Html.EditorFor(model => model.DebitBatchEntries[0].StatusDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @readonly = "readonly", @id = "StatusDescription" } })
                                             @Html.ValidationMessageFor(model => model.DebitBatchEntries[0].StatusDescription, "", new { @class = "text-danger" })
                                         </div>
@@ -402,7 +403,7 @@
 
 
 
-                        @using (Html.BeginForm("Create", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                        @using (Html.BeginForm("Create", "BatchOrigination_Debit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "debitForm" }))
                         {
                             <div class="bottom-button">
                                 <div class="row">
@@ -411,11 +412,10 @@
                                             <input type="submit" value="Create" class="btn btn-primary" />
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
-
                         }
+
 
 
 
@@ -522,6 +522,56 @@
 
 
 
+
+    <script>
+    $(document).ready(function () {
+        $('#debitForm').on('submit', function (e) {
+            e.preventDefault(); // Prevent the default form submission
+
+            // Serialize the form data
+            var formData = $(this).serialize();
+
+            $.ajax({
+                url: '@Url.Action("Create", "BatchOrigination_Debit", new { Area = "Accounts" })',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        // Show success message
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Batch Created!',
+                            text: response.message,
+                            timer: 1000,
+                            showConfirmButton: false
+                        }).then(function () {
+                            // Redirect to the Index action of the same controller
+                            window.location.href = '@Url.Action("Index", "BatchOrigination_Debit", new { Area = "Accounts" })';
+                        });
+                    } else {
+                        // Handle failure, show error message
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: response.message
+                        });
+                    }
+                },
+                error: function (xhr, status, error) {
+                    // Handle AJAX errors
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Something went wrong!'
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+
+
 <script type="text/javascript">
     $(document).ready(function () {
         $('#addEntryBtn').click(function (event) {
@@ -550,8 +600,8 @@
                             icon: 'error',
                             title: 'Error!',
                             text: response.message,
-                            timer: 10000,
-                            showConfirmButton: false
+                            timer: 8000,
+                            showConfirmButton: true
                         });
                     }
                 },
@@ -624,35 +674,6 @@
 
 
     <script>
-
-
-
-
-
-
-
-    $(document).ready(function () {
-            $('.remove-btn').click(function () {
-                var row = $(this).closest('tr');
-                var id = row.data('id');
-
-
-                $.ajax({
-                    url: '@Url.Action("removeChargeSplit", "BatchOrigination_Voucher")',
-                    type: 'POST',
-                    data: { id: id },
-                    success: function () {
-                        row.remove();
-                    },
-                    error: function () {
-                        alert('Error removing row.');
-                    }
-                });
-            });
-     });
-
-
-
 
 
 
@@ -806,6 +827,7 @@
             $('#DebitCustomerAccountCustomerReference3').val(data.CustomerReference3);
             $('#DebitCustomerAccountIdentificationNumber').val(data.IdentificationNumber);
             $('#StatusDescription').val(data.StatusDescription);
+            $('#Status').val(data.Status);
             $('#DebitCustomerAccountRemarks').val(data.Remarks);
             $('#ProductDescription').val(data.ProductDescription);
             $('#CustomerAccountId').val(data.CustomerId);
