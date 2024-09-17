@@ -38,6 +38,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Reports Setting", Icon="fa fa-calculator", ControllerName="ReportSetting", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 7},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Locations", Icon="fa fa-low-vision", ControllerName="Location", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 8},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Permission", Icon="fa fa-users", ControllerName="SystemTransactiontypes", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 9},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "SSRS Report Setting", Icon="fa fa-cogs", ControllerName="SSRSReportSetting", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 10},
+
 
                 //Registry - area 21,000
                 new NavigationMenu{Description = "Registry", IsArea = true, Code = 0x00005208},

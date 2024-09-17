@@ -531,6 +531,7 @@
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
@@ -1384,6 +1385,8 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
+    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

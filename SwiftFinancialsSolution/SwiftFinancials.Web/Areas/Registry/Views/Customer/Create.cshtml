@@ -359,41 +359,56 @@
                             </div>
 
                             <div id="SpecimenCapture" class="tab-pane" role="tabpanel">
-                                <!--Specimen Capture-->
                                 <link href="~/Scripts/css/WebCam.css" rel="stylesheet" />
-                                <!--<form asp-action="Create" method="post" enctype="multipart/form-data" id="documentForm">-->
-                                <div class="form-group row">
+
+                                <!-- Passport Photo Section -->
+                                <div class="form-group row mb-5">
                                     <div class="col-md-6">
-                                        <label for="passportPhoto">Passport Photo (via Webcam)</label>
-                                        <video id="webcam" autoplay style="width: 100%; border: 1px solid #ccc;"></video>
-                                        <button type="button" class="btn btn-primary mt-2" onclick="captureImage()">Capture Passport Photo</button>
+                                        <div class="passport-photo-container p-3 text-center">
+                                            <label for="passportPhoto" class="mb-2">Passport Photo (via Webcam)</label>
+                                            <video id="webcam" autoplay style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.2);"></video>
+                                            <button type="button" class="btn btn-primary mt-3" onclick="captureImage()">Capture Passport Photo</button>
+                                        </div>
                                     </div>
-                                    <div class="col-md-4 d-flex flex-column align-items-center">
-                                        <label for="capturedImage" class="d-none">Captured Image</label>
-                                        <div id="passportPhotoPlaceholder" class="mt-3">
-                                            <img id="capturedImage" src="" alt="Captured Image" style="width: 80%; border: 1px solid #ccc;" />
+                                    <div class="col-md-4">
+                                        <label for="capturedImage" class="mb-2">Captured Passport Photo</label>
+                                        <div class="passport-photo-preview">
+                                            <img id="capturedImage" src="" alt="Captured Image" style="width: 80%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
                                         </div>
                                     </div>
                                     <input type="hidden" name="passportPhotoDataUrl" id="passportPhotoDataUrl" />
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="signaturePhoto">Signature Photo</label>
-                                    <input type="file" name="signaturePhoto" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="idCardFrontPhoto">Identity Card Front Photo</label>
-                                    <input type="file" name="idCardFrontPhoto" class="form-control" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="idCardBackPhoto">Identity Card Back Photo</label>
-                                    <input type="file" name="idCardBackPhoto" class="form-control" />
-                                </div>
-                                <!--<button type="submit" class="btn btn-success">Upload</button>-->
-                                <!--</form>-->
+                                <!-- Signature and ID Photos Section -->
+                                <div class="form-group row" style="margin-top: 100px;">
+                                    <!-- Signature Photo -->
+                                    <div class="col-md-3" style="margin-right: 100px;">
+                                        <div class="image-placeholder">
+                                            <img id="signaturePhotoPreview" src="" alt="Signature Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                        </div>
+                                        <label for="signaturePhoto" class="mt-3 mb-2">Signature Photo</label>
+                                        <input type="file" name="signaturePhoto" class="form-control" id="signaturePhotoInput" accept="image/*" onchange="previewImage(event, 'signaturePhotoPreview')" />
+                                    </div>
 
+                                    <!-- ID Card Front Photo -->
+                                    <div class="col-md-3" style="margin-right: 100px;">
+                                        <div class="image-placeholder">
+                                            <img id="idCardFrontPreview" src="" alt="ID Card Front Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                        </div>
+                                        <label for="idCardFrontPhoto" class="mt-3 mb-2">Identity Card Front Photo</label>
+                                        <input type="file" name="idCardFrontPhoto" class="form-control" id="idCardFrontPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardFrontPreview')" />
+                                    </div>
+
+                                    <!-- ID Card Back Photo -->
+                                    <div class="col-md-3">
+                                        <div class="image-placeholder">
+                                            <img id="idCardBackPreview" src="" alt="ID Card Back Preview" style="width: 100%; border: 2px solid #007bff; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);" />
+                                        </div>
+                                        <label for="idCardBackPhoto" class="mt-3 mb-2">Identity Card Back Photo</label>
+                                        <input type="file" name="idCardBackPhoto" class="form-control" id="idCardBackPhotoInput" accept="image/*" onchange="previewImage(event, 'idCardBackPreview')" />
+                                    </div>
+                                </div>
                             </div>
-
                         </div>
 
                         <div class="row">
@@ -632,4 +647,28 @@
         .catch(error => {
             console.error('Error accessing webcam: ', error);
         });
+</script>
+
+<script>
+    function previewImage(event, previewElementId) {
+        const input = event.target;
+        const reader = new FileReader();
+        reader.onload = function () {
+            const previewImage = document.getElementById(previewElementId);
+            previewImage.src = reader.result;
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+
+    function captureImage() {
+        const video = document.getElementById('webcam');
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL();
+        document.getElementById('capturedImage').src = dataUrl;
+        document.getElementById('passportPhotoDataUrl').value = dataUrl;
+    }
 </script>

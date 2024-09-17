@@ -1,0 +1,231 @@
+﻿
+@{
+    ViewBag.Title = "Report Setting";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background: linear-gradient(145deg, #ececec, #f3f3f3);
+    }
+
+    /* .container {
+        background: #ffffff;
+        padding: 30px;
+        box-shadow: 10px 10px 15px rgba(0,0,0,0.1), -10px -10px 15px rgba(255,255,255,0.7);
+        border-radius: 15px;
+        transform: translateZ(50px);
+        transition: transform 0.3s ease-in-out;
+    }*/
+
+    .form-group label {
+        font-weight: bold;
+        /*color: #007bff;*/
+    }
+
+    .form-control, .form-control-file {
+        border: 1px solid #007bff;
+        padding: 5px;
+        box-shadow: inset 2px 2px 8px rgba(0,0,0,0.1), inset -2px -2px 8px rgba(255,255,255,0.8);
+        border-radius: 10px;
+        transition: transform 0.2s ease;
+    }
+
+        .form-control:hover, .form-control-file:hover {
+            transform: translateZ(20px);
+        }
+
+    button {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 20px;
+        border-radius: 5px;
+        box-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        transition: transform 0.2s ease;
+    }
+
+        button:hover {
+            transform: translateZ(20px);
+        }
+
+    .alert {
+        margin-top: 15px;
+    }
+
+
+    .modal-dialog {
+        max-width: 500px;
+    }
+
+    .modal-content {
+        border-radius: 10px;
+    }
+
+    .modal-header {
+        border-bottom: 1px solid #ddd;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #ddd;
+    }
+</style>
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-12">
+        <h1>Administration</h1>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" })
+            </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "Company", new { Area = "Admin" })
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>Create</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<div class="wrapper wrapper-content" style="padding: 20px;">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="ibox">
+                <div class="ibox-title">
+                    <h5>Report Setting</h5>
+                    <div class="ibox-tools">
+                        <a class="collapse-link" aria-label="Collapse">
+                            <i class="fa fa-chevron-up"></i>
+                        </a>
+                        <a class="close-link" aria-label="Close">
+                            <i class="fa fa-times"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="ibox-content bg-white text-info">
+                    @using (Html.BeginForm("UploadReport", "SSRSReportSetting", FormMethod.Post, new { enctype = "multipart/form-data" }))
+                    {
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    @Html.Label("category", "Select Category:", new { @class = "control-label" })
+                                    @Html.DropDownList("categoryId", (List<SelectListItem>)ViewBag.Categories, "--Select a Category--", new { @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    @Html.Label("reportname", "Report Name", new { @class = "control-label" })
+                                    @Html.TextBox("reportname", null, new { type = "text", @class = "form-control" })
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    @Html.Label("reportFile", "Upload Report (.rdl):", new { @class = "control-label" })
+                                    @Html.TextBox("reportFile", null, new { type = "file", @class = "form-control-file", accept = ".rdl" })
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mt-3">
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary">
+                                        Upload Report
+                                    </button>
+                                </div>
+                            </div>
+
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#createCategoryModal">
+                                        Create New Category
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-secondary" onclick="openReportBuilder()">
+                                        Open Report Builder
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (TempData["InvalidFile"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["InvalidFile"]
+                        </div>
+                    }
+
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["Success"]
+                        </div>
+                    }
+
+                    @if (TempData["CategoryError"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["CategoryError"]
+                        </div>
+                    }
+
+                    @if (TempData["CategorySuccess"] != null)
+                    {
+                        <div class="alert alert-success">
+                            @TempData["CategorySuccess"]
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="createCategoryModal" tabindex="-1" role="dialog" aria-labelledby="createCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="createCategoryModalLabel">Create New Report Category</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                @using (Html.BeginForm("CreateCategory", "SSRSReportSetting", FormMethod.Post))
+                {
+                    <div class="form-group">
+                        @Html.Label("reportCategory", "Category Name:", new { @class = "control-label" })
+                        @Html.TextBox("reportCategory", null, new { @class = "form-control" })
+                    </div>
+
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">
+                            Create Category
+                        </button>
+                    </div>}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function openReportBuilder() {
+        // You might need to provide the full path to the application if it is not in the system's PATH
+        window.open('file://C:/ProgramFiles(x86/MicrosoftReportBuilder.exe', '_blank');
+    }
+</script>
+@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">*@
+
+
