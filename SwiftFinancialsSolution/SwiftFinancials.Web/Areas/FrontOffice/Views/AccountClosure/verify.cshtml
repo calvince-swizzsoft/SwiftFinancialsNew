@@ -177,15 +177,15 @@
                                     </div>
                                 </div>
 
-                             
+
                             </div>
 
                             <div class="row">
                                 <div class="col-md-3">
-                                    
-                                        @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
-                                        @Html.TextAreaFor(model => model.Reason, new { @rows = 3, @class = "form-control", @placeholder = "Enter Reasons", @required = "" })
-                                    
+
+                                    @Html.LabelFor(model => model.Reason, htmlAttributes: new { @class = "control-label" })
+                                    @Html.TextAreaFor(model => model.Reason, new { @rows = 3, @class = "form-control", @placeholder = "Enter Reasons", @required = "" })
+
                                 </div>
                                 <div class="col-md-3">
                                     @Html.LabelFor(model => model.AuditRemarks)
@@ -215,7 +215,7 @@
 
 
 
-                            <ul class="nav nav-tabs" id="loanAccountsTab">
+                            <!--<ul class="nav nav-tabs" id="loanAccountsTab">
                                 <li class="nav-item">
                                     <a class="nav-link active" href="#loanAccounts" data-toggle="tab">Loan Accounts</a>
                                 </li>
@@ -227,9 +227,9 @@
                                 </li>
                             </ul>
 
-                            <div class="tab-content">
+                            <div class="tab-content">-->
                                 <!-- Loan Accounts Tab Content -->
-                                <div id="loanAccounts" class="tab-pane fade show active">
+                                <!--<div id="loanAccounts" class="tab-pane fade show active">
                                     <h3>Customer Loan Accounts</h3>
 
                                     @if (ViewBag.LoanAccounts != null && ViewBag.LoanAccounts.Count > 0)
@@ -274,13 +274,106 @@
                                     {
                                         <p>No loan accounts found for this customer.</p>
                                     }
+                                </div>-->
+
+                                <!-- Investment Accounts Tab Content -->
+                                <!--<div id="investmentAccounts" class="tab-pane fade">
+                                    <h3>Customer Investment Accounts</h3>
+
+                                    @if (ViewBag.InvestmentAccounts != null && ViewBag.InvestmentAccounts.Count > 0)
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Parent Chart of Account Name</th>
+                                                    <th>Description</th>
+                                                    <th>Minimum Balance</th>
+                                                    <th>Maximum Balance</th>
+                                                    <th>Pool Amount</th>
+                                                    <th>Annual Percentage Yield</th>
+                                                    <th>Transfer Balance on Termination</th>
+                                                    <th>Account Name</th>
+                                                    <th>Chart of Account Name</th>
+                                                    <th>Cost Center</th>
+                                                    <th>Product Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var investmentAccount in ViewBag.InvestmentAccounts)
+                                                {
+                                                    <tr>
+                                                        <td>@investmentAccount.ParentChartOfAccountNameDescription</td>
+                                                        <td>@investmentAccount.Description</td>
+                                                        <td>@investmentAccount.MinimumBalance</td>
+                                                        <td>@investmentAccount.MaximumBalance</td>
+                                                        <td>@investmentAccount.PoolAmount</td>
+                                                        <td>@investmentAccount.AnnualPercentageYield</td>
+                                                        <td>@investmentAccount.TransferBalanceToParentOnMembershipTermination</td>
+                                                        <td>@investmentAccount.ChartOfAccountAccountName</td>
+                                                        <td>@investmentAccount.ChartOfAccountName</td>
+                                                        <td>@investmentAccount.ChartOfAccountCostCenterDescription</td>
+                                                        <td>@investmentAccount.ProductName</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>No investment accounts found for this customer.</p>
+                                    }
+                                </div>-->
+
+
+                                <!-- Loans Guaranteed Tab Content -->
+                                <!--<div id="loansGuaranteed" class="tab-pane fade">
+                                    <h3>Loans Guaranteed</h3>-->
+                                    <!-- Add your content for loans guaranteed here -->
+
+                                    <!--@if (ViewBag.LoanGuarantors != null && ViewBag.LoanGuarantors.Count > 0)
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Customer FullName</th>
+                                                    <th>Guarantor Customer FullName</th>
+                                                    <th>Loanee Customer FullName</th>
+                                                    <th>LoanProduct Description</th>
+                                                    <th>LoanCaseStatus Description</th>
+                                                    <th>CustomerType Description</th>
+                                                    <th>CustomerAddress MobileLine</th>
+                                                    <th>AmountGuaranteed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var guarantor in ViewBag.LoanGuarantors)
+                                                {
+                                                    <tr>
+                                                        <td>@guarantor.CustomerFullName</td>
+                                                        <td>@guarantor.GuarantorCustomerFullName</td>
+                                                        <td>@guarantor.LoaneeCustomerFullName</td>
+                                                        <td>@guarantor.LoanProductDescription</td>
+                                                        <td>@guarantor.LoanCaseStatusDescription</td>
+                                                        <td>@guarantor.CustomerTypeDescription</td>
+                                                        <td>@guarantor.CustomerAddressMobileLine</td>
+                                                        <td>@guarantor.AmountGuaranteed</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>No loan guarantors found for this customer.</p>
+                                    }
                                 </div>
 
 
 
 
 
-                            </div>
+
+                            </div>-->
 
 
                             <br />
@@ -309,11 +402,11 @@
                                 </div>
                             </div>-->
 
-                             <div class="form-group row">
-                            <div class="col-md-12">
-                                <button type="submit" class="btn btn-primary btn-md float-right">Verify</button>
+                            <div class="form-group row">
+                                <div class="col-md-12">
+                                    <button type="submit" class="btn btn-primary btn-md float-right">Verify</button>
+                                </div>
                             </div>
-                        </div>
                         </div>
                     }
 
@@ -397,7 +490,7 @@
 
 
 
-<script>
+    <script>
 
     $(document).ready(function () {
     var accountsMap = {}; // Initialize accounts map
@@ -523,7 +616,62 @@
     });
 
 
-</script>
+    </script>
+
+
+    <script>
+        $(document).ready(function () {
+            // Update Loan Accounts Tab Content
+            $('input, textarea').on('input', function () {
+                // Fetch values from form fields
+                var accountNumber = $('#CustomerAccountRemarks').val();
+                var accountStatus = $('#CustomerAccountStatusDescription').val();
+                var productName = $('#CustomerAccountTypeTargetProductDescription').val();
+                var customerName = $('#CustomerAccountCustomerFullName').val();
+                var customerIdentification = $('#CustomerAccountCustomerIdentificationNumber').val();
+
+                // Update the Loan Accounts Tab content
+                $('#loanAccountNumber').text(accountNumber);
+                $('#loanAccountStatus').text(accountStatus);
+                $('#loanProductName').text(productName);
+                $('#loanCustomerName').text(customerName);
+                $('#loanCustomerIdentification').text(customerIdentification);
+            });
+
+
+
+        });
+
+    </script>
+
+    <script>
+        $(document).ready(function () {
+            // Handle tab click events
+            $('#loanAccountsTab a').on('click', function (e) {
+                e.preventDefault();
+
+                // Remove 'active' and 'show' classes from all tabs and tab content
+                $('.nav-link').removeClass('active');
+                $('.tab-pane').removeClass('show active');
+
+                // Add 'active' class to the clicked tab
+                $(this).addClass('active');
+
+                // Get the href attribute of the clicked tab to determine which tab content to show
+                var target = $(this).attr('href');
+
+                // Show the corresponding tab content by adding 'show' and 'active' classes
+                $(target).addClass('show active');
+
+                // Debugging: Log the target to ensure it matches the content ID
+                console.log('Tab clicked:', target);
+            });
+        });
+
+
+
+
+    </script>
 
 
 }

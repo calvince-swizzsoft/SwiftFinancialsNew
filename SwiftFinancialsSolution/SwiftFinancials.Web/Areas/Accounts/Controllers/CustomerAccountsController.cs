@@ -27,7 +27,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel,int productCode,int recordStatus)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
        {
             int totalRecordCount = 0;
 

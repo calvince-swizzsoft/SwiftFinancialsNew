@@ -156,9 +156,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     fixedDepositDTO.CustomerAccountCustomerReference1 = customer.CustomerReference1;
                     fixedDepositDTO.CustomerAccountCustomerReference2 = customer.CustomerReference2;
                     fixedDepositDTO.CustomerAccountCustomerReference3 = customer.CustomerReference3;
-                    fixedDepositDTO.Category = fixedDepositDTO.Category;  
-                    fixedDepositDTO.Value = customer.TotalValue;
-                    fixedDepositDTO.Remarks = customer.Remarks;
+                    fixedDepositDTO.Category = fixedDepositDTO.Category;
                     fixedDepositDTO.BranchId = customer.BranchId;
                     fixedDepositDTO.CustomerAccountCustomerId = customer.CustomerId;
                     fixedDepositDTO.ProductChartOfAccountId = customer.CustomerAccountTypeTargetProductId;
@@ -169,7 +167,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     fixedDepositDTO.Rate = fixedDepositDTO.Rate;
                     fixedDepositDTO.Term = fixedDepositDTO.Term;
                     fixedDepositDTO.MaturityAction = fixedDepositDTO.MaturityAction;
-
+                    fixedDepositDTO.CustomerAccountBranchId = customer.BranchId;
+                    fixedDepositDTO.CustomerAccountCustomerAccountTypeTargetProductId = customer.CustomerAccountTypeTargetProductChartOfAccountId;
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
                         customer.CustomerId,
                         customer.CustomerAccountTypeTargetProductId,
@@ -223,7 +222,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                     TempData["SuccessMessage"] = "Fixed Deposit created successfully!";
 
-                    TempData["fixedDepositDTO"] = null; 
+                    TempData["fixedDepositDTO"] = null;
 
                     return RedirectToAction("Index");
                 }
@@ -302,62 +301,93 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
 
-        public async Task<ActionResult> Verify(Guid id)
+        // GET: Verify - Displays the Fixed Deposit details for verification
+        [HttpGet]
+        public async Task<ActionResult> Verify(Guid? id)
         {
+            // Ensure the navigation menus are served
             await ServeNavigationMenus();
 
-            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(id, GetServiceHeader());
+            // Check if the ID is provided
+            if (!id.HasValue || id == Guid.Empty)
+            {
+                TempData["ErrorMessage"] = "Fixed Deposit ID is not provided.";
+                return RedirectToAction("Index");
+            }
 
+            var fixedDepositId = id.Value;
+
+            // Call the service to find the fixed deposit by ID
+            var fixedDepositDTO = await _channelService.FindFixedDepositAsync(fixedDepositId, GetServiceHeader());
+
+            if (fixedDepositDTO == null)
+            {
+                TempData["ErrorMessage"] = "Fixed Deposit details could not be found.";
+                return RedirectToAction("Index");
+            }
+
+            // Populate necessary ViewBag data for dropdowns or other elements
 
             return View(fixedDepositDTO);
         }
 
-
+        // POST: Verify - Submits the Fixed Deposit details for verification
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Verify(Guid id, FixedDepositDTO fixedDepositDTO)
+        public async Task<ActionResult> Verify(FixedDepositDTO fixedDepositDTO, string fixedDepositAuthOption)
         {
-            fixedDepositDTO.ValidateAll();
+            // Ensure the navigation menus are served
+            await ServeNavigationMenus();
 
-            int fixedDepositAuthOption = 1;
-
-            int moduleNavigationItemCode = fixedDepositDTO.ModuleNavigationItemCode;
-
-            if (!fixedDepositDTO.HasErrors)
+            // Validate the model
+            if (!ModelState.IsValid)
             {
-                bool isSuccess = await _channelService.AuditFixedDepositAsync(
-                    fixedDepositDTO,
-                    fixedDepositAuthOption,
-                    moduleNavigationItemCode,
-                    GetServiceHeader());
-
-                if (isSuccess && !fixedDepositDTO.HasErrors)
-                {
-                    TempData["verifySuccess"] = "Fixed deposit has been successfully verified.";
-
-                    return RedirectToAction("Index");
-                }
-                else if(isSuccess==false)
-                {
-                    TempData["verifyError"] = fixedDepositDTO.errormassage.Any()
-                        ? string.Join("; ", fixedDepositDTO.ErrorMessages)
-                        : "Failed to verify the fixed deposit.";
-
-                    ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
-
-                    return View(fixedDepositDTO);
-                }
+                TempData["ErrorMessage"] = "There are validation errors. Please check the details and try again.";
+                return View("Index"); 
             }
-            else
+
+            // Validate that the authorization option is provided
+            if (string.IsNullOrEmpty(fixedDepositAuthOption))
             {
-                // Handle validation errors
-                TempData["verifyError"] = "Validation failed. Please correct the errors and try again.";
-
-                // Prepare view bags for the view
-                ViewBag.JournalVoucherAuthOptionSelectList = GetJournalVoucherAuthOptionSelectList(fixedDepositDTO.FixedDepositAuthOption.ToString());
-
+                TempData["ErrorMessage"] = "Authorization option is required.";
                 return View(fixedDepositDTO);
             }
+
+            // Convert the string action to FixedDepositAuthOption enum
+            if (!Enum.TryParse(fixedDepositAuthOption, out FixedDepositAuthOption authOption))
+            {
+                TempData["ErrorMessage"] = "Invalid authorization option selected.";
+                return View(fixedDepositDTO);
+            }
+
+            try
+            {
+                // Set the module navigation item code (adjust as necessary)
+                int moduleNavigationItemCode = 1234;
+
+                // Get the service header
+                var serviceHeader = GetServiceHeader();
+
+                // Call the service to audit the fixed deposit
+                var isAuditSuccessful = await _channelService.AuditFixedDepositAsync(fixedDepositDTO, (int)authOption, moduleNavigationItemCode, serviceHeader);
+
+                if (isAuditSuccessful)
+                {
+                    TempData["SuccessMessage"] = "Fixed Deposit verified successfully.";
+                    return RedirectToAction("Index");
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "An error occurred while verifying the Fixed Deposit. Please try again.";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (ex) if necessary
+                TempData["ErrorMessage"] = "An unexpected error occurred: " + ex.Message;
+            }
+
+            // If something went wrong, redisplay the form
             return View(fixedDepositDTO);
         }
 

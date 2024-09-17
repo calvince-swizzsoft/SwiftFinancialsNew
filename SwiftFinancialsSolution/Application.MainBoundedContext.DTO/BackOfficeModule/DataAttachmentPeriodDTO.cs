@@ -97,5 +97,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [Display(Name = "Data Period")]
         public string DataAttachmentPeriodDescription { get; set; }
 
+        [DataMember]
+        public string ErrorMessageResult { get; set; }
     }
 }

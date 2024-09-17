@@ -135,7 +135,7 @@
                                 <div class="col-lg-3">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountCustomerTypeDescription, htmlAttributes: new { @class = "control-label" })
-                                        @Html.EditorFor(model => model.CustomerAccountCustomerTypeDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerTypeDescription", @required = "" } })
+                                        @Html.EditorFor(model => model.CustomerAccountCustomerNonIndividualDescription, new { htmlAttributes = new { @class = "form-control datepicker", @placeholder = "", @id = "CustomerAccountCustomerTypeDescription", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountCustomerTypeDescription, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
@@ -258,6 +258,99 @@
                                         <p>No loan accounts found for this customer.</p>
                                     }
                                 </div>
+
+                                <!-- Investment Accounts Tab Content -->
+                                <div id="investmentAccounts" class="tab-pane fade">
+                                    <h3>Customer Investment Accounts</h3>
+
+                                    @if (ViewBag.InvestmentAccounts != null && ViewBag.InvestmentAccounts.Count > 0)
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Parent Chart of Account Name</th>
+                                                    <th>Description</th>
+                                                    <th>Minimum Balance</th>
+                                                    <th>Maximum Balance</th>
+                                                    <th>Pool Amount</th>
+                                                    <th>Annual Percentage Yield</th>
+                                                    <th>Transfer Balance on Termination</th>
+                                                    <th>Account Name</th>
+                                                    <th>Chart of Account Name</th>
+                                                    <th>Cost Center</th>
+                                                    <th>Product Name</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var investmentAccount in ViewBag.InvestmentAccounts)
+                                                {
+                                                    <tr>
+                                                        <td>@investmentAccount.ParentChartOfAccountNameDescription</td>
+                                                        <td>@investmentAccount.Description</td>
+                                                        <td>@investmentAccount.MinimumBalance</td>
+                                                        <td>@investmentAccount.MaximumBalance</td>
+                                                        <td>@investmentAccount.PoolAmount</td>
+                                                        <td>@investmentAccount.AnnualPercentageYield</td>
+                                                        <td>@investmentAccount.TransferBalanceToParentOnMembershipTermination</td>
+                                                        <td>@investmentAccount.ChartOfAccountAccountName</td>
+                                                        <td>@investmentAccount.ChartOfAccountName</td>
+                                                        <td>@investmentAccount.ChartOfAccountCostCenterDescription</td>
+                                                        <td>@investmentAccount.ProductName</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>No investment accounts found for this customer.</p>
+                                    }
+                                </div>
+
+
+                                <!-- Loans Guaranteed Tab Content -->
+                                <div id="loansGuaranteed" class="tab-pane fade">
+                                    <h3>Loans Guaranteed</h3>
+                                    <!-- Add your content for loans guaranteed here -->
+
+                                    @if (ViewBag.LoanGuarantors != null && ViewBag.LoanGuarantors.Count > 0)
+                                    {
+                                        <table class="table table-bordered">
+                                            <thead>
+                                                <tr>
+                                                    <th>Customer FullName</th>
+                                                    <th>Guarantor Customer FullName</th>
+                                                    <th>Loanee Customer FullName</th>
+                                                    <th>LoanProduct Description</th>
+                                                    <th>LoanCaseStatus Description</th>
+                                                    <th>CustomerType Description</th>
+                                                    <th>CustomerAddress MobileLine</th>
+                                                    <th>AmountGuaranteed</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var guarantor in ViewBag.LoanGuarantors)
+                                                {
+                                                    <tr>
+                                                        <td>@guarantor.CustomerFullName</td>
+                                                        <td>@guarantor.GuarantorCustomerFullName</td>
+                                                        <td>@guarantor.LoaneeCustomerFullName</td>
+                                                        <td>@guarantor.LoanProductDescription</td>
+                                                        <td>@guarantor.LoanCaseStatusDescription</td>
+                                                        <td>@guarantor.CustomerTypeDescription</td>
+                                                        <td>@guarantor.CustomerAddressMobileLine</td>
+                                                        <td>@guarantor.AmountGuaranteed</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                    else
+                                    {
+                                        <p>No loan guarantors found for this customer.</p>
+                                    }
+                                </div>
+
 
 
 

@@ -183,7 +183,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "CoA_Register", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 "fnServerParams": function (aoData) {
                     aoData.push(
@@ -218,10 +218,10 @@
                             </div>
                         </div>`;
 
-                    $('td:eq(8)', nRow).html(dropdownHtml);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
 
-                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(dt_Created);
                     //$('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
 
                     return nRow;
@@ -231,12 +231,12 @@
                     { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "10%" },
-                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "15%" },
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
                     { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "15%" },
                     { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
             });
             $('#form').on('submit', function (e) {

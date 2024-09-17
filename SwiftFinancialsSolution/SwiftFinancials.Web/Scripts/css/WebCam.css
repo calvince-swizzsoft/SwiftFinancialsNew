@@ -19,3 +19,36 @@
         flex-direction: column;
     }
 }
+
+
+.photo-upload-container, .passport-photo-container {
+    background: linear-gradient(145deg, #ffffff, #f0f0f0);
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1), -5px -5px 15px rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .photo-upload-container:hover, .passport-photo-container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    }
+
+.image-placeholder img {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .image-placeholder img:hover {
+        transform: scale(1.05);
+        box-shadow: 0 20px 30px rgba(0, 0, 0, 0.2);
+    }
+
+.uniform-img {
+    width: 100%; 
+    height: 150px; 
+    object-fit: cover; 
+    border: 2px solid #007bff;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+}
+
+
