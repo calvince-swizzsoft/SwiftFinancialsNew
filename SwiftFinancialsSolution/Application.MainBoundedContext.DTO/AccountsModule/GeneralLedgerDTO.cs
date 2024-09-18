@@ -136,6 +136,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
             }
         }
 
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
 
     }
 }

@@ -2,6 +2,8 @@
 
 @{
     ViewBag.Title = "General Ledger";
+    var status = ViewBag.BatchStatus as List<SelectListItem>;
+}
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -75,6 +77,16 @@
         border-radius: 4px; /* Rounded corners */
         @*border: 1px solid black;*@ /* Border color and style */
     }
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+        
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
 </style>
 
 
@@ -108,6 +120,9 @@
                     </a>
 
                     <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
+                        <i class="fa fa-cog"></i> Inter Account Transfer Batch
+                    </a>
+                    <a href="@Url.Action("Index", "CoA_Register", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> Inter Account Transfer Batch
                     </a>
 
@@ -178,34 +193,141 @@
                         </table>
 
                     </div>
+                    @using (Html.BeginForm("Index", "AddGeneralLedger", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        <div class="bottom-button">
+
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Status, status,
+                                            new { @class = "form-control input-md", @id = "status" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group spacing-form-group" id="data_3">
+                                        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="valuedate" class="form-control" id="startDate" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group spacing-form-group" id="data_3">
+                                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="valuedate" class="form-control" id="endDate" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    }
                 </div>
             </div>
         </div>
     </div>
 </div>
 
-@section Styles {
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
     @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
-@section scripts {
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
     @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
 
     <script type="text/javascript">
 
 
         $(document).ready(function () {
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
+            });
+        
+
+            // Set default values
+            var defaultStatus = $('#status').val();
+            var defaultStartDate = $('#startDate').val();
+            var defaultEndDate = $('#endDate').val();
+
+            // Function to convert date from dd/mm/yyyy to yyyy-mm-dd
+            function formatDate(dateString) {
+                var parts = dateString.split("/");
+                return parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+
             $('#GeneralLedgerAccountMappingsGrid').DataTable({
-                // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts"}))",
+                "sAjaxSource": "@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })",
                 "sServerMethod": "POST",
-                // Callback settings
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "status", "value": $('#status').val() || defaultStatus },
+                        { "name": "startDate", "value": formatDate($('#startDate').val() || defaultStartDate) },
+                        { "name": "endDate", "value": formatDate($('#endDate').val() || defaultEndDate) }
+                    );
+                },
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
                     var m = ("0" + createdDate.getMinutes()).slice(-2);
                     var s = ("0" + createdDate.getSeconds()).slice(-2);
@@ -213,22 +335,20 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-
-                var dropdownHtml = `
+                    var dropdownHtml = `
                         <div class="dropdown">
                             <button style="width: 150px;" class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 Action
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">`;
 
-                var viewButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/details/${aData.Id}">View</a>`;
-                    @*var editButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/edit/${aData.Id}">Edit</a>`;*@
-                var verifyButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Verify/${aData.Id}">Verify</a>`;
-                var authorizeButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Authorize/${aData.Id}">Authorize</a>`;
+                    var viewButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/details/${aData.Id}">View</a>`;
+                    var verifyButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Verify/${aData.Id}">Verify</a>`;
+                    var authorizeButton = `<a class="dropdown-item" href="/Accounts/AddGeneralLedger/Authorize/${aData.Id}">Authorize</a>`;
 
                     switch (aData.Status) {
                         case 1:
-                            dropdownHtml += viewButton + verifyButton ;
+                            dropdownHtml += viewButton + verifyButton;
                             break;
                         case 8:
                             dropdownHtml += viewButton + authorizeButton;
@@ -248,7 +368,6 @@
 
                     return nRow;
                 },
-                // Display settings
                 "aoColumns": [
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%" },
@@ -256,13 +375,17 @@
                     { "mDataProp": "LedgerNumber", "sTitle": "LedgerNumber", "sWidth": "15%" },
                     { "mDataProp": "TotalValue", "sTitle": "TotalValue", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }
+                ],
                 "aaSorting": [[0, "desc"]]
             });
-         });
 
-
-
+            // Refresh button click handler
+            $('#form').on('submit', function (e) {
+                e.preventDefault();
+                $('#GeneralLedgerAccountMappingsGrid').DataTable().ajax.reload();
+            });
+        });
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
@@ -270,9 +393,6 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-
-
-
 
 
 

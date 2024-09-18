@@ -20,11 +20,14 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel,int productCode, int recordStatus)
         {
             int totalRecordCount = 0;
 
@@ -32,9 +35,12 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 2, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+           
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync(productCode,recordStatus,jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
