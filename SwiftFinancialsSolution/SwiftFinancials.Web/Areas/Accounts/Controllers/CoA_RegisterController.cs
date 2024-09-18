@@ -16,6 +16,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 {
     public class CoA_RegisterController : MasterController
     {
+       
+
+        //Index With Filters
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
@@ -27,7 +30,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel,int productCode, int recordStatus)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int recordStatus)
         {
             int totalRecordCount = 0;
 
@@ -39,8 +42,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-           
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync(productCode,recordStatus,jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndRecordStatusAndFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -54,8 +57,6 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
-
-
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();

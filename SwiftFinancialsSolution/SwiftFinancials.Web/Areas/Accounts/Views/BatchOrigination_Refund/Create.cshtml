@@ -1,6 +1,13 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.OverDeductionBatchDTO
 
+@{
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 
+
+
+    ViewBag.Title = "Refund Batch";
+}
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
@@ -133,6 +140,16 @@
     .form-control {
         color: #007bff;
     }
+    .form-row {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
 </style>
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
@@ -145,7 +162,7 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    
+
                     @if (TempData["BatchSuccess"] != null)
                     {
                         <div class="alert alert-success">
@@ -221,10 +238,10 @@
                             </div>
 
                             @*<span class="input-group-addon">
-                <a href="javascript:void(0);" onclick="handleSearchClick()">
-                    <span class="fa fa-search"></span>
-                </a>
-            </span>*@
+                                    <a href="javascript:void(0);" onclick="handleSearchClick()">
+                                        <span class="fa fa-search"></span>
+                                    </a>
+                                </span>*@
 
 
                             <div class="batch-entries-container">
@@ -432,6 +449,23 @@
                     </tr>
                 </tbody>
             </table>
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.CustomerAccountTypeProductCode)
+                        @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, productCode, new { @class = "form-control", id = "productCode" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.RecordStatus)
+                        @Html.DropDownListFor(m => m.RecordStatus, recordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Apply Filters</button>
+                    </div>
+                    
+                </div>
+                
+            </form>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -723,12 +757,22 @@
 
 
     ////////// Credit customer accounts lookup modal/////////
+
+        var defaultProductCode = $('#productCode').val();
+        var defaultRecordStatus = $('#recordStatus').val();
     $('#CreditCustomerAccountsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
         "sServerMethod": "POST",
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+
+            );
+        },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
             var h = ("0" + createdDate.getHours()).slice(-2);
@@ -738,21 +782,26 @@
             aData.CreatedDate = dt_Created;
 
             var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
-            $('td:eq(3)', nRow).html(dt_Created);
-            $('td:eq(4)', nRow).html(selectUrl);
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
             return nRow;
         },
         "aoColumns": [
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "4%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "4%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
     });
 
-
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#CreditCustomerAccountsGrid').DataTable().ajax.reload();
+        });
 
     function selectCustomerAccounts(id) {
         $.ajax({

@@ -262,5 +262,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                 return Enum.IsDefined(typeof(BatchAuthOption), (int)WireTransferAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)WireTransferAuthOption) : string.Empty;
             }
         }
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
     }
 }

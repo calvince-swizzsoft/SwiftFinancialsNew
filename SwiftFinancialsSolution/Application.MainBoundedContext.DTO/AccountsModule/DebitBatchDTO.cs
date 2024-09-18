@@ -147,5 +147,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         
         public DebitBatchEntryDTO DebitBatchEntry { get; set; }
 
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
+
     }
 }

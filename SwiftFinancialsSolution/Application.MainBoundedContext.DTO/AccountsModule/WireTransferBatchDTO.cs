@@ -176,5 +176,13 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         public WireTransferBatchEntryDTO WireTransferEntry { get; set; }
 
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
+
     }
 }
