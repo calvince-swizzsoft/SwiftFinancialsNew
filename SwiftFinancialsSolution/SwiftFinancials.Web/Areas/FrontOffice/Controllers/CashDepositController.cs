@@ -967,13 +967,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             var externalChequeResult = await _channelService.AddExternalChequeAsync(NewExternalCheque, GetServiceHeader());
 
-                            //if (externalChequeResult != null)
-                            //{
-                            //    if (ExternalChequePayables != null)
-                            //        await _channelService.UpdateExternalChequePayablesByExternalChequeIdAsync(externalChequeResult.Id, new ObservableCollection<ExternalChequePayableDTO>(ExternalChequePayables.SelectedItems));
+                            if (externalChequeResult != null)
+                             {
 
 
-                            //}
+                                MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+
+                             }
 
                             var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
                             
