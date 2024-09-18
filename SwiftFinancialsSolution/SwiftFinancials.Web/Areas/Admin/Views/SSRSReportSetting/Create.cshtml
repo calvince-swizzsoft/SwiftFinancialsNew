@@ -92,7 +92,7 @@
         <div class="col-md-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    <h5>Report Setting</h5>
+                    <h2>Report Setting</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link" aria-label="Collapse">
                             <i class="fa fa-chevron-up"></i>
@@ -102,7 +102,7 @@
                         </a>
                     </div>
                 </div>
-                <div class="ibox-content bg-white text-info">
+                <div class="ibox-content bg-white">
                     @using (Html.BeginForm("UploadReport", "SSRSReportSetting", FormMethod.Post, new { enctype = "multipart/form-data" }))
                     {
                         <div class="row">
@@ -148,7 +148,7 @@
 
                             <div class="col-lg-4">
                                 <div class="form-group">
-                                    <button type="button" class="btn btn-secondary" onclick="openReportBuilder()">
+                                    <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#reportBuilderModal">
                                         Open Report Builder
                                     </button>
                                 </div>
@@ -181,6 +181,20 @@
                     {
                         <div class="alert alert-success">
                             @TempData["CategorySuccess"]
+                        </div>
+                    }
+                    
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error"]
+                        </div>
+                    }  
+                    
+                    @if (TempData["ErrorCat"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["ErrorCat"]
                         </div>
                     }
                 </div>
@@ -218,14 +232,29 @@
 </div>
 
 
-<script>
-    function openReportBuilder() {
-        // You might need to provide the full path to the application if it is not in the system's PATH
-        window.open('file://C:/ProgramFiles(x86/MicrosoftReportBuilder.exe', '_blank');
-    }
-</script>
-@*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">*@
-
-
+<div class="modal fade" id="reportBuilderModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel" style="color: white;">Open Report Builder</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>To open Microsoft Report Builder, please follow these steps:</p>
+                <ol>
+                    <li>Go to your Start Menu or Search bar.</li>
+                    <li>Search for <strong>"Microsoft Report Builder"</strong>.</li>
+                    <li>Click on the application to open it.</li>
+                </ol>
+                <p>If you don't have Report Builder installed, you can download it from the official Microsoft website:</p>
+                <a href="https://www.microsoft.com/en-us/download/details.aspx?id=53613" target="_blank">Download Report Builder &gt;&gt;</a>
+                <a href="http://desktop-trhql6c/Reports_Test/browse/" target="_blank">Open SQL Server Reporting Services Portal  &gt;&gt;</a>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: red;">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -44,18 +44,42 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             await SaveReportToDatabaseAsync(reportFile.FileName, fileData, categoryId, reportname);
 
+            if (TempData["Error"] != null)
+            {
+                ViewBag.Categories = await GetCategoriesAsync();
+                return RedirectToAction("Create");
+            }
+
             TempData["Success"] = "Report uploaded successfully!";
             ViewBag.Categories = await GetCategoriesAsync();
             return View("Create");
         }
+
 
         private async Task SaveReportToDatabaseAsync(string fileName, byte[] fileContent, int categoryId, string reportname)
         {
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 await conn.OpenAsync();
-                var query = "INSERT INTO SSRSReports (FileName, FileContent, CategoryID,ReportName, CreatedDate) VALUES (@FileName, @FileContent, @CategoryID, @reportname, @CreatedDate)";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+
+                var checkQuery = "SELECT COUNT(*) FROM SSRSReports WHERE FileName = @FileName AND CategoryID = @CategoryID AND ReportName = @reportname";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@FileName", fileName);
+                    checkCmd.Parameters.AddWithValue("@CategoryID", categoryId);
+                    checkCmd.Parameters.AddWithValue("@reportname", reportname);
+
+                    int reportExists = (int)await checkCmd.ExecuteScalarAsync();
+
+                    if (reportExists > 0)
+                    {
+                        TempData["Error"] = "A report with the same name and category already exists.";
+                        return;
+                    }
+                }
+
+                var insertQuery = "INSERT INTO SSRSReports (FileName, FileContent, CategoryID, ReportName, CreatedDate) VALUES (@FileName, @FileContent, @CategoryID, @reportname, @CreatedDate)";
+                using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@FileName", fileName);
                     cmd.Parameters.AddWithValue("@FileContent", fileContent);
@@ -67,6 +91,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
         }
 
+
         private async Task<List<SelectListItem>> GetCategoriesAsync()
         {
             await ServeNavigationMenus();
@@ -76,7 +101,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 await conn.OpenAsync();
-                var query = "SELECT CategoryID, CategoryName FROM ReportCategories";
+                var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
@@ -108,6 +133,12 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             await AddCategoryToDatabaseAsync(reportCategory);
 
+            if (TempData["ErrorCat"] != null)
+            {
+                ViewBag.Categories = await GetCategoriesAsync();
+                return RedirectToAction("Create");
+            }
+
             TempData["CategorySuccess"] = "Report category created successfully!";
             return RedirectToAction("Create");
         }
@@ -117,10 +148,26 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
                 await conn.OpenAsync();
+
+                var checkQuery = "SELECT COUNT(*) FROM ReportCategories WHERE CategoryName = @CategoryName";
+                using (SqlCommand checkCmd = new SqlCommand(checkQuery, conn))
+                {
+                    checkCmd.Parameters.AddWithValue("@CategoryName", reportCategory);
+
+                    int reportExists = (int)await checkCmd.ExecuteScalarAsync();
+
+                    if (reportExists > 0)
+                    {
+                        TempData["ErrorCat"] = "Category already exists.";
+                        return;
+                    }
+                }
+
+
                 var query = "INSERT INTO ReportCategories (CategoryName) VALUES (@CategoryName)";
                 using (SqlCommand cmd = new SqlCommand(query, conn))
                 {
-                    cmd.Parameters.AddWithValue("@CategoryName", reportCategory);
+                    cmd.Parameters.AddWithValue("@CategoryName", reportCategory.ToUpper());
                     await cmd.ExecuteNonQueryAsync();
                 }
             }
