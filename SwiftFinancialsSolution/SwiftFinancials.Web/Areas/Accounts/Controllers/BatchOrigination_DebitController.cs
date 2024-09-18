@@ -79,7 +79,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             await ServeNavigationMenus();
-            
+
+
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
             return View();
         }
 

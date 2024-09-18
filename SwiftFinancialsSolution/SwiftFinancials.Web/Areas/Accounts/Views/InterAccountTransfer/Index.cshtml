@@ -5,13 +5,13 @@
 @model Application.MainBoundedContext.DTO.AccountsModule.InterAccountTransferBatchDTO
 
 @{
-    ViewBag.Title = "Inter Account Transfer Ledger";
+    ViewBag.Title = "Inter Account Transfer";
     var status = ViewBag.BatchStatus as List<SelectListItem>;
 }
 
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
-        <h2>General Ledger Accounts</h2>
+       
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -361,7 +361,7 @@
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Posting Period", "sWidth": "15%" },
                     { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
-                    { "mDataProp": "Reference", "sTitle": "TotalValue", "sWidth": "15%" },
+                    { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "5%", "bSortable": false }
                 ],
