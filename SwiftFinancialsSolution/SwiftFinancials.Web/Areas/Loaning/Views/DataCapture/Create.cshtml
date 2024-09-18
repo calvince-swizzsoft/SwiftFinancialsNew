@@ -40,6 +40,13 @@
                         </div>
                     }
 
+                    @if (TempData["ErrorMessageResult"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Failed !</strong> @TempData["ErrorMessageResult"]
+                        </div>
+                    }
+
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>

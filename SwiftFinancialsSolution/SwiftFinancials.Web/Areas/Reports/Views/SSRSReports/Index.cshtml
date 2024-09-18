@@ -1,0 +1,176 @@
+﻿@model IEnumerable<SwiftFinancials.Web.Areas.Reports.Models.ReportByCategoryViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f0f4f7;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    h2 {
+        font-size: 2.5rem;
+        color: #333;
+        margin: 40px 0;
+        text-align: center;
+    }
+
+    .category-container {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        padding: 10px;
+    }
+
+    .category-group {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .category-group:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #007bff;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: color 0.3s;
+    }
+
+        .category-title:hover {
+            color: #0056b3;
+        }
+
+        .category-title .toggle-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+    .report-list {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 20px;
+        transition: all 0.3s ease;
+        overflow-x: auto; /* Allows horizontal scrolling */
+        padding-bottom: 10px;
+    }
+
+    .report-card {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
+        text-align: left;
+        color: #333;
+    }
+
+        .report-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    .report-icon {
+        background-color: #0056b3;
+        color: white;
+        padding: 15px;
+        border-radius: 50%;
+        margin-right: 15px;
+        font-size: 2rem;
+        flex-shrink: 0;
+    }
+
+    .report-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    .collapsed .toggle-icon {
+        transform: rotate(-180deg);
+    }
+
+    .no-reports-message {
+        font-size: large;
+        color: red;
+        text-align: center;
+        padding: 20px;
+    }
+</style>
+
+<h2>Reports by Category</h2>
+
+<div class="category-container">
+    @foreach (var categoryGroup in Model.GroupBy(r => r.CategoryName))
+    {
+        <div class="category-group">
+            <h3 class="category-title" onclick="toggleCategory(this)">
+                @categoryGroup.Key
+                <span class="toggle-icon">&#9660;</span>
+            </h3>
+
+            <div class="report-list">
+                @if (!categoryGroup.Any())
+                {
+                    <p class="no-reports-message">No reports available in this category.</p>
+                }
+                else
+                {
+                    foreach (var report in categoryGroup)
+                    {
+                        var fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(report.FileName);
+                        var encodedFileName = fileNameWithoutExtension.Replace(" ", "%20");
+
+                        <a href="http://desktop-trhql6c/Reports_Test/report/@encodedFileName" target="_blank" class="report-card">
+                            <div class="report-icon">
+                                <i class="fas fa-file-alt"></i>
+                            </div>
+                            <div class="report-title">@report.ReportName</div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function toggleCategory(categoryTitle) {
+        var reportList = categoryTitle.nextElementSibling;
+        var toggleIcon = categoryTitle.querySelector('.toggle-icon');
+
+        if (reportList.style.display === 'grid') {
+            reportList.style.display = 'none';
+            categoryTitle.classList.remove('collapsed');
+        } else {
+            reportList.style.display = 'grid';
+            categoryTitle.classList.add('collapsed');
+        }
+    }
+</script>

@@ -128,13 +128,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             await _channelService.UpdateExpensePayableEntriesByExpensePayableIdAsync(resultDTO.Id, expensePayableEntries, GetServiceHeader());
 
-            // Success message and clear TempData
+            // Success message and retain TempData
             TempData["SuccessMessage"] = "Expense payable created successfully";
-            TempData["ExpensePayableDTO"] = "";
-            TempData["ExpensePayableEntryDTOs"] = "";
+            // Removed TempData clearing lines
 
             return RedirectToAction("Index");
         }
+
 
 
 

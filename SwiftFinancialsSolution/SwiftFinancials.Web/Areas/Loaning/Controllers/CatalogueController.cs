@@ -85,19 +85,11 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 dataAttachmentPeriodDTO.Remarks = dataPeriod.Remarks;
                 dataAttachmentPeriodDTO.PostingPeriodId = dataPeriod.PostingPeriodId;
 
-                if (Session["jQueryDataTablesModel"] != null)
-                {
-                    JQueryDataTablesModel jQueryDataTablesModel = new JQueryDataTablesModel();
 
-                    jQueryDataTablesModel = Session["jQueryDataTablesModel"] as JQueryDataTablesModel;
-
-                    await GetDataAttachmentPeriodEntries(jQueryDataTablesModel);
-                }
-
-                //var dataAttachmentPeriodEntries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(dataAttachmentPeriodDTO.Id,
-                //    string.Empty, 0, 200, true, GetServiceHeader());
-                //if (dataAttachmentPeriodEntries != null)
-                //    ViewBag.DataAttaPeriodsAndEntries = dataAttachmentPeriodEntries;
+                var dataAttachmentPeriodEntries = await _channelService.FindDataAttachmentEntriesByDataAttachmentPeriodIdAndFilterInPageAsync(parseId,
+                    string.Empty, 0, 2000000, true, GetServiceHeader());
+                if (dataAttachmentPeriodEntries != null)
+                    ViewBag.DataAttaPeriodsAndEntries = dataAttachmentPeriodEntries;
 
                 Session["Id"] = dataAttachmentPeriodDTO.Id;
             }

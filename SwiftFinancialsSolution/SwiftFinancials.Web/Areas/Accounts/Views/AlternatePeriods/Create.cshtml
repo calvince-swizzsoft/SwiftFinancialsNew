@@ -121,7 +121,20 @@
                     $('td:eq(3)', nRow).html(dt_StartDate);
                     $('td:eq(4)', nRow).html(dt_EndDate);
                     //$('td:eq(5)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + "&nbsp" + CloseUrl);
+                    var dropdownHtml = `
+                        <div class="dropdown">
+                            <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Actions
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="/accounts/AlternatePeriods/Processing/${aData.Id}">Processing</a>
+                                <a class="dropdown-item" href="/accounts/AlternatePeriods/Closing/${aData.Id}">Closing</a>
+                            </div>
+                        </div>`;
+
+                    $('td:eq(5)', nRow).html(dropdownHtml);
+
+                   // $('td:eq(5)', nRow).html(viewUrl + '&nbsp;' + editUrl + "&nbsp" + CloseUrl);
 
                     return nRow;
                 },

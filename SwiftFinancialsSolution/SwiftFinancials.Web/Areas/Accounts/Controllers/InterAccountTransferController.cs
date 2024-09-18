@@ -18,28 +18,30 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Index()
         {
             await ServeNavigationMenus();
+            ViewBag.BatchStatus = GetBatchStatusTypeSelectList(string.Empty);
 
 
             return View();
         }
 
         [HttpPost]
-        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int status, DateTime startDate, DateTime endDate)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-            GeneralLedgerDTO generalLedgerDTO = new GeneralLedgerDTO();
+            
 
-            DateTime startDate = DateTime.Now.AddDays(-30);
-            DateTime endDate = DateTime.Now.AddDays(+30);
+           
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindInterAccountTransferBatchesByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindInterAccountTransferBatchesByStatusAndFilterInPageAsync(status,startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -51,6 +53,13 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             }
             else return this.DataTablesJson(items: new List<InterAccountTransferBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+
+
+
+
+
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -69,7 +78,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
 
 
-        
+
 
         [HttpPost]
         public async Task<JsonResult> EntryCreditCustomerAccountLookUp(Guid id)
@@ -174,7 +183,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 // Check if an entry with the same Debit and Credit account numbers already exists
                 var existingEntry = interAccountBatchEntryDTOs
                 .FirstOrDefault(e =>
-                    e.AccountNumber == entry.AccountNumber ||
+                    (e.AccountNumber != null && entry.AccountNumber != null && e.AccountNumber == entry.AccountNumber) ||
                     (e.ChartOfAccountId != null && entry.ChartOfAccountId != null && e.ChartOfAccountId == entry.ChartOfAccountId));
 
 
@@ -258,6 +267,10 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
+
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+
             ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
             ViewBag.GetApportionToSelectList = GetApportionToSelectList(string.Empty);
             return View();

@@ -1,7 +1,27 @@
-﻿
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CustomerAccountDTO
+
+
+
 @{
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+
     ViewBag.Title = "Customer Accounts";
+
 }
+
+<style>
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Customer Accounts</h2>
@@ -62,6 +82,46 @@
                             </tbody>
                         </table>
                     </div>
+                    @using (Html.BeginForm("Index", "CustomerAccounts", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        <div class="bottom-button">
+
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.CustomerAccountTypeProductCode, new { @class = "control-label" })
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.CustomerAccountTypeProductCode, productCode,
+                                            new { @class = "form-control input-md", @id = "productCode" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.RecordStatus, new { @class = "control-label" })
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.RecordStatus, recordStatus,
+                                            new { @class = "form-control input-md", @id = "recordStatus" })
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-4" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" class="btn btn-primary" />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    }
                 </div>
             </div>
         </div>
@@ -115,13 +175,23 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
+            var defaultProductCode = $('#productCode').val();
+            var defaultRecordStatus = $('#recordStatus').val();
+
             $('#CustomerAccountsGrid').DataTable({
                 // Ajax settings
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "CoA_Register", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+
+                    );
+                },
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -142,16 +212,16 @@
                                 Actions
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                
+
                                     <a class="dropdown-item" href="/Accounts/CoA_Register/Edit/${aData.Id}">Verify</a>
 
                             </div>
                         </div>`;
 
-                    $('td:eq(8)', nRow).html(dropdownHtml);
+                    $('td:eq(9)', nRow).html(dropdownHtml);
 
 
-                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(dt_Created);
                     //$('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
 
                     return nRow;
@@ -161,14 +231,18 @@
                     { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
                     { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
                     { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "10%" },
-                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "15%" },
+                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "10%" },
                     { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
-                    { "mDataProp": "Remarks", "sTitle": "Remarks", "sWidth": "15%" },
+                    { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "15%" },
                     { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "10%" },
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "20%", "bSortable": false }],
+                    { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "10%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-             });
+            });
+            $('#form').on('submit', function (e) {
+                e.preventDefault();
+                $('#CustomerAccountsGrid').DataTable().ajax.reload();
+            });
         });
 
         $(document).ajaxStart(function () {
