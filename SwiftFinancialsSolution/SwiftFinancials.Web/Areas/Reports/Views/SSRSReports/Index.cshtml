@@ -1,0 +1,148 @@
+﻿@model IEnumerable<SwiftFinancials.Web.Areas.Reports.Models.ReportByCategoryViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    body {
+        background-color: #f0f4f7;
+    }
+
+    h2 {
+        font-size: 2rem;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .category-group {
+        margin-bottom: 40px;
+    }
+
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 500;
+        color: #007bff;
+        margin-bottom: 15px;
+        text-transform: uppercase;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+        letter-spacing: 1px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .category-title .toggle-icon {
+            font-size: 1.25rem;
+            transition: transform 0.3s ease;
+        }
+
+    .report-list {
+        display: none;
+        flex-wrap: wrap;
+        gap: 20px;
+        transition: all 0.3s ease;
+    }
+
+    .report-card {
+        background-color: #ffffff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s, box-shadow 0.3s;
+        width: calc(33.333% - 20px);
+        box-sizing: border-box;
+        position: relative;
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        overflow: hidden;
+        text-decoration: none;
+    }
+
+        .report-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+    .report-icon {
+        background-color: #0056b3;
+        color: white;
+        padding: 10px;
+        border-radius: 4px;
+        margin-right: 15px;
+        font-size: 1.5rem;
+    }
+
+    .report-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .collapsed .toggle-icon {
+        transform: rotate(-180deg);
+    }
+
+    .no-reports-message {
+        font-size: large;
+        color: red;
+        text-align: center;
+        padding: 20px;
+    }
+</style>
+
+<h2>Reports by Category</h2>
+
+@foreach (var categoryGroup in Model.GroupBy(r => r.CategoryName))
+{
+    <div class="category-group">
+        <h3 class="category-title" onclick="toggleCategory(this)">
+            @categoryGroup.Key
+            <span class="toggle-icon">&#9660;</span>
+        </h3>
+
+        <div class="report-list">
+            @if (!categoryGroup.Any())
+            {
+                <p class="no-reports-message">No reports available in this category.</p>
+            }
+            else
+            {
+                foreach (var report in categoryGroup)
+                {
+                    var fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(report.FileName);
+                    var encodedFileName = fileNameWithoutExtension.Replace(" ", "%20");
+
+
+                    <a href="http://desktop-trhql6c/Reports_Test/report/@encodedFileName" target="_blank" class="report-card">
+                        <div class="report-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="report-title">@report.ReportName</div>
+                    </a>
+                }
+            }
+        </div>
+    </div>
+}
+
+
+<script>
+    function toggleCategory(categoryTitle) {
+        var reportList = categoryTitle.nextElementSibling;
+        var toggleIcon = categoryTitle.querySelector('.toggle-icon');
+
+        if (reportList.style.display === 'block') {
+            reportList.style.display = 'none';
+            categoryTitle.classList.remove('collapsed');
+        } else {
+            reportList.style.display = 'block';
+            categoryTitle.classList.add('collapsed');
+        }
+    }
+</script>
