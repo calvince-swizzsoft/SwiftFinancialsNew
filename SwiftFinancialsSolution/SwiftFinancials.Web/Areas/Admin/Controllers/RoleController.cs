@@ -35,7 +35,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             var search = jQueryDataTablesModel.sSearch.ToLower();
 
-            var pageCollectionInfo = await _channelService.FindMembershipRolesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, sortedColumns, sortAscending, GetServiceHeader());
+            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindMembershipRolesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, sortedColumns, sortAscending, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
