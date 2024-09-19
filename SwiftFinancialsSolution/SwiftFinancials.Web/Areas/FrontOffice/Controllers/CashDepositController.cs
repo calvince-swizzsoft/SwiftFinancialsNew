@@ -1197,6 +1197,45 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return Json(chequeTypes, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public async Task<JsonResult> FetchKnownCharges(CustomerTransactionModel model, string target)
+        {
+           
+         
+            var savingsProduct = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
+            ObservableCollection<CommissionDTO> commissions = null;
+
+            //default to ordinary savings
+            if (savingsProduct == null)
+            {
+                var products = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+
+                savingsProduct = products[0];
+            }
+            
+            switch (target.ToLower())
+            {
+                case "#cashdeposit":
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashDeposit, GetServiceHeader());
+                    break;
+
+                case "#cashwithdrawal":
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashWithdrawal, GetServiceHeader());
+                    break;
+
+                case "#chequedeposit":
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.ChequeBookCharges, GetServiceHeader());
+                    break;
+
+                default:
+                    return Json(new { success = false, message = "Unknown transaction type." });
+            }
+
+           
+            return Json(new { success = true, data = commissions });
+        }
+
+
 
 
     }

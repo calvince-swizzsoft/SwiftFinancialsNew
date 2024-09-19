@@ -1388,6 +1388,7 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BackOfficeTransfers\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
