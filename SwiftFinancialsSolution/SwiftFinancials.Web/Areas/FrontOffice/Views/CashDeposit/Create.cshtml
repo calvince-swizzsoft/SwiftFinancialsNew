@@ -193,7 +193,7 @@
                                         <div class="form-group">
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductCode)
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeProductCode)
-                                            @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductId)
+                                            @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
                                             @Html.LabelFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductDescription, "Product Name:", new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductParentId)
                                             @Html.TextBoxFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductDescription, new { @class = "form-control", @readonly = "readonly" })
@@ -408,13 +408,6 @@
                                                                         @Html.TextBoxFor(model => model.ChequeDeposit.WriteDate, new { @class = "form-control", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
                                                                     </div>
                                                                 </div>
-
-
-                                                                @*<div class="form-group">
-            @Html.LabelFor(model => model.ChequeDeposit.WriteDate, htmlAttributes: new { @class = "" })
-            @Html.EditorFor(model => model.ChequeDeposit.WriteDate, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.ChequeDeposit.WriteDate, "", new { @class = "text-danger" })
-        </div>*@
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -444,11 +437,11 @@
                                                                     @Html.ValidationMessageFor(model => model.ChequeDeposit.DrawerBankBranch, "", new { @class = "text-danger" })
                                                                 </div>
                                                             </div>
-                                           
+
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                              
+
                                                                 <div class="form-group">
                                                                     @Html.HiddenFor(model => model.ChequeDeposit.ChequeTypeId, htmlAttributes: new { @id = "ChequeTypeId" })
                                                                     @Html.LabelFor(model => model.ChequeDeposit.ChequeTypeDescription, htmlAttributes: new { @class = "" })
@@ -462,13 +455,13 @@
                                                                     @Html.LabelFor(model => model.ChequeDeposit.MaturityDate, htmlAttributes: new { @class = "" })
                                                                     <div class="input-group date">
                                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                                        @Html.TextBoxFor(model => model.ChequeDeposit.MaturityDate , new { @class = "form-control", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
+                                                                        @Html.TextBoxFor(model => model.ChequeDeposit.MaturityDate, new { @class = "form-control", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
                                                                     </div>
                                                                 </div>
 
 
                                                             </div>
-                                                         
+
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6">
@@ -500,17 +493,7 @@
                                                         <h5 class="card-title">Payment Voucher Details</h5>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                @*<div class="form-group">
-                                                            <label for="chequeBookNumber">Cheque Book Number:</label>
-                                                            <div class="input-group">
-                                                                <input type="text" id="chequeBookNumber" class="form-control" readonly>
-                                                                <span class="input-group-addon">
-                                                                    <a data-toggle="modal" data-target="#paymentVoucherLookupModal">
-                                                                        <span class="fa fa-search"></span>
-                                                                    </a>
-                                                                </span>
-                                                            </div>
-                                                        </div>*@
+
 
                                                                 <div class="form-group">
                                                                     @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, "Payment Voucher Number:", new { @class = "control-label" })
@@ -574,7 +557,24 @@
                                             <!-- Charges & Levies Tab -->
                                             <div id="chargesLevies" class="inner-tab-pane">
                                                 <!-- Content for Charges & Levies -->
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Amount</th>
+                                                                <th>Borne by</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colspan="3">Loading...</td>  <!-- Placeholder until AJAX updates -->
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
 
@@ -1205,7 +1205,7 @@
                             format: "dd/mm/yyyy"  // Set the date format
                         });
                     </script>
-                    
+
                     <script>
 
         $('#PaymentVouchersGrid').DataTable({
@@ -1338,6 +1338,7 @@
 
 
         $('#id').val(CustomersMap[item].CustomerAccountId);
+        $('#CustomerAccountTypeTargetProductId').val(CustomersMap[item].CustomerAccountTypeTargetProductId)
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
         $('#FullAccountNumber').val(CustomersMap[item].FullAccountNumber);
         $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
@@ -1349,144 +1350,6 @@
         $('#customerLookupModal').modal('hide');
     });
 
-
-
-        ///// Investment products lookup /////
-$('.InvestmentProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (InvestmentProducts) {
-                var newInvestmentProductsData = [];
-                InvestmentProductsMap = {};
-                $.each(InvestmentProducts, function (i, InvestmentProduct) {
-                    newInvestmentProductsData.push(InvestmentProduct.Description);
-                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
-                });
-                process(newInvestmentProductsData);
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var investmentProductId = "";
-        investmentProductId = InvestmentProductsMap[item].Id;
-        $('#InvestmentProductId').val(investmentProductId);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
-        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
-
-        //console.log(investmentProductId)
-        return item;
-    }
-});
-
-
-             //Station typehead starts here
-
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
-
-
-    $('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
-            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
-            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
-            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
-
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#customerLookupModal').modal('hide');
-    });
 
 
          //Branch typehead starts here
@@ -1526,42 +1389,7 @@ $('.InvestmentProductsLookup').typeahead({
                 }
             });
 
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        //console.log(savingProductId)
-        return item;
-    }
-});
+
         function captureDetails() {
             var Remarks = document.getElementById('Remark').value;
             var BranchDescription = document.getElementById('BranchDescription').value;
@@ -1609,23 +1437,85 @@ $('.InvestmentProductsLookup').typeahead({
 
                     <script>
                         $(document).ready(function () {
+                            // Function to handle tab switching and data fetching
+                            function handleTabClick(target) {
+                                if (target) {
+                                    // Switch active tabs
+                                    $('.inner-tab-pane').removeClass('active');
+                                    $(target).addClass('active');
+                                    $('.inner-nav-link').removeClass('active');
+                                    $('a[href="' + target + '"]').addClass('active');
+
+                                    // Derive transaction type from target ID
+                                    var transactionType = '';
+                                    switch (target) {
+                                        case '#cashDeposit':
+                                            transactionType = 'Cash Deposit';
+                                            break;
+                                        case '#cashWithdrawal':
+                                            transactionType = 'Cash Withdrawal';
+                                            break;
+                                        case '#chequeDeposit':
+                                            transactionType = 'Cheque Deposit';
+                                            break;
+                                        default:
+                                            transactionType = 'Unknown Transaction';
+                                    }
+
+                                    // Call the FetchKnownCharges method via AJAX
+                                    $.ajax({
+                                        url: '/CashDeposit/FetchKnownCharges', 
+                                        type: 'POST',
+                                        data: { target: target },
+                                        success: function (response) {
+                                            if (response.success) {
+                                                var model = response.data;
+                                                var commissions = model.Commissions;
+
+                                                
+                                                if (commissions && commissions.length > 0) {
+                                                    var tableBody = '';
+                                                    $.each(commissions, function (index, commission) {
+                                                        tableBody += '<tr>' +
+                                                            '<td>' + commission.Description + '</td>' +
+                                                            '<td>' + commission.MaximumCharge + '</td>' +
+                                                            '<td>' + commission.ExtendedChargeBenefactorDescription + '</td>' +
+                                                            '</tr>';
+                                                    });
+
+                                                    // Insert the rows into the tbody of the table
+                                                    $('#chargesLevies tbody').html(tableBody);
+                                                } else {
+                                                    // If no commissions, display a message with the transaction type
+                                                    var noDataMessage = 'No commissions available for this ' + transactionType + ' transaction';
+                                                    $('#chargesLevies tbody').html('<tr><td colspan="3">' + noDataMessage + '</td></tr>');
+                                                }
+                                            } else {
+                                                console.log("Error:", response.message);
+                                            }
+                                        },
+                                        error: function (xhr, status, error) {
+                                            console.log("AJAX error:", error);
+                                        }
+                                    });
+                                }
+                            }
+
+                            // Bind click events to the inner-nav-link elements
                             $('.inner-nav-link').on('click', function (e) {
                                 e.preventDefault();
-
-                                console.log(this);
-
                                 var target = $(this).attr('href');
-
-                                console.log(target);
-
-                                $('.inner-tab-pane').removeClass('active');
-                                $(target).addClass('active');
-
-                                $('.inner-nav-link').removeClass('active');
-                                $(this).addClass('active');
+                                handleTabClick(target);
                             });
+
+                            // Trigger the default tab (e.g., #cashDeposit) on page load
+                            handleTabClick('#cashDeposit');
                         });
                     </script>
+
+
+
+
 
                     <script>
 
@@ -1770,15 +1660,13 @@ $('.InvestmentProductsLookup').typeahead({
                     ChequeTypeId = chequeTypesMap[item].Id;
                     $('#ChequeTypeId').val(ChequeTypeId);
                     $('#ChequeTypeDescription').val(chequeTypesMap[item].Description);
-                 
+
                     return item;
                 }
             });
 
 
-
-
-
-
                     </script>
+
+
                 }
