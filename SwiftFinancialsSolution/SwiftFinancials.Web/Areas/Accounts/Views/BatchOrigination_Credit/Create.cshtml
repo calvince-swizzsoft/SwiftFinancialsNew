@@ -1,9 +1,12 @@
 ﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CreditBatchDTO
 
 @{
-    /**/
+
 
     ViewBag.Title = "Create Credit Batch";
+
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
 
     var creditBatchType = ViewBag.CreditBatchTypeTypeSelectList as List<SelectListItem>;
     var QueuePriority = ViewBag.QueuePriorityTypeSelectList as List<SelectListItem>;
@@ -29,21 +32,22 @@
         border: 2px solid gray; /* Border color set to gray */
         padding: 10px; /* Padding inside the border */
         border-radius: 5px; /* Rounded corners (optional) */
-
+        margin:10px;
 
         align-items: center; /* Center content vertically */
         justify-content: center; /* Center content horizontally */
         font-size: 15px; /* Set font size to 15px */
         text-align: center; /* Center text within elements */
-        margin-top: 30px;
+       
         font-weight: bold;
         background-color: #00e0ff;
+        color: black;
     }
 
     /* Ensure that any child elements that need to be centered don't affect the container alignment */
-    .row {
+    @*.row {
         width: 100%; /* Make sure row takes full width */
-        font-size: 16px;
+        font-size: 16px;*@
 
     }
     .combined-container {
@@ -61,17 +65,6 @@
         margin-bottom: 5px; /* Space between rows */
     }
 
-   @* .form-group {
-        margin-bottom: 15px; /* Space between form groups */
-    }
-
-    .input-group-addon {
-        padding: 10px; /* Padding inside the input group addon */
-    }
-
-    .form-control {
-        margin-top: 5px; /* Space above input controls */
-    }*@
     .btn-primary {
         border-radius: 10px;
     }
@@ -137,10 +130,7 @@
             margin: 0;
         }
 
-        .journal-voucher-container .form-control,
-        .journal-voucher-container .input-group-addon {
-            font-weight: normal; /* Retain normal weight for controls */
-        }
+        
     input.form-control {
         color: #007bff; /* Replace with your desired color */
     }
@@ -157,6 +147,16 @@
         font-weight: bold;
         padding:10px;
         background-color: #f1f1f1;
+    }
+    .form-row {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 14px;
+        font-weight: bold;
+        background-color: #00e0ff;
     }
 </style>
 
@@ -208,12 +208,14 @@
                             <strong>Failed !</strong> @TempData["tPercentage"]
                         </div>
                     }
+
                     @if (TempData["LessSumAmount"] != null)
                     {
                         <div class="alert alert-danger">
                             <strong>Failed !</strong> @TempData["LessSumAmount"]
                         </div>
                     }
+
                     @if (TempData["BatchSuccess"] != null)
                     {
                         <div class="alert alert-success">
@@ -357,7 +359,7 @@
 
 
                             <div class="journal-voucher-container">
-                                <h2>Add credit Batch Entries</h2>
+                                <h2>Entries</h2>
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="col-md-13 form-group">
@@ -522,47 +524,47 @@
 
                         @using (Html.BeginForm("Create", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @id = "creditForm" }))
                         {
-                            <div class="custom-container">
-                                <div class="row" id="policies">
+                            <div class=" row custom-container">
+                                
 
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.PreserveAccountBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Preserve Account Balance?" } })
-                                            @Html.LabelFor(model => model.PreserveAccountBalance, htmlAttributes: new { @class = "" })
-                                            @Html.ValidationMessageFor(model => model.PreserveAccountBalance, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.RecoverArrearages, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Arrearages?" } })
-                                            @Html.LabelFor(model => model.RecoverArrearages, htmlAttributes: new { @class = "" })
-                                            @Html.ValidationMessageFor(model => model.RecoverArrearages, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-3">
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.RecoverIndefiniteCharges, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                            @Html.LabelFor(model => model.RecoverIndefiniteCharges, htmlAttributes: new { @class = "" })
-                                            @Html.ValidationMessageFor(model => model.RecoverIndefiniteCharges, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <div class="form-group form-group-lg">
-                                            @Html.CheckBoxFor(model => model.RecoverCarryForwards, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Carry Forwards?" } })
-                                            @Html.LabelFor(model => model.RecoverCarryForwards, htmlAttributes: new { @class = "" })
-                                            @Html.ValidationMessageFor(model => model.RecoverCarryForwards, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-2">
-                                        <div class="form-group" style="text-align:right;">
-                                            <input type="submit" value="Create" class="btn btn-primary" style="width: 100px; margin-left: 20px; border-radius: 4px; background-color: dodgerblue;" />
-                                        </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-sm">
+                                        @Html.CheckBoxFor(model => model.PreserveAccountBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "Preserve Account Balance?" } })
+                                        @Html.LabelFor(model => model.PreserveAccountBalance, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.PreserveAccountBalance, "", new { @class = "text-danger" })
                                     </div>
                                 </div>
+
+                                <div class="col-lg-2">
+                                    <div class="form-group form-group-sm">
+                                        @Html.CheckBoxFor(model => model.RecoverArrearages, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Arrearages?" } })
+                                        @Html.LabelFor(model => model.RecoverArrearages, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.RecoverArrearages, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-sm">
+                                        @Html.CheckBoxFor(model => model.RecoverIndefiniteCharges, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                        @Html.LabelFor(model => model.RecoverIndefiniteCharges, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.RecoverIndefiniteCharges, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-sm">
+                                        @Html.CheckBoxFor(model => model.RecoverCarryForwards, new { htmlAttributes = new { @class = "form-control", @placeholder = "Recover Carry Forwards?" } })
+                                        @Html.LabelFor(model => model.RecoverCarryForwards, htmlAttributes: new { @class = "" })
+                                        @Html.ValidationMessageFor(model => model.RecoverCarryForwards, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+
+                                <div class="col-lg-1">
+                                    <div class="form-group" style="text-align:center;">
+                                        <input type="submit" value="Create" class="btn btn-primary" style=" margin-left: 10px; border-radius: 4px; background-color: dodgerblue;" />
+                                    </div>
+                                </div>
+                                
                             </div>
                         }
 
@@ -595,6 +597,23 @@
                     </tr>
                 </tbody>
             </table>
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.CustomerAccountTypeProductCode)
+                        @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, ProductCode, new { @class = "form-control", id = "productCode" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.RecordStatus)
+                        @Html.DropDownListFor(m => m.RecordStatus, RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                    </div>
+
+                </div>
+
+            </form>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -816,34 +835,55 @@
 
 
         ////////// Credit customer accounts lookup modal/////////
+        // Set Default Value for Filters
+        var defaultProductCode = $('#productCode').val();
+        var defaultRecordStatus = $('#recordStatus').val();
     $('#CreditCustomerAccountsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
         "sServerMethod": "POST",
+        //Ensure to include the filters in the Ajax request
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+
+            );
+        },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
             var h = ("0" + createdDate.getHours()).slice(-2);
             var m = ("0" + createdDate.getMinutes()).slice(-2);
             var s = ("0" + createdDate.getSeconds()).slice(-2);
+
             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
             aData.CreatedDate = dt_Created;
 
             var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
-            $('td:eq(3)', nRow).html(dt_Created);
-            $('td:eq(4)', nRow).html(selectUrl);
+
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
             return nRow;
         },
         "aoColumns": [
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "10%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "10%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
             { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
     });
+
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#CreditCustomerAccountsGrid').DataTable().ajax.reload();
+        });
 
     function selectCustomerAccounts(id) {
     $.ajax({

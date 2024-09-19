@@ -18,6 +18,9 @@ namespace Application.MainBoundedContext.DTO
             AddAllAttributeValidators();
         }
 
+        [Display(Name = "Id")]
+        public Guid Id { get; set; }
+
         [Display(Name = "Apportion To")]
         public int ApportionTo { get; set; }
 

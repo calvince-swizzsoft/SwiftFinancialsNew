@@ -474,6 +474,7 @@
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternatePeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
@@ -531,6 +532,7 @@
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
@@ -642,8 +644,10 @@
     <Compile Include="Areas\Reports\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportSettingController.cs" />
     <Compile Include="Areas\Reports\Controllers\spDynamicReportingController.cs" />
+    <Compile Include="Areas\Reports\Controllers\SSRSReportsController.cs" />
     <Compile Include="Areas\Reports\Controllers\StoredProcedureController.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Reports\Models\ReportByCategoryViewModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureViewModel.cs" />
@@ -1384,6 +1388,7 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\BackOfficeTransfers\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -1391,6 +1396,8 @@
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\Marquee.css" />
+    <Content Include="Scripts\css\SSRSGenerateReportIndex.css" />
+    <Content Include="Scripts\css\SSRSModal.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
     <Content Include="Scripts\css\WebCam.css" />
@@ -1814,6 +1821,7 @@
     <Content Include="Scripts\summernote\summernote.min.js" />
     <Content Include="calculator.html" />
     <Content Include="loan-calculator.html" />
+    <Content Include="ToDoList.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
