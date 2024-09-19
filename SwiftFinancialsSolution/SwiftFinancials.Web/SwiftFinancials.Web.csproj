@@ -1387,7 +1387,6 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\_ViewStart.cshtml" />
     <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
     <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
