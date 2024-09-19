@@ -474,6 +474,7 @@
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternatePeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
@@ -1387,8 +1388,6 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
-    <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
-    <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

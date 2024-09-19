@@ -6,8 +6,9 @@
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
-    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer"
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Scripts"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer\\Index.cshtml",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Scripts\\bootstrap.js.map",
   "PreviewInSolutionExplorer": false
 }

@@ -4,6 +4,7 @@ using Application.MainBoundedContext.DTO.FrontOfficeModule;
 using Application.MainBoundedContext.DTO.RegistryModule;
 using Application.Seedwork;
 using Infrastructure.Crosscutting.Framework.Attributes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -211,6 +212,25 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
             }
         }
 
+        public string DebitCustomerAccountJson
+        {
+            get
+            {
+                return DebitCustomerAccount == null ? null : JsonConvert.SerializeObject(DebitCustomerAccount);
+            }
+            set
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    DebitCustomerAccount = null;
+                }
+                else
+                {
+                    DebitCustomerAccount = JsonConvert.DeserializeObject<CustomerAccountDTO>(value);
+                }
+            }
+        }
+
         Guid? _creditCustomerAccountId;
         [Display(Name = "Credit Customer Account")]
         public Guid? CreditCustomerAccountId
@@ -293,6 +313,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Models
         public List<CustomerAccountSignatoryDTO> CustomerAccountSignatories { get; set; }
 
         public List<ElectronicStatementOrderDTO> CustomerAccountMiniStatement { get; set; }
+
+        [DataMember]
+        [Display(Name = "Available Balance")]
+        public decimal AvailableBalance { get; set; }
 
 
     }
