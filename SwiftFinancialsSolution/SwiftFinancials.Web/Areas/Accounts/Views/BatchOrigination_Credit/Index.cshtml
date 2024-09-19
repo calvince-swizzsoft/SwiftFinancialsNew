@@ -1,5 +1,9 @@
-﻿@{
+﻿@model  Application.MainBoundedContext.DTO.AccountsModule.CreditBatchDTO
+
+
+@{
     ViewBag.Title = "Credit Batch";
+    var status = ViewBag.BatchStatus as List<SelectListItem>;
 }
 
 <style>
@@ -58,6 +62,16 @@
         border-radius: 4px; /* Rounded corners */
         @*border: 1px solid black;*@ /* Border color and style */
     }
+    .bottom-button {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
 </style>
 
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -75,7 +89,7 @@
 </div>
 
 <div class="row row-center">
-    
+
     <div class="col-lg-12">
         <div class="nav1">
             <div class="col-lg-12">
@@ -101,7 +115,7 @@
                     <a href="@Url.Action("Index", "AddGeneralLedger", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> General Ledger Batch
                     </a>
-                   
+
                     <a href="@Url.Action("Index", "InterAccountTransfer", new { Area = "Accounts" })" class="nav-link">
                         <i class="fa fa-cog"></i> Inter Account Transfer Batch
                     </a>
@@ -164,6 +178,51 @@
                             </tbody>
                         </table>
                     </div>
+                    @using (Html.BeginForm("Index", "BatchOrigination_Credit", new { Area = "Accounts" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
+                    {
+                        <div class="bottom-button">
+
+                            <div class="row" style="display: flex; justify-content: flex-start; align-content:center;">
+                                <div class="col-lg-3">
+                                    <div class="form-group form-group-lg">
+                                        @Html.LabelFor(model => model.Status, new { @class = "control-label" })
+
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                            @Html.DropDownListFor(model => model.Status, status,
+                                            new { @class = "form-control input-md", @id = "status" })
+
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group spacing-form-group" id="data_3">
+                                        @Html.LabelFor(model => model.StartDate, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="valuedate" class="form-control" id="startDate" value="@DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group spacing-form-group" id="data_3">
+                                        @Html.LabelFor(model => model.EndDate, htmlAttributes: new { @class = "control-label" })
+                                        <div class="input-group date">
+                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                            <input type="text" name="valuedate" class="form-control" id="endDate" value="@DateTime.Today.ToString("dd/MM/yyyy")">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
+                                    <div class="form-group form-group-sm">
+                                        <input type="submit" value="Refresh" class="btn btn-primary" />
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+
+                    }
                 </div>
             </div>
         </div>
@@ -215,12 +274,41 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+
+            $('#data_3 .input-group.date').datepicker({
+                startView: 2,
+                todayBtn: "linked",
+                keyboardNavigation: false,
+                forceParse: false,
+                autoclose: true,
+                format: 'dd/mm/yyyy',
+                language: 'en-GB'  // Use British English locale to ensure dd/mm/yyyy format
+            });
+
+
+            var defaultStatus = $('#status').val();
+            var defaultStartDate = $('#startDate').val();
+            var defaultEndDate = $('#endDate').val();
+
+            // Function to convert date from dd/mm/yyyy to yyyy-mm-dd
+            function formatDate(dateString) {
+                var parts = dateString.split("/");
+                return parts[2] + "-" + parts[1] + "-" + parts[0];
+            }
+
             $('#creditBatchesGrid').DataTable({
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "BatchOrigination_Credit", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "status", "value": $('#status').val() || defaultStatus },
+                        { "name": "startDate", "value": formatDate($('#startDate').val() || defaultStartDate) },
+                        { "name": "endDate", "value": formatDate($('#endDate').val() || defaultEndDate) }
+                    );
+                },
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
                     var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
                     var h = ("0" + createdDate.getHours()).slice(-2);
@@ -247,7 +335,7 @@
                             break;
                         case 8:
                             dropdownHtml += viewButton + authorizeButton;
-                            break;  
+                            break;
                         case 2:
                             dropdownHtml += viewButton;
                             break;
@@ -276,6 +364,12 @@
                     { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "5%", "bSortable": false }
                 ],
                 "aaSorting": [[0, "desc"]]
+            });
+
+            // Refresh button click handler
+            $('#form').on('submit', function (e) {
+                e.preventDefault();
+                $('#creditBatchesGrid').DataTable().ajax.reload();
             });
         });
 

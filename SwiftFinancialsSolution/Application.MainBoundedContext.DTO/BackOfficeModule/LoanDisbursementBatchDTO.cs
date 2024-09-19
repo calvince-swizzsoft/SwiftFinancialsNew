@@ -218,5 +218,14 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
     }
 }

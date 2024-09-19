@@ -2013,6 +2013,29 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Reference3,
     }
 
+    public enum CustomerFilterReduced
+    {
+        [Description("Personal Identification #")]
+        PersonalIdentificationNumber = 0,
+        [Description("First Name")]
+        FirstName,
+        [Description("Last Name")]
+        LastName,
+        [Description("Identity Card #")]
+        IdentityCardNumber,
+        [Description("Email")]
+        Email,
+        [Description("Mobile Line")]
+        MobileLine,
+        [Description("Account Number")]
+        Reference1,
+        [Description("Membership Number")]
+        Reference2,
+        [Description("Personal File Number")]
+        Reference3,
+
+    }
+
     public enum IndividualType
     {
         [Description("Adult")]
