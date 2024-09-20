@@ -147,7 +147,15 @@
                 });
                 // Attach event listener for role checkboxes
                 $('.role-checkbox').change(function () {
-                    updateRoleSelection();
+                    var isChecked = $(this).is(':checked');
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+
+                    if (isChecked) {
+                        updateRoleSelection();
+                    } else {
+                        removeRole(roleId, roleName);
+                    }
                 });
             }
 
@@ -166,7 +174,14 @@
                 });
                 // Attach event listener for branch checkboxes
                 $('.branch-checkbox').change(function () {
-                    updateBranchSelection();
+                    var isChecked = $(this).is(':checked');
+                    var branchId = $(this).data('branch-id');
+
+                    if (isChecked) {
+                        updateBranchSelection();
+                    } else {
+                        removeBranch(branchId);
+                    }
                 });
             }
 
@@ -176,7 +191,7 @@
                 $('.role-checkbox:checked').each(function () {
                     var roleId = $(this).data('role-id');
                     var roleName = $(this).data('role-name');
-                    selectedRoles.push(roleId + '|' + roleName);  // Concatenate roleId and roleName with a separator (|).
+                    selectedRoles.push(roleId + '|' + roleName);
                 });
                 sendDataToCreateAction(selectedRoles.join(','), $('#SelectedBranches').val());
             }
@@ -196,7 +211,7 @@
                     url: '@Url.Action("Create", "SystemTransactiontypes", new { Area = "Admin" })',
                     type: 'POST',
                     data: {
-                        selectedRoles: selectedRoles,  // This will now contain both roleId and roleName.
+                        selectedRoles: selectedRoles,
                         selectedBranches: selectedBranches,
                         systemPermissionType: $('#SystemPermissionType').val()
                     },
@@ -213,6 +228,52 @@
                 });
             }
 
+            // Function to remove a role
+            function removeRole(roleId, roleName) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: roleId + '|' + roleName,
+                        selectedBranches: $('#SelectedBranches').val(),
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while removing the role.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
+            // Function to remove a branch
+            function removeBranch(branchId) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: $('#SelectedRoles').val(),
+                        selectedBranches: branchId,
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'success', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while removing the branch.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
             // Form submission logic
             function submitForm() {
                 var selectedRoles = [];
@@ -221,7 +282,7 @@
                 $('.role-checkbox:checked').each(function () {
                     var roleId = $(this).data('role-id');
                     var roleName = $(this).data('role-name');
-                    selectedRoles.push(roleId + '|' + roleName);  // Include both roleId and roleName.
+                    selectedRoles.push(roleId + '|' + roleName);
                 });
 
                 $('.branch-checkbox:checked').each(function () {
@@ -253,37 +314,3 @@
     </script>
 }
 
-
-
-        [HttpPost]
-        public async Task<JsonResult>
-    Remove(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
-    {
-    await ServeNavigationMenus();
-    ViewBag.SystemPermissionTypeSelectList = GetsystemPermissionTypeList(string.Empty);
-
-
-    roleBindingModel.systemPermissionTypeInRoles = ParseSelectedRoles(selectedRoles);
-    roleBindingModel.systemPermissionTypeInBranchDTOs = ParseSelectedBranches(selectedBranches);
-
-    var linkedRoles = await _channelService.GetRolesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
-    var linkedBranches = await _channelService.GetBranchesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
-    ObservableCollection<string>
-        k = new ObservableCollection<string>
-            ();
-            foreach (var n in roleBindingModel.systemPermissionTypeInRoles)
-            {
-            string p = n.RoleName;
-            k.Add(p);
-            }
-            if (!roleBindingModel.HasErrors)
-            {
-            await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, k, GetServiceHeader());
-            await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
-
-            return Json(new { success = true, message = "System Permissions Updated Successfully" });
-            }
-
-            await ServeNavigationMenus();
-            return Json(new { success = false, message = "There was an error updating system permissions." });
-            }
