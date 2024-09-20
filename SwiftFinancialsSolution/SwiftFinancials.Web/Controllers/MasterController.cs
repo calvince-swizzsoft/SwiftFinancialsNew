@@ -1841,6 +1841,27 @@ namespace SwiftFinancials.Web.Controllers
             return imageSource;
         }
 
-     
+
+        [NonAction]
+        protected List<SelectListItem> GetCustomerFilterSelectList(string selectedValue)
+        {
+            List<SelectListItem> customerFilter = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(CustomerFilter)).Cast<CustomerFilter>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            customerFilter.AddRange(items);
+
+            return customerFilter;
+        }
+
+
+
+
+
     }
 }
