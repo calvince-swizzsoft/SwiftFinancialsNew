@@ -17,6 +17,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
     [RoleBasedAccessControl]
     public class SystemTransactiontypesController : MasterController
     {
+        [HttpGet]
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -82,23 +83,42 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var roles = _applicationRoleManager.Roles.ToList();
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public async Task<ActionResult> Create(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
         {
             await ServeNavigationMenus();
             ViewBag.SystemPermissionTypeSelectList = GetsystemPermissionTypeList(string.Empty);
-            // Parse selectedRoles (roleId|roleName format)
 
             roleBindingModel.systemPermissionTypeInRoles = ParseSelectedRoles(selectedRoles);
             roleBindingModel.systemPermissionTypeInBranchDTOs = ParseSelectedBranches(selectedBranches);
 
             if (!roleBindingModel.HasErrors)
             {
-                await _channelService.AddSystemPermissionTypeToRolesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInRoles, GetServiceHeader());
+                // Retrieve currently linked roles
+                var linkedRoles = await _channelService.GetRolesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
+                var existingRoles = new ObservableCollection<string>(linkedRoles.Select(r => r.ToString())); // Assuming linkedRoles contains RoleName
+
+                // Create a list to hold new roles that will be added
+                var rolesToAdd = new ObservableCollection<SystemPermissionTypeInRoleDTO>();
+
+                foreach (var role in roleBindingModel.systemPermissionTypeInRoles)
+                {
+                    // Check if the role already exists in the linked roles
+                    if (!existingRoles.Contains(role.RoleName))
+                    {
+                        rolesToAdd.Add(role);
+                        existingRoles.Add(role.RoleName); // Optionally keep track of roles for further operations
+                    }
+                }
+
+                // Only process new roles if there are any
+                if (rolesToAdd.Any())
+                {
+                    await _channelService.AddSystemPermissionTypeToRolesAsync(systemPermissionType, rolesToAdd, GetServiceHeader());
+                }
+
+                // Process branches regardless of roles
                 await _channelService.AddSystemPermissionTypeToBranchesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
-                //await _channelService.MapSystemPermissionTypeToRolesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInRoles, GetServiceHeader());
-                //await _channelService.MapSystemPermissionTypeToBranchesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
 
                 if (Request.IsAjaxRequest())
                 {
@@ -106,11 +126,11 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 }
 
                 TempData["SuccessMessage"] = "System Permissions Updated Successfully";
-                return RedirectToAction("Create"); // Redirect back to the Create view
+                return RedirectToAction("Create");
             }
 
             await ServeNavigationMenus();
-            return View("Create", roleBindingModel); // Return the same view with model data
+            return View("Create", roleBindingModel);
         }
 
 
