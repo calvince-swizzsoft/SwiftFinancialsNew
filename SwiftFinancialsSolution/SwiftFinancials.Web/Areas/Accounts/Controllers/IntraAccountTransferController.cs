@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
-using Application.MainBoundedContext.DTO.RegistryModule;
 using SwiftFinancials.Presentation.Infrastructure.Util;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
@@ -20,214 +19,344 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         {
             await ServeNavigationMenus();
 
+
             return View();
         }
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<ActionResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
+            GeneralLedgerDTO generalLedgerDTO = new GeneralLedgerDTO();
+
+            DateTime startDate = DateTime.Now.AddDays(-30);
+            DateTime endDate = DateTime.Now.AddDays(+30);
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByFilterInPageAsync(jQueryDataTablesModel.sSearch, 0, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindInterAccountTransferBatchesByDateRangeAndFilterInPageAsync(startDate, endDate, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(ChartOfAccountDTO => ChartOfAccountDTO.CreatedDate).ToList();
-
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
-            else return this.DataTablesJson(items: new List<ChartOfAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            else return this.DataTablesJson(items: new List<InterAccountTransferBatchDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+
+
+
+
 
 
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
-            var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
-            var p = await _channelService.FindCustomerAccountSignatoriesByCustomerAccountIdAsync(customerAccountDTO.Id, GetServiceHeader());
 
-            ViewBag.customerAccountSignatoryDTOs = p;
-            TempData["customerAccountSignatoryDTOs"] = p;
-            return View(customerAccountDTO);
-        }
-        public async Task<ActionResult> Search(Guid? id, InterAccountTransferBatchDTO standingOrderDTO)
-        {
-            await ServeNavigationMenus();
-
-
-            Guid parseId;
-
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
-
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-
-            if (Session["Customers"] != null)
-            {
-                standingOrderDTO.Customers = Session["Customers"] as CustomerAccountDTO;
-            }
-
-            if (Session["benefactorAccounts"] != null)
-            {
-                standingOrderDTO.interAccountTransferBatch = Session["benefactorAccounts"] as CustomerAccountDTO;
-            }
-
-
-
-            var beneficiaryAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            if (beneficiaryAccounts != null)
-            {
-
-                standingOrderDTO.interAccountTransferBatch = beneficiaryAccounts;
-               
-                //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
-                standingOrderDTO.CustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerFullName;
-
-
-            }
-            Session["Customers"] = standingOrderDTO.interAccountTransferBatch;
-            return View("Create", standingOrderDTO);
+            var WireTransferBatch = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
+            ViewBag.InterAccountTransferEntries = batchentries;
+            return View(WireTransferBatch);
         }
 
-        public async Task<ActionResult> Create(Guid? id, InterAccountTransferBatchDTO standingOrderDTO)
-        {
-            await ServeNavigationMenus();
-            if (Session["interAccountTransferBatch"] != null)
-            {
-                standingOrderDTO.Customers = Session["interAccountTransferBatch"] as CustomerAccountDTO;
-            }
-            if(Session["Customers"]!=null)
-            {
-                standingOrderDTO.interAccountTransferBatch = Session["Customers"] as CustomerAccountDTO;
-            }
-            ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(string.Empty);
-            ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(string.Empty);
-            ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(string.Empty);
-            ViewBag.SalutationSelectList = GetSalutationSelectList(string.Empty);
-            ViewBag.GenderSelectList = GetGenderSelectList(string.Empty);
-            ViewBag.MaritalStatusSelectList = GetMaritalStatusSelectList(string.Empty);
-            ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(string.Empty);
-            ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(string.Empty);
-            ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(string.Empty);
-
-            ViewBag.MonthsSelectList = GetMonthsAsync(string.Empty);
-            ViewBag.ChargeTypeSelectList = GetChargeTypeSelectList(string.Empty);
-            ViewBag.loanRegistrationStandingOrderTriggers = GetLoanRegistrationStandingOrderTriggerSelectList(string.Empty);
-
-            Guid parseId;
-
-            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
-            {
-                return View();
-            }
-
-            bool includeBalances = false;
-            bool includeProductDescription = false;
-            bool includeInterestBalanceForLoanAccounts = false;
-            bool considerMaturityPeriodForInvestmentAccounts = false;
-            var beneficiaryAccounts = await _channelService.FindCustomerAccountAsync(parseId, includeBalances, includeProductDescription, includeInterestBalanceForLoanAccounts, considerMaturityPeriodForInvestmentAccounts, GetServiceHeader());
-
-            if (beneficiaryAccounts != null)
-            {
-                standingOrderDTO.Customers = beneficiaryAccounts;
-                //customerAccountSignatoryDTO.FirstName = benefactorAccounts.CustomerFullName;
-                standingOrderDTO.CustomerAccountCustomerIndividualFirstName = beneficiaryAccounts.CustomerFullName;
 
 
-            }
-            Session["interAccountTransferBatch"] = standingOrderDTO.Customers;
-            return View("Create", standingOrderDTO);
-        }
-        //[HttpPost]
-        //public async Task<ActionResult> Add(Guid? id, InterAccountTransferBatchDTO customerAccountSignatoryDTO, CustomerAccountDTO customerAccountDTO)
-        //{
-        //    await ServeNavigationMenus();
 
-        //    customerAccountSignatoryDTOs = TempData["customerAccountSignatoryDTO"] as ObservableCollection<CustomerAccountSignatoryDTO>;
 
-        //    if (customerAccountSignatoryDTOs == null)
-        //        customerAccountSignatoryDTOs = new ObservableCollection<CustomerAccountSignatoryDTO>();
 
-        //    foreach (var Signatory in customerAccountSignatoryDTO.customerAccountSignatoryDTOs)
-        //    {
-        //        Signatory.Id = customerAccountSignatoryDTO.Id;
-        //        Signatory.FirstName = customerAccountSignatoryDTO.CustomerAccountCustomerFullName;
-        //        Signatory.LastName = Signatory.LastName;
-        //        Signatory.AddressAddressLine1 = Signatory.AddressAddressLine1;
-        //        Signatory.AddressAddressLine2 = Signatory.AddressAddressLine2;
-        //        Signatory.AddressCity = Signatory.AddressCity;
-        //        Signatory.AddressEmail = Signatory.AddressEmail;
-        //        Signatory.AddressMobileLine = Signatory.AddressMobileLine;
-        //        Signatory.Relationship = Signatory.Relationship;
-        //        customerAccountSignatoryDTOs.Add(Signatory);
-        //    };
 
-        //    TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
 
-        //    TempData["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
-        //    Session["customerAccountSignatoryDTO"] = customerAccountSignatoryDTOs;
-        //    if (Session["benefactorAccounts"] != null)
-        //    {
-        //        customerAccountDTO = Session["benefactorAccounts"] as CustomerAccountDTO;
-        //    }
-        //    ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerAccountSignatoryDTO.CustomerAccountCustomerType.ToString());
-        //    ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
-        //    ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerAccountSignatoryDTO.IdentityCardType.ToString());
-        //    ViewBag.SalutationSelectList = GetSalutationSelectList(customerAccountSignatoryDTO.Salutation.ToString());
-        //    ViewBag.GenderSelectList = GetGenderSelectList(customerAccountSignatoryDTO.Gender.ToString());
-        //    ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerAccountSignatoryDTO.Relationship.ToString());
 
-        //    return View("Create");
-        //}
 
         [HttpPost]
-        public async Task<ActionResult> Create(InterAccountTransferBatchDTO customerBindingModel, ObservableCollection<InterAccountTransferBatchEntryDTO> interAccountTransferBatchEntryCollection)
+        public async Task<JsonResult> EntryCreditCustomerAccountLookUp(Guid id)
         {
 
-            customerBindingModel.ValidateAll();
-
-            if (!customerBindingModel.HasErrors)
+            if (id == Guid.Empty)
             {
-                await _channelService.AddInterAccountTransferBatchAsync(customerBindingModel, GetServiceHeader());
-                await _channelService.UpdateInterAccountTransferBatchEntryCollectionAsync(customerBindingModel.Id, interAccountTransferBatchEntryCollection, GetServiceHeader());
-                TempData["AlertMessage"] = "Customer Account signatory created successfully";
-                return RedirectToAction("Create");
+                return Json(new { success = false, message = "Invalid ID" });
             }
-            else
+            var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
+
+            if (creditcustomerAccount != null)
             {
-                var errorMessages = customerBindingModel.ErrorMessages;
+                if (creditcustomerAccount.CustomerAccountTypeProductCode == 2)
+                {
+                    var creditEntry = new InterAccountTransferBatchEntryDTO
+                    {
+                        InterAccountTransferBatchBranchId = creditcustomerAccount.BranchId,
+                        CustomerFullName = creditcustomerAccount.CustomerFullName,
+                        AccountNumber = creditcustomerAccount.FullAccountNumber,
+                        CustomerAccountCustomerReference2 = creditcustomerAccount.CustomerReference2,
+                        CustomerAccountCustomerReference3 = creditcustomerAccount.CustomerReference3,
+                        CustomerPersonalIdentificationNumber = creditcustomerAccount.CustomerIndividualIdentityCardNumber,
+                        BookBalance = creditcustomerAccount.BookBalance,
+                        AccountStatusDescription = creditcustomerAccount.StatusDescription,
+                        Remarks = creditcustomerAccount.Remarks,
+                        CustomerAccountId = creditcustomerAccount.Id,
+                        CustomerType = creditcustomerAccount.CustomerType,
+                        CustomerTypeDescription = creditcustomerAccount.CustomerTypeDescription,
+                        CustomerIndividualPayrollNumbers = creditcustomerAccount.CustomerIndividualPayrollNumbers,
+                        CustomerAccountCustomerReference1 = creditcustomerAccount.CustomerReference1,
+                        CustomerAccountCustomerAccountTypeProductCode = creditcustomerAccount.CustomerAccountTypeProductCode,
+                        Interest = creditcustomerAccount.InterestBalance,
+                        Principal = creditcustomerAccount.PrincipalBalance
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(customerBindingModel.Status.ToString());
-                ViewBag.IndividualTypeSelectList = GetIndividualTypeSelectList(customerBindingModel.Status.ToString());
-                ViewBag.IdentityCardSelectList = GetIdentityCardTypeSelectList(customerBindingModel.Status.ToString());
-                ViewBag.SalutationSelectList = GetSalutationSelectList(customerBindingModel.Status.ToString());
-                ViewBag.GenderSelectList = GetGenderSelectList(customerBindingModel.Status.ToString());
-                ViewBag.signatoryRelationshipSelectList = GetsignatoryRelationshipSelectList(customerBindingModel.Status.ToString());
 
-                return View(customerBindingModel);
+                    };
+
+                    return Json(new { success = true, data = creditEntry });
+                }
+
+
+
             }
+
+            return Json(new { success = false, message = "Customer account not found" });
+        }
+        [HttpPost]
+        public async Task<JsonResult> CustomerAccountLookUp(Guid id)
+        {
+
+            if (id == Guid.Empty)
+            {
+                return Json(new { success = false, message = "Invalid ID" });
+            }
+            var creditcustomerAccount = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
+
+            if (creditcustomerAccount != null)
+            {
+
+
+                var creditEntry = new InterAccountTransferBatchDTO
+                {
+                    BranchId = creditcustomerAccount.BranchId,
+                    CustomerFullName = creditcustomerAccount.CustomerFullName,
+                    AccountNumber = creditcustomerAccount.FullAccountNumber,
+                    CustomerAccountCustomerReference2 = creditcustomerAccount.CustomerReference2,
+                    CustomerAccountCustomerReference3 = creditcustomerAccount.CustomerReference3,
+                    CustomerPersonalIdentificationNumber = creditcustomerAccount.CustomerIndividualIdentityCardNumber,
+                    AvailableBalance = creditcustomerAccount.AvailableBalance,
+                    AccountStatusDescription = creditcustomerAccount.StatusDescription,
+                    CustomerId = creditcustomerAccount.CustomerId,
+                    Remarks = creditcustomerAccount.Remarks,
+                    CustomerAccountId = creditcustomerAccount.Id,
+                    CustomerTypeDescription = creditcustomerAccount.CustomerTypeDescription,
+                    CustomerIndividualPayrollNumbers = creditcustomerAccount.CustomerIndividualPayrollNumbers,
+                    CustomerAccountCustomerReference1 = creditcustomerAccount.CustomerReference1
+
+
+                };
+
+                return Json(new { success = true, data = creditEntry });
+            }
+
+            return Json(new { success = false, message = "Customer account not found" });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Add(InterAccountTransferBatchDTO interAccountTransferBatchDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var interAccountBatchEntryDTOs = Session["interAccountBatchEntryDTOs"] as ObservableCollection<InterAccountTransferBatchEntryDTO>;
+            if (interAccountBatchEntryDTOs == null)
+            {
+                interAccountBatchEntryDTOs = new ObservableCollection<InterAccountTransferBatchEntryDTO>();
+            }
+
+            foreach (var entry in interAccountTransferBatchDTO.interAccountBatchEntries)
+            {
+                // Check if an entry with the same Debit and Credit account numbers already exists
+                var existingEntry = interAccountBatchEntryDTOs
+                .FirstOrDefault(e =>
+                    (e.AccountNumber != null && entry.AccountNumber != null && e.AccountNumber == entry.AccountNumber) ||
+                    (e.ChartOfAccountId != null && entry.ChartOfAccountId != null && e.ChartOfAccountId == entry.ChartOfAccountId));
+
+
+
+                if (existingEntry != null)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "same customer Account has been selected please select another Account."
+                    });
+                }
+
+                if (entry.Id == Guid.Empty)
+                {
+                    entry.Id = Guid.NewGuid();
+                }
+
+
+                interAccountBatchEntryDTOs.Add(entry);
+
+                // Calculate the sum of Principal and Interest
+                decimal sumAmount = interAccountBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+
+                // Check if the total value is exceeded
+                if (sumAmount > interAccountTransferBatchDTO.AvailableBalance)
+                {
+                    interAccountBatchEntryDTOs.Remove(entry);
+                    decimal exceededAmount = sumAmount - interAccountTransferBatchDTO.AvailableBalance;
+                    return Json(new
+                    {
+                        success = false,
+                        message = $"The total of principal and interest has exceeded the  AvailableBalance by {exceededAmount}."
+                    });
+                }
+            }
+
+            // Save the updated entries back to the session
+            Session["interAccountBatchEntryDTOs"] = interAccountBatchEntryDTOs;
+            Session["interAccountTransferBatchDTO"] = interAccountTransferBatchDTO;
+
+            return Json(new { success = true, data = interAccountBatchEntryDTOs });
+        }
+
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> Remove(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var interAccountBatchEntryDTOs = Session["interAccountBatchEntryDTOs"] as ObservableCollection<InterAccountTransferBatchEntryDTO>;
+
+
+            decimal sumAmount = interAccountBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+
+            if (interAccountBatchEntryDTOs != null)
+            {
+                var entryToRemove = interAccountBatchEntryDTOs.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    interAccountBatchEntryDTOs.Remove(entryToRemove);
+
+                    sumAmount -= entryToRemove.Principal + entryToRemove.Interest;
+
+                    Session["interAccountBatchEntryDTOs"] = interAccountBatchEntryDTOs;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = interAccountBatchEntryDTOs });
+        }
+
+
+
+
+
+        public async Task<ActionResult> Create()
+        {
+            await ServeNavigationMenus();
+            ViewBag.SystemGeneralLedgerAccountCodeSelectList = GetSystemGeneralLedgerAccountCodeSelectList(string.Empty);
+            ViewBag.GetApportionToSelectList = GetApportionToSelectList(string.Empty);
+            return View();
+        }
+
+
+
+        [HttpPost]
+        public async Task<ActionResult> Create(InterAccountTransferBatchDTO interAccountTransferBatchDTO)
+        {
+            // Retrieve the DTO stored in session
+            interAccountTransferBatchDTO = Session["interAccountTransferBatchDTO"] as InterAccountTransferBatchDTO;
+
+            if (interAccountTransferBatchDTO == null)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = "Batch cannot be null."
+                });
+            }
+
+
+
+            // If there are no entries, initialize a new list
+            var interAccountBatchEntryDTOs = Session["interAccountBatchEntryDTOs"] as ObservableCollection<InterAccountTransferBatchEntryDTO>;
+
+            if (interAccountBatchEntryDTOs != null)
+            {
+                interAccountTransferBatchDTO.interAccountBatchEntries = interAccountBatchEntryDTOs;
+            }
+            foreach (var d in interAccountBatchEntryDTOs)
+            {
+                if (interAccountTransferBatchDTO.CustomerAccountFullAccountNumber !=d.CustomerAccountFullAccountNumber)
+                {
+                    return Json(new
+                    {
+                        success = false,
+                        message = "Customer Accounts Have to Belong to the same Member."
+                    });
+                }
+            }
+            decimal SumAmount = interAccountBatchEntryDTOs.Sum(e => e.Principal + e.Interest);
+            decimal totalValue = interAccountTransferBatchDTO?.AvailableBalance ?? 0;
+
+            if (SumAmount != totalValue)
+            {
+                var balance = totalValue - SumAmount;
+                return Json(new { success = false, message = $"The total value ({totalValue}) should be equal to the sum of the entries ({SumAmount}). Balance: {balance}" });
+            }
+
+            // Validate the DTO
+            interAccountTransferBatchDTO.ValidateAll();
+            if (interAccountTransferBatchDTO.ErrorMessages.Count != 0)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = interAccountTransferBatchDTO.ErrorMessages
+                });
+            }
+
+            // Save the batch data
+            var interAccountTransferBatch = await _channelService.AddInterAccountTransferBatchAsync(interAccountTransferBatchDTO, GetServiceHeader());
+            if (interAccountTransferBatchDTO.HasErrors)
+            {
+                return Json(new
+                {
+                    success = false,
+                    message = interAccountTransferBatchDTO.ErrorMessages
+                });
+            }
+
+            // Save each batch entry
+            foreach (var InterAccountTransferBatchEntry in interAccountBatchEntryDTOs)
+            {
+                InterAccountTransferBatchEntry.InterAccountTransferBatchId = interAccountTransferBatch.Id;
+                await _channelService.AddInterAccountTransferBatchEntryAsync(InterAccountTransferBatchEntry, GetServiceHeader());
+            }
+
+            // Clear session data after successful creation
+            Session["interAccountBatchEntryDTOs"] = null;
+            Session["interAccountTransferBatchDTO"] = null;
+
+            // Return success message in JSON
+            return Json(new
+            {
+                success = true,
+                message = "Successfully Transfered Funds ."
+            });
         }
 
 
@@ -238,28 +367,123 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         public async Task<ActionResult> Edit(Guid id)
         {
             await ServeNavigationMenus();
-            ViewBag.record = GetRecordStatusSelectList(string.Empty);
-            var customerAccountDTO = await _channelService.FindCustomerAccountAsync(id, false, false, false, false, GetServiceHeader());
-            return View(customerAccountDTO);
+
+            var postingPeriodDTO = await _channelService.FindGeneralLedgerAsync(id, GetServiceHeader());
+
+            return View(postingPeriodDTO.MapTo<GeneralLedgerDTO>());
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit(Guid id, CustomerAccountDTO customerAccountDTO)
+        public async Task<ActionResult> Edit(Guid id, GeneralLedgerDTO generalLedgerDTO)
         {
-            customerAccountDTO.CreatedDate = DateTime.Today;
-            ViewBag.record = GetRecordStatusSelectList(customerAccountDTO.RecordStatus.ToString());
-            if (!customerAccountDTO.HasErrors)
+            if (ModelState.IsValid)
             {
-                await _channelService.UpdateCustomerAccountAsync(customerAccountDTO, GetServiceHeader());
-
-                TempData["Edit"] = "Edited Customer Account successfully";
+                await _channelService.UpdateGeneralLedgerAsync(generalLedgerDTO.MapTo<GeneralLedgerDTO>(), GetServiceHeader());
 
                 return RedirectToAction("Index");
             }
-
-            TempData["EditError"] = "Failed to Edit Customer Account";
-            return View(customerAccountDTO);
+            else
+            {
+                return View(generalLedgerDTO);
+            }
         }
+
+
+        public async Task<ActionResult> Verify(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+            var interAccountTransferBatchDTO = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+
+            CustomerAccountDTO customerAcc = await _channelService.FindCustomerAccountAsync(interAccountTransferBatchDTO.CustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            interAccountTransferBatchDTO.CustomerId = customerAcc.CustomerId;
+
+            var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
+
+            ViewBag.InterAccountTransferEntries = batchentries;
+            return View(interAccountTransferBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Verify(Guid id, InterAccountTransferBatchDTO interAccountTransferBatchDTO)
+        {
+            interAccountTransferBatchDTO.ValidateAll();
+
+
+            var auth = interAccountTransferBatchDTO.WireTransferAuthOption;
+
+
+            if (!interAccountTransferBatchDTO.HasErrors)
+            {
+                await _channelService.AuditInterAccountTransferBatchAsync(interAccountTransferBatchDTO, auth, GetServiceHeader());
+
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
+
+                TempData["VerifySuccess"] = "Verification Successiful";
+
+                return RedirectToAction("Index");
+            }
+            else
+            {
+                TempData["VerificationFail"] = "Verification Failed!. Review all conditions.";
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+                var errorMessages = interAccountTransferBatchDTO.ErrorMessages;
+
+                return View(interAccountTransferBatchDTO);
+            }
+        }
+
+        public async Task<ActionResult> Authorize(Guid id)
+        {
+            await ServeNavigationMenus();
+            ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(string.Empty);
+
+
+            var interAccountTransferBatchDTO = await _channelService.FindInterAccountTransferBatchAsync(id, GetServiceHeader());
+            var batchentries = await _channelService.FindInterAccountTransferBatchEntriesByInterAccountTransferBatchIdAsync(id, GetServiceHeader());
+
+            CustomerAccountDTO customerAcc = await _channelService.FindCustomerAccountAsync(interAccountTransferBatchDTO.CustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            interAccountTransferBatchDTO.CustomerId = customerAcc.CustomerId;
+
+            ViewBag.InterAccountTransferEntries = batchentries;
+            return View(interAccountTransferBatchDTO);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Authorize(Guid id, InterAccountTransferBatchDTO interAccountTransferBatchDTO)
+        {
+            var batchAuthOption = interAccountTransferBatchDTO.WireTransferAuthOption;
+            interAccountTransferBatchDTO.ValidateAll();
+
+            if (!interAccountTransferBatchDTO.HasErrors)
+            {
+                await _channelService.AuthorizeInterAccountTransferBatchAsync(interAccountTransferBatchDTO, batchAuthOption, 1, GetServiceHeader());
+
+
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
+
+
+
+                TempData["AuthorizationSuccess"] = "Authorization Successiful";
+                return RedirectToAction("Index");
+            }
+            else
+            {
+
+                var errorMessages = interAccountTransferBatchDTO.ErrorMessages;
+                ViewBag.BatchAuthOptionSelectList = GetBatchAuthOptionSelectList(interAccountTransferBatchDTO.WireTransferAuthOption.ToString());
+                TempData["AuthorizationFail"] = "Authorization Failed!. Review all conditions.";
+
+                return View(interAccountTransferBatchDTO);
+            }
+        }
+
+
+
     }
 }

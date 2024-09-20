@@ -285,7 +285,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public string CustomerIndividualPayrollNumbers { get; set; }
 
         [DataMember]
-        [Display(Name = "Personal Identification Number")]
+        [Display(Name = "Personal Id Number")]
         public string CustomerPersonalIdentificationNumber { get; set; }
     }
 }

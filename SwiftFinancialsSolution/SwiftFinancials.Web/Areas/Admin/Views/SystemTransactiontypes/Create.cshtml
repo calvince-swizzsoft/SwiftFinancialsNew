@@ -9,15 +9,9 @@
     <div class="col-lg-12">
         <h2>Update System Permission</h2>
         <ol class="breadcrumb">
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
-            </li>
-            <li class="breadcrumb-item">
-                @Html.ActionLink("Home", "Create", "SystemTransactiontypes", new { Area = "Admin" }, null)
-            </li>
-            <li class="breadcrumb-item active">
-                <strong>Update System Permission</strong>
-            </li>
+            <li class="breadcrumb-item">@Html.ActionLink("Dashboard", "Index", "Home")</li>
+            <li class="breadcrumb-item">@Html.ActionLink("Home", "Index", "SystemTransactiontypes", new { Area = "Admin" })</li>
+            <li class="breadcrumb-item active"><strong>Update System Permission</strong></li>
         </ol>
     </div>
 </div>
@@ -31,30 +25,22 @@
                     {
                         <div class="alert alert-success">
                             <strong>Success!</strong> @TempData["Success"]
-                            <button type="button" class="close" data-dismiss="alert">
-                                <span>&times;</span>
-                            </button>
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
                     }
                     <div class="ibox-tools">
-                        <a class="collapse-link">
-                            <i class="fa fa-chevron-up"></i>
-                        </a>
-                        <a class="close-link">
-                            <i class="fa fa-times"></i>
-                        </a>
+                        <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                        <a class="close-link"><i class="fa fa-times"></i></a>
                     </div>
                 </div>
                 <div class="ibox-content bg-white text-dark">
                     @using (Html.BeginForm("Create", "SystemTransactiontypes", new { Area = "Admin" }, FormMethod.Post, new { id = "updateForm" }))
                     {
                         @Html.AntiForgeryToken()
-
                         <div class="form-horizontal">
                             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
                             <div class="form-group form-group-lg">
-                                @Html.LabelFor(model => model.SystemPermissionTypeDescription, htmlAttributes: new { @class = "" })
+                                @Html.LabelFor(model => model.SystemPermissionTypeDescription)
                                 <div class="input-group">
                                     <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
                                     @Html.DropDownListFor(model => model.SystemPermissionType, month, new { @class = "form-control input-md", id = "SystemPermissionType" })
@@ -62,23 +48,16 @@
                                 </div>
                             </div>
 
-                            <!-- Hidden inputs to store selected roles and branches -->
                             <input type="hidden" name="SelectedRoles" id="SelectedRoles" />
                             <input type="hidden" name="SelectedBranches" id="SelectedBranches" />
 
-                            <!-- Tabs for Roles and Branches -->
                             <ul class="nav nav-tabs" id="roleBranchTabs" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link" id="branches-tab" data-toggle="tab" href="#branches" role="tab" aria-controls="branches" aria-selected="false">Branches</a>
-                                </li>
-                                <li class="nav-item active">
-                                    <a class="nav-link active" id="roles-tab" data-toggle="tab" href="#roles" role="tab" aria-controls="roles" aria-selected="true">Roles</a>
-                                </li>
+                                <li class="nav-item"><a class="nav-link active" id="roles-tab" data-toggle="tab" href="#roles" role="tab">Roles</a></li>
+                                <li class="nav-item"><a class="nav-link" id="branches-tab" data-toggle="tab" href="#branches" role="tab">Branches</a></li>
                             </ul>
 
                             <div class="tab-content">
-                                <!-- Roles Tab -->
-                                <div class="tab-pane fade show active" id="roles" role="tabpanel" aria-labelledby="roles-tab">
+                                <div class="tab-pane fade show active" id="roles" role="tabpanel">
                                     <div class="panel panel-primary">
                                         <div class="panel-heading">Roles</div>
                                         <div class="panel-body">
@@ -90,16 +69,13 @@
                                                         <th>Map</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="rolesTableBody">
-                                                    <!-- Roles will be dynamically populated here -->
-                                                </tbody>
+                                                <tbody id="rolesTableBody"></tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
 
-                                <!-- Branches Tab -->
-                                <div class="tab-pane fade" id="branches" role="tabpanel" aria-labelledby="branches-tab">
+                                <div class="tab-pane fade" id="branches" role="tabpanel">
                                     <div class="panel panel-primary">
                                         <div class="panel-heading">Branches</div>
                                         <div class="panel-body">
@@ -111,15 +87,12 @@
                                                         <th>Map</th>
                                                     </tr>
                                                 </thead>
-                                                <tbody id="branchesTableBody">
-                                                    <!-- Branches will be dynamically populated here -->
-                                                </tbody>
+                                                <tbody id="branchesTableBody"></tbody>
                                             </table>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     }
                 </div>
@@ -128,23 +101,21 @@
     </div>
 </div>
 
-@section Scripts {
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-
-    <script type="text/javascript">
+@section Scripts{
+    <script>
         $(document).ready(function () {
-            // Initial load of roles and branches
-            loadRolesAndBranches();
-
-            // Event listener for dropdown change
-            $('#SystemPermissionType').change(function () {
-                var systemPermissionTypeId = $(this).val();
-                if (systemPermissionTypeId) {
-                    loadRolesAndBranches(systemPermissionTypeId);
-                }
+            // Form submission event
+            $('#updateForm').on('submit', function (e) {
+                e.preventDefault();
+                submitForm();
             });
 
+            // Load roles and branches based on the selected permission type
+            $('#SystemPermissionType').change(function () {
+                loadRolesAndBranches($(this).val());
+            });
+
+            // AJAX call to load roles and branches based on permission type
             function loadRolesAndBranches(systemPermissionTypeId) {
                 $.ajax({
                     url: '@Url.Action("GetAction", "SystemTransactiontypes", new { Area = "Admin" })',
@@ -156,115 +127,125 @@
                         populateBranches(data.allBranches, data.linkedBranches);
                     },
                     error: function () {
-                       // alert('Failed to load roles and branches.');
+                        toastr.error('Failed to load roles and branches.', 'Error');
                     }
                 });
             }
 
+            // Populate roles dynamically with checkboxes
             function populateRoles(allRoles, linkedRoles) {
                 var rolesTableBody = $('#rolesTableBody');
                 rolesTableBody.empty();
                 $.each(allRoles, function (index, role) {
-                    var isChecked = linkedRoles.some(linkedRole => linkedRole.RoleId === role.Id);
-                    rolesTableBody.append(
-                        '<tr>' +
+                    var isChecked = linkedRoles.some(linkedRole => linkedRole.Name === role.Name);
+                    rolesTableBody.append('<tr>' +
                         '<td style="display: none">' + role.Id + '</td>' +
                         '<td>' + role.Name + '</td>' +
                         '<td><input type="checkbox" class="role-checkbox" data-role-id="' + role.Id + '" data-role-name="' + role.Name + '"' + (isChecked ? ' checked' : '') + '></td>' +
                         '</tr>'
                     );
                 });
+                // Attach event listener for role checkboxes
+                $('.role-checkbox').change(function () {
+                    updateRoleSelection();
+                });
             }
 
+            // Populate branches dynamically with checkboxes
             function populateBranches(allBranches, linkedBranches) {
                 var branchesTableBody = $('#branchesTableBody');
                 branchesTableBody.empty();
                 $.each(allBranches, function (index, branch) {
                     var isChecked = linkedBranches.some(linkedBranch => linkedBranch.Id === branch.Id);
-                    branchesTableBody.append(
-                        '<tr>' +
+                    branchesTableBody.append('<tr>' +
                         '<td style="display: none">' + branch.Id + '</td>' +
                         '<td>' + branch.Description + '</td>' +
                         '<td><input type="checkbox" class="branch-checkbox" data-branch-id="' + branch.Id + '"' + (isChecked ? ' checked' : '') + '></td>' +
                         '</tr>'
                     );
                 });
+                // Attach event listener for branch checkboxes
+                $('.branch-checkbox').change(function () {
+                    updateBranchSelection();
+                });
             }
 
-            // Event listener for checkbox changes
-            $(document).on('change', '.role-checkbox, .branch-checkbox', function () {
-                var isChecked = $(this).is(':checked');
-                var id = $(this).data('role-id') || $(this).data('branch-id');
-                var name = $(this).data('role-name') || '';
-                var type = $(this).hasClass('role-checkbox') ? 'role' : 'branch';
+            // Update role selection and send data via AJAX
+            function updateRoleSelection() {
+                var selectedRoles = [];
+                $('.role-checkbox:checked').each(function () {
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+                    selectedRoles.push(roleId + '|' + roleName);  // Concatenate roleId and roleName with a separator (|).
+                });
+                sendDataToCreateAction(selectedRoles.join(','), $('#SelectedBranches').val());
+            }
 
-                if (isChecked) {
-                    handleCreate(type, id, name);
-                } else {
-                    handleRemove(type, id);
-                }
-            });
+            // Update branch selection and send data via AJAX
+            function updateBranchSelection() {
+                var selectedBranches = [];
+                $('.branch-checkbox:checked').each(function () {
+                    selectedBranches.push($(this).data('branch-id'));
+                });
+                sendDataToCreateAction($('#SelectedRoles').val(), selectedBranches.join(','));
+            }
 
-            function handleCreate(type, id, name) {
-                var url = '@Url.Action("Create", "SystemTransactiontypes", new { Area = "Admin" })';
-                var selectedRoles = JSON.parse($('#SelectedRoles').val() || '[]');
-                var selectedBranches = JSON.parse($('#SelectedBranches').val() || '[]');
-
-                if (type === 'role') {
-                    if (!selectedRoles.some(role => role.RoleId === id)) {
-                        selectedRoles.push({ RoleId: id, RoleName: name });
-                        $('#SelectedRoles').val(JSON.stringify(selectedRoles));
-                    }
-                } else if (type === 'branch') {
-                    if (!selectedBranches.some(branch => branch.Id === id)) {
-                        selectedBranches.push({ Id: id });
-                        $('#SelectedBranches').val(JSON.stringify(selectedBranches));
-                    }
-                }
-
+            // Send selected roles and branches via AJAX to the Create action
+            function sendDataToCreateAction(selectedRoles, selectedBranches) {
                 $.ajax({
-                    url: url,
+                    url: '@Url.Action("Create", "SystemTransactiontypes", new { Area = "Admin" })',
                     type: 'POST',
-                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                    data: $('#updateForm').serialize(),
+                    data: {
+                        selectedRoles: selectedRoles,  // This will now contain both roleId and roleName.
+                        selectedBranches: selectedBranches,
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
                     success: function (response) {
                         if (response.success) {
-                            console.log(response.message);
-                            alert('Added system permissions.');
-                        } 
+                            Swal.fire({ icon: 'success', title: 'Success!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
                     },
                     error: function () {
-                        alert('Failed to create system permissions.');
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while processing your request.', timer: 8000, showConfirmButton: true });
                     }
                 });
             }
 
-            function handleRemove(type, id) {
-                var url = '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })';
-                var selectedRoles = JSON.parse($('#SelectedRoles').val() || '[]');
-                var selectedBranches = JSON.parse($('#SelectedBranches').val() || '[]');
+            // Form submission logic
+            function submitForm() {
+                var selectedRoles = [];
+                var selectedBranches = [];
 
-                if (type === 'role') {
-                    selectedRoles = selectedRoles.filter(role => role.RoleId !== id);
-                    $('#SelectedRoles').val(JSON.stringify(selectedRoles));
-                } else if (type === 'branch') {
-                    selectedBranches = selectedBranches.filter(branch => branch.Id !== id);
-                    $('#SelectedBranches').val(JSON.stringify(selectedBranches));
-                }
+                $('.role-checkbox:checked').each(function () {
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+                    selectedRoles.push(roleId + '|' + roleName);  // Include both roleId and roleName.
+                });
 
+                $('.branch-checkbox:checked').each(function () {
+                    selectedBranches.push($(this).data('branch-id'));
+                });
+
+                $('#SelectedRoles').val(selectedRoles.join(','));
+                $('#SelectedBranches').val(selectedBranches.join(','));
+
+                var formData = $('#updateForm').serialize();
                 $.ajax({
-                    url: url,
+                    url: $('#updateForm').attr('action'),
                     type: 'POST',
-                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
-                    data: $('#updateForm').serialize(),
+                    data: formData,
                     success: function (response) {
                         if (response.success) {
-                            console.log(response.message);
-                          //  alert('removed system permissions.');
-                        } 
+                            Swal.fire({ icon: 'success', title: 'Success!', text: response.message, timer: 1000, showConfirmButton: false })
+                                .then(() => { window.location.href = '/Accounts/SystemTransactiontypes/Create'; });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
                     },
                     error: function () {
-                        alert('Failed to remove system permissions.');
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while processing your request.', timer: 8000, showConfirmButton: true });
                     }
                 });
             }
@@ -274,3 +255,35 @@
 
 
 
+        [HttpPost]
+        public async Task<JsonResult>
+    Remove(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
+    {
+    await ServeNavigationMenus();
+    ViewBag.SystemPermissionTypeSelectList = GetsystemPermissionTypeList(string.Empty);
+
+
+    roleBindingModel.systemPermissionTypeInRoles = ParseSelectedRoles(selectedRoles);
+    roleBindingModel.systemPermissionTypeInBranchDTOs = ParseSelectedBranches(selectedBranches);
+
+    var linkedRoles = await _channelService.GetRolesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
+    var linkedBranches = await _channelService.GetBranchesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
+    ObservableCollection<string>
+        k = new ObservableCollection<string>
+            ();
+            foreach (var n in roleBindingModel.systemPermissionTypeInRoles)
+            {
+            string p = n.RoleName;
+            k.Add(p);
+            }
+            if (!roleBindingModel.HasErrors)
+            {
+            await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, k, GetServiceHeader());
+            await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
+
+            return Json(new { success = true, message = "System Permissions Updated Successfully" });
+            }
+
+            await ServeNavigationMenus();
+            return Json(new { success = false, message = "There was an error updating system permissions." });
+            }
