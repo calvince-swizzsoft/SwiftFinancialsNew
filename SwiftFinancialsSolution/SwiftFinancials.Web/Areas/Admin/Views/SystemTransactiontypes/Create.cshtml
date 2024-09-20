@@ -28,6 +28,13 @@
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
                     }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> @TempData["Error"]
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    }
                     <div class="ibox-tools">
                         <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         <a class="close-link"><i class="fa fa-times"></i></a>
@@ -101,21 +108,19 @@
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
-            // Form submission event
             $('#updateForm').on('submit', function (e) {
                 e.preventDefault();
                 submitForm();
             });
 
-            // Load roles and branches based on the selected permission type
             $('#SystemPermissionType').change(function () {
                 loadRolesAndBranches($(this).val());
             });
 
-            // AJAX call to load roles and branches based on permission type
             function loadRolesAndBranches(systemPermissionTypeId) {
                 $.ajax({
                     url: '@Url.Action("GetAction", "SystemTransactiontypes", new { Area = "Admin" })',
@@ -132,7 +137,6 @@
                 });
             }
 
-            // Populate roles dynamically with checkboxes
             function populateRoles(allRoles, linkedRoles) {
                 var rolesTableBody = $('#rolesTableBody');
                 rolesTableBody.empty();
@@ -145,7 +149,6 @@
                         '</tr>'
                     );
                 });
-                // Attach event listener for role checkboxes
                 $('.role-checkbox').change(function () {
                     var isChecked = $(this).is(':checked');
                     var roleId = $(this).data('role-id');
@@ -159,7 +162,6 @@
                 });
             }
 
-            // Populate branches dynamically with checkboxes
             function populateBranches(allBranches, linkedBranches) {
                 var branchesTableBody = $('#branchesTableBody');
                 branchesTableBody.empty();
@@ -172,7 +174,6 @@
                         '</tr>'
                     );
                 });
-                // Attach event listener for branch checkboxes
                 $('.branch-checkbox').change(function () {
                     var isChecked = $(this).is(':checked');
                     var branchId = $(this).data('branch-id');
@@ -185,7 +186,6 @@
                 });
             }
 
-            // Update role selection and send data via AJAX
             function updateRoleSelection() {
                 var selectedRoles = [];
                 $('.role-checkbox:checked').each(function () {
@@ -196,7 +196,6 @@
                 sendDataToCreateAction(selectedRoles.join(','), $('#SelectedBranches').val());
             }
 
-            // Update branch selection and send data via AJAX
             function updateBranchSelection() {
                 var selectedBranches = [];
                 $('.branch-checkbox:checked').each(function () {
@@ -205,7 +204,6 @@
                 sendDataToCreateAction($('#SelectedRoles').val(), selectedBranches.join(','));
             }
 
-            // Send selected roles and branches via AJAX to the Create action
             function sendDataToCreateAction(selectedRoles, selectedBranches) {
                 $.ajax({
                     url: '@Url.Action("Create", "SystemTransactiontypes", new { Area = "Admin" })',
@@ -228,7 +226,6 @@
                 });
             }
 
-            // Function to remove a role
             function removeRole(roleId, roleName) {
                 $.ajax({
                     url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
@@ -240,7 +237,7 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire({ icon: 'success', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                            Swal.fire({ icon: 'error', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
                         } else {
                             Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
                         }
@@ -251,7 +248,6 @@
                 });
             }
 
-            // Function to remove a branch
             function removeBranch(branchId) {
                 $.ajax({
                     url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
@@ -263,7 +259,7 @@
                     },
                     success: function (response) {
                         if (response.success) {
-                            Swal.fire({ icon: 'success', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                            Swal.fire({ icon: 'error', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
                         } else {
                             Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
                         }
@@ -274,7 +270,6 @@
                 });
             }
 
-            // Form submission logic
             function submitForm() {
                 var selectedRoles = [];
                 var selectedBranches = [];
@@ -313,4 +308,3 @@
         });
     </script>
 }
-

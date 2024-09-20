@@ -114,10 +114,14 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 // Only process new roles if there are any
                 if (rolesToAdd.Any())
                 {
+                    TempData["SuccessMessage"] = "System Permissions Updated Successfully";
+
                     await _channelService.AddSystemPermissionTypeToRolesAsync(systemPermissionType, rolesToAdd, GetServiceHeader());
                 }
 
                 // Process branches regardless of roles
+                TempData["SuccessMessage"] = "System Permissions Updated Successfully";
+
                 await _channelService.AddSystemPermissionTypeToBranchesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
 
                 if (Request.IsAjaxRequest())
@@ -166,7 +170,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             {
                 await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, k, GetServiceHeader());
                 await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
-
+                TempData["RemoveMassage"] = "System Permissions Removed Successfully";
                 return Json(new { success = true, message = "System Permissions Updated Successfully" });
             }
 
