@@ -198,22 +198,26 @@
                         </table>
                     </div>
                     <form id="modalFilterForm">
-                        <div class="form-row">
-                            <div class="form-group col-md-4">
-                                <label for="recordStatus">Status</label>
-                                @Html.DropDownList("recordStatus", recordStatus, "Filter by Status", new { @class = "form-control", @id = "recordStatus" })
-                            </div>
-                            <div class="form-group col-md-2">
-                                <label for="customerFilter">Search by</label>
-                                @Html.DropDownList("customerFilter", customerFilter, "Advanced Filters", new { @class = "form-control", @id = "customerFilter" })
-                            </div>
-                            <div class="col-lg-6" style="display: flex; justify-content: flex-end; padding-right:50px; margin-top:20px;">
-                                <div class="form-group form-group-sm">
-                                    <input type="submit" value="Refresh" class="btn btn-primary" />
+                        <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
+
+                            <div class=" col-lg-2 form-group">
+                                <div style="display: flex; gap: 30px;">
+                                    <label for="recordStatus">Status</label>
+
+                                    @Html.DropDownList("recordStatus", recordStatus, "Filter by Status", new { @class = "form-control", @id = "recordStatus" })
                                 </div>
                             </div>
+                            <div class=" col-lg-2 form-group">
+                                <div style="display: flex; gap: 30px;">
+                                    <label for="customerFilter">Advanced </label>
 
+                                    @Html.DropDownList("customerFilter", customerFilter, "Search", new { @class = "form-control", @id = "customerFilter" })
+                                </div>
 
+                            </div>
+                            <div class="  col-lg-2 form-group">
+                                <input type="submit" value="Refresh" class="btn btn-primary" />
+                            </div>
                         </div>
                     </form>
                 </div>
