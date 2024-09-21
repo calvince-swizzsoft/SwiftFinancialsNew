@@ -262,5 +262,39 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
                 return Enum.IsDefined(typeof(BatchAuthOption), (int)WireTransferAuthOption) ? EnumHelper.GetDescription((BatchAuthOption)WireTransferAuthOption) : string.Empty;
             }
         }
+        [DataMember]
+        [Display(Name = "Start Date")]
+        public DateTime StartDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "End Date")]
+        public DateTime EndDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public int CustomerAccountTypeProductCode { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerAccountTypeProductCodeDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(ProductCode), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((ProductCode)CustomerAccountTypeProductCode) : string.Empty;
+            }
+        }
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public int RecordStatus { get; set; }
+
+        [DataMember]
+        [Display(Name = "Record Status")]
+        public string RecordStatusDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(RecordStatus), RecordStatus) ? EnumHelper.GetDescription((RecordStatus)RecordStatus) : string.Empty;
+            }
+        }
     }
 }

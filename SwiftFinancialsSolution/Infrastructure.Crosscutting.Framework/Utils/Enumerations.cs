@@ -2013,6 +2013,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
         Reference3,
     }
 
+    
     public enum IndividualType
     {
         [Description("Adult")]

@@ -1,0 +1,110 @@
+﻿@model IEnumerable<SwiftFinancials.Web.Areas.Reports.Models.ReportByCategoryViewModel>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Reports by Category</h2>
+
+
+<div class="search-container">
+    <input type="text" id="reportSearchInput" placeholder="Search for a report..." onkeyup="searchReports()" />
+    <p class="text-danger" id="searchNotFound" style="display: none;"></p> 
+</div>
+
+
+<div class="category-container">
+    @foreach (var categoryGroup in Model.GroupBy(r => r.CategoryName))
+    {
+        <div class="category-group">
+            <h3 class="category-title" onclick="toggleCategory(this)">
+                @categoryGroup.Key (@categoryGroup.Count())
+                <span class="toggle-icon">&#9660;</span>
+            </h3>
+
+            <div class="report-list" style="display: none;">
+                @if (!categoryGroup.Any())
+                {
+                    <p class="no-reports-message">No reports available in this category.</p>
+                }
+                else
+                {
+                    foreach (var report in categoryGroup)
+                    {
+                        var fileNameWithoutExtension = System.IO.Path.GetFileNameWithoutExtension(report.FileName);
+                        var encodedFileName = fileNameWithoutExtension.Replace(" ", "%20");
+
+                        <a href="http://desktop-trhql6c/Reports_Test/report/@encodedFileName" target="_blank" class="report-card">
+                            <div class="report-icon">
+                                <i class="fa fa-file-o" aria-hidden="true"></i>
+                            </div>
+                            <div class="report-title">@report.ReportName</div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    }
+</div>
+
+<link href="~/Scripts/css/SSRSGenerateReportIndex.css" rel="stylesheet" />
+<script>
+    function toggleCategory(categoryTitle) {
+        var reportList = categoryTitle.nextElementSibling;
+        var toggleIcon = categoryTitle.querySelector('.toggle-icon');
+
+        if (reportList.style.display === 'none') {
+            reportList.style.display = 'grid';
+            toggleIcon.innerHTML = '&#9650;';
+        } else {
+            reportList.style.display = 'none';
+            toggleIcon.innerHTML = '&#9660;';
+        }
+    }
+
+    function searchReports() {
+        var input = document.getElementById('reportSearchInput');
+        var filter = input.value.toLowerCase();
+        var categoryGroups = document.querySelectorAll('.category-group');
+        var noReportsFound = true; 
+
+        categoryGroups.forEach(function (categoryGroup) {
+            var categoryTitle = categoryGroup.querySelector('.category-title');
+            var reportList = categoryGroup.querySelector('.report-list');
+            var reports = reportList.querySelectorAll('.report-card');
+            var categoryMatch = false;
+
+            reports.forEach(function (report) {
+                var reportTitle = report.querySelector('.report-title').textContent.toLowerCase();
+
+                if (reportTitle.indexOf(filter) > -1) {
+                    report.style.display = 'flex';
+                    categoryMatch = true;
+                    noReportsFound = false;         
+                } else {
+                    report.style.display = 'none';
+                }
+            });
+
+            if (categoryMatch) {
+                categoryGroup.style.display = 'block';
+                categoryTitle.classList.add('collapsed');
+                reportList.style.display = 'grid';
+            } else {
+                categoryGroup.style.display = 'none';
+            }
+        });
+
+       
+        var searchNotFoundMessage = document.getElementById('searchNotFound');
+        if (noReportsFound && filter.trim() !== "") {
+            searchNotFoundMessage.textContent = "No reports found matching your search.";
+            searchNotFoundMessage.style.display = 'block'; 
+        } else {
+            searchNotFoundMessage.textContent = ""; 
+            searchNotFoundMessage.style.display = 'none'; 
+        }
+    }
+
+</script>

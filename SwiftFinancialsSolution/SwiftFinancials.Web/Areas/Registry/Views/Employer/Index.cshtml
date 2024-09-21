@@ -61,48 +61,54 @@
 @section scripts {
     @Scripts.Render("~/plugins/dataTables")
 
-    <script type="text/javascript">
+<script type="text/javascript">
 
         $(document).ready(function () {
-            $('#employersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Employer", new { Area = "Registry"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+    $('#employersGrid').DataTable({
+        // Ajax settings
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "Employer", new { Area = "Registry"}))",
+        "sServerMethod": "POST",
+        // Callback settings
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dropdownHtml = `
+                <div class="dropdown">
+                    <button class="btn btn-outline-info dropdown-toggle" type="button" id="dropdownMenuButton_${aData.Id}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Actions
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton_${aData.Id}">
+                        <a class="dropdown-item" href="/registry/Employer/details/${aData.Id}">View</a>
+                        <a class="dropdown-item" href="/registry/Employer/edit/${aData.Id}">Edit</a>
+                    </div>
+                </div>`;
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var editUrl = '<a  href="/registry/Employer/edit/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Edit</a>';
-                    var viewUrl = '<a  href="/registry/Employer/details/' + aData.Id + '" class = "btn btn-outline-info"">' + 'View</a>';
-
-                    $('td:eq(6)', nRow).html(dt_Created);
-                    $('td:eq(7)', nRow).html(viewUrl + '&nbsp;' + editUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                "aoColumns": [
-                 { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
-                    { "mDataProp": "Divisions[0].Description", "sTitle": "Division", "sWidth": "10%" },
-                    { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No.", "sWidth": "10%" },
-                    { "mDataProp": "AddressEmail", "sTitle": "Email", "sWidth": "15%" },
-                    { "mDataProp": "RetirementAge", "sTitle": "Retirement Age", "sWidth": "15%" },
-                    { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-                "aaSorting": [[0, "desc"]]
-        });
-        });
+            $('td:eq(6)', nRow).html(dt_Created);
+            $('td:eq(7)', nRow).html(dropdownHtml);
+            return nRow;
+        },
+        // Display settings
+        "aoColumns": [
+            { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+            { "mDataProp": "Divisions[0].Description", "sTitle": "Division", "sWidth": "10%" },
+            { "mDataProp": "AddressMobileLine", "sTitle": "Mobile No.", "sWidth": "10%" },
+            { "mDataProp": "AddressEmail", "sTitle": "Email", "sWidth": "15%" },
+            { "mDataProp": "RetirementAge", "sTitle": "Retirement Age", "sWidth": "15%" },
+            { "mDataProp": "IsLocked", "sTitle": "Is Locked", "sWidth": "15%"},
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
+            { "mDataProp": "CreatedDate", "sTitle": "Actions", "sWidth": "10%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
+});
 
         $(document).ajaxStart(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
@@ -110,6 +116,6 @@
         $(document).ajaxStop(function () {
             $('.ibox').children('.ibox-content').toggleClass('sk-loading');
         });
-    </script>
+</script>
 
 }

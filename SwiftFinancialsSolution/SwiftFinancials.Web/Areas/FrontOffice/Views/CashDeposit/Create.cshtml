@@ -7,11 +7,65 @@
     var withdrawalNotificationCategories = ViewBag.WithdrawalNotificationCategorySelectList as List<SelectListItem>;
     var frontOfficeTransactionType = ViewBag.TransactionTypeSelectList as List<SelectListItem>;
     var chequeDepositType = ViewBag.chequeDepositTypeSelectList as List<SelectListItem>;
- 
+
+    var productCode = ViewBag.ProductCode as List<SelectListItem>;
+    //var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+
+    var customerFilter = ViewBag.CustomerFilterSelectList as List<SelectListItem>;
+
 }
 
 <head>
     <style>
+        .custom-modal-styles {
+            max-width: 850px; /* Fixed width for modal */
+            max-height: 850px; /* Fixed height */
+            margin: 50px auto; /* Center modal with space around it */
+        }
+
+        .modal-content {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden; /* Ensure no scrolling for modal */
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .table-scroll {
+            flex-grow: 1; /* Allow table content to grow */
+            overflow-y: auto; /* Scrollable table data */
+            max-height: 300px; /* Set max height for table data */
+        }
+
+        .table thead th {
+            position: sticky; /* Keep headers fixed */
+            top: 0; /* Fix headers at top */
+            background-color: white; /* Ensure visibility */
+            z-index: 10; /* Layer above the table */
+        }
+
+        .modal-footer {
+            flex-shrink: 0; /* Fixed footer at the bottom */
+          
+            text-align: right;
+            border-top: 1px solid #ddd;
+        }
+
+        /* Ensuring proper margin and width control */
+        .form-row {
+            margin-bottom: 15px; /* Add spacing between the form row and the element below */
+        }
+
+        .btn-primary {
+            margin-right: 0; /* Ensure no unnecessary right margin */
+        }
+
 
         /* Primary Tabs */
         .nav-tabs .nav-link {
@@ -39,8 +93,7 @@
         }
 
             .tab-content > .tab-pane.active,
-            .inner-tab-content > .inner-tab-pane.active
-             {
+            .inner-tab-content > .inner-tab-pane.active {
                 display: block;
             }
 
@@ -193,7 +246,7 @@
                                         <div class="form-group">
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductCode)
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeProductCode)
-                                            @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductId)
+                                            @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
                                             @Html.LabelFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductDescription, "Product Name:", new { @class = "control-label" })
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductParentId)
                                             @Html.TextBoxFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductDescription, new { @class = "form-control", @readonly = "readonly" })
@@ -408,13 +461,6 @@
                                                                         @Html.TextBoxFor(model => model.ChequeDeposit.WriteDate, new { @class = "form-control", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
                                                                     </div>
                                                                 </div>
-
-
-                                                                @*<div class="form-group">
-            @Html.LabelFor(model => model.ChequeDeposit.WriteDate, htmlAttributes: new { @class = "" })
-            @Html.EditorFor(model => model.ChequeDeposit.WriteDate, new { htmlAttributes = new { @class = "form-control" } })
-            @Html.ValidationMessageFor(model => model.ChequeDeposit.WriteDate, "", new { @class = "text-danger" })
-        </div>*@
                                                             </div>
                                                         </div>
                                                         <div class="row">
@@ -444,11 +490,11 @@
                                                                     @Html.ValidationMessageFor(model => model.ChequeDeposit.DrawerBankBranch, "", new { @class = "text-danger" })
                                                                 </div>
                                                             </div>
-                                           
+
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                              
+
                                                                 <div class="form-group">
                                                                     @Html.HiddenFor(model => model.ChequeDeposit.ChequeTypeId, htmlAttributes: new { @id = "ChequeTypeId" })
                                                                     @Html.LabelFor(model => model.ChequeDeposit.ChequeTypeDescription, htmlAttributes: new { @class = "" })
@@ -462,13 +508,13 @@
                                                                     @Html.LabelFor(model => model.ChequeDeposit.MaturityDate, htmlAttributes: new { @class = "" })
                                                                     <div class="input-group date">
                                                                         <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                                        @Html.TextBoxFor(model => model.ChequeDeposit.MaturityDate , new { @class = "form-control", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
+                                                                        @Html.TextBoxFor(model => model.ChequeDeposit.MaturityDate, new { @class = "form-control", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
                                                                     </div>
                                                                 </div>
 
 
                                                             </div>
-                                                         
+
                                                         </div>
                                                         <div class="row">
                                                             <div class="col-md-6">
@@ -500,17 +546,7 @@
                                                         <h5 class="card-title">Payment Voucher Details</h5>
                                                         <div class="row">
                                                             <div class="col-md-6">
-                                                                @*<div class="form-group">
-                                                            <label for="chequeBookNumber">Cheque Book Number:</label>
-                                                            <div class="input-group">
-                                                                <input type="text" id="chequeBookNumber" class="form-control" readonly>
-                                                                <span class="input-group-addon">
-                                                                    <a data-toggle="modal" data-target="#paymentVoucherLookupModal">
-                                                                        <span class="fa fa-search"></span>
-                                                                    </a>
-                                                                </span>
-                                                            </div>
-                                                        </div>*@
+
 
                                                                 <div class="form-group">
                                                                     @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, "Payment Voucher Number:", new { @class = "control-label" })
@@ -574,7 +610,24 @@
                                             <!-- Charges & Levies Tab -->
                                             <div id="chargesLevies" class="inner-tab-pane">
                                                 <!-- Content for Charges & Levies -->
+                                                <div class="table-responsive">
+                                                    <table class="table table-bordered">
+                                                        <thead>
+                                                            <tr>
+                                                                <th>Name</th>
+                                                                <th>Amount</th>
+                                                                <th>Borne by</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td colspan="3">Loading...</td>  <!-- Placeholder until AJAX updates -->
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
                                             </div>
+
                                         </div>
                                     </div>
 
@@ -993,220 +1046,266 @@
 
                     }
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
-                <!-- Payment Voucher Lookup Modal -->
-                <div class="modal fade" id="paymentVoucherLookupModal" tabindex="-1" role="dialog" aria-labelledby="paymentVoucherLookupModalLabel">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title" id="paymentVoucherLookupModalLabel">Payment Voucher Lookup</h4>
-                                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="row">
-                                    <div class="col-md-12">
-                                        <!-- Upper pane -->
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Serial Number</th>
-                                                        <th>Is Active?</th>
-                                                        <th>Initial Voucher Number</th>
-                                                        <th>Number Of Vouchers</th>
-                                                        <th>Account Number</th>
-                                                        <th>Customer Name</th>
-                                                        <th>Customer Reference 1</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- Sample data, replace with dynamic data in real implementation -->
-                                                    <tr>
-                                                        <td>000001</td>
-                                                        <td>False</td>
-                                                        <td>1</td>
-                                                        <td>5</td>
-                                                        <td>001-000520-001-001</td>
-                                                        <td>JUSTUS AMOS</td>
-                                                        <td>0101-001-07529</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <!-- Lower pane -->
-                                        <h5>Payment Vouchers</h5>
-                                        <div class="table-responsive">
-                                            <table class="table table-striped">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Voucher Number</th>
-                                                        <th>Status</th>
-                                                        <th>Payee</th>
-                                                        <th>Amount</th>
-                                                        <th>Write Date</th>
-                                                        <th>Reference</th>
-                                                        <th>Paid/Flagged Date</th>
-                                                        <th>Created Date</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <!-- Sample data, replace with dynamic data in real implementation -->
-                                                    <tr>
-                                                        <td>000001</td>
-                                                        <td>Flagged</td>
-                                                        <td></td>
-                                                        <td>KES:0.00</td>
-                                                        <td></td>
-                                                        <td>Active</td>
-                                                        <td>12-03-2015 14:47:15 PM</td>
-                                                        <td>04-03-2015 10:51:09 AM</td>
-                                                    </tr>
-                                                    <!-- Add more rows as needed -->
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary">Select</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-
-                <div class="modal  fade" id="customerLookupModal" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header  bg-primary">
-                                <h3 class="font-bold">Customers Account Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-                            </div>
-                            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                                <tbody>
+<!-- Payment Voucher Lookup Modal -->
+<div class="modal fade" id="paymentVoucherLookupModal" tabindex="-1" role="dialog" aria-labelledby="paymentVoucherLookupModalLabel">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="paymentVoucherLookupModalLabel">Payment Voucher Lookup</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- Upper pane -->
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
                                     <tr>
-                                        <td class="dataTables_empty">
-                                            Loading data from server
-                                        </td>
+                                        <th>Serial Number</th>
+                                        <th>Is Active?</th>
+                                        <th>Initial Voucher Number</th>
+                                        <th>Number Of Vouchers</th>
+                                        <th>Account Number</th>
+                                        <th>Customer Name</th>
+                                        <th>Customer Reference 1</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sample data, replace with dynamic data in real implementation -->
+                                    <tr>
+                                        <td>000001</td>
+                                        <td>False</td>
+                                        <td>1</td>
+                                        <td>5</td>
+                                        <td>001-000520-001-001</td>
+                                        <td>JUSTUS AMOS</td>
+                                        <td>0101-001-07529</td>
                                     </tr>
                                 </tbody>
                             </table>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="modal  fade" id="paymentVoucherLookupModal" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header  bg-primary">
-                                <h3 class="font-bold">Payment Voucher Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-                            </div>
-                            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                                <tbody>
+                        <!-- Lower pane -->
+                        <h5>Payment Vouchers</h5>
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <thead>
                                     <tr>
-                                        <td class="dataTables_empty">
-                                            Loading data from server
-                                        </td>
+                                        <th>Voucher Number</th>
+                                        <th>Status</th>
+                                        <th>Payee</th>
+                                        <th>Amount</th>
+                                        <th>Write Date</th>
+                                        <th>Reference</th>
+                                        <th>Paid/Flagged Date</th>
+                                        <th>Created Date</th>
                                     </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Sample data, replace with dynamic data in real implementation -->
+                                    <tr>
+                                        <td>000001</td>
+                                        <td>Flagged</td>
+                                        <td></td>
+                                        <td>KES:0.00</td>
+                                        <td></td>
+                                        <td>Active</td>
+                                        <td>12-03-2015 14:47:15 PM</td>
+                                        <td>04-03-2015 10:51:09 AM</td>
+                                    </tr>
+                                    <!-- Add more rows as needed -->
                                 </tbody>
                             </table>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Select</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="customerLookupModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog custom-modal-styles" role="document">
+        <div class="modal-content">
+            <!-- Modal Header -->
+            <div class="modal-header bg-primary">
+                <h4 class="font-bold">Credit Customers Account Lookup</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span class="sr-only">Close</span>
+                </button>
+            </div>
 
-                <input type='hidden' id='h' name='h' />
-
-                <div class="modal  fade" id="banksLookupModal" role="dialog" aria-hidden="true">
-                    <div class="modal-dialog modal-lg">
-                        <div class="modal-content">
-                            <div class="modal-header  bg-primary">
-                                <h3 class="font-bold">Bank Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
-                            </div>
-                            <table id="banksGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
-                                <tbody>
-                                    <tr>
-                                        <td class="dataTables_empty">
-                                            Loading data from server
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-                            </div>
+            <!-- Modal Body (Scrollable Table Content) -->
+            <div class="modal-body">
+                <!-- Filter Form & Controls (Fixed) -->
+                <form id="modalFilterForm">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            @Html.DropDownListFor(m => m.CustomerAccount.CustomerAccountTypeProductCode, productCode, new { @class = "form-control", id = "productCode" })
+                        </div>
+                        <div class="form-group col-md-6">
+                            @Html.DropDownListFor(m => m.CustomerAccount.CustomerFilter, customerFilter, new { @class = "form-control", id = "customerFilter" })
                         </div>
                     </div>
+                    <div class="form-row justify-content-end">
+                        <div class="col-auto">
+                            <button type="submit" class="btn btn-primary">Refresh</button>
+                        </div>
+                    </div>
+
+                </form>
+
+                <!-- Table & Scrollable Data Rows -->
+                <div class="table-responsive table-scroll">
+                    <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Customer Full Name</th>
+                                <th>Account No.</th>
+                                <th>Membership</th>
+                                <th>Product</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td colspan="5" class="dataTables_empty">Loading data from server...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                @section Styles{
-                    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
-                    @Styles.Render("~/plugins/wizardStepsStyles")
-                    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
-                    @Styles.Render("~/plugins/awesomeCheckboxStyles")
-                    @Styles.Render("~/plugins/clockpickerStyles")
-                    @Styles.Render("~/plugins/dateRangeStyles")
-                    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
-                    @Styles.Render("~/plugins/switcheryStyles")
-                    @Styles.Render("~/plugins/jasnyBootstrapStyles")
-                    @Styles.Render("~/plugins/nouiSliderStyles")
-                    @Styles.Render("~/plugins/dataPickerStyles")
-                    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
-                    @Styles.Render("~/plugins/imagecropperStyles")
-                    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
-                    @Styles.Render("~/plugins/select2Styles")
-                    @Styles.Render("~/plugins/touchSpinStyles")
-                    @Styles.Render("~/plugins/tagInputsStyles")
-                    @Styles.Render("~/plugins/duallistStyles")
-                }
+            <!-- Modal Footer (Fixed Controls) -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-                @section Scripts{
-                    @Scripts.Render("~/plugins/wizardSteps")
-                    @Scripts.Render("~/plugins/validate")
-                    @Scripts.Render("~/plugins/typehead")
-                    @Scripts.Render("~/plugins/dataTables")
-                    @Scripts.Render("~/plugins/iCheck")
-                    @Scripts.Render("~/plugins/dataPicker")
-                    @Scripts.Render("~/plugins/ionRange")
-                    @Scripts.Render("~/plugins/nouiSlider")
-                    @Scripts.Render("~/plugins/jasnyBootstrap")
-                    @Scripts.Render("~/plugins/switchery")
-                    @Scripts.Render("~/plugins/chosen")
-                    @Scripts.Render("~/plugins/knob")
-                    @Scripts.Render("~/plugins/imagecropper")
-                    @Scripts.Render("~/plugins/colorpicker")
-                    @Scripts.Render("~/plugins/clockpicker")
-                    @Scripts.Render("~/plugins/dateRange")
-                    @Scripts.Render("~/plugins/select2")
-                    @Scripts.Render("~/plugins/touchSpin")
-                    @Scripts.Render("~/plugins/tagInputs")
-                    @Scripts.Render("~/plugins/duallist")
 
-                    <script>
 
-                        $('#data_3 .input-group.date').datepicker({
-                            startView: 2,
-                            todayBtn: "linked",
-                            keyboardNavigation: false,
-                            forceParse: false,
-                            autoclose: true,
-                            format: "dd/mm/yyyy"  // Set the date format
-                        });
-                    </script>
-                    
-                    <script>
+
+
+
+
+
+
+<div class="modal  fade" id="paymentVoucherLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Payment Voucher Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<input type='hidden' id='h' name='h' />
+
+<div class="modal  fade" id="banksLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header  bg-primary">
+                <h3 class="font-bold">Bank Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="banksGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+    <script>
+
+        $('#data_3 .input-group.date').datepicker({
+            startView: 2,
+            todayBtn: "linked",
+            keyboardNavigation: false,
+            forceParse: false,
+            autoclose: true,
+            format: "dd/mm/yyyy"  // Set the date format
+        });
+    </script>
+
+    <script>
 
         $('#PaymentVouchersGrid').DataTable({
     // Ajax settings
@@ -1286,45 +1385,58 @@
     });
 
 
+                        // Set Default Value for Filters
+                        var defaultProductCode = $('#productCode').val();
+                        var defaultCustomerFilter = $('#customerFilter').val();
 
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                        //Refresh button for reloading the Datable after Applying the filters
+                        $('#modalFilterForm').on('submit', function (e) {
+                            e.preventDefault();
+                            $('#CustomerAccountsGrid').DataTable().ajax.reload();
+                        });
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+     $('#CustomerAccountsGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("FetchCustomerAccountsTable", "CashDeposit", new { Area = "FrontOffice"}))",
+    "sServerMethod": "POST",
 
-                    var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+    // Ensure to include the filters in the Ajax request
+    "fnServerParams": function (aoData) {
+        aoData.push(
+            { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+            { "name": "customerFilter", "value": $('#customerFilter').val() || defaultCustomerFilter }
+        );
+         },
 
-                    $('td:eq(5)', nRow).html(dt_Created);
+         // Callback settings
+         "fnRowCallback": function (nRow, aData) {
+             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+             var h = ("0" + createdDate.getHours()).slice(-2);
+             var m = ("0" + createdDate.getMinutes()).slice(-2);
+             var s = ("0" + createdDate.getSeconds()).slice(-2);
+             var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
 
-                    $('td:eq(6)', nRow).html(selectUrl);
+             var selectUrl = '<a href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class="btn btn-outline-info">Select</a>';
+             $('td:eq(4)', nRow).html(selectUrl);
 
-                    return nRow;
-                },
-            // Display settings
-            "aoColumns": [
+             return nRow;
+         },
 
-                { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-                { "mDataProp": "CustomerReference1", "sTitle": "customer", "sWidth": "2%" },
-                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
-                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "2%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-            "aaSorting": [[0, "desc"]]
-        });
+    // Display settings with adjusted column widths
+    "aoColumns": [
+        { "mDataProp": "CustomerFullName", "sTitle": "Name", "sWidth": "30%" },
+        { "mDataProp": "FullAccountNumber", "sTitle": "Account No.", "sWidth": "30%" },
+        { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "15%" },
+        { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "15%" },
+        { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
+    ],
+    "aaSorting": [[0, "desc"]]
+});
+
 
     $("#s tbody").on("click", "tr", function () {
         var data = CustomerAccountsGrid.row(this).data();
@@ -1338,6 +1450,7 @@
 
 
         $('#id').val(CustomersMap[item].CustomerAccountId);
+        $('#CustomerAccountTypeTargetProductId').val(CustomersMap[item].CustomerAccountTypeTargetProductId)
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
         $('#FullAccountNumber').val(CustomersMap[item].FullAccountNumber);
         $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
@@ -1346,145 +1459,6 @@
         $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
         $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
-        $('#customerLookupModal').modal('hide');
-    });
-
-
-
-        ///// Investment products lookup /////
-$('.InvestmentProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-            '@Url.Action("GetInvestmentProductsAsync", "InvestmentProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (InvestmentProducts) {
-                var newInvestmentProductsData = [];
-                InvestmentProductsMap = {};
-                $.each(InvestmentProducts, function (i, InvestmentProduct) {
-                    newInvestmentProductsData.push(InvestmentProduct.Description);
-                    InvestmentProductsMap[InvestmentProduct.Description] = InvestmentProduct;
-                });
-                process(newInvestmentProductsData);
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var investmentProductId = "";
-        investmentProductId = InvestmentProductsMap[item].Id;
-        $('#InvestmentProductId').val(investmentProductId);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomerAccountTypeTargetProductDescription); // You might need to define or retrieve CustomerAccountTypeTargetProductDescription
-        $('#CustomerAccountTypeTargetProductId').val(investmentProductId); // Assuming this was meant to set the Product ID, corrected it to investmentProductId
-
-        //console.log(investmentProductId)
-        return item;
-    }
-});
-
-
-             //Station typehead starts here
-
-            $('.StationsLookup').typeahead({
-                source: function (query, process) {
-                    return $.getJSON(
-                        '@Url.Action("GetStationsAsync", "Station", new { Area = "Registry" })',
-                        { query: query },
-                        function (Stations) {
-                            var newStationsData = [];
-                            StationsMap = {};
-                            $.each(Stations, function (i, Station) {
-                                newStationsData.push(Station.Description);
-                                StationsMap[Station.Description] = Station;
-                            });
-                            process(newStationsData); return;
-                        });
-                },
-                matcher: function (item) {
-                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-                        return true;
-                    }
-                },
-                sorter: function (items) {
-                    return items.sort();
-                },
-                highlighter: function (item) {
-                    var regex = new RegExp('(' + this.query + ')', 'gi');
-                    return item.replace(regex, "<strong>$1</strong>");
-                },
-                updater: function (item) {
-                    var stationId = "";
-                    StationId = StationsMap[item].Id;
-                    $('#StationId').val(StationId);
-                    $('#StationZoneDivisionEmployerDescription').val(StationsMap[item].ZoneDivisionEmployerDescription);
-                    $('#StationZoneDescription').val(StationsMap[item].ZoneDescription);
-                    $('#StationZoneDivisionDescription').val(StationsMap[item].ZoneDivisionDescription);
-                    //console.log(StationId)
-                    return item;
-                }
-            });
-
-
-    $('#customersGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/FrontOffice/CashDeposit/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(4)', nRow).html(dt_Created);
-                    $('td:eq(5)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-            { "mDataProp": "FullName", "sTitle": "Name", "sWidth": "15%" },
-            { "mDataProp": "TypeDescription", "sTitle": "Type", "sWidth": "10%" },
-            { "mDataProp": "Reference2", "sTitle": "Membership  Number", "sWidth": "10%" },
-            { "mDataProp": "IndividualTypeDescription", "sTitle": "Individual Type", "sWidth": "15%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = customersGrid.row(this).data();
-
-        $('#CustomerId').val(data.Id);
-        $('input[name=CustomerId]').val(data.Id);
-        $('input[name=CustomerFullName]').val(data.FullName);
-
-        var CustomerId = "";
-        CustomerId = CustomersMap[item].Id;
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-        $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
         $('#customerLookupModal').modal('hide');
     });
 
@@ -1526,42 +1500,7 @@ $('.InvestmentProductsLookup').typeahead({
                 }
             });
 
-        $('.SavingProductsLookup').typeahead({
-    source: function (query, process) {
-        return $.getJSON(
-         '@Url.Action("GetSavingsProductsAsync", "SavingsProduct", new { Area = "Accounts" })',
-            { query: query },
-            function (SavingProducts) {
-                var newSavingProductsData = [];
-                SavingProductsMap = {};
-                $.each(SavingProducts, function (i, SavingProduct) {
-                    newSavingProductsData.push(SavingProduct.Description);
-                    SavingProductsMap[SavingProduct.Description] = SavingProduct;
-                });
-                process(newSavingProductsData);
-                return;
-            });
-    },
-    matcher: function (item) {
-        if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
-            return true;
-        }
-    },
-    sorter: function (items) {
-        return items.sort();
-    },
-    highlighter: function (item) {
-        var regex = new RegExp('(' + this.query + ')', 'gi');
-        return item.replace(regex, "<strong>$1</strong>");
-    },
-    updater: function (item) {
-        var savingProductId = "";
-        savingProductId = SavingProductsMap[item].Id;
-        $('#SavingProductId').val(savingProductId);
-        //console.log(savingProductId)
-        return item;
-    }
-});
+
         function captureDetails() {
             var Remarks = document.getElementById('Remark').value;
             var BranchDescription = document.getElementById('BranchDescription').value;
@@ -1584,50 +1523,112 @@ $('.InvestmentProductsLookup').typeahead({
         }
 
 
-                    </script>
+    </script>
 
 
-                    <script>
-                        $(document).ready(function () {
-                            $('.nav-link').on('click', function (e) {
-                                e.preventDefault();
+    <script>
+        $(document).ready(function () {
+            $('.nav-link').on('click', function (e) {
+                e.preventDefault();
 
-                                console.log(this);
+                console.log(this);
 
-                                var target = $(this).attr('href');
+                var target = $(this).attr('href');
 
-                                console.log(target);
+                console.log(target);
 
-                                $('.tab-pane').removeClass('active');
-                                $(target).addClass('active');
+                $('.tab-pane').removeClass('active');
+                $(target).addClass('active');
 
-                                $('.nav-link').removeClass('active');
-                                $(this).addClass('active');
-                            });
-                        });
-                    </script>
+                $('.nav-link').removeClass('active');
+                $(this).addClass('active');
+            });
+        });
+    </script>
 
-                    <script>
-                        $(document).ready(function () {
-                            $('.inner-nav-link').on('click', function (e) {
-                                e.preventDefault();
+    <script>
+        $(document).ready(function () {
+            // Function to handle tab switching and data fetching
+            function handleTabClick(target) {
+                if (target) {
+                    // Switch active tabs
+                    $('.inner-tab-pane').removeClass('active');
+                    $(target).addClass('active');
+                    $('.inner-nav-link').removeClass('active');
+                    $('a[href="' + target + '"]').addClass('active');
 
-                                console.log(this);
+                    // Derive transaction type from target ID
+                    var transactionType = '';
+                    switch (target) {
+                        case '#cashDeposit':
+                            transactionType = 'Cash Deposit';
+                            break;
+                        case '#cashWithdrawal':
+                            transactionType = 'Cash Withdrawal';
+                            break;
+                        case '#chequeDeposit':
+                            transactionType = 'Cheque Deposit';
+                            break;
+                        default:
+                            transactionType = 'Unknown Transaction';
+                    }
 
-                                var target = $(this).attr('href');
+                    // Call the FetchKnownCharges method via AJAX
+                    $.ajax({
+                        url: '/CashDeposit/FetchKnownCharges',
+                        type: 'POST',
+                        data: { target: target },
+                        success: function (response) {
+                            if (response.success) {
+                                var model = response.data;
+                                var commissions = model.Commissions;
 
-                                console.log(target);
 
-                                $('.inner-tab-pane').removeClass('active');
-                                $(target).addClass('active');
+                                if (commissions && commissions.length > 0) {
+                                    var tableBody = '';
+                                    $.each(commissions, function (index, commission) {
+                                        tableBody += '<tr>' +
+                                            '<td>' + commission.Description + '</td>' +
+                                            '<td>' + commission.MaximumCharge + '</td>' +
+                                            '<td>' + commission.ExtendedChargeBenefactorDescription + '</td>' +
+                                            '</tr>';
+                                    });
 
-                                $('.inner-nav-link').removeClass('active');
-                                $(this).addClass('active');
-                            });
-                        });
-                    </script>
+                                    // Insert the rows into the tbody of the table
+                                    $('#chargesLevies tbody').html(tableBody);
+                                } else {
+                                    // If no commissions, display a message with the transaction type
+                                    var noDataMessage = 'No commissions available for this ' + transactionType + ' transaction';
+                                    $('#chargesLevies tbody').html('<tr><td colspan="3">' + noDataMessage + '</td></tr>');
+                                }
+                            } else {
+                                console.log("Error:", response.message);
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.log("AJAX error:", error);
+                        }
+                    });
+                }
+            }
 
-                    <script>
+            // Bind click events to the inner-nav-link elements
+            $('.inner-nav-link').on('click', function (e) {
+                e.preventDefault();
+                var target = $(this).attr('href');
+                handleTabClick(target);
+            });
+
+            // Trigger the default tab (e.g., #cashDeposit) on page load
+            handleTabClick('#cashDeposit');
+        });
+    </script>
+
+
+
+
+
+    <script>
 
                            $('#banksGrid').DataTable({
                 // Ajax settings
@@ -1770,15 +1771,13 @@ $('.InvestmentProductsLookup').typeahead({
                     ChequeTypeId = chequeTypesMap[item].Id;
                     $('#ChequeTypeId').val(ChequeTypeId);
                     $('#ChequeTypeDescription').val(chequeTypesMap[item].Description);
-                 
+
                     return item;
                 }
             });
 
 
+    </script>
 
 
-
-
-                    </script>
-                }
+}

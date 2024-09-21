@@ -1,6 +1,9 @@
-﻿
+﻿@model Application.MainBoundedContext.DTO.RegistryModule.CustomerBindingModel
+
 @{
     ViewBag.Title = "Customers";
+    var customerFilter = ViewBag.CustomerFilters as List<SelectListItem>;
+    var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
 
@@ -18,21 +21,21 @@
 </div>
 
 @*<nav class="navbar">
-    <div class="container">
-        <ul class="nav-menu">
-            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "ConditionalLending" ? "active" : "")">
-                <a href="@Url.Action("Index", "ConditionalLending")" class="nav-link">Conditional Lending</a>
-            </li>
-            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "StationLinkage" ? "active" : "")">
-                <a href="@Url.Action("Create", "StationLinkage")" class="nav-link">Station Linkage</a>
-            </li>
-            <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "NextofKin" ? "active" : "")">
-                <a href="@Url.Action("Create", "NextofKin")" class="nav-link">Next of Kin </a>
-            </li>
-           
-        </ul>
-    </div>
-</nav>*@
+        <div class="container">
+            <ul class="nav-menu">
+                <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Index" && ViewContext.RouteData.Values["Controller"].ToString() == "ConditionalLending" ? "active" : "")">
+                    <a href="@Url.Action("Index", "ConditionalLending")" class="nav-link">Conditional Lending</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "StationLinkage" ? "active" : "")">
+                    <a href="@Url.Action("Create", "StationLinkage")" class="nav-link">Station Linkage</a>
+                </li>
+                <li class="nav-item @(ViewContext.RouteData.Values["Action"].ToString() == "Create" && ViewContext.RouteData.Values["Controller"].ToString() == "NextofKin" ? "active" : "")">
+                    <a href="@Url.Action("Create", "NextofKin")" class="nav-link">Next of Kin </a>
+                </li>
+
+            </ul>
+        </div>
+    </nav>*@
 
 <style>
     body {
@@ -102,17 +105,22 @@
             background-color: #f0f0f0;
         }
 
-    media screen and (max-width: 768px) {
-        .nav-menu
-
-    {
-        flex-direction: column;
-    }
+   
 
     .nav-item {
         margin-right: 0;
         margin-bottom: 5px;
     }
+
+    .form-row {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 16px;
+        font-weight: bold;
+        background-color: #00e0ff;
     }
 </style>
 @*  End of narbar menu  *@
@@ -189,6 +197,29 @@
                             </tbody>
                         </table>
                     </div>
+                    <form id="modalFilterForm">
+                        <div class="form-row" style="display: flex; justify-content: space-between; align-items: center; gap: 30px;">
+
+                            <div class=" col-lg-2 form-group">
+                                <div style="display: flex; gap: 30px;">
+                                    <label for="recordStatus">Status</label>
+
+                                    @Html.DropDownList("recordStatus", recordStatus, "Filter by Status", new { @class = "form-control", @id = "recordStatus" })
+                                </div>
+                            </div>
+                            <div class=" col-lg-2 form-group">
+                                <div style="display: flex; gap: 30px;">
+                                    <label for="customerFilter">Advanced </label>
+
+                                    @Html.DropDownList("customerFilter", customerFilter, "Search", new { @class = "form-control", @id = "customerFilter" })
+                                </div>
+
+                            </div>
+                            <div class="  col-lg-2 form-group">
+                                <input type="submit" value="Refresh" class="btn btn-primary" />
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -203,7 +234,7 @@
     @Scripts.Render("~/plugins/dataTables")
 
     <script type="text/javascript">
-
+        //Default Filters
         $(document).ready(function () {
             $('#CustomersGrid').DataTable({
                 // Ajax settings
@@ -212,6 +243,12 @@
                 "bServerSide": true,
                 "sAjaxSource": "@(Url.Action("Index", "Customer", new { Area = "Registry"}))",
                 "sServerMethod": "POST",
+                "fnServerParams": function (aoData) {
+                    aoData.push(
+                        { "name": "recordStatus", "value": $('#recordStatus').val() || null},
+                        { "name": "customerFilter", "value": $('#customerFilter').val() || null}
+                    );
+                },
                 // Callback settings
                 "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
@@ -253,7 +290,12 @@
                     { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%"},
                     { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "20%", "bSortable": false }],
                 "aaSorting": [[0, "desc"]]
-        });
+            });
+            // Refresh button click handler
+            $('#modalFilterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#CustomersGrid').DataTable().ajax.reload();
+            });
         });
 
         $(document).ajaxStart(function () {

@@ -7,6 +7,8 @@
     var priority = ViewBag.Priority as List<SelectListItem>;
     var batchType = ViewBag.BatchType as List<SelectListItem>;
     var batchAuth = ViewBag.BatchAuthOption as List<SelectListItem>;
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
 
 }
 <style>
@@ -109,6 +111,16 @@
     h2 {
         color: #333;
         font-weight:bold;
+    }
+    .form-row {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 14px;
+        font-weight: bold;
+        background-color: #00e0ff;
     }
 </style>
 
@@ -249,7 +261,7 @@
                             </div>
 
                             <div class="Wire-Transfer-container">
-                                <h2>Batch Entries</h2>
+                                <h2>Entries</h2>
                                 <div class="row">
                                     <div class="col-lg-3">
                                         <div class="col-md-13 form-group">
@@ -435,13 +447,14 @@
                     </tr>
                 </tbody>
             </table>
-
+            
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+
 <div class="modal  fade" id="WireTransferAccountLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -457,6 +470,23 @@
                     </tr>
                 </tbody>
             </table>
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.CustomerAccountTypeProductCode)
+                        @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, ProductCode, new { @class = "form-control", id = "productCode" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.RecordStatus)
+                        @Html.DropDownListFor(m => m.RecordStatus, RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                    </div>
+
+                </div>
+
+            </form>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -698,44 +728,60 @@ function removeEntry(id) {
 
 
 
+        // Set Default Value for Filters
+            var defaultProductCode = $('#productCode').val();
+            var defaultRecordStatus = $('#recordStatus').val();
+        $('#WireTransferAccountsGrid').DataTable({
+            // Ajax settings
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+            "sServerMethod": "POST",
+            //Ensure to include the filters in the Ajax request
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                    { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
 
-    $('#WireTransferAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                );
+            },
+            // Callback settings
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var h = ("0" + createdDate.getHours()).slice(-2);
+                var m = ("0" + createdDate.getMinutes()).slice(-2);
+                var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<button class="btn btn-outline-info" onclick="selectWireTransferCustomerAccount(\'' + aData.Id + '\')">Select</button>';
+                var selectUrl = '<button class="btn btn-outline-info" onclick="selectWireTransferCustomerAccount(\'' + aData.Id + '\')">Select</button>';
 
 
 
-                    $('td:eq(3)', nRow).html(dt_Created);
-                    $('td:eq(4)', nRow).html(selectUrl);
+                $('td:eq(5)', nRow).html(dt_Created);
+                $('td:eq(6)', nRow).html(selectUrl);
 
-                    return nRow;
-                },
-        // Display settings
-        "aoColumns": [
-
-            { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-        "aaSorting": [[0, "desc"]]
-    });
+                return nRow;
+            },
+            // Display settings
+            "aoColumns": [
+                { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
+                { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "4%" },
+                { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "4%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
+                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+            "aaSorting": [[0, "desc"]]
+        });
+            //Refresh button for reloading the Datable after Applying the filters
+            $('#modalFilterForm').on('submit', function (e) {
+                e.preventDefault();
+                $('#WireTransferAccountsGrid').DataTable().ajax.reload();
+            });
 
 
 

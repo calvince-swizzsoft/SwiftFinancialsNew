@@ -38,6 +38,8 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Reports Setting", Icon="fa fa-calculator", ControllerName="ReportSetting", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 7},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Locations", Icon="fa fa-low-vision", ControllerName="Location", ActionName="Index", AreaName = "Admin", Code = 0x00004E20 + 8},
                 new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "System Permission", Icon="fa fa-users", ControllerName="SystemTransactiontypes", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 9},
+                new NavigationMenu{AreaCode = 0x00004E20, IsArea = false, Description = "Report Setting", Icon="fa fa-cogs", ControllerName="SSRSReportSetting", ActionName="Create", AreaName = "Admin", Code = 0x00004E20 + 10},
+
 
                 //Registry - area 21,000
                 new NavigationMenu{Description = "Registry", IsArea = true, Code = 0x00005208},
@@ -233,6 +235,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loan Cases", Icon="fa fa-address-book", ControllerName="LoanRegistration", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 6},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Loaning", Icon="fa fa-book", ControllerName="LoanRestructuring", ActionName="Create", AreaName = "Loaning", Code = 0x00005DC0 + 7},
                 new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Data Capture", Icon="fa fa-database", ControllerName="DataCapture", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 8},
+                new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Back Office Transfers", Icon="fa fa-database", ControllerName="BackOfficeTransfers", ActionName="Create", AreaName = "Accounts", Code = 0x00005DC0 + 8},
                 //new NavigationMenu{AreaCode = 0x00005DC0 + 2, IsArea = false, Description = "Reports", Icon="fa fa-database", ControllerName="Reports", ActionName="Index", AreaName = "Loaning", Code = 0x00005DC0 + 9},
                 //.
                 //.
@@ -282,7 +285,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                 //reports - area 28,000
                 new NavigationMenu{Description = "Reporting", IsArea = true, Code = 0x00006D60},
                 new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Reports", Icon="fa fa-bars", ControllerName="Report", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 1},
-                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Reports", Icon="fa fa-clipboard", ControllerName="ReportSetting", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
+                new NavigationMenu{AreaCode = 0x00006D60, IsArea = false, Description = "Generate Reports", Icon="fa fa-clipboard", ControllerName="SSRSReports", ActionName="index", AreaName = "Reports", Code = 0x00006D60 + 2},
              
             /*
                 //test - area 62,000

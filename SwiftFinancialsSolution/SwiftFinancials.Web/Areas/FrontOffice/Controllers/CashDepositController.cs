@@ -159,6 +159,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
+        {
+            
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+            //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -181,6 +214,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
+
             if (SelectedTeller != null)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
@@ -201,9 +235,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
-
-                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
-
+                    //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
                     searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -230,6 +262,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
             CustomerTransactionModel transactionModel = new CustomerTransactionModel();
 
@@ -967,13 +1002,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             var externalChequeResult = await _channelService.AddExternalChequeAsync(NewExternalCheque, GetServiceHeader());
 
-                            //if (externalChequeResult != null)
-                            //{
-                            //    if (ExternalChequePayables != null)
-                            //        await _channelService.UpdateExternalChequePayablesByExternalChequeIdAsync(externalChequeResult.Id, new ObservableCollection<ExternalChequePayableDTO>(ExternalChequePayables.SelectedItems));
+                            if (externalChequeResult != null)
+                             {
 
 
-                            //}
+                                MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+
+                             }
 
                             var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
                             
@@ -1196,6 +1231,45 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             return Json(chequeTypes, JsonRequestBehavior.AllowGet);
         }
+
+        [HttpPost]
+        public async Task<JsonResult> FetchKnownCharges(CustomerTransactionModel model, string target)
+        {
+           
+         
+            var savingsProduct = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
+            ObservableCollection<CommissionDTO> commissions = null;
+
+            //default to ordinary savings
+            if (savingsProduct == null)
+            {
+                var products = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+
+                savingsProduct = products[0];
+            }
+            
+            switch (target.ToLower())
+            {
+                case "#cashdeposit":
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashDeposit, GetServiceHeader());
+                    break;
+
+                case "#cashwithdrawal":
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.CashWithdrawal, GetServiceHeader());
+                    break;
+
+                case "#chequedeposit":
+                    commissions = await _channelService.FindCommissionsBySavingsProductIdAsync(savingsProduct.Id, (int)SavingsProductKnownChargeType.ChequeBookCharges, GetServiceHeader());
+                    break;
+
+                default:
+                    return Json(new { success = false, message = "Unknown transaction type." });
+            }
+
+           
+            return Json(new { success = true, data = commissions });
+        }
+
 
 
 

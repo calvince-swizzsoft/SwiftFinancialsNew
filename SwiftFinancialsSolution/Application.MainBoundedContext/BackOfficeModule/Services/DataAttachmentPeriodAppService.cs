@@ -60,7 +60,10 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                     var dataAttachmentPeriods = _dataAttachmentPeriodRepository.AllMatching(spec, serviceHeader);
 
                     if (dataAttachmentPeriods != null && dataAttachmentPeriods.Any(x => x.Status == (int)DataAttachmentPeriodStatus.Closed || x.Status == (int)DataAttachmentPeriodStatus.Open))
-                        throw new InvalidOperationException("Sorry, but there is already an open/closed data period for the selected month!");
+                    {
+                        dataAttachmentPeriodDTO.ErrorMessageResult = string.Format("Sorry, but there is already an open/closed data period for the selected month!");
+                        return dataAttachmentPeriodDTO;
+                    }
                     else
                     {
                         var dataAttachmentPeriod = DataAttachmentPeriodFactory.CreateDataAttachmentPeriod(dataAttachmentPeriodDTO.PostingPeriodId, dataAttachmentPeriodDTO.Month, dataAttachmentPeriodDTO.Remarks);
@@ -107,7 +110,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                         current.ChangeCurrentIdentity(persisted.Id, persisted.SequentialId, persisted.CreatedBy, persisted.CreatedDate);
                         current.Status = persisted.Status;
                         current.CreatedBy = persisted.CreatedBy;
-                        
+
 
                         _dataAttachmentPeriodRepository.Merge(persisted, current, serviceHeader);
 
@@ -265,7 +268,7 @@ namespace Application.MainBoundedContext.BackOfficeModule.Services
                 if (dataAttachmentPeriodPagedCollection != null)
                 {
                     var pageCollection = dataAttachmentPeriodPagedCollection.PageCollection.ProjectedAsCollection<DataAttachmentPeriodDTO>();
-                    
+
                     var itemsCount = dataAttachmentPeriodPagedCollection.ItemsCount;
 
                     return new PageCollectionInfo<DataAttachmentPeriodDTO> { PageCollection = pageCollection, ItemsCount = itemsCount };

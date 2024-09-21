@@ -1,18 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.EnterpriseServices;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.RegistryModule;
+using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Util;
+using SwiftFinancials.Web.Attributes;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
 namespace SwiftFinancials.Web.Areas.Registry.Controllers
 {
+    [RoleBasedAccessControl]
     public class ZoneController : MasterController
     {
         public async Task<ActionResult> Index()
@@ -33,7 +37,9 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindZonesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindZonesByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -54,7 +60,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             return View(zoneDTO);
         }
-
+        [RoleBasedAccessControl]
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
@@ -63,6 +69,7 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
         }
 
         [HttpPost]
+        [RoleBasedAccessControl]
         public async Task<ActionResult> Create(ZoneBindingModel zoneBindingModel)
         {
             zoneBindingModel.ValidateAll();

@@ -5,6 +5,9 @@
 
     ViewBag.Title = "Create Debit Batch";
     var queuePriorities = ViewBag.QueuePrioritySelectList as List<SelectListItem>;
+
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
 }
 
 
@@ -117,6 +120,16 @@
     .form-control {
         color: #007bff;
     }
+    .form-row {
+        border: 2px solid gray; /* Border color set to gray */
+        padding: 10px; /* Padding inside the border */
+        border-radius: 5px; /* Rounded corners (optional) */
+
+
+        font-size: 14px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
 
 </style>
 
@@ -184,6 +197,7 @@
                             <i class="fa fa-times"></i>
                         </a>
                     </div>
+                    <h2 style="font-style: italic; margin-bottom: 0;">Debit Batch</h2>
                 </div>
                 <div class="ibox-content bg-white text-info">
 
@@ -467,6 +481,23 @@
                     </tr>
                 </tbody>
             </table>
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.CustomerAccountTypeProductCode)
+                        @Html.DropDownListFor(m => m.CustomerAccountTypeProductCode, ProductCode, new { @class = "form-control", id = "productCode" })
+                    </div>
+                    <div class="form-group col-md-4">
+                        @Html.LabelFor(m => m.RecordStatus)
+                        @Html.DropDownListFor(m => m.RecordStatus, RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                    </div>
+
+                </div>
+
+            </form>
 
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
@@ -780,12 +811,24 @@
             });
 
         ////////// Debit customer accounts lookup modol/////////
+
+        // Set Default Value for Filters
+        var defaultProductCode = $('#productCode').val();
+        var defaultRecordStatus = $('#recordStatus').val();
            $('#DebitCustomerAccountsGrid').DataTable({
         "sPaginationType": "full_numbers",
         "bProcessing": true,
         "bServerSide": true,
         "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
-        "sServerMethod": "POST",
+               "sServerMethod": "POST",
+               //Ensure to include the filters in the Ajax request
+               "fnServerParams": function (aoData) {
+                   aoData.push(
+                       { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                       { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
+
+                   );
+               },
         "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
             var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
             var h = ("0" + createdDate.getHours()).slice(-2);
@@ -797,22 +840,27 @@
 
             var selectUrl = '<a href="#" onclick="selectCustomerAccount(\'' + aData.Id + '\'); return false;" class="btn btn-outline-info">Select</a>';
 
-            $('td:eq(3)', nRow).html(dt_Created);
-            $('td:eq(4)', nRow).html(selectUrl);
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
             return nRow;
         },
         "aoColumns": [
             { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
             { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Customer Gender", "sWidth": "4%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "4%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "4%" },
             { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
             { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }
-        ],
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
         "aaSorting": [[0, "desc"]]
     });
 
-
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#DebitCustomerAccountsGrid').DataTable().ajax.reload();
+        });
 
         function selectCustomerAccount(id) {
     $.ajax({

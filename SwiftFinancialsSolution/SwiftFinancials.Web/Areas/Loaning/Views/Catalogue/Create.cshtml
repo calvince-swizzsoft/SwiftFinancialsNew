@@ -98,50 +98,6 @@
                         </div>
 
                         <h3><i class="fa fa-table" aria-hidden="true"></i> Data Entries</h3>
-                        @*<row>
-                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                        <tr>
-                                            <th>Full Account Number</th>
-                                            <th>Customer Name</th>
-                                            <th>Transaction Type</th>
-                                            <th>Sequence Number</th>
-                                            <th>Current Amount</th>
-                                            <th>Current Balance</th>
-                                            <th>Current Ability</th>
-                                            <th>New Amount</th>
-                                            <th>New Balance</th>
-                                            <th>New Ability</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.DataAttaPeriodsAndEntries != null)
-                                        {
-                                            foreach (var DAEntries in ViewBag.DataAttaPeriodsAndEntries)
-                                            {
-                                                <tr>
-                                                    <td>@DAEntries.FullAccountNumber</td>
-                                                    <td>@DAEntries.CustomerFullName</td>
-                                                    <td>@DAEntries.TransactionTypeDescription</td>
-                                                    <td>@DAEntries.SequenceNumber</td>
-                                                    <td style="text-align: right;">@DAEntries.CurrentAmount</td>
-                                                    <td style="text-align: right;">@DAEntries.CurrentBalance</td>
-                                                    <td style="text-align: right;">@DAEntries.CurrentAbility</td>
-                                                    <td style="text-align: right;">@DAEntries.NewAmount</td>
-                                                    <td style="text-align: right;">@DAEntries.NewBalance</td>
-                                                    <td style="text-align: right;">@DAEntries.NewAbility</td>
-                                                </tr>
-                                            }
-                                        }
-                                    </tbody>
-                                </table>
-
-                                @if (TempData["DAEntries"] != null)
-                                {
-                                    <p style="color: red; font-style:italic; text-align: left;"><strong>@TempData["DAEntries"]</strong></p>
-                                }
-                            </row>*@
-
                         <div class="ibox-content">
                             <div class="sk-spinner sk-spinner-double-bounce">
                                 <div class="sk-double-bounce1"></div>

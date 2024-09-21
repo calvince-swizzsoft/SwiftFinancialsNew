@@ -55,7 +55,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             var dataCapture = await _channelService.FindDataAttachmentPeriodAsync(id, GetServiceHeader());
-           
+
             return View(dataCapture);
         }
 
@@ -94,7 +94,15 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (!dataPeriodDTO.HasErrors)
             {
-                await _channelService.AddDataAttachmentPeriodAsync(dataPeriodDTO, GetServiceHeader());
+                var cut = await _channelService.AddDataAttachmentPeriodAsync(dataPeriodDTO, GetServiceHeader());
+
+                if (cut.ErrorMessageResult != null)
+                {
+                    ViewBag.MonthSelectList = GetMonthsAsync(string.Empty);
+
+                    TempData["ErrorMessageResult"] = cut.ErrorMessageResult;
+                    return View();
+                }
 
                 TempData["message"] = "Successfully created Data Period";
 

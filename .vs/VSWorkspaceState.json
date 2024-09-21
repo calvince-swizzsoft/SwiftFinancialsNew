@@ -1,0 +1,14 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Credit",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer"
+  ],
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\BatchOrigination_Credit\\Create.cshtml",
+  "PreviewInSolutionExplorer": false
+}
