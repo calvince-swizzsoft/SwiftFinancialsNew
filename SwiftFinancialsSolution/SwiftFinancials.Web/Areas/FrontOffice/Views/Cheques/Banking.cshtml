@@ -131,6 +131,8 @@
                             </tbody>
                         </table>
                     </div>
+
+                    <button id="toggle-select-all" class="btn btn-primary">Select All</button>
                     <button id="bankSelectedButton" class="btn btn-success">Bank</button>
 
                 </div>
@@ -254,7 +256,7 @@
 
 
 
-   
+
 
 
     <script>
@@ -342,6 +344,28 @@
     });
 });
 
+    </script>
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            // Flag to track whether all items are selected
+            var allSelected = false;
+
+            // Handle Select All button click
+            $('#toggle-select-all').click(function () {
+                allSelected = !allSelected; // Toggle the flag
+
+                if (allSelected) {
+                    // Select all checkboxes
+                    $('.select-row').prop('checked', true);
+                    $(this).text('Deselect All'); // Change button text to 'Deselect All'
+                } else {
+                    // Deselect all checkboxes
+                    $('.select-row').prop('checked', false);
+                    $(this).text('Select All'); // Change button text to 'Select All'
+                }
+            });
+        });
     </script>
 
 }
