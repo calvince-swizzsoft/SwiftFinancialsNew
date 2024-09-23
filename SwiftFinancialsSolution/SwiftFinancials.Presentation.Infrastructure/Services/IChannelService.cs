@@ -2044,7 +2044,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ChequeBookDTO> FindChequeBookAsync(Guid chequeBookId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<ChequeBookDTO>> FindChequeBooksAsync(ServiceHeader seriviceHeader = null);
         Task<ObservableCollection<PaymentVoucherDTO>> FindPaymentVouchersByChequeBookIdAsync(Guid chequeBookId, ServiceHeader serviceHeader = null);
+
+        Task<PageCollectionInfo<PaymentVoucherDTO>> FindPaymentVouchersByChequeBookIdAndFilterInPageAsync(Guid chequeBookId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader);
 
         Task<bool> FlagPaymentVoucherAsync(PaymentVoucherDTO paymentVoucherDTO, ServiceHeader serviceHeader = null);
 

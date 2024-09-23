@@ -1084,6 +1084,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.TotalValue = transactionModel.ChequeDeposit.Amount;
             }
 
+            if (transactionModel.PaymentVoucher.Amount > 0)
+            {
+                transactionModel.TotalValue = transactionModel.PaymentVoucher.Amount;
+                transactionModel.Reference = transactionModel.PaymentVoucher.Reference;
+            }
+
 
 
             switch ((FrontOfficeTransactionType)transactionModel.CustomerAccount.Type)
@@ -1107,6 +1113,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     break;
 
                 case FrontOfficeTransactionType.CashWithdrawal:
+                case FrontOfficeTransactionType.CashWithdrawalPaymentVoucher: 
 
                     if (SelectedCustomerAccount != null)
                     {
@@ -1161,7 +1168,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 return RedirectToAction("Create");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
 
@@ -1293,8 +1300,53 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return Json(new { success = true, data = commissions });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> FetchPaymentVouchersTable(Guid? customerAccountId, JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
+
+           
+            var chequebooks = await _channelService.FindChequeBooksAsync(GetServiceHeader());
+            var chequebook = chequebooks.FirstOrDefault(c => c.CustomerAccountId == customerAccountId);
+
+            if (chequebook != null)
+            {
+
+                var pageCollectionInfo = await _channelService.FindPaymentVouchersByChequeBookIdAndFilterInPageAsync(chequebook.Id, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+
+                else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
+
+        public async Task<JsonResult> FetchPaymentVoucherJson(Guid chequeBookId)
+        {
+
+
+            var paymentVoucher = await _channelService.FindPaymentVouchersByChequeBookIdAsync(chequeBookId, GetServiceHeader());
+
+            return Json(new { success = true, data = paymentVoucher });
+
+        }
 
     }
 }
