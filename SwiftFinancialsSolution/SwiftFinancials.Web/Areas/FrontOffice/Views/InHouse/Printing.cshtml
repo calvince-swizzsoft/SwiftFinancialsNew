@@ -1,0 +1,433 @@
+﻿
+
+@model Application.MainBoundedContext.DTO.FrontOfficeModule.InHouseChequeDTO
+
+@{
+    ViewBag.Title = "Print In-house Cheques";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-lg-10">
+        <h2>Cheque Banking</h2>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
+            </li>
+            <li class="breadcrumb-item active">
+                <strong>List</strong>
+            </li>
+        </ol>
+    </div>
+</div>
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+<style>
+    .main-container {
+        border: 1px solid gray;
+        border-radius: 10px;
+        background-color: #f1f1f1;
+        padding: 20px;
+        margin-top: 20px;
+    }
+
+    .section-header {
+        background-color: #b0e0e6;
+        padding: 10px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .content {
+        border: 1px solid #00e0ff;
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+    }
+
+    .input-group-addon {
+        color: #007bff;
+    }
+
+    .bottom-button {
+        border: 2px solid gray;
+        padding: 10px;
+        border-radius: 5px;
+        font-size: 18px;
+        font-weight: bold;
+        background-color: #00e0ff;
+    }
+
+    .form-control, .custom-select {
+        border-radius: 10px;
+        color: #007bff;
+    }
+
+    .btn-custom {
+        background-color: #28a745;
+        color: white;
+        border-radius: 10px;
+    }
+
+    .btn-remove, .btn-update {
+        background-color: #007bff;
+        color: white;
+        border-radius: 10px;
+    }
+
+    .table-container {
+        background-color: #b0e0e6;
+        border-radius: 10px;
+        padding: 20px;
+        margin-top: 20px;
+    }
+</style>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        // Show a dialog when the page loads
+        window.onload = function () {
+            var successMessage = "@TempData["SuccessMessage"]";
+            if (successMessage) {
+                // Show a confirmation dialog
+                var userChoice = confirm(successMessage + "\nDo you want to print the cheque?");
+                if (userChoice) {
+                    // If the user clicks "OK", proceed to print
+                    printCheque();
+                }
+            }
+        };
+
+        // Function to trigger cheque printing
+        function printCheque() {
+            // Implement the logic to print the cheque here
+            window.open('/path-to-print-cheque-page', '_blank'); // Example of opening print page
+        }
+    </script>
+}
+
+
+<div class="main-container">
+    <h2 class="section-header">Cheque Printing</h2>
+
+    @using (Html.BeginForm("Printing", "InHouse", new { Area = "FrontOffice" }, FormMethod.Post))
+    {
+        @Html.AntiForgeryToken()
+
+        <!-- Step 1: Select Source of Funds -->
+        <div class="row">
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Payee, "Payee", new { @class = "control-label" })
+                <div class="input-group" data-autoclose="true">
+                    @Html.EditorFor(model => model.Payee, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                    <span class="input-group-addon">
+                        <a data-toggle="modal" data-target="#PayeeLookupModal" onclick="captureDetails();">
+                            <span class="fa fa-search"></span>
+                        </a>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Step 3: Enter Amount -->
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Reference, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Reference, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.Reference, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
+            </div>
+
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.WordifiedAmount, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.WordifiedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.WordifiedAmount, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.PaddedAmount, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.PaddedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.PaddedAmount, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.ChequeNumber, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.ChequeNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.ChequeNumber, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.BankName, new { @class = "control-label" })
+                <div class="input-group" data-autoclose="true">
+                    @Html.TextBoxFor(model => model.BankName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Bank..." })
+                    <span class="input-group-addon">
+                        <a data-toggle="modal" data-target="#bankLinkageLookupModal"><span class="fa fa-search"></span></a>
+                    </span>
+                </div>
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.BranchDescription, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.BranchDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.BranchDescription, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.BankAccount, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.BankAccount, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.BankAccount, "", new { @class = "text-danger" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(model => model.DebitChartOfAccountAccountName, htmlAttributes: new { @class = "control-label" })
+                @Html.EditorFor(model => model.DebitChartOfAccountAccountName, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
+                @Html.ValidationMessageFor(model => model.DebitChartOfAccountAccountName, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+        <!-- Step 4: Enter Payee Name -->
+
+        <br />
+        <hr />
+
+        <div class="form-group">
+            <input type="submit" value="Print Cheque" class="btn btn-primary btn-update" />
+            <a href="@Url.Action("Index", "InHouseCheque")" class="btn btn-secondary">Cancel</a>
+        </div>
+    }
+</div>
+
+
+<!-- Payee Lookup Modal -->
+<div class="modal fade" id="PayeeLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">In-House Cheque Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="PayeeGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bank Lookup Modal -->
+<div class="modal fade" id="bankLinkageLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Bank Linkages Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="bankLinkageGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">Loading data from server</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+    @Styles.Render("~/Content/plugins/jqueryValidationStyles")
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+}
+
+@section Scripts{
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+    @Scripts.Render("~/plugins/jquery")
+    @Scripts.Render("~/plugins/jqueryValidate")
+    @Scripts.Render("~/plugins/jqueryValidateUnobtrusive")
+
+
+
+    <script>
+    $(document).ready(function () {
+        // Initialize the DataTable
+        $('#PayeeGrid').DataTable({
+            // Ajax settings
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "InHouse", new { Area = "FrontOffice"}))",
+            "sServerMethod": "POST",
+
+            // Callback settings
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                // Parse and format the created date
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var formattedDate = createdDate.toLocaleDateString('en-GB') + " " + createdDate.toLocaleTimeString('en-GB');
+
+                // Create the Select button with data attributes
+                var selectUrl = '<a href="#" class="btn btn-outline-info select-bank"  data-id="' + aData.Id + '" data - payee = "' + aData.Payee +'" data - reference="' + aData.Reference + '" data - amount="' + aData.Amount + '" data - wordi-fied-amount="' + aData.WordifiedAmount + '" data - padded-amount = "' + aData.PaddedAmount + '"  > Select</a > ';
+
+                // Update the row data
+                $('td:eq(5)', nRow).html(formattedDate);
+                $('td:eq(6)', nRow).html(selectUrl);
+
+                return nRow;
+            },
+
+            // Display settings
+            "aoColumns": [
+                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "15%" },
+                { "mDataProp": "Payee", "sTitle": "Payee", "sWidth": "10%" },
+                { "mDataProp": "Funding", "sTitle": "Funding", "sWidth": "10%" },
+                { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "10%" },
+                { "mDataProp": "DebitChartOfAccountAccountName", "sTitle": "Debit Chart Of Account Name", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
+                { "mDataProp": null, "sTitle": "", "sWidth": "10%", "bSortable": false }
+            ],
+            "aaSorting": [[0, "desc"]]
+        });
+
+        // Handle the selection of a bank from the lookup
+        $('#bankLinkageGrid').on('click', '.select-bank', function (e) {
+            e.preventDefault();
+
+            // Retrieve data from the clicked button's data attributes
+            var bankId = $(this).data('id');
+            var payee = $(this).data('payee');
+            var reference = $(this).data('reference');
+            var wordifiedamount = $(this).data('wordi-fied-amount');
+            var paddedamount = $(this).data('padded-amount');
+
+            // Set values in the form fields
+            $('#Payee').val(payee);
+            $('#Reference').val(reference);
+            $('#Wordifiedamount').val(wordifiedamount);
+            $('#Paddedamount').val(paddedamount);
+
+            // Close the modal
+            $('#bankLinkageLookupModal').modal('hide');
+        });
+    });
+    </script>
+
+    <script>
+    $(document).ready(function () {
+        // Initialize the DataTable
+        $('#bankLinkageGrid').DataTable({
+            // Ajax settings
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "BankLinkage", new { Area = "Accounts"}))",
+            "sServerMethod": "POST",
+
+            // Callback settings
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                // Parse and format the created date
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var formattedDate = createdDate.toLocaleDateString('en-GB') + " " + createdDate.toLocaleTimeString('en-GB');
+
+                // Create the Select button with data attributes
+                var selectUrl = '<a href="#" class="btn btn-outline-info select-bank" data-bank-id="' + aData.Id + '" data-bank-name="' + aData.BankName + '" data-branch="' + aData.BranchDescription + '" data-gl-account="' + aData.ChartOfAccountAccountName + '" data-bank-account-number="' + aData.BankAccountNumber + '">Select</a>';
+
+                // Update the row data
+                $('td:eq(5)', nRow).html(formattedDate);
+                $('td:eq(6)', nRow).html(selectUrl);
+
+                return nRow;
+            },
+
+            // Display settings
+            "aoColumns": [
+                { "mDataProp": "BankBranchName", "sTitle": "Bank Branch Name", "sWidth": "15%" },
+                { "mDataProp": "BranchDescription", "sTitle": "Branch Name", "sWidth": "10%" },
+                { "mDataProp": "ChartOfAccountAccountName", "sTitle": "G/L Account Name", "sWidth": "10%" },
+                { "mDataProp": "BankName", "sTitle": "Bank Name", "sWidth": "10%" },
+                { "mDataProp": "ChartOfAccountCostCenterDescription", "sTitle": "G/L Account Cost Center", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
+                { "mDataProp": null, "sTitle": "", "sWidth": "10%", "bSortable": false }
+            ],
+            "aaSorting": [[0, "desc"]]
+        });
+
+        // Handle the selection of a bank from the lookup
+        $('#bankLinkageGrid').on('click', '.select-bank', function (e) {
+            e.preventDefault();
+
+            // Retrieve data from the clicked button's data attributes
+            var bankId = $(this).data('bank-id');
+            var bankName = $(this).data('bank-name');
+            var branch = $(this).data('branch');
+            var glAccount = $(this).data('gl-account');
+            var bankAccountNumber = $(this).data('bank-account-number');
+
+            // Set values in the form fields
+            $('#BankName').val(bankName);
+            $('#BranchDescription').val(branch);
+            $('#DebitChartOfAccountAccountName').val(glAccount);
+            $('#BankAccount').val(bankAccountNumber);
+
+            // Close the modal
+            $('#bankLinkageLookupModal').modal('hide');
+        });
+    });
+    </script>
+
+
+
+
+
+
+
+
+}
+
+
+
+
+
+
+
+

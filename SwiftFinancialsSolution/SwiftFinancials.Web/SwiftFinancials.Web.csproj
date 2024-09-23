@@ -548,6 +548,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\CustomerReceiptsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\EndOfDayController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />
@@ -1388,7 +1389,6 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
-    <Content Include="Areas\Accounts\Views\BackOfficeTransfers\Create.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

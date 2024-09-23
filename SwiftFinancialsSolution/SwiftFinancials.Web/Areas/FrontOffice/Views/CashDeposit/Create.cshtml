@@ -497,6 +497,7 @@
 
                                                                 <div class="form-group">
                                                                     @Html.HiddenFor(model => model.ChequeDeposit.ChequeTypeId, htmlAttributes: new { @id = "ChequeTypeId" })
+                                                                    @Html.HiddenFor(model => model.ChequeDeposit.BankLinkageChartOfAccountId)
                                                                     @Html.LabelFor(model => model.ChequeDeposit.ChequeTypeDescription, htmlAttributes: new { @class = "" })
                                                                     @Html.EditorFor(model => model.ChequeDeposit.ChequeTypeDescription, new { htmlAttributes = new { @id = "ChequeTypeDescription", @class = "ChequeTypeLookup form-control", @placeholer = "tap spacebar" } })
                                                                     @Html.ValidationMessageFor(model => model.ChequeDeposit.ChequeTypeDescription, "", new { @class = "text-danger" })
@@ -1684,10 +1685,11 @@
                                         // Populate the fields with the returned data
                                         $('#DrawerBankId').val(data.Id);
                                         $('#DrawerBankName').val(data.Description);
+                                        $('#DrawerBankLinkageChartOfAccoundId').val(data.BankLinkageChartOfAccountId);
 
 
                                         // Close the modal after successful data retrieval
-                                        $('#bankLookupModal').modal('hide');
+                                        $('#banksLookupModal').modal('hide');
                                     } else {
                                         console.error("No bank details found.");
                                     }
