@@ -17,11 +17,12 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
     [RoleBasedAccessControl]
     public class SystemTransactiontypesController : MasterController
     {
+        [HttpGet]
         public async Task<ActionResult> Create()
         {
             await ServeNavigationMenus();
             ViewBag.SystemPermissionTypeSelectList = GetsystemPermissionTypeList(string.Empty);
-            return View();
+            return View("Create");
         }
 
         [HttpGet]
@@ -32,8 +33,22 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var branchesDTOs = await _channelService.FindBranchesAsync(GetServiceHeader());
             return Json(branchesDTOs, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public async Task<JsonResult> MarkRoleCheckbox(int navigationItemCode, string roleName)
+        {
+            await _applicationRoleManager.FindByNameAsync(roleName);
+            //bool result =aw
+            //if (result == true)
+            //{
+            //    return Json(1, JsonRequestBehavior.AllowGet);
+            //}
+            //else
+            //{
+            //    return Json(2, JsonRequestBehavior.AllowGet);
+            //}
+            return Json(2, JsonRequestBehavior.AllowGet);
+        }
 
-       
         [HttpGet]
         public async Task<JsonResult> GetAction(int systemPermissionTypeId)
         {
@@ -44,22 +59,30 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             var linkedRoles = await _channelService.GetRolesForSystemPermissionTypeAsync(systemPermissionTypeId, GetServiceHeader());
             var linkedBranches = await _channelService.GetBranchesForSystemPermissionTypeAsync(systemPermissionTypeId, GetServiceHeader());
 
+            var foundRoles = new ObservableCollection<RoleDTO>();
+            foreach (var roleName in linkedRoles)
+            {
+                var role = await _applicationRoleManager.FindByNameAsync(roleName);
+                if (role != null)
+                {
+                    foundRoles.Add(new RoleDTO { Id = role.Id, Name = role.Name });
+                }
+            }
+
             return Json(new
             {
                 allRoles = allRoles.Select(role => new { role.Id, role.Name }).ToList(),
                 allBranches = allBranches.Select(branch => new { branch.Id, branch.Description }).ToList(),
-                linkedRoles = linkedRoles,
+                linkedRoles = foundRoles.Select(role => new { role.Id, role.Name }).ToList(),
                 linkedBranches = linkedBranches.Select(branch => new { branch.Id }).ToList()
             }, JsonRequestBehavior.AllowGet);
         }
-
         [HttpGet]
         public JsonResult GetRoles()
         {
             var roles = _applicationRoleManager.Roles.ToList();
             return Json(roles, JsonRequestBehavior.AllowGet);
         }
-
         [HttpPost]
         public async Task<ActionResult> Create(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
         {
@@ -71,35 +94,47 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             if (!roleBindingModel.HasErrors)
             {
-                await _channelService.AddSystemPermissionTypeToRolesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInRoles, GetServiceHeader());
+                // Retrieve currently linked roles
+                var linkedRoles = await _channelService.GetRolesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
+                var existingRoles = new ObservableCollection<string>(linkedRoles.Select(r => r.ToString())); // Assuming linkedRoles contains RoleName
+
+                // Create a list to hold new roles that will be added
+                var rolesToAdd = new ObservableCollection<SystemPermissionTypeInRoleDTO>();
+
+                foreach (var role in roleBindingModel.systemPermissionTypeInRoles)
+                {
+                    // Check if the role already exists in the linked roles
+                    if (!existingRoles.Contains(role.RoleName))
+                    {
+                        rolesToAdd.Add(role);
+                        existingRoles.Add(role.RoleName); // Optionally keep track of roles for further operations
+                    }
+                }
+
+                // Only process new roles if there are any
+                if (rolesToAdd.Any())
+                {
+                    TempData["SuccessMessage"] = "System Permissions Updated Successfully";
+
+                    await _channelService.AddSystemPermissionTypeToRolesAsync(systemPermissionType, rolesToAdd, GetServiceHeader());
+                }
+
+                // Process branches regardless of roles
+                TempData["SuccessMessage"] = "System Permissions Updated Successfully";
+
                 await _channelService.AddSystemPermissionTypeToBranchesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
-                await _channelService.MapSystemPermissionTypeToRolesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInRoles, GetServiceHeader());
-                await _channelService.MapSystemPermissionTypeToBranchesAsync(systemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
 
-                //    // Success notification
-                //    var successMessage = new
-                //    {
-                //        success = true,
-                //        message = "System Permissions Linked Successfully!",
-                //        icon = "✔️" // Checkmark icon for success
-                //    };
+                if (Request.IsAjaxRequest())
+                {
+                    return Json(new { success = true, message = "System Permissions Updated Successfully" });
+                }
 
-                //    return Json(successMessage, JsonRequestBehavior.AllowGet);
-                //}
-
-                //// Error notification
-                //var errorMessage = new
-                //{
-                //    success = false,
-                //    message = "There was an error linking system permissions.",
-                //    icon = "❌" // X icon for failure
-                //};
-
-                return View("Create");
+                TempData["SuccessMessage"] = "System Permissions Updated Successfully";
+                return RedirectToAction("Create");
             }
 
             await ServeNavigationMenus();
-            return View("Create");
+            return View("Create", roleBindingModel);
         }
 
 
@@ -113,13 +148,12 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             return Json(notificationMessage, JsonRequestBehavior.AllowGet);
         }
-
-
         [HttpPost]
-        public async Task<JsonResult> Remove(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
+        public async Task<ActionResult> Remove(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
         {
             await ServeNavigationMenus();
             ViewBag.SystemPermissionTypeSelectList = GetsystemPermissionTypeList(string.Empty);
+
 
             roleBindingModel.systemPermissionTypeInRoles = ParseSelectedRoles(selectedRoles);
             roleBindingModel.systemPermissionTypeInBranchDTOs = ParseSelectedBranches(selectedBranches);
@@ -134,9 +168,9 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             }
             if (!roleBindingModel.HasErrors)
             {
-                await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, linkedRoles, GetServiceHeader());
-                await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, linkedBranches, GetServiceHeader());
-
+                await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, k, GetServiceHeader());
+                await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
+                TempData["RemoveMassage"] = "System Permissions Removed Successfully";
                 return Json(new { success = true, message = "System Permissions Updated Successfully" });
             }
 
@@ -146,18 +180,35 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
         private ObservableCollection<SystemPermissionTypeInRoleDTO> ParseSelectedRoles(string selectedRoles)
         {
-
             if (string.IsNullOrEmpty(selectedRoles))
                 return new ObservableCollection<SystemPermissionTypeInRoleDTO>();
 
             try
             {
-                var roles = Newtonsoft.Json.JsonConvert.DeserializeObject<List<SystemPermissionTypeInRoleDTO>>(selectedRoles);
-                return new ObservableCollection<SystemPermissionTypeInRoleDTO>(roles.Select(role => new SystemPermissionTypeInRoleDTO
+                // Split the input string into individual role items
+                var rolesArray = selectedRoles.Split(',');
+                var rolesList = new List<SystemPermissionTypeInRoleDTO>();
+
+                foreach (var roleItem in rolesArray)
                 {
-                    RoleId = Guid.Parse(role.RoleId.ToString()),
-                    RoleName = role.RoleName
-                }).ToList());
+                    // Split each role item into roleId and roleName
+                    var roleData = roleItem.Split('|');
+                    if (roleData.Length == 2) // Ensure we have both roleId and roleName
+                    {
+                        var roleId = roleData[0];  // Get the roleId
+                        var roleName = roleData[1]; // Get the roleName
+
+                        // Create a new SystemPermissionTypeInRoleDTO object and add it to the list
+                        rolesList.Add(new SystemPermissionTypeInRoleDTO
+                        {
+                            RoleId = Guid.Parse(roleId), // Parse roleId as Guid
+                            RoleName = roleName
+                        });
+                    }
+                }
+
+                // Return the list as an ObservableCollection
+                return new ObservableCollection<SystemPermissionTypeInRoleDTO>(rolesList);
             }
             catch (Exception ex)
             {
@@ -174,19 +225,26 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             try
             {
-                var branches = Newtonsoft.Json.JsonConvert.DeserializeObject<List<BranchDTO>>(selectedBranches);
-                return new ObservableCollection<BranchDTO>(branches.Select(branch => new BranchDTO
+                // Split the string by comma to get individual GUIDs
+                var branchGuids = selectedBranches.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                // Convert each GUID string into a BranchDTO object
+                var branches = branchGuids.Select(guidStr => new BranchDTO
                 {
-                    Id = Guid.Parse(branch.Id.ToString()),
-                    Description = branch.Description
-                }).ToList());
+                    Id = Guid.TryParse(guidStr, out Guid parsedId) ? parsedId : Guid.Empty,
+                    //Description = "Branch for " + guidStr  // Set any description you want
+                }).ToList();
+
+                // Return as an ObservableCollection
+                return new ObservableCollection<BranchDTO>(branches);
             }
             catch (Exception ex)
             {
-                // Handle parsing errors
-                // Log exception if necessary
+                // Log or handle the parsing errors
                 return new ObservableCollection<BranchDTO>();
             }
         }
+
+
     }
 }

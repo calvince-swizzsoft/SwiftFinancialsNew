@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\SwiftFinancialsSolution",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Views",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Views\\Customer"
+  ],
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers\\CoA_RegisterController.cs",
+  "PreviewInSolutionExplorer": false
+}

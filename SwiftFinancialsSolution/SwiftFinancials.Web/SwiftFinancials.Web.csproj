@@ -528,6 +528,7 @@
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TiersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TransactionJournalsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
@@ -548,6 +549,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\CustomerReceiptsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\EndOfDayController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />
@@ -698,6 +700,7 @@
     <Compile Include="Services\IWebConfigurationService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Attributes\SystemPermission.cs" />
     <Compile Include="TypeAdapterFactory\ApplicationProfile.cs" />
     <Compile Include="TypeAdapterFactory\AutomapperTypeAdapter.cs" />
     <Compile Include="TypeAdapterFactory\AutomapperTypeAdapterFactory.cs" />

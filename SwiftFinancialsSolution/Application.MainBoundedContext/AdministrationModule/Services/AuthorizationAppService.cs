@@ -321,7 +321,8 @@ namespace Application.MainBoundedContext.AdministrationModule.Services
                         if (matches.Any())
                         {
                             // If a match is found, return false to indicate that the entry already exists
-                            return false;
+                            matches.ToList().ForEach(x => _systemPermissionTypeInRoleRepository.Add(x, serviceHeader));
+                            return true;
                         }
 
                         var systemPermissionTypeInRole = SystemPermissionTypeInRoleFactory.CreateSystemPermissionTypeInRole(systemPermissionType, item.RoleName, item.RequiredApprovers, item.ApprovalPriority);
