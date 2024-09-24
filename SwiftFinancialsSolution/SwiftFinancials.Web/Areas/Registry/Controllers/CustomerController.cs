@@ -213,6 +213,8 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             customerBindingModel.IndividualEmploymentDate = DateTime.ParseExact((Request["employmentdate"].ToString()), "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
             var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+            var roles= userDTO.Roles;
+
 
             if (userDTO.BranchId != null)
             {
