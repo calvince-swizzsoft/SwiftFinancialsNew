@@ -1389,6 +1389,9 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
     <Content Include="Areas\Accounts\Views\BackOfficeTransfers\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
+    <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\EditReport.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
