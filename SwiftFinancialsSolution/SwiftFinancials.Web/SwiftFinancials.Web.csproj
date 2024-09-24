@@ -549,6 +549,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\CustomerReceiptsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\EndOfDayController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />

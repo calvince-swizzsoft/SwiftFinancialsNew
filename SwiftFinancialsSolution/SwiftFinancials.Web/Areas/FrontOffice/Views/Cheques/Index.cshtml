@@ -1,7 +1,63 @@
 ﻿@{
     ViewBag.Title = "Cheques";
 }
+<style>
 
+    .nav {
+        display: flex;
+        flex-wrap: wrap; /* Allows the links to wrap onto multiple lines */
+        padding: 0;
+        margin: 5px;
+        margin-bottom:0;
+        border: 2px solid Black;
+        border-radius:8px;
+        margin-top:20px;
+        gap: 10px; /* Space between links */
+        text-align: center; /* Centers the text inside links */
+
+        padding:10px;
+    }
+
+    .nav-link {
+        display: flex;
+
+
+        text-decoration: none;
+        color: #007bff; /* Default text color */
+        transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+
+        border-radius: 4px; /* Rounded corners */
+        font-size: 14px; /* Adjust font size for better fit */
+        white-space: nowrap; /* Prevents text from wrapping inside the link */
+
+       @* border: 1px solid #007bff;*@ /* Border color and style */
+    }
+
+        .nav-link:hover {
+            color: #fff; /* Text color on hover */
+            background-color: #0056b3; /* Background color on hover */
+        }
+
+        .nav-link i {
+            margin-right: 8px; /* Space between icon and text */
+            font-size: 16px; /* Adjust icon size */
+        }
+
+        .nav-link.disabled {
+            pointer-events: none;
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+    .col-lg-2 {
+        display: flex;
+        align-items: center; /* Center the title vertically */
+        justify-content: center; /* Center the title horizontally if needed */
+        padding: 0; /* Remove default padding if necessary */
+        border-radius: 4px; /* Rounded corners */
+        @*border: 1px solid black;*@ /* Border color and style */
+    }
+</style>
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h2>Cheque Banking</h2>
@@ -16,7 +72,20 @@
     </div>
 </div>
 
+<div class="col-lg-12">
+    <div class="nav1">
+        <div class="col-lg-12">
+            <nav class="nav">
+                <a href="@Url.Action("Index", "InHouse", new { Area = "FrontOffice" })" class="nav-link">
+                    <i class="fa fa-cog"></i> In-House Cheques
+                </a>
 
+
+            </nav>
+        </div>
+
+    </div>
+</div>
 
 <div class="wrapper wrapper-content">
     <div class="row">
@@ -24,7 +93,8 @@
             <div class="ibox">
                 <div class="ibox-title">
                     @Html.ActionLink("Create Cheques", "Banking", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
-                    @Html.ActionLink("Catalogue", "Catalogue", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+                    @Html.ActionLink("Cheque Clearance", "ChequeClearance", "Cheques", new { Area = "FrontOffice" }, new { @class = "btn btn-primary" })
+
                     @{ ViewBag.Title = "Cheques"; }
 
                     @if (TempData["SuccessMessage"] != null)
@@ -150,7 +220,7 @@
 
 
                     var verifyButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/verify/${aData.Id}">Verify</a>`;
-                    var terminateButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/terminate/${aData.Id}">Terminate</a>`;
+                    var chequeClearanceButton = `<a class="dropdown-item" href="/FrontOffice/Cheques/chequeClearance/${aData.Id}">ChequeClearance</a>`;
                     var liquidationButton = `<a class="dropdown-item" href="/FrontOffice/FixedDeposit/liquidation/${aData.Id}">Liquidation</a>`;
 
 
@@ -159,21 +229,21 @@
 
                     switch (aData.Status) {
                         case 8:
-                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                            dropdownHtml += verifyButton + chequeClearanceButton + liquidationButton;
                             break;
 
                         case 1:
-                            dropdownHtml += terminateButton + liquidationButton;
+                            dropdownHtml += chequeClearanceButton + liquidationButton;
                             break;
                         case 2:
                             dropdownHtml += liquidationButton;
                             break;
                         case 4:
-                            dropdownHtml += terminateButton;
+                            dropdownHtml += chequeClearanceButton;
                             break;
 
                         default:
-                            dropdownHtml += verifyButton + terminateButton + liquidationButton;
+                            dropdownHtml += verifyButton + chequeClearanceButton + liquidationButton;
                             break;
                     }
 

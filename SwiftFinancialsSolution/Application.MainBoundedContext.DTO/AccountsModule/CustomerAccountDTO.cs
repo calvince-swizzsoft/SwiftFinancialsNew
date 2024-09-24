@@ -339,6 +339,20 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
         public bool BranchCompanyEnforceInvestmentProductExemptions { get; set; }
 
         [DataMember]
+       
+        public int CustomerFilter { get; set; }
+
+        [DataMember]
+        [Display(Name = "Product Code")]
+        public string CustomerFilterDescription
+        {
+            get
+            {
+                return Enum.IsDefined(typeof(CustomerFilter), CustomerAccountTypeProductCode) ? EnumHelper.GetDescription((CustomerFilter)CustomerFilter) : string.Empty;
+            }
+        }
+
+        [DataMember]
         [Display(Name = "Product Code")]
         public int CustomerAccountTypeProductCode { get; set; }
 

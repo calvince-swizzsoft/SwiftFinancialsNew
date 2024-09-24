@@ -183,7 +183,7 @@
                 "sPaginationType": "full_numbers",
                 "bProcessing": true,
                 "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "CoA_Register", new { Area = "Accounts"}))",
+                "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
                 "sServerMethod": "POST",
                 "fnServerParams": function (aoData) {
                     aoData.push(
@@ -218,10 +218,15 @@
                             </div>
                         </div>`;
 
-                    $('td:eq(9)', nRow).html(dropdownHtml);
 
 
-                    $('td:eq(8)', nRow).html(dt_Created);
+
+
+                    $('td:eq(7)', nRow).html(dt_Created);
+                    $('td:eq(8)', nRow).html(dropdownHtml);
+
+
+                   
                     //$('td:eq(4)', nRow).html(viewUrl + '&nbsp;' + editUrl + '&nbsp;' + CustomerManagementUrl);
 
                     return nRow;

@@ -159,6 +159,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View();
         }
 
+
+        [HttpPost]
+        public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
+        {
+
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync(productCode, jQueryDataTablesModel.sSearch, customerFilter, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+            //var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeFilterInPageAsync(productCode, recordStatus, jQueryDataTablesModel.sSearch, 2, pageIndex, jQueryDataTablesModel.iDisplayLength, false, false, false, false, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
         [HttpPost]
         public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
         {
@@ -181,6 +214,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
+
             if (SelectedTeller != null)
             {
                 var pageCollectionInfo = await _channelService.FindGeneralLedgerTransactionsByChartOfAccountIdAndDateRangeAndFilterInPageAsync(
@@ -201,9 +235,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 {
                     totalRecordCount = pageCollectionInfo.ItemsCount;
 
-
-                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
-
+                    //pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.JournalCreatedDate).ToList();
 
                     searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
 
@@ -230,6 +262,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
             ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(string.Empty);
+            ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
+            ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
 
             CustomerTransactionModel transactionModel = new CustomerTransactionModel();
 
@@ -349,7 +384,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
-
+            var time = System.DateTime.Now.ToString("dd/mm/yyyy");
 
             try
             {
@@ -957,6 +992,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                         if (NewExternalCheque.HasErrors)
                         {
+
+                            MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             //_messageService.ShowExclamation(string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages), this.DisplayName);
 
                             //ResetView();
@@ -968,23 +1005,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var externalChequeResult = await _channelService.AddExternalChequeAsync(NewExternalCheque, GetServiceHeader());
 
                             if (externalChequeResult != null)
-                             {
-
-
-                                MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-
-                             }
-
-                            var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
-                            
-                            if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
-                                MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+
+                                MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                
+
                             }
+
+                            //var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
+
+                            //if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
+                            //{
+                                //MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            //}
 
                             else
                             {
-                                MessageBox.Show("Operation failed", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                                MessageBox.Show("Operation failed", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             }
                         }
                         break;
@@ -1034,9 +1071,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.PrimaryDescription = "ok";
             transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
-            transactionModel.CreditChartOfAccountId = (Guid)transactionModel.Teller.ChartOfAccountId;
+            transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
-            if (transactionModel.CashWithdrawal.Amount > 0 )
+            if (transactionModel.CashWithdrawal.Amount > 0)
             {
 
                 transactionModel.TotalValue = transactionModel.CashWithdrawal.Amount;
@@ -1047,13 +1084,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.TotalValue = transactionModel.ChequeDeposit.Amount;
             }
 
-            
+            if (transactionModel.PaymentVoucher.Amount > 0)
+            {
+                transactionModel.TotalValue = transactionModel.PaymentVoucher.Amount;
+                transactionModel.Reference = transactionModel.PaymentVoucher.Reference;
+            }
+
+
 
             switch ((FrontOfficeTransactionType)transactionModel.CustomerAccount.Type)
             {
                 case FrontOfficeTransactionType.CashDeposit:
-                case FrontOfficeTransactionType.ChequeDeposit:    
-                  
+                case FrontOfficeTransactionType.ChequeDeposit:
+
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
                         transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
@@ -1070,6 +1113,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     break;
 
                 case FrontOfficeTransactionType.CashWithdrawal:
+                case FrontOfficeTransactionType.CashWithdrawalPaymentVoucher: 
 
                     if (SelectedCustomerAccount != null)
                     {
@@ -1089,13 +1133,26 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             }
-                       
+
             transactionModel.ValidateAll();
 
             if (transactionModel.HasErrors)
             {
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
+
+
+                MessageBox.Show("Transaction Error",
+               "Cash Transaction",
+               MessageBoxButtons.OK,
+               MessageBoxIcon.Exclamation,
+               MessageBoxDefaultButton.Button1,
+               MessageBoxOptions.ServiceNotification
+
+               );
+
                 return View(SelectedCustomerAccount);
+
+
             }
 
             try
@@ -1107,21 +1164,29 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
-     
-              
+
+
                 return RedirectToAction("Create");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                TempData["ErrorMesage"] = "bad thing";
-                // Handle or log the exception as needed
-                Console.WriteLine($"An error occurred: {ex.Message}");
 
-                // Set the transaction type select list for the view in case of an error
+
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
+                MessageBox.Show("Transaction Error",
+                  "Cash Transaction",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Exclamation,
+                  MessageBoxDefaultButton.Button1,
+                  MessageBoxOptions.ServiceNotification
+
+                  );
+
+
                 return View();
+
             }
         }
 
@@ -1137,35 +1202,35 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
-        private async Task<TellerDTO> GetCurrentTeller() 
+        private async Task<TellerDTO> GetCurrentTeller()
         {
 
             // Get the current user
             var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            
-            
-                var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-                var targetCustomer = customers.FirstOrDefault(c => c.AddressEmail == user.Email);
 
-                if (targetCustomer != null)
-                {
-                    var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
-                    SelectedEmployee = employees.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
 
-                    var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var targetCustomer = customers.FirstOrDefault(c => c.AddressEmail == user.Email);
 
-                    return teller;
-                }
-                else
-                {
-                    TempData["Missing Teller"] = "You are working without a Recognized Teller";
-                    //transactionModel.Teller = new TellerDTO { BookBalance = 0 };
+            if (targetCustomer != null)
+            {
+                var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+                SelectedEmployee = employees.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
 
-                    return null;
-                }
-            
-          
+                var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+
+                return teller;
+            }
+            else
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+                //transactionModel.Teller = new TellerDTO { BookBalance = 0 };
+
+                return null;
+            }
+
+
 
 
         }
@@ -1200,8 +1265,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> FetchKnownCharges(CustomerTransactionModel model, string target)
         {
-           
-         
+
+
             var savingsProduct = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
             ObservableCollection<CommissionDTO> commissions = null;
 
@@ -1212,7 +1277,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 savingsProduct = products[0];
             }
-            
+
             switch (target.ToLower())
             {
                 case "#cashdeposit":
@@ -1231,14 +1296,59 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { success = false, message = "Unknown transaction type." });
             }
 
-           
+
             return Json(new { success = true, data = commissions });
         }
 
+        [HttpPost]
+        public async Task<JsonResult> FetchPaymentVouchersTable(Guid? customerAccountId, JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
 
+
+           
+            var chequebooks = await _channelService.FindChequeBooksAsync(GetServiceHeader());
+            var chequebook = chequebooks.FirstOrDefault(c => c.CustomerAccountId == customerAccountId);
+
+            if (chequebook != null)
+            {
+
+                var pageCollectionInfo = await _channelService.FindPaymentVouchersByChequeBookIdAndFilterInPageAsync(chequebook.Id, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+
+                else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
+
+        public async Task<JsonResult> FetchPaymentVoucherJson(Guid chequeBookId)
+        {
+
+
+            var paymentVoucher = await _channelService.FindPaymentVouchersByChequeBookIdAsync(chequeBookId, GetServiceHeader());
+
+            return Json(new { success = true, data = paymentVoucher });
+
+        }
 
     }
 }
-    
+
 

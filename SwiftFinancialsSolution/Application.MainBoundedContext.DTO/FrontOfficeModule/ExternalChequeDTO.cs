@@ -353,5 +353,8 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 
             return ValidationResult.Success;
         }
+
+        public string errormassage;
+
     }
 }

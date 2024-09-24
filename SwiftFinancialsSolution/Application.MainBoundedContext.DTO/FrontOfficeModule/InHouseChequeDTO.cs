@@ -7,6 +7,7 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.Runtime.Serialization;
+using Application.MainBoundedContext.DTO.AccountsModule;
 
 namespace Application.MainBoundedContext.DTO.FrontOfficeModule
 {
@@ -37,10 +38,6 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Cheque Type")]
         public string ChequeTypeDescription { get; set; }
-
-        [DataMember]
-        [Display(Name = "Cheque Type Charge Recovery Mode")]
-        public int ChequeTypeChargeRecoveryMode { get; set; }
 
         [DataMember]
         [Display(Name = "Debit G/L Account")]
@@ -222,9 +219,31 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [DataMember]
         [Display(Name = "Chargeable?")]
         public bool Chargeable { get; set; }
-        
+
         [DataMember]
         [Display(Name = "Created Date")]
         public DateTime CreatedDate { get; set; }
+
+        [DataMember]
+        [Display(Name = "Cost Center")]
+        public string CostCenter { get; set; }
+        [DataMember]
+        [Display(Name = "costCenterId")]
+        [ValidGuid]
+        public Guid? CostCenterId { get; set; }
+
+        public CostCenterDTO costCenterDTO;
+
+        [DataMember]
+        [Display(Name = "Cheque Number")]
+        public string ChequeNumber { get; set; }
+
+        [DataMember]
+        [Display(Name = "Bank")]
+        public string BankName { get; set; }
+
+        [DataMember]
+        [Display(Name = "Bank Account")]
+        public string BankAccount { get; set; }
     }
 }
