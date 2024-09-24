@@ -26,13 +26,15 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> UploadReport(HttpPostedFileBase reportFile, int categoryId, string reportname)
+        public async Task<ActionResult> UploadReport(HttpPostedFileBase reportFile, int? categoryId, string reportname)
         {
             await ServeNavigationMenus();
 
-            if (reportFile == null || categoryId == 0 || string.IsNullOrWhiteSpace(reportname))
+            if (reportFile == null || categoryId <= 0 || string.IsNullOrWhiteSpace(reportname))
             {
-                TempData["ReportError"] = "Missing values";
+                categoryId = 0;
+
+                TempData["ReportError"] = "Missing fields. Confirm that \"Report Name\", \"Category\" and \"Upload Report\" have been populated";
                 return RedirectToAction("Create");
             }
 
@@ -49,7 +51,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 fileData = binaryReader.ReadBytes(reportFile.ContentLength);
             }
 
-            await SaveReportToDatabaseAsync(reportFile.FileName, fileData, categoryId, reportname);
+            await SaveReportToDatabaseAsync(reportFile.FileName, fileData, categoryId.Value, reportname);
 
             if (TempData["Error"] != null)
             {
@@ -57,7 +59,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return RedirectToAction("Create");
             }
 
-            TempData["Success"] = "Report saved successfully!";
             ViewBag.Categories = await GetCategoriesAsync();
             return View("Create");
         }
@@ -70,6 +71,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 TempData["ReportError"] = "Missing values";
                 return;
             }
+
+            
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -91,6 +94,51 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                     }
                 }
 
+                var fileNameCheckQuery = "SELECT COUNT(*) FROM SSRSReports WHERE FileName = @FileName";
+                using (SqlCommand fileNameCheckCmd = new SqlCommand(fileNameCheckQuery, conn))
+                {
+                    fileNameCheckCmd.Parameters.AddWithValue("@FileName", fileName);
+                    fileNameCheckCmd.Parameters.AddWithValue("@ReportName", reportname);
+
+                    int fileNameExists = (int)await fileNameCheckCmd.ExecuteScalarAsync();
+
+                    if (fileNameExists > 0)
+                    {
+                        TempData["Error2"] = "A report with the same file already exists.";
+                        return;
+                    }
+                }
+
+                var fileNameAndReportNameCheckQuery = "SELECT COUNT(*) FROM SSRSReports WHERE FileName = @FileName AND ReportName = @ReportName";
+                using (SqlCommand fileNameAndReportNameCheckCmd = new SqlCommand(fileNameAndReportNameCheckQuery, conn))
+                {
+                    fileNameAndReportNameCheckCmd.Parameters.AddWithValue("@FileName", fileName);
+                    fileNameAndReportNameCheckCmd.Parameters.AddWithValue("@ReportName", reportname);
+
+                    int fileNameExists = (int)await fileNameAndReportNameCheckCmd.ExecuteScalarAsync();
+
+                    if (fileNameExists > 0)
+                    {
+                        TempData["Error3"] = "A report with the same file and name already exists.";
+                        return;
+                    }
+                }
+
+
+                var reportNameCheckQuery = "SELECT COUNT(*) FROM SSRSReports WHERE ReportName = @ReportName";
+                using (SqlCommand reportNameCheckCmd = new SqlCommand(reportNameCheckQuery, conn))
+                {
+                    reportNameCheckCmd.Parameters.AddWithValue("@ReportName", reportname);
+
+                    int fileNameExists = (int)await reportNameCheckCmd.ExecuteScalarAsync();
+
+                    if (fileNameExists > 0)
+                    {
+                        TempData["Error4"] = "A report with the same name already exists.";
+                        return;
+                    }
+                }
+
                 var insertQuery = "INSERT INTO SSRSReports (FileName, FileContent, CategoryID, ReportName, CreatedDate) VALUES (@FileName, @FileContent, @CategoryID, @reportname, @CreatedDate)";
                 using (SqlCommand cmd = new SqlCommand(insertQuery, conn))
                 {
@@ -100,9 +148,12 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                     cmd.Parameters.AddWithValue("@reportname", reportname);
                     cmd.Parameters.AddWithValue("@CreatedDate", DateTime.Now);
                     await cmd.ExecuteNonQueryAsync();
+
+                    TempData["Success"] = "Report saved successfully!";
                 }
             }
         }
+
 
 
         private async Task<List<SelectListItem>> GetCategoriesAsync()
@@ -227,6 +278,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 }
             }
 
+            ViewBag.reportsCount = reports.Count;
+
             return Json(reports, JsonRequestBehavior.AllowGet);
         }
 
@@ -236,19 +289,34 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> DeleteReport(int id)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            try
             {
-                await conn.OpenAsync();
-                var query = "DELETE FROM SSRSReports WHERE Id = @Id";
-                using (SqlCommand cmd = new SqlCommand(query, conn))
+                using (SqlConnection conn = new SqlConnection(connectionString))
                 {
-                    cmd.Parameters.AddWithValue("@Id", id);
-                    await cmd.ExecuteNonQueryAsync();
+                    await conn.OpenAsync();
+                    var query = "DELETE FROM SSRSReports WHERE ReportID = @Id";
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", id);
+                        int rowsAffected = await cmd.ExecuteNonQueryAsync();
+
+                        if (rowsAffected > 0)
+                        {
+                            return new HttpStatusCodeResult(200); 
+                        }
+                        else
+                        {
+                            return new HttpStatusCodeResult(404, "Report not found"); 
+                        }
+                    }
                 }
             }
-
-            return new HttpStatusCodeResult(200);
+            catch (Exception ex)
+            {
+                return new HttpStatusCodeResult(500, "Internal server error: " + ex.Message); 
+            }
         }
+
 
 
 
@@ -333,6 +401,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return RedirectToAction("EditReport", new { id = reportID });
             }
 
+            dynamic report = new System.Dynamic.ExpandoObject();
+
             byte[] fileData = null;
             if (reportFile != null && Path.GetExtension(reportFile.FileName).ToLower() == ".rdl")
             {
@@ -348,6 +418,30 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return RedirectToAction("EditReport", new { id = reportID });
             }
 
+            if (reportFile == null)
+            {
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    await conn.OpenAsync();
+                    var query = "SELECT FileName FROM SSRSReports WHERE ReportID = @Id";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@Id", reportID);
+                        using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                        {
+                            if (await reader.ReadAsync())
+                            {
+                                report.FileName = reader["FileName"].ToString();
+                            }
+                            else
+                            {
+                                return HttpNotFound("Report file name not found.");
+                            }
+                        }
+                    }
+                }
+            }
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -356,6 +450,8 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                                   (fileData != null ? ", FileContent = @FileContent" : "") +
                                   " WHERE ReportID = @ReportID";
 
+                TempData["EditSuccess"] = "";
+
                 using (SqlCommand cmd = new SqlCommand(updateQuery, conn))
                 {
                     cmd.Parameters.AddWithValue("@ReportName", reportName);
@@ -363,9 +459,17 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                     if (fileData != null)
                     {
                         cmd.Parameters.AddWithValue("@FileContent", fileData);
+                        cmd.Parameters.AddWithValue("@FileName", reportFile.FileName);
+                        cmd.Parameters.AddWithValue("@ReportID", reportID);
+
+                        await cmd.ExecuteNonQueryAsync();
+
+                        TempData["EditSuccess"] = "Report updated successfully!";
+                        return RedirectToAction("Create");
                     }
                     cmd.Parameters.AddWithValue("@ReportID", reportID);
-                    cmd.Parameters.AddWithValue("@FileName", reportFile.FileName);
+                    cmd.Parameters.AddWithValue("@FileName", report.FileName);
+
                     await cmd.ExecuteNonQueryAsync();
                 }
             }

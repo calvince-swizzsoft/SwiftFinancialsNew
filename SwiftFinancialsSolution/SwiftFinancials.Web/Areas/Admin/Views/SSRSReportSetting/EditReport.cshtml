@@ -71,7 +71,7 @@
                                     <input type="file" name="reportFile" class="form-control" accept=".rdl" />
                                 </div>
 
-                                <label style="font-size: medium;">Current File: <strong style="color: dodgerblue;">@report.FileName</strong></label>
+                                <label style="font-size: medium;">Existing Report File: <strong style="color: dodgerblue;">@report.FileName</strong></label>
                             </div>
                         </div>
 
@@ -88,8 +88,8 @@
                         <div class="alert alert-danger">
                             <strong>Attempt Failed! </strong>@TempData["ErrorReportName"]
                         </div>
-                    } 
-                    
+                    }
+
                     @if (TempData["InvalidFileEdit"] != null)
                     {
                         <div class="alert alert-danger">
