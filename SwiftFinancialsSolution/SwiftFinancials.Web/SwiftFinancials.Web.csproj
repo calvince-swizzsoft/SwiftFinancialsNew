@@ -1389,6 +1389,11 @@
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
     <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\ChequeBanking.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\ChequeClearance.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Printing.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

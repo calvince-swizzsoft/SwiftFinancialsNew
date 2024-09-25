@@ -31,17 +31,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             bool sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc";
             var sortedColumns = jQueryDataTablesModel.GetSortedColumns().Select(s => s.PropertyName).ToList();
 
-            
+
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
             int pageSize = jQueryDataTablesModel.iDisplayLength;
 
-           
+
             var pageCollectionInfo = await _channelService.FindAccountClosureRequestsByFilterInPageAsync(
                 jQueryDataTablesModel.sSearch,
-                0,  
+                0,
                 pageIndex,
                 pageSize,
-                false, 
+                false,
                 GetServiceHeader()
             );
 
@@ -49,12 +49,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 totalRecordCount = pageCollectionInfo.ItemsCount;
 
-               
+
                 var sortedData = pageCollectionInfo.PageCollection
-                    .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime)) 
+                    .OrderBy(item => sortedColumns.Contains("CreatedDate") ? item.CreatedDate : default(DateTime))
                     .ToList();
 
-               
+
                 searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? sortedData.Count : totalRecordCount;
 
                 return this.DataTablesJson(
@@ -102,7 +102,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 var customer = await _channelService.FindCustomerAccountAsync(
                     parseId,
                     includeBalances: false,
-                    includeProductDescription:true,
+                    includeProductDescription: true,
                     includeInterestBalanceForLoanAccounts: false,
                     considerMaturityPeriodForInvestmentAccounts: false,
                     GetServiceHeader()
@@ -126,7 +126,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     accountClosureRequestDTO.CustomerAccountId = customer.Id;
                     accountClosureRequestDTO.CustomerAccountTypeTargetProductChartOfAccountName = customer.StatusDescription;
                     accountClosureRequestDTO.CustomerAccountCustomerIndividualLastName = customer.FullAccountNumber;
-                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer. CustomerTypeDescription;
+                    accountClosureRequestDTO.CustomerAccountCustomerNonIndividualDescription = customer.CustomerTypeDescription;
 
                     var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndCustomerAccountTypeTargetProductIdAsync(
                         customer.CustomerId,
@@ -367,7 +367,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     if (result)
                     {
                         TempData["SuccessMessage"] = "Account closure request verified successfully.";
-                        return RedirectToAction("Index"); 
+                        return RedirectToAction("Index");
                     }
                     else
                     {
@@ -386,7 +386,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 TempData["ErrorMessage"] = "There were validation errors. Please review the form and try again.";
             }
 
-            return View(accountClosureRequestDTO); 
+            return View(accountClosureRequestDTO);
         }
 
 
