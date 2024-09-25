@@ -52,7 +52,7 @@
 
         .modal-footer {
             flex-shrink: 0; /* Fixed footer at the bottom */
-          
+
             text-align: right;
             border-top: 1px solid #ddd;
         }
@@ -342,26 +342,26 @@
 
                             <div class="tab-content">
                                 <div id="transaction" class="tab-pane active">
+
                                     <div class="form-group">
-                                        @Html.LabelFor(model => model.CustomerAccount.Type, htmlAttributes: new { @class = "control-label" })
-                                        @Html.DropDownListFor(model => model.CustomerAccount.Type, frontOfficeTransactionType, new { @class = "form-control input.md" })
-                                        @Html.ValidationMessageFor(model => model.CustomerAccount.Type)
+
+                                        @Html.HiddenFor(model => model.CustomerAccount.Type, new {@id = "CustomerAccount_Type" }) <!-- Hidden field for TransactionType -->
                                     </div>
 
                                     <!-- inner Tabs (indented) -->
                                     <div style="margin-left: 20px;">
                                         <ul class="nav inner-nav-tabs" style="margin-bottom: 20px;">
                                             <li class="nav-item">
-                                                <a class="inner-nav-link active" data-toggle="tab" href="#cashDeposit">Cash Deposit</a>
+                                                <a class="inner-nav-link active" data-toggle="tab" href="#cashDeposit" data-transaction-type="2">Cash Deposit</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="inner-nav-link" data-toggle="tab" href="#cashWithdrawal">Cash Withdrawal</a>
+                                                <a class="inner-nav-link" data-toggle="tab" href="#cashWithdrawal" data-transaction-type="1">Cash Withdrawal</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="inner-nav-link" data-toggle="tab" href="#chequeDeposit">Cheque Deposit</a>
+                                                <a class="inner-nav-link" data-toggle="tab" href="#chequeDeposit" data-transaction-type="3">Cheque Deposit</a>
                                             </li>
                                             <li class="nav-item">
-                                                <a class="inner-nav-link" data-toggle="tab" href="#paymentVoucher">Payment Voucher</a>
+                                                <a class="inner-nav-link" data-toggle="tab" href="#paymentVoucher" data-transaction-type="4">Payment Voucher</a>
                                             </li>
                                             <li class="nav-item">
                                                 <a class="inner-nav-link" data-toggle="tab" href="#chargesLevies">Charges & Levies</a>
@@ -575,14 +575,14 @@
                                                         <div class="row">
                                                             <div class="col-md-6">
 
-                                                               
-                                                                    <div class="form-group" id="data_3">
-                                                                        @Html.LabelFor(model => model.PaymentVoucher.WriteDate, htmlAttributes: new { @class = "" })
-                                                                        <div class="input-group date">
-                                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                                                            @Html.TextBoxFor(model => model.PaymentVoucher.WriteDate, new { @class = "form-control", @id = "PaymentVoucherWriteDate", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
-                                                                        </div>
+
+                                                                <div class="form-group" id="data_3">
+                                                                    @Html.LabelFor(model => model.PaymentVoucher.WriteDate, htmlAttributes: new { @class = "" })
+                                                                    <div class="input-group date">
+                                                                        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                                        @Html.TextBoxFor(model => model.PaymentVoucher.WriteDate, new { @class = "form-control", @id = "PaymentVoucherWriteDate", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
                                                                     </div>
+                                                                </div>
 
                                                             </div>
                                                             <div class="col-md-6">
@@ -1303,7 +1303,7 @@
     "sAjaxSource": "@(Url.Action("FetchChequeBooksTable", "CashDeposit", new { Area = "FrontOffice" }))",
     "sServerMethod": "POST",
     // Callback settings
-        
+
     "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
 
         var selectUrl = '<a href="#" class="btn btn-outline-info select-chequebook" data-id="' + aData.Id + '">Select</a>';
@@ -1740,6 +1740,21 @@
 
 
     </script>
+
+    <script>
+        $(document).ready(function () {
+
+            $('.inner-nav-link').on('click', function () {
+             
+                var transactionType = $(this).data('transaction-type');
+
+                console.log("transacin type is", transactionType);
+                // Set the hidden field value for TransactionType
+                $('#CustomerAccount_Type').val(transactionType);
+            });
+        });
+    </script>
+
 
 
 }
