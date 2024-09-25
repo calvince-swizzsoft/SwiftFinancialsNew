@@ -8,9 +8,10 @@
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Views\\InterAccountTransfer",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry",
+    "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Controllers",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Views",
     "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Views\\Customer"
   ],
-  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Accounts\\Controllers\\CoA_RegisterController.cs",
+  "SelectedNode": "\\SwiftFinancialsSolution\\SwiftFinancials.Web\\Areas\\Registry\\Controllers\\CustomerController.cs",
   "PreviewInSolutionExplorer": false
 }
