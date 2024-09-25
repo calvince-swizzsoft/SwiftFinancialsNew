@@ -163,7 +163,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
         {
-            
+
 
             int totalRecordCount = 0;
 
@@ -384,7 +384,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
             System.Globalization.NumberFormatInfo _nfi = new CultureInfo("en-US", false).NumberFormat;
-
+            var time = System.DateTime.Now.ToString("dd/mm/yyyy");
 
             try
             {
@@ -654,7 +654,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 "Cash Withdrawal", // Title of the message box
                                 MessageBoxButtons.OK, // Button to display
                                 MessageBoxIcon.Exclamation, // Icon to display (exclamation mark)
-                                 MessageBoxDefaultButton.Button1,
+                                MessageBoxDefaultButton.Button1,
                                 MessageBoxOptions.ServiceNotification
                             );
 
@@ -831,12 +831,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                     {
                                         var result = MessageBox.Show(
                                             string.Format("{0}.\nDo you want to proceed and place a cash withdrawal authorization request?",
-                                                EnumHelper.GetDescription(cashWithdrawalCategory)),
+                                            EnumHelper.GetDescription(cashWithdrawalCategory)),
                                             "CashWithdrawal Request",
                                             MessageBoxButtons.YesNo,
                                             MessageBoxIcon.Question,
-                                             MessageBoxDefaultButton.Button1,
-                                              MessageBoxOptions.ServiceNotification
+                                            MessageBoxDefaultButton.Button1,
+                                            MessageBoxOptions.ServiceNotification
                                         );
 
                                         if (result == DialogResult.Yes && !proceedCashWithdrawalAuthorizationRequest)
@@ -992,6 +992,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                         if (NewExternalCheque.HasErrors)
                         {
+
+                            MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             //_messageService.ShowExclamation(string.Join(Environment.NewLine, NewExternalCheque.ErrorMessages), this.DisplayName);
 
                             //ResetView();
@@ -1003,23 +1005,23 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             var externalChequeResult = await _channelService.AddExternalChequeAsync(NewExternalCheque, GetServiceHeader());
 
                             if (externalChequeResult != null)
-                             {
-
-
-                                MessageBox.Show("Operation Error", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
-
-                             }
-
-                            var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
-                            
-                            if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
                             {
-                                MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1);
+
+                                MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                                
+
                             }
+
+                            //var chequeDepositJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
+
+                            //if (chequeDepositJournal != null && !chequeDepositJournal.HasErrors)
+                            //{
+                                //MessageBox.Show("Operation Success", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                            //}
 
                             else
                             {
-                                MessageBox.Show("Operation failed", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1);
+                                MessageBox.Show("Operation failed", "ChequeDeposit Request", MessageBoxButtons.OK, MessageBoxIcon.Exclamation, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
                             }
                         }
                         break;
@@ -1069,9 +1071,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.PrimaryDescription = "ok";
             transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
             transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
-            transactionModel.CreditChartOfAccountId = (Guid)transactionModel.Teller.ChartOfAccountId;
+            transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
-            if (transactionModel.CashWithdrawal.Amount > 0 )
+            if (transactionModel.CashWithdrawal.Amount > 0)
             {
 
                 transactionModel.TotalValue = transactionModel.CashWithdrawal.Amount;
@@ -1082,13 +1084,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 transactionModel.TotalValue = transactionModel.ChequeDeposit.Amount;
             }
 
-            
+            if (transactionModel.PaymentVoucher.Amount > 0)
+            {
+                transactionModel.TotalValue = transactionModel.PaymentVoucher.Amount;
+                transactionModel.Reference = transactionModel.PaymentVoucher.Reference;
+            }
+
+
 
             switch ((FrontOfficeTransactionType)transactionModel.CustomerAccount.Type)
             {
                 case FrontOfficeTransactionType.CashDeposit:
-                case FrontOfficeTransactionType.ChequeDeposit:    
-                  
+                case FrontOfficeTransactionType.ChequeDeposit:
+
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
                         transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
@@ -1105,6 +1113,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     break;
 
                 case FrontOfficeTransactionType.CashWithdrawal:
+                case FrontOfficeTransactionType.CashWithdrawalPaymentVoucher: 
 
                     if (SelectedCustomerAccount != null)
                     {
@@ -1113,54 +1122,62 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
                         transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
                         transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-
                     }
-
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
                         transactionModel.CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
 
                     break;
-
-
             }
-                       
+
             transactionModel.ValidateAll();
 
             if (transactionModel.HasErrors)
             {
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
+
+
+                MessageBox.Show("Transaction Error",
+               "Cash Transaction",
+               MessageBoxButtons.OK,
+               MessageBoxIcon.Exclamation,
+               MessageBoxDefaultButton.Button1,
+               MessageBoxOptions.ServiceNotification
+
+               );
+
                 return View(SelectedCustomerAccount);
+
+
             }
 
             try
             {
                 // Call the asynchronous method to process the customer transaction
                 await ProcessCustomerTransactionAsync(transactionModel);
-
                 SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
-
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
-
-     
-              
                 return RedirectToAction("Create");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                TempData["ErrorMesage"] = "bad thing";
-                // Handle or log the exception as needed
-                Console.WriteLine($"An error occurred: {ex.Message}");
-
-                // Set the transaction type select list for the view in case of an error
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
+                MessageBox.Show("Transaction Error",
+                  "Cash Transaction",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Exclamation,
+                  MessageBoxDefaultButton.Button1,
+                  MessageBoxOptions.ServiceNotification
+
+                  );
+
+
                 return View();
+
             }
         }
-
-
 
 
         [HttpGet]
@@ -1172,35 +1189,35 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         }
 
-        private async Task<TellerDTO> GetCurrentTeller() 
+        private async Task<TellerDTO> GetCurrentTeller()
         {
 
             // Get the current user
             var user = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-            
-            
-                var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
-                var targetCustomer = customers.FirstOrDefault(c => c.AddressEmail == user.Email);
 
-                if (targetCustomer != null)
-                {
-                    var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
-                    SelectedEmployee = employees.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
 
-                    var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+            var customers = await _channelService.FindCustomersAsync(GetServiceHeader());
+            var targetCustomer = customers.FirstOrDefault(c => c.AddressEmail == user.Email);
 
-                    return teller;
-                }
-                else
-                {
-                    TempData["Missing Teller"] = "You are working without a Recognized Teller";
-                    //transactionModel.Teller = new TellerDTO { BookBalance = 0 };
+            if (targetCustomer != null)
+            {
+                var employees = await _channelService.FindEmployeesAsync(GetServiceHeader());
+                SelectedEmployee = employees.FirstOrDefault(e => e.CustomerId == targetCustomer.Id);
 
-                    return null;
-                }
-            
-          
+                var teller = await _channelService.FindTellerByEmployeeIdAsync(SelectedEmployee.Id, false, GetServiceHeader());
+
+                return teller;
+            }
+            else
+            {
+                TempData["Missing Teller"] = "You are working without a Recognized Teller";
+                //transactionModel.Teller = new TellerDTO { BookBalance = 0 };
+
+                return null;
+            }
+
+
 
 
         }
@@ -1235,8 +1252,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         [HttpPost]
         public async Task<JsonResult> FetchKnownCharges(CustomerTransactionModel model, string target)
         {
-           
-         
+
+
             var savingsProduct = await _channelService.FindSavingsProductAsync(model.CustomerAccount.CustomerAccountTypeTargetProductId, GetServiceHeader());
             ObservableCollection<CommissionDTO> commissions = null;
 
@@ -1247,7 +1264,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 savingsProduct = products[0];
             }
-            
+
             switch (target.ToLower())
             {
                 case "#cashdeposit":
@@ -1266,14 +1283,70 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { success = false, message = "Unknown transaction type." });
             }
 
-           
+
             return Json(new { success = true, data = commissions });
         }
 
 
+        [HttpPost]
+        public async Task<JsonResult> FetchChequeBooksTable(JQueryDataTablesModel jQueryDataTablesModel)
+        {
 
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindChequeBooksByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+
+            else return this.DataTablesJson(items: new List<ChequeBookDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> FetchPaymentVouchersTable(Guid? chequeBookId, JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            if (chequeBookId != null)
+            {
+
+                var pageCollectionInfo = await _channelService.FindPaymentVouchersByChequeBookIdAndFilterInPageAsync((Guid)chequeBookId, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+                if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+                {
+                    totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                    pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
+
+                    searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                    return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+                }
+
+                else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
 
     }
 }
-    
+
 

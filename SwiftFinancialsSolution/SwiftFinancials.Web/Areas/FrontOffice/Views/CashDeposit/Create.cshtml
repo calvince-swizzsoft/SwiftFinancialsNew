@@ -214,7 +214,7 @@
                                     <div class="col-md-3">
                                         <div class="form-group">
                                             @Html.HiddenFor(model => model.CustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId)
-                                            @Html.HiddenFor(model => model.CustomerAccount.Id)
+                                            @Html.HiddenFor(model => model.CustomerAccount.Id, new { @id = "CustomerAccountId" })
                                             @Html.LabelFor(model => model.CustomerAccount.FullAccountNumber, "Full Account Number:", new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
                                                 @Html.TextBoxFor(model => model.CustomerAccount.FullAccountNumber, new { @class = "form-control", @readonly = "readonly" })
@@ -497,6 +497,7 @@
 
                                                                 <div class="form-group">
                                                                     @Html.HiddenFor(model => model.ChequeDeposit.ChequeTypeId, htmlAttributes: new { @id = "ChequeTypeId" })
+                                                                    @Html.HiddenFor(model => model.ChequeDeposit.BankLinkageChartOfAccountId)
                                                                     @Html.LabelFor(model => model.ChequeDeposit.ChequeTypeDescription, htmlAttributes: new { @class = "" })
                                                                     @Html.EditorFor(model => model.ChequeDeposit.ChequeTypeDescription, new { htmlAttributes = new { @id = "ChequeTypeDescription", @class = "ChequeTypeLookup form-control", @placeholer = "tap spacebar" } })
                                                                     @Html.ValidationMessageFor(model => model.ChequeDeposit.ChequeTypeDescription, "", new { @class = "text-danger" })
@@ -549,11 +550,13 @@
 
 
                                                                 <div class="form-group">
-                                                                    @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, "Payment Voucher Number:", new { @class = "control-label" })
+                                                                    <input type="hidden" id="ChequeBookId" name="ChequeBookId" value="" />
+
+                                                                    @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, "Payment Voucher Number:", new { @class = "control-label", @readonly = "readonly" })
                                                                     <div class="input-group" data-autoclose="true">
-                                                                        @Html.TextBoxFor(model => model.PaymentVoucher.VoucherNumber, new { @class = "form-control", @readonly = "readonly" })
+                                                                        @Html.TextBoxFor(model => model.PaymentVoucher.VoucherNumber, new { @class = "form-control", @readonly = "readonly", @id = "PaymentVoucherNumber" })
                                                                         <span class="input-group-addon">
-                                                                            <a data-toggle="modal" data-target="#paymentVoucherLookupModal" onclick="captureDetails();">
+                                                                            <a data-toggle="modal" data-target="#PaymentVouchersLookupModal">
                                                                                 <span class="fa fa-search"></span>
                                                                             </a>
                                                                         </span>
@@ -563,44 +566,41 @@
                                                             </div>
                                                             <div class="col-md-6">
                                                                 <div class="form-group">
-                                                                    @Html.LabelFor(model => model.PaymentVoucher.VoucherNumber, htmlAttributes: new { @class = "" })
-                                                                    @Html.EditorFor(model => model.PaymentVoucher.VoucherNumber, new { htmlAttributes = new { @class = "form-control" } })
-                                                                    @Html.ValidationMessageFor(model => model.PaymentVoucher.VoucherNumber, "", new { @class = "text-danger" })
+                                                                    @Html.LabelFor(model => model.PaymentVoucher.Payee, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.PaymentVoucher.Payee, new { htmlAttributes = new { @class = "form-control", @id = "PaymentVoucherPayee" } })
+                                                                    @Html.ValidationMessageFor(model => model.PaymentVoucher.Payee, "", new { @class = "text-danger" })
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
+                                                        <div class="row">
+                                                            <div class="col-md-6">
 
-                                                <div class="mt-4">
-                                                    <h5>Payment Details</h5>
-                                                    <div class="row">
-                                                        <div class="col-md-6">
-                                                            <div class="form-group">
-                                                                @Html.LabelFor(model => model.PaymentVoucher.Payee, htmlAttributes: new { @class = "" })
-                                                                @Html.EditorFor(model => model.PaymentVoucher.Payee, new { htmlAttributes = new { @class = "form-control" } })
-                                                                @Html.ValidationMessageFor(model => model.PaymentVoucher.Payee, "", new { @class = "text-danger" })
+                                                               
+                                                                    <div class="form-group" id="data_3">
+                                                                        @Html.LabelFor(model => model.PaymentVoucher.WriteDate, htmlAttributes: new { @class = "" })
+                                                                        <div class="input-group date">
+                                                                            <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                                                            @Html.TextBoxFor(model => model.PaymentVoucher.WriteDate, new { @class = "form-control", @id = "PaymentVoucherWriteDate", @Value = DateTime.Today.AddDays(-30).ToString("dd/MM/yyyy") })
+                                                                        </div>
+                                                                    </div>
+
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                <div class="form-group">
+                                                                    @Html.LabelFor(model => model.PaymentVoucher.Amount, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.PaymentVoucher.Amount, new { htmlAttributes = new { @class = "form-control", @id = "PaymentVoucherAmount" } })
+                                                                    @Html.ValidationMessageFor(model => model.PaymentVoucher.Amount, "", new { @class = "text-danger" })
+                                                                </div>
                                                             </div>
                                                         </div>
-
-                                                        <div class="form-group">
-                                                            @Html.LabelFor(model => model.PaymentVoucher.WriteDate, htmlAttributes: new { @class = "" })
-                                                            @Html.EditorFor(model => model.PaymentVoucher.WriteDate, new { htmlAttributes = new { @class = "form-control" } })
-                                                            @Html.ValidationMessageFor(model => model.PaymentVoucher.WriteDate, "", new { @class = "text-danger" })
-                                                        </div>
-                                                    </div>
-                                                    <div class="row">
-
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.PaymentVoucher.Amount, htmlAttributes: new { @class = "" })
-                                                            @Html.EditorFor(model => model.PaymentVoucher.Amount, new { htmlAttributes = new { @class = "form-control" } })
-                                                            @Html.ValidationMessageFor(model => model.PaymentVoucher.Amount, "", new { @class = "text-danger" })
-                                                        </div>
-
-                                                        <div class="form-group form-group-lg">
-                                                            @Html.LabelFor(model => model.PaymentVoucher.Reference, htmlAttributes: new { @class = "" })
-                                                            @Html.EditorFor(model => model.PaymentVoucher.Reference, new { htmlAttributes = new { @class = "form-control" } })
-                                                            @Html.ValidationMessageFor(model => model.PaymentVoucher.Reference, "", new { @class = "text-danger" })
+                                                        <div class="row">
+                                                            <div class="col-md-12">
+                                                                <div class="form-group">
+                                                                    @Html.LabelFor(model => model.PaymentVoucher.Reference, htmlAttributes: new { @class = "" })
+                                                                    @Html.EditorFor(model => model.PaymentVoucher.Reference, new { htmlAttributes = new { @class = "form-control", @id = "PaymentVoucherReference" } })
+                                                                    @Html.ValidationMessageFor(model => model.PaymentVoucher.Reference, "", new { @class = "text-danger" })
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1051,89 +1051,6 @@
     </div>
 </div>
 
-
-<!-- Payment Voucher Lookup Modal -->
-<div class="modal fade" id="paymentVoucherLookupModal" tabindex="-1" role="dialog" aria-labelledby="paymentVoucherLookupModalLabel">
-    <div class="modal-dialog modal-lg" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title" id="paymentVoucherLookupModalLabel">Payment Voucher Lookup</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            </div>
-            <div class="modal-body">
-                <div class="row">
-                    <div class="col-md-12">
-                        <!-- Upper pane -->
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Serial Number</th>
-                                        <th>Is Active?</th>
-                                        <th>Initial Voucher Number</th>
-                                        <th>Number Of Vouchers</th>
-                                        <th>Account Number</th>
-                                        <th>Customer Name</th>
-                                        <th>Customer Reference 1</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Sample data, replace with dynamic data in real implementation -->
-                                    <tr>
-                                        <td>000001</td>
-                                        <td>False</td>
-                                        <td>1</td>
-                                        <td>5</td>
-                                        <td>001-000520-001-001</td>
-                                        <td>JUSTUS AMOS</td>
-                                        <td>0101-001-07529</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <!-- Lower pane -->
-                        <h5>Payment Vouchers</h5>
-                        <div class="table-responsive">
-                            <table class="table table-striped">
-                                <thead>
-                                    <tr>
-                                        <th>Voucher Number</th>
-                                        <th>Status</th>
-                                        <th>Payee</th>
-                                        <th>Amount</th>
-                                        <th>Write Date</th>
-                                        <th>Reference</th>
-                                        <th>Paid/Flagged Date</th>
-                                        <th>Created Date</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <!-- Sample data, replace with dynamic data in real implementation -->
-                                    <tr>
-                                        <td>000001</td>
-                                        <td>Flagged</td>
-                                        <td></td>
-                                        <td>KES:0.00</td>
-                                        <td></td>
-                                        <td>Active</td>
-                                        <td>12-03-2015 14:47:15 PM</td>
-                                        <td>04-03-2015 10:51:09 AM</td>
-                                    </tr>
-                                    <!-- Add more rows as needed -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Select</button>
-            </div>
-        </div>
-    </div>
-</div>
 <div class="modal fade" id="customerLookupModal" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog custom-modal-styles" role="document">
         <div class="modal-content">
@@ -1168,15 +1085,6 @@
                 <!-- Table & Scrollable Data Rows -->
                 <div class="table-responsive table-scroll">
                     <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width: 100%;">
-                        <thead>
-                            <tr>
-                                <th>Customer Full Name</th>
-                                <th>Account No.</th>
-                                <th>Membership</th>
-                                <th>Product</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
                         <tbody>
                             <tr>
                                 <td colspan="5" class="dataTables_empty">Loading data from server...</td>
@@ -1195,20 +1103,22 @@
 </div>
 
 
-
-
-
-
-
-
-
-<div class="modal  fade" id="paymentVoucherLookupModal" role="dialog" aria-hidden="true">
+<div class="modal  fade" id="PaymentVouchersLookupModal" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header  bg-primary">
                 <h3 class="font-bold">Payment Voucher Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
             </div>
-            <table id="CustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+            <table id="ChequeBooksGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <table id="PaymentVouchersGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                 <tbody>
                     <tr>
                         <td class="dataTables_empty">
@@ -1307,87 +1217,11 @@
 
     <script>
 
-        $('#PaymentVouchersGrid').DataTable({
-    // Ajax settings
-    "sPaginationType": "full_numbers",
-    "bProcessing": true,
-    "bServerSide": true,
-    "sAjaxSource": "@(Url.Action("GetPaymentVouchers", "PaymentVouchers", new { Area = "Payments" }))",
-    "sServerMethod": "POST",
-    // Callback settings
-    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-        var writeDate = new Date(parseInt(aData.WriteDate.replace("/Date(", "").replace(")/", ""), 10));
-        var paidFlaggedDate = new Date(parseInt(aData.PaidFlaggedDate.replace("/Date(", "").replace(")/", ""), 10));
-        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-
-        var formatDate = function(date) {
-            return $.datepicker.formatDate('dd/mm/yy', date);
-        };
-
-        // Format dates
-        aData.WriteDate = formatDate(writeDate);
-        aData.PaidFlaggedDate = formatDate(paidFlaggedDate);
-        aData.CreatedDate = formatDate(createdDate);
-
-        // Update row content
-        $('td:eq(4)', nRow).html(aData.WriteDate);
-        $('td:eq(6)', nRow).html(aData.PaidFlaggedDate);
-        $('td:eq(7)', nRow).html(aData.CreatedDate);
-
-        return nRow;
-    },
-    // Display settings
-    "aoColumns": [
-        { "mDataProp": "VoucherNumber", "sTitle": "Voucher Number", "sWidth": "10%" },
-        { "mDataProp": "Status", "sTitle": "Status", "sWidth": "10%" },
-        { "mDataProp": "Payee", "sTitle": "Payee", "sWidth": "20%" },
-        { "mDataProp": "Amount", "sTitle": "Amount", "sWidth": "10%" },
-        { "mDataProp": "WriteDate", "sTitle": "Write Date", "sWidth": "10%" },
-        { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "15%" },
-        { "mDataProp": "PaidFlaggedDate", "sTitle": "Paid/Flagged Date", "sWidth": "10%" },
-        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" }
-    ],
-    "aaSorting": [[0, "desc"]]
-        });
-
-
-    $('#tellerGlTable').DataTable({
-        "sPaginationType": "full_numbers",
-        "bProcessing": true,
-        "bServerSide": true,
-        "sAjaxSource": "@(Url.Action("Index", "CashDeposit", new { Area = "FrontOffice"}))",
-        "sServerMethod": "POST",
-        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-
-            var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-            var h = ("0" + createdDate.getHours()).slice(-2);
-            var m = ("0" + createdDate.getMinutes()).slice(-2);
-            var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-            aData.JournalCreatedDate = dt_Created;
-
-
-             $('td:eq(1)', nRow).html(dt_Created);
-            return nRow;
-        },
-        "aoColumns": [
-            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
-            { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
-            { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
-            { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
-            { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
-            { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
-            { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
-        ],
-        "aaSorting": [[1, "desc"]] // Default sorting, adjust index as needed
-    });
-
-
                         // Set Default Value for Filters
                         var defaultProductCode = $('#productCode').val();
-                        var defaultCustomerFilter = $('#customerFilter').val();
+        var defaultCustomerFilter = $('#customerFilter').val();
+
+        var defaultChequeBookId = $('#ChequeBookId').val();
 
 
                         //Refresh button for reloading the Datable after Applying the filters
@@ -1440,16 +1274,15 @@
 
     $("#s tbody").on("click", "tr", function () {
         var data = CustomerAccountsGrid.row(this).data();
-        $('#Id').val(data.Id);
-        $('#Id').val(data.CustomerId);
-        $('input[name=CustomerId]').val(data.Id);
+        //$('#Id').val(data.Id);
+        //$('#Id').val(data.CustomerId);
+        //$('input[name=CustomerId]').val(data.Id);
         $('input[name=FullAccountNumber]').val(data.FullAccountNumber);
 
         var CustomerId = "";
         CustomerId = CustomersMap[item].Id;
 
-
-        $('#id').val(CustomersMap[item].CustomerAccountId);
+        $('#CustomerAccountId').val(CustomersMap[item].CustomerAccountId);
         $('#CustomerAccountTypeTargetProductId').val(CustomersMap[item].CustomerAccountTypeTargetProductId)
         $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
         $('#FullAccountNumber').val(CustomersMap[item].FullAccountNumber);
@@ -1461,6 +1294,157 @@
         $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
         $('#customerLookupModal').modal('hide');
     });
+
+   $('#ChequeBooksGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("FetchChequeBooksTable", "CashDeposit", new { Area = "FrontOffice" }))",
+    "sServerMethod": "POST",
+    // Callback settings
+        
+    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+        var selectUrl = '<a href="#" class="btn btn-outline-info select-chequebook" data-id="' + aData.Id + '">Select</a>';
+        $('td:eq(5)', nRow).html(selectUrl);
+
+        // Set the hidden input with the value of ChequeBookId
+        $('td:eq(5)', nRow).find('a').on('click', function (e) {
+            e.preventDefault();
+            console.log("cheqe book id is", aData.Id);
+            $('#ChequeBookId').val(aData.Id);
+        });
+
+
+        return nRow;
+    },
+    // Display settings
+    "aoColumns": [
+        { "mDataProp": "SerialNumber", "sTitle": "Serial Number", "sWidth": "10%" },
+        { "mDataProp": "IsActive", "sTitle": "IsActive", "sWidth": "10%" },
+        { "mDataProp": "FullAccountNumber", "sTitle": "Account Number", "sWidth": "20%" },
+        { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "20" },
+        { "mDataProp": "CustomerAccountCustomerReference1", "sTitle": "Customer Reference 1", "sWidth": "20%" },
+        { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "20%" }
+    ],
+    "aaSorting": [[0, "desc"]]
+   });
+
+        // Listen for chequebook selection
+        $(document).on('click', '.select-chequebook', function (e) {
+            e.preventDefault();
+            var chequeBookId = $(this).data('id');
+            console.log("Selected ChequeBook Id:", chequeBookId);
+
+            // Set the hidden field value
+            $('#ChequeBookId').val(chequeBookId);
+
+            // Reload Payment Vouchers Table with the selected ChequeBook Id
+            $('#PaymentVouchersGrid').DataTable().ajax.reload();
+        });
+
+         $('#PaymentVouchersGrid').DataTable({
+    // Ajax settings
+    "sPaginationType": "full_numbers",
+    "bProcessing": true,
+    "bServerSide": true,
+    "sAjaxSource": "@(Url.Action("FetchPaymentVouchersTable", "CashDeposit", new { Area = "FrontOffice" }))",
+    "sServerMethod": "POST",
+    // Callback settings
+            "fnServerParams": function (aoData) {
+                aoData.push(
+                    { "name": "chequeBookId", "value": $('#ChequeBookId').val() || defaultChequeBookId},
+
+                );
+            },
+
+    "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+        //var writeDate = new Date(parseInt(aData.WriteDate.replace("/Date(", "").replace(")/", ""), 10));
+        //var paidFlaggedDate = new Date(parseInt(aData.PaidFlaggedDate.replace("/Date(", "").replace(")/", ""), 10));
+        var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+
+        var formatDate = function(date) {
+            return $.datepicker.formatDate('dd/mm/yy', date);
+        };
+
+        // Format dates
+        //aData.WriteDate = formatDate(writeDate);
+        //aData.PaidDate = formatDate(paidFlaggedDate);
+        aData.CreatedDate = formatDate(createdDate);
+
+        // Update row content
+        $('td:eq(4)', nRow).html(aData.WriteDate);
+        $('td:eq(5)', nRow).html(aData.PaidFlaggedDate);
+        $('td:eq(6)', nRow).html(aData.CreatedDate);
+
+        var selectUrl = '<a onclick="setPaymentVoucherDetails(\'' + aData.VoucherNumber + '\', \'' + aData.ChequeBookId + '\')" class="btn btn-outline-info">Select</a>';
+
+
+        $('td:eq(7)', nRow).html(selectUrl);
+
+
+        return nRow;
+    },
+    // Display settings
+    "aoColumns": [
+        { "mDataProp": "VoucherNumber", "sTitle": "Voucher Number", "sWidth": "10%" },
+        { "mDataProp": "StatusDescription", "sTitle": "Status", "sWidth": "10%" },
+        { "mDataProp": "Payee", "sTitle": "Payee", "sWidth": "20%" },
+        { "mDataProp": "Amount", "sTitle": "Amount", "sWidth": "10%" },
+        { "mDataProp": "WriteDate", "sTitle": "Write Date", "sWidth": "10%" },
+     /*   { "mDataProp": "Reference", "sTitle": "Reference", "sWidth": "15%" },*/
+        { "mDataProp": "PaidDate", "sTitle": "Paid/Flagged Date", "sWidth": "10%" },
+        { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "15%" },
+         { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "15%", "bSortable": false }
+    ],
+    "aaSorting": [[0, "desc"]]
+         });
+
+        function setPaymentVoucherDetails(voucherNumber, voucherId) {
+
+            console.log("entered setPaymentVoucherDetails with vouchernumber:", voucherNumber);
+
+            $('#PaymentVoucherNumber').val(voucherNumber);
+            //$('#ChequeBookId').val(voucherId);
+
+            $('#PaymentVouchersLookupModal').modal('hide');
+        }
+
+
+    $('#tellerGlTable').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CashDeposit", new { Area = "FrontOffice"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+
+            var createdDate = new Date(parseInt(aData.JournalCreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.JournalCreatedDate = dt_Created;
+
+
+             $('td:eq(1)', nRow).html(dt_Created);
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "15%" },
+            { "mDataProp": "JournalCreatedDate", "sTitle": "Txn Date", "sWidth": "15%" },
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "25%" },
+            { "mDataProp": "Debit", "sTitle": "Debit", "sWidth": "10%" },
+            { "mDataProp": "Credit", "sTitle": "Credit", "sWidth": "10%" },
+            { "mDataProp": "RunningBalance", "sTitle": "Running Balance", "sWidth": "10%" },
+            { "mDataProp": "ContraGLAccountName", "sTitle": "Contra G/L Account", "sWidth": "15%" }
+        ],
+        "aaSorting": [[1, "desc"]] // Default sorting, adjust index as needed
+    });
+
 
 
          //Branch typehead starts here
@@ -1499,28 +1483,6 @@
                     return item;
                 }
             });
-
-
-        function captureDetails() {
-            var Remarks = document.getElementById('Remark').value;
-            var BranchDescription = document.getElementById('BranchDescription').value;
-            //var h = document.getElementById('h');
-            //h.value = word;
-            //$.post("Registry/WithdrawalNotification/AssignText", { word });
-            $.ajax({
-                url: "/Registry/WithdrawalNotification/AssignText",
-                type: "POST",
-                data: { "Remarks": Remarks, "BranchDescription": BranchDescription },
-                //success: function (mydata) {
-                //    alert("Saved");
-                //},
-                //error: function (error) {
-                //    alert('failed');
-                //    alert(error);
-                //}
-            });
-
-        }
 
 
     </script>
@@ -1671,7 +1633,6 @@
 
                             console.log("bankId is", bankId);
 
-
                             $.ajax({
                                 url: '/FrontOffice/CashDeposit/GetBankDetailsJson',
                                 type: 'GET',
@@ -1684,10 +1645,11 @@
                                         // Populate the fields with the returned data
                                         $('#DrawerBankId').val(data.Id);
                                         $('#DrawerBankName').val(data.Description);
+                                        $('#DrawerBankLinkageChartOfAccoundId').val(data.BankLinkageChartOfAccountId);
 
 
                                         // Close the modal after successful data retrieval
-                                        $('#bankLookupModal').modal('hide');
+                                        $('#banksLookupModal').modal('hide');
                                     } else {
                                         console.error("No bank details found.");
                                     }
@@ -1738,7 +1700,7 @@
                 }
             });
 
-                          //ChequeTyoe typehead starts here
+                          //ChequeType typehead starts here
                                $('.ChequeTypeLookup').typeahead({
                 source: function (query, process) {
                     return $.getJSON(

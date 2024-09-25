@@ -26736,6 +26736,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        public Task<ObservableCollection<ChequeBookDTO>> FindChequeBooksAsync(ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<ChequeBookDTO>>();
+
+            IChequeBookService service = GetService<IChequeBookService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<ChequeBookDTO> response = ((IChequeBookService)result.AsyncState).EndFindChequeBooks(result);
+
+                    tcs.TrySetResult(new ObservableCollection<ChequeBookDTO>(response ?? new List<ChequeBookDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindChequeBooks(asyncCallback, service);
+
+            return tcs.Task;
+        }
+
         public Task<ObservableCollection<PaymentVoucherDTO>> FindPaymentVouchersByChequeBookIdAsync(Guid chequeBookId, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<ObservableCollection<PaymentVoucherDTO>>();
@@ -26764,6 +26796,39 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginFindPaymentVouchersByChequeBookId(chequeBookId, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+
+        public Task<PageCollectionInfo<PaymentVoucherDTO>> FindPaymentVouchersByChequeBookIdAndFilterInPageAsync(Guid chequeBookId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<PageCollectionInfo<PaymentVoucherDTO>>();
+
+            IChequeBookService service = GetService<IChequeBookService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    PageCollectionInfo<PaymentVoucherDTO> response = ((IChequeBookService)result.AsyncState).EndFindPaymentVouchersByChequeBookIdAndFilterInPage(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindPaymentVouchersByChequeBookIdAndFilterInPage(chequeBookId, text, pageIndex, pageSize, asyncCallback, service);
 
             return tcs.Task;
         }
