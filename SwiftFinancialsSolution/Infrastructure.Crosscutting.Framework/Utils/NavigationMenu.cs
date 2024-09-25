@@ -199,10 +199,7 @@ namespace Infrastructure.Crosscutting.Framework.Utils
                //new NavigationMenu{AreaCode = 0x000059D8 + 78, IsArea = false, Description = "Catalog ", Icon="fa fa-money", ControllerName="Catalog", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 81},
 
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "G/LAccount", Icon="fa fa-tasks", ControllerName="GLAccount", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 85},
-
-               
-
-
+               new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Transaction Journals", Icon="fa fa-tasks", ControllerName="TransactionJournals", ActionName="Index", AreaName = "Accounts", Code = 0x000059D8 + 86},
 
 
                new NavigationMenu{AreaCode = 0x000059D8, IsArea = false, Description = "Alternate channel Reconciliation", Icon="fa fa-exchange-alt", Code = 0x000059D8 + 86},

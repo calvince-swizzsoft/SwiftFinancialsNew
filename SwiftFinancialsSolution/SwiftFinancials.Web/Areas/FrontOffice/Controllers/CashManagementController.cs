@@ -342,9 +342,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         transactionModel.CreditChartOfAccountId = creditChartOfAccountId;
 
 
-
-                       
-
                         break;
 
                     case TreasuryTransactionType.TreasuryToTeller:
@@ -431,7 +428,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                             System.Windows.Forms.MessageBoxDefaultButton.Button1,
                             System.Windows.Forms.MessageBoxOptions.ServiceNotification
                             );
-                        
+
+                        break;
                     }
 
                     var bankToTellerJournal = await _channelService.AddCashManagementJournalAsync(transactionModel.fiscalCountDTO, transactionModel, GetServiceHeader());

@@ -44,7 +44,7 @@ namespace SwiftFinancials.Web.Areas.Reports.Controllers
 
                 using (SqlCommand cmd = new SqlCommand(sql, conn))
                 {
-                    using (SqlDataReader reader = cmd.ExecuteReader()) 
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync()) 
                     {
                         while (reader.Read())
                         {

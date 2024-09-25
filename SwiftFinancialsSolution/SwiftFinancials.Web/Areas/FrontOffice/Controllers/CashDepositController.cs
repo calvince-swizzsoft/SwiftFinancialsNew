@@ -654,7 +654,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 "Cash Withdrawal", // Title of the message box
                                 MessageBoxButtons.OK, // Button to display
                                 MessageBoxIcon.Exclamation, // Icon to display (exclamation mark)
-                                 MessageBoxDefaultButton.Button1,
+                                MessageBoxDefaultButton.Button1,
                                 MessageBoxOptions.ServiceNotification
                             );
 
@@ -831,12 +831,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                     {
                                         var result = MessageBox.Show(
                                             string.Format("{0}.\nDo you want to proceed and place a cash withdrawal authorization request?",
-                                                EnumHelper.GetDescription(cashWithdrawalCategory)),
+                                            EnumHelper.GetDescription(cashWithdrawalCategory)),
                                             "CashWithdrawal Request",
                                             MessageBoxButtons.YesNo,
                                             MessageBoxIcon.Question,
-                                             MessageBoxDefaultButton.Button1,
-                                              MessageBoxOptions.ServiceNotification
+                                            MessageBoxDefaultButton.Button1,
+                                            MessageBoxOptions.ServiceNotification
                                         );
 
                                         if (result == DialogResult.Yes && !proceedCashWithdrawalAuthorizationRequest)
@@ -1122,16 +1122,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
                         transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
                         transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
-
                     }
-
 
                     if (SelectedTeller != null && !SelectedTeller.IsLocked)
                         transactionModel.CreditChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
 
                     break;
-
-
             }
 
             transactionModel.ValidateAll();
@@ -1159,19 +1155,12 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             {
                 // Call the asynchronous method to process the customer transaction
                 await ProcessCustomerTransactionAsync(transactionModel);
-
                 SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(transactionModel.CustomerAccount.Id, false, true, false, false, GetServiceHeader());
-
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
-
-
-
                 return RedirectToAction("Create");
             }
             catch (Exception)
             {
-
-
 
                 ViewBag.TransactionTypeSelectList = GetFrontOfficeTransactionTypeSelectList(SelectedCustomerAccount.Type.ToString());
 
@@ -1189,8 +1178,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             }
         }
-
-
 
 
         [HttpGet]
@@ -1300,8 +1287,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return Json(new { success = true, data = commissions });
         }
 
+
         [HttpPost]
-        public async Task<JsonResult> FetchPaymentVouchersTable(Guid? customerAccountId, JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> FetchChequeBooksTable(JQueryDataTablesModel jQueryDataTablesModel)
         {
 
             int totalRecordCount = 0;
@@ -1310,16 +1298,36 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
+            var pageCollectionInfo = await _channelService.FindChequeBooksByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
 
-           
-            var chequebooks = await _channelService.FindChequeBooksAsync(GetServiceHeader());
-            var chequebook = chequebooks.FirstOrDefault(c => c.CustomerAccountId == customerAccountId);
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.CreatedDate).ToList();
 
-            if (chequebook != null)
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+
+            else return this.DataTablesJson(items: new List<ChequeBookDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> FetchPaymentVouchersTable(Guid? chequeBookId, JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+            int searchRecordCount = 0;
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            if (chequeBookId != null)
             {
 
-                var pageCollectionInfo = await _channelService.FindPaymentVouchersByChequeBookIdAndFilterInPageAsync(chequebook.Id, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+                var pageCollectionInfo = await _channelService.FindPaymentVouchersByChequeBookIdAndFilterInPageAsync((Guid)chequeBookId, jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
                 if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
                 {
@@ -1335,16 +1343,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-
-        }
-
-        public async Task<JsonResult> FetchPaymentVoucherJson(Guid chequeBookId)
-        {
-
-
-            var paymentVoucher = await _channelService.FindPaymentVouchersByChequeBookIdAsync(chequeBookId, GetServiceHeader());
-
-            return Json(new { success = true, data = paymentVoucher });
 
         }
 

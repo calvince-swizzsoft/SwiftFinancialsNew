@@ -21,13 +21,20 @@
         <div class="col-lg-12">
             <div class="ibox">
                 <div class="ibox-title">
-                    @if (TempData["Success"] != null)
+                    @*@if (TempData["Success"] != null)
                     {
                         <div class="alert alert-success">
                             <strong>Success!</strong> @TempData["Success"]
                             <button type="button" class="close" data-dismiss="alert">&times;</button>
                         </div>
                     }
+                    @if (TempData["Error"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            <strong>Error!</strong> @TempData["Error"]
+                            <button type="button" class="close" data-dismiss="alert">&times;</button>
+                        </div>
+                    }*@
                     <div class="ibox-tools">
                         <a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
                         <a class="close-link"><i class="fa fa-times"></i></a>
@@ -101,21 +108,19 @@
     </div>
 </div>
 
-@section Scripts{
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         $(document).ready(function () {
-            // Form submission event
             $('#updateForm').on('submit', function (e) {
                 e.preventDefault();
                 submitForm();
             });
 
-            // Load roles and branches based on the selected permission type
             $('#SystemPermissionType').change(function () {
                 loadRolesAndBranches($(this).val());
             });
 
-            // AJAX call to load roles and branches based on permission type
             function loadRolesAndBranches(systemPermissionTypeId) {
                 $.ajax({
                     url: '@Url.Action("GetAction", "SystemTransactiontypes", new { Area = "Admin" })',
@@ -132,7 +137,6 @@
                 });
             }
 
-            // Populate roles dynamically with checkboxes
             function populateRoles(allRoles, linkedRoles) {
                 var rolesTableBody = $('#rolesTableBody');
                 rolesTableBody.empty();
@@ -145,13 +149,19 @@
                         '</tr>'
                     );
                 });
-                // Attach event listener for role checkboxes
                 $('.role-checkbox').change(function () {
-                    updateRoleSelection();
+                    var isChecked = $(this).is(':checked');
+                    var roleId = $(this).data('role-id');
+                    var roleName = $(this).data('role-name');
+
+                    if (isChecked) {
+                        updateRoleSelection();
+                    } else {
+                        removeRole(roleId, roleName);
+                    }
                 });
             }
 
-            // Populate branches dynamically with checkboxes
             function populateBranches(allBranches, linkedBranches) {
                 var branchesTableBody = $('#branchesTableBody');
                 branchesTableBody.empty();
@@ -164,24 +174,28 @@
                         '</tr>'
                     );
                 });
-                // Attach event listener for branch checkboxes
                 $('.branch-checkbox').change(function () {
-                    updateBranchSelection();
+                    var isChecked = $(this).is(':checked');
+                    var branchId = $(this).data('branch-id');
+
+                    if (isChecked) {
+                        updateBranchSelection();
+                    } else {
+                        removeBranch(branchId);
+                    }
                 });
             }
 
-            // Update role selection and send data via AJAX
             function updateRoleSelection() {
                 var selectedRoles = [];
                 $('.role-checkbox:checked').each(function () {
                     var roleId = $(this).data('role-id');
                     var roleName = $(this).data('role-name');
-                    selectedRoles.push(roleId + '|' + roleName);  // Concatenate roleId and roleName with a separator (|).
+                    selectedRoles.push(roleId + '|' + roleName);
                 });
                 sendDataToCreateAction(selectedRoles.join(','), $('#SelectedBranches').val());
             }
 
-            // Update branch selection and send data via AJAX
             function updateBranchSelection() {
                 var selectedBranches = [];
                 $('.branch-checkbox:checked').each(function () {
@@ -190,13 +204,12 @@
                 sendDataToCreateAction($('#SelectedRoles').val(), selectedBranches.join(','));
             }
 
-            // Send selected roles and branches via AJAX to the Create action
             function sendDataToCreateAction(selectedRoles, selectedBranches) {
                 $.ajax({
                     url: '@Url.Action("Create", "SystemTransactiontypes", new { Area = "Admin" })',
                     type: 'POST',
                     data: {
-                        selectedRoles: selectedRoles,  // This will now contain both roleId and roleName.
+                        selectedRoles: selectedRoles,
                         selectedBranches: selectedBranches,
                         systemPermissionType: $('#SystemPermissionType').val()
                     },
@@ -213,7 +226,50 @@
                 });
             }
 
-            // Form submission logic
+            function removeRole(roleId, roleName) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: roleId + '|' + roleName,
+                        selectedBranches: $('#SelectedBranches').val(),
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'error', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while removing the role.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
+            function removeBranch(branchId) {
+                $.ajax({
+                    url: '@Url.Action("Remove", "SystemTransactiontypes", new { Area = "Admin" })',
+                    type: 'POST',
+                    data: {
+                        selectedRoles: $('#SelectedRoles').val(),
+                        selectedBranches: branchId,
+                        systemPermissionType: $('#SystemPermissionType').val()
+                    },
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({ icon: 'error', title: 'Removed!', text: response.message, timer: 1000, showConfirmButton: false });
+                        } else {
+                            Swal.fire({ icon: 'error', title: 'Error!', text: response.message, timer: 8000, showConfirmButton: true });
+                        }
+                    },
+                    error: function () {
+                        Swal.fire({ icon: 'error', title: 'Error!', text: 'An error occurred while removing the branch.', timer: 8000, showConfirmButton: true });
+                    }
+                });
+            }
+
             function submitForm() {
                 var selectedRoles = [];
                 var selectedBranches = [];
@@ -221,7 +277,7 @@
                 $('.role-checkbox:checked').each(function () {
                     var roleId = $(this).data('role-id');
                     var roleName = $(this).data('role-name');
-                    selectedRoles.push(roleId + '|' + roleName);  // Include both roleId and roleName.
+                    selectedRoles.push(roleId + '|' + roleName);
                 });
 
                 $('.branch-checkbox:checked').each(function () {
@@ -252,38 +308,3 @@
         });
     </script>
 }
-
-
-
-        [HttpPost]
-        public async Task<JsonResult>
-    Remove(SystemPermissionTypeInRoleDTO roleBindingModel, string selectedRoles, string selectedBranches, int systemPermissionType)
-    {
-    await ServeNavigationMenus();
-    ViewBag.SystemPermissionTypeSelectList = GetsystemPermissionTypeList(string.Empty);
-
-
-    roleBindingModel.systemPermissionTypeInRoles = ParseSelectedRoles(selectedRoles);
-    roleBindingModel.systemPermissionTypeInBranchDTOs = ParseSelectedBranches(selectedBranches);
-
-    var linkedRoles = await _channelService.GetRolesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
-    var linkedBranches = await _channelService.GetBranchesForSystemPermissionTypeAsync(systemPermissionType, GetServiceHeader());
-    ObservableCollection<string>
-        k = new ObservableCollection<string>
-            ();
-            foreach (var n in roleBindingModel.systemPermissionTypeInRoles)
-            {
-            string p = n.RoleName;
-            k.Add(p);
-            }
-            if (!roleBindingModel.HasErrors)
-            {
-            await _channelService.RemoveSystemPermissionTypeFromRolesAsync(roleBindingModel.SystemPermissionType, k, GetServiceHeader());
-            await _channelService.RemoveSystemPermissionTypeFromBranchesAsync(roleBindingModel.SystemPermissionType, roleBindingModel.systemPermissionTypeInBranchDTOs, GetServiceHeader());
-
-            return Json(new { success = true, message = "System Permissions Updated Successfully" });
-            }
-
-            await ServeNavigationMenus();
-            return Json(new { success = false, message = "There was an error updating system permissions." });
-            }
