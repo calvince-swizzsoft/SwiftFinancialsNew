@@ -33,27 +33,19 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             int searchRecordCount = 0;
 
-
-            //var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-            //DateTime startDate = postingPeriod.DurationStartDate;
-
-            //DateTime endDate = postingPeriod.DurationStartDate;
-
             DateTime startDate = DateTime.MinValue;
 
             DateTime endDate = DateTime.MaxValue;
 
             int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
 
-
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
+           
 
             var pageCollectionInfo = await _channelService.FindCashDepositRequestsByFilterInPageAsync(startDate, endDate, 1, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
 
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
@@ -79,12 +71,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
-
-            //var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
-
-            //DateTime startDate = postingPeriod.DurationStartDate;
-
-            //DateTime endDate = postingPeriod.DurationStartDate;
 
             DateTime startDate = DateTime.MinValue;
 
@@ -301,52 +287,52 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 case FrontOfficeCashRequestType.CashDeposit:
                     var cashDepositRequest = await _channelService.FindCashDepositRequestAsync(id, GetServiceHeader());
                     var depositAuthorization = await _channelService.AuthorizeCashDepositRequestAsync(cashDepositRequest, customerTransactionAuthOption, GetServiceHeader());
-                    var depositingAccount = await _channelService.FindCustomerAccountAsync(cashDepositRequest.CustomerAccountId, true, true, true, true, GetServiceHeader());
+                    //var depositingAccount = await _channelService.FindCustomerAccountAsync(cashDepositRequest.CustomerAccountId, true, true, true, true, GetServiceHeader());
 
-                    cashDepositRequest.Remarks = remarks;
+                    //cashDepositRequest.Remarks = remarks;
 
-                    int txnType = (int)FrontOfficeTransactionType.CashDeposit;
+                    //int txnType = (int)FrontOfficeTransactionType.CashDeposit;
 
-                    CustomerTransactionModel transactionModel = new CustomerTransactionModel
-                    {
-                        CustomerAccount = depositingAccount,
+                    //CustomerTransactionModel transactionModel = new CustomerTransactionModel
+                    //{
+                    //    CustomerAccount = depositingAccount,
 
-                        BranchId = depositingAccount.BranchId,
+                    //    BranchId = depositingAccount.BranchId,
 
-                        TotalValue = cashDepositRequest.Amount
-                    };
+                    //    TotalValue = cashDepositRequest.Amount
+                    //};
 
-                    var depositBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
+                    //var depositBranch = await _channelService.FindBranchAsync(transactionModel.BranchId, GetServiceHeader());
 
 
-                    var tellerToDebit = await FindTellerWithRequestDTO(cashDepositRequest);
+                    //var tellerToDebit = await FindTellerWithRequestDTO(cashDepositRequest);
 
-                    transactionModel.PrimaryDescription = "Customer Deposit To Teller";
-                    transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", depositBranch.Code, tellerToDebit.Code, tellerToDebit.ItemsCount);
+                    //transactionModel.PrimaryDescription = "Customer Deposit To Teller";
+                    //transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", depositBranch.Code, tellerToDebit.Code, tellerToDebit.ItemsCount);
 
-                    transactionModel.Reference = string.Format("{0}", transactionModel.Reference ?? depositingAccount.CustomerReference1);
+                    //transactionModel.Reference = string.Format("{0}", transactionModel.Reference ?? depositingAccount.CustomerReference1);
 
                     //var depositRandom = new Random();
                     //var depositCodeString = DateTime.UtcNow.ToString("yyMMddHHmmss") + depositRandom.Next(1000, 9999);
                     //transactionModel.TransactionCode = int.Parse(depositCodeString);
 
-                    transactionModel.DebitChartOfAccountId = (Guid)tellerToDebit.ChartOfAccountId;
+                    //transactionModel.DebitChartOfAccountId = (Guid)tellerToDebit.ChartOfAccountId;
 
-                    transactionModel.DebitCustomerAccountId = depositingAccount.Id;
-                    transactionModel.DebitCustomerAccount = depositingAccount;
-                    transactionModel.CreditCustomerAccountId = depositingAccount.Id;
-                    transactionModel.CreditCustomerAccount = depositingAccount;
-                    transactionModel.CreditChartOfAccountId = depositingAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+                    //transactionModel.DebitCustomerAccountId = depositingAccount.Id;
+                    //transactionModel.DebitCustomerAccount = depositingAccount;
+                    //transactionModel.CreditCustomerAccountId = depositingAccount.Id;
+                    //transactionModel.CreditCustomerAccount = depositingAccount;
+                    //transactionModel.CreditChartOfAccountId = depositingAccount.CustomerAccountTypeTargetProductChartOfAccountId;
 
-                    if (depositAuthorization && await _channelService.PostCashDepositRequestAsync(cashDepositRequest, GetServiceHeader())) {
+                    //if (depositAuthorization && await _channelService.PostCashDepositRequestAsync(cashDepositRequest, GetServiceHeader())) {
 
                        
 
-                        var depositTariffs = await _channelService.ComputeTellerCashTariffsAsync(transactionModel.CustomerAccount, transactionModel.TotalValue, txnType, GetServiceHeader());
-                        await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, depositTariffs, GetServiceHeader());
-                        transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
-                        var result = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
-                    }
+                    //    var depositTariffs = await _channelService.ComputeTellerCashTariffsAsync(transactionModel.CustomerAccount, transactionModel.TotalValue, txnType, GetServiceHeader());
+                    //    await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, depositTariffs, GetServiceHeader());
+                    //    transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
+                    //    var result = await _channelService.UpdateCustomerAccountAsync(transactionModel.CustomerAccount, GetServiceHeader());
+                    //}
 
                     return HandleAuthorizationResult(depositAuthorization, isApproval);
 
