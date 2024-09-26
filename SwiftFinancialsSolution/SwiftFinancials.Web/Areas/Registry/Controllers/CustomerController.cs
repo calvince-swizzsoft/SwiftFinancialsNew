@@ -51,8 +51,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
 
             int searchRecordCount = 0;
 
-
-
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
@@ -77,9 +75,6 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
             {
                 pageCollectionInfo = await _channelService.FindCustomersByFilterInPageAsync(jQueryDataTablesModel.sSearch, (int)CustomerFilter.FirstName, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
             }
-
-
-
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {

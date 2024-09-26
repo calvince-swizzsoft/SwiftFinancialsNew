@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Report Setting";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var reportsCount = ViewBag.reportsCount;
 }
 
 <style>
@@ -250,6 +252,27 @@
                         <div class="alert alert-success">
                             @TempData["EditSuccess"]
                         </div>
+                    } 
+                    
+                    @if (TempData["Error2"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error2"]
+                        </div>
+                    }
+                    
+                    @if (TempData["Error3"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error3"]
+                        </div>
+                    }
+                    
+                    @if (TempData["Error4"] != null)
+                    {
+                        <div class="alert alert-danger">
+                            @TempData["Error4"]
+                        </div>
                     }
                 </div>
             </div>
@@ -319,28 +342,29 @@
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content" style="width: 100%;">
             <div class="modal-header">
-                <h5 class="modal-title" id="viewReportsModalLabel">Saved Reports</h5>
+                <h5 class="modal-title" id="viewReportsModalLabel"></h5>
+
+                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="color: red; background-color: white; font-size: medium;">&times;</button>
             </div>
             <div class="modal-body">
-
                 <div class="form-group">
                     <input type="text" id="searchInput" class="form-control hyper-realistic-input" placeholder="Search reports" />
                 </div>
 
-                <div style="max-height: 620px; overflow-y: hidden;">
+
+                <div style="max-height: 850px; overflow-y: auto;">
                     <table class="table table-striped" style="width: 100%;">
                         <thead class="thead-dark" style="font-size: medium;">
                             <tr>
                                 <th>Report Name</th>
-                                <th style="text-align: center;">File Name</th>
-                                <th style="text-align: right;">Category</th>
+                                <th>File Name</th>
+                                <th style="text-align: center;">Category</th>
                                 <th style="text-align: right;">Actions</th>
                             </tr>
                         </thead>
                     </table>
 
-                    
-                    <div style="max-height: 700px; overflow-y: auto;">
+                    <div style="max-height: 250px; overflow-y: auto;">
                         <table class="table table-striped" style="width: 100%;">
                             <tbody id="reportListBody">
                             </tbody>
@@ -349,9 +373,7 @@
                 </div>
 
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" style="color: white; background-color: red;">Close</button>
-            </div>
+
         </div>
     </div>
 </div>
@@ -373,15 +395,21 @@
                     var tableBody = $('#reportListBody');
                     tableBody.empty();
 
+                    var reportsCount = data.length;
+                    $('#viewReportsModalLabel').text(`Saved Reports (${reportsCount})`);
+
+
                     data.forEach(function (report) {
                         var row = `
                         <tr>
                             <td>${report.ReportName}</td>
                             <td>${report.FileName}</td>
-                            <td style="text-align: center;">${report.CategoryName}</td>
+                            <td>${report.CategoryName}</td>
                             <td style="text-align: right;">
                                 <a href="@Url.Action("EditReport", "SSRSReportSetting")/${report.Id}" style="margin-right: 10px;" title="Edit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></a>
-                                <a href="@Url.Action("DeleteReport", "SSRSReportSetting")/${report.Id}" style="margin-right: 10px;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+
+                                <a href="javascript:void(0);" onclick="deleteReport(${report.Id})" style="margin-right: 10px;" title="Delete"><i class="fa fa-trash-o" aria-hidden="true"></i></a>
+
                                 <a href="@Url.Action("DownloadReport", "SSRSReportSetting")/${report.Id}" title="Download"><i class="fa fa-download" aria-hidden="true"></i></a>
                             </td>
                         </tr>
