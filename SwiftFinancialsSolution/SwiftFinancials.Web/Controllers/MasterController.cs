@@ -769,6 +769,10 @@ namespace SwiftFinancials.Web.Controllers
             return chartOfAccountCategories;
         }
 
+
+
+
+
         [NonAction]
         protected List<SelectListItem> GetChargeTypeSelectList(string selectedValue)
         {
@@ -1841,8 +1845,25 @@ namespace SwiftFinancials.Web.Controllers
             return imageSource;
         }
 
+        //added
 
-        
+
+        protected List<SelectListItem> GetAccountClosureSelectList(string selectedValue)
+        {
+            List<SelectListItem> accountClosure = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(AccountClosureRequestStatus)).Cast<AccountClosureRequestStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            accountClosure.AddRange(items);
+
+            return accountClosure;
+        }
+
 
 
 

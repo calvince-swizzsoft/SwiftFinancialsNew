@@ -373,6 +373,9 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+       // public async 
+
+
         private async Task ProcessCustomerTransactionAsync(CustomerTransactionModel transactionModel)
         {
 
@@ -486,7 +489,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                             {
                                                 if (await _channelService.PostCashDepositRequestAsync(targetCashDepositRequest, GetServiceHeader()))
                                                 {
-                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs);
+                                                    var authorizedJournal = await _channelService.AddJournalWithCustomerAccountAndTariffsAsync(transactionModel, tariffs, GetServiceHeader());
 
                                                     //basic
                                                     transactionModel.CustomerAccount.NewAvailableBalance = transactionModel.CustomerAccount.AvailableBalance + transactionModel.TotalValue;
@@ -495,7 +498,17 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                                                     if (updateAboveLimitResult)
                                                     {
-                                                        TempData["RequestSuccess"] = $"success: customer new balance is {transactionModel.CustomerAccount.NewAvailableBalance}";
+                                                        string successmessage = $"Customer new balance is {transactionModel.CustomerAccount.NewAvailableBalance}";
+
+                                                        // Use MessageBox with ServiceNotification to show the message in any context
+                                                        MessageBox.Show(
+                                                            successmessage,
+                                                            "Success",
+                                                            MessageBoxButtons.OK,
+                                                            MessageBoxIcon.Information,
+                                                            MessageBoxDefaultButton.Button1,
+                                                            MessageBoxOptions.ServiceNotification
+                                                        );
                                                     }
 
                                                     //PrintReceipt(authorizedJournal);
@@ -1179,6 +1192,193 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<JsonResult> PayAuthorizedCashDepositRequestAsync(Guid cashDepositRequestId)
+        {
+
+            var cashDepositRequest = await _channelService.FindCashDepositRequestAsync(cashDepositRequestId, GetServiceHeader());
+
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync(cashDepositRequest.CustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            _selectedTeller = await GetCurrentTeller();
+
+            SelectedBranch = await _channelService.FindBranchAsync(SelectedCustomerAccount.BranchId, GetServiceHeader());
+            ;
+
+            var transactionModel = new CustomerTransactionModel();
+
+            var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            transactionModel.PostingPeriodId = postingPeriod.Id;
+            //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+            transactionModel.PrimaryDescription = "ok";
+            transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
+            transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
+            transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
+
+            transactionModel.TotalValue = cashDepositRequest.Amount;
+
+            transactionModel.CashDepositRequest = cashDepositRequest;
+
+            SelectedCustomerAccount.Type = (int)FrontOfficeTransactionType.CashDeposit;
+
+            transactionModel.CustomerAccount = SelectedCustomerAccount;
+
+
+
+            if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+
+            if (SelectedCustomerAccount != null)
+            {
+                transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
+                transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
+                transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
+                transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
+                transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+            }
+
+
+            try
+            {
+                // Call the asynchronous method to process the customer transaction
+                await ProcessCustomerTransactionAsync(transactionModel);
+
+                var response = new
+                {
+                    Status = "Success",
+                    Message = "Cash deposit request authorized successfully.",
+                    Amount = transactionModel.TotalValue,
+                    AccountNumber = transactionModel.CashDepositRequest.CustomerAccountFullAccountNumber,
+                    Timestamp = DateTime.Now
+                };
+
+
+                MessageBox.Show(response.Message,
+                 "Cash Transaction",
+                 MessageBoxButtons.OK,
+                 MessageBoxIcon.Information,
+                 MessageBoxDefaultButton.Button1,
+                 MessageBoxOptions.ServiceNotification
+
+                 );
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+
+                var errorResponse = new
+                {
+                    Status = "Error",
+                    Message = ex.Message,
+                    Timestamp = DateTime.Now
+                };                
+                  MessageBox.Show("Transaction Error",
+                  "Cash Transaction",
+                  MessageBoxButtons.OK,
+                  MessageBoxIcon.Exclamation,
+                  MessageBoxDefaultButton.Button1,
+                  MessageBoxOptions.ServiceNotification
+
+                  );
+                return Json(errorResponse);
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> PayAuthorizedWithdrawalRequestAsync(Guid cashWithdrawalRequestId)
+        {
+
+            var cashWithdrawalRequest = await _channelService.FindCashWithdrawalRequestAsync(cashWithdrawalRequestId, GetServiceHeader());
+
+            SelectedCustomerAccount = await _channelService.FindCustomerAccountAsync((Guid)cashWithdrawalRequest.CustomerAccountId, true, true, true, true, GetServiceHeader());
+
+            _selectedTeller = await GetCurrentTeller();
+
+            SelectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
+            ;
+
+            var transactionModel = new CustomerTransactionModel();
+
+            var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+            transactionModel.PostingPeriodId = postingPeriod.Id;
+            //transactionModel.DebitChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+            transactionModel.PrimaryDescription = "ok";
+            transactionModel.SecondaryDescription = string.Format("B{0}/T{1}/#{2}", SelectedBranch.Code, _selectedTeller.Code, _selectedTeller.ItemsCount);
+            transactionModel.Reference = string.Format("{0}", SelectedCustomerAccount.CustomerReference1);
+            transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
+
+            transactionModel.TotalValue = cashWithdrawalRequest.Amount;
+
+            transactionModel.CashWithdrawal = cashWithdrawalRequest;
+
+            SelectedCustomerAccount.Type = (int)FrontOfficeTransactionType.CashWithdrawal;
+
+            transactionModel.CustomerAccount = SelectedCustomerAccount;
+
+
+
+            if (SelectedTeller != null && !SelectedTeller.IsLocked)
+                transactionModel.DebitChartOfAccountId = SelectedTeller.ChartOfAccountId ?? Guid.Empty;
+
+            if (SelectedCustomerAccount != null)
+            {
+                transactionModel.DebitCustomerAccountId = SelectedCustomerAccount.Id;
+                transactionModel.DebitCustomerAccount = SelectedCustomerAccount;
+                transactionModel.CreditCustomerAccountId = SelectedCustomerAccount.Id;
+                transactionModel.CreditCustomerAccount = SelectedCustomerAccount;
+                transactionModel.CreditChartOfAccountId = SelectedCustomerAccount.CustomerAccountTypeTargetProductChartOfAccountId;
+            }
+
+
+            try
+            {
+                // Call the asynchronous method to process the customer transaction
+                await ProcessCustomerTransactionAsync(transactionModel);
+
+                var response = new
+                {
+                    Status = "Success",
+                    Message = "Cash deposit request authorized successfully.",
+                    Amount = transactionModel.TotalValue,
+                    AccountNumber = transactionModel.CashDepositRequest.CustomerAccountFullAccountNumber,
+                    Timestamp = DateTime.Now
+                };
+
+
+                MessageBox.Show(response.Message,
+                 "Cash Transaction",
+                 MessageBoxButtons.OK,
+                 MessageBoxIcon.Information,
+                 MessageBoxDefaultButton.Button1,
+                 MessageBoxOptions.ServiceNotification
+
+                 );
+
+                return Json(response);
+            }
+            catch (Exception ex)
+            {
+
+                var errorResponse = new
+                {
+                    Status = "Error",
+                    Message = ex.Message,
+                    Timestamp = DateTime.Now
+                };
+                MessageBox.Show("Transaction Error",
+                "Cash Transaction",
+                MessageBoxButtons.OK,
+                MessageBoxIcon.Exclamation,
+                MessageBoxDefaultButton.Button1,
+                MessageBoxOptions.ServiceNotification
+
+                );
+                return Json(errorResponse);
+            }
+        }
+
 
         [HttpGet]
         public async Task<JsonResult> GetTellersAsync()
@@ -1345,6 +1545,95 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else return this.DataTablesJson(items: new List<PaymentVoucherDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
 
         }
+
+
+        [HttpPost]
+        public async Task<JsonResult> CashDepositRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+
+            //var postingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
+
+            //DateTime startDate = postingPeriod.DurationStartDate;
+
+            //DateTime endDate = postingPeriod.DurationStartDate;
+
+            DateTime startDate = DateTime.MinValue;
+
+            DateTime endDate = DateTime.MaxValue;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+
+            var pageCollectionInfo = await _channelService.FindCashDepositRequestsByFilterInPageAsync(startDate, endDate, 2, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.PostedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CashDepositRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> CashWithdrawalRequestsIndex(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+            DateTime startDate = DateTime.MinValue;
+
+            DateTime endDate = DateTime.MaxValue;
+
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+
+            var pageCollectionInfo = await _channelService.FindCashWithdrawalRequestsByFilterInPageAsync(startDate, endDate, 2, "", 2, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(l => l.PaidDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+
+        }
+
 
     }
 }
