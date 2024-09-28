@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -55,6 +56,31 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(loanProductDTO);
         }
 
+
+        [HttpPost]
+        public async Task<JsonResult> GetInvestmentProductDetails(Guid id)
+        {
+            await ServeNavigationMenus();
+            var investmentProduct = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
+
+            if (investmentProduct == null)
+            {
+                return Json(new { success = false, message = "Investment product not found" });
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    CustomerAccountTypeTargetProductDescription = investmentProduct.Description,
+                    CustomerAccountTypeTargetProductId = investmentProduct.Id
+                }
+            });
+        }
+
+
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -72,6 +98,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(string.Empty);
             ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(string.Empty);
             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
+            ViewBag.ChargeType = GetTakeHomeTypeSelectList(string.Empty);
 
             Guid parseId;
 
@@ -152,6 +180,63 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(loanProductBindingModel);
             }
         }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> AddDeductibles(LoanProductDTO  loanProductDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var deductiles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>;
+            if (deductiles == null)
+            {
+                deductiles = new ObservableCollection<LoanProductDeductibleDTO>();
+            }
+
+            foreach (var entry in loanProductDTO.Deductiles)
+            {
+
+                deductiles.Add(entry);
+            }
+
+            // Save the updated entries back to the session
+            Session["deductiles"] = deductiles;
+            
+
+            return Json(new { success = true, data = deductiles });
+        }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> AddLoanCycles(LoanProductDTO loanProductDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var cycles = Session["cycles"] as ObservableCollection<LoanCycleDTO>;
+            if (cycles == null)
+            {
+                cycles = new ObservableCollection<LoanCycleDTO>();
+            }
+
+            foreach (var entry in loanProductDTO.Cycles)
+            {
+
+                cycles.Add(entry);
+            }
+
+            // Save the updated entries back to the session
+            Session["cycles"] = cycles;
+
+
+            return Json(new { success = true, data = cycles });
+        }
+
+
+
 
         [HttpGet]
         public async Task<JsonResult> GetLoanProductsAsync()

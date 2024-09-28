@@ -16,10 +16,12 @@
     var loanRegistrationPaymentDueDate = ViewBag.LoanRegistrationPaymentDueDateSelectList as List<SelectListItem>;
     var takeHomeTypes = ViewBag.TakeHomeTypeSelectList as List<SelectListItem>;
     var loanPaymentFrequencyPerYear = ViewBag.LoanPaymentFrequencyPerYearSelectList as List<SelectListItem>;
+    var productCode = ViewBag.ProductCodeSelectList as List<SelectListItem>;
+    var chargeType = ViewBag.ChargeType as List<SelectListItem>;
 }
 <div class="row wrapper border-bottom bg-white page-heading">
     <div class="col-lg-10">
-       
+
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
@@ -38,6 +40,39 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <style>
+
+
+    #ChargeSplits {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: Arial, sans-serif;
+    }
+
+        #ChargeSplits thead {
+            background-color: white;
+            color: #333;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        #ChargeSplits th, #ChargeSplits td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        #ChargeSplits th {
+            font-weight: bold;
+        }
+
+        #ChargeSplits tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        #ChargeSplits tbody tr:hover {
+            background-color: #f1f1f1;
+        }
+
+
     .tab-content > .tab-pane,
     .inner-tab-content > .inner-tab-pane {
         display: none;
@@ -71,7 +106,7 @@
     #flags {
         border: 2px solid #007bff;
         border-radius: 12px;
-        padding: 30px;
+        padding: 50px;
         margin-bottom: 20px;
         height: 600px;
     }
@@ -85,6 +120,7 @@
         border: 2px solid #333;
         border-radius: 12px;
         background-color: #f1f1f1;
+        width: 100%;
     }
 
     #secondary {
@@ -101,7 +137,7 @@
     }
 
     .inner-tab-content {
-        min-height: 400px;
+        min-height: 500px;
     }
 
     .tables {
@@ -116,7 +152,93 @@
     }
 </style>
 
+<style>
+    .custom-checkbox-container {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 15px;
+    }
 
+    #loanProductForm input[type="checkbox"] {
+        margin-right: 10px;
+        margin-top: 5px; /* Align with first line of text */
+        accent-color: blue; /* This makes the checkbox blue */
+    }
+
+    .custom-checkbox-container label {
+        flex: 1;
+        margin-bottom: 0;
+        color: black;
+        font-weight: bold;
+    }
+
+
+
+    /* Styling for main10 div */
+    .main10 {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        position: relative; /* Required for absolute positioning of h2 */
+    }
+
+    /* Styling for TierDetails div */
+    .TierDetails {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 5px;
+        position: relative; /* Required for absolute positioning of h2 */
+    }
+
+    /* Styling for Tiers div */
+    .Tiers {
+        border: 1px solid black;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 5px;
+        position: relative; /* Required for absolute positioning of h2 */
+    }
+
+        /* Make h2 part of the border */
+        .main10 h2,
+        .TierDetails h2,
+        .Tiers h2 {
+            position: absolute;
+            top: -16px; /* Adjust to make it overlap the border */
+            left: 20px; /* Adjust to center it with padding */
+            background-color: white; /* Same as the background to hide the border behind */
+            padding: 0 10px;
+            font-size: 18px; /* Adjust font size if necessary */
+        }
+
+    /* Additional table styling */
+    table#ChargeSplits {
+        width: 100%;
+        color: black;
+        margin-bottom: 50px;
+    }
+
+        table#ChargeSplits thead {
+            font-style: italic;
+            color: cadetblue;
+            text-align: center;
+        }
+
+    /* Ensure row doesn't get affected by div styling */
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+</style>
+<style>
+    .table-responsive table,
+    .table-responsive table th,
+    .table-responsive table td {
+        border: 1px solid gray !important;
+    }
+</style>
 
 
 
@@ -143,655 +265,904 @@
                         {
                             @Html.AntiForgeryToken()
 
-                            
-
-                        <div id="loanProductForm">
-                            <div class="bg-blue-40 p-4 rounded-lg">
-                                <ul class="flex space-x-4 mb-6 primary-tabs" role="tablist">
-                                    <li>
-                                        <a class="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600" data-toggle="tab" href="#primary" role="tab">Primary Details</a>
-                                    </li>
-                                    <li>
-                                        <a class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300" data-toggle="tab" href="#secondary" role="tab">Secondary Details</a>
-                                    </li>
-                                    <li>
-                                        <a class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300" data-toggle="tab" href="#flags" role="tab">Flags</a>
-                                    </li>
-                                </ul>
-
-                                <div class="tab-content">
-                                    <div id="primary" class="tab-pane active">
-
-                                        <div class="row">
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationTermInMonths, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMinimumAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMinimumAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumAmount, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMinimumMembershipPeriod, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMinimumMembershipPeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumMembershipPeriod, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMinimumGuarantors, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMinimumGuarantors, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumGuarantors, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanInterestChargeMode, loanInterestChargeModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestChargeMode)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanInterestRecoveryMode, loanInterestRecoveryModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanInterestRecoveryMode, loanInterestRecoveryModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationLoanProductSection, loanRegistrationLoanProductSections, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationGuarantorSecurityMode, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationGuarantorSecurityMode, loanRegistrationGuarantorSecurityModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationGuarantorSecurityMode)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationPaymentDueDate, loanRegistrationPaymentDueDate, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentDueDate)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationPaymentFrequencyPerYear, loanPaymentFrequencyPerYear, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentFrequencyPerYear)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.TakeHomeType, takeHomeTypes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.TakeHomeType)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationPayoutRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationPayoutRecoveryMode, loanRegistrationPayoutRecoveryModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationPayoutRecoveryMode)
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationStandingOrderTrigger, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationStandingOrderTrigger, loanRegistrationStandingOrderTriggers, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationStandingOrderTrigger)
-                                                    </div>
-                                                </div>
-                                            </div>
 
 
+                            <div id="loanProductForm">
+                                <div class="bg-blue-40 p-4 rounded-lg">
+                                    <ul class="flex space-x-4 mb-6 primary-tabs" role="tablist">
+                                        <li>
+                                            <a class="px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600" data-toggle="tab" href="#primary" role="tab">Primary Details</a>
+                                        </li>
+                                        <li>
+                                            <a class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300" data-toggle="tab" href="#secondary" role="tab">Secondary Details</a>
+                                        </li>
+                                        <li>
+                                            <a class="px-4 py-2 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300" data-toggle="tab" href="#flags" role="tab">Flags</a>
+                                        </li>
+                                    </ul>
 
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationGracePeriod, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationGracePeriod, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMaximumGuarantees, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMaximumGuarantees, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumGuarantees, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMinimumInterestAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumInterestAmount, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanInterestCalculationMode, new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanInterestCalculationMode, loanInterestCalculationModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode)
+                                    <div class="tab-content">
+                                        <div id="primary" class="tab-pane active">
+
+                                            <div class="row">
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationLoanProductCategory, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationLoanProductCategory, loanRegistrationLoanProductCategories, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductCategory)
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationTermInMonths, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.TextBoxFor(model => model.LoanRegistrationTermInMonths, new { @class = "form-control", type = "number", min = "0", step = "1", placeholder = "" })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationTermInMonths, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, loanRegistrationAggregateCheckOffRecoveryModes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode)
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMinimumAmount, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMinimumAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumAmount, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationRoundingType, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.LoanRegistrationRoundingType, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationRoundingType)
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMinimumMembershipPeriod, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMinimumMembershipPeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumMembershipPeriod, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.TakeHomeFixedAmount, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.TakeHomeFixedAmount, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
-                                                    <div class="input-group">
-                                                        <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
-                                                        @Html.DropDownListFor(model => model.Priority, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
-                                                        @Html.ValidationMessageFor(model => model.Priority)
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMinimumGuarantors, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMinimumGuarantors, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumGuarantors, "", new { @class = "text-danger" })
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationConsecutiveIncome, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationConsecutiveIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationConsecutiveIncome, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.InterestChargedChartOfAccountId, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.ChartOfAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestChargeMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestChargeMode, loanInterestChargeModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestChargeMode)
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.InterestReceivedChartOfAccountId, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.ChartOfAccountAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestRecoveryMode, loanInterestRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode)
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.InterestReceivableChartOfAccountId, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.ChartOfAccountName, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestRecoveryMode, loanInterestRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestRecoveryMode)
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-3">
-                                                <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.ChartOfAccountId, new { @class = "control-label" })
-                                                    <div class="input-group" data-autoclose="true">
-                                                        @Html.TextBoxFor(model => model.ChartOfAccountId, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
-                                                        <span class="input-group-addon">
-                                                            <a data-toggle="modal" data-target="#chartOfAccountLookupModal"><span class="fa fa-search"></span></a>
-                                                        </span>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductSection, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationLoanProductSection, loanRegistrationLoanProductSections, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductSection)
+                                                        </div>
                                                     </div>
                                                 </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationGuarantorSecurityMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationGuarantorSecurityMode, loanRegistrationGuarantorSecurityModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationGuarantorSecurityMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationPaymentDueDate, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationPaymentDueDate, loanRegistrationPaymentDueDate, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentDueDate)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationPaymentFrequencyPerYear, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationPaymentFrequencyPerYear, loanPaymentFrequencyPerYear, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationPaymentFrequencyPerYear)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.TakeHomeType, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.TakeHomeType, takeHomeTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.TakeHomeType)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationPayoutRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationPayoutRecoveryMode, loanRegistrationPayoutRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationPayoutRecoveryMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationStandingOrderTrigger, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationStandingOrderTrigger, loanRegistrationStandingOrderTriggers, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationStandingOrderTrigger)
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+
+
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestAnnualPercentageRate, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanInterestAnnualPercentageRate, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanInterestAnnualPercentageRate, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumAmount, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumAmount, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationGracePeriod, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationGracePeriod, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationGracePeriod, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumGuarantees, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumGuarantees, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumGuarantees, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMinimumInterestAmount, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMinimumInterestAmount, new { htmlAttributes = new { @class = "form-control", placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMinimumInterestAmount, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanInterestCalculationMode, new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanInterestCalculationMode, loanInterestCalculationModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanInterestCalculationMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationLoanProductCategory, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationLoanProductCategory, loanRegistrationLoanProductCategories, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationLoanProductCategory)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode, loanRegistrationAggregateCheckOffRecoveryModes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationAggregateCheckOffRecoveryMode)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationRoundingType, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.LoanRegistrationRoundingType, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.LoanRegistrationRoundingType)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationMaximumSelfGuaranteeEligiblePercentage, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.TakeHomeFixedAmount, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.TakeHomeFixedAmount, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.TakeHomeFixedAmount, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.Priority, htmlAttributes: new { @class = "control-label" })
+                                                        <div class="input-group">
+                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                            @Html.DropDownListFor(model => model.Priority, loanRegistrationRoundingTypes, new { @class = "form-control input-md" })
+                                                            @Html.ValidationMessageFor(model => model.Priority)
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationConsecutiveIncome, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationConsecutiveIncome, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationConsecutiveIncome, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.LoanRegistrationInvestmentsMultiplier, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.EditorFor(model => model.LoanRegistrationInvestmentsMultiplier, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
+                                                        @Html.ValidationMessageFor(model => model.LoanRegistrationInvestmentsMultiplier, "", new { @class = "text-danger" })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.InterestChargedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.InterestChargedChartOfAccountId, new { @id = "ChartofAccountTypehead11" })
+                                                        @Html.ValidationMessageFor(model => model.ChartOfAccountName, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead1 form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.InterestReceivedChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.InterestReceivedChartOfAccountId, new { @id = "ChartofAccountTypehead22" })
+                                                        @Html.ValidationMessageFor(model => model.ChartOfAccountAccountName, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.ChartOfAccountAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead2 form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-3">
+                                                    <div class="form-group form-group-lg">
+                                                        @Html.LabelFor(model => model.InterestReceivableChartOfAccountId, htmlAttributes: new { @class = "control-label" })
+                                                        @Html.HiddenFor(model => model.InterestReceivableChartOfAccountId, new { @id = "ChartofAccountTypehead33" })
+                                                        @Html.ValidationMessageFor(model => model.ChartOfAccountName, "", new { @class = "text-danger" })
+                                                        @Html.EditorFor(model => model.ChartOfAccountName, new { htmlAttributes = new { @class = "ChartofAccountTypehead3 form-control required entry-field", placeholder = "Enter space to autofill.." } })
+                                                    </div>
+                                                </div>
+
+
                                             </div>
 
                                         </div>
 
-                                    </div>
+                                        <div id="secondary" class="tab-pane">
 
-                                    <div id="secondary" class="tab-pane">
+                                            <ul class="flex flex-wrap space-x-2 mb-6 secondary-tabs" role="tablist">
+                                                <li>
+                                                    <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#loansProduct" role="tab">Attached Loans Product</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#incomeDeduction" role="tab">Eligible Income Deduction</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#appraisalProductsInvestment" role="tab">Appraisal Investment</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#investmentAppraisal" role="tab">Auxiliary Investment Products</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#lendingConditions" role="tab">Auxiliary Lending Conditions</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#loancycles" role="tab">Loan Cycle</a>
+                                                </li>
+                                                <li>
+                                                    <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#deductibles" role="tab">Deductibles</a>
+                                                </li>
 
-                                        <ul class="flex flex-wrap space-x-2 mb-6 secondary-tabs" role="tablist">
-                                            <li>
-                                                <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#indefiniteCharges" role="tab">Indefinite Charges</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#loansProduct" role="tab">Attached Loans Product</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#incomeDeduction" role="tab">Eligible Income Deduction</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#appraisalProductsInvestment" role="tab">Appraisal Products</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#investmentAppraisal" role="tab">Auxiliary Investment Products</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#lendingConditions" role="tab">Auxiliary Lending Conditions</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#loancycles" role="tab">Loan Cycle</a>
-                                            </li>
-                                            <li>
-                                                <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#deductibles" role="tab">Deductibles</a>
-                                            </li>
+                                            </ul>
 
-                                        </ul>
+                                            <div class="inner-tab-content">
 
-                                        <div class="inner-tab-content">
-
-                                            <div id="indefiniteCharges" class="inner-tab-pane active">
-                                                <div style="text-align: left;">
-                                                    <input type="checkbox" id="lheaderCheckbox" style="transform: scale(1); color: blue;">
-                                                    <label for="lheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                                </div>
-
-                                                <div class="table-responsive">
-                                                    <table id="IndefiniteChargesGrid" class="table table-striped table-bordered table-hover" width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="7" class="dataTables_empty">
-                                                                    Loading data from server
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-
-                                            </div>
-
-
-                                            <div id="loansProduct" class="inner-tab-pane">
-                                                <div style="text-align: left;">
-                                                    <input type="checkbox" id="lheaderCheckbox" style="transform: scale(1); color: blue;">
-                                                    <label for="lheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                                </div>
-
-                                                <div class="table-responsive">
-                                                    <table id="LoanProductsGrid1" class="table table-striped table-bordered table-hover" width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="7" class="dataTables_empty">
-                                                                    Loading data from server
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </div>
-
-
-                                            <div id="incomeDeduction" class="inner-tab-pane sub-tabs">
-                                                <ul class="flex flex-wrap space-x-2 mb-6 secondary-tabs-child" role="tablist">
-
-                                                    <li>
-                                                        <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#section2" role="tab">Loans Product</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#section3" role="tab">Investment Product</a>
-                                                    </li>
-                                                    <li>
-                                                        <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#section1" role="tab">Savings Products</a>
-                                                    </li>
-
-                                                </ul>
-                                                <div class="tab-content tables">
-                                                    <div id="section2" class="tab-pane active">
-
-                                                        <div style="text-align: left;">
-                                                            <input type="checkbox" id="lheaderCheckbox" style="transform: scale(1); color: blue;">
-                                                            <label for="lheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                                        </div>
-
-                                                        <div class="table-responsive">
-                                                            <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td colspan="7" class="dataTables_empty">
-                                                                            Loading data from server
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-
-
-
-                                                    </div>
-                                                    <div id="section1" class="tab-pane">
-
-                                                        <div style="text-align: left;">
-                                                            <input type="checkbox" id="sheaderCheckbox" style="transform: scale(1); color: blue;">
-                                                            <label for="sheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                                        </div>
-
-                                                        <div class="table-responsive">
-                                                            <table id="SavingsProductGrid" class="table table-striped table-bordered table-hover" width="100%">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td colspan="7" class="dataTables_empty">
-                                                                            Loading data from server
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-
-
-
+                                                <div id="indefiniteCharges" class="inner-tab-pane active">
+                                                    <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Indefinite Charges</h3>
+                                                    <div style="text-align: left;">
+                                                        <input type="checkbox" id="icheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                        <label for="icheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
                                                     </div>
 
+                                                    <div class="table-responsive">
+                                                        <table id="IndefiniteChargesGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="7" class="dataTables_empty">
+                                                                        Loading data from server
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
+
+                                                </div>
 
 
-                                                    <div id="section3" class="tab-pane">
+                                                <div id="loansProduct" class="inner-tab-pane">
+                                                    <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Loan Products</h3>
+                                                    <div style="text-align: left;">
+                                                        <input type="checkbox" id="1lheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                        <label for="1lheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                    </div>
 
-                                                        <div style="text-align: left;">
-                                                            <input type="checkbox" id="iheaderCheckbox" style="transform: scale(1); color: blue;">
-                                                            <label for="iheaderCheckbox" style="font-weight: bold;">Select All</label>
-                                                        </div>
-
-                                                        <div class="table-responsive">
-                                                            <table id="InvestmentProductGrid" class="table table-striped table-bordered table-hover" width="100%">
-                                                                <tbody>
-                                                                    <tr>
-                                                                        <td colspan="7" class="dataTables_empty">
-                                                                            Loading data from server
-                                                                        </td>
-                                                                    </tr>
-                                                                </tbody>
-                                                            </table>
-                                                        </div>
-
-
-
+                                                    <div class="table-responsive">
+                                                        <table id="LoanProductsGrid1" class="table table-striped table-bordered table-hover" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="7" class="dataTables_empty">
+                                                                        Loading data from server
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
 
 
+                                                <div id="incomeDeduction" class="inner-tab-pane sub-tabs">
+                                                    <ul class="flex flex-wrap space-x-2 mb-6 secondary-tabs-child" role="tablist">
+
+                                                        <li>
+                                                            <a class="px-3 py-1 bg-blue-500 text-white rounded-md cursor-pointer transition duration-200 hover:bg-blue-600 text-sm" data-toggle="tab" href="#section2" role="tab">Loans Product</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#section3" role="tab">Investment Product</a>
+                                                        </li>
+                                                        <li>
+                                                            <a class="px-3 py-1 bg-gray-200 text-gray-700 rounded-md cursor-pointer transition duration-200 hover:bg-gray-300 text-sm" data-toggle="tab" href="#section1" role="tab">Savings Products</a>
+                                                        </li>
+
+                                                    </ul>
+                                                    <div class="tab-content tables">
+                                                        <div id="section2" class="tab-pane active">
+                                                            <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Loans</h3>
+                                                            <div style="text-align: left;">
+                                                                <input type="checkbox" id="lheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                                <label for="lheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                            </div>
+
+                                                            <div class="table-responsive">
+                                                                <table id="LoanProductsGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td colspan="7" class="dataTables_empty">
+                                                                                Loading data from server
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
 
 
 
-                                            </div>
+                                                        </div>
+                                                        <div id="section1" class="tab-pane">
+                                                            <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Savings</h3>
+                                                            <div style="text-align: left;">
+                                                                <input type="checkbox" id="sheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                                <label for="sheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                            </div>
 
-                                            <div id="appraisalProductsInvestment" class="inner-tab-pane">
-                                                <div style="text-align: left;">
-                                                    <input type="checkbox" id="iheaderCheckbox" style="transform: scale(1); color: blue;">
-                                                    <label for="iheaderCheckbox" style="font-weight: bold;">Select All</label>
+                                                            <div class="table-responsive">
+                                                                <table id="SavingsProductGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td colspan="7" class="dataTables_empty">
+                                                                                Loading data from server
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+
+
+                                                        </div>
+
+
+
+                                                        <div id="section3" class="tab-pane">
+                                                            <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Investments</h3>
+                                                            <div style="text-align: left;">
+                                                                <input type="checkbox" id="iheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                                <label for="iheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                            </div>
+
+                                                            <div class="table-responsive">
+                                                                <table id="InvestmentProductGrid" class="table table-striped table-bordered table-hover" width="100%">
+                                                                    <tbody>
+                                                                        <tr>
+                                                                            <td colspan="7" class="dataTables_empty">
+                                                                                Loading data from server
+                                                                            </td>
+                                                                        </tr>
+                                                                    </tbody>
+                                                                </table>
+                                                            </div>
+
+
+
+                                                        </div>
+                                                    </div>
+
                                                 </div>
 
-                                                <div class="table-responsive">
-                                                    <table id="InvestmentProductGrid1" class="table table-striped table-bordered table-hover" width="100%">
-                                                        <tbody>
-                                                            <tr>
-                                                                <td colspan="7" class="dataTables_empty">
-                                                                    Loading data from server
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
+                                                <div id="appraisalProductsInvestment" class="inner-tab-pane">
+                                                    <h3 style="color:cadetblue; margin-top:40px;  margin-left:3px; margin-bottom:10px; font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif">Investments</h3>
+                                                    <div style="text-align: left;">
+                                                        <input type="checkbox" id="aiheaderCheckbox" style="transform: scale(1); color: blue;">
+                                                        <label for="aiheaderCheckbox" style="font-weight: bold; color:#333;">Select All</label>
+                                                    </div>
+
+                                                    <div class="table-responsive">
+                                                        <table id="InvestmentProductGrid1" class="table table-striped table-bordered table-hover" width="100%">
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td colspan="7" class="dataTables_empty">
+                                                                        Loading data from server
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
+                                                    </div>
                                                 </div>
+
+                                                <div id="investmentAppraisal" class="inner-tab-pane">
+                                                    <div class="main10">
+                                                        <div class="TierDetails">
+                                                            <h2>Tier Details</h2>
+                                                            <div class="row">
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Tiers[0].RangeLowerLimit, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Tiers[0].RangeLowerLimit, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.Tiers[0].RangeLowerLimit, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Tiers[0].LoaneeMultiplier, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Tiers[0].LoaneeMultiplier, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.Tiers[0].LoaneeMultiplier, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Tiers[0].GuarantorMultiplier, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Tiers[0].GuarantorMultiplier, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.Tiers[0].GuarantorMultiplier, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12">
+                                                                    <div style="text-align: right; margin: 20px 20px;">
+                                                                        <button type="submit" id="addEntryBtn" class="btn btn-primary">Add</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="Tiers">
+                                                                <h2>Tiers</h2>
+
+                                                                <row>
+
+                                                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                                            <tr>
+
+                                                                                <th style="width: 10%;">Investment Range(Lower Limit) </th>
+                                                                                <th style="width: 10%;">Investment Range(Upper Limit)</th>
+                                                                                <th style="width: 10%;">Loan Multiplier</th>
+                                                                                <th style="width: 10%;">Guarantor Multiplier</th>
+                                                                                <th style="width: 10%;">Action</th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+
+
+                                                                </row>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div id="lendingConditions" class="inner-tab-pane">
+                                                    <div class="main10">
+                                                        <div class="TierDetails">
+                                                            <h2>Auxiliary Lending Condition Details</h2>
+                                                            <div class="row">
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.AuxiliaryConditions[0].TargetLoanProductId, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.AuxiliaryConditions[0].TargetLoanProductDescription, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.AuxiliaryConditions[0].TargetLoanProductDescription, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.AuxiliaryConditions[0].Condition, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.AuxiliaryConditions[0].Condition, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.AuxiliaryConditions[0].Condition, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-4">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.AuxiliaryConditions[0].MaximumEligiblePercentage, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.AuxiliaryConditions[0].MaximumEligiblePercentage, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.AuxiliaryConditions[0].MaximumEligiblePercentage, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12">
+                                                                    <div style="text-align: right; margin: 20px 20px;">
+                                                                        <button type="submit" id="addEntryBtn22" class="btn btn-primary">Add</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="Tiers">
+                                                                <h2>Auxiliary Lending Conditions</h2>
+
+                                                                <row>
+
+                                                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                                            <tr>
+
+                                                                                <th style="width: 10%;">Target Loan Product </th>
+                                                                                <th style="width: 10%;">Condition</th>
+                                                                                <th style="width: 10%;">Maximum Eligible</th>
+                                                                                <th style="width: 10%;">CreatedDate</th>
+                                                                                <th style="width: 10%;">Action</th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+
+
+                                                                </row>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div id="loancycles" class="inner-tab-pane">
+                                                    <div class="main10">
+                                                        <div class="TierDetails">
+                                                            <h2>Loan Cycle Details</h2>
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Cycles[0].RangeLowerLimit, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Cycles[0].RangeLowerLimit, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.Cycles[0].RangeLowerLimit, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="col-lg-12">
+                                                                    <div style="text-align: right; margin: 20px 20px;">
+                                                                        <button type="button" id="addEntryBtn23" class="btn btn-primary">Add</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="Tiers">
+                                                                <h2>Loan Cycles</h2>
+
+                                                                <row>
+
+                                                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                                            <tr>
+
+                                                                                <th style="width: 10%;">Target Loan Product </th>
+                                                                                <th style="width: 10%;">Condition</th>
+                                                                                <th style="width: 10%;">Maximum Eligible</th>
+                                                                                <th style="width: 10%;">CreatedDate</th>
+                                                                                <th style="width: 10%;">Action</th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+
+
+                                                                </row>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+                                                <div id="deductibles" class="inner-tab-pane">
+                                                    <div class="main10">
+                                                        <div class="TierDetails">
+                                                            <h2>Deductiles Details</h2>
+                                                            <div class="row">
+                                                                <div class="col-lg-12">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].Description, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Deductiles[0].Description, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].Description, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeProductCode, htmlAttributes: new { @class = "control-label" })
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                            @Html.DropDownListFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription, productCode, new { @class = "form-control input-md" })
+                                                                            @Html.ValidationMessageFor(model => model.Deductiles[0].CustomerAccountTypeProductCodeDescription)
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @class = "control-label" })
+                                                                        <div class="input-group" data-autoclose="true">
+                                                                            @Html.HiddenFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductId, new { @id = "CustomerAccountTypeTargetProductId" })
+                                                                            @Html.TextBoxFor(model => model.Deductiles[0].CustomerAccountTypeTargetProductDescription, new { @id = "CustomerAccountTypeTargetProductDescription", @class = "form-control input-md alpha alphaspace required", @readonly = "readonly" })
+                                                                            <span class="input-group-addon">
+                                                                                <a data-toggle="modal" data-target="#BenefactorcustomerLookupModal"><span class="fa fa-search"></span></a>
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+
+                                                            </div>
+                                                            <div class="row">
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].ChargeType, htmlAttributes: new { @class = "control-label" })
+                                                                        <div class="input-group">
+                                                                            <span class="input-group-addon"><i class="fa fa-bars fa-fw"></i></span>
+                                                                            @Html.DropDownListFor(model => model.Deductiles[0].ChargeTypeDescription, chargeType, new { @class = "form-control input-md" })
+                                                                            @Html.ValidationMessageFor(model => model.Deductiles[0].ChargeTypeDescription)
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-6">
+                                                                    <div class="form-group form-group-lg">
+                                                                        @Html.LabelFor(model => model.Deductiles[0].ChargePercentage, htmlAttributes: new { @class = "control-label" })
+                                                                        @Html.EditorFor(model => model.Deductiles[0].ChargePercentage, new { htmlAttributes = new { @class = "form-control entry-field", @placeholder = "", @required = "", @id = "Beneficiary" } })
+                                                                        @Html.ValidationMessageFor(model => model.Deductiles[0].ChargePercentage, "", new { @class = "text-danger" })
+                                                                    </div>
+                                                                </div>
+                                                                <div class="col-lg-12">
+                                                                    <div style="text-align: right; margin: 20px 20px;">
+                                                                        <button type="button" id="addEntryBtn2" class="btn btn-primary">Add</button>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="Tiers">
+                                                                <h2>Deductiles</h2>
+
+                                                                <row>
+
+                                                                    <table id="Deductiles" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%; margin-bottom: 50px;">
+                                                                        <thead style="font-style: italic; color: cadetblue; text-align: center;">
+                                                                            <tr>
+
+                                                                                <th style="width: 10%;">Name </th>
+                                                                                <th style="width: 10%;">Product Code</th>
+                                                                                <th style="width: 10%;">Product Name</th>
+                                                                                <th style="width: 10%;">Charge Type </th>
+                                                                                <th style="width: 10%;">Percentage</th>
+                                                                                <th style="width: 10%;">Fixed Amount</th>
+                                                                                <th style="width: 10%;">Action</th>
+
+                                                                            </tr>
+                                                                        </thead>
+                                                                        <tbody>
+                                                                        </tbody>
+                                                                    </table>
+
+
+                                                                </row>
+
+                                                            </div>
+
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
                                             </div>
-
-                                            <div id="investmentAppraisal" class="inner-tab-pane">
-
-                                            </div>
-
-                                            <div id="lendingConditions" class="inner-tab-pane">
-
-                                            </div>
-
-                                            <div id="loancycles" class="inner-tab-pane">
-
-                                            </div>
-
-                                            <div id="deductibles" class="inner-tab-pane">
-
-                                            </div>
-
                                         </div>
-                                    </div>
 
-                                    <div id="flags" class="tab-pane">
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationSecurityRequired, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationSecurityRequired, htmlAttributes: new { @class = "labels" })
+                                        <div id="flags" class="tab-pane">
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationSecurityRequired, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationSecurityRequired, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationSecurityRequired, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationRejectIfMemberHasBalance, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationRejectIfMemberHasBalance, htmlAttributes: new { @class = "labels" })
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationRejectIfMemberHasBalance, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationRejectIfMemberHasBalance, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationRejectIfMemberHasBalance, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationAllowSelfGuarantee, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationAllowSelfGuarantee, htmlAttributes: new { @class = "labels" })
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationAllowSelfGuarantee, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationAllowSelfGuarantee, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationAllowSelfGuarantee, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationChargeClearanceFee, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationChargeClearanceFee, htmlAttributes: new { @class = "labels" })
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationChargeClearanceFee, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationChargeClearanceFee, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationChargeClearanceFee, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                        </div>
 
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationMicrocredit, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationMicrocredit, htmlAttributes: new { @class = "labels" })
+                                            <div class="row">
+
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationMicrocredit, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationMicrocredit, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationMicrocredit, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationTrackArrears, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationTrackArrears, htmlAttributes: new { @class = "labels" })
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationTrackArrears, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationTrackArrears, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationTrackArrears, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationEnforceSystemAppraisalRecommendation, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationEnforceSystemAppraisalRecommendation, htmlAttributes: new { @class = "labels" })
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationEnforceSystemAppraisalRecommendation, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationEnforceSystemAppraisalRecommendation, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationEnforceSystemAppraisalRecommendation, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationDisburseMicroLoanLessDeductions, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationDisburseMicroLoanLessDeductions, htmlAttributes: new { @class = "labels" })
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationDisburseMicroLoanLessDeductions, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationDisburseMicroLoanLessDeductions, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationDisburseMicroLoanLessDeductions, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationBypassAudit, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationBypassAudit, htmlAttributes: new { @class = "labels" })
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationBypassAudit, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationBypassAudit, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationBypassAudit, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationChargeArrearsFee, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationChargeArrearsFee, htmlAttributes: new { @class = "labels" })
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationChargeArrearsFee, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationChargeArrearsFee, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationChargeArrearsFee, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement, htmlAttributes: new { @class = "labels" })
+
+                                            <div class="row">
+
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationExcludeOutstandingLoansOnMaximumEntitlement, "", new { @class = "text-danger" })
                                                 </div>
-                                            </div>
-                                            <div class="col-lg-4">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal, htmlAttributes: new { @class = "labels" })
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.LoanRegistrationConsiderInvestmentsBalanceForIncomeBasedLoanAppraisal, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-lg-2">
-                                                <div class="form-group form-group-sm">
-                                                    @Html.CheckBoxFor(model => model.IsLocked, new { htmlAttributes = new { @class = "form-control", @placeholder = "" } })
-                                                    @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "labels" })
+
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="custom-checkbox-container">
+                                                        @Html.CheckBoxFor(model => model.IsLocked, new { @class = "form-check-input" })
+                                                        @Html.LabelFor(model => model.IsLocked, htmlAttributes: new { @class = "form-check-label" })
+                                                    </div>
                                                     @Html.ValidationMessageFor(model => model.IsLocked, "", new { @class = "text-danger" })
                                                 </div>
                                             </div>
 
+
                                         </div>
 
                                     </div>
-
-                                </div>
-                                <div class="myfooter">
-                                    <div class="form-group col-md-12 d-flex justify-content-end">
-                                        <button type="submit" class="btn btn-primary">Create</button>
+                                    <div class="myfooter">
+                                        <div class="form-group col-md-12 d-flex justify-content-end">
+                                            <button type="submit" class="btn btn-primary">Create</button>
+                                        </div>
                                     </div>
+
+
+
+
                                 </div>
-
-
 
 
                             </div>
 
 
-                        </div>
-                                    
-
-                                
 
 
-                            
+
+
 
                         }
                     </div>
@@ -827,7 +1198,27 @@
         </div>
     </div>
 </div>
-
+<div class="modal fade" id="BenefactorcustomerLookupModal" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h3 class="font-bold">Investment Product Lookup<button type="button" class="close" data-dismiss="modal"><span class="sr-only">Close</span></button></h3>
+            </div>
+            <table id="BenefactorCustomerAccountsGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
+                <tbody>
+                    <tr>
+                        <td class="dataTables_empty">
+                            Loading data from server
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -913,15 +1304,15 @@
 
     $(document).ready(function () {
         // Event listener for header checkbox
-        $('#sheaderCheckbox').on('change', function () {
+        $('#icheaderCheckbox').on('change', function () {
             // Check or uncheck all row checkboxes based on the header checkbox state
-            $('.srowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+            $('.icrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
                 var checkboxKey = $(this).attr('id');
                 // Save the state of the checkbox to local storage
                 saveCheckboxState(checkboxKey, $(this).prop('checked'));
             });
             // Save the state of the header checkbox to local storage
-            saveCheckboxState('sheaderCheckbox', $(this).prop('checked'));
+            saveCheckboxState('icheaderCheckbox', $(this).prop('checked'));
         });
 
         // Event listener for individual row checkboxes
@@ -932,20 +1323,20 @@
 
             // Uncheck header checkbox if any row checkbox is unchecked
             if (!$(this).prop('checked')) {
-                $('#sheaderCheckbox').prop('checked', false);
+                $('#icheaderCheckbox').prop('checked', false);
                 // Save the state of the header checkbox to local storage
-                saveCheckboxState('sheaderCheckbox', false);
+                saveCheckboxState('icheaderCheckbox', false);
             } else {
                 // Check if all row checkboxes are checked and check the header checkbox accordingly
-                var allChecked = $('.srowCheckbox:checked').length === $('.srowCheckbox').length;
-                $('#sheaderCheckbox').prop('checked', allChecked);
+                var allChecked = $('.icrowCheckbox:checked').length === $('.icrowCheckbox').length;
+                $('#icheaderCheckbox').prop('checked', allChecked);
                 // Save the state of the header checkbox to local storage
-                saveCheckboxState('sheaderCheckbox', allChecked);
+                saveCheckboxState('icheaderCheckbox', allChecked);
             }
         });
 
         // Load the state of the header checkbox from local storage after the page is loaded
-        $('#sheaderCheckbox').prop('checked', loadCheckboxState('sheaderCheckbox'));
+        $('#icheaderCheckbox').prop('checked', loadCheckboxState('icheaderCheckbox'));
     });
 
     // Initialize the DataTable
@@ -968,7 +1359,7 @@
 
             //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
             //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
-            var checkboxHTML = '<input type="checkbox" class="srowCheckbox" data-id="' + aData.Id + '"';
+            var checkboxHTML = '<input type="checkbox" class="icrowCheckbox" data-id="' + aData.Id + '"';
             if (aData.AutomateLedgerFeeCalculation === true) {
                 checkboxHTML += ' checked';
             }
@@ -986,36 +1377,36 @@
         "aaSorting": [[0, "desc"]],
         "initComplete": function(settings, json) {
             // Load the state of the header checkbox from local storage after DataTable initialization is complete
-            $('#sheaderCheckbox').prop('checked', loadCheckboxState('sheaderCheckbox'));
+            $('#icheaderCheckbox').prop('checked', loadCheckboxState('icheaderCheckbox'));
         }
     });
 
     // Place the header checkbox anywhere on the grid
-            $('#IndefiniteCharges_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="sheaderCheckbox"> Select $ Deselect All</div>');
+            $('#IndefiniteCharges_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="icheaderCheckbox"> Select $ Deselect All</div>');
 
     // Event listener for header checkbox
-    $('#sheaderCheckbox').on('change', function () {
+    $('#icheaderCheckbox').on('change', function () {
         // Check or uncheck all row checkboxes based on the header checkbox state
-        $('.srowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+        $('.icrowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
             var checkboxKey = $(this).attr('id');
             // Save the state of the checkbox to local storage
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
         });
         // Save the state of the header checkbox to local storage
-        saveCheckboxState('sheaderCheckbox', $(this).prop('checked'));
+        saveCheckboxState('icheaderCheckbox', $(this).prop('checked'));
     });
 
     // Event listener for individual row checkboxes
-            $('#IndefiniteCharges').on('change', '.srowCheckbox', function () {
+            $('#IndefiniteCharges').on('change', '.icrowCheckbox', function () {
         // Save the state of the checkbox to local storage
         var checkboxKey = $(this).attr('id');
         saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
         // Uncheck header checkbox if any row checkbox is unchecked
         if (!$(this).prop('checked')) {
-            $('#sheaderCheckbox').prop('checked', false);
+            $('#icheaderCheckbox').prop('checked', false);
             // Save the state of the header checkbox to local storage
-            saveCheckboxState('sheaderCheckbox', false);
+            saveCheckboxState('icheaderCheckbox', false);
         }
     });
         });
@@ -1165,39 +1556,39 @@
 
     $(document).ready(function () {
         // Event listener for header checkbox
-        $('#iheaderCheckbox').on('change', function () {
+        $('#aiheaderCheckbox').on('change', function () {
             // Check or uncheck all row checkboxes based on the header checkbox state
-            $('.irowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+            $('.airowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
                 var checkboxKey = $(this).attr('id');
                 // Save the state of the checkbox to local storage
                 saveCheckboxState(checkboxKey, $(this).prop('checked'));
             });
             // Save the state of the header checkbox to local storage
-            saveCheckboxState('iheaderCheckbox', $(this).prop('checked'));
+            saveCheckboxState('aiheaderCheckbox', $(this).prop('checked'));
         });
 
         // Event listener for individual row checkboxes
-        $('#InvestmentProductGrid1').on('change', '.irowCheckbox', function () {
+        $('#InvestmentProductGrid1').on('change', '.airowCheckbox', function () {
             // Save the state of the checkbox to local storage
             var checkboxKey = $(this).attr('id');
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
             // Uncheck header checkbox if any row checkbox is unchecked
             if (!$(this).prop('checked')) {
-                $('#iheaderCheckbox').prop('checked', false);
+                $('#aiheaderCheckbox').prop('checked', false);
                 // Save the state of the header checkbox to local storage
-                saveCheckboxState('iheaderCheckbox', false);
+                saveCheckboxState('aiheaderCheckbox', false);
             } else {
                 // Check if all row checkboxes are checked and check the header checkbox accordingly
-                var allChecked = $('.irowCheckbox:checked').length === $('.irowCheckbox').length;
-                $('#iheaderCheckbox').prop('checked', allChecked);
+                var allChecked = $('.airowCheckbox:checked').length === $('.airowCheckbox').length;
+                $('#aiheaderCheckbox').prop('checked', allChecked);
                 // Save the state of the header checkbox to local storage
-                saveCheckboxState('iheaderCheckbox', allChecked);
+                saveCheckboxState('aiheaderCheckbox', allChecked);
             }
         });
 
         // Load the state of the header checkbox from local storage after the page is loaded
-        $('#iheaderCheckbox').prop('checked', loadCheckboxState('iheaderCheckbox'));
+        $('#aiheaderCheckbox').prop('checked', loadCheckboxState('aiheaderCheckbox'));
     });
 
     // Initialize the DataTable
@@ -1220,7 +1611,7 @@
 
             //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
             //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
-            var checkboxHTML = '<input type="checkbox" class="irowCheckbox" data-id="' + aData.Id + '"';
+            var checkboxHTML = '<input type="checkbox" class="airowCheckbox" data-id="' + aData.Id + '"';
             if (aData.AutomateLedgerFeeCalculation === true) {
                 checkboxHTML += ' checked';
             }
@@ -1238,36 +1629,36 @@
         "aaSorting": [[0, "desc"]],
         "initComplete": function(settings, json) {
             // Load the state of the header checkbox from local storage after DataTable initialization is complete
-            $('#iheaderCheckbox').prop('checked', loadCheckboxState('iheaderCheckbox'));
+            $('#aiheaderCheckbox').prop('checked', loadCheckboxState('aiheaderCheckbox'));
         }
     });
 
     // Place the header checkbox anywhere on the grid
-            $('#InvestmentProductGrid1_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="iheaderCheckbox"> Select $ Deselect All</div>');
+            $('#InvestmentProductGrid1_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="aiheaderCheckbox"> Select $ Deselect All</div>');
 
     // Event listener for header checkbox
-    $('#iheaderCheckbox').on('change', function () {
+    $('#aiheaderCheckbox').on('change', function () {
         // Check or uncheck all row checkboxes based on the header checkbox state
-        $('.irowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+        $('.airowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
             var checkboxKey = $(this).attr('id');
             // Save the state of the checkbox to local storage
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
         });
         // Save the state of the header checkbox to local storage
-        saveCheckboxState('iheaderCheckbox', $(this).prop('checked'));
+        saveCheckboxState('aiheaderCheckbox', $(this).prop('checked'));
     });
 
     // Event listener for individual row checkboxes
-            $('#InvestmentProductGrid1').on('change', '.irowCheckbox', function () {
+            $('#InvestmentProductGrid1').on('change', '.airowCheckbox', function () {
         // Save the state of the checkbox to local storage
         var checkboxKey = $(this).attr('id');
         saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
         // Uncheck header checkbox if any row checkbox is unchecked
         if (!$(this).prop('checked')) {
-            $('#iheaderCheckbox').prop('checked', false);
+            $('#aiheaderCheckbox').prop('checked', false);
             // Save the state of the header checkbox to local storage
-            saveCheckboxState('iheaderCheckbox', false);
+            saveCheckboxState('aiheaderCheckbox', false);
         }
     });
         });
@@ -1413,39 +1804,39 @@
 
     $(document).ready(function () {
         // Event listener for header checkbox
-        $('#lheaderCheckbox').on('change', function () {
+        $('#1lheaderCheckbox').on('change', function () {
             // Check or uncheck all row checkboxes based on the header checkbox state
-            $('.lrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
+            $('.1lrowCheckbox').prop('checked', $(this).prop('checked')).each(function () {
                 var checkboxKey = $(this).attr('id');
                 // Save the state of the checkbox to local storage
                 saveCheckboxState(checkboxKey, $(this).prop('checked'));
             });
             // Save the state of the header checkbox to local storage
-            saveCheckboxState('lheaderCheckbox', $(this).prop('checked'));
+            saveCheckboxState('1lheaderCheckbox', $(this).prop('checked'));
         });
 
         // Event listener for individual row checkboxes
-        $('#LoanProductsGrid1').on('change', '.lrowCheckbox', function () {
+        $('#LoanProductsGrid1').on('change', '.1lrowCheckbox', function () {
             // Save the state of the checkbox to local storage
             var checkboxKey = $(this).attr('id');
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
             // Uncheck header checkbox if any row checkbox is unchecked
             if (!$(this).prop('checked')) {
-                $('#lheaderCheckbox').prop('checked', false);
+                $('#1lheaderCheckbox').prop('checked', false);
                 // Save the state of the header checkbox to local storage
-                saveCheckboxState('lheaderCheckbox', false);
+                saveCheckboxState('1lheaderCheckbox', false);
             } else {
                 // Check if all row checkboxes are checked and check the header checkbox accordingly
-                var allChecked = $('.lrowCheckbox:checked').length === $('.lrowCheckbox').length;
-                $('#lheaderCheckbox').prop('checked', allChecked);
+                var allChecked = $('.1lrowCheckbox:checked').length === $('.1lrowCheckbox').length;
+                $('#1lheaderCheckbox').prop('checked', allChecked);
                 // Save the state of the header checkbox to local storage
-                saveCheckboxState('lheaderCheckbox', allChecked);
+                saveCheckboxState('1lheaderCheckbox', allChecked);
             }
         });
 
         // Load the state of the header checkbox from local storage after the page is loaded
-        $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
+        $('#1lheaderCheckbox').prop('checked', loadCheckboxState('1lheaderCheckbox'));
     });
 
     // Initialize the DataTable
@@ -1468,7 +1859,7 @@
 
             //var editUrl = '<a href="/accounts/SavingsProduct/edit/' + aData.Id + '" class="btn btn-outline-info">Edit</a>';
             //var viewUrl = '<a href="/accounts/SavingsProduct/details/' + aData.Id + '" class="btn btn-outline-info">View</a>';
-            var checkboxHTML = '<input type="checkbox" class="lrowCheckbox" data-id="' + aData.Id + '"';
+            var checkboxHTML = '<input type="checkbox" class="1lrowCheckbox" data-id="' + aData.Id + '"';
             if (aData.AutomateLedgerFeeCalculation === true) {
                 checkboxHTML += ' checked';
             }
@@ -1486,36 +1877,36 @@
         "aaSorting": [[0, "desc"]],
         "initComplete": function(settings, json) {
             // Load the state of the header checkbox from local storage after DataTable initialization is complete
-            $('#lheaderCheckbox').prop('checked', loadCheckboxState('lheaderCheckbox'));
+            $('#1lheaderCheckbox').prop('checked', loadCheckboxState('1lheaderCheckbox'));
         }
     });
 
     // Place the header checkbox anywhere on the grid
-    $('#LoanProductsGrid1_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="lheaderCheckbox"> Select $ Deselect All</div>');
+    $('#LoanProductsGrid1_wrapper .dataTables_scroll').prepend('<div><input type="checkbox" id="1lheaderCheckbox"> Select $ Deselect All</div>');
 
     // Event listener for header checkbox
-    $('#lheaderCheckbox').on('change', function () {
+    $('#1lheaderCheckbox').on('change', function () {
         // Check or uncheck all row checkboxes based on the header checkbox state
-        $('.lrowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
+        $('.1lrowCheckbox').prop('checked', $(this).prop('checked')).each(function() {
             var checkboxKey = $(this).attr('id');
             // Save the state of the checkbox to local storage
             saveCheckboxState(checkboxKey, $(this).prop('checked'));
         });
         // Save the state of the header checkbox to local storage
-        saveCheckboxState('lheaderCheckbox', $(this).prop('checked'));
+        saveCheckboxState('1lheaderCheckbox', $(this).prop('checked'));
     });
 
     // Event listener for individual row checkboxes
-    $('#LoanProductsGrid1').on('change', '.lrowCheckbox', function () {
+    $('#LoanProductsGrid1').on('change', '.1lrowCheckbox', function () {
         // Save the state of the checkbox to local storage
         var checkboxKey = $(this).attr('id');
         saveCheckboxState(checkboxKey, $(this).prop('checked'));
 
         // Uncheck header checkbox if any row checkbox is unchecked
         if (!$(this).prop('checked')) {
-            $('#lheaderCheckbox').prop('checked', false);
+            $('#1lheaderCheckbox').prop('checked', false);
             // Save the state of the header checkbox to local storage
-            saveCheckboxState('lheaderCheckbox', false);
+            saveCheckboxState('1lheaderCheckbox', false);
         }
     });
         });
@@ -1703,4 +2094,265 @@
 
 
     </script>
+
+    <script>
+        //Typehead 1
+
+        $('.ChartofAccountTypehead1').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartofAccountTypehead11').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+        });
+
+        //Typehead 2
+
+        $('.ChartofAccountTypehead2').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartofAccountTypehead22').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+        });
+
+        //Typehead 3
+
+        $('.ChartofAccountTypehead3').typeahead({
+                source: function (query, process) {
+                    return $.getJSON(
+                        '@Url.Action("GetChartOfAccountsAsync", "ChartOfAccount", new { Area = "Accounts" })',
+                        { query: query },
+                        function (ChartOfAccounts) {
+                            var newChartOfAccountsData = [];
+                            ChartOfAccountsMap = {};
+                            $.each(ChartOfAccounts, function (i, ChartOfAccount) {
+                                newChartOfAccountsData.push(ChartOfAccount.AccountName);
+                                ChartOfAccountsMap[ChartOfAccount.AccountName] = ChartOfAccount;
+                            });
+                            process(newChartOfAccountsData); return;
+                        });
+                },
+                matcher: function (item) {
+                    if (item.toLowerCase().indexOf(this.query.trim().toLowerCase()) != -1) {
+                        return true;
+                    }
+                },
+                sorter: function (items) {
+                    return items.sort();
+                },
+                highlighter: function (item) {
+                    var regex = new RegExp('(' + this.query + ')', 'gi');
+                    return item.replace(regex, "<strong>$1</strong>");
+                },
+                updater: function (item) {
+                    var chartOfAccountId = "";
+                    ChartOfAccountId = ChartOfAccountsMap[item].Id;
+                    $('#ChartofAccountTypehead33').val(ChartOfAccountId);
+                    //console.log(ChartOfAccountId)
+                    return item;
+                }
+    });
+    </script>
+
+
+    <script>
+        // Wait for the DOM to be fully loaded
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get the add button
+            const addButton = document.getElementById('addEntryBtn2');
+
+            // Add click event listener to the button
+            addButton.addEventListener('click', submitDeductiblesForm);
+        });
+
+        function submitDeductiblesForm() {
+            // Get form data
+            const description = document.querySelector('[name="Deductiles[0].Description"]').value;
+            const productCode = document.querySelector('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').value;
+            const productName = document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductDescription"]').value;
+            const chargeType = document.querySelector('[name="Deductiles[0].ChargeTypeDescription"]').value;
+            const chargePercentage = document.querySelector('[name="Deductiles[0].ChargePercentage"]').value;
+
+            // Create an object with the form data
+            const formData = {
+                Description: description,
+                CustomerAccountTypeProductCodeDescription: productCode,
+                CustomerAccountTypeTargetProductDescription: productName,
+                ChargeTypeDescription: chargeType,
+                ChargePercentage: chargePercentage
+            };
+
+            // Send AJAX request
+            fetch('/LoanProduct/AddDeductibles', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify(formData)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Add the new row to the table
+                        addRowToTable(data.deductible);
+                        // Clear the form fields
+                        clearFormFields();
+                    } else {
+                        alert('Error: ' + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('An error occurred while submitting the form');
+                });
+        }
+
+        function addRowToTable(deductible) {
+            const table = document.getElementById('Deductiles').getElementsByTagName('tbody')[0];
+            const newRow = table.insertRow();
+
+            newRow.innerHTML = `
+        <td>${deductible.Description}</td>
+        <td>${deductible.CustomerAccountTypeProductCodeDescription}</td>
+        <td>${deductible.CustomerAccountTypeTargetProductDescription}</td>
+        <td>${deductible.ChargeTypeDescription}</td>
+        <td>${deductible.ChargePercentage}</td>
+        <td>${deductible.FixedAmount || ''}</td>
+        <td>${deductible.IsNextOfInvestmentBalance ? 'Yes' : 'No'}</td>
+        <td>${deductible.ComputeChargeOnTopUp ? 'Yes' : 'No'}</td>
+        <td>
+            <button class="btn btn-primary btn-xs edit-btn" data-id="${deductible.Id}">Edit</button>
+            <button class="btn btn-danger btn-xs delete-btn" data-id="${deductible.Id}">Delete</button>
+        </td>
+    `;
+        }
+
+        function clearFormFields() {
+            document.querySelector('[name="Deductiles[0].Description"]').value = '';
+            document.querySelector('[name="Deductiles[0].CustomerAccountTypeProductCodeDescription"]').value = '';
+            document.querySelector('[name="Deductiles[0].CustomerAccountTypeTargetProductDescription"]').value = '';
+            document.querySelector('[name="Deductiles[0].ChargeTypeDescription"]').value = '';
+            document.querySelector('[name="Deductiles[0].ChargePercentage"]').value = '';
+        }
+    </script>
+
+    <script>
+
+     //InvestMent Product Lookup starts here
+            $('#BenefactorCustomerAccountsGrid').DataTable({
+            "sPaginationType": "full_numbers",
+            "bProcessing": true,
+            "bServerSide": true,
+            "sAjaxSource": "@(Url.Action("Index", "InvestmentProduct", new { Area = "Accounts" }))",
+            "sServerMethod": "POST",
+            "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+                var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+                var h = ("0" + createdDate.getHours()).slice(-2);
+                var m = ("0" + createdDate.getMinutes()).slice(-2);
+                var s = ("0" + createdDate.getSeconds()).slice(-2);
+
+                var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+                aData.CreatedDate = dt_Created;
+
+                var selectButton = '<a href="#" data-id="' + aData.Id + '" class="btn btn-outline-info select-link">Select</a>';
+
+                $('td:eq(3)', nRow).html(dt_Created);
+                $('td:eq(4)', nRow).html(selectButton);
+
+                return nRow;
+            },
+            "aoColumns": [
+                { "mDataProp": "Description", "sTitle": "Name", "sWidth": "15%" },
+                { "mDataProp": "PaddedCode", "sTitle": "Code", "sWidth": "10%" },
+                { "mDataProp": "Priority", "sTitle": "Priority", "sWidth": "15%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+                { "mDataProp": "CreatedDate", "sTitle": "Action", "sWidth": "6%", "bSortable": false }
+            ],
+            "aaSorting": [[0, "desc"]]
+        });
+
+        // Handle the click event for the select link
+                $(document).on('click', '.select-link', function (event) {
+            event.preventDefault();
+            var id = $(this).data('id');
+            $.ajax({
+                url: '@Url.Action("GetInvestmentProductDetails", "LoanProduct")',
+                type: 'POST',
+                data: { id: id },
+                success: function (data) {
+                    console.log(data); // Log the response data
+                    if (data.success) {
+                        $('#CustomerAccountTypeTargetProductDescription').val(data.data.CustomerAccountTypeTargetProductDescription);
+                        $('#CustomerAccountTypeTargetProductId').val(data.data.CustomerAccountTypeTargetProductId);
+                        $('#BenefactorcustomerLookupModal').modal('hide');
+                    } else {
+                        alert(data.message || 'Error retrieving data');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error selecting debit type:", error);
+                }
+            });
+        });
+    </script>
+
+    
 }
