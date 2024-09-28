@@ -678,7 +678,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         {
                             var cashWithdrawalCategory = CashWithdrawalCategory.WithinLimits;
 
-                            if (FrontOfficeTransactionType == FrontOfficeTransactionType.CashWithdrawalPaymentVoucher)
+                            if ((FrontOfficeTransactionType)frontOfficeTransactionType == FrontOfficeTransactionType.CashWithdrawalPaymentVoucher)
                             {
                                 cashWithdrawalCategory = CashWithdrawalCategory.PaymentVoucher;
                             }
@@ -1202,7 +1202,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _selectedTeller = await GetCurrentTeller();
 
-            SelectedBranch = await _channelService.FindBranchAsync(SelectedCustomerAccount.BranchId, GetServiceHeader());
+           SelectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
             ;
 
             var transactionModel = new CustomerTransactionModel();
@@ -1216,6 +1216,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
             transactionModel.TotalValue = cashDepositRequest.Amount;
+
+            transactionModel.BranchId = SelectedBranch.Id;
 
             transactionModel.CashDepositRequest = cashDepositRequest;
 
@@ -1631,10 +1633,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-
         }
-
-
     }
 }
 
