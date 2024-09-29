@@ -1,5 +1,6 @@
 ﻿@model SwiftFinancials.Presentation.Infrastructure.Models.CustomerTransactionModel
 
+
 @{
     /**/
 
@@ -12,7 +13,7 @@
     //var recordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 
     var customerFilter = ViewBag.CustomerFilterSelectList as List<SelectListItem>;
-
+    var documents = ViewBag.Documents as List<SwiftFinancials.Web.Areas.Registry.DocumentsModel.Document>;
 }
 
 <head>
@@ -1011,35 +1012,132 @@
 
                                             <!-- Specimen Tab -->
                                             <div id="specimen" class="inner-tab-pane">
-                                                <div class="upload-container">
-                                                    <div class="upload-box">
-                                                        <label for="passport">Passport</label>
-                                                        <div id="passport" class="upload-area">
-                                                            <img src="~/Images/passportDemo.jpg" style="width: 54%; height: auto;" />
-                                                        </div>
-                                                    </div>
+                                                @if (documents != null && documents.Any())
+                                                {
+                                            foreach (var document in documents)
+                                            {
+                                            <div class="document-section card shadow-sm mb-4">
+                                                <div class="card-body">
+                                                    <h4 class="card-title text-secondary">Document Set</h4>
+                                                    <div class="row">
+                                                        @if (document.PassportPhoto != null)
+                                                        {
+                                            <div class="col-md-3 text-center">
+                                                <h5>Passport Photo</h5>
+                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.PassportPhoto)" alt="Passport Photo" class="img-thumbnail mb-2" width="200" />
+                                            </div> }
+                                                                    else
+                                                                    {
+                                            <div class="col-md-3 text-center">
+                                                <h5>Passport Photo</h5>
+                                                <p>No Passport Photo available</p>
+                                            </div>                        }
 
-                                                    <div class="upload-box">
-                                                        <label for="signature">Signature</label>
-                                                        <div id="signature" class="upload-area">
-                                                            <img src="~/Images/signatureDemo.jpg" style="width: 100%; height: 60%;" />
-                                                        </div>
-                                                    </div>
+                                                        @if (document.SignaturePhoto != null)
+                                                        {
+                                            <div class="col-md-3 text-center">
+                                                <h5>Signature Photo</h5>
+                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.SignaturePhoto)" alt="Signature Photo" class="img-thumbnail mb-2" width="200" />
+                                            </div> }
+                                                                    else
+                                                                    {
+                                            <div class="col-md-3 text-center">
+                                                <h5>Signature Photo</h5>
+                                                <p>No Signature Photo available</p>
+                                            </div>                        }
 
-                                                    <div class="upload-box">
-                                                        <label for="id-front">Identity Card (Front)</label>
-                                                        <div id="id-front" class="upload-area">
-                                                            <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
-                                                        </div>
-                                                    </div>
+                                                        @if (document.IDCardFrontPhoto != null)
+                                                        {
+                                            <div class="col-md-3 text-center">
+                                                <h5>ID Card Front</h5>
+                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardFrontPhoto)" alt="ID Card Front" class="img-thumbnail mb-2" width="200" />
+                                            </div> }
+                                                                    else
+                                                                    {
+                                            <div class="col-md-3 text-center">
+                                                <h5>ID Card Front</h5>
+                                                <p>No ID Card Front available</p>
+                                            </div>                        }
 
-                                                    <div class="upload-box">
-                                                        <label for="id-back">Identity Card (Back)</label>
-                                                        <div id="id-back" class="upload-area">
-                                                            <img src="~/Images/idDemo_Front.jpg" style="width: 100%; height: 60%;" />
-                                                        </div>
+                                                        @if (document.IDCardBackPhoto != null)
+                                                        {
+                                            <div class="col-md-3 text-center">
+                                                <h5>ID Card Back</h5>
+                                                <img src="data:image/jpeg;base64,@Convert.ToBase64String(document.IDCardBackPhoto)" alt="ID Card Back" class="img-thumbnail mb-2" width="200" />
+                                            </div> }
+                                                                    else
+                                                                    {
+                                            <div class="col-md-3 text-center">
+                                                <h5>ID Card Back</h5>
+                                                <p>No ID Card Back available</p>
+                                            </div>                        }
                                                     </div>
                                                 </div>
+                                            </div>} }
+                                                            else
+                                                            {
+                                            <p>No documents available for this customer.</p>}
+
+                                                <style>
+                                                    body {
+                                                        background-color: #f4f6f9;
+                                                        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                                                    }
+
+                                                    h2 {
+                                                        margin-bottom: 30px;
+                                                    }
+
+                                                    .document-section.card {
+                                                        border-radius: 15px;
+                                                        background: linear-gradient(145deg, #e6e6e6, #ffffff);
+                                                        box-shadow: 20px 20px 40px #d9d9d9, -20px -20px 40px #ffffff;
+                                                        transition: all 0.3s ease;
+                                                        overflow: hidden;
+                                                    }
+
+                                                        .document-section.card:hover {
+                                                            transform: translateY(-10px) scale(1.02);
+                                                            box-shadow: 20px 20px 60px #d1d1d1, -20px -20px 60px #ffffff;
+                                                        }
+
+                                                    .card-body {
+                                                        padding: 20px;
+                                                        background: linear-gradient(145deg, #ffffff, #f0f0f0);
+                                                        border-radius: 10px;
+                                                        box-shadow: inset 5px 5px 10px #d9d9d9, inset -5px -5px 10px #ffffff;
+                                                    }
+
+                                                    .card-title {
+                                                        font-size: 1.5rem;
+                                                        font-weight: 700;
+                                                        color: #333;
+                                                        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+                                                    }
+
+                                                    h5 {
+                                                        margin-top: 10px;
+                                                        color: #007bff;
+                                                        text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+                                                    }
+
+                                                    img {
+                                                        border: 2px solid #007bff;
+                                                        border-radius: 10px;
+                                                        transition: transform 0.3s ease, box-shadow 0.3s ease;
+                                                        box-shadow: 5px 5px 15px rgba(0, 123, 255, 0.2);
+                                                        width: 230px;
+                                                    }
+
+                                                        img:hover {
+                                                            transform: scale(1.05);
+                                                            box-shadow: 10px 10px 20px rgba(0, 123, 255, 0.3);
+                                                        }
+
+                                                    .row {
+                                                        margin-bottom: 10px;
+                                                    }
+                                                </style>
                                             </div>
                                         </div>
                                     </div>
