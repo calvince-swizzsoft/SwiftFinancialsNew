@@ -388,6 +388,9 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         public LoanCaseDTO loanCaseDTO { get; set; }
         public string errormassage;
 
+        public decimal InvestmentBalance { get; set; }
+        public decimal LoanBalance { get; set; }
+
 
     }
 }

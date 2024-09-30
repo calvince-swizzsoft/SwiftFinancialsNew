@@ -22,6 +22,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
+
             return View();
         }
 
@@ -52,6 +53,41 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+        public async Task<ActionResult> Cheques()
+        {
+            await ServeNavigationMenus();
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Cheques(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindExternalChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -80,6 +116,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     externalChequeDTO.BankName = bankLinkageDTO.BankName;
                     externalChequeDTO.BranchDescription = bankLinkageDTO.BankBranchName;
                     externalChequeDTO.ChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountAccountName;
+                    externalChequeDTO.BankLinkageChartOfAccountId = bankLinkageDTO.ChartOfAccountId;
+                    externalChequeDTO.CustomerAccountCustomerId = bankLinkageDTO.ChartOfAccountId;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountName;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountType = bankLinkageDTO.ChartOfAccountAccountType;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountCode = bankLinkageDTO.ChartOfAccountAccountCode;
+                    externalChequeDTO.BankLinkageChartOfAccountCostCenterDescription = bankLinkageDTO.ChartOfAccountCostCenterDescription;
+                    externalChequeDTO.BankLinkageChartOfAccountCostCenterId = bankLinkageDTO.ChartOfAccountCostCenterId;
 
                     return View(externalChequeDTO);
                 }
@@ -222,7 +265,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             try
             {
-                // Fetch all uncleared cheques (using filter or without, as needed)
                 var pageCollectionInfo = await _channelService.FindUnClearedExternalChequesByFilterInPageAsync(
                     string.Empty, 
                     0, 
@@ -235,7 +277,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     return Json(new { success = false, message = "No uncleared cheques found." });
                 }
 
-                // Filter the collection to only include the selected cheques
                 var selectedCheques = pageCollectionInfo.PageCollection
                     .Where(cheque => selectedChequeIds.Contains(cheque.Id))
                     .ToList();
@@ -247,7 +288,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                 foreach (var cheque in selectedCheques)
                 {
-                    // Clear or UnPay the cheque based on actionType
                     if (actionType.ToLower() == "clear")
                     {
                         var result = await _channelService.ClearExternalChequeAsync(cheque, clearingOption, /* ModuleNavigationItemCode */ 1, null, serviceHeader);

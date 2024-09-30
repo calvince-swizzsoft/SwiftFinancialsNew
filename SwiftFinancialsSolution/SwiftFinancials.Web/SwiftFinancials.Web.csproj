@@ -679,6 +679,7 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
     <Compile Include="PDF\PdfHeaderFooter.cs" />
     <Compile Include="PDF\RegisteredLoans.cs" />
@@ -711,6 +712,8 @@
     <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
+    <Content Include="bin\SwiftFinancials.Web.dll" />
+    <Content Include="bin\SwiftFinancials.Web.pdb" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -1166,7 +1169,6 @@
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Approve.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\verify.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Banking.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
@@ -1400,6 +1402,15 @@
     <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
     <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SSRSReportSetting\EditReport.cshtml" />
+    <Content Include="Files\CustomerReport20240831072056.pdf" />
+    <Content Include="Files\CustomerReport20240831072101.pdf" />
+    <Content Include="Files\CustomerReport20240831072118.pdf" />
+    <Content Include="Files\CustomerReport20240831072133.pdf" />
+    <Content Include="Files\CustomerReport20240831072149.pdf" />
+    <Content Include="Files\CustomerReport20240831072157.pdf" />
+    <Content Include="Files\CustomerReport20240831072206.pdf" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Cheques.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
