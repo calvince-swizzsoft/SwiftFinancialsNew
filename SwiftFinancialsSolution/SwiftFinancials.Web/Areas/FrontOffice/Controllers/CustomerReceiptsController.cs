@@ -15,6 +15,7 @@ using System.Net;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 using System.Windows.Forms;
+using Microsoft.AspNet.Identity;
 
 namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 {
@@ -185,7 +186,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             var currentPostingPeriod = await _channelService.FindCurrentPostingPeriodAsync(GetServiceHeader());
 
-            var currentUser = await _applicationUserManager.FindByEmailAsync("calvince.ochieng@swizzsoft.com");
+            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
             var currentTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
             
