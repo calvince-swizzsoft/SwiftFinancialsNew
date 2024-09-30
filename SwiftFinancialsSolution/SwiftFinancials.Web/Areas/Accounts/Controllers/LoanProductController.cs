@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -31,7 +32,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+            var pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
+            var pageCollectionInfo = await _channelService.FindLoanProductsByFilterInPageAsync(jQueryDataTablesModel.sSearch, pageIndex, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
 
             if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
             {
@@ -53,6 +56,53 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             return View(loanProductDTO);
         }
 
+
+        [HttpPost]
+        public async Task<JsonResult> GetInvestmentProductDetails(Guid id)
+        {
+            await ServeNavigationMenus();
+            var investmentProduct = await _channelService.FindInvestmentProductAsync(id, GetServiceHeader());
+
+            if (investmentProduct == null)
+            {
+                return Json(new { success = false, message = "Investment product not found" });
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    CustomerAccountTypeTargetProductDescription = investmentProduct.Description,
+                    CustomerAccountTypeTargetProductId = investmentProduct.Id
+                }
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetLoanProductDetails(Guid id)
+        {
+            await ServeNavigationMenus();
+            var loanProduct = await _channelService.FindLoanProductAsync(id, GetServiceHeader());
+
+            if (loanProduct == null)
+            {
+                return Json(new { success = false, message = "Loan product not found" });
+            }
+
+            return Json(new
+            {
+                success = true,
+                data = new
+                {
+                    TargetLoanProductDescription = loanProduct.Description,
+                    TargetLoanProductId = loanProduct.Id
+                }
+            });
+        }
+
+
+
         public async Task<ActionResult> Create(Guid? id)
         {
             await ServeNavigationMenus();
@@ -70,6 +120,9 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(string.Empty);
             ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(string.Empty);
             ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(string.Empty);
+            ViewBag.ProductCodeSelectList = GetProductCodeSelectList(string.Empty);
+            ViewBag.ChargeType = GetTakeHomeTypeSelectList(string.Empty);
+            ViewBag.AuxiliaryLoanConditions = GetAuxiliaryLoanConditionSelectList(string.Empty);
 
             Guid parseId;
 
@@ -95,34 +148,50 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
+        public async Task<ActionResult> SelectedCharges(List<DynamicChargeDTO> charges)
+        {
+            // Process the charges as needed
+            foreach (var charge in charges)
+            {
+                // Handle each charge
+            }
+
+            return Json(new { success = true });
+        }
+
+        [HttpPost]
         public async Task<ActionResult> Create(LoanProductDTO LoanProductDTO)
         {
             LoanProductDTO.ValidateAll();
-
             if (!LoanProductDTO.HasErrors)
             {
-                await _channelService.AddLoanProductAsync(LoanProductDTO, GetServiceHeader());
+                var deductiles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>;
+                var cycles = Session["cycles"] as ObservableCollection<LoanCycleDTO>;
+                var auxiliaryAppraisal = Session["auxiliaryAppraisal"] as ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO>;
 
-                return RedirectToAction("Index");
+                var lendingConditions = Session["lendingConditions"] as ObservableCollection<LoanProductAuxiliaryConditionDTO>;
+                try
+                {
+                     var loanProduct =await _channelService.AddLoanProductAsync(LoanProductDTO, GetServiceHeader());
+                    if (!loanProduct.HasErrors)
+                    {
+                        await _channelService.UpdateLoanProductDeductiblesByLoanProductIdAsync(loanProduct.Id,deductiles, GetServiceHeader());
+                        await _channelService.UpdateLoanCyclesByLoanProductIdAsync(loanProduct.Id,cycles, GetServiceHeader());
+                        await _channelService.UpdateLoanProductAuxilliaryAppraisalFactorsByLoanProductIdAsync(loanProduct.Id,auxiliaryAppraisal, GetServiceHeader());
+
+                    }
+                    return Json(new { success = true, message = "Loan product created successfully." });
+                }
+                catch (Exception ex)
+                {
+                    // Log the exception here
+                    return Json(new { success = false, message = "An error occurred while creating the loan product.", errors = new[] { ex.Message } });
+                }
             }
             else
             {
                 var errorMessages = LoanProductDTO.ErrorMessages;
-                ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(LoanProductDTO.LoanInterestCalculationMode.ToString());
-                ViewBag.LoanInterestChargeModeSelectList = GetLoanInterestChargeModeSelectList(LoanProductDTO.LoanInterestChargeMode.ToString());
-                ViewBag.LoanInterestRecoveryModeSelectList = GetLoanInterestRecoveryModeSelectList(LoanProductDTO.LoanInterestRecoveryMode.ToString());
-                ViewBag.LoanRegistrationLoanProductCategorySelectList = GetLoanRegistrationLoanProductCategorySelectList(LoanProductDTO.LoanRegistrationLoanProductCategory.ToString());
-                ViewBag.LoanRegistrationRoundingTypeSelectList = GetLoanRegistrationRoundingTypeSelectList(LoanProductDTO.LoanRegistrationRoundingType.ToString());
-                ViewBag.LoanRegistrationGuarantorSecurityModeSelectList = GetLoanRegistrationGuarantorSecurityModeSelectList(LoanProductDTO.LoanRegistrationGuarantorSecurityMode.ToString());
-                ViewBag.LoanRegistrationAggregateCheckOffRecoveryModeSelectList = GetLoanRegistrationAggregateCheckOffRecoveryModeSelectList(LoanProductDTO.LoanRegistrationAggregateCheckOffRecoveryMode.ToString());
-                ViewBag.LoanRegistrationStandingOrderTriggerSelectList = GetLoanRegistrationStandingOrderTriggerSelectList(LoanProductDTO.LoanRegistrationStandingOrderTrigger.ToString());
-                ViewBag.PrioritySelectList = GetRecoveryPrioritySelectList(LoanProductDTO.Priority.ToString());
-                ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductSectionsSelectList(LoanProductDTO.LoanRegistrationLoanProductSection.ToString());
-                ViewBag.LoanRegistrationPayoutRecoveryModeSelectList = GetLoanRegistrationPayoutRecoveryModeSelectList(LoanProductDTO.LoanRegistrationPayoutRecoveryMode.ToString());
-                ViewBag.LoanRegistrationPaymentDueDateSelectList = GetLoanRegistrationPaymentDueDateSelectList(LoanProductDTO.LoanRegistrationPaymentDueDate.ToString());
-                ViewBag.TakeHomeTypeSelectList = GetTakeHomeTypeSelectList(LoanProductDTO.TakeHomeType.ToString());
-                ViewBag.LoanPaymentFrequencyPerYearSelectList = GetLoanPaymentFrequencyPerYearSelectList(LoanProductDTO.LoanRegistrationPaymentFrequencyPerYear.ToString());
-                return View(LoanProductDTO);
+                return Json(new { success = false, message = "Validation failed.", errors = errorMessages });
             }
         }
 
@@ -150,6 +219,215 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 return View(loanProductBindingModel);
             }
         }
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> AddDeductibles(LoanProductDeductibleDTO   loanProductDeductibleDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var deductiles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>;
+            if (deductiles == null)
+            {
+                deductiles = new ObservableCollection<LoanProductDeductibleDTO>();
+            }
+            if (loanProductDeductibleDTO.Id == Guid.Empty)
+            {
+                loanProductDeductibleDTO.Id = Guid.NewGuid();
+            }
+            deductiles.Add(loanProductDeductibleDTO);
+
+            // Save the updated entries back to the session
+            Session["deductiles"] = deductiles;
+            
+
+            return Json(new { success = true, data = deductiles });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> RemoveDeductibles(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var deductiles = Session["deductiles"] as ObservableCollection<LoanProductDeductibleDTO>;
+
+            if (deductiles != null)
+            {
+                var entryToRemove = deductiles.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    deductiles.Remove(entryToRemove);
+
+
+
+                    Session["deductiles"] = deductiles;
+                }
+            }
+
+
+
+            return Json(new { success = true, data = deductiles });
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> AddCycles(LoanCycleDTO loanCycleDTO )
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var cycles = Session["cycles"] as ObservableCollection<LoanCycleDTO>;
+            if (cycles == null)
+            {
+                cycles = new ObservableCollection<LoanCycleDTO>();
+            }
+            if (loanCycleDTO.Id == Guid.Empty)
+            {
+                loanCycleDTO.Id = Guid.NewGuid();
+            }
+            cycles.Add(loanCycleDTO);
+
+            // Save the updated entries back to the session
+            Session["cycles"] = cycles;
+
+
+            return Json(new { success = true, data1 = cycles });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> RemoveCycle(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var cycles = Session["cycles"] as ObservableCollection<LoanCycleDTO>;
+
+            if (cycles != null)
+            {
+                var entryToRemove = cycles.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    cycles.Remove(entryToRemove);
+
+
+
+                    Session["cycles"] = cycles;
+                }
+            }
+
+
+
+            return Json(new { success = true, data1 = cycles });
+        }
+
+
+
+
+        [HttpPost]
+        public async Task<JsonResult> AddLendingConditions(LoanProductAuxiliaryConditionDTO   loanProductAuxiliaryConditionDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var lendingConditions = Session["lendingConditions"] as ObservableCollection<LoanProductAuxiliaryConditionDTO>;
+            if (lendingConditions == null)
+            {
+                lendingConditions = new ObservableCollection<LoanProductAuxiliaryConditionDTO>();
+            }
+            if (loanProductAuxiliaryConditionDTO.Id == Guid.Empty)
+            {
+                loanProductAuxiliaryConditionDTO.Id = Guid.NewGuid();
+            }
+            lendingConditions.Add(loanProductAuxiliaryConditionDTO);
+
+            // Save the updated entries back to the session
+            Session["lendingConditions"] = lendingConditions;
+
+
+            return Json(new { success = true, data3 = lendingConditions });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> RemoveLendingConditions(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var lendingConditions = Session["lendingConditions"] as ObservableCollection<LoanProductAuxiliaryConditionDTO>;
+
+            if (lendingConditions != null)
+            {
+                var entryToRemove = lendingConditions.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    lendingConditions.Remove(entryToRemove);
+
+
+
+                    Session["lendingConditions"] = lendingConditions;
+                }
+            }
+
+
+
+            return Json(new { success = true, data3 = lendingConditions });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddAuxiliaryAppraisal(LoanProductAuxilliaryAppraisalFactorDTO  loanProductAuxilliaryAppraisalFactorDTO)
+        {
+            await ServeNavigationMenus();
+
+            // Retrieve the batch entries from the session
+            var auxiliaryAppraisal = Session["auxiliaryAppraisal"] as ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO>;
+            if (auxiliaryAppraisal == null)
+            {
+                auxiliaryAppraisal = new ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO>();
+            }
+            if (loanProductAuxilliaryAppraisalFactorDTO.Id == Guid.Empty)
+            {
+                loanProductAuxilliaryAppraisalFactorDTO.Id = Guid.NewGuid();
+            }
+            auxiliaryAppraisal.Add(loanProductAuxilliaryAppraisalFactorDTO);
+
+            // Save the updated entries back to the session
+            Session["auxiliaryAppraisal"] = auxiliaryAppraisal;
+
+
+            return Json(new { success = true, data2 = auxiliaryAppraisal });
+        }
+
+
+        [HttpPost]
+        public async Task<JsonResult> RemoveAuxiliaryAppraisal (Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var auxiliaryAppraisal = Session["auxiliaryAppraisal"] as ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO>;
+
+            if (auxiliaryAppraisal != null)
+            {
+                var entryToRemove = auxiliaryAppraisal.FirstOrDefault(e => e.Id == id);
+                if (entryToRemove != null)
+                {
+                    auxiliaryAppraisal.Remove(entryToRemove);
+
+
+
+                    Session["auxiliaryAppraisal"] = auxiliaryAppraisal;
+                }
+            }
+
+
+
+            return Json(new { success = true, data2 = auxiliaryAppraisal });
+        }
+
 
         [HttpGet]
         public async Task<JsonResult> GetLoanProductsAsync()

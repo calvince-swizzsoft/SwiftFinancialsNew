@@ -22,6 +22,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         {
             await ServeNavigationMenus();
 
+
             return View();
         }
 
@@ -52,6 +53,41 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
+
+        public async Task<ActionResult> Cheques()
+        {
+            await ServeNavigationMenus();
+
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> Cheques(JQueryDataTablesModel jQueryDataTablesModel)
+        {
+            int totalRecordCount = 0;
+
+            int searchRecordCount = 0;
+
+
+            var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
+
+            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
+
+            var pageCollectionInfo = await _channelService.FindExternalChequesByFilterInPageAsync(jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
+
+            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
+            {
+                totalRecordCount = pageCollectionInfo.ItemsCount;
+
+                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(postingPeriod => postingPeriod.CreatedDate).ToList();
+
+                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
+
+                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            }
+            else return this.DataTablesJson(items: new List<ExternalChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+        }
         public async Task<ActionResult> Details(Guid id)
         {
             await ServeNavigationMenus();
@@ -61,7 +97,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             return View(externalChequeDTO);
         }
 
-        
+
 
         public async Task<ActionResult> Banking(Guid? id)
         {
@@ -80,6 +116,13 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     externalChequeDTO.BankName = bankLinkageDTO.BankName;
                     externalChequeDTO.BranchDescription = bankLinkageDTO.BankBranchName;
                     externalChequeDTO.ChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountAccountName;
+                    externalChequeDTO.BankLinkageChartOfAccountId = bankLinkageDTO.ChartOfAccountId;
+                    externalChequeDTO.CustomerAccountCustomerId = bankLinkageDTO.ChartOfAccountId;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountName = bankLinkageDTO.ChartOfAccountName;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountType = bankLinkageDTO.ChartOfAccountAccountType;
+                    externalChequeDTO.BankLinkageChartOfAccountAccountCode = bankLinkageDTO.ChartOfAccountAccountCode;
+                    externalChequeDTO.BankLinkageChartOfAccountCostCenterDescription = bankLinkageDTO.ChartOfAccountCostCenterDescription;
+                    externalChequeDTO.BankLinkageChartOfAccountCostCenterId = bankLinkageDTO.ChartOfAccountCostCenterId;
 
                     return View(externalChequeDTO);
                 }
@@ -96,10 +139,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         [HttpPost]
         public async Task<JsonResult> BankCheques(JQueryDataTablesModel jQueryDataTablesModel)
-         {
+        {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
+
 
 
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
@@ -208,109 +252,78 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> ClearSelectedCheques(List<Guid> selectedChequeIds, string actionType)
+        public async Task<JsonResult> ClearSelectedCheques(List<Guid> selectedChequeIds, int clearingOption, string actionType, UnPayReasonDTO unPayReasonDTO = null)
         {
-            if (selectedChequeIds == null || selectedChequeIds.Count == 0)
+            if (selectedChequeIds == null || !selectedChequeIds.Any())
             {
-                TempData["ErrorMessage"] = "No cheques selected.";
-                return RedirectToAction("Index"); // Or the relevant action/view you want to redirect to
+                return Json(new { success = false, message = "No cheques selected." });
             }
 
-            bool result = true;
-            var message = string.Empty;
+            var serviceHeader = GetServiceHeader();
+            bool isSuccess = true;
+            string errorMessage = string.Empty;
 
             try
             {
-                int clearingOption;
-                switch (actionType)
+                var pageCollectionInfo = await _channelService.FindUnClearedExternalChequesByFilterInPageAsync(
+                    string.Empty, 
+                    0, 
+                    int.MaxValue, 
+                    serviceHeader
+                );
+
+                if (pageCollectionInfo == null || !pageCollectionInfo.PageCollection.Any())
                 {
-                    case "clear":
-                        clearingOption = 1;
-                        break;
-                    case "unpay":
-                        clearingOption = 2;
-                        break;
-                    default:
-                        TempData["ErrorMessage"] = "Invalid action type.";
-                        return RedirectToAction("Index");
+                    return Json(new { success = false, message = "No uncleared cheques found." });
                 }
 
-                foreach (var chequeId in selectedChequeIds)
+                var selectedCheques = pageCollectionInfo.PageCollection
+                    .Where(cheque => selectedChequeIds.Contains(cheque.Id))
+                    .ToList();
+
+                if (!selectedCheques.Any())
                 {
-                    var externalChequeDTO = new ExternalChequeDTO { Id = chequeId };
-
-                    // Fetch additional details if necessary
-                    // var fetchedCheque = await _channelService.GetChequeDetailsAsync(chequeId);
-
-                    var serviceHeader = GetServiceHeader();
-                    if (serviceHeader == null)
-                    {
-                        TempData["ErrorMessage"] = "Service header is null.";
-                        return RedirectToAction("Index");
-                    }
-
-                    result = await _channelService.ClearExternalChequeAsync(
-                        externalChequeDTO,
-                        clearingOption,
-                        moduleNavigationItemCode: 123,
-                        unPayReasonDTO: null,
-                        serviceHeader: serviceHeader
-                    );
-
-                    if (!result)
-                    {
-                        message = $"Failed to update cheque with ID {chequeId}.";
-                        TempData["ErrorMessage"] = message;
-                        return RedirectToAction("ChequeClearance");
-                    }
+                    return Json(new { success = false, message = "Selected cheques not found in uncleared cheques." });
                 }
 
-                if (result)
+                foreach (var cheque in selectedCheques)
                 {
-                    TempData["SuccessMessage"] = "Cheques updated successfully.";
+                    if (actionType.ToLower() == "clear")
+                    {
+                        var result = await _channelService.ClearExternalChequeAsync(cheque, clearingOption, /* ModuleNavigationItemCode */ 1, null, serviceHeader);
+
+                        if (!result)
+                        {
+                            isSuccess = false;
+                            errorMessage += $"Failed to clear cheque with ID {cheque.Id}. ";
+                        }
+                    }
+                    else if (actionType.ToLower() == "unpay")
+                    {
+                        if (unPayReasonDTO == null)
+                        {
+                            return Json(new { success = false, message = "UnPay reason is required." });
+                        }
+
+                        var result = await _channelService.ClearExternalChequeAsync(cheque, clearingOption, /* ModuleNavigationItemCode */ 1, unPayReasonDTO, serviceHeader);
+
+                        if (!result)
+                        {
+                            isSuccess = false;
+                            errorMessage += $"Failed to unpay cheque with ID {cheque.Id}. ";
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                TempData["ErrorMessage"] = $"An error occurred: {ex.Message}";
-                result = false;
+                return Json(new { success = false, message = $"Error occurred: {ex.Message}" });
             }
 
-            return RedirectToAction("Index"); // Redirect to the same view or any other relevant view
+            return Json(new { success = isSuccess, message = isSuccess ? "Cheques processed successfully." : errorMessage });
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

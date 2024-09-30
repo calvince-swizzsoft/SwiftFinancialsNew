@@ -3,6 +3,7 @@ using Infrastructure.Crosscutting.Framework.Attributes;
 using Infrastructure.Crosscutting.Framework.Extensions;
 using Infrastructure.Crosscutting.Framework.Utils;
 using System;
+using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
 
@@ -540,5 +541,27 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
             return ValidationResult.Success;
         }
+
+        [DataMember]
+        public LoanProductAuxilliaryAppraisalFactorDTO AuxilliaryAppraisalFactor { get; set; }
+
+        [DataMember]
+        public ObservableCollection<LoanProductAuxilliaryAppraisalFactorDTO> Tiers { get; set; }
+
+        [DataMember]
+        public ObservableCollection<LoanProductAuxiliaryConditionDTO> AuxiliaryConditions { get; set; }
+
+        [DataMember]
+        public ObservableCollection<LoanProductDeductibleDTO> Deductiles { get; set; }
+
+        [DataMember]
+        public ObservableCollection<LoanCycleDTO> Cycles { get; set; }
+
+
+        [DataMember]
+        public ObservableCollection<DynamicChargeDTO> charges { get; set; }
+
+        [DataMember]
+        public ProductCollectionInfo productCollection { get; set; }
     }
 }

@@ -34,7 +34,7 @@
                                     <a class="nav-link active" data-toggle="tab" href="#cashTransfer">Cash Transfer</a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" data-toggle="tab" href="#checkTransfer">Check Transfer</a>
+                                    <a class="nav-link" data-toggle="tab" href="#chequesTransfer">Check Transfer</a>
                                 </li>
                             </ul>
 
@@ -44,8 +44,8 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <div class="form-group form-group-lg">
-                                                    @Html.LabelFor(model => model.Openin, htmlAttributes: new { @class = "control-label" })
-                                                    @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount", @required = "" } })
+                                                    @Html.LabelFor(model => model.Amount, htmlAttributes: new { @class = "control-label" })
+                                                    @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control", @placeholder = "Amount" } })
                                                     @Html.ValidationMessageFor(model => model.Amount, "", new { @class = "text-danger" })
                                                 </div>
                                                 <div class="form-group">
@@ -108,52 +108,34 @@
                                     </div>
                                 </div>
 
-                                <div id="checkTransfer" class="tab-pane">
-                                    <div style="border: 1px solid #ddd; padding: 20px; border-radius: 4px;">
-                                        <table class="table table-bordered">
-                                            <thead>
-                                                <tr>
-                                                    <th>Select?</th>
-                                                    <th>Cheque Number</th>
-                                                    <th>Amount</th>
-                                                    <th>Drawer</th>
-                                                    <th>Drawer Bank</th>
-                                                    <th>Drawer Bank Branch</th>
-                                                    <th>Write Date</th>
-                                                    <th>Cheque Type</th>
-                                                    <th>Maturity Date</th>
-                                                    <th>Customer Name</th>
-                                                    <th>Account Number</th>
-                                                    <th>Membership</th>
-                                                </tr>
-                                            </thead>
+                                <div id="chequesTransfer" class="tab-pane">
+
+                                    <div id="selectAllContainer" style="margin-bottom: 10px;">
+                                        <label>
+                                            <input type="checkbox" id="selectAllCheckbox"> Select All Cheques
+                                        </label>
+                                    </div>
+
+                                    <div class="table-responsive">
+                                        <table id="ChequesGrid" class="table table-striped table-bordered table-hover" style="width:100%;">
                                             <tbody>
-                                                <!-- Table rows would go here -->
+                                                <tr>
+                                                    <td class="dataTables_empty">
+                                                        Loading data from server
+                                                    </td>
+                                                </tr>
                                             </tbody>
                                         </table>
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="itemsPerPage">Items per page:</label>
-                                                    <select id="itemsPerPage" class="form-control">
-                                                        <option>15</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <input type="checkbox" id="toggleSelection">
-                                                    <label for="toggleSelection">Toggle Selection</label>
-                                                </div>
-                                            </div>
-                                        </div>
                                     </div>
+
+                                    <div class="form-group" style="margin-top: 20px; text-align: right;">
+                                        <button id="transferButton" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
+                                    </div>
+
                                 </div>
                             </div>
 
-                            <div class="form-group" style="margin-top: 20px; text-align: right;">
-                                <button type="submit" class="btn btn-primary" style="background-color: #007bff; border: 2px solid #0056b3; padding: 10px 20px; font-weight: bold;">Update</button>
-                            </div>
+
                         </div>
                     </form>
                 </div>
@@ -161,3 +143,170 @@
         </div>
     </div>
 </div>
+
+@section Styles{
+    @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
+    @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
+}
+
+@section Scripts {
+    @Scripts.Render("~/plugins/wizardSteps")
+    @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
+
+    <script>
+
+
+        function updateSelectAllCheckbox() {
+    var allChecked = $('.cheque-checkbox:checked').length === $('.cheque-checkbox').length;
+    $('#selectAllCheckbox').prop('checked', allChecked);
+}
+    // Initialize the DataTable and store the reference in a variable
+    var chequeTable = $('#ChequesGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("FetchUnTransferredChequesTable", "Transfers", new { Area = "FrontOffice"}))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+
+            // Create the checkbox for each row
+            var checkboxHtml = '<div style="text-align: center;"><input type="checkbox" class="form-check-input cheque-checkbox" value="' + String(aData.Id) + '"></div>';
+            $('td:eq(0)', nRow).html(checkboxHtml);
+
+            // Handle CreatedDate formatting
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
+
+            // Handle MaturityDate formatting
+            if (aData.MaturityDate) {
+                var maturityDate = new Date(parseInt(aData.MaturityDate.replace("/Date(", "").replace(")/", ""), 10));
+                var dt_Maturity = $.datepicker.formatDate('dd/mm/yy', maturityDate);
+                $('td:eq(8)', nRow).html(dt_Maturity);
+            }
+
+            // Handle WriteDate formatting (corrected from MaturityDate)
+            if (aData.WriteDate) {
+                var writeDate = new Date(parseInt(aData.WriteDate.replace("/Date(", "").replace(")/", ""), 10));
+                var dt_Write = $.datepicker.formatDate('dd/mm/yy', writeDate);
+                $('td:eq(6)', nRow).html(dt_Write);
+            }
+
+            // Update CreatedDate column
+            $('td:eq(12)', nRow).html(dt_Created);
+            return nRow;
+        },
+
+        "aoColumns": [
+            { "mDataProp": null, "sTitle": "Select?", "sWidth": "3%", "bSortable": false, "sClass": "dt-body-center"},
+            { "mDataProp": "PaddedNumber", "sTitle": "Cheque Number", "sWidth": "15%" },
+            { "mDataProp": "Amount", "sTitle": "Amount", "sWidth": "15%" },
+            { "mDataProp": "Drawer", "sTitle": "Drawer", "sWidth": "25%" },
+            { "mDataProp": "DrawerBank", "sTitle": "Drawer Bank", "sWidth": "10%" },
+            { "mDataProp": "DrawerBankBranch", "sTitle": "Drawer Bank Branch", "sWidth": "10%" },
+            { "mDataProp": "WriteDate", "sTitle": "Write Date", "sWidth": "10%" },
+            { "mDataProp": "ChequeTypeDescription", "sTitle": "Cheque Type", "sWidth": "15%" },
+            { "mDataProp": "MaturityDate", "sTitle": "Maturity Date", "sWidth": "15%" },
+            { "mDataProp": "CustomerAccountCustomerFullName", "sTitle": "Customer Name", "sWidth": "15%" },
+            { "mDataProp": "CustomerAccountFullAccountNumber", "sTitle": "Account Number", "sWidth": "15%" },
+            { "mDataProp": "CustomerAccountCustomerReference2", "sTitle": "Membership", "sWidth": "15%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+        ],
+
+        "oClasses": {
+            "sStripeOdd": "odd",
+            "sStripeEven": "even",
+            "sRow": "aligned-row"
+        },
+
+        "aaSorting": [[1, "desc"]], // Default sorting on Cheque Number
+
+        "drawCallback": function (settings) {
+            updateSelectAllCheckbox();
+        }
+    });
+
+        // Event listener for the "Select All" checkbox
+        $('#selectAllCheckbox').on('change', function () {
+            var isChecked = $(this).prop('checked');
+            $('.cheque-checkbox').prop('checked', isChecked);
+        });
+
+    // Event listener for the "Transfer Cheques" button
+    $('#transferButton').on('click', function () {
+        var selectedCheques = [];
+
+        // Gather selected cheques data
+        $('.cheque-checkbox:checked').each(function () {
+            var row = $(this).closest('tr'); // Get the parent row of the checkbox
+            var chequeData = chequeTable.row(row).data(); // Get the data for the selected row
+            selectedCheques.push(chequeData);
+        });
+
+        // Check if any cheques are selected
+        if (selectedCheques.length === 0) {
+            alert("Please select at least one cheque to transfer.");
+            return;
+        }
+
+        // AJAX request to send selected cheques data to the controller
+        $.ajax({
+            url: '@Url.Action("TransferSelectedChequesAsync", "Transfers")', // Ensure this is in a Razor view or use a hardcoded URL
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({ cheques: selectedCheques }), // Send the selected cheque data
+            success: function (response) {
+                if (response && response.success) {
+                    alert(response.message);
+                    chequeTable.ajax.reload(); // Refresh the table after the transfer
+                } else {
+                    alert("Error: " + (response.message || "An unexpected error occurred."));
+                }
+            },
+            error: function () {
+                alert("An unexpected error occurred.");
+            }
+        });
+    });
+    </script>
+
+
+}
