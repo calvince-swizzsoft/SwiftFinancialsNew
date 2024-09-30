@@ -6,14 +6,17 @@
     ViewBag.Title = "Print In-house Cheques";
 }
 <div class="row wrapper border-bottom white-bg page-heading">
-    <div class="col-lg-10">
-        <h2>Cheque Banking</h2>
+    <div class="col-lg-12">
+        <h2>Cheque Printing</h2>
         <ol class="breadcrumb">
             <li class="breadcrumb-item">
                 @Html.ActionLink("Dashboard", "Index", "Home", new { Area = "" }, null)
             </li>
+            <li class="breadcrumb-item">
+                @Html.ActionLink("Home", "Index", "InHouse", new { Area = "FrontOffice" }, null)
+            </li>
             <li class="breadcrumb-item active">
-                <strong>List</strong>
+                <strong>Cheque Printing</strong>
             </li>
         </ol>
     </div>

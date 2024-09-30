@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
@@ -17,6 +19,7 @@ using Domain.MainBoundedContext.AccountsModule.Aggregates.PostingPeriodAgg;
 using Infrastructure.Crosscutting.Framework.Utils;
 using Microsoft.AspNet.Identity;
 using SwiftFinancials.Presentation.Infrastructure.Models;
+using SwiftFinancials.Web.Areas.Registry.DocumentsModel;
 using SwiftFinancials.Web.Controllers;
 using SwiftFinancials.Web.Helpers;
 
@@ -39,6 +42,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         PostingPeriodDTO _currentPostingPeriod;
 
+        private readonly string _connectionString;
 
 
 
@@ -50,6 +54,11 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         private bool IsBusy { get; set; } // Property to indicate if an operation is in progress
 
+        public CashDepositController()
+        {
+            // Get connection string from Web.config
+            _connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
+        }
         public PostingPeriodDTO CurrentPostingPeriod
         {
 
@@ -160,6 +169,39 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
         }
 
 
+        private async Task<List<Document>> GetDocumentsAsync(Guid id)
+        {
+            var documents = new List<Document>();
+
+            using (var connection = new SqlConnection(_connectionString))
+            {
+                await connection.OpenAsync();
+                var query = "SELECT PassportPhoto, SignaturePhoto, IDCardFrontPhoto, IDCardBackPhoto FROM swiftFin_SpecimenCapture WHERE CustomerId = @CustomerId";
+
+                using (var command = new SqlCommand(query, connection))
+                {
+                    command.Parameters.AddWithValue("@CustomerId", id);
+
+                    using (var reader = await command.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            documents.Add(new Document
+                            {
+                                PassportPhoto = reader.IsDBNull(0) ? null : (byte[])reader[0],
+                                SignaturePhoto = reader.IsDBNull(1) ? null : (byte[])reader[1],
+                                IDCardFrontPhoto = reader.IsDBNull(2) ? null : (byte[])reader[2],
+                                IDCardBackPhoto = reader.IsDBNull(3) ? null : (byte[])reader[3]
+                            });
+                        }
+                    }
+                }
+            }
+
+            return documents;
+        }
+
+
         [HttpPost]
         public async Task<JsonResult> FetchCustomerAccountsTable(JQueryDataTablesModel jQueryDataTablesModel, int productCode, int customerFilter)
         {
@@ -265,6 +307,10 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             ViewBag.ProductCode = GetProductCodeSelectList(string.Empty);
             ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
             ViewBag.CustomerFilterSelectList = GetCustomerFilterSelectList(string.Empty);
+            if (id != null)
+            {
+                ViewBag.Documents = GetDocumentsAsync(id.Value);
+            }
 
             CustomerTransactionModel transactionModel = new CustomerTransactionModel();
 
@@ -678,7 +724,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                         {
                             var cashWithdrawalCategory = CashWithdrawalCategory.WithinLimits;
 
-                            if (FrontOfficeTransactionType == FrontOfficeTransactionType.CashWithdrawalPaymentVoucher)
+                            if ((FrontOfficeTransactionType)frontOfficeTransactionType == FrontOfficeTransactionType.CashWithdrawalPaymentVoucher)
                             {
                                 cashWithdrawalCategory = CashWithdrawalCategory.PaymentVoucher;
                             }
@@ -1202,7 +1248,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             _selectedTeller = await GetCurrentTeller();
 
-            SelectedBranch = await _channelService.FindBranchAsync(SelectedCustomerAccount.BranchId, GetServiceHeader());
+           SelectedBranch = await _channelService.FindBranchAsync(SelectedTeller.EmployeeBranchId, GetServiceHeader());
             ;
 
             var transactionModel = new CustomerTransactionModel();
@@ -1216,6 +1262,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             transactionModel.CreditChartOfAccountId = (Guid)SelectedTeller.ChartOfAccountId;
 
             transactionModel.TotalValue = cashDepositRequest.Amount;
+
+            transactionModel.BranchId = SelectedBranch.Id;
 
             transactionModel.CashDepositRequest = cashDepositRequest;
 
@@ -1631,10 +1679,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
             }
             else return this.DataTablesJson(items: new List<CashWithdrawalRequestDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-
         }
-
-
     }
 }
 

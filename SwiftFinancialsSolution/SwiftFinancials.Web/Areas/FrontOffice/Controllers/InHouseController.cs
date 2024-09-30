@@ -52,8 +52,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             else return this.DataTablesJson(items: new List<InHouseChequeDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
 
-
-
+        
 
 
         public async Task<ActionResult> Create(Guid? id, bool isCustomerAccount = false)
@@ -62,7 +61,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             InHouseChequeDTO inHouseChequeDTO = new InHouseChequeDTO();
 
-            // If an ID is provided, determine whether to fetch a customer account or G/L account based on the 'isCustomerAccount' flag
             if (id.HasValue && id != Guid.Empty)
             {
                 if (isCustomerAccount)
@@ -81,7 +79,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                     {
                         // Populate the DTO with relevant customer account data
                         inHouseChequeDTO.DebitChartOfAccountAccountName = customerAccount.CustomerReference1;
-                        inHouseChequeDTO.Amount = customerAccount.AvailableBalance;
                         inHouseChequeDTO.BranchDescription = customerAccount.BranchDescription;
                     }
                     else
@@ -196,7 +193,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (inHouseChequeDTO == null)
             {
                 ModelState.AddModelError("", "Invalid cheque data.");
-                return await ReloadCreateView(inHouseChequeDTO); // Return the view with error message and data reload
+                return await ReloadCreateView(inHouseChequeDTO);
             }
 
             // 2. Perform server-side validation
@@ -218,7 +215,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             // If validation fails, return the view with errors
             if (!ModelState.IsValid)
             {
-                return await ReloadCreateView(inHouseChequeDTO); // Reload view with validation errors
+                return await ReloadCreateView(inHouseChequeDTO);
             }
 
             // 3. Call the service method to add the cheque

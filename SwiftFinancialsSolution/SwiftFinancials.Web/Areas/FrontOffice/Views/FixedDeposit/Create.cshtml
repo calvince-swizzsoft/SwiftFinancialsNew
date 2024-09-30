@@ -66,6 +66,7 @@
                         @Html.AntiForgeryToken()
                         @Html.HiddenFor(model => model.BranchId)
                         @Html.HiddenFor(model => model.CustomerAccountId)
+                        @Html.HiddenFor(model => model.ProductChartOfAccountId)
 
 
 
@@ -96,6 +97,8 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ProductChartOfAccountId)
+
                                         @Html.EditorFor(model => model.CustomerAccountCustomerIndividualLastName, new { htmlAttributes = new { @class = "form-control", @placeholder = "EnterText...", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
@@ -228,7 +231,7 @@
                                         @Html.EditorFor(model => model.Term, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter term in month....." } })
                                     </div>
                                 </div>
-
+                                
                                 <div class="col-md-4">
                                     <label for="MaturityAction">Maturity Action:</label>
                                     <select id="MaturityAction" class="form-control">
@@ -248,12 +251,15 @@
                                         @Html.TextAreaFor(model => model.Remarks, new { @rows = 3, @class = "form-control", @placeholder = "Enter Text.....", @required = "" })
                                     </div>
                                 </div>
+                                <input type="hidden" id="ProductChartOfAccountId" name="ProductChartOfAccountId" value="@Model.ProductChartOfAccountId" />
+
 
                             </div>
 
                             <br />
                             <hr />
 
+                            <!-- Fixed Deposit Payables Section -->
                             <ul class="nav nav-tabs">
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#FixedDepositPayable">Fixed Deposit Payables</a>
@@ -283,8 +289,6 @@
                                                         <tr>
                                                             <td>@account.FullAccountNumber</td>
                                                             <td>@account.CustomerAccountTypeTargetProductDescription</td>
-                                                            <td>@account.CustomerAccountTypeTargetProductId</td>
-
                                                             <td>@account.BookBalance</td>
                                                             <td>@account.AvailableBalance</td>
                                                             <td>@account.PrincipalBalance</td>
@@ -293,7 +297,6 @@
                                                                 <input type="checkbox" name="selectedAccounts" value="@account.FullAccountNumber" />
                                                                 <input type="hidden" name="accountDetails" data-account="@account.FullAccountNumber"
                                                                        data-product="@account.CustomerAccountTypeTargetProductDescription"
-                                                                       data-productid="@account.CustomerAccountTypeTargetProductId"
                                                                        data-bookbalance="@account.BookBalance"
                                                                        data-availablebalance="@account.AvailableBalance"
                                                                        data-principalbalance="@account.PrincipalBalance"
@@ -313,7 +316,7 @@
                             </div>
 
 
-                            <!-- Template for adding new Fixed Deposit Payable -->
+                            <!-- Template for adding new Fixed Deposit Payable (if needed dynamically) -->
                             <div id="fixedDepositTemplate" class="d-none">
                                 <div class="fixed-deposit-entry border p-3 mt-2">
                                     <div class="form-row">
@@ -326,7 +329,7 @@
                                         <div class="col">
                                             <input type="text" name="BookBalance[]" class="form-control" placeholder="Book Balance" />
                                         </div>
-                                        <div>
+                                        <div class="col">
                                             <input type="text" name="AvailableBalance[]" class="form-control" placeholder="Available Balance" />
                                         </div>
                                         <div class="col">
@@ -335,7 +338,6 @@
                                         <div class="col">
                                             <input type="text" name="InterestBalance[]" class="form-control" placeholder="Interest Balance" />
                                         </div>
-
                                         <div class="col-auto">
                                             <button type="button" class="btn btn-danger remove-entry-button">Remove</button>
                                         </div>
@@ -386,10 +388,11 @@
                     </tr>
                 </tbody>
             </table>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
-        </div>
+
     </div>
 </div>
 
@@ -489,69 +492,59 @@
     </script>
 
     <script>
+       $(document).ready(function () {
+    var customerAccountsGrid = $('#CustomerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
+        "sServerMethod": "POST",
+        "fnRowCallback": function (nRow, aData) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
 
-        $('#CustomerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                 "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts"}))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var selectUrl = '<a href="/FrontOffice/FixedDeposit/Search/' + aData.Id + '" class="btn btn-outline-info">Select</a>';
 
-                   var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
+            return nRow;
+        },
+        "aoColumns": [
+            { "data": "CustomerFullName", "sTitle": "Customer Name", "sWidth": "5%" },
+            { "data": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
+            { "data": "CustomerReference1", "sTitle": "Customer Account Number", "sWidth": "5%" },
+            { "data": "CustomerReference2", "sTitle": "Membership", "sWidth": "5%" },
+            { "data": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Name", "sWidth": "5%" },
+            { "data": "CreatedDate", "sTitle": "Created Date", "sWidth": "5%" },
+            { "data": null, "sTitle": "", "sWidth": "3%", "bSortable": false }
+        ],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    var selectUrl = '<a  href="/FrontOffice/FixedDeposit/Search/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+    // Handle row click and populate form
+    $('#CustomerAccountsGrid tbody').on('click', 'tr', function () {
+        var data = customerAccountsGrid.row(this).data();
 
-                    $('td:eq(5)', nRow).html(dt_Created);
-
-                    $('td:eq(6)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-            // Display settings
-            // lookup Display settings
-            "aoColumns": [
-
-                { "mDataProp": "CustomerFullName", "sTitle": "CustomerFullName", "sWidth": "3%" },
-                { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "5%" },
-                { "mDataProp": "CustomerReference1", "sTitle": "Customer Account Number", "sWidth": "2%" },
-                { "mDataProp": "CustomerReference2", "sTitle": "Membership", "sWidth": "2%" },
-                { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product Name", "sWidth": "2%" },
-                { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "1%" },
-                { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
-            "aaSorting": [[0, "desc"]]
-        });
-
-    $("#s tbody").on("click", "tr", function () {
-        var data = CustomerAccountsGrid.row(this).data();
         $('#Id').val(data.Id);
-        $('#Id').val(data.CustomerAccountCustomerId);
-        $('input[name=CustomerAccountCustomerId]').val(data.Id);
+        $('#CustomerAccountCustomerId').val(data.CustomerAccountCustomerId);
         $('input[name=CustomerAccountFullAccountNumber]').val(data.CustomerAccountFullAccountNumber);
 
-        var CustomerAccountCustomerId = "";
-        CustomerAccountCustomerId = CustomersMap[item].Id;
+        $('#CustomerStationZoneDivisionEmployerDescription').val(data.StationDescription);
+        $('#CustomerReference1').val(data.CustomerReference1);
+        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(data.IndividualIdentityCardNumber);
+        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(data.IndividualPayrollNumbers);
+        $('#CustomerAccountTypeTargetProductDescription').val(data.CustomerAccountTypeTargetProductDescription);
+        $('#CustomerAccountTypeProductCodeDescription').val(data.CustomerAccountTypeProductCodeDescription);
 
-
-        $('#id').val(CustomersMap[item].CustomerAccountId);
-        $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerAccountFullAccountNumber').val(CustomersMap[item].CustomerAccountFullAccountNumber);
-        $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-        $('#CustomerReference1').val(CustomersMap[item].CustomerReference1);
-        $('#CustomerAccountCustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-        $('#CustomerAccountCustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-        $('#CustomerAccountTypeTargetProductDescription').val(CustomersMap[item].CustomerAccountTypeTargetProductDescription);
-        $('#CustomerAccountTypeProductCodeDescription').val(CustomersMap[item].CustomerAccountTypeProductCodeDescription);
+        // Hide the lookup modal
         $('#customerLookupModal').modal('hide');
     });
+});
+
     </script>
 
     //ajax form submisstion
@@ -581,7 +574,7 @@
     </script>
 
 
-    
+
 
     <script>
     // Initialize DataTable for FixedDepositType lookup
@@ -641,6 +634,36 @@
                     }
                 });
             });
+        });
+    </script>
+
+    <script>
+        // Function to dynamically gather selected accounts
+        $('#createFixedDeposit').on('click', function (e) {
+            var selectedAccounts = [];
+            $('input[name="selectedAccounts"]:checked').each(function () {
+                var accountDetails = $(this).siblings('input[name="accountDetails"]');
+                selectedAccounts.push({
+                    FullAccountNumber: accountDetails.data('account'),
+                    ProductName: accountDetails.data('product'),
+                    BookBalance: accountDetails.data('bookbalance'),
+                    AvailableBalance: accountDetails.data('availablebalance'),
+                    PrincipalBalance: accountDetails.data('principalbalance'),
+                    InterestBalance: accountDetails.data('interestbalance')
+                });
+            });
+
+            // Add selected accounts to a hidden input field to submit with the form
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'SelectedAccountsJson',
+                value: JSON.stringify(selectedAccounts)
+            }).appendTo('form');
+        });
+
+        // Remove dynamic entry functionality
+        $(document).on('click', '.remove-entry-button', function () {
+            $(this).closest('.fixed-deposit-entry').remove();
         });
     </script>
 
