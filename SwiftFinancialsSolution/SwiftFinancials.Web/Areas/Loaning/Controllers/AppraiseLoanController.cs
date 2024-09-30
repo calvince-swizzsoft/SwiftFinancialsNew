@@ -93,18 +93,9 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 Session["selectedLoanCase"] = loanCaseDTO;
 
-                // Loan Accounts
-                int[] array = new int[] { 2 };
-                var loanAccounts = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync(loaneeCustomer.CustomerId, array, true, true, true, true, GetServiceHeader());
-                if (loanAccounts != null)
-                {
-
-                }
-
-
-                // Standing Orders
+                //// Standing Orders
                 ObservableCollection<Guid> customerAccountId = new ObservableCollection<Guid>();
-                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(Id, true, true, true, true, GetServiceHeader());
+                var customerAccounts = await _channelService.FindCustomerAccountsByCustomerIdAsync(parseId, true, true, true, true, GetServiceHeader());
 
                 foreach (var accounts in customerAccounts)
                 {
@@ -121,11 +112,37 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                     {
                         allStandingOrders.AddRange(standingOrders); // Add standing orders to the collection
                     }
+                    else
+                    {
+                        TempData["EmptystandingOrders"] = "Selected Customer has no Standing Orders.";
+                    }
                 }
                 ViewBag.StandingOrders = allStandingOrders;
 
 
+                //// Income History
+                //// Payouts
+                var payouts = await _channelService.FindLoanDisbursementBatchEntriesByCustomerIdAsync((int)BatchStatus.Posted, parseId, GetServiceHeader());
+                if (payouts != null)
+                {
+                    ViewBag.Payouts = payouts;
+                }
 
+
+                ////Salary
+                // No method fetching by customerId
+
+
+
+                //// Loan Applications
+                var loanApplications = await _channelService.FindLoanCasesByCustomerIdInProcessAsync(parseId, GetServiceHeader());
+                if (loanApplications != null)
+                {
+                    ViewBag.LoanApplications = loanApplications;
+                }
+
+                //// Collaterals...
+                // No method fetching by customerId
             }
 
             loanCaseDTO.LoanRegistrationOutstandingLoansBalance = await GetOutstandingLoansBalanceAsync();

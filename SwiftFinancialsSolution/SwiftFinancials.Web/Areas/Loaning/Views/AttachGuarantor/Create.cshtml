@@ -7,41 +7,7 @@
 <!-- _Layout.cshtml or individual views -->
 <link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 
-
-<style>
-    #ChargeSplits {
-        width: 100%;
-        border-collapse: collapse;
-        font-family: Arial, sans-serif;
-    }
-
-        #ChargeSplits thead {
-            background-color: white;
-            color: #333;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        #ChargeSplits th, #ChargeSplits td {
-            padding: 12px;
-            text-align: left;
-            border: 1px solid #ddd;
-        }
-
-        #ChargeSplits th {
-            font-weight: bold;
-        }
-
-        #ChargeSplits tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        #ChargeSplits tbody tr:hover {
-            background-color: #f1f1f1;
-        }
-</style>
-
-
-
+<link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-10">
         <h1>Back Office</h1>
@@ -414,7 +380,14 @@
                 </div>
 
                 <div class="ibox-content">
-                    @Html.ActionLink("Finish", "Index", "LoanRegistration", new { Area = "Loaning" }, new { @class = "btn btn-primary" })
+                    <div class="row">
+                        <div class="col-md-6 form-group">
+                            @using (Html.BeginForm("Finish", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
+                            {
+                                <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
+                            }
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

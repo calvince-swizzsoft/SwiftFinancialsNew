@@ -85,7 +85,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             if (customerAccount.Status != (int)CustomerAccountStatus.Normal)
             {
-                TempData["AccountStatus"] = "Sorry. Could not restructure loan for account \"" + customerAccount.FullAccountNumber + "\". Account status: " + customerAccount.StatusDescription;
+                TempData["AccountStatus"] = "Sorry. The selected customer account \"" + customerAccount.FullAccountNumber + "\". Account status is: " + customerAccount.StatusDescription;
                 return View();
             }
 
@@ -132,36 +132,53 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO)
+        public async Task<ActionResult> Create(CustomerAccountDTO customerAccountDTO, double PaymentPerPeriod, double NumberOfPeriods, string Reference)
         {
-            var userDTO = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
-
-            customerAccountDTO.BranchId = (Guid)userDTO.BranchId;
             customerAccountDTO.CustomerAccountTypeTargetProductId = (Guid)Session["productId"];
-
             customerAccountDTO = Session["customerAccountDTO"] as CustomerAccountDTO;
 
-            customerAccountDTO.NumberOfPeriods = 5;
+            customerAccountDTO.NumberOfPeriods = NumberOfPeriods;
+            customerAccountDTO.PaymentPerPeriod = PaymentPerPeriod;
+            customerAccountDTO.Reference = Reference;
+
+            var findbranchId = await _channelService.FindCustomerAccountsByCustomerIdAsync(customerAccountDTO.CustomerId, true, true, true, true, GetServiceHeader());
+
+            Guid branchId = Guid.Empty;
+            foreach (var pickBranchId in findbranchId)
+            {
+                branchId = pickBranchId.BranchId;
+            }
+
+            customerAccountDTO.BranchId = branchId;
+
             customerAccountDTO.ValidateAll();
 
             await ServeNavigationMenus();
 
             if (!customerAccountDTO.HasErrors)
             {
-                await _channelService.RestructureLoanAsync((Guid)userDTO.BranchId, customerAccountDTO.Id, customerAccountDTO.NumberOfPeriods, customerAccountDTO.PaymentPerPeriod,
-                    customerAccountDTO.Reference, 0, GetServiceHeader());
+                var submit = await _channelService.RestructureLoanAsync(customerAccountDTO.BranchId, customerAccountDTO.Id, customerAccountDTO.NumberOfPeriods, customerAccountDTO.PaymentPerPeriod,
+                    customerAccountDTO.Reference, 1234, GetServiceHeader());
+
+                if (submit == false)
+                {
+                    TempData["ExistingLoanCase"] = "Sorry, but selected customer has a loan case for the selected product currently undergoing processing!";
+                    return View();
+                }
 
                 TempData["Create"] = "Loan Restructuring Successful";
 
                 Session.Remove("productId");
                 Session.Remove("customerAccountDTO");
 
-                return RedirectToAction("Index");
+                Session.Clear();
+
+                return View();
             }
             else
             {
                 var errorMessages = customerAccountDTO.ErrorMessages;
-                return View(customerAccountDTO);
+                return View();
             }
         }
     }

@@ -9,6 +9,8 @@ using System.Web;
 using System.Web.Mvc;
 using Application.MainBoundedContext.DTO.AdministrationModule;
 using System.Data;
+using System.Web.Security;
+using Microsoft.AspNet.Identity;
 
 namespace SwiftFinancials.Web.Areas.Admin.Controllers
 {
@@ -72,7 +74,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                 return;
             }
 
-            
+
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
@@ -271,7 +273,7 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
                                 Id = (int)reader["ReportID"],
                                 FileName = reader["FileName"].ToString(),
                                 ReportName = reader["ReportName"].ToString(),
-                                CategoryName = reader["CategoryName"].ToString() 
+                                CategoryName = reader["CategoryName"].ToString()
                             });
                         }
                     }
@@ -302,18 +304,18 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
                         if (rowsAffected > 0)
                         {
-                            return new HttpStatusCodeResult(200); 
+                            return new HttpStatusCodeResult(200);
                         }
                         else
                         {
-                            return new HttpStatusCodeResult(404, "Report not found"); 
+                            return new HttpStatusCodeResult(404, "Report not found");
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                return new HttpStatusCodeResult(500, "Internal server error: " + ex.Message); 
+                return new HttpStatusCodeResult(500, "Internal server error: " + ex.Message);
             }
         }
 

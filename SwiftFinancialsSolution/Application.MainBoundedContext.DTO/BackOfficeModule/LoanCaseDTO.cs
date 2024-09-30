@@ -1241,7 +1241,7 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
 
         [DataMember]
-        public IncomeAdjustmentDTO incomeAdjustment { get; set; }
+        public List<IncomeAdjustmentDTO> incomeAdjustmentDTO { get; set; }
 
 
         // Reports DTOs

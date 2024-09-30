@@ -60,12 +60,14 @@
 
     @Scripts.Render("~/plugins/idletimer")
     @Scripts.Render("~/plugins/toastr")
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">    
 
     <!-- Handler for local scripts -->
     @RenderSection("scripts", required: false)
 
+    @*<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.blockUI/2.70/jquery.blockUI.js"></script>*@
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <link href="~/Scripts/css/BackOfficeNavigationMenu.css" rel="stylesheet" />
     <script src="~/Scripts/messageAlert.js"></script>
     <link href="~/Scripts/css/ActionDropDown.css" rel="stylesheet" />
     <link href="~/Scripts/css/_layout.css" rel="stylesheet" />

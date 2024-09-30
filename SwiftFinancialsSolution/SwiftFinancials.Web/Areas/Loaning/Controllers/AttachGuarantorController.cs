@@ -75,6 +75,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var myloanCases = await _channelService.FindLoanCaseAsync(parseId, GetServiceHeader());
 
+            var loanproductId = myloanCases.LoanProductId;
+            Session["LoanProductIdID"] = loanproductId;
+
+            var sourceCustomerAccountId = myloanCases.CustomerId;
+            Session["sourceCustomerAccountId"] = sourceCustomerAccountId;
+
             if (myloanCases != null)
             {
                 loanGuarantorDTO.LoanCase = myloanCases;
@@ -106,7 +112,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
 
-            if(Session["loanCaseId"] != null)
+            if (Session["loanCaseId"] != null)
             {
                 Guid loanCaseId = (Guid)Session["loanCaseId"];
 
@@ -132,6 +138,86 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View("Create", loanGuarantorDTO);
         }
 
+
+
+        [HttpPost]
+        public async Task<ActionResult> Add(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            LoanGuarantorsDTO = TempData["LoanGuarantorsDTO"] as ObservableCollection<LoanGuarantorDTO>;
+
+            double sumPercentages = 0;
+
+
+            if (LoanGuarantorsDTO == null)
+                LoanGuarantorsDTO = new ObservableCollection<LoanGuarantorDTO>();
+
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                TempData["tPercentage"] = "Could not add charge split. Choose G/L Account.";
+
+                await ServeNavigationMenus();
+
+                return View("Create", loanGuarantorDTO);
+            }
+
+
+            //foreach (var GuarantorsDTO in loanGuarantorDTO.Guarantors)
+            //{
+            //    chargeSplitDTO.Id = parseId;
+            //    chargeSplitDTO.Description = chargeSplitDTO.Description;
+            //    chargeSplitDTO.ChartOfAccountId = commissionDTO.Id;
+            //    chargeSplitDTO.ChartOfAccountAccountName = glAccount.ChartOfAccountAccountName;
+            //    chargeSplitDTO.Percentage = chargeSplitDTO.Percentage;
+            //    chargeSplitDTO.Leviable = chargeSplitDTO.Leviable;
+
+
+            //    TempData["tPercentage"] = "";
+
+
+            //    if (chargeSplitDTO.Description == null || chargeSplitDTO.ChartOfAccountAccountName == null || chargeSplitDTO.Percentage == 0)
+            //    {
+            //        TempData["tPercentage"] = "Could not add charge split. Make sure to provide all charge split details to proceed.";
+            //    }
+            //    else
+            //    {
+            //        ChargeSplitDTOs.Add(chargeSplitDTO);
+
+            //        sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
+
+            //        Session["chargeSplit"] = commissionDTO.chargeSplit;
+
+            //        if (sumPercentages > 100)
+            //        {
+            //            TempData["tPercentage"] = "Failed to add \"" + chargeSplitDTO.Description.ToUpper() + "\". Total percentage exceeded 100%.";
+
+            //            ChargeSplitDTOs.Remove(chargeSplitDTO);
+            //        }
+            //        else if (sumPercentages < 1)
+            //        {
+            //            TempData["tPercentage"] = "Total percentage must be at least greater than 1%.";
+            //        }
+            //    }
+            //};
+
+
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
+
+            ViewBag.totalPercentage = sumPercentages;
+
+            Session["totalPercentage"] = sumPercentages;
+
+            TempData["ChargeSplitDTOs"] = ChargeSplitDTOs;
+
+
+            TempData["ChargeDTO"] = loanGuarantorDTO;
+
+            return View("Create");
+        }
 
 
         [HttpPost]
@@ -205,6 +291,35 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> Finish()
+        {
+
+            if (Session["loanCaseId"] != null || Session["LoanProductIdID"] != null || Session["sourceCustomerAccountId"] != null)
+            {
+                Guid loanCaseID = (Guid)Session["loanCaseId"];
+                Guid loanProductId = (Guid)Session["LoanProductIdID"];
+                Guid sourceCustomerAccountId = (Guid)Session["sourceCustomerAccountId"];
+
+
+                var LoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseID, GetServiceHeader());
+
+                ObservableCollection<LoanGuarantorDTO> loanGuarantors = new ObservableCollection<LoanGuarantorDTO>();
+
+                foreach (var guarantors in LoanGuarantors)
+                {
+                    loanGuarantors.Add(guarantors);
+                }
+
+                await _channelService.AttachLoanGuarantorsAsync(sourceCustomerAccountId, loanProductId, loanGuarantors, 1234, GetServiceHeader());
+
+                return RedirectToAction("Index", "LoanRegistration");
+            }
+
+            TempData["emptyIDs"] = "Sorry, something went wrong !";
+            return View("Create");
+        }
+
 
         [HttpPost]
         public async Task<ActionResult> removeGuarantors(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
@@ -215,6 +330,104 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
             var findLoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseId, GetServiceHeader());
             ViewBag.LoanGuarantors = findLoanGuarantors;
+
+            if (id == null || id == Guid.Empty)
+            {
+                return View("create", loanGuarantorDTO);
+            }
+
+            return View("create", loanGuarantorDTO);
+        }
+
+
+        // Guarantor Relieving
+        public async Task<ActionResult> relieveguarantor(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+
+            ViewBag.LoanGuarantors = loanGuarantors;
+
+            return View(loanCaseDTO);
+        }
+        [HttpPost]
+        public async Task<ActionResult> relieveguarantor(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid loanCaseId = (Guid)Session["loanCaseId"];
+
+            //await _channelService.RelieveLoanGuarantorsAsync(id, GetServiceHeader(null));
+
+            if (id == null || id == Guid.Empty)
+            {
+                return View("create", loanGuarantorDTO);
+            }
+
+            return View("create", loanGuarantorDTO);
+        }
+
+
+
+
+
+        // Guarantor Management
+        public async Task<ActionResult> guarantorManagement(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+
+            ViewBag.LoanGuarantors = loanGuarantors;
+
+            return View(loanCaseDTO);
+        }
+        [HttpPost]
+        public async Task<ActionResult> guarantorManagement(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid loanCaseId = (Guid)Session["loanCaseId"];
+
+            //await _channelService.RelieveLoanGuarantorsAsync(id, GetServiceHeader(null));
+
+            if (id == null || id == Guid.Empty)
+            {
+                return View("create", loanGuarantorDTO);
+            }
+
+            return View("create", loanGuarantorDTO);
+        }
+
+
+
+
+        // Guarantor Substitution
+        public async Task<ActionResult> guarantorSubstitution(Guid id)
+        {
+            await ServeNavigationMenus();
+
+            var loanCaseDTO = await _channelService.FindLoanCaseAsync(id, GetServiceHeader());
+
+            var loanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(id, GetServiceHeader());
+
+            ViewBag.LoanGuarantors = loanGuarantors;
+
+            return View(loanCaseDTO);
+        }
+        [HttpPost]
+        public async Task<ActionResult> guarantorSubstitution(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid loanCaseId = (Guid)Session["loanCaseId"];
+
+            //await _channelService.RelieveLoanGuarantorsAsync(id, GetServiceHeader(null));
 
             if (id == null || id == Guid.Empty)
             {

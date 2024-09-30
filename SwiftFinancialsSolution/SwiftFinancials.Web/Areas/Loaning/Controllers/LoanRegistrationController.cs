@@ -540,6 +540,17 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanCaseDTO.TakeHomePercentage = loanProduct.TakeHomePercentage;
                 loanCaseDTO.TakeHomeFixedAmount = loanProduct.TakeHomeFixedAmount;
 
+
+                if (loanCaseDTO.BranchCompanyEnforceBudgetControl && loanCaseDTO.AmountApplied > loanCaseDTO.BranchBudgetBalance)
+                {
+
+                    TempData["BudgetBalanceLow"] = "Amount applied will exceed the branch budget balance!";
+
+                    return View("Create", loanCaseDTO);
+                }
+
+
+
                 // Calculate Loan Balance
                 // Calculate Investments Balace
                 // Find Maximum Percentage
@@ -1257,12 +1268,19 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             loanCaseDTO.Remarks = Session["Remarks"].ToString();
 
 
+            if (loanCaseDTO.BranchCompanyEnforceBudgetControl && loanCaseDTO.AmountApplied > loanCaseDTO.BranchBudgetBalance)
+            {
+
+                TempData["BudgetBalanceLow"] = "Amount applied will exceed the branch budget balance!";
+
+                return View("Create", loanCaseDTO);
+            }
 
             loanCaseDTO.ValidateAll();
 
             if (!loanCaseDTO.HasErrors)
             {
-                if (loanCaseDTO.AmountApplied < 1)
+                if (loanCaseDTO.AmountApplied <= 50)
                 {
                     TempData["lessAmountApplied"] = "The amount you are applying for is too low. Enter amount greater than " + loanCaseDTO.AmountApplied;
                     return View("create", loanCaseDTO);
@@ -1318,6 +1336,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else
             {
+                await ServeNavigationMenus();
+
                 var errorMessages = loanCaseDTO.ErrorMessages;
                 ViewBag.LoanInterestCalculationModeSelectList = GetLoanInterestCalculationModeSelectList(loanCaseDTO.LoanInterestCalculationMode.ToString());
                 ViewBag.LoanRegistrationLoanProductSectionSelectList = GetLoanRegistrationLoanProductCategorySelectList(loanCaseDTO.LoanRegistrationLoanProductCategory.ToString());

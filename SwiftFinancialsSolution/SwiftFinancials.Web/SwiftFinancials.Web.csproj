@@ -534,6 +534,7 @@
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SSRSReportSettingLoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
@@ -1395,10 +1396,14 @@
     <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
     <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
     <Content Include="Areas\Admin\Views\SSRSReportSetting\EditReport.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSettingLogin\Login.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\relieveguarantor.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\guarantorSubstitution.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
+    <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\Marquee.css" />
@@ -1406,6 +1411,7 @@
     <Content Include="Scripts\css\SSRSModal.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
+    <Content Include="Scripts\css\ViewbagTable.css" />
     <Content Include="Scripts\css\WebCam.css" />
     <Content Include="Scripts\css\_layout.css" />
     <Content Include="Scripts\home-index.js" />
