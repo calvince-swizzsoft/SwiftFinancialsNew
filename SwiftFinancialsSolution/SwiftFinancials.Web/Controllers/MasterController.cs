@@ -877,6 +877,23 @@ namespace SwiftFinancials.Web.Controllers
         }
 
         [NonAction]
+        protected List<SelectListItem> GetAuxiliaryLoanConditionSelectList(string selectedValue)
+        {
+            List<SelectListItem> auxiliaryLoanCondition = new List<SelectListItem>();
+
+            var items = Enum.GetValues(typeof(AuxiliaryLoanCondition)).Cast<AuxiliaryLoanCondition>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
+
+            auxiliaryLoanCondition.AddRange(items);
+
+            return auxiliaryLoanCondition;
+        }
+
+        [NonAction]
         protected List<SelectListItem> GetLoanInterestCalculationModeSelectList(string selectedValue)
         {
             List<SelectListItem> loanInterestCalculationModes = new List<SelectListItem>();

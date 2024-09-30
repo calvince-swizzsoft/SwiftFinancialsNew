@@ -556,5 +556,12 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         public ObservableCollection<LoanCycleDTO> Cycles { get; set; }
+
+
+        [DataMember]
+        public ObservableCollection<DynamicChargeDTO> charges { get; set; }
+
+        [DataMember]
+        public ProductCollectionInfo productCollection { get; set; }
     }
 }
