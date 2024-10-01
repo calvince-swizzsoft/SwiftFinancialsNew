@@ -108,7 +108,9 @@
                         @Html.HiddenFor(model => model.BranchId)
                         @Html.HiddenFor(model => model.FixedDepositTypeId)
                         @Html.HiddenFor(model => model.CustomerAccountId)
+                        @Html.HiddenFor(model => model.ProductChartOfAccountId)
                         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
 
                         <div class="form-horizontal">
 
@@ -127,6 +129,8 @@
                                 <div class="col-lg-4">
                                     <div class="form-group form-group-lg">
                                         @Html.LabelFor(model => model.CustomerAccountStatusDescription, htmlAttributes: new { @class = "control-label" })
+                                        @Html.HiddenFor(model => model.ProductChartOfAccountId)
+
                                         @Html.EditorFor(model => model.CustomerAccountStatusDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Account Status", @required = "" } })
                                         @Html.ValidationMessageFor(model => model.CustomerAccountStatusDescription, "", new { @class = "text-danger" })
                                     </div>
@@ -204,7 +208,7 @@
 
                             <div class="row">
                                 <div class="col-md-4">
-                                   
+
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.CategoryDescription, new { @class = "control-label" })
                                         @Html.EditorFor(model => model.CategoryDescription, new { htmlAttributes = new { @id = "CategoryDescription", @class = "form-control", @placeholder = "Enter value" } })
@@ -249,7 +253,7 @@
                                 </div>
 
                                 <div class="col-md-4">
-                                    
+
                                     <div class="form-group">
                                         @Html.LabelFor(model => model.MaturityActionDescription, new { @class = "control-label" })
                                         @Html.EditorFor(model => model.MaturityActionDescription, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter term in months" } })
@@ -344,8 +348,8 @@
 
                             </ul>
                             <div class="tab-content">
-                             Loan Accounts Tab Content 
-                            <div id="fixedDepositPayable" class="tab-pane fade show active">
+                                Loan Accounts Tab Content
+                                <div id="fixedDepositPayable" class="tab-pane fade show active">
                                     <div id="fixedDepositEntries">
                                         <div id="noEntriesMessage">
 
@@ -432,6 +436,8 @@
 </div>
 
 <input type="hidden" id="customerId" name="customerId" />
+<input type="hidden" id="ProductChartOfAccountId" name="ProductChartOfAccountId" value="@Model.ProductChartOfAccountId" />
+
 
 
 <!--FixedDepositType-->

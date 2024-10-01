@@ -731,7 +731,7 @@ namespace Application.MainBoundedContext.DTO.AccountsModule
 
         [DataMember]
         [Display(Name = "Number Of Periods")]
-        public int NumberOfPeriods { get; set; }
+        public double NumberOfPeriods { get; set; }
 
         [DataMember]
         [Display(Name = "Reference")]

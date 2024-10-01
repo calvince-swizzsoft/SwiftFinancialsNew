@@ -61,6 +61,58 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             return View(dataCapture);
         }
 
+        public async Task<ActionResult> CustomerAccountLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
+        {
+            await ServeNavigationMenus();
+
+            Guid parseId;
+
+            if (id == Guid.Empty || !Guid.TryParse(id.ToString(), out parseId))
+            {
+                return View("create");
+            }
+
+            var accounts = await _channelService.FindCustomerAccountAsync(parseId, true, true, true, true, GetServiceHeader());
+
+            if (accounts != null)
+            {
+                loanGuarantorDTO.CustomerAccountFullAccountNumber = accounts.FullAccountNumber;
+                loanGuarantorDTO.CustomerAccountAccountId = accounts.Id;
+                loanGuarantorDTO.CustomerAccountAccountStatusDescription = accounts.StatusDescription;
+                loanGuarantorDTO.CustomerAccountAccountRemarks = accounts.Remarks;
+                loanGuarantorDTO.BookBalance = accounts.BookBalance;
+                loanGuarantorDTO.CustomerId = accounts.CustomerId;
+                loanGuarantorDTO.CustomerIndividualFirstName = accounts.CustomerFullName;
+                loanGuarantorDTO.CustomerAccounntCustomerTypeDescription = accounts.CustomerTypeDescription;
+                loanGuarantorDTO.CustomerIndividualPayrollNumbers = accounts.CustomerIndividualPayrollNumbers;
+                loanGuarantorDTO.CustomerPersonalIdentificationNumber = accounts.CustomerPersonalIdentificationNumber;
+                loanGuarantorDTO.CustomerReference1 = accounts.CustomerReference1;
+                loanGuarantorDTO.CustomerReference2 = accounts.CustomerReference2;
+                loanGuarantorDTO.CustomerReference3 = accounts.CustomerReference3;
+
+
+                // Find Guarantors
+
+                var Guarantors = await _channelService.FindLoanGuarantorsByCustomerIdAsync(accounts.CustomerId, GetServiceHeader());
+                if (Guarantors != null)
+                {
+                    ViewBag.LoanGuarantors = Guarantors;
+
+                    List<LoanGuarantorDTO> Cases = new List<LoanGuarantorDTO>();
+                    foreach (var gC in Guarantors)
+                    {
+                        Cases.Add(gC);
+                    }
+                }
+                else
+                {
+                    TempData["NullGuarantors"] = "No guarantors attached for the specified customer";
+                }
+            }
+
+            return View("Create", loanGuarantorDTO);
+        }
+
 
 
         public async Task<ActionResult> Create(Guid? id, LoanGuarantorDTO loanGuarantorDTO)

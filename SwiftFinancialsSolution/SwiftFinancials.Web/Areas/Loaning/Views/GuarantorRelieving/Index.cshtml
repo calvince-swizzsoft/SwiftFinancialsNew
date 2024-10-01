@@ -60,15 +60,46 @@
     </div>
 </div>
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
-        <li>@Html.ActionLink("Guarantor Attachment", "create", "Attachment")</li>
-        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
-        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
-    </ul>
-</div>
+
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "LoanRestructuring")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Restructuring
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorAttachment")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Guarantor Attachment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorSubstitution")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Guarantor Substitution
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorRelieving")" class="nav-link">
+                    <i class="fa fa-search"></i> Guarantor Relieving
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorManagement")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Guarantor Management
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
 
 
 <div class="wrapper wrapper-content">

@@ -51,7 +51,7 @@
                     @using (Html.BeginForm("Edit", "AccountClosure", FormMethod.Post, new { @class = "form-horizontal" }))
                     {
                         @Html.AntiForgeryToken()
-                        <h1>Account Closure Request</h1>
+                        <h1>Edit Account Closure Request</h1>
 
                         <div class="ibox-content text-info">
                             <div class="form-horizontal">
@@ -63,7 +63,7 @@
                                         <div class="form-group">
                                             @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, "Full Account Number:", new { @class = "control-label" })
                                             <div class="input-group" data-autoclose="true">
-                                                @Html.TextBoxFor(model => model.CustomerAccountCustomerReference1, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountFullAccountNumber1" }) <!-- Unique ID here -->
+                                                @Html.TextBoxFor(model => model.CustomerAccountFullAccountNumber, new { @class = "form-control", @readonly = "readonly", @id = "CustomerAccountFullAccountNumber1" }) <!-- Unique ID here -->
                                                 <span class="input-group-addon">
                                                     <a data-toggle="modal" data-target="#customerLookupModal" onclick="captureDetails();">
                                                         <span class="fa fa-search"></span>

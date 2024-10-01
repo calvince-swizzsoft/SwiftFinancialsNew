@@ -7,33 +7,24 @@
 
 
 <style>
-    .table-wrapper {
-        height: 300px; /* Set the height of the scrollable area */
-        overflow-y: auto;
-        overflow-x: hidden;
-        border: solid 1px;
-        border-radius: 7px;
-        border-color: #333333;
+
+    .table-wrapper::-webkit-scrollbar {
+        width: 8px;
     }
 
-
-
-        .table-wrapper::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .table-wrapper::-webkit-scrollbar-thumb {
-            background-color: #007bff;
-            border-radius: 10px;
-        }
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background-color: #007bff;
+        border-radius: 10px;
+    }
 
     #ChargeSplits {
         width: 100%;
+        height: 900px;
         border-collapse: collapse;
         font-family: Arial, sans-serif;
         position: sticky;
         top: 0;
-        background-color: #f9f9f9; /* Background color of the header */
+        background-color: #f9f9f9;
         z-index: 1;
     }
 
@@ -67,6 +58,137 @@
         padding: 15px;
         border-radius: 8px;
     }
+
+
+
+
+
+
+
+
+
+    .tab-header {
+        position: relative;
+        background-color: #e9ecef;
+        border-bottom: 2px solid cadetblue;
+        padding: 10px;
+        margin-bottom: -5px;
+        z-index: 1;
+    }
+
+    .tab-button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px 5px 0 0;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+        .tab-button.active {
+            cursor: default;
+            pointer-events: none;
+            opacity: 0.9;
+        }
+
+    h3 {
+        margin: 0;
+        padding: 10px;
+        position: relative;
+        text-align: center;
+        z-index: 2;
+    }
+
+    .table-wrapper {
+        background: #ffffff;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        margin-top: 20px;
+        position: relative;
+    }
+
+    .table-scroll {
+        max-height: 480px;
+        overflow-y: auto;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        overflow: hidden;
+    }
+
+    thead {
+        background-color: #007bff;
+        color: #fff;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    th, td {
+        padding: 15px;
+        border-bottom: 1px solid #dee2e6;
+        transition: background 0.3s;
+    }
+
+    th {
+        position: relative;
+    }
+
+        th:before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: #007bff;
+            transform: translateY(100%);
+            z-index: -1;
+            transition: transform 0.3s;
+        }
+
+    tr:hover {
+        background-color: rgba(0, 123, 255, 0.1);
+    }
+
+    tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    tr:hover td {
+        background: rgba(255, 255, 255, 0.8);
+    }
+
+    td {
+        border: none;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+    }
+
+        td:last-child {
+            border-radius: 0 0 8px 8px;
+        }
+
+        td:first-child {
+            border-radius: 8px 0 0 0;
+        }
+
+    .button {
+        padding: 10px 15px;
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+        transition: background 0.3s;
+    }
+
+        .button:hover {
+            background-color: #218838;
+        }
 </style>
 
 
@@ -91,15 +213,45 @@
 </div>
 
 
-<div id="tabs-container">
-    <ul class="nav-tabs">
-        <li>@Html.ActionLink("Restructuring", "create", "LoanRestructuring")</li>
-        <li>@Html.ActionLink("Guarantor Attachment", "create", "GuarantorAttachment")</li>
-        <li>@Html.ActionLink("Guarantor Substitution", "create", "GuarantorSubstitution")</li>
-        <li>@Html.ActionLink("Guarantor Relieving", "Index", "GuarantorRelieving")</li>
-        <li>@Html.ActionLink("Guarantor Management", "Index", "GuarantorManagement")</li>
-    </ul>
-</div>
+
+<br />
+<nav class="navbar navbar-expand-lg bg-white nav-3d shadow">
+    <a class="navbar-brand" href="#">
+        <i class="fa fa-money" aria-hidden="true"></i>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "LoanRestructuring")" class="nav-link">
+                    <i class="fa fa-pencil"></i> Loan Restructuring
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorAttachment")" class="nav-link">
+                    <i class="fa fa-check-circle"></i> Guarantor Attachment
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorSubstitution")" class="nav-link">
+                    <i class="fa fa-thumbs-up"></i> Guarantor Substitution
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorRelieving")" class="nav-link">
+                    <i class="fa fa-search"></i> Guarantor Relieving
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="@Url.Action("Create", "GuarantorManagement")" class="nav-link">
+                    <i class="fa fa-times-circle"></i> Guarantor Management
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
 
 
 <div class="wrapper wrapper-content">
@@ -239,50 +391,54 @@
 
 
                             @*Tabs*@
-                            <div class="tab-header" style="color: black;">
-                                <div class="tab-button active" style="pointer-events: none; cursor: default; font-size: medium;">
-                                    Guarantors
+                            <div class="tab-header">
+                                <div class="tab-button active">
+                                    <h3>Guarantors</h3>
                                 </div>
                             </div>
 
                             <div id="section1" class="tab active" style="display: block;">
                                 <div class="table-wrapper">
-                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                        <thead style="color: cadetblue; text-align: center; font-weight: bold;">
-                                            <tr>
-                                                <th>Status</th>
-                                                <th>Customer Name</th>
-                                                <th>Mobile Line</th>
-                                                <th>Total Shares</th>
-                                                <th>Committed Shares</th>
-                                                <th>Amount Guaranteed</th>
-                                                <th>Principal Attached</th>
-                                                <th>Interest Attached</th>
-                                                <th>Identity Card Number</th>
-                                                <th>Payroll Numbers</th>
-                                                <th>Loan Number</th>
-                                                <th>Case Status</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if (ViewBag.LoanGuarantors != null)
-                                            {
-                                                foreach (var guarantors in ViewBag.LoanGuarantors)
+                                    <div class="table-scroll">
+                                        <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                            <thead>
+                                                <tr>
+                                                    <th>Status</th>
+                                                    <th>Customer Name</th>
+                                                    <th>Total Shares</th>
+                                                    <th>Committed Shares</th>
+                                                    <th>Amount Guaranteed</th>
+                                                    <th>Principal Attached</th>
+                                                    <th>Interest Attached</th>
+                                                    <th>Identity Card Number</th>
+                                                    <th>Payroll Numbers</th>
+                                                    @*<th>Loan Number</th>
+                                                        <th>Case Status</th>*@
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.LoanGuarantors != null)
                                                 {
-                                                    <tr>
-                                                        @*<td>@guarantors.Customer.FullName</td>
-                                                            <td>@guarantors.Customer.StationZoneDivisionEmployerDescription</td>
-                                                            <td>@guarantors.Customer.Reference1</td>
-                                                            <td>@guarantors.AppraisalFactor</td>
+                                                    foreach (var guarantors in ViewBag.LoanGuarantors)
+                                                    {
+                                                        <tr>
+                                                            <td>@guarantors.Status</td>
+                                                            <td>@guarantors.CustomerIndividualSalutationDescription @guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
                                                             <td style="text-align: right;">@guarantors.TotalShares</td>
                                                             <td style="text-align: right;">@guarantors.CommittedShares</td>
                                                             <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
-                                                            <td>@guarantors.CreatedDate</td>*@
-                                                    </tr>
+                                                            <td>@guarantors.PrincipalAttached</td>
+                                                            <td>@guarantors.InterestAttached</td>
+                                                            <td>@guarantors.CustomerIndividualIdentityCardNumber</td>
+                                                            <td>@guarantors.CustomerIndividualPayrollNumbers</td>
+                                                            @*<td>@guarantors.LoanNumber</td>
+                                                                <td>@guarantors.CaseStatus</td>*@
+                                                        </tr>
+                                                    }
                                                 }
-                                            }
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
                             </div>
                             <br />
@@ -290,42 +446,30 @@
 
                             <div class="amount-section">
                                 <div class="row">
-                                    <div class="col-lg-2"></div>
-
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.AmountGuaranteed, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.AmountGuaranteed, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @placeholder = "Kshs. 0.00" } })
-                                            @Html.ValidationMessageFor(model => model.AmountGuaranteed, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.PrincipalAttached, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.PrincipalAttached, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
-                                            @Html.ValidationMessageFor(model => model.PrincipalAttached, "", new { @class = "text-danger" })
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-4">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.InterestAttached, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.InterestAttached, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
-                                            @Html.ValidationMessageFor(model => model.InterestAttached, "", new { @class = "text-danger" })
                                         </div>
-                                    </div>
-
-                                    <div class="col-lg-1 mt-3">
-                                        <input type="submit" class="btn btn-primary" style="border-radius: 7px;" value="Update" />
                                     </div>
                                 </div>
 
                                 <div class="row mt-4">
-                                    <div class="col-lg-2"></div>
-                                    <div class="col-lg-3"></div>
-
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-5">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Apportioned, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.Apportioned, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
@@ -333,7 +477,7 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-3">
+                                    <div class="col-lg-5">
                                         <div class="form-group form-group-lg">
                                             @Html.LabelFor(model => model.Shortage, htmlAttributes: new { @class = "" })
                                             @Html.EditorFor(model => model.Shortage, new { htmlAttributes = new { @class = "form-control", @placeholder = "Kshs. 0.00" } })
@@ -341,8 +485,8 @@
                                         </div>
                                     </div>
 
-                                    <div class="col-lg-1 mt-3">
-                                        <input type="submit" class="btn btn-primary" style="border-radius: 7px;" value="Reset" />
+                                    <div class="col-lg-2 mt-3">
+                                        <input type="submit" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Reset;" />
                                     </div>
                                 </div>
                             </div>
@@ -351,19 +495,19 @@
                             <div class="amount-section">
                                 <div class="row">
                                     <div class="col-lg-2"></div>
-                                    <div class="col-lg-3"   ></div>
                                     <div class="col-lg-3"></div>
-                                    
+                                    <div class="col-lg-3"></div>
+
 
                                     <div class="col-md-3 form-group">
-                                        @Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
-                                        <div class="input-group" data-autoclose="true">
-                                            @Html.HiddenFor(model => model.AttachToId)
-                                            @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
-                                            <span class="input-group-addon">
-                                                <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
-                                            </span>
-                                        </div>
+                                        @*@Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
+                                            <div class="input-group" data-autoclose="true">
+                                                @Html.HiddenFor(model => model.AttachToId)
+                                                @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                                <span class="input-group-addon">
+                                                    <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
+                                                </span>
+                                            </div>*@
                                     </div>
 
                                     <div class="col-lg-1 mt-3">
@@ -407,142 +551,6 @@
 </div>
 
 
-<!-- Modal Structure -->
-<div class="modal fade" id="loanCasesModal" tabindex="-1" role="dialog" aria-labelledby="loanCasesModalLabel" aria-hidden="true" style="width: 100%;">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" id="loanCasesModalLabel" style="text-align: center;">Loan Calculator</h2>
-            </div>
-            <div class="modal-body">
-                <style>
-                    .calculator {
-                        background-color: white;
-                        padding: 20px;
-                        border-radius: 10px;
-                        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                        width: 100%;
-                    }
-
-                        .calculator h2 {
-                            margin-top: 0;
-                            font-size: 24px;
-                            text-align: center;
-                        }
-
-                    .form-group {
-                        margin-bottom: 15px;
-                    }
-
-                        .form-group label {
-                            display: block;
-                            font-size: 14px;
-                            margin-bottom: 5px;
-                        }
-
-                        .form-group input {
-                            width: 100%;
-                            padding: 8px;
-                            border: 1px solid #ccc;
-                            border-radius: 4px;
-                        }
-
-                    .result {
-                        margin-top: 20px;
-                        color: cadetblue;
-                    }
-
-                        .result h3 {
-                            margin: 10px 0;
-                            font-size: 18px;
-                            text-align: center;
-                        }
-
-                        .result p {
-                            font-size: 16px;
-                            text-align: center;
-                        }
-
-                    button {
-                        padding: 10px;
-                        background-color: #007bff;
-                        color: white;
-                        border: none;
-                        border-radius: 4px;
-                        font-size: 16px;
-                        cursor: pointer;
-                        border: solid;
-                    }
-                </style>
-
-
-                <div class="calculator">
-                    <div class="form-group">
-                        <label for="loanAmount">Loan Amount</label>
-                        <input type="number" id="loanAmount" placeholder="Enter loan amount">
-                    </div>
-                    <div class="form-group">
-                        <label for="interestRate">Annual Percentage Rate (APR) (%)</label>
-                        <input type="number" id="interestRate" placeholder="Enter APR">
-                    </div>
-                    <div class="form-group">
-                        <label for="loanTerm">Loan Term (years)</label>
-                        <input type="number" id="loanTerm" placeholder="Enter loan term">
-                    </div>
-                    <div class="form-group">
-                        <label for="periodsPerYear">Payments per Year</label>
-                        <input type="number" id="periodsPerYear" placeholder="Enter payments per year (e.g., 12 for monthly)">
-                    </div>
-                    <button onclick="calculateLoan()" style="width: 100%;">Calculate</button>
-
-                    <div class="result">
-                        <h3>Results</h3>
-                        <p id="monthlyPayment">Payment per Period: Kshs. 0.00</p>
-                        <p id="totalPayment">Total Payment: Kshs. 0.00</p>
-                        <p id="totalInterest">Total Interest Paid: Kshs. 0.00</p>
-                        <p id="apr">Annual Percentage Rate (APR): 0.00%</p>
-                        <p id="yearlyPayment">Yearly Payment: Kshs. 0.00</p>
-                    </div>
-                </div>
-
-                <script>
-                    function calculateLoan() {
-                        var loanAmount = parseFloat(document.getElementById('loanAmount').value);
-                        var interestRate = parseFloat(document.getElementById('interestRate').value);
-                        var loanTerm = parseFloat(document.getElementById('loanTerm').value);
-                        var periodsPerYear = parseInt(document.getElementById('periodsPerYear').value);
-
-                        var monthlyRate = (interestRate / 100) / periodsPerYear;
-                        var totalPeriods = loanTerm * periodsPerYear;
-
-                        var x = Math.pow(1 + monthlyRate, totalPeriods);
-                        var paymentPerPeriod = (loanAmount * x * monthlyRate) / (x - 1);
-
-                        var totalPayment = paymentPerPeriod * totalPeriods;
-                        var totalInterest = totalPayment - loanAmount;
-
-                        var apr = ((totalInterest / totalPeriods) / loanAmount) * periodsPerYear * 100;
-
-                        var yearlyPayment = paymentPerPeriod * periodsPerYear;
-
-                        document.getElementById('monthlyPayment').innerText = 'Payment per Period: Kshs. ' + paymentPerPeriod.toFixed(2);
-                        document.getElementById('totalPayment').innerText = 'Total Payment: Kshs. ' + totalPayment.toFixed(2);
-                        document.getElementById('totalInterest').innerText = 'Total Interest Paid: Kshs. ' + totalInterest.toFixed(2);
-                        document.getElementById('apr').innerText = 'Annual Percentage Rate (APR): ' + apr.toFixed(2) + '%';
-                        document.getElementById('yearlyPayment').innerText = 'Yearly Payment: Kshs. ' + yearlyPayment.toFixed(2);
-                    }
-                </script>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    Close Calculator
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
-
 
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
@@ -555,9 +563,7 @@
     @Scripts.Render("~/plugins/validate")
     @Scripts.Render("~/plugins/typehead")
 
-
-
-
+    <script src="~/Scripts/js/navlink.js"></script>
     <script>
         $(document).ready(function () {
             $("#wizard").steps();
@@ -648,7 +654,7 @@
                     var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
                     aData.CreatedDate = dt_Created;
 
-                    var selectUrl = '<a  href="/loaning/LoanRestructuring/Create/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
+                    var selectUrl = '<a  href="/loaning/GuarantorAttachment/CustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
 
                     $('td:eq(7)', nRow).html(dt_Created);
                     $('td:eq(8)', nRow).html(selectUrl);
