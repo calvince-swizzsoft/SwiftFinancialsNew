@@ -4,8 +4,6 @@
     ViewBag.Title = "Attach Guarantor";
 }
 
-<!-- _Layout.cshtml or individual views -->
-<link href="~/Scripts/css/tabbing2.css" rel="stylesheet" />
 
 <link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 <div class="row wrapper border-bottom white-bg page-heading">
@@ -23,9 +21,6 @@
             </li>
         </ol>
     </div>
-    <div class="col-lg-2">
-
-    </div>
 </div>
 
 <div class="wrapper wrapper-content">
@@ -33,7 +28,7 @@
         <div class="col-md-12">
             <div class="ibox ">
                 <div class="ibox-title">
-                    <h2>Attach Guarantor</h2>
+                    <h2>Add Loan Guarantor</h2>
                     <div class="ibox-tools">
                         <a class="collapse-link">
                             <i class="fa fa-chevron-up"></i>
@@ -340,38 +335,38 @@
                             <row>
                                 <h3>Loan Guarantors</h3>
 
-                                <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table" style="text-wrap: normal; color: black; width: 100%;">
-                                    <thead style="font-style: italic; color: cadetblue; text-align: center;">
-                                        <tr>
-                                            <th>Guarantor Name</th>
-                                            <th>Identity Card Type</th>
-                                            <th>Identity Card Number</th>
-                                            <th>Total shares</th>
-                                            <th>Committed shares</th>
-                                            <th>Amount Guaranteed</th>
-                                            <th>Appraisal Factor</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @if (ViewBag.LoanGuarantors != null)
-                                        {
-                                            foreach (var loanGuarantors in ViewBag.LoanGuarantors)
+                                    <table id="ChargeSplits" class="footable table table-striped toggle-arrow-tiny grey-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Guarantor Name</th>
+                                                <th>Identity Card Type</th>
+                                                <th>Identity Card Number</th>
+                                                <th>Total shares</th>
+                                                <th>Committed shares</th>
+                                                <th>Amount Guaranteed</th>
+                                                <th>Appraisal Factor</th>
+                                                <th>Action</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if (ViewBag.LoanGuarantors != null)
                                             {
-                                                <tr data-id="@loanGuarantors.Customer.Id">
-                                                    <td>@loanGuarantors.Customer.FullName</td>
-                                                    <td>@loanGuarantors.Customer.IndividualIdentityCardTypeDescription</td>
-                                                    <td>@loanGuarantors.Customer.IdentificationNumber</td>
-                                                    <td>@loanGuarantors.TotalShares</td>
-                                                    <td>@loanGuarantors.CommittedShares</td>
-                                                    <td>@loanGuarantors.AmountGuaranteed</td>
-                                                    <td>@loanGuarantors.AppraisalFactor</td>
-                                                    <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
-                                                </tr>
+                                                foreach (var loanGuarantors in ViewBag.LoanGuarantors)
+                                                {
+                                                    <tr data-id="@loanGuarantors.Customer.Id">
+                                                        <td data-title="Guarantor Name">@loanGuarantors.Customer.FullName</td>
+                                                        <td data-title="Identity Card Type">@loanGuarantors.Customer.IndividualIdentityCardTypeDescription</td>
+                                                        <td data-title="Identity Card Number">@loanGuarantors.Customer.IdentificationNumber</td>
+                                                        <td data-title="Total shares">@loanGuarantors.TotalShares</td>
+                                                        <td data-title="Committed shares">@loanGuarantors.CommittedShares</td>
+                                                        <td data-title="Amount Guaranteed">@loanGuarantors.AmountGuaranteed</td>
+                                                        <td data-title="Appraisal Factor">@loanGuarantors.AppraisalFactor</td>
+                                                        <td><button type="button" class="btn btn-danger remove-btn">Remove</button></td>
+                                                    </tr>
+                                                }
                                             }
-                                        }
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
                             </row>
 
                         </fieldset>
@@ -381,10 +376,10 @@
 
                 <div class="ibox-content">
                     <div class="row">
-                        <div class="col-md-6 form-group">
+                        <div class="col-md-4 form-group">
                             @using (Html.BeginForm("Finish", "AttachGuarantor", new { Area = "Loaning" }, FormMethod.Post, new { @class = "btn btn-primary" }))
                             {
-                                <input type="submit" style="width:150px;" class="btn btn-primary" value="Add" />
+                                <input type="submit" style="width:150px;" class="btn btn-primary" value="Finish" />
                             }
                         </div>
                     </div>
@@ -446,7 +441,7 @@
 
 
 
-
+<link href="~/Scripts/css/ViewbagTable.css" rel="stylesheet" />
 
 
 @section Styles{
