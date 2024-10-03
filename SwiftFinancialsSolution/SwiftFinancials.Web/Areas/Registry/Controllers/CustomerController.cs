@@ -300,13 +300,15 @@ namespace SwiftFinancials.Web.Areas.Registry.Controllers
                 ViewBag.IndividualEmploymentTermsOfServiceSelectList = GetTermsOfServiceSelectList(customerBindingModel.IndividualEmploymentTermsOfService.ToString());
                 ViewBag.IndividualClassificationSelectList = GetCustomerClassificationSelectList(customerBindingModel.IndividualClassification.ToString());
 
-                // await _channelService.UpdateRefereeCollectionByCustomerIdAsync(result.Id,)
+                if (customerBindingModel != null && !string.IsNullOrEmpty(customerBindingModel.FullName))
+                {
+                    TempData["SuccessMessage"] = $"Successfully Created Customer {customerBindingModel.FullName}";
+                }
+                else
+                {
+                    TempData["ErrorMessage"] = "Failed to create customer. Invalid data provided.";
+                }
 
-                TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
-
-                //return View("Index");
-
-                //TempData["SuccessMessage"] = "Successfully Created Customer " + customerBindingModel.FullName;
                 return RedirectToAction("Index");
             }
             else
