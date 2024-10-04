@@ -48,7 +48,7 @@
                                         <div class="card h-100">
                                             <div class="card-body d-flex flex-column">
                                                 <!-- Amount Field -->
-                                                @Html.HiddenFor(model => model.EmployeeId, new {htmlAttributes = new {@id = "employeeId" } })
+                                                @Html.HiddenFor(model => model.EmployeeId, new { htmlAttributes = new { @id = "employeeId" } })
                                                 <div class="form-group mb-4">
                                                     @Html.LabelFor(model => model.Amount, "Amount", new { @class = "font-bold" })
                                                     @Html.EditorFor(model => model.Amount, new { htmlAttributes = new { @class = "form-control form-control-lg", @id = "amount" } })
@@ -57,17 +57,17 @@
 
                                                 <!-- Transaction Type Field -->
                                                 @*<div class="form-group mb-4">
-                                                    @Html.LabelFor(model => model.TransactionType, "Transaction Type", new { @class = "font-bold" })
-                                                    @Html.DropDownListFor(model => model.TransactionType, new SelectList(new List<string> { "Teller To Treasury", "Teller To Teller" }), new { @class = "form-control", @id = "transactionType" })
-                                                    @Html.ValidationMessageFor(model => model.TransactionType, "", new { @class = "text-danger" })
-                                                </div>*@
+                                                        @Html.LabelFor(model => model.TransactionType, "Transaction Type", new { @class = "font-bold" })
+                                                        @Html.DropDownListFor(model => model.TransactionType, new SelectList(new List<string> { "Teller To Treasury", "Teller To Teller" }), new { @class = "form-control", @id = "transactionType" })
+                                                        @Html.ValidationMessageFor(model => model.TransactionType, "", new { @class = "text-danger" })
+                                                    </div>*@
 
                                                 <!-- Treasury Field (Read-only) -->
                                                 @*<div class="form-group mb-4">
-                            @Html.LabelFor(model => model.Treasury, "Treasury", new { @class = "font-bold" })
-                            @Html.EditorFor(model => model.Treasury, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @value = "HeadOffice", @id = "treasury" } })
-                            @Html.ValidationMessageFor(model => model.Treasury, "", new { @class = "text-danger" })
-                        </div>*@
+                                                        @Html.LabelFor(model => model.Treasury, "Treasury", new { @class = "font-bold" })
+                                                        @Html.EditorFor(model => model.Treasury, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", @value = "HeadOffice", @id = "treasury" } })
+                                                        @Html.ValidationMessageFor(model => model.Treasury, "", new { @class = "text-danger" })
+                                                    </div>*@
                                                 <div class="form-group mb-4">
                                                     <label>Treasury</label>
                                                     <input type="text" class="form-control" readonly value="HeadOffice">
@@ -129,11 +129,11 @@
 
                                                 <div class="form-group mb-3">
                                                     @Html.LabelFor(model => model.ClosingBalanceStatus, new { @class = "font-bold" })
-                                                    @Html.TextBoxFor(model => model.ClosingBalanceStatus, new { @class = "form-control", @id = "closingBalance", @readonly = "readonly" })
+                                                    @Html.TextBoxFor(model => model.ClosingBalanceStatus, new { @class = "form-control", @id = "closingBalanceStatus", @readonly = "readonly" })
                                                     @Html.ValidationMessageFor(model => model.ClosingBalanceStatus, "", new { @class = "text-danger" })
                                                 </div>
 
-                                              
+
                                             </div>
                                         </div>
                                     </div>
@@ -427,7 +427,7 @@
 $('#cashTransferButton').on('click', function () {
 
     var cashTransferRequestDTO = {
-        amount: $('#amount').val(),  
+        amount: $('#amount').val(),
         reference: $('#reference').val(),
         employeeId: $('#employeeId').val()
     };
@@ -453,5 +453,38 @@ $('#cashTransferButton').on('click', function () {
 
 
     </script>
+
+    <script>
+        $(document).ready(function () {
+            // Function to update the balance status based on the amount and closing balance
+            function updateBalanceStatus() {
+                // Get the current values for amount and closing balance
+                var amount = parseFloat($('#amount').val()) || 0;  // Default to 0 if no value is entered
+                var closingBalance = parseFloat($('#closingBalance').val()) || 0;
+
+                // Determine the status based on the comparison
+                var status;
+                if (amount < closingBalance) {
+                    status = 'Shortage';
+                } else if (amount > closingBalance) {
+                    status = 'Excess';
+                } else {
+                    status = 'Balanced';
+                }
+
+                // Update the status field
+                $('#closingBalanceStatus').val(status);
+            }
+
+            // Attach the update function to the amount field's input event
+            $('#amount').on('input', function () {
+                updateBalanceStatus();
+            });
+
+            // Initialize the status when the page loads
+            updateBalanceStatus();
+        });
+    </script>
+
 
 }

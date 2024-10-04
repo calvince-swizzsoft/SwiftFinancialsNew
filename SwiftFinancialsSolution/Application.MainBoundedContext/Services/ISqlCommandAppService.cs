@@ -114,7 +114,7 @@ namespace Application.MainBoundedContext.Services
 
         //Tuple<decimal, decimal, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader);
 
-        Tuple<decimal, decimal, decimal, decimal, string, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader);
+        Tuple<decimal, decimal, decimal, decimal, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader);
 
         Task<Tuple<decimal, decimal, int>> FindGlAccountStatisticsAsync(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader);
 

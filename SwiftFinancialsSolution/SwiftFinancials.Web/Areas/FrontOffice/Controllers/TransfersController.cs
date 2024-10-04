@@ -67,7 +67,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
             model.UntransferredChequesValue = untransferredChequesValue;
 
-            model.ClosingBalanceStatus = SelectedTeller.Status;
+            //model.ClosingBalanceStatus = SelectedTeller.Status;
 
             //var transactions = await _channelService.FindGeneralLedgerTransactionsB
             //var tellerBalances = await _channelService.FindT

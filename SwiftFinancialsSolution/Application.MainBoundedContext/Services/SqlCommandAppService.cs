@@ -711,14 +711,13 @@ namespace Application.MainBoundedContext.Services
         //    return new Tuple<decimal, decimal, int>(totalCredits, totalDebits, itemsCount);
         //}
 
-        public Tuple<decimal, decimal, decimal, decimal, string, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader)
+        public Tuple<decimal, decimal, decimal, decimal, int> FindGlAccountStatistics(Guid chartOfAccountId, DateTime startDate, DateTime endDate, int transactionDateFilter, ServiceHeader serviceHeader)
         {
             var totalCredits = 0m;
             var totalDebits = 0m;
             var openingBalance = 0m;
             var closingBalance = 0m;
             var itemsCount = 0;
-            string status = "";
 
             using (_dbContextScopeFactory.CreateReadOnly())
             {
@@ -736,13 +735,12 @@ namespace Application.MainBoundedContext.Services
                         totalDebits = item.TotalDebits;
                         openingBalance = item.OpeningBalance;
                         closingBalance = item.ClosingBalance;
-                        status = item.Status;
                         itemsCount = item.Count;
                     }
                 }
             }
 
-            return new Tuple<decimal, decimal, decimal, decimal, string, int>(totalCredits, totalDebits, openingBalance, closingBalance, status, itemsCount);
+            return new Tuple<decimal, decimal, decimal, decimal, int>(totalCredits, totalDebits, openingBalance, closingBalance, itemsCount);
         }
 
         public List<StandingOrderDTO> FindStandingOrdersByEmployerAndTrigger(Guid employerId, int trigger, ServiceHeader serviceHeader)
@@ -1549,6 +1547,5 @@ namespace Application.MainBoundedContext.Services
 
         public int Count { get; set; }
 
-        public string Status {get; set;}
     }
 }
