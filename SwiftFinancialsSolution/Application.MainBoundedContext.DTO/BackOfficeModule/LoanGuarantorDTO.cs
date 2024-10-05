@@ -76,7 +76,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Loanee")]
-        [ValidGuid]
         public Guid? LoaneeCustomerId { get; set; }
 
         [DataMember]
@@ -166,7 +165,6 @@ namespace Application.MainBoundedContext.DTO.BackOfficeModule
 
         [DataMember]
         [Display(Name = "Loan Product")]
-        [ValidGuid]
         public Guid LoanProductId { get; set; }
 
         [DataMember]

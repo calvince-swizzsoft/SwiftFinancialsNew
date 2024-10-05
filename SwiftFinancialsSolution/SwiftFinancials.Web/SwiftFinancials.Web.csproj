@@ -1419,6 +1419,7 @@
     <Content Include="Areas\Admin\Views\SSRSReportSettingLogin\Login.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\relieveguarantor.cshtml" />
     <Content Include="Areas\Loaning\Views\AttachGuarantor\guarantorSubstitution.cshtml" />
+    <Content Include="Areas\Loaning\Views\GuarantorAttachment\Index.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />

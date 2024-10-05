@@ -28,23 +28,26 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             await ServeNavigationMenus();
 
             ViewBag.LoanCaseFilterSelectList = GetLoanCaseFilterTypeSelectList(string.Empty);
+            ViewBag.LoanCaseStatusSelectList = GetLoanCaseStatusSelectList(string.Empty);
 
             return View();
         }
 
 
         [HttpPost]
-        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<JsonResult> Index(JQueryDataTablesModel jQueryDataTablesModel, int loanCaseStatus, string filterValue, int filterType)
         {
             int totalRecordCount = 0;
 
             int searchRecordCount = 0;
 
+            int pageIndex = jQueryDataTablesModel.iDisplayStart / jQueryDataTablesModel.iDisplayLength;
+
             var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
 
             var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
 
-            var pageCollectionInfo = await _channelService.FindLoanCasesByFilterInPageAsync(jQueryDataTablesModel.sSearch, 10, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
+            var pageCollectionInfo = await _channelService.FindLoanCasesByStatusAndFilterInPageAsync(loanCaseStatus, filterValue, filterType, pageIndex, jQueryDataTablesModel.iDisplayLength, true, GetServiceHeader());
 
             var page = pageCollectionInfo.PageCollection;
 
@@ -119,7 +122,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 // Start the headers after the logo
                 int headerRowStart = 5; // Adjust this if the logo is larger or smaller
 
-                
+
                 var headers = new[] { "CASE NUMBER", "CUSTOMER NAME", "AMOUNT APPLIED", "BRANCH", "PAYMENT PER PERIOD", "RECEIVED DATE", "CREATED DATE" };
                 for (int i = 0; i < headers.Length; i++)
                 {
@@ -1176,7 +1179,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             var takeBranchId = Guid.Empty;
 
             var findBranch = await _channelService.FindBranchesAsync(GetServiceHeader());
-            foreach(var id in findBranch)
+            foreach (var id in findBranch)
             {
                 takeBranchId = id.Id;
             }
