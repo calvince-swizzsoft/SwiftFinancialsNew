@@ -225,6 +225,12 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                         var findLoanGuarantors = await _channelService.FindLoanGuarantorsByLoanCaseIdAsync(loanCaseId, GetServiceHeader());
                         ViewBag.LoanGuarantors = findLoanGuarantors;
+
+                        Session.Remove("loanCaseId");
+                        Session.Remove("loanCases");
+                        Session.Remove("Customer");
+                        Session.Remove("status");
+
                         return View();
                     }
 
@@ -240,12 +246,14 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                     MessageBox.Show(Form.ActiveForm, "Operation completed successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
 
+                    Session.Clear();
                     return View();
                 }
                 else
                 {
                     IsBusy = false;
 
+                    Session.Clear();
                     return View(loanGuarantorDTO);
                 }
             }
@@ -259,6 +267,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 
                 TempData["ErrorMsg"] = "Failed to attach Loan Guarantor.";
 
+                Session.Clear();
                 return View(loanGuarantorDTO);
             }
         }

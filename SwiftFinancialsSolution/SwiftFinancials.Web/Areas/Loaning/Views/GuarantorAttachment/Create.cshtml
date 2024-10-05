@@ -2,6 +2,9 @@
 @model  Application.MainBoundedContext.DTO.BackOfficeModule.LoanGuarantorDTO
 @{
     ViewBag.Title = "Guarantor Attachment";
+
+    var ProductCode = ViewBag.ProductCode as List<SelectListItem>;
+    var RecordStatus = ViewBag.RecordStatus as List<SelectListItem>;
 }
 
 
@@ -66,38 +69,6 @@
 
 
 
-
-    .tab-header {
-        position: relative;
-        background-color: #e9ecef;
-        border-bottom: 2px solid cadetblue;
-        padding: 10px;
-        margin-bottom: -5px;
-        z-index: 1;
-    }
-
-    .tab-button {
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        border-radius: 5px 5px 0 0;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    }
-
-        .tab-button.active {
-            cursor: default;
-            pointer-events: none;
-            opacity: 0.9;
-        }
-
-    h3 {
-        margin: 0;
-        padding: 10px;
-        position: relative;
-        text-align: center;
-        z-index: 2;
-    }
-
     .table-wrapper {
         background: #ffffff;
         border-radius: 8px;
@@ -111,23 +82,23 @@
         max-height: 480px;
         overflow-y: auto;
     }
-
+    /*
     table {
         width: 100%;
         border-collapse: collapse;
         text-align: left;
         overflow: hidden;
-    }
+    }*/
 
-    thead {
+    /*  thead {
         background-color: #007bff;
         color: #fff;
         position: sticky;
         top: 0;
         z-index: 1;
-    }
+    }*/
 
-    th, td {
+    /* th, td {
         padding: 15px;
         border-bottom: 1px solid #dee2e6;
         transition: background 0.3s;
@@ -188,7 +159,11 @@
 
         .button:hover {
             background-color: #218838;
-        }
+        }*/
+
+    h3 {
+        font-size: 1.3rem;
+    }
 </style>
 
 
@@ -286,7 +261,7 @@
                     </div>
                 </div>
                 <div class="ibox-content bg-white">
-                    @using (Html.BeginForm("Create", "GuarantorAttachment", new { Area = "Loaning" }, FormMethod.Post))
+                    @using (Html.BeginForm("Create", "GuarantorAttachment", new { Area = "Loaning" }, FormMethod.Post, new { id = "guarantorForm" }))
                     {
                         @Html.AntiForgeryToken()
                         <fieldset>
@@ -295,7 +270,7 @@
                                     @Html.LabelFor(model => model.CustomerAccountFullAccountNumber, new { @class = "control-label" })
                                     <div class="input-group" data-autoclose="true">
                                         @Html.HiddenFor(model => model.CustomerAccountAccountId)
-                                        @Html.TextBoxFor(model => model.CustomerIndividualIdentityCardNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                        @Html.TextBoxFor(model => model.CustomerAccountFullAccountNumber, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
                                         <span class="input-group-addon">
                                             <a data-toggle="modal" data-target="#fullAccountNumberLookupModal"><span class="fa fa-search"></span></a>
                                         </span>
@@ -410,32 +385,12 @@
                                                     <th>Amount Guaranteed</th>
                                                     <th>Principal Attached</th>
                                                     <th>Interest Attached</th>
-                                                    <th>Identity Card Number</th>
                                                     <th>Payroll Numbers</th>
                                                     @*<th>Loan Number</th>
-                                                        <th>Case Status</th>*@
+                                        <th>Case Status</th>*@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                @if (ViewBag.LoanGuarantors != null)
-                                                {
-                                                    foreach (var guarantors in ViewBag.LoanGuarantors)
-                                                    {
-                                                        <tr>
-                                                            <td>@guarantors.Status</td>
-                                                            <td>@guarantors.CustomerIndividualSalutationDescription @guarantors.CustomerIndividualFirstName @guarantors.CustomerIndividualLastName</td>
-                                                            <td style="text-align: right;">@guarantors.TotalShares</td>
-                                                            <td style="text-align: right;">@guarantors.CommittedShares</td>
-                                                            <td style="text-align: right;">@guarantors.AmountGuaranteed</td>
-                                                            <td>@guarantors.PrincipalAttached</td>
-                                                            <td>@guarantors.InterestAttached</td>
-                                                            <td>@guarantors.CustomerIndividualIdentityCardNumber</td>
-                                                            <td>@guarantors.CustomerIndividualPayrollNumbers</td>
-                                                            @*<td>@guarantors.LoanNumber</td>
-                                                                <td>@guarantors.CaseStatus</td>*@
-                                                        </tr>
-                                                    }
-                                                }
                                             </tbody>
                                         </table>
                                     </div>
@@ -443,6 +398,8 @@
                             </div>
                             <br />
                             <br />
+
+                            <input type="hidden" id="guarantorsData" name="GuarantorsJson" />
 
                             <div class="amount-section">
                                 <div class="row">
@@ -486,7 +443,7 @@
                                     </div>
 
                                     <div class="col-lg-2 mt-3">
-                                        <input type="submit" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Reset;" />
+                                        <input type="submit" onclick="sendFormData()" class="btn btn-primary" style="border-radius: 7px; margin-top: 10px;" value="Reset;" />
                                     </div>
                                 </div>
                             </div>
@@ -501,13 +458,13 @@
 
                                     <div class="col-md-3 form-group">
                                         @*@Html.LabelFor(model => model.AttachTo, new { @class = "control-label" })
-                                            <div class="input-group" data-autoclose="true">
-                                                @Html.HiddenFor(model => model.AttachToId)
-                                                @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
-                                                <span class="input-group-addon">
-                                                    <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
-                                                </span>
-                                            </div>*@
+                            <div class="input-group" data-autoclose="true">
+                                @Html.HiddenFor(model => model.AttachToId)
+                                @Html.TextBoxFor(model => model.AttachTo, new { @class = "form-control input-md alpha alphaspace required", @readonly = "readonly", @placeholder = "Link Customer Account..." })
+                                <span class="input-group-addon">
+                                    <a data-toggle="modal" data-target="#AttachToLookupModal"><span class="fa fa-search"></span></a>
+                                </span>
+                            </div>*@
                                     </div>
 
                                     <div class="col-lg-1 mt-3">
@@ -543,6 +500,24 @@
                 </tbody>
             </table>
 
+            <form id="modalFilterForm">
+                <div class="form-row">
+                    <div class="form-group col-md-4">
+                        @Html.Label("Product Code", "Product Code")
+                        @Html.DropDownList("productCode", ProductCode, new { @class = "form-control", id = "productCode" })
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        @Html.Label("RecordStatus", "Record Status")
+                        @Html.DropDownList("recordStatus", RecordStatus, new { @class = "form-control", id = "recordStatus" })
+                    </div>
+
+                    <div class="form-group col-md-4" style="align-content:center;">
+                        <button type="submit" class="btn btn-primary" style="justify-content:flex-end;margin-left:80px;">Refresh</button>
+                    </div>
+                </div>
+            </form>
+
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
             </div>
@@ -564,165 +539,144 @@
     @Scripts.Render("~/plugins/typehead")
 
     <script src="~/Scripts/js/navlink.js"></script>
+
     <script>
-        $(document).ready(function () {
-            $("#wizard").steps();
-            $("#form").steps({
-                bodyTag: "fieldset",
-                onStepChanging: function (event, currentIndex, newIndex) {
-                    // Always allow going backward even if the current step contains invalid fields!
-                    if (currentIndex > newIndex) {
-                        return true;
-                    }
+        var defaultProductCode = $('#productCode').val();
+        var defaultRecordStatus = $('#recordStatus').val();
+        $('#customerAccountsGrid').DataTable({
+        "sPaginationType": "full_numbers",
+        "bProcessing": true,
+        "bServerSide": true,
+        "sAjaxSource": "@(Url.Action("Index", "CoA_register", new { Area = "Accounts"}))",
+        "sServerMethod": "POST",
+        //Ensure to include the filters in the Ajax request
+        "fnServerParams": function (aoData) {
+            aoData.push(
+                { "name": "productCode", "value": $('#productCode').val() || defaultProductCode },
+                { "name": "recordStatus", "value": $('#recordStatus').val() || defaultRecordStatus }
 
-                    // Forbid suppressing "Warning" step if the user is to young
-                    if (newIndex === 3 && Number($("#age").val()) < 18) {
-                        return false;
-                    }
+            );
+        },
+        "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
+            var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
+            var h = ("0" + createdDate.getHours()).slice(-2);
+            var m = ("0" + createdDate.getMinutes()).slice(-2);
+            var s = ("0" + createdDate.getSeconds()).slice(-2);
 
-                    var form = $(this);
+            var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
+            aData.CreatedDate = dt_Created;
 
-                    // Clean up if user went backward before
-                    if (currentIndex < newIndex) {
-                        // To remove error styles
-                        $(".body:eq(" + newIndex + ") label.error", form).remove();
-                        $(".body:eq(" + newIndex + ") .error", form).removeClass("error");
-                    }
+            var selectUrl = '<button class="btn btn-outline-info" onclick="selectCustomerAccounts(\'' + aData.Id + '\')">Select</button>';
 
-                    // Disable validation on fields that are disabled or hidden.
-                    form.validate().settings.ignore = ":disabled,:hidden";
+            $('td:eq(5)', nRow).html(dt_Created);
+            $('td:eq(6)', nRow).html(selectUrl);
 
-                    // Start validation; Prevent going forward if false
-                    return form.valid();
-                },
-                onStepChanged: function (event, currentIndex, priorIndex) {
-                    // Suppress (skip) "Warning" step if the user is old enough.
-                    if (currentIndex === 2 && Number($("#age").val()) >= 18) {
-                        $(this).steps("next");
-                    }
+            return nRow;
+        },
+        "aoColumns": [
+            { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "10%" },
+            { "mDataProp": "CustomerIndividualGenderDescription", "sTitle": "Gender", "sWidth": "10%" },
+            { "mDataProp": "CustomerAccountTypeProductCodeDescription", "sTitle": "Product", "sWidth": "10%" },
+            { "mDataProp": "RecordStatusDescription", "sTitle": "Record Status", "sWidth": "10%" },
+            { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "10%" },
+            { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "10%", "bSortable": false }],
+        "aaSorting": [[0, "desc"]]
+    });
 
-                    // Suppress (skip) "Warning" step if the user is old enough and wants to the previous step.
-                    if (currentIndex === 2 && priorIndex === 3) {
-                        $(this).steps("previous");
-                    }
-                },
-                onFinishing: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Disable validation on fields that are disabled.
-                    // At this point it's recommended to do an overall check (mean ignoring only disabled fields)
-                    form.validate().settings.ignore = ":disabled";
-
-                    // Start validation; Prevent form submission if false
-                    return form.valid();
-                },
-                onFinished: function (event, currentIndex) {
-                    var form = $(this);
-
-                    // Submit form input
-                    form.submit();
-                }
-            }).validate({
-                errorPlacement: function (error, element) {
-
-                    element.before(error);
-                },
-                rules: {
-                    confirm: {
-                        equalTo: "#password"
-                    }
-                }
-            });
-
-
-            //Customers Lookup
-            $('#customerAccountsGrid').DataTable({
-                // Ajax settings
-                "sPaginationType": "full_numbers",
-                "bProcessing": true,
-                "bServerSide": true,
-                "sAjaxSource": "@(Url.Action("Index", "CustomerAccounts", new { Area = "Accounts" }))",
-                "sServerMethod": "POST",
-                // Callback settings
-                "fnRowCallback": function (nRow, aData, iDisplayIndex, iDisplayIndexFull) {
-
-                    var createdDate = new Date(parseInt(aData.CreatedDate.replace("/Date(", "").replace(")/", ""), 10));
-                    var h = ("0" + createdDate.getHours()).slice(-2);
-                    var m = ("0" + createdDate.getMinutes()).slice(-2);
-                    var s = ("0" + createdDate.getSeconds()).slice(-2);
-
-                    var dt_Created = $.datepicker.formatDate('dd/mm/yy', createdDate) + " " + h + ":" + m + ":" + s;
-                    aData.CreatedDate = dt_Created;
-
-                    var selectUrl = '<a  href="/loaning/GuarantorAttachment/CustomerAccountLookUp/' + aData.Id + '" class = "btn btn-outline-info"">' + 'Select</a>';
-
-                    $('td:eq(7)', nRow).html(dt_Created);
-                    $('td:eq(8)', nRow).html(selectUrl);
-
-                    return nRow;
-                },
-                // Display settings
-                // Display settings
-                "aoColumns": [
-                    { "mDataProp": "FullAccountNumber", "sTitle": "Full Account Number", "sWidth": "7%" },
-                    { "mDataProp": "CustomerFullName", "sTitle": "Customer", "sWidth": "7%" },
-                    { "mDataProp": "StatusDescription", "sTitle": "Account Status", "sWidth": "5%" },
-                    { "mDataProp": "CustomerAccountTypeTargetProductDescription", "sTitle": "Product Name", "sWidth": "5%" },
-                    { "mDataProp": "BranchDescription", "sTitle": "Branch", "sWidth": "7%" },
-                    { "mDataProp": "CustomerTypeDescription", "sTitle": "Customer Type", "sWidth": "5%" },
-                    { "mDataProp": "CustomerReference1", "sTitle": "Account Number", "sWidth": "5%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "Created Date", "sWidth": "6%" },
-                    { "mDataProp": "CreatedDate", "sTitle": "", "sWidth": "5%", "bSortable": false }
-                ],
-                "aaSorting": [[0, "desc"]]
-            });
-
-            $("#s tbody").on("click", "tr", function () {
-                var data = companiesGrid.row(this).data();
-
-                $('#CustomerId').val(data.Id);
-                $('input[name=CustomerId]').val(data.Id);
-                $('input[name=CustomerFullName]').val(data.FullName);
-                //$('input[name=ChartOfAccountAccountCode]').val(data.AccountCode);
-                $('#CustomerStationZoneDivisionEmployerDescription').val(CustomersMap[item].StationZoneDivisionEmployerDescription);
-                $('#CustomerStationDescription').val(CustomersMap[item].StationDescription);
-                $('#CustomerSerialNumber').val(CustomersMap[item].SerialNumber);
-
-
-                $('#CustomerIndividualIdentityCardNumber').val(CustomersMap[item].IndividualIdentityCardNumber);
-                $('#CustomerIndividualPayrollNumbers').val(CustomersMap[item].IndividualPayrollNumbers);
-                $('#CompaniesLookup').modal('hide');
-            });
+        //Refresh button for reloading the Datable after Applying the filters
+        $('#modalFilterForm').on('submit', function (e) {
+            e.preventDefault();
+            $('#customerAccountsGrid').DataTable().ajax.reload();
         });
 
+        function selectCustomerAccounts(id) {
+            $.ajax({
+                url: '/Loaning/GuarantorAttachment/CustomerAccountLookUp',
+                type: 'POST',
+                data: { Id: id },
+                success: function (response) {
+                    if (response.success) {
+                        // Populate fields with the returned data
+                        $('#CustomerAccountFullAccountNumber').val(response.data.CustomerAccountFullAccountNumber);
+                        $('#CustomerAccountAccountId').val(response.data.CustomerAccountAccountId);
+                        $('#CustomerAccountAccountStatusDescription').val(response.data.CustomerAccountAccountStatusDescription);
+                        $('#CustomerAccountAccountRemarks').val(response.data.CustomerAccountAccountRemarks);
+                        $('#BookBalance').val(response.data.BookBalance);
+                        $('#CustomerId').val(response.data.CustomerId);
+                        $('#CustomerIndividualFirstName').val(response.data.CustomerIndividualFirstName);
+                        $('#CustomerAccounntCustomerTypeDescription').val(response.data.CustomerAccounntCustomerTypeDescription);
+                        $('#CustomerIndividualPayrollNumbers').val(response.data.CustomerIndividualPayrollNumbers);
+                        $('#CustomerPersonalIdentificationNumber').val(response.data.CustomerPersonalIdentificationNumber);
+                        $('#CustomerReference1').val(response.data.CustomerReference1);
+                        $('#CustomerReference2').val(response.data.CustomerReference2);
+                        $('#CustomerReference3').val(response.data.CustomerReference3);
+                        $('#AmountGuaranteed').val(response.data.AmountGuaranteed);
+
+                        // Insert guarantors data into the table
+                        var guarantors = response.data.Guarantors;
+                        var tbody = $('#ChargeSplits tbody');
+                        tbody.empty();  // Clear any previous data
+
+                        guarantors.forEach(function (guarantor) {
+                            // Assuming guarantor object contains the necessary fields
+                            var row = '<tr>' +
+                                '<td>' + guarantor.StatusDescription + '</td>' +
+                                '<td>' + guarantor.CustomerIndividualFirstName + guarantor.CustomerIndividualLastName + '</td>' +
+                                '<td>' + guarantor.TotalShares + '</td>' +
+                                '<td>' + guarantor.CommittedShares + '</td>' +
+                                '<td>' + guarantor.AmountGuaranteed + '</td>' +
+                                '<td>' + guarantor.PrincipalAttached + '</td>' +
+                                '<td>' + guarantor.InterestAttached + '</td>' +
+                                '<td>' + guarantor.CustomerIndividualPayrollNumbers + '</td>' +
+                                '</tr>';
+                            tbody.append(row);
+                        });
+
+                        // Close the modal
+                        $('#fullAccountNumberLookupModal').modal('hide');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
 
 
 
+
+
+        function gatherGuarantorData() {
+            var guarantors = [];
+            $('#ChargeSplits tbody tr').each(function () {
+                var row = $(this);
+                var guarantor = {
+                    StatusDescription: row.find('td:eq(0)').text(),
+                    CustomerIndividualFirstName: row.find('td:eq(1)').text(), // Assuming it's a combined First and Last Name
+                    TotalShares: row.find('td:eq(2)').text(),
+                    CommittedShares: row.find('td:eq(3)').text(),
+                    AmountGuaranteed: row.find('td:eq(4)').text(),
+                    PrincipalAttached: row.find('td:eq(5)').text(),
+                    InterestAttached: row.find('td:eq(6)').text(),
+                    CustomerIndividualPayrollNumbers: row.find('td:eq(7)').text()
+                };
+                guarantors.push(guarantor);
+            });
+
+            // Serialize guarantor data into hidden input for form submission
+            $('#guarantorsData').val(JSON.stringify(guarantors));
+        }
 
         function sendFormData() {
-            // Create an object to hold the form data
-            let formData = {
-                PaymentPerPeriod: document.querySelector('[name="PaymentPerPeriod"]').value,
-                Reference: document.querySelector('[name="Reference"]').value
-            };
+            // Gather all guarantor data before submitting
+            gatherGuarantorData();
 
-            // Send the data to the first controller using fetch
-            fetch('/LoanRestructuring/Create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('[name="__RequestVerificationToken"]').value // Include this line if you are using Anti-Forgery Token
-                },
-                body: JSON.stringify(formData)
-            })
-                .then(response => response.json())
-                .then(data => {
-                    // Handle the response data here
-                    console.log('Form Data Submitted:', data);
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
+            // Submit the form
+            $('guarantorForm').submit();  // Assuming there's only one form on the page. If you have multiple forms, you can use a more specific selector like $('#formId').submit();
         }
+
     </script>
 }

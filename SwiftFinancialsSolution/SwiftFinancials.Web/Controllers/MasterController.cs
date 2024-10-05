@@ -1883,8 +1883,20 @@ namespace SwiftFinancials.Web.Controllers
 
 
 
+        protected List<SelectListItem> GetLoanCaseStatusSelectList(string selectedValue)
+        {
+            List<SelectListItem> loancaseStatus = new List<SelectListItem>();
 
+            var items = Enum.GetValues(typeof(LoanCaseStatus)).Cast<LoanCaseStatus>().Select(v => new SelectListItem
+            {
+                Text = GetEnumDescription(v),
+                Value = ((int)v).ToString(),
+                Selected = ((int)v).ToString() == selectedValue,
+            }).ToList();
 
+            loancaseStatus.AddRange(items);
 
+            return loancaseStatus;
+        }
     }
 }
