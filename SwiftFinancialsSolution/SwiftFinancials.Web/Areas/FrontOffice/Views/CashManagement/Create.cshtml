@@ -99,12 +99,12 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" data-toggle="tab" href="#cashManagement">Cash Management</a>
                                 </li>
-                                <li class="nav-item">
+                                @*<li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#cashWithdrawalRequest">Cash Withdrawal Request</a>
                                 </li>
                                 <li class="nav-item">
                                     <a class="nav-link" data-toggle="tab" href="#fiscalCatalog">Fiscal Catalog</a>
-                                </li>
+                                </li>*@
                             </ul>
 
                             <div class="tab-content">
@@ -134,24 +134,35 @@
                                                     @Html.ValidationMessageFor(model => model.TransactionType)
                                                 </div>
 
-                                                <label class="col-sm-2 col-form-label">Total Value:</label>
+                                                <label class="col-sm-2 col-form-label">Destination:</label>
                                                 <div class="col-sm-4">
-                                                    @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control" })
+                                                    @*<div class="form-group">*@
+                                                    @Html.HiddenFor(model => model.Id, new { @id = "Id" })
+                                                    @Html.HiddenFor(model => model.DestinationBranchId, new { @id = "DestinationBranchId" })
+
+                                                    <div class="input-group" data-autoclose="true">
+                                                        @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
+                                                        <span class="input-group-addon">
+                                                            <a id="searchButton" data-toggle="modal" data-target="#">
+                                                                <span class="fa fa-search"></span>
+                                                            </a>
+                                                        </span>
+                                                    </div>
+                                                    @*</div>*@
                                                 </div>
                                             </div>
 
                                             <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Total Value:</label>
+                                                <div class="col-sm-4">
+                                                    @Html.TextBoxFor(model => model.TotalValue, new { @class = "form-control" })
+                                                </div>
+
                                                 <label class="col-sm-2 col-form-label">Reference:</label>
                                                 <div class="col-sm-4">
                                                     @Html.TextBoxFor(model => model.Reference, new { @class = "form-control" })
                                                 </div>
 
-                                                <label class="col-sm-2 col-form-label">Destination:</label>
-                                                <div class="col-sm-4">
-                                                    @Html.HiddenFor(model => model.Id, new {@id = "Id"})
-                                                    @Html.HiddenFor(model => model.DestinationBranchId, new { @id = "DestinationBranchId" })
-                                                    @Html.TextBoxFor(model => model.Description, new { @class = "form-control", @readonly = "readonly" })
-                                                </div>
                                             </div>
                                         </div>
 
@@ -195,7 +206,7 @@
                                 </div>
 
                                 <!-- Cash Withdrawal Request Tab -->
-                                <div id="cashWithdrawalRequest" class="tab-pane">
+                                <!--<div id="cashWithdrawalRequest" class="tab-pane">
                                     <div class="form-group row">
                                         <label class="col-sm-2 col-form-label">Savings Account #:</label>
                                         <div class="col-sm-4">
@@ -250,12 +261,12 @@
                                             @Html.TextBoxFor(model => model.Teller.CommissionCustomerAccountCustomerReference2, new { @class = "form-control", placeholder = "Enter Text..." })
                                         </div>
                                     </div>
-                                </div>
+                                </div>-->
 
                                 <!-- Fiscal Catalog Tab -->
-                                <div id="fiscalCatalog" class="tab-pane">
+                                <!--<div id="fiscalCatalog" class="tab-pane">-->
                                     <!-- Content for Fiscal Catalog tab -->
-                                </div>
+                                <!--</div> -->
                             </div>
 
                             <div class="form-group row" style="margin-top: 20px;">
@@ -441,58 +452,48 @@
     @Scripts.Render("~/plugins/duallist")
 
 <script>
-        $(document).ready(function () {
-            var selectedValue = localStorage.getItem('selectedTransactionType'); // Get selected value from local storage
-            var modalShown = false; // Flag to track if modal has been shown for the selected value
+    $(document).ready(function () {
+        var searchButton = $('#searchButton');
+        var selectedValue = $('#TransactionType').val(); // Get the initial value of the dropdown
 
-            // Function to show the appropriate modal based on the selected value without delay
-            function showCorrectModal() {
-                // Hide all modals initially
-                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
+        function updateSearchButtonTarget() {
+            // Reset data-target
+            searchButton.attr('data-target', '#');
 
-                // Show the modal based on the selected value if it hasn't been shown before
-                if (!modalShown) {
-                    switch (selectedValue) {
-                        case '1':
-                            $('#TresuriesLookupModal').modal('show'); // Show modal
-                            setTimeout(function () {
-                                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
-                            }, 600000); // 10 minutes timeout
-                            break;
-                        case '2':
-                        case '4':
-                            $('#BankssLookupModal').modal('show'); // Show modal
-                            setTimeout(function () {
-                                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
-                            }, 600000); // 10 minutes timeout
-                            break;
-                        case '8':
-                            $('#EmployeeLookupModal').modal('show'); // Show modal
-                            setTimeout(function () {
-                                $('#BankssLookupModal, #EmployeeLookupModal, #TresuriesLookupModal').modal('hide');
-                            }, 600000); // 10 minutes timeout
-                            break;
-                        default:
-                            // Handle default case if necessary
-                            break;
-                    }
-                    modalShown = true; // Set flag to true indicating modal has been shown
-                }
+            // Set data-target based on the selected value
+            switch (selectedValue) {
+                case '1':
+                    searchButton.attr('data-target', '#TresuriesLookupModal');
+                    break;
+                case '2':
+                case '4':
+                    searchButton.attr('data-target', '#BankssLookupModal');
+                    break;
+                case '8':
+                    searchButton.attr('data-target', '#EmployeeLookupModal');
+                    break;
+                default:
+                    searchButton.attr('data-target', '#TresuriesLookupModal');
+                    break;
             }
+        }
 
-            // Handle dropdown change event
-            $('#TransactionType').change(function () {
-                selectedValue = $(this).val();
-                localStorage.setItem('selectedTransactionType', selectedValue); // Save selected value to local storage
-                modalShown = false; // Reset flag when dropdown value changes
-                showCorrectModal();
-            });
+        // Call the function to set the correct target on page load
+        updateSearchButtonTarget();
 
-            // Initialize dropdown with persisted value
-            if (selectedValue) {
-                $('#TransactionType').val(selectedValue).change();
-            }
+        // Handle dropdown change event
+        $('#TransactionType').change(function () {
+            selectedValue = $(this).val(); // Get the new selected value
+            updateSearchButtonTarget(); // Update the search button data-target
         });
+
+        // If you need to persist the value across reloads, ensure it's set here
+        if (selectedValue) {
+            $('#TransactionType').val(selectedValue).change();
+        }
+    });
+
+
 
 
 

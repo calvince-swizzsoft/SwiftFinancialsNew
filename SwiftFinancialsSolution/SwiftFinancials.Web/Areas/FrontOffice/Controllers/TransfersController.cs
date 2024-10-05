@@ -42,32 +42,68 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
         public async Task<ActionResult> Create(Guid? id)
         {
+            
             await ServeNavigationMenus();
+            ViewBag.CashTransaferTransactionTypeSelectList = GetCashTransferTransactionTypeSelectList(string.Empty);
+
+            var model = new CashTransferRequestDTO();
+
+            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
+
+            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
 
 
+            var untransferredCheques = await _channelService.FindUnTransferredExternalChequesByTellerId(SelectedTeller.Id, "", GetServiceHeader());
 
-            return View();
+            var untransferredChequesValue = untransferredCheques.Sum(cheque => cheque.Amount);
+
+            model.EmployeeId = SelectedTeller.EmployeeId;
+            model.TotalCredits = SelectedTeller.TotalCredits;
+            model.TotalDebits = SelectedTeller.TotalDebits;
+            model.BookBalance = SelectedTeller.BookBalance;
+
+            model.OpeningBalance = SelectedTeller.OpeningBalance;
+            model.ClosingBalance = SelectedTeller.ClosingBalance;
+
+            model.UntransferredChequesValue = untransferredChequesValue;
+
+            //model.ClosingBalanceStatus = SelectedTeller.Status;
+
+            //var transactions = await _channelService.FindGeneralLedgerTransactionsB
+            //var tellerBalances = await _channelService.FindT
+
+            return View(model);
         }
 
 
         [HttpPost]
-        public async Task<ActionResult> Create(ExternalChequeDTO externalChequeDTO)
+        public async Task<ActionResult> Create(CashTransferRequestDTO cashTransferRequestDTO)
         {
             /*ashTransferRequestDTO.ValidateAll();*/
 
-            if (!externalChequeDTO.HasErrors)
-            {
-                await _channelService.AddExternalChequeAsync(externalChequeDTO, GetServiceHeader());
+            var currentUser = await _applicationUserManager.FindByIdAsync(User.Identity.GetUserId());
 
-                ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(externalChequeDTO.CustomerAccountCustomerType.ToString());
+            _selectedTeller = await _channelService.FindTellerByEmployeeIdAsync((Guid)currentUser.EmployeeId, true, GetServiceHeader());
+
+            cashTransferRequestDTO.EmployeeId = SelectedTeller.EmployeeId;
+
+            if (!cashTransferRequestDTO.HasErrors)
+            {
+
+                await _channelService.AddCashTransferRequestAsync(cashTransferRequestDTO, GetServiceHeader());
+                
+          
+
+                //ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(externalChequeDTO.CustomerAccountCustomerType.ToString());
+                //ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
                 return RedirectToAction("Index");
             }
             else
             {
-                var errorMessages = externalChequeDTO.ErrorMessages;
+                var errorMessages = cashTransferRequestDTO.ErrorMessages;
 
-                return View(externalChequeDTO);
+                return View(cashTransferRequestDTO);
             }
         }
 

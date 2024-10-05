@@ -61,6 +61,16 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         {
             await ServeNavigationMenus();
 
+            var debitTypes = await _channelService.FindDebitTypesAsync(GetServiceHeader());
+
+            var savingsProducts = await _channelService.FindSavingsProductsAsync(GetServiceHeader());
+
+            var investmentProducts = await _channelService.FindInvestmentProductsAsync(GetServiceHeader());
+
+            ViewBag.DebitTypes = debitTypes;
+            ViewBag.SavingsProducts = savingsProducts;
+            ViewBag.InvestmentProducts = investmentProducts;
+
             return View();
         }
 

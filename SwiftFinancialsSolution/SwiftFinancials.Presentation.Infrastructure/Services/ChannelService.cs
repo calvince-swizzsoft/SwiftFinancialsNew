@@ -7344,6 +7344,59 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             return tcs.Task;
         }
 
+        //public List<ExternalChequeDTO> FindUnTransferredExternalChequesByTellerId(Guid tellerId, string text, ServiceHeader serviceHeader)
+        //{
+        //    using (_dbContextScopeFactory.CreateReadOnly())
+        //    {
+        //        var filter = ExternalChequeSpecifications.UnTransferredExternalChequesWithTellerId(tellerId, text);
+
+        //        ISpecification<ExternalCheque> spec = filter;
+
+        //        var externalCheques = _externalChequeRepository.AllMatching(spec, serviceHeader);
+
+        //        if (externalCheques != null && externalCheques.Any())
+        //        {
+        //            return externalCheques.ProjectedAsCollection<ExternalChequeDTO>();
+        //        }
+        //        else return null;
+        //    }
+        //}
+
+        public Task<ObservableCollection<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerId(Guid tellerId, string text, ServiceHeader serviceHeader)
+        {
+
+            var tcs = new TaskCompletionSource<ObservableCollection<ExternalChequeDTO>>();
+
+            IExternalChequeService service = GetService<IExternalChequeService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<ExternalChequeDTO> response = ((IExternalChequeService)result.AsyncState).EndFindUnTransferredExternalChequesByTellerIdAndFilter(result);
+
+                    tcs.TrySetResult(new ObservableCollection<ExternalChequeDTO>(response ?? new List<ExternalChequeDTO>()));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginFindUnTransferredExternalChequesByTellerIdAndFilter(tellerId, text, asyncCallback, service);
+
+            return tcs.Task;
+
+
+        }
+
         public Task<PageCollectionInfo<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(Guid tellerId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<PageCollectionInfo<ExternalChequeDTO>>();

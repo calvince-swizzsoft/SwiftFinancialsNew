@@ -597,6 +597,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<ExternalChequeDTO>> FindUnClearedExternalChequesByCustomerAccountIdAsync(Guid customerAccountId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerId(Guid tellerId, string text, ServiceHeader serviceHeader);
         Task<PageCollectionInfo<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(Guid tellerId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerIdAndFilterAsync(Guid tellerId, string text, ServiceHeader serviceHeader = null);

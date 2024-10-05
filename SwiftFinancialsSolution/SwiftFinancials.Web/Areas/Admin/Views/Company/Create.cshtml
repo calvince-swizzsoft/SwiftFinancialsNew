@@ -2,6 +2,9 @@
 
 @{
     ViewBag.Title = "Company";
+    var DebitTypes = ViewBag.DebitTypes;
+    var InvestmentProducts = ViewBag.InvestmentProducts;
+    var SavingsProducts = ViewBag.SavingsProducts;
 }
 
 <head>
@@ -204,6 +207,53 @@
                                     </div>
                                 </div>
                             </div>
+                            <div id="mandatoryDebitTypes" class="tab-pane" style="margin-left:20px;">
+                                <fieldset>
+                                   
+                                    @if (ViewBag.DebitTypes != null)
+                                    {
+                                        foreach (var debitType in ViewBag.DebitTypes)
+                                        {
+                                            <div class="form-group form-group-lg">
+                                                <input type="checkbox" name="DebitTypes" value="@debitType.Id" class="form-check-input" />
+                                                <label class="font-bold" style="color: #1ab394;">@debitType.Description</label>
+                                            </div>}
+                                    }
+                                </fieldset>
+
+                            </div>
+                            <!-- Investment Products Section -->
+                            <div id="mandatoryInvestmentProducts" class="tab-pane" style="margin-left: 20px;">
+                                <fieldset>
+                                   
+                                    @if (ViewBag.InvestmentProducts != null)
+                                    {
+                                        foreach (var investmentProduct in ViewBag.InvestmentProducts)
+                                        {
+                                            <div class="form-group form-group-lg">
+                                                <input type="checkbox" name="InvestmentProducts" value="@investmentProduct.Id" class="form-check-input" />
+                                                <label class="font-bold" style="color: #1ab394;">@investmentProduct.Description</label>
+                                            </div>}
+                                    }
+                                </fieldset>
+                            </div>
+
+                            <!-- Savings Products Section -->
+                            <div id="mandatorySavingsProducts" class="tab-pane" style="margin-left: 20px;">
+                                <fieldset>
+                                   
+                                    @if (ViewBag.SavingsProducts != null)
+                                    {
+                                        foreach (var savingsProduct in ViewBag.SavingsProducts)
+                                        {
+                        <div class="form-group form-group-lg">
+                            <input type="checkbox" name="SavingsProducts" value="@savingsProduct.Id" class="form-check-input" />
+                            <label class="font-bold" style="color: #1ab394;">@savingsProduct.Description</label>
+                        </div>}
+                                        }
+                                </fieldset>
+                            </div>
+
                             <div id="flags" class="tab-pane" style="margin-left: 20px;">
                                 <fieldset>
                                     <div class="row">
