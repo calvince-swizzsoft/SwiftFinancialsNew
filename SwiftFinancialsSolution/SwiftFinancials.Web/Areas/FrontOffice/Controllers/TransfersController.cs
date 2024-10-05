@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.FrontOfficeModule;
@@ -66,12 +67,6 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             model.ClosingBalance = SelectedTeller.ClosingBalance;
 
             model.UntransferredChequesValue = untransferredChequesValue;
-
-            //model.ClosingBalanceStatus = SelectedTeller.Status;
-
-            //var transactions = await _channelService.FindGeneralLedgerTransactionsB
-            //var tellerBalances = await _channelService.FindT
-
             return View(model);
         }
 
@@ -90,14 +85,25 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
             if (!cashTransferRequestDTO.HasErrors)
             {
 
-                await _channelService.AddCashTransferRequestAsync(cashTransferRequestDTO, GetServiceHeader());
-                
-          
+                var successRequest = await _channelService.AddCashTransferRequestAsync(cashTransferRequestDTO, GetServiceHeader());
 
                 //ViewBag.CustomerTypeSelectList = GetCustomerTypeSelectList(externalChequeDTO.CustomerAccountCustomerType.ToString());
                 //ViewBag.TreasuryTransactionTypeSelectList = GetTreasuryTransactionTypeSelectList(string.Empty);
 
-                return RedirectToAction("Index");
+                if (successRequest != null)
+                {
+
+                    MessageBox.Show("Transfer Success", "Information", MessageBoxButtons.OK, MessageBoxIcon.Information, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+                    return View(cashTransferRequestDTO);
+                }
+                else
+                {
+
+
+                    MessageBox.Show("Transfer failed", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+
+                    return View(cashTransferRequestDTO);
+                }
             }
             else
             {

@@ -302,7 +302,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                 fiscalCountDTO.PostingPeriodId = CurrentPostingPeriod.Id;
                 fiscalCountDTO.ChartOfAccountId = ActiveTreasury.ChartOfAccountId;
                 transactionModel.TotalValue = fiscalCountDTO.TotalValue;
-                transactionModel.TransactionCode = fiscalCountDTO.TransactionCode;
+                //transactionModel.TransactionCode = fiscalCountDTO.TransactionCode;
                 transactionModel.PostingPeriodId = CurrentPostingPeriod.Id;
                 transactionModel.PrimaryDescription = fiscalCountDTO.TransactionTypeDescription;
                 transactionModel.ValueDate = DateTime.Today;
@@ -331,6 +331,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
 
                             transactionModel.DebitChartOfAccountId = matchingBankLinkage.ChartOfAccountId;
                             transactionModel.CreditChartOfAccountId = ActiveTreasury.ChartOfAccountId;
+                            transactionModel.TransactionCode = (int)SystemTransactionCode.BankToTreasury;
                             break;
 
                         case TreasuryTransactionType.TreasuryToTeller:
@@ -342,6 +343,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 return View(fiscalCountDTO);
                             }
                             transactionModel.CreditChartOfAccountId = (Guid)teller.ChartOfAccountId;
+                            transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToTeller;
                             break;
 
                         case TreasuryTransactionType.TreasuryToBank:
@@ -360,6 +362,8 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 return View(fiscalCountDTO);
                             }
                             transactionModel.CreditChartOfAccountId = linkage.ChartOfAccountId;
+                            transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToBank;
+
                             break;
 
                         case TreasuryTransactionType.TreasuryToTreasury:
@@ -371,6 +375,7 @@ namespace SwiftFinancials.Web.Areas.FrontOffice.Controllers
                                 return View(fiscalCountDTO);
                             }
                             transactionModel.CreditChartOfAccountId = treasury.ChartOfAccountId;
+                            transactionModel.TransactionCode = (int)SystemTransactionCode.TreasuryToTreasury;
                             break;
                     }
 
