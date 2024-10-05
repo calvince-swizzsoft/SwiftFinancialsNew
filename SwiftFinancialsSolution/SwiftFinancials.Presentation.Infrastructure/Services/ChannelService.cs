@@ -21998,7 +21998,37 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
             return tcs.Task;
         }
+        public Task<bool> RemoveSystemTransactionTypeFromCommissions(int systemPermissionType, List<CommissionDTO> commissions, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<bool>();
 
+            ICommissionService service = GetService<ICommissionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    bool response = ((ICommissionService)result.AsyncState).EndRemoveSystemTransactionTypeFromCommissions(result);
+
+                    tcs.TrySetResult(response);
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(false); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginRemoveSystemTransactionTypeFromCommissions(systemPermissionType, commissions.ToArray(), asyncCallback, service);
+
+            return tcs.Task;
+        }
         public Task<bool> MapSystemTransactionTypeToCommissionsAsync(int systemTransactionType, ObservableCollection<CommissionDTO> commissions, ChargeDTO chargeDTO, ServiceHeader serviceHeader)
         {
             var tcs = new TaskCompletionSource<bool>();
@@ -22027,6 +22057,38 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
             });
 
             service.BeginMapSystemTransactionTypeToCommissions(systemTransactionType, commissions.ExtendedToArray(), chargeDTO, asyncCallback, service);
+
+            return tcs.Task;
+        }
+
+        public Task<ObservableCollection<CommissionDTO>> GetCommissionsForSystemTransactionType(int systemTransactionType, ServiceHeader serviceHeader)
+        {
+            var tcs = new TaskCompletionSource<ObservableCollection<CommissionDTO>>();
+
+            ICommissionService service = GetService<ICommissionService>(serviceHeader);
+
+            AsyncCallback asyncCallback = (result =>
+            {
+                try
+                {
+                    List<CommissionDTO> response = ((ICommissionService)result.AsyncState).EndGetCommissionsForSystemTransactionType(result);
+
+                    tcs.TrySetResult(new ObservableCollection<CommissionDTO>(response ?? new List<CommissionDTO> { }));
+                }
+                catch (Exception ex)
+                {
+                    HandleFault(ex, (msgcb) =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(msgcb)) tcs.TrySetResult(null); else tcs.TrySetException(ex);
+                    });
+                }
+                finally
+                {
+                    DisposeService(service as IClientChannel);
+                }
+            });
+
+            service.BeginGetCommissionsForSystemTransactionType(systemTransactionType, asyncCallback, service);
 
             return tcs.Task;
         }

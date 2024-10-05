@@ -1,9 +1,7 @@
 ﻿@model Application.MainBoundedContext.DTO.AdministrationModule.CompanyBindingModel
-
 @{
     ViewBag.Title = "Company";
 }
-
 <head>
     <style>
         .tab-content > .tab-pane {
@@ -15,7 +13,6 @@
             }
     </style>
 </head>
-
 <div class="row wrapper border-bottom white-bg page-heading">
     <div class="col-lg-12">
         <h1>Companies</h1>
@@ -32,7 +29,6 @@
         </ol>
     </div>
 </div>
-
 <div class="wrapper wrapper-content" style="padding: 20px;">
     <div class="row">
         <div class="col-md-12">
@@ -52,45 +48,34 @@
                     @using (Html.BeginForm("Create", "Company", new { Area = "Admin" }, FormMethod.Post, new { @class = "wizard-big", @id = "form" }))
                     {
                         @Html.AntiForgeryToken()
-
                         <div class="form-group">
                             @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "font-bold" })
                             @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Company name.", @required = "", @style = "border-radius: 5px;" } })
                             @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
                         </div>
-
                         <div class="row">
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.RegistrationNumber, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.RegistrationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Registration Number.", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.RegistrationNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.PersonalIdentificationNumber, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.PersonalIdentificationNumber, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter PIN", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.PersonalIdentificationNumber, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-3">
+                            <div class="col-md-4">
                                 <div class="form-group">
                                     @Html.LabelFor(model => model.MembershipTerminationNoticePeriod, htmlAttributes: new { @class = "font-bold" })
                                     @Html.EditorFor(model => model.MembershipTerminationNoticePeriod, new { htmlAttributes = new { @class = "form-control", @placeholder = "Notice period.", @required = "", @style = "border-radius: 5px;" } })
                                     @Html.ValidationMessageFor(model => model.MembershipTerminationNoticePeriod, "", new { @class = "text-danger" })
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.ApplicationDisplayName, htmlAttributes: new { @class = "font-bold" })
-                                    @Html.EditorFor(model => model.ApplicationDisplayName, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Display Name.", @required = "", @style = "border-radius: 5px;" } })
-                                    @Html.ValidationMessageFor(model => model.ApplicationDisplayName, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
                         </div>
-
-
                         <div class="form-group">
                             @Html.LabelFor(model => model.Vision, htmlAttributes: new { @class = "font-bold" })
                             @Html.EditorFor(model => model.Vision, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Vision.", @required = "", @style = "border-radius: 5px;" } })
@@ -106,8 +91,6 @@
                             @Html.EditorFor(model => model.Motto, new { htmlAttributes = new { @class = "form-control", @placeholder = "Enter Motto.", @required = "", @style = "border-radius: 5px;" } })
                             @Html.ValidationMessageFor(model => model.Motto, "", new { @class = "text-danger" })
                         </div>
-
-
                         <div class="form-group">
                             @Html.LabelFor(model => model.RecoveryPriority, htmlAttributes: new { @class = "font-bold" })
                             @Html.DropDownListFor(model => model.RecoveryPriority, new List<SelectListItem>
@@ -119,8 +102,6 @@
                             }, new { @class = "form-control", @style = "border-radius: 5px;" })
                             @Html.ValidationMessageFor(model => model.RecoveryPriority, "", new { @class = "text-danger" })
                         </div>
-
-
                         <ul class="nav nav-tabs" style="margin-bottom: 20px;">
                             <li class="nav-item">
                                 <a class="nav-link active" href="#address">Address</a>
@@ -138,7 +119,6 @@
                                 <a class="nav-link" href="#flags">Flags</a>
                             </li>
                         </ul>
-
                         <div class="tab-content">
                             <div id="address" class="tab-pane active">
                                 <div class="row">
@@ -204,6 +184,89 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="tab-content">
+                                <div id="mandatoryDebitTypes" class="tab-pane active">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                        <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                            <thead style="background-color: #4682b4; color: #fff;">
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                    <th data-hide="phone"></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.debit != null)
+                                                {
+                                                    foreach (var debitype in ViewBag.debit)
+                                                    {
+                                                        <tr style="background-color: #f5f5f5;">
+                                                            <td>
+                                                                <input type="checkbox" class="debit-checkbox" name="debittypes" value="@debitype.Id" />
+                                                                @debitype.Description
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div id="mandatoryInvestmentProducts" class="tab-pane active">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                        <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                            <thead style="background-color: #4682b4; color: #fff;">
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.investment != null)
+                                                {
+                                                    foreach (var invest in ViewBag.investment)
+                                                    {
+                                                        <tr style="background-color: #f5f5f5;">
+                                                            <td>
+                                                                <input type="checkbox" class="investment-checkbox" name="investmentproducts" value="@invest.Id" />
+                                                                @invest.Description
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div id="mandatorySavingsProducts" class="tab-pane active">
+                                    <div class="ibox-content m-b-sm border-bottom text-dark" style="background-color: #f0f8ff; border-color: #e3e6e8;">
+                                        <table class="footable table table-striped toggle-arrow-tiny grey-table" style="color: #333;">
+                                            <thead style="background-color: #4682b4; color: #fff;">
+                                                <tr>
+                                                    <th data-toggle="true">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @if (ViewBag.savings != null)
+                                                {
+                                                    foreach (var save in ViewBag.savings)
+                                                    {
+                                                        <tr style="background-color: #f5f5f5;">
+                                                            <td>
+                                                                <input type="checkbox" class="savings-checkbox" name="savingsproducts" value="@save.Id" />
+                                                                @save.Description
+                                                            </td>
+                                                        </tr>
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
                             <div id="flags" class="tab-pane" style="margin-left: 20px;">
                                 <fieldset>
                                     <div class="row">
@@ -263,58 +326,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.ExcludeChequeMaturityDateInTransactionReceipt, "Exclude cheque maturity date in TxRcpt?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassLoanDisbursementBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassLoanDisbursementBatchAudit, "Bypass disbursement batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.EnforceTwoFactorAuthentication, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.EnforceTwoFactorAuthentication, "Enforce Two Factor Authentication?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassGeneralLedgerAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassGeneralLedgerAudit, "Bypass general ledger verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.TrackGuarantorCommittedInvestments, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.TrackGuarantorCommittedInvestments, "Track guarantor committed investments?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.EnforceSystemLock, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.EnforceSystemLock, "Company is locked?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
 
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassDebitBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassDebitBatchAudit, "Bypass debit batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.BypassJournalReversalBatchAudit, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.BypassJournalReversalBatchAudit, "Bypass reversal batch verification?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.ExcludeChargesInTransactionReceipt, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.ExcludeChargesInTransactionReceipt, "Exclude charges in TxRcpt?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="form-group form-group-lg">
-                                                @Html.CheckBoxFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, new { @class = "form-check-input" })
-                                                @Html.LabelFor(model => model.TransferNetRefundableAmountToSavingsAccountOnDeathClaimSettlement, "Transfer net refundable amount to savings account on death claim settlement?", new { @class = "font-bold", @style = "color: #1ab394;" })
-                                            </div>
-
-                                        </div>
-                                    </div>
 
                                 </fieldset>
                             </div>
@@ -336,10 +348,90 @@
 @section Styles{
     @Styles.Render("~/Content/plugins/iCheck/iCheckStyles")
     @Styles.Render("~/plugins/wizardStepsStyles")
+    @Styles.Render("~/Content/plugins/dataTables/dataTablesStyles")
+    @Styles.Render("~/plugins/awesomeCheckboxStyles")
+    @Styles.Render("~/plugins/clockpickerStyles")
+    @Styles.Render("~/plugins/dateRangeStyles")
+    @Styles.Render("~/Content/plugins/chosen/chosenStyles")
+    @Styles.Render("~/plugins/switcheryStyles")
+    @Styles.Render("~/plugins/jasnyBootstrapStyles")
+    @Styles.Render("~/plugins/nouiSliderStyles")
+    @Styles.Render("~/plugins/dataPickerStyles")
+    @Styles.Render("~/Content/plugins/ionRangeSlider/ionRangeStyles")
+    @Styles.Render("~/plugins/imagecropperStyles")
+    @Styles.Render("~/Content/plugins/colorpicker/colorpickerStyles")
+    @Styles.Render("~/plugins/select2Styles")
+    @Styles.Render("~/plugins/touchSpinStyles")
+    @Styles.Render("~/plugins/tagInputsStyles")
+    @Styles.Render("~/plugins/duallistStyles")
 }
 
 @section Scripts{
     @Scripts.Render("~/plugins/wizardSteps")
     @Scripts.Render("~/plugins/validate")
+    @Scripts.Render("~/plugins/typehead")
+    @Scripts.Render("~/plugins/dataTables")
+    @Scripts.Render("~/plugins/iCheck")
+    @Scripts.Render("~/plugins/dataPicker")
+    @Scripts.Render("~/plugins/ionRange")
+    @Scripts.Render("~/plugins/nouiSlider")
+    @Scripts.Render("~/plugins/jasnyBootstrap")
+    @Scripts.Render("~/plugins/switchery")
+    @Scripts.Render("~/plugins/chosen")
+    @Scripts.Render("~/plugins/knob")
+    @Scripts.Render("~/plugins/imagecropper")
+    @Scripts.Render("~/plugins/colorpicker")
+    @Scripts.Render("~/plugins/clockpicker")
+    @Scripts.Render("~/plugins/dateRange")
+    @Scripts.Render("~/plugins/select2")
+    @Scripts.Render("~/plugins/touchSpin")
+    @Scripts.Render("~/plugins/tagInputs")
+    @Scripts.Render("~/plugins/duallist")
+
     @Scripts.Render("~/Scripts/js/navlink.js")
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+    $(document).ready(function () {
+        $('#submitButton').on('click', function () {
+            var debitTypes = [];
+            var investmentProducts = [];
+            var savingsProducts = [];
+
+            // Gather selected debit types
+            $('.debit-checkbox:checked').each(function () {
+                debitTypes.push($(this).val());
+            });
+
+            // Gather selected investment products
+            $('.investment-checkbox:checked').each(function () {
+                investmentProducts.push($(this).val());
+            });
+
+            // Gather selected savings products
+            $('.savings-checkbox:checked').each(function () {
+                savingsProducts.push($(this).val());
+            });
+
+            $.ajax({
+                url: '@Url.Action("Create", "Company")', // Update with your controller name
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    debittypes: debitTypes,
+                    investmentproducts: investmentProducts,
+                    savingsproducts: savingsProducts
+                }),
+                success: function (response) {
+                    // Handle success
+                    alert("Data submitted successfully!");
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    alert("An error occurred: " + error);
+                }
+            });
+        });
+    });
+    </script>
+
 }

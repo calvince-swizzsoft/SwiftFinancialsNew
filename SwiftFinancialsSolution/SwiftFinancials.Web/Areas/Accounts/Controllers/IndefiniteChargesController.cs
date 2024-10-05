@@ -71,20 +71,18 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             ViewBag.DynamicCharge = GetDynamicChargeRecoveryModeSelectList(string.Empty);
             ViewBag.SystemTransactionType = GetSystemTransactionTypeList(string.Empty);
             ViewBag.Source = GetDynamicChargeRecoverySourceSelectList(string.Empty);
-           // ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
+            // ViewBag.AlternateChannelType = GetAlternateChannelTypeSelectList(string.Empty);
             ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(string.Empty);
             ViewBag.Chargetype = GetChargeTypeSelectList(string.Empty);
-            
-          //  ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
+
+            //  ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(string.Empty);
             return View();
         }
 
         [HttpPost]
         public async Task<ActionResult> Create(DynamicChargeDTO levyDTO, ObservableCollection<CommissionDTO> selectedRows)
         {
-            levyDTO.Description = Session["Description"].ToString();
-            levyDTO.RecoverySource = Convert.ToInt32(Session["RecoverySource"].ToString());
-            levyDTO.RecoveryMode = Convert.ToInt32(Session["RecoveryMode"].ToString());
+
 
             levyDTO.ValidateAll();
 
@@ -93,7 +91,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 await _channelService.AddDynamicChargeAsync(levyDTO, GetServiceHeader());
                 TempData["Successfully"] = "Successfully Create indefinate charges";
                 ViewBag.SystemTransactionType = GetSystemTransactionTypeList(levyDTO.RecoverySource.ToString());
-               // ViewBag.AlternateSelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
+                // ViewBag.AlternateSelectList = GetAlternateChannelKnownChargeTypeSelectList(levyDTO.RecoveryMode.ToString());
                 ViewBag.Source = GetDynamicChargeRecoverySourceSelectList(levyDTO.RecoverySource.ToString());
                 ViewBag.ChargeBenefactor = GetChargeBenefactorSelectList(levyDTO.RecoveryMode.ToString());
                 ViewBag.Chargetype = GetChargeTypeSelectList(levyDTO.RecoverySource.ToString());
@@ -104,7 +102,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
             else
             {
                 var errorMessages = levyDTO.ErrorMessages;
-               // ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
+                // ViewBag.QueuePrioritySelectList = GetQueuePrioritySelectList(levyDTO.RecoverySource.ToString());
                 return View(levyDTO);
             }
         }
@@ -124,7 +122,7 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
         }
 
         [HttpPost]
-       
+
         public async Task<ActionResult> Edit(Guid id, DynamicChargeDTO levyDTO)
         {
             levyDTO.ValidateAll();
