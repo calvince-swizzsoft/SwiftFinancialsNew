@@ -99,7 +99,6 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
         [HttpPost]
         public async Task<ActionResult> Create(CompanyBindingModel companyBindingModel, string[] debittypes, string[] savingsproducts, string[] investmentproducts)
         {
-            companyBindingModel.AddressPostalCode = "we";
             //cheat
             var mandatoryInvestmentProducts = new List<InvestmentProductDTO>();
             var mandatorySavingsProducts = new List<SavingsProductDTO>();
