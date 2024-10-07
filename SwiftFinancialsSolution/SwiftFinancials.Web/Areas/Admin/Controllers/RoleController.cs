@@ -78,20 +78,15 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var newIdentityRole = new IdentityRole(roleBindingModel.Name);
-
+                //var identityRole = await _applicationRoleManager.FindByNameAsync(newIdentityRole.Name); 
                 var roleresult = await _applicationRoleManager.CreateAsync(newIdentityRole);
 
-                if (!roleresult.Succeeded)
-                {
-                    TempData["Error"] = string.Join(",", roleresult.Errors);
-
-                    return View();
-                }
-
                 TempData["Success"] = "Role Created Successfully";
+                await ServeNavigationMenus();
 
-                return RedirectToAction("Index", "Role", new { Area = "Admin" });
+                return View("Index");
             }
+            await ServeNavigationMenus();
             return View();
         }
 
@@ -103,11 +98,15 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
             {
                 var identityRole = await _applicationRoleManager.FindByIdAsync(id);
 
+                TempData["Success"] = "Role Edited Successfully"; // Set the success message before returning the view
                 return View(identityRole.MapTo<RoleBindingModel>());
             }
             else
+            {
                 return View();
+            }
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]

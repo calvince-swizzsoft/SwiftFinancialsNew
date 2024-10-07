@@ -597,6 +597,7 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
 
         Task<ObservableCollection<ExternalChequeDTO>> FindUnClearedExternalChequesByCustomerAccountIdAsync(Guid customerAccountId, ServiceHeader serviceHeader = null);
 
+        Task<ObservableCollection<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerId(Guid tellerId, string text, ServiceHeader serviceHeader);
         Task<PageCollectionInfo<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerIdAndFilterInPageAsync(Guid tellerId, string text, int pageIndex, int pageSize, ServiceHeader serviceHeader = null);
 
         Task<ObservableCollection<ExternalChequeDTO>> FindUnTransferredExternalChequesByTellerIdAndFilterAsync(Guid tellerId, string text, ServiceHeader serviceHeader = null);
@@ -1697,6 +1698,10 @@ namespace SwiftFinancials.Presentation.Infrastructure.Services
         Task<bool> UpdateGraduatedScalesByCommissionIdAsync(Guid commissionId, ObservableCollection<GraduatedScaleDTO> graduatedScales, ServiceHeader serviceHeader = null);
 
         Task<bool> MapSystemTransactionTypeToCommissionsAsync(int systemTransactionType, ObservableCollection<CommissionDTO> commissions, ChargeDTO chargeDTO, ServiceHeader serviceHeader = null);
+        Task<bool> RemoveSystemTransactionTypeFromCommissions(int systemPermissionType, List<CommissionDTO> CommissionDTO, ServiceHeader serviceHeader = null);
+
+        Task<ObservableCollection<CommissionDTO>> GetCommissionsForSystemTransactionType(int systemTransactionType, ServiceHeader serviceHeader = null);
+
 
         Task<bool> UpdateCommissionSplitAsync(CommissionSplitDTO commissionSplitDTO, ServiceHeader serviceHeader = null);
 

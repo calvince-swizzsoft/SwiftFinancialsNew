@@ -68,8 +68,10 @@ namespace SwiftFinancials.Web.Areas.Admin.Controllers
 
             if (!branchDTO.HasErrors)
             {
-                await _channelService.AddBranchAsync(branchDTO, GetServiceHeader());
-
+                var companyDTO = await _channelService.FindCompanyAsync(branchDTO.CompanyId, GetServiceHeader());
+                  branchDTO.companyDTO=companyDTO;
+                var h = await _channelService.AddBranchAsync(branchDTO, GetServiceHeader());
+                TempData["SuccessMessage"] = "Branch " + h.Description + " created successfully";
                 return RedirectToAction("Index");
             }
             else

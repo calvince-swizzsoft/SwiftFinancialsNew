@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
+using System.Data.SqlClient;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Windows.Forms;
 using Application.MainBoundedContext.DTO;
 using Application.MainBoundedContext.DTO.AccountsModule;
 using Application.MainBoundedContext.DTO.BackOfficeModule;
@@ -17,6 +20,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
 {
     public class GuarantorSubstitutionController : MasterController
     {
+        string connectionString = ConfigurationManager.ConnectionStrings["SwiftFin_Dev"].ConnectionString;
 
         public async Task<ActionResult> Index()
         {
@@ -50,6 +54,100 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
             else return this.DataTablesJson(items: new List<LoanCaseDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
         }
+
+
+        //// Get Savings Account
+        //private async Task<List<SelectListItem>> GetSavingsAccountAsync()
+        //{
+        //    await ServeNavigationMenus();
+
+        //    var savingsAccount = new List<SelectListItem>();
+
+        //    using (SqlConnection conn = new SqlConnection(connectionString))
+        //    {
+        //        await conn.OpenAsync();
+        //        var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
+        //        using (SqlCommand cmd = new SqlCommand(query, conn))
+        //        {
+        //            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    savingsAccount.Add(new CustomerAccountDTO
+        //                    {
+        //                        Value = reader["CategoryID"].ToString(),
+        //                        Text = reader["CategoryName"].ToString()
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return categories;
+        //}
+
+
+        //// Get Investments Account
+        //private async Task<List<SelectListItem>> GetInvestmentsAsync()
+        //{
+        //    await ServeNavigationMenus();
+
+        //    var categories = new List<SelectListItem>();
+
+        //    using (SqlConnection conn = new SqlConnection(connectionString))
+        //    {
+        //        await conn.OpenAsync();
+        //        var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
+        //        using (SqlCommand cmd = new SqlCommand(query, conn))
+        //        {
+        //            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    categories.Add(new SelectListItem
+        //                    {
+        //                        Value = reader["CategoryID"].ToString(),
+        //                        Text = reader["CategoryName"].ToString()
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return categories;
+        //}
+
+
+
+        //// Get Loans Account
+        //private async Task<List<SelectListItem>> GetCategoriesAsync()
+        //{
+        //    await ServeNavigationMenus();
+
+        //    var categories = new List<SelectListItem>();
+
+        //    using (SqlConnection conn = new SqlConnection(connectionString))
+        //    {
+        //        await conn.OpenAsync();
+        //        var query = "SELECT CategoryID, CategoryName FROM ReportCategories Order By CategoryName ASC";
+        //        using (SqlCommand cmd = new SqlCommand(query, conn))
+        //        {
+        //            using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+        //            {
+        //                while (await reader.ReadAsync())
+        //                {
+        //                    categories.Add(new SelectListItem
+        //                    {
+        //                        Value = reader["CategoryID"].ToString(),
+        //                        Text = reader["CategoryName"].ToString()
+        //                    });
+        //                }
+        //            }
+        //        }
+        //    }
+
+        //    return categories;
+        //}
 
 
         public async Task<ActionResult> CustomerLookUp(Guid? id, LoanGuarantorDTO loanGuarantorDTO)
@@ -86,189 +184,60 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.CustomerReference3 = customer.Reference3;
 
 
-                Session["customer"] = loanGuarantorDTO;
+                var productCodes = new int[] { (int)ProductCode.Savings, (int)ProductCode.Investment, (int)ProductCode.Loan };
+                var findAccountsbyCode = await _channelService.FindCustomerAccountsByCustomerIdAndProductCodesAsync((Guid)loanGuarantorDTO.LoaneeCustomerId, productCodes, true, true, true, false, GetServiceHeader());
 
-                JQueryDataTablesModel jQDtTble = new JQueryDataTablesModel
+                // savings Product
+                var savingsAccounts = findAccountsbyCode.Where(account => account.CustomerAccountTypeProductCode == (int)ProductCode.Savings).ToList();
+
+                // investments Product
+                var investmentsAccounts = findAccountsbyCode.Where(account => account.CustomerAccountTypeProductCode == (int)ProductCode.Investment).ToList();
+
+                // loans Product
+                var loansAccounts = findAccountsbyCode.Where(account => account.CustomerAccountTypeProductCode == (int)ProductCode.Loan).ToList();
+
+
+                // Get Loan
+
+                // Loan Applications
+                //var loanApplications = await LoanApplications();
+
+                return Json(new
                 {
-                    sEcho = 1
-                };
-
-                await FindCustomerGuarantors(jQDtTble);
-                await FindSavingsAccountsByProductCode(jQDtTble);
-                await FindLoanAccountsByProductCode(jQDtTble);
-                await FindInvestmentsAccountsByProductCode(jQDtTble);
+                    success = true,
+                    data = new
+                    {
+                        LoaneeCustomerId = loanGuarantorDTO.LoaneeCustomerId,
+                        LoaneeCustomerIndividualFirstName = loanGuarantorDTO.LoaneeCustomerIndividualFirstName,
+                        CustomerNonIndividualDescription = loanGuarantorDTO.CustomerNonIndividualDescription,
+                        EmployerDescription = loanGuarantorDTO.EmployerDescription,
+                        EmployerId = loanGuarantorDTO.EmployerId,
+                        StationDescription = loanGuarantorDTO.StationDescription,
+                        StationId = loanGuarantorDTO.StationId,
+                        CustomerPersonalIdentificationNumber = loanGuarantorDTO.CustomerPersonalIdentificationNumber,
+                        CustomerReference1 = loanGuarantorDTO.CustomerReference1,
+                        CustomerReference2 = loanGuarantorDTO.CustomerReference2,
+                        CustomerReference3 = loanGuarantorDTO.CustomerReference3,
+                        SavingsAccounts = savingsAccounts,
+                        InvestmentsAccounts = investmentsAccounts,
+                        LoansAccounts = loansAccounts
+                    }
+                });
             }
 
-            return View("Create", loanGuarantorDTO);
+            MessageBox.Show(Form.ActiveForm, "Customer not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+            return Json(new { success = false, message = string.Empty });
         }
-
 
 
         [HttpPost]
-        public async Task<ActionResult> FindCustomerGuarantors(JQueryDataTablesModel jQueryDataTablesModel)
+        public async Task<ActionResult> LoanApplications(Guid? loaneeId)
         {
-            Guid CustomerId = Guid.Empty;
 
-            if (Session["CustomerId"] != null)
-            {
-                CustomerId = (Guid)Session["CustomerId"];
-            }
+            //await _channelService.FindLoanGuarantorsByLoaneeCustomerIdAndLoanProductIdAsync();
 
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindLoanGuarantorsByCustomerIdAndFilterInPageAsync(CustomerId, jQueryDataTablesModel.sSearch, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(guarantors => guarantors.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-
-                List<LoanGuarantorDTO> myPageInfo = new List<LoanGuarantorDTO>();
-                foreach (var items in pageCollectionInfo.PageCollection)
-                {
-                    myPageInfo.Add(items);
-                }
-                ViewBag.LoanGuarantors = myPageInfo;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<LoanGuarantorDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
+            return RedirectToAction("Create");
         }
-
-
-        /// <summary>
-        ///         Savings Accounts
-        /// </summary>
-        /// <param name="jQueryDataTablesModel"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult> FindSavingsAccountsByProductCode(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync((int)ProductCode.Savings, jQueryDataTablesModel.sSearch,
-                (int)CustomerFilter.FirstName, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, true, true, true, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(guarantors => guarantors.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-
-                List<CustomerAccountDTO> myPageInfo = new List<CustomerAccountDTO>();
-                foreach (var items in pageCollectionInfo.PageCollection)
-                {
-                    myPageInfo.Add(items);
-                }
-                ViewBag.SavingsAccounts = myPageInfo;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-
-        /// <summary>
-        ///             Loan Accounts
-        /// </summary>
-        /// <param name="jQueryDataTablesModel"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult> FindLoanAccountsByProductCode(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync((int)ProductCode.Loan, jQueryDataTablesModel.sSearch,
-                (int)CustomerFilter.FirstName, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, true, true, true, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(guarantors => guarantors.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-
-                List<CustomerAccountDTO> myPageInfo = new List<CustomerAccountDTO>();
-                foreach (var items in pageCollectionInfo.PageCollection)
-                {
-                    myPageInfo.Add(items);
-                }
-                ViewBag.LoanAccounts = myPageInfo;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-
-        /// <summary>
-        ///             Investments Accounts
-        /// </summary>
-        /// <param name="jQueryDataTablesModel"></param>
-        /// <returns></returns>
-        [HttpPost]
-        public async Task<ActionResult> FindInvestmentsAccountsByProductCode(JQueryDataTablesModel jQueryDataTablesModel)
-        {
-            int totalRecordCount = 0;
-
-            int searchRecordCount = 0;
-
-            //var sortAscending = jQueryDataTablesModel.sSortDir_.First() == "asc" ? true : false;
-
-            var sortedColumns = (from s in jQueryDataTablesModel.GetSortedColumns() select s.PropertyName).ToList();
-
-            var pageCollectionInfo = await _channelService.FindCustomerAccountsByProductCodeAndFilterInPageAsync((int)ProductCode.Investment, jQueryDataTablesModel.sSearch,
-                (int)CustomerFilter.FirstName, jQueryDataTablesModel.iDisplayStart, jQueryDataTablesModel.iDisplayLength, true, true, true, true, GetServiceHeader());
-
-            if (pageCollectionInfo != null && pageCollectionInfo.PageCollection.Any())
-            {
-                totalRecordCount = pageCollectionInfo.ItemsCount;
-
-                pageCollectionInfo.PageCollection = pageCollectionInfo.PageCollection.OrderByDescending(guarantors => guarantors.CreatedDate).ToList();
-
-                searchRecordCount = !string.IsNullOrWhiteSpace(jQueryDataTablesModel.sSearch) ? pageCollectionInfo.PageCollection.Count : totalRecordCount;
-
-
-                List<CustomerAccountDTO> myPageInfo = new List<CustomerAccountDTO>();
-                foreach (var items in pageCollectionInfo.PageCollection)
-                {
-                    myPageInfo.Add(items);
-                }
-                ViewBag.InvestmentsAccounts = myPageInfo;
-
-                return this.DataTablesJson(items: pageCollectionInfo.PageCollection, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-            }
-            else return this.DataTablesJson(items: new List<CustomerAccountDTO> { }, totalRecords: totalRecordCount, totalDisplayRecords: searchRecordCount, sEcho: jQueryDataTablesModel.sEcho);
-        }
-
-
 
         public async Task<ActionResult> Details(Guid id)
         {
@@ -293,7 +262,7 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
             }
 
 
-            if (Session["customer"]!=null)
+            if (Session["customer"] != null)
             {
                 loanGuarantorDTO = Session["customer"] as LoanGuarantorDTO;
             }
@@ -313,16 +282,29 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
                 loanGuarantorDTO.GuarantorRef2 = customer.Reference2;
                 loanGuarantorDTO.GuarantorRef3 = customer.Reference3;
 
-
-                Session["guarantor"] = loanGuarantorDTO;
+                return Json(new
+                {
+                    success = true,
+                    data = new
+                    {
+                        GuarantorId = loanGuarantorDTO.GuarantorId,
+                        GuarantorFullName = loanGuarantorDTO.GuarantorFullName,
+                        GuarantorTypeDescription = loanGuarantorDTO.GuarantorTypeDescription,
+                        GuarantorEmployerDescription = loanGuarantorDTO.GuarantorEmployerDescription,
+                        GuarantorEmployerId = loanGuarantorDTO.GuarantorEmployerId,
+                        GuarantorStationDescription = loanGuarantorDTO.GuarantorStationDescription,
+                        GuarantorStationId = loanGuarantorDTO.GuarantorStationId,
+                        GuarantorIdentificationNumber = loanGuarantorDTO.GuarantorIdentificationNumber,
+                        GuarantorRef1 = loanGuarantorDTO.GuarantorRef1,
+                        GuarantorRef2 = loanGuarantorDTO.GuarantorRef2,
+                        GuarantorRef3 = loanGuarantorDTO.GuarantorRef3
+                    }
+                });
             }
 
-            return View("Create", loanGuarantorDTO);
+            MessageBox.Show(Form.ActiveForm, "Customer not found!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button1, MessageBoxOptions.ServiceNotification);
+            return Json(new { success = false, message = string.Empty });
         }
-
-
-
-
 
 
 
@@ -330,6 +312,8 @@ namespace SwiftFinancials.Web.Areas.Loaning.Controllers
         {
             await ServeNavigationMenus();
 
+            ViewBag.CustomerFilter = GetCustomerFilterSelectList(string.Empty);
+            ViewBag.RecordStatus = GetRecordStatusSelectList(string.Empty);
             return View();
         }
 

@@ -21,7 +21,20 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="ibox">
+
                 <div class="ibox-title">
+                    @if (TempData["Success"] != null)
+                    {
+                        <div class="alert alert-success">
+                            <strong>Success !</strong> @TempData["Success"]
+
+                            <button type="button" class="close" data-dismiss="alert">
+                                <span>
+                                    &times;
+                                </span>
+                            </button>
+                        </div>
+                    }
                     @Html.ActionLink("Create Company", "Create", "Company", new { Area = "Admin" }, new { @class = "btn btn-primary" })
                     <div class="ibox-tools">
                         <a class="collapse-link">
