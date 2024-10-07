@@ -460,8 +460,8 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
                 else
                 {
-                    ChargeSplitDTOs.Add(chargeSplitDTO);
-
+                    chargesplits.Add(chargeSplitDTO);
+                   
                     sumPercentages = ChargeSplitDTOs.Sum(cs => cs.Percentage);
 
                     Session["chargeSplit"] = commissionDTO.chargeSplit;
@@ -481,11 +481,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 }
             };
 
-            TempData["ChargeSplitDTOs2"] = ChargeSplitDTOs;
+            TempData["ChargeSplitDTOs2"] = chargesplits;
 
             TempData["ChargeDTO2"] = commissionDTO;
 
-            ViewBag.chargeSplits = ChargeSplitDTOs;
+            ViewBag.ChargeSplitDTOs = ChargeSplitDTOs;
 
             return View("Edit", commissionDTO);
         }

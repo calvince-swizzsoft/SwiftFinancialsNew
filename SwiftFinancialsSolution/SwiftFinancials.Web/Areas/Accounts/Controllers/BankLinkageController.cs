@@ -78,11 +78,11 @@ namespace SwiftFinancials.Web.Areas.Accounts.Controllers
                 bankLinkageDTO.BankBranchName = Session["BankBranchName"].ToString();
             }
 
-            if (Session["chartOfAccountId"] != null)
-            {
-                bankLinkageDTO.ChartOfAccountId = (Guid)Session["chartOfAccountId"];
-                bankLinkageDTO.ChartOfAccountAccountName = Session["chartOfAccountAccountName"].ToString();
-            }
+            //if (Session["chartOfAccountId"] != null)
+            //{
+            //    bankLinkageDTO.ChartOfAccountId = (Guid)Session["chartOfAccountId"];
+            //    bankLinkageDTO.ChartOfAccountAccountName = Session["chartOfAccountAccountName"].ToString();
+            //}
 
             var bank = await _channelService.FindBankAsync(parseId, GetServiceHeader());
             var bankBranches = await _channelService.FindBankBranchesByBankIdAsync(parseId, GetServiceHeader());

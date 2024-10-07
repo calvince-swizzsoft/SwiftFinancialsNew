@@ -58,16 +58,16 @@
       <HintPath>..\packages\ClosedXML.0.102.3\lib\netstandard2.0\ClosedXML.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.CrystalReports.Engine">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.CrystalReports.Engine.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.ReportSource">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.ReportSource.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Shared">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Shared.dll</HintPath>
     </Reference>
     <Reference Include="CrystalDecisions.Web">
-      <HintPath>c:\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\program files (x86)\sap businessobjects\crystal reports for .net framework 4.0\common\sap businessobjects enterprise xi 4.0\win32_x86\dotnet\CrystalDecisions.Web.dll</HintPath>
     </Reference>
     <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dapper.2.1.35\lib\net461\Dapper.dll</HintPath>
@@ -98,6 +98,10 @@
     </Reference>
     <Reference Include="LazyCache, Version=0.7.1.44, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\LazyCache.0.7.1.44\lib\net45\LazyCache.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
+      <HintPath>..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.3\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -474,6 +478,8 @@
     <Compile Include="Areas\Accounts\Controllers\AlternatechannelManagementController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternateChannelsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\AlternatePeriodsController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BackOfficeTransferController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\BackOfficeTransfersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankLinkageController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BankReconciliation_PeriodsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\BatchOrigination_CreditController.cs" />
@@ -511,6 +517,7 @@
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsuranceCompanyController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InsurersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\InterAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\IntraAccountTransferController.cs" />
     <Compile Include="Areas\Accounts\Controllers\InvestmentProductController.cs" />
     <Compile Include="Areas\Accounts\Controllers\JournalVoucherController.cs" />
@@ -526,10 +533,13 @@
     <Compile Include="Areas\Accounts\Controllers\SystemGeneralLedgerAccountMappingController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TextAlertChargesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TiersController.cs" />
+    <Compile Include="Areas\Accounts\Controllers\TransactionJournalsController.cs" />
     <Compile Include="Areas\Accounts\Controllers\TreasuriesController.cs" />
     <Compile Include="Areas\Accounts\Controllers\WellknownchargesController.cs" />
     <Compile Include="Areas\Accounts\Models\GLAccountsDetermination\GLAccountsDet.cs" />
     <Compile Include="Areas\Admin\Controllers\DynamicReportingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SSRSReportSettingController.cs" />
+    <Compile Include="Areas\Admin\Controllers\SSRSReportSettingLoginController.cs" />
     <Compile Include="Areas\Admin\Controllers\SystemTransactiontypesController.cs" />
     <Compile Include="Areas\Admin\Data\ReportRepository.cs" />
     <Compile Include="Areas\Admin\Models\DynamicReport.cs" />
@@ -545,6 +555,7 @@
     <Compile Include="Areas\FrontOffice\Controllers\CustomerReceiptsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\EndOfDayController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\ExpensePayableController.cs" />
+    <Compile Include="Areas\FrontOffice\Controllers\InHouseController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\SundryPaymentsController.cs" />
     <Compile Include="Areas\FrontOffice\Controllers\TransfersController.cs" />
     <Compile Include="Areas\HumanResource\Controllers\DocumentController.cs" />
@@ -630,18 +641,19 @@
     <Compile Include="Areas\Registry\Controllers\EmployerController.cs" />
     <Compile Include="Areas\Registry\Controllers\FindEducationRegisterAsync.cs" />
     <Compile Include="Areas\Registry\Controllers\MultiDestinationController.cs" />
-    <Compile Include="Areas\Registry\Controllers\NextofKinController.cs" />
     <Compile Include="Areas\Registry\Controllers\RegistereducationvenueController.cs" />
     <Compile Include="Areas\Registry\Controllers\StationController.cs" />
-    <Compile Include="Areas\Registry\Controllers\StationLinkageController.cs" />
     <Compile Include="Areas\Registry\Controllers\WithdrawalNotificationController.cs" />
     <Compile Include="Areas\Registry\Controllers\ZoneController.cs" />
+    <Compile Include="Areas\Registry\DocumentsModel\Document.cs" />
     <Compile Include="Areas\Registry\RegistryAreaRegistration.cs" />
     <Compile Include="Areas\Reports\Controllers\DynamicReportingController.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportSettingController.cs" />
     <Compile Include="Areas\Reports\Controllers\spDynamicReportingController.cs" />
+    <Compile Include="Areas\Reports\Controllers\SSRSReportsController.cs" />
     <Compile Include="Areas\Reports\Controllers\StoredProcedureController.cs" />
     <Compile Include="Areas\Reports\Controllers\ReportController.cs" />
+    <Compile Include="Areas\Reports\Models\ReportByCategoryViewModel.cs" />
     <Compile Include="Areas\Reports\Models\ReportParams.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureParameter.cs" />
     <Compile Include="Areas\Reports\Models\StoredProcedureViewModel.cs" />
@@ -671,6 +683,7 @@
     <Compile Include="Identity\SmsService.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
+    <Compile Include="obj\Debug\.NETFramework,Version=v4.7.2.AssemblyAttributes.cs" />
     <Compile Include="PDF\CreatePdf.cs" />
     <Compile Include="PDF\PdfHeaderFooter.cs" />
     <Compile Include="PDF\RegisteredLoans.cs" />
@@ -692,6 +705,7 @@
     <Compile Include="Services\IWebConfigurationService.cs" />
     <Compile Include="Services\WebConfigurationService.cs" />
     <Compile Include="Startup.cs" />
+    <Compile Include="Attributes\SystemPermission.cs" />
     <Compile Include="TypeAdapterFactory\ApplicationProfile.cs" />
     <Compile Include="TypeAdapterFactory\AutomapperTypeAdapter.cs" />
     <Compile Include="TypeAdapterFactory\AutomapperTypeAdapterFactory.cs" />
@@ -702,6 +716,8 @@
     <Content Include="Areas\Reports\Views\Report\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\Report\Index.cshtml" />
     <Content Include="Areas\Reports\Views\Report\_Reports.cshtml" />
+    <Content Include="bin\SwiftFinancials.Web.dll" />
+    <Content Include="bin\SwiftFinancials.Web.pdb" />
     <Content Include="Content\animate.css" />
     <Content Include="Content\bootstrap-theme.css" />
     <Content Include="Content\bootstrap-theme.min.css" />
@@ -1157,7 +1173,6 @@
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Edit.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\Approve.cshtml" />
     <Content Include="Areas\FrontOffice\Views\AccountClosure\verify.cshtml" />
-    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\Cheques\Banking.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Index.cshtml" />
     <Content Include="Areas\FrontOffice\Views\FixedDeposit\Create.cshtml" />
@@ -1374,20 +1389,62 @@
     <Content Include="Areas\Admin\Views\ReportSetting\Index.cshtml" />
     <Content Include="Areas\Admin\Views\ReportSetting\Edit.cshtml" />
     <Content Include="Areas\Reports\Views\ReportSetting\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Details.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\AddGeneralLedger\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Create.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Index.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Verify.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Authorize.cshtml" />
+    <Content Include="Areas\Accounts\Views\InterAccountTransfer\Details.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\ChequeBanking.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\ChequeClearance.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Create.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Index.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\InHouse\Printing.cshtml" />
+    <Content Include="Areas\Accounts\Views\BackOfficeTransfers\Create.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\Create.cshtml" />
+    <Content Include="Areas\Reports\Views\SSRSReports\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSetting\EditReport.cshtml" />
+    <Content Include="Areas\Accounts\Views\BackOfficeTransfer\Create.cshtml" />
+    <Content Include="Files\CustomerReport20240831072056.pdf" />
+    <Content Include="Files\CustomerReport20240831072101.pdf" />
+    <Content Include="Files\CustomerReport20240831072118.pdf" />
+    <Content Include="Files\CustomerReport20240831072133.pdf" />
+    <Content Include="Files\CustomerReport20240831072149.pdf" />
+    <Content Include="Files\CustomerReport20240831072157.pdf" />
+    <Content Include="Files\CustomerReport20240831072206.pdf" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Cheques.cshtml" />
+    <Content Include="Areas\FrontOffice\Views\Cheques\Index.cshtml" />
+    <Content Include="Areas\Admin\Views\SSRSReportSettingLogin\Login.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\relieveguarantor.cshtml" />
+    <Content Include="Areas\Loaning\Views\AttachGuarantor\guarantorSubstitution.cshtml" />
     <None Include="Properties\PublishProfiles\FolderProfile.pubxml" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\css\ActionDropDown.css" />
+    <Content Include="Scripts\css\BackOfficeNavigationMenu.css" />
     <Content Include="Scripts\css\CaptureSpecimenForm.css" />
     <Content Include="Scripts\css\login.css" />
     <Content Include="Scripts\css\Marquee.css" />
+    <Content Include="Scripts\css\SSRSGenerateReportIndex.css" />
+    <Content Include="Scripts\css\SSRSModal.css" />
     <Content Include="Scripts\css\tabbing.css" />
     <Content Include="Scripts\css\tabbing2.css" />
+    <Content Include="Scripts\css\ViewbagTable.css" />
+    <Content Include="Scripts\css\WebCam.css" />
     <Content Include="Scripts\css\_layout.css" />
     <Content Include="Scripts\home-index.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-3.1.1.min.js" />
     <Content Include="Scripts\js\CaptureSpecimenDetails.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\apportionments.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\apportionTypeHandler.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\chartOfAccounts.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\customerAccountsGrid.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\customersGrid.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\formSubmission.js" />
+    <Content Include="Scripts\js\frontoffice\customerreceipts\tellerGlTable.js" />
     <Content Include="Scripts\js\GuarantorsModalPopUp.js" />
     <Content Include="Scripts\js\handleTogglingTheSectionAndButtonText.js" />
     <Content Include="Scripts\js\MarqueeTransform.js" />
@@ -1794,6 +1851,9 @@
     <Content Include="Scripts\summernote\summernote-lite.js" />
     <Content Include="Scripts\summernote\summernote.js" />
     <Content Include="Scripts\summernote\summernote.min.js" />
+    <Content Include="calculator.html" />
+    <Content Include="loan-calculator.html" />
+    <Content Include="ToDoList.html" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
