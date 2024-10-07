@@ -99,7 +99,7 @@
 
                                                 <div class="form-group mb-3">
                                                     @Html.LabelFor(model => model.UntransferredChequesValue, new { @class = "font-bold" })
-                                                    @Html.TextBoxFor(model => model.UntransferredChequesValue, new { @class = "form-control", @id = "bookBalance", @readonly = "readonly" })
+                                                    @Html.TextBoxFor(model => model.UntransferredChequesValue, new { @class = "form-control", @id = "untrasferredChequesValue", @readonly = "readonly" })
                                                     @Html.ValidationMessageFor(model => model.UntransferredChequesValue, "", new { @class = "text-danger" })
                                                 </div>
 
@@ -110,9 +110,10 @@
                                                 </div>
 
                                                 <div class="form-group mb-3">
-                                                    @Html.LabelFor(model => model.ClosingBalanceStatus, new { @class = "font-bold" })
-                                                    @Html.TextBoxFor(model => model.ClosingBalanceStatus, new { @class = "form-control", @id = "closingBalanceStatus", @readonly = "readonly" })
-                                                    @Html.ValidationMessageFor(model => model.ClosingBalanceStatus, "", new { @class = "text-danger" })
+                                                    @Html.TextBoxFor(model => model.TellerCashBalanceStatusValue, new { @class = "form-control", @id = "cashBalanceStatusValue", @readonly = "readonly" })
+                                                    @Html.LabelFor(model => model.TellerCashBalanceStatus, new { @class = "font-bold" })
+                                                    @Html.TextBoxFor(model => model.TellerCashBalanceStatus, new { @class = "form-control", @id = "closingBalanceStatus", @readonly = "readonly" })
+                                                    @Html.ValidationMessageFor(model => model.TellerCashBalanceStatus, "", new { @class = "text-danger" })
                                                 </div>
 
 
@@ -258,22 +259,26 @@
     @Scripts.Render("~/plugins/tagInputs")
     @Scripts.Render("~/plugins/duallist")
 
-<script>
-   
+    <script>
+
 $('#cashTransferButton').on('click', function () {
 
     var cashTransferRequestDTO = {
         amount: $('#amount').val(),
         reference: $('#reference').val(),
-        employeeId: $('#employeeId').val()
-    };
+        employeeId: $('#employeeId').val(),
+        tellerCashBalanceStatus: $('#closingBalanceStatus').val(),
+        tellerCashBalanceStatusValue: $('#cashBalanceStatusValue').val(),
+        untransferredChequesValue: $('#untransferredChequesValue').val()
 
-  
+    }
+
+
     $.ajax({
         url: '@Url.Action("Create", "EndOfDay")',
         type: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify(cashTransferRequestDTO), 
+        data: JSON.stringify(cashTransferRequestDTO),
         success: function (response) {
             if (response && response.success) {
                 alert(response.message);
@@ -292,30 +297,37 @@ $('#cashTransferButton').on('click', function () {
 
     <script>
         $(document).ready(function () {
-            
+
             function updateBalanceStatus() {
-              
-                var amount = parseFloat($('#amount').val()) || 0; 
+                var amount = parseFloat($('#amount').val()) || 0;
                 var closingBalance = parseFloat($('#closingBalance').val()) || 0;
 
-               
                 var status;
+                var statusValue;
+
                 if (amount < closingBalance) {
                     status = 'Shortage';
+                    statusValue = 0x5001; // Assuming this represents Shortage
                 } else if (amount > closingBalance) {
                     status = 'Excess';
+                    statusValue = 0x5002; // Assuming this represents Excess
                 } else {
                     status = 'Balanced';
+                    statusValue = 0x5000; // Assuming this represents Balanced
                 }
 
                 $('#closingBalanceStatus').val(status);
+                $('#cashBalanceStatusValue').val(statusValue); // Changed ID to match the hidden field
+
             }
 
             $('#amount').on('input', function () {
                 updateBalanceStatus();
             });
 
+            // Initial call to set the status on page load
             updateBalanceStatus();
         });
     </script>
+
 }

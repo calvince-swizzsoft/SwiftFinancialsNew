@@ -86,19 +86,36 @@ namespace Application.MainBoundedContext.DTO.FrontOfficeModule
         [Display(Name = "From")]
         public string CreatedBy { get; set; }
 
-        [DataMember]
-        [Display(Name = "TransactionType")]
-        public int TransactionType { get; set; }
+        //[DataMember]
+        //[Display(Name = "TransactionType")]
+        //public int TransactionType { get; set; }
+
+        //[DataMember]
+        //[Display(Name = "TransactionType")]
+        //public string TransactionTypeDescription
+        //{
+        //    get
+        //    {
+        //        return Enum.IsDefined(typeof(TreasuryTransactionType), TransactionType) ? EnumHelper.GetDescription((TreasuryTransactionType)TransactionType) : string.Empty;
+        //    }
+        //}
 
         [DataMember]
-        [Display(Name = "TransactionType")]
-        public string TransactionTypeDescription
+        [Display(Name = "Cash Balance Status")]
+        public int TellerCashBalanceStatusValue { get; set; } // Changed the name to avoid conflict
+
+        [DataMember]
+        [Display(Name = "Cash Balance Status")]
+        public string TellerCashBalanceStatus
         {
             get
             {
-                return Enum.IsDefined(typeof(TreasuryTransactionType), TransactionType) ? EnumHelper.GetDescription((TreasuryTransactionType)TransactionType) : string.Empty;
+                return Enum.IsDefined(typeof(TellerCashBalanceStatus), TellerCashBalanceStatusValue)
+                    ? EnumHelper.GetDescription((TellerCashBalanceStatus)TellerCashBalanceStatusValue)
+                    : string.Empty;
             }
         }
+
 
         [Display(Name = "Opening Balance")]
         public decimal OpeningBalance { get; set; }
